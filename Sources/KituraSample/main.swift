@@ -18,6 +18,7 @@ import sys
 import net
 import router
 
+import LoggerAPI
 import HeliumLogger
 
 #if os(Linux)
