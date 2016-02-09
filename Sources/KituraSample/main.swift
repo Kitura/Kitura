@@ -39,7 +39,7 @@ class EchoTest: RouterMiddleware {
 
 
 let router = Router()
-Log.logger = BasicLogger()
+Log.logger = HeliumLogger()
         
 
 router.use("/zxcv/*", middleware: EchoTest())
