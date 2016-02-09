@@ -17,7 +17,7 @@
 import net
 import sys
 
-import HeliumLogger
+import LoggerAPI
 
 import Foundation
 
