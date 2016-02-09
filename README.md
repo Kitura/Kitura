@@ -44,7 +44,7 @@ Kitura is a Swift server library that is created for use with the [Swift Package
 
 4. Build and install the patched libdispatch library. Please note that the complete instructions for building and installing this library are found [here](https://github.com/seabaylea/swift-corelibs-libdispatch/blob/opaque-pointer/INSTALL). Though, all you need to do is just this: `cd swift-corelibs-libdispatch && sh ./autogen.sh && ./configure && make && sudo make install`
 
-5. Add a modulemap file for the libdispatch library to the following folder: `/usr/local/include/dispatch`. You can simply copy the contents of the following map module file in [module.modulemap](https://github.ibm.com/ibmswift/IncludeChanges/blob/master/include-dispatch/module.modulemap).
+5. Add a modulemap file for the libdispatch library to the following folder: `/usr/local/include/dispatch`. You can simply copy the contents of the following map module file in [module.modulemap](https://github.com/IBM-Swift/Kitura/blob/master/Sources/Modulemaps/module.modulemap).
 
 6. Download the [pcre2](http://ftp.exim.org/pub/pcre/pcre2-10.20.tar.gz) source code. Unpack the tar. Run ./configure && make && sudo make install. This will place the necessary headers and libraries into /usr/local/include and /user/local/libs.
 
