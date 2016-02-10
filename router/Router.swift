@@ -95,16 +95,12 @@ extension Router : HttpServerDelegate {
         
         let urlPath = StringUtils.toUtf8String(routeReq.parsedUrl.path!)
         if  urlPath != nil  {
-            var handled = false
             var elemIndex = -1
         
             // Extra variable to get around use of variable in its own initializer
-            var callback: ((processed: Bool)->Void)? = nil
+            var callback: (()->Void)? = nil
         
-            let callbackHandler = {(processed: Bool) -> Void in
-                if  processed  {
-                    handled = true
-                }
+            let callbackHandler = {() -> Void in
                 elemIndex+=1
                 if  elemIndex < self.routeElems.count  &&  routeResp.error == nil {
                     self.routeElems[elemIndex].process(method, urlPath: urlPath!, request: routeReq, response: routeResp, next: callback!)
@@ -116,8 +112,8 @@ extension Router : HttpServerDelegate {
                             Log.error(message)
                             try routeResp.status(.INTERNAL_SERVER_ERROR).end(message)
                         }
-                        else if  !handled {
-                            try routeResp.sendStatus(.NOT_FOUND).end()
+                        else if  !routeResp.invokedEnd {
+                            try routeResp.end()
                         }
                     }
                     catch {
@@ -127,7 +123,7 @@ extension Router : HttpServerDelegate {
             }
             callback = callbackHandler
         
-            callbackHandler(false)
+            callbackHandler()
         }
     }
 }

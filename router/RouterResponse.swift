@@ -24,11 +24,14 @@ import Foundation
 public class RouterResponse {
     let response: ServerResponse
     private let buffer = BufferList()
+
+    var invokedEnd = false
     
     public var error: NSError?
     
     init(response: ServerResponse) {
         self.response = response
+        status(HttpStatusCode.NOT_FOUND)
     }
     
     public func end() throws -> RouterResponse {
@@ -40,6 +43,7 @@ public class RouterResponse {
             }
             try response.writeData(data)
         }
+        invokedEnd = true
         try response.end()
         return self
     }

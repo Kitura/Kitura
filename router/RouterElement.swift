@@ -61,7 +61,7 @@ class RouterElement {
         self.middleware = middleware
     }
     
-    func process(httpMethod: RouterMethod, urlPath: NSData, request: RouterRequest, response: RouterResponse, next: (processed: Bool) -> Void) {
+    func process(httpMethod: RouterMethod, urlPath: NSData, request: RouterRequest, response: RouterResponse, next: () -> Void) {
         
         if  method == .All  ||  method == httpMethod {
             if  let r = regex  {
@@ -78,21 +78,21 @@ class RouterElement {
                 processHelper(request, response: response, next: next)
             }
         }
-        next(processed: false)
+        next()
     }
     
-    private func processHelper(request: RouterRequest, response: RouterResponse, next: (processed: Bool) -> Void) {
+    private func processHelper(request: RouterRequest, response: RouterResponse, next: () -> Void) {
         
         if  let handler = handler  {
             handler(request: request, response: response) { () in
                 request.params = [:]
-                next(processed: true)
+                next()
             }
         }
         else if  let middleware = middleware  {
             middleware.handle(request, response: response) { () in
                 request.params = [:]
-                next(processed: true)
+                next()
             }
         }
 
