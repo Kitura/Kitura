@@ -100,7 +100,7 @@ extension Router : HttpServerDelegate {
             // Extra variable to get around use of variable in its own initializer
             var callback: (()->Void)? = nil
         
-            let callbackHandler = {() -> Void in
+            let callbackHandler = {[unowned routeReq, unowned routeResp] () -> Void in
                 elemIndex+=1
                 if  elemIndex < self.routeElems.count  &&  routeResp.error == nil {
                     self.routeElems[elemIndex].process(method, urlPath: urlPath!, request: routeReq, response: routeResp, next: callback!)
