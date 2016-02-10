@@ -16,6 +16,15 @@
 
 import PackageDescription
 
+// Dual pathing for O/S differences
+#if os(Linux)
+   let swiftyJsonUrl = "https://github.com/IBM-Swift/SwiftyJSON.git"
+   let swiftyJsonVersion = 3
+#else
+   let swiftyJsonUrl = "https://github.com/SwiftyJSON/SwiftyJSON.git"
+   let swiftyJsonVersion = 2
+#endif
+
 let package = Package(
     name: "router",
         dependencies: [
@@ -24,6 +33,7 @@ let package = Package(
             .Package(url: "https://github.com/IBM-Swift/Kitura-Pcre2.git", majorVersion: 0),
             .Package(url: "https://github.com/IBM-Swift/Kitura-CurlHelpers.git", majorVersion: 0),
             .Package(url: "https://github.com/IBM-Swift/Kitura-HttpParserHelper.git", majorVersion: 0),
+            .Package(url: swiftyJsonUrl, majorVersion: swiftyJsonVersion)
         ]
 )
 
