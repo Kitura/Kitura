@@ -1,5 +1,6 @@
 module Dispatch [system] [extern_c] {
 	umbrella header "dispatch.h"
+    link "dispatch"
 	module * { export * }
 	export *
 }
