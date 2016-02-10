@@ -17,7 +17,7 @@
 import net
 import sys
 
-// import SwiftyJSON
+import SwiftyJSON
 
 import Foundation
 
@@ -69,16 +69,12 @@ public class RouterResponse {
         return self
     }
     
-
-	// TODO: use JSON parsing here.
-	/**    
-	public func sendJson(json: JSON) -> RouterResponse {
+    public func sendJson(json: JSON) -> RouterResponse {
         let jsonStr = json.description
         setHeader("Content-Type", value: ContentType.contentTypeForExtension("json")!)
         send(jsonStr)
         return self
-    	}
-	**/
+    }
     
     public func status(status: Int) -> RouterResponse {
         response.status = status
