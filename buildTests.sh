@@ -28,13 +28,13 @@ if [ -f "./mainBuildTests.sh" ]; then
     fi
 else
     fwDir="!"
-    for  dir in Packages/PhoenixTestFramework* ; do
+    for  dir in Packages/Kitura-TestFramework* ; do
         fwDir=$dir
     done
     if [[ "${fwDir}" !=  "!"  &&  -d "${fwDir}" ]]; then
         "${fwDir}/TestFramework/mainBuildTests.sh"
     else
-        echo "Didn't find the Phoenix test framework"
+        echo "Could not find the Kitura test framework!"
         exit 1
     fi
 fi
