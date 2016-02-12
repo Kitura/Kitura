@@ -14,6 +14,8 @@
  * limitations under the License.
  **/
 
+// KituraSample shows examples for creating custom routes.
+
 import sys
 import net
 import router
@@ -25,10 +27,18 @@ import HeliumLogger
     import Glibc
 #endif
 
-//import SwiftyJSON
-
 import Foundation
 
+// All Web apps need a router to define routes
+let router = Router()
+
+// Using an implementation for a Logger
+Log.logger = HeliumLogger()
+
+/** 
+* RouterMiddleware can be used for intercepting requests and handling custom behavior
+* such as authentication and other routing
+*/
 class EchoTest: RouterMiddleware {
     func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
         for  (key, value) in request.headers {
@@ -38,111 +48,78 @@ class EchoTest: RouterMiddleware {
 }
 
 
-let router = Router()
-Log.logger = HeliumLogger()
-        
+// This route executes the echo middleware
+router.use("/*", middleware: EchoTest())
 
-router.use("/zxcv/*", middleware: EchoTest())
-
-
-router.all("/zxcv/:p1") { request, _, next in
-    request.userInfo["u1"] = "Ploni Almoni".bridge()
-    next()
+router.get("/hello") { _, response, next in
+     response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
+     do {
+         try response.status(HttpStatusCode.OK).send("Hello World!").end()
+     }
+     catch {}
+     next()
 }
 
-router.get("/qwer") { _, response, next in
-    response.setHeader("Content-Type", value: "text/html; charset=utf-8")
+router.post("/") {request, response, next in
+    response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
     do {
-        try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+        try response.status(HttpStatusCode.OK).send("Got a POST request").end()
     }
     catch {}
     next()
 }
 
-// router.get("/") { _, response, next in
-//     response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
-//     do {
-//         try response.status(HttpStatusCode.OK).send("Hello World!").end()
-//     }
-//     catch {}
-//     next()
-// }
-
-
-router.get("/zxcv/:p1") { request, response, next in
-    response.setHeader("Content-Type", value: "text/html; charset=utf-8")
-    let p1 = request.params["p1"] ?? "(nil)"
-    let q = request.queryParams["q"] ?? "(nil)"
-    let u1 = request.userInfo["u1"] as? NSString ?? "(nil)"
+router.put("/") {request, response, next in
+    response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
     do {
-        try response.status(HttpStatusCode.OK).send("<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=\(p1)<p><p>q=\(q)<p><p>u1=\(u1)</body></html>\n\n").end()
+        try response.status(HttpStatusCode.OK).send("Got a PUT request").end()
     }
     catch {}
     next()
 }
 
-        
-router.get("/redir") { _, response, next in
+router.delete("/") {request, response, next in
+    response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
     do {
-        try response.redirect("http://www.ibm.com")
+        try response.status(HttpStatusCode.OK).send("Got a DELETE request").end()
     }
     catch {}
-
     next()
 }
 
-        
+// Handing errors
 router.get("/error") { _, response, next in
     response.error = NSError(domain: "RouterTestDomain", code: 1, userInfo: [:])
     next()
 }
 
+// Handling redirects
+router.get("/redir") { _, response, next in
+    do {
+        try response.redirect("http://www.ibm.com")
+    }
+    catch {}
+    
+    next()
+}
 
-router.use("/bodytest", middleware: BodyParser())
-        
-router.post("/bodytest") { request, response, next in
-    // if let json = request.body?.asJson() {
-    //     response.setHeader("Content-Type", value: "text/html; charset=utf-8")
-    //     do {
-    //         try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received JSON body </b><br>\(json)</body></html>\n\n")
-    //     }
-    //     catch {}
-    // }
-    if let body = request.body?.asUrlEncoded() {
-        response.setHeader("Content-Type", value: "text/html; charset=utf-8")
-        do {
-            try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> \(body) </body></html>\n\n")
-        }
-        catch {}
+// Reading parameters
+router.get("/users/:user") { request, response, next in
+    response.setHeader("Content-Type", value: "text/html; charset=utf-8")
+    let p1 = request.params["user"] ?? "(nil)"
+    do {
+        try response.status(HttpStatusCode.OK).send(
+            "<!DOCTYPE html><html><body>" +
+            "<b>User:</b> \(p1)" +
+            "</body></html>\n\n").end()
     }
-    else if let text = request.body?.asText() {
-        response.setHeader("Content-Type", value: "text/html; charset=utf-8")
-        do {
-            try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received text body: </b>\(text)</body></html>\n\n")
-        }
-        catch {}
-    }
-    else {
-        response.error = NSError(domain: "RouterTestDomain", code: 1, userInfo: [NSLocalizedDescriptionKey:"Failed to parse request body"])
-    }
-
+    catch {}
     next()
 }
 
 
-// router.get("/json/:p1") { request, response, next in
-//     let p1 = request.params["p1"] ?? ""
-//     let dict: [String: AnyObject] = ["a": "asdf", "b": [1,2,3], "c":true, "d": NSNull(), "e": 123, "f": ["p1": p1]]
-//     let json = JSON(dict)
-//     do {
-//         try response.status(.OK).sendJson(json).end()
-//     }
-//     catch {}
-//     next()
-// }
-
-        
-let server = HttpServer.listen(8090, delegate: router)
+let server = HttpServer.listen(8090,
+    delegate: router)
         
 Server.run()
 
