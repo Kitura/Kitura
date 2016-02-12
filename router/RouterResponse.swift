@@ -17,18 +17,21 @@
 import net
 import sys
 
-// import SwiftyJSON
+import SwiftyJSON
 
 import Foundation
 
 public class RouterResponse {
     let response: ServerResponse
     private let buffer = BufferList()
+
+    var invokedEnd = false
     
     public var error: NSError?
     
     init(response: ServerResponse) {
         self.response = response
+        status(HttpStatusCode.NOT_FOUND)
     }
     
     public func end() throws -> RouterResponse {
@@ -40,6 +43,7 @@ public class RouterResponse {
             }
             try response.writeData(data)
         }
+        invokedEnd = true
         try response.end()
         return self
     }
@@ -69,16 +73,12 @@ public class RouterResponse {
         return self
     }
     
-
-	// TODO: use JSON parsing here.
-	/**    
-	public func sendJson(json: JSON) -> RouterResponse {
+    public func sendJson(json: JSON) -> RouterResponse {
         let jsonStr = json.description
         setHeader("Content-Type", value: ContentType.contentTypeForExtension("json")!)
         send(jsonStr)
         return self
-    	}
-	**/
+    }
     
     public func status(status: Int) -> RouterResponse {
         response.status = status

@@ -14,7 +14,7 @@
  * limitations under the License.
  **/
 
-// import SwiftyJSON
+import SwiftyJSON
 
 import sys
 import net
@@ -36,14 +36,14 @@ public class BodyParser : RouterMiddleware {
     if let contentType = contentType {
       do {
 
-        //if ContentType.isType(contentType, typeDescriptor: "json") {
-        //    let bodyData = try readBodyData(message)
-        //    let json = JSON(data: bodyData)
-        //   if json != JSON.null {
-        //       return ParsedBody(json: json)
-        //   }
-        //}
-        if ContentType.isType(contentType, typeDescriptor: "urlencoded") {
+        if ContentType.isType(contentType, typeDescriptor: "json") {
+            let bodyData = try readBodyData(message)
+            let json = JSON(data: bodyData)
+            if json != JSON.null {
+               return ParsedBody(json: json)
+            }
+        }
+        else if ContentType.isType(contentType, typeDescriptor: "urlencoded") {
           let bodyData = try readBodyData(message)
           var parsedBody = [String:String]()
           var success = true
@@ -94,13 +94,13 @@ public class BodyParser : RouterMiddleware {
 }
 
 public class ParsedBody {
-  // private var jsonBody: JSON?
+  private var jsonBody: JSON?
   private var urlEncodedBody: [String:String]?
   private var textBody: String?
 
-  //public init (json: JSON) {
-  //    jsonBody = json
-  //}
+  public init (json: JSON) {
+      jsonBody = json
+  }
 
   public init (urlEncoded: [String:String]) {
     urlEncodedBody = urlEncoded
@@ -110,9 +110,9 @@ public class ParsedBody {
     textBody = text
   }
 
-  //public func asJson() -> JSON? {
-  //    return jsonBody
-  //}
+  public func asJson() -> JSON? {
+      return jsonBody
+  }
 
   public func asUrlEncoded() -> [String:String]? {
     return urlEncodedBody
