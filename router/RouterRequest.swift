@@ -19,7 +19,7 @@ import BlueSocket
 
 import Foundation
 
-public class RouterRequest: ETReader {
+public class RouterRequest: BlueSocketReader {
     let serverRequest: ServerRequest
     let parsedUrl: UrlParser
     

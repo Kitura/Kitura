@@ -32,7 +32,7 @@ public class BodyParser : RouterMiddleware {
     next()
   }
 
-  public class func parse(message: ETReader, contentType: String?) -> ParsedBody? {
+  public class func parse(message: BlueSocketReader, contentType: String?) -> ParsedBody? {
     if let contentType = contentType {
       do {
 
@@ -81,7 +81,7 @@ public class BodyParser : RouterMiddleware {
     return nil
   }
 
-  public class func readBodyData(reader: ETReader) throws -> NSMutableData {
+  public class func readBodyData(reader: BlueSocketReader) throws -> NSMutableData {
     let bodyData = NSMutableData()
 
     var length = try reader.readData(bodyData)
