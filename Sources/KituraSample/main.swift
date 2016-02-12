@@ -39,17 +39,21 @@ Log.logger = HeliumLogger()
 * RouterMiddleware can be used for intercepting requests and handling custom behavior
 * such as authentication and other routing
 */
-class EchoTest: RouterMiddleware {
+class BasicAuthMiddleware: RouterMiddleware {
     func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
-        for  (key, value) in request.headers {
-            print("EchoTest. key=\(key). value=\(value).")
-        }
+        
+        let authString = request.headers["Authorization"]
+        
+        Log.info("Authorization: \(authString)")
+        
+        // Check authorization string in database to approve the request if fail
+        // response.error = NSError(domain: "AuthFailure", code: 1, userInfo: [:])
     }
 }
 
 
 // This route executes the echo middleware
-router.use("/*", middleware: EchoTest())
+router.use("/*", middleware: BasicAuthMiddleware())
 
 router.get("/hello") { _, response, next in
      response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
