@@ -34,3 +34,7 @@ let package = Package(
         .Package(url: "git@github.com:IBM-Swift/Kitura-TestFramework.git", majorVersion: 0),
         ]
 )
+
+#if os(OSX)
+    package.dependencies.append(.Package(url: "git@github.com:IBM-Swift/GRMustache.swift.git", majorVersion: 1))
+#endif

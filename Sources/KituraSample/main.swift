@@ -29,6 +29,10 @@ import HeliumLogger
 
 import Foundation
 
+#if os(OSX)
+    import Mustache
+#endif
+
 // All Web apps need a router to define routes
 let router = Router()
 
@@ -121,10 +125,54 @@ router.get("/users/:user") { request, response, next in
     next()
 }
 
+#if os(OSX) // Mustache implented for OSX only yet
+router.get("/mustache") { _, response, next in
+    defer {
+        next()
+    }
+    do {
+        let template = try Template(string: "Hello {{name}}\n" +
+            "Your beard trimmer will arrive on {{format(date)}}.\n" +
+            "{{#late}}" +
+            "Well, on {{format(realDate)}} because of a Martian attack." +
+            "{{/late}}")
+        // Let template format dates with `{{format(...)}}`
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateStyle = .MediumStyle
+        template.registerInBaseContext("format", Box(dateFormatter))
+
+        // The rendered data
+        let data = [
+            "name": "Arthur",
+            "date": NSDate(),
+            "realDate": NSDate().dateByAddingTimeInterval(60*60*24*3),
+            "late": true
+        ]
+        var rendering = ""
+        // The rendering: "Hello Arthur..."
+        do {
+            rendering = try template.render(Box(data))
+        }
+        catch {
+            Log.error("Failed to render mustache template")
+        }
+
+        do {
+            try response.status(HttpStatusCode.OK).end(rendering)
+        }
+        catch {
+            Log.error("Failed to send response")
+        }
+    }
+    catch {
+        Log.error("Failed to create mustache template")
+    }
+}
+#endif
 
 let server = HttpServer.listen(8090,
     delegate: router)
-        
+
 Server.run()
 
 
