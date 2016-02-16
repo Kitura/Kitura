@@ -19,31 +19,80 @@ import Foundation
 
 import pcre2
 
+// MARK: RegexMatcher
+
 public class RegexMatcher {
-    
+
+    /// 
+    /// Compiled expression handle
+    ///
     let compiledExpr: COpaquePointer
+    
+    ///
+    /// Match data block in pcre2
+    ///
     let matchData: COpaquePointer
+    
+    ///
+    ///
+    ///
     var matchStr: NSData?
     
+    ///
+    ///
+    ///
     public var matchCount: Int {
+        
         return matchStr != nil ? Int(pcre2_get_ovector_count_8(matchData)) : 0
+        
     }
     
+    ///
+    /// Initializes a RegexMatcher instance
+    ///
+    /// - Parameter expr: pointer to the expression
+    ///
+    /// - Returns: instance of RegexMatcher
+    ///
     init(expr: COpaquePointer) {
+        
         compiledExpr = expr
         matchData = pcre2_match_data_create_from_pattern_8(compiledExpr, nil)
+        
     }
     
+    /// 
+    /// Destroy the RegexMatcher
+    ///
     deinit {
+        
         pcre2_match_data_free_8(matchData)
+        
     }
     
+    ///
+    /// Check is the given string matches the regular expression
+    ///
+    /// - Parameter str: the string to be matched
+    ///
+    /// - Returns: whether the string matched the regex 
+    ///
     public func match(str: String) -> Bool {
+        
         let cStr = StringUtils.toUtf8String(str)
         return cStr != nil ? match(cStr!) : false
+        
     }
     
+    ///
+    /// Check is the given data matches the regular expression
+    ///
+    /// - Parameter data: the data to be matched
+    ///
+    /// - Returns: whether the string matched the regex
+    ///
     public func match(data: NSData) -> Bool {
+        
         var result = false
         matchStr = data
         
@@ -56,7 +105,15 @@ public class RegexMatcher {
         return result
     }
     
+    ///
+    /// Return the matched elements
+    /// 
+    /// - Parameter number: the number elements to return 
+    ///
+    /// - Returns: the element 
+    ///
     public func getMatchedElement(number: Int) -> String? {
+        
         var result: String? = nil
         if  matchStr != nil {
             let count = pcre2_get_ovector_count_8(matchData)
@@ -69,8 +126,18 @@ public class RegexMatcher {
             }
         }
         return result
+        
     }
     
+    /// 
+    /// Perform string replacement
+    ///
+    /// - Parameter str: String
+    /// - Parameter replacement: replacement String 
+    /// - Parameter globally: whether to replace it globally
+    ///
+    /// - Returns: 
+    ///
     public func substitute(str: String, replacement: String, globally: Bool=false) -> (Int, String?) {
         
         let cStr = StringUtils.toUtf8String(str)
@@ -85,14 +152,27 @@ public class RegexMatcher {
         else {
             return (0, nil)
         }
+        
     }
     
+    ///
+    /// Perform string replacement in data
+    ///
+    /// - Parameter str: data to be interpreted as a String
+    /// - Parameter replacement: replacement String
+    /// - Parameter globally: whether to replace it globally
+    ///
+    /// - Returns:
+    ///
+
     public func substitute(str: NSData, replacement: NSData, inout output: [UInt8], globally: Bool=false) -> Int {
+        
         let options:UInt32 = globally ? PCRE2_SUBSTITUTE_GLOBAL : 0
         var resultLen: size_t = output.count-1
         
         let rc = pcre2_substitute_8(compiledExpr, UnsafePointer<UInt8>(str.bytes), str.length, 0, options, matchData, nil, UnsafePointer<UInt8>(replacement.bytes), replacement.length, &output, &resultLen)
         
         return Int(rc)
+        
     }
 }

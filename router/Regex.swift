@@ -19,23 +19,48 @@ import pcre2
 
 import Foundation
 
+// MARK: Regex
+
 public class Regex {
     
+    ///
+    /// TODO: ???
+    ///
     let COMPILE_ERROR_BASE: Int32 = 100
     
+    ///
+    /// Pointer to the compiled regular expression
+    ///
     private var compiledExpr: COpaquePointer = nil
     
+    /// 
+    /// Initializes a Regex instance
+    ///
     public init() {}
     
+    ///
+    /// Deconstructs the instance
+    ///
     deinit {
         free()
     }
     
+    ///
+    /// Returns the Optional Regular Expression matcher
+    ///
     public var matcher: RegexMatcher? {
         return compiledExpr != nil ? RegexMatcher(expr: compiledExpr) : nil
     }
     
+    ///
+    /// Compile the expression
+    ///
+    /// - Parameter exprSrc: regular expression
+    /// 
+    /// - Returns: whether successful 
+    ///
     public func compile(exprSrc: String) -> Bool {
+        
         var result = true
         
         if  let cSrc = StringUtils.toUtf8String(exprSrc)  {
@@ -60,10 +85,15 @@ public class Regex {
         return result
     }
     
+    /// 
+    /// Free the regular expression matcher
+    ///
     public func free() {
+        
         if  compiledExpr != nil {
             pcre2_code_free_8(compiledExpr)
             compiledExpr = nil
         }
+        
     }
 }
