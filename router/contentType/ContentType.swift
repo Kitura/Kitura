@@ -1,5 +1,5 @@
 /**
- * Copyright IBM Corporation 2015
+ * Copyright IBM Corporation 2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,22 +17,34 @@
 import Foundation
 import LoggerAPI
 
+// MARK: ContentType 
+
 public class ContentType {
     
+    ///
+    /// Whether to use the local mime-type definitions or the ones in the file
+    ///
     private static let MIME_TYPE_EMBEDDED: Bool = true
     
-    // For now the MIME types are specified in
+    ///
+    // A list of paths to check for the types.json file
+    ///
     private static let TYPES_PATH: [String] = [
         "Sources/router/contentType/types.json",
-        "Packages/Phoenix/Sources/router/contentType/types.json",
+        "Packages/Kitura-net/Sources/router/contentType/types.json",
         "./types.json"]
     
-    
+    ///
+    /// A dictionary of extensions to MIME type descriptions
+    ///
     private static var extToContentType = [String:String]()
     
-    /**
-    * Attempt to load data from the filesystem in order from the following paths
-    **/
+    ///
+    /// Attempt to load data from the filesystem in order from the following paths
+    ///
+    /// - Parameter paths: a list of paths to check for the file
+    ///
+    /// - Returns: the data from the types.json file
     public class func loadDataFromFile (paths: [String]) -> NSData? {
         
         for path in paths {
@@ -49,9 +61,9 @@ public class ContentType {
     }
     
     
-    /**
-    * The following function loads the MIME types from an external file
-    **/
+    ///
+    /// The following function loads the MIME types from an external file
+    ///
     public class func initialize () {
         
         // MARK: Remove this when Linux reading of JSON files works.
@@ -110,13 +122,27 @@ public class ContentType {
         
     }
     
-    
+    /// 
+    /// Get the content type for the given file extension
+    ///
+    /// - Parameter ext: the file extension 
+    /// 
+    /// - Returns: an Optional String for the content type 
+    ///
     public class func contentTypeForExtension (ext: String) -> String? {
         return extToContentType[ext]
     }
     
-    
+    /// 
+    /// Check if the message content type matches the type descriptor
+    ///
+    /// - Parameter messageContentType: the content type 
+    /// - Parameter typeDescriptor: the description of the type
+    ///
+    /// - Returns: whether the types matched 
+    ///
     public class func isType (messageContentType: String, typeDescriptor: String) -> Bool {
+        
         let type = typeDescriptor.lowercaseString
         let typeAndSubtype = messageContentType.bridge().componentsSeparatedByString(";")[0].lowercaseString
         
@@ -145,8 +171,15 @@ public class ContentType {
         return false
     }
     
-    
+    ///
+    /// Normalized the type 
+    ///
+    /// - Parameter type: the content type
+    /// 
+    /// - Returns: the normalized String 
+    ///
     private class func normalizeType (type: String) -> String {
+        
         switch type {
         case "urlencoded":
             return "application/x-www-form-urlencoded"
@@ -155,15 +188,19 @@ public class ContentType {
         case "json":
             return "application/json"
             // TODO: +json?
-//            if (type[0] === '+') {
-//                // "+json" -> "*/*+json" expando
-//                type = '*/*' + type
-//            }
+            //            if (type[0] === '+') {
+            //                // "+json" -> "*/*+json" expando
+            //                type = '*/*' + type
+            //            }
         default:
             return type
         }
     }
     
+    ///
+    /// The raw types
+    /// *Note*: This will be removed once JSON parsing and the types.json file can be read. 
+    ///
     private static var rawTypes = [
         "text/plain": ["txt","text","conf","def","list","log","in","ini"],
         "text/html": ["html", "htm"],

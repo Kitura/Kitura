@@ -22,19 +22,44 @@ import BlueSocket
 
 import Foundation
 
+// MARK: BodyParser
+
 public class BodyParser : RouterMiddleware {
-  private static let BUFFER_SIZE = 2000
 
-  public init() {}
+    ///
+    /// Default buffer size (in bytes)
+    ///
+    private static let BUFFER_SIZE = 2000
 
-  public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
-    request.body = BodyParser.parse(request, contentType: request.serverRequest.headers["Content-Type"])
-    next()
-  }
+    /// 
+    /// Initializes a BodyParser instance
+    ///
+    public init() {}
 
-  public class func parse(message: BlueSocketReader, contentType: String?) -> ParsedBody? {
-    if let contentType = contentType {
-      do {
+    ///
+    /// Handle the request
+    ///
+    /// - Parameter request: the router request
+    /// - Parameter response: the router response
+    /// - Parameter next: the closure for the next execution block 
+    ///
+    public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
+        
+        request.body = BodyParser.parse(request, contentType: request.serverRequest.headers["Content-Type"])
+        next()
+        
+    }
+
+    ///
+    /// Parse the incoming message
+    ///
+    /// - Parameter message: message coming from the socket
+    /// - Parameter contentType: the contentType as a string 
+    ///
+    public class func parse(message: BlueSocketReader, contentType: String?) -> ParsedBody? {
+        
+        if let contentType = contentType {
+            do {
 
         if ContentType.isType(contentType, typeDescriptor: "json") {
             let bodyData = try readBodyData(message)
@@ -81,44 +106,106 @@ public class BodyParser : RouterMiddleware {
     return nil
   }
 
-  public class func readBodyData(reader: BlueSocketReader) throws -> NSMutableData {
-    let bodyData = NSMutableData()
+    ///
+    /// Read the Body data
+    ///
+    /// - Parameter reader: the socket reader 
+    ///
+    /// - Throws: ???
+    /// - Returns: data for the body 
+    ///
+    public class func readBodyData(reader: BlueSocketReader) throws -> NSMutableData {
+        
+        let bodyData = NSMutableData()
 
-    var length = try reader.readData(bodyData)
-    while length != 0 {
-      length = try reader.readData(bodyData)
+        var length = try reader.readData(bodyData)
+        while length != 0 {
+            length = try reader.readData(bodyData)
+        }
+        return bodyData
     }
-    return bodyData
-  }
 
 }
 
+// MARK: ParsedBody
+
 public class ParsedBody {
-  private var jsonBody: JSON?
-  private var urlEncodedBody: [String:String]?
-  private var textBody: String?
+    
+    ///
+    /// JSON body if the body is JSON
+    ///
+    private var jsonBody: JSON?
+  
+    ///
+    /// URL encoded body
+    ///
+    private var urlEncodedBody: [String:String]?
+    
+    ///
+    /// Plain-text body
+    ///
+    private var textBody: String?
 
-  public init (json: JSON) {
-      jsonBody = json
-  }
+    /// 
+    /// Initializes a ParsedBody instance
+    ///
+    /// - Parameter json: JSON formatted data
+    ///
+    /// - Returns: a ParsedBody instance
+    ///
+    public init (json: JSON) {
+        
+        jsonBody = json
+        
+    }
 
-  public init (urlEncoded: [String:String]) {
-    urlEncodedBody = urlEncoded
-  }
+    ///
+    /// Initializes a ParsedBody instance
+    ///
+    /// - Parameter urlEncoded: a list of String,String tuples
+    ///
+    /// - Returns a parsed body instance
+    ///
+    public init (urlEncoded: [String:String]) {
+        urlEncodedBody = urlEncoded
+    }
 
-  public init (text: String) {
-    textBody = text
-  }
+    ///
+    /// Initializes a ParsedBody instance
+    ///
+    /// - Parameter text: the String plain-text
+    ///
+    /// - Returns a parsed body instance
+    ///
+    public init (text: String) {
+        textBody = text
+    }
 
-  public func asJson() -> JSON? {
+    ///
+    /// Returns the body as JSON
+    ///
+    /// - Returns: the JSON 
+    ///
+    public func asJson() -> JSON? {
       return jsonBody
-  }
+    }
 
-  public func asUrlEncoded() -> [String:String]? {
-    return urlEncodedBody
-  }
+    ///
+    /// Returns the body as URL encoded strings
+    ///
+    /// - Returns: the list of string, string tuples
+    ///
+    public func asUrlEncoded() -> [String:String]? {
+        return urlEncodedBody
+    }
 
-  public func asText() -> String? {
-    return textBody
-  }
+    ///
+    /// Returns the body as plain-text 
+    ///
+    /// - Returns: the plain text
+    ///
+    public func asText() -> String? {
+        return textBody
+    }
+    
 }
