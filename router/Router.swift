@@ -21,13 +21,29 @@ import LoggerAPI
 
 import Foundation
 
+// MARK Router 
+
 public class Router {
+    
+    ///
+    /// Contains the list of routing elements
+    ///
     private var routeElems: [RouterElement] = []
     
+    ///
+    /// Initializes a Router 
+    ///
+    /// - Returns: a Router instance
+    ///
     public init() {
+        
+        // Read the MIME types
         ContentType.initialize()
+        
         Log.verbose("Router initialized")
+        
     }
+    
     
     public func all(handler: RouterHandler) -> Router {
         return routingHelper(.All, pattern: nil, handler: handler)
@@ -86,9 +102,19 @@ public class Router {
 }
 
 
+///
+/// HttpServerDelegate extensions 
+///
 extension Router : HttpServerDelegate {
 
+    ///
+    /// Handle the request 
+    ///
+    /// - Parameter request: the server request 
+    /// - Parameter response: the server response 
+    ///
     public func handleRequest(request: ServerRequest, response: ServerResponse) {
+        
         let routeReq = RouterRequest(request: request)
         let routeResp = RouterResponse(response: response)
         let method = RouterMethod(string: request.method)

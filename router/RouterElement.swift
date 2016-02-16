@@ -19,20 +19,65 @@ import sys
 
 import Foundation
 
+// MARK: RouterElement
+
 class RouterElement {
+
+    ///
+    /// The regular expression matcher
+    ///
     static let keyRegex = Regex()
+    
+    ///
+    /// The regular expression matcher
+    ///
     static let nonKeyRegex = Regex()
+    
+    ///
+    /// Status of regex initialization
+    ///
     static var regexInit: Int = 0
     
+    ///
+    /// The routing method (get, post, put, delete)
+    ///
     private let method: RouterMethod
+    
+    ///
+    /// The regular expression pattern
+    ///
     private let pattern: String?
+    
+    ///
+    /// The regular expression
+    ///
     private var regex: Regex?
+    
+    ///
+    /// The list of keys
+    ///
     private var keys:[String]?
     
+    ///
+    /// The handler
+    ///
     private var handler: RouterHandler?
+    
+    ///
+    /// The middleware to use
+    ///
     private var middleware: RouterMiddleware?
     
+    /// 
+    /// initializes a RouterElement
+    ///
+    /// - Parameter method: the RouterMethod
+    /// - Parameter pattern: the String pattern to use
+    ///
+    /// - Returns: a RouterElement instance
+    ///
     private init(method: RouterMethod, pattern: String?) {
+        
         self.method = method
         self.pattern = pattern
         self.regex = nil
@@ -47,20 +92,39 @@ class RouterElement {
         
         // Needs to be after the initialization of the static Regex's
         (regex, keys) = buildRegexFromPattern(pattern)
+        
     }
     
+    ///
+    /// Convenience initializer
+    ///
     convenience init(method: RouterMethod, pattern: String? , handler: RouterHandler) {
+        
         self.init(method: method, pattern: pattern)
         
         self.handler = handler
+        
     }
     
+    ///
+    /// Convenience initializer 
+    ///
     convenience init(method: RouterMethod, pattern: String?, middleware: RouterMiddleware) {
+        
         self.init(method: method, pattern: pattern)
         
         self.middleware = middleware
+        
     }
     
+    ///
+    /// Process 
+    ///
+    /// - Parameter httpMethod: the method 
+    /// - Parameter urlPath: the path 
+    /// - Parameter request: the request
+    /// - Parameter response: the response
+    ///
     func process(httpMethod: RouterMethod, urlPath: NSData, request: RouterRequest, response: RouterResponse, next: () -> Void) {
         
         if  method == .All  ||  method == httpMethod {
@@ -81,6 +145,13 @@ class RouterElement {
         next()
     }
     
+    ///
+    /// Process the helper
+    ///
+    /// - Parameter request: the request
+    /// - Parameter response: the router response 
+    /// - Parameter next: the closure for the next execution block
+    ///
     private func processHelper(request: RouterRequest, response: RouterResponse, next: () -> Void) {
         
         if  let handler = handler  {
@@ -98,7 +169,15 @@ class RouterElement {
 
     }
     
+    ///
+    /// Builds a regular expression from a String pattern 
+    ///
+    /// - Parameter pattern: Optional string
+    ///
+    /// - Returns:
+    ///
     private func buildRegexFromPattern(pattern: String?) -> (Regex?, [String]?) {
+        
         if  let p = pattern  {
             let keyMatcher = RouterElement.keyRegex.matcher!
             let nonKeyMatcher = RouterElement.nonKeyRegex.matcher!
@@ -179,7 +258,14 @@ class RouterElement {
         }
     }
     
+    ///
+    /// Update the update request parameters
+    ///
+    /// - Parameter matcher: the regular expression matcher
+    /// - Parameter request:
+    ///
     private func updateRequestParams(matcher: RegexMatcher, request: RouterRequest) {
+        
         if  let k = keys {
             var params: [String:String] = [:]
             for index in 0..<k.count {
@@ -187,10 +273,15 @@ class RouterElement {
             }
             request.params = params
         }
+        
     }
 }
 
+///
+/// Values for Router methods (Get, Post, Put, Delete, etc)
+///
 enum RouterMethod :Int {
+    
     case All, Get, Post, Put, Delete, Head, Unknown
     
     
@@ -219,4 +310,7 @@ enum RouterMethod :Int {
     }
 }
 
+///
+/// RouterHandler is a closure
+///
 public typealias RouterHandler = (request: RouterRequest, response: RouterResponse, next: ()->Void) -> Void
