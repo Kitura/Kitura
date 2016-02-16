@@ -131,6 +131,7 @@ router.get("/mustache") { _, response, next in
         next()
     }
     do {
+        // the example from https://github.com/groue/GRMustache.swift/blob/master/README.md
         let template = try Template(string: "Hello {{name}}\n" +
             "Your beard trimmer will arrive on {{format(date)}}.\n" +
             "{{#late}}" +
