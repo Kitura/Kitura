@@ -112,20 +112,6 @@ public class RouterResponse {
         return self
         
     }
-
-    ///
-    /// Sends data
-    ///
-    /// - Parameter data: the data to send
-    ///
-    /// - Returns: a RouterResponse instance
-    ///
-    public func sendData(data: NSData) -> RouterResponse {
-        
-        buffer.appendData(data)
-        return self
-        
-    }
     
     ///
     /// Sends a string
@@ -141,6 +127,60 @@ public class RouterResponse {
         }
         return self
         
+    }
+
+    ///
+    /// Sends data
+    ///
+    /// - Parameter data: the data to send
+    ///
+    /// - Returns: a RouterResponse instance
+    ///
+    public func sendData(data: NSData) -> RouterResponse {
+        
+        buffer.appendData(data)
+        return self
+        
+    }
+
+    ///
+    /// Sends a file
+    ///
+    /// - Parameter fileName: the name of the file to send.
+    ///
+    /// - Returns: a RouterResponse instance
+    ///
+    /// Note: Sets the Content-Type header based on the "extension" of the file
+    ///       If the fileName is relative, it is relative to the current directory
+    ///
+    public func sendFile(fileName: String) throws -> RouterResponse {
+        let data = try NSData(contentsOfFile: fileName, options: [])
+
+        let lastPathElemRange: Range<String.Index>
+        if  let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch)  {
+            lastPathElemRange = Range(start: lastSlash.startIndex.successor(), end: fileName.characters.endIndex)
+        }
+        else {
+            lastPathElemRange = Range(start: fileName.characters.startIndex, end: fileName.characters.endIndex)
+        }
+
+        let extRange: Range<String.Index>
+        if  let lastDot = fileName.rangeOfString(".", range: lastPathElemRange)  {
+            extRange = Range(start: lastDot.startIndex.successor(), end: fileName.characters.endIndex)
+        }
+        else {
+            // No "extension", use the entire last path element as the "extension"
+            extRange = lastPathElemRange
+        }
+
+        let contentType =  ContentType.contentTypeForExtension(fileName.substringWithRange(extRange))
+        if  let contentType = contentType  {
+            setHeader("Content-Type", value: contentType)
+        }
+
+        buffer.appendData(data)
+
+        return self
     }
     
     ///
