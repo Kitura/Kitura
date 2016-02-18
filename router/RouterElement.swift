@@ -134,6 +134,8 @@ class RouterElement {
                     request.route = pattern
                     updateRequestParams(matcher, request: request)
                     processHelper(request, response: response, next: next)
+                } else {
+                    next()
                 }
             }
             else {
@@ -141,8 +143,9 @@ class RouterElement {
                 request.params = [:]
                 processHelper(request, response: response, next: next)
             }
+        } else {
+            next()
         }
-        next()
     }
     
     ///
