@@ -228,5 +228,7 @@ class EchoTest: RouterMiddleware {
         for  (key, value) in request.headers {
             print("EchoTest. key=\(key). value=\(value).")
         }
+        next()
     }
 }
+
