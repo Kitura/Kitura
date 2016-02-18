@@ -144,6 +144,7 @@ extension Router : HttpServerDelegate {
                     }
                     catch {
                         // Not much to do here
+                        Log.error("Failed to send response to the client")
                     }
                 }
             }
