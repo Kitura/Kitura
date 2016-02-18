@@ -9,7 +9,7 @@
 ![Swift 2 compatible](https://img.shields.io/badge/swift2-compatible-4BC51D.svg?style=flat)
 ![Apache 2](https://img.shields.io/badge/license-Apache2-blue.svg?style=flat)
 
-Kitura is a Swift server library that is created for use with the [Swift Package Manager](https://swift.org/package-manager/).
+Kitura is a web framework and web server that is created for web services written in Swift. It has support for URL routing and middleware.
 
 ## Installation (OS X - El Capitan)
 
@@ -21,7 +21,9 @@ Kitura is a Swift server library that is created for use with the [Swift Package
 
  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
-3. Run `brew install http-parser`, `brew install pcre2`, `brew install curl`, and `brew install hiredis`
+3. Install the necessary dependencies: 
+
+ `brew install http-parser`, `brew install pcre2`, `brew install curl`, and `brew install hiredis`
 
 4. Make sure the latest Swift compiler is installed https://swift.org/download/. After installing it, make sure you update your PATH environment variable as described in the installation instructions (e.g. export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH)
 
