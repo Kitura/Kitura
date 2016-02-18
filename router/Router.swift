@@ -139,6 +139,9 @@ extension Router : HttpServerDelegate {
                             try routeResp.status(.INTERNAL_SERVER_ERROR).end(message)
                         }
                         else if  !routeResp.invokedEnd {
+                            if  response.statusCode == HttpStatusCode.NOT_FOUND  {
+                                self.sendDefaultIndexHtml(routeReq, routeResp: routeResp)
+                            }
                             try routeResp.end()
                         }
                     }
@@ -149,10 +152,44 @@ extension Router : HttpServerDelegate {
                 }
             }
             callback = callbackHandler
-        
+
             callbackHandler()
         }
     }
+
+    ///
+    /// Send default index.html file and it's resources if appropriate
+    ///
+    private func sendDefaultIndexHtml(routeReq: RouterRequest, routeResp: RouterResponse) {
+         if  routeReq.parsedUrl.path! == "/"  {
+              sendResourceIfExisting(routeResp, resource: "index.html")
+         }
+         else if routeReq.parsedUrl.path! == "/@@Kitura-router@@/kitura.svg"  {
+              sendResourceIfExisting(routeResp, resource: "kitura.svg")
+         }
+    }
+
+    ///
+    /// Get the directory we were compiled from
+    ///
+    private func sendResourceIfExisting(routeResp: RouterResponse, resource: String)  {
+        let fileName = NSString(string: __FILE__)
+        let jsonFilePrefixRange: NSRange
+        let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch)
+        if  lastSlash.location != NSNotFound  {
+            jsonFilePrefixRange = NSMakeRange(0, lastSlash.location+1)
+        }
+        else {
+            jsonFilePrefixRange = NSMakeRange(0, fileName.length)
+        }
+        let resourceFileName = fileName.substringWithRange(jsonFilePrefixRange) + "resources/" + resource
+
+        do {
+            try routeResp.sendFile(resourceFileName)
+            routeResp.status(HttpStatusCode.OK)
+        }
+        catch {
+            // Fail silently
+        }
+    }
 }
-
-
