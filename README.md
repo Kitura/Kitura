@@ -1,4 +1,4 @@
-# Kitura
+![Kitura](Documentation/images/KituraLogo.svg)
 
 [![Build Status](https://travis-ci.com/IBM-Swift/Kitura.svg?token=HbPXgFCvQeph5JZPCbdW&branch=master)](https://travis-ci.com/IBM-Swift/Kitura/)
 
