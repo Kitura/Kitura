@@ -13,12 +13,13 @@ Kitura is a Swift server library that is created for use with the [Swift Package
 
 ## Installation (OS X - El Capitan)
 
-1. Clone this repository
+1. Clone this repository:
 
  git clone https://github.com/IBM-Swift/Kitura
 
-2. Install homebrew installation if you do not already have it
-`ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
+2. Install [Homebrew](http://brew.sh/):
+
+ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 3. Run `brew install http-parser`, `brew install pcre2`, `brew install curl`, and `brew install hiredis`
 
