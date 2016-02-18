@@ -1,6 +1,4 @@
-<img src="Documentation/images/KituraLogo.png" width="200">
-
-[![Build Status](https://travis-ci.com/IBM-Swift/Kitura.svg?token=HbPXgFCvQeph5JZPCbdW&branch=master)](https://travis-ci.com/IBM-Swift/Kitura/)
+<img src="Documentation/images/KituraLogo.png" width="200"> [![Build Status](https://travis-ci.com/IBM-Swift/Kitura.svg?token=HbPXgFCvQeph5JZPCbdW&branch=master)](https://travis-ci.com/IBM-Swift/Kitura/)
 
 Kitura is a Swift server library that is created for use with the [Swift Package Manager](https://swift.org/package-manager/).
 
