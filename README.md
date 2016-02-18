@@ -15,17 +15,19 @@ Kitura is a web framework and web server that is created for web services writte
 
 1. Clone this repository:
 
- git clone https://github.com/IBM-Swift/Kitura
+ `git clone https://github.com/IBM-Swift/Kitura`
 
 2. Install [Homebrew](http://brew.sh/):
 
- ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+ `ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
 
 3. Install the necessary dependencies: 
 
  `brew install http-parser`, `brew install pcre2`, `brew install curl`, and `brew install hiredis`
 
-4. Make sure the latest Swift compiler is installed https://swift.org/download/. After installing it, make sure you update your PATH environment variable as described in the installation instructions (e.g. export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH)
+4. Download and install the latest Swift compiler.
+
+ Make sure the latest Swift compiler is installed https://swift.org/download/. After installing it, make sure you update your PATH environment variable as described in the installation instructions (e.g. export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH)
 
 5. In the root directory of this project run `swift build` to copy the dependencies. **Note the build process itself will fail!**
 
