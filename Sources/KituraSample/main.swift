@@ -53,6 +53,8 @@ class BasicAuthMiddleware: RouterMiddleware {
         next()
         // Check authorization string in database to approve the request if fail
         // response.error = NSError(domain: "AuthFailure", code: 1, userInfo: [:])
+       
+        next()
     }
 }
 
@@ -63,14 +65,14 @@ router.use("/*", middleware: BasicAuthMiddleware())
 router.get("/hello") { _, response, next in
      response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
      do {
-         try response.status(HttpStatusCode.OK).send("Hello World!").end()
+         try response.status(HttpStatusCode.OK).send("Hello World, from Kitura!").end()
      }
      catch {}
      next()
 }
 
 // This route accepts POST requests
-router.post("/") {request, response, next in
+router.post("/hello") {request, response, next in
     response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
     do {
         try response.status(HttpStatusCode.OK).send("Got a POST request").end()
@@ -80,7 +82,7 @@ router.post("/") {request, response, next in
 }
 
 // This route accepts PUT requests
-router.put("/") {request, response, next in
+router.put("/hello") {request, response, next in
     response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
     do {
         try response.status(HttpStatusCode.OK).send("Got a PUT request").end()
@@ -90,7 +92,7 @@ router.put("/") {request, response, next in
 }
 
 // This route accepts DELETE requests
-router.delete("/") {request, response, next in
+router.delete("/hello") {request, response, next in
     response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
     do {
         try response.status(HttpStatusCode.OK).send("Got a DELETE request").end()
