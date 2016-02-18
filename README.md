@@ -37,7 +37,9 @@ Kitura is a web framework and web server that is created for web services writte
 
  Then run `make` to build the helper libraries, Kitura framework, and the sample program.
 
-7. You can run the sample program which located in: `<path-to-repo>/.build/debug`. From the project root, execute the `./.build/debug/KituraSample` command from a terminal window. You should see a message that says "Listening on port 8090".
+7. Run KituraSample:
+
+ You can run the sample program which located in: `<path-to-repo>/.build/debug`. From the project root, execute the `./.build/debug/KituraSample` command from a terminal window. You should see a message that says "Listening on port 8090".
 
 ## Installation (Linux)
 
