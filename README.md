@@ -19,7 +19,7 @@ Kitura is a Swift server library that is created for use with the [Swift Package
 
 6. Then run `make` to build the helper libraries, Kitura framework, and the sample program.
 
-7. You can run the sample program which located in: `<path-to-repo>/.build/debug`. From the project root, execute the `./.build/debug/sample` command from a terminal window. You should see a message that says "Listening on port 8090".
+7. You can run the sample program which located in: `<path-to-repo>/.build/debug`. From the project root, execute the `./.build/debug/KituraSample` command from a terminal window. You should see a message that says "Listening on port 8090".
 
 ## Installation (Linux)
 
@@ -54,4 +54,4 @@ Kitura is a Swift server library that is created for use with the [Swift Package
 
 9. In order to run the sample, first you need to point to the shared libraries that have been built by running `export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH`
 
-10. Run the sample program: `<path_to_kitura_repo>./.build/debug/sample`. You should see a message that says "Listening on port 8090".
+10. Run the sample program: `<path_to_kitura_repo>./.build/debug/KituraSample`. You should see a message that says "Listening on port 8090".
