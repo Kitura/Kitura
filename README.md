@@ -15,6 +15,8 @@ Kitura is a Swift server library that is created for use with the [Swift Package
 
 1. Clone this repository
 
+ git clone https://github.com/IBM-Swift/Kitura
+
 2. Install homebrew installation if you do not already have it
 `ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
 
