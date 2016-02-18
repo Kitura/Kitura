@@ -1,4 +1,4 @@
-![Kitura](Documentation/images/KituraLogo.png)
+![Kitura](Documentation/images/KituraLogo.png | width=100)
 
 [![Build Status](https://travis-ci.com/IBM-Swift/Kitura.svg?token=HbPXgFCvQeph5JZPCbdW&branch=master)](https://travis-ci.com/IBM-Swift/Kitura/)
 
