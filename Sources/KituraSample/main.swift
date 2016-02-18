@@ -39,17 +39,18 @@ let router = Router()
 // Using an implementation for a Logger
 Log.logger = HeliumLogger()
 
-/** 
+/**
 * RouterMiddleware can be used for intercepting requests and handling custom behavior
 * such as authentication and other routing
 */
 class BasicAuthMiddleware: RouterMiddleware {
     func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
-        
+
         let authString = request.headers["Authorization"]
-        
+
         Log.info("Authorization: \(authString)")
-        
+
+        next()
         // Check authorization string in database to approve the request if fail
         // response.error = NSError(domain: "AuthFailure", code: 1, userInfo: [:])
     }
@@ -68,6 +69,7 @@ router.get("/hello") { _, response, next in
      next()
 }
 
+// This route accepts POST requests
 router.post("/") {request, response, next in
     response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
     do {
@@ -77,6 +79,7 @@ router.post("/") {request, response, next in
     next()
 }
 
+// This route accepts PUT requests
 router.put("/") {request, response, next in
     response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
     do {
@@ -86,6 +89,7 @@ router.put("/") {request, response, next in
     next()
 }
 
+// This route accepts DELETE requests
 router.delete("/") {request, response, next in
     response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
     do {
@@ -95,23 +99,24 @@ router.delete("/") {request, response, next in
     next()
 }
 
-// Handing errors
+// Error handling example
 router.get("/error") { _, response, next in
     response.error = NSError(domain: "RouterTestDomain", code: 1, userInfo: [:])
     next()
 }
 
-// Handling redirects
+// Redirection example
 router.get("/redir") { _, response, next in
     do {
         try response.redirect("http://www.ibm.com")
     }
     catch {}
-    
+
     next()
 }
 
 // Reading parameters
+// Accepts user as a parameter
 router.get("/users/:user") { request, response, next in
     response.setHeader("Content-Type", value: "text/html; charset=utf-8")
     let p1 = request.params["user"] ?? "(nil)"
@@ -125,6 +130,7 @@ router.get("/users/:user") { request, response, next in
     next()
 }
 
+// Example using templating of strings
 #if os(OSX) // Mustache implented for OSX only yet
 router.get("/mustache") { _, response, next in
     defer {
@@ -171,9 +177,18 @@ router.get("/mustache") { _, response, next in
 }
 #endif
 
+// Handle the GET request at the root path
+router.get("/") { _, response, next in
+  response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
+  do {
+      try response.status(HttpStatusCode.OK).send("You're running Kitura").end()
+  }
+  catch {}
+  next()
+}
+
+// Listen on port 8090
 let server = HttpServer.listen(8090,
     delegate: router)
 
 Server.run()
-
-
