@@ -210,17 +210,17 @@ public class ContentType {
         "text/javascript": [],
         "text/markdown": [],
         "text/x-markdown": ["markdown","md","mkd"],
-        
+
         "application/json": ["json","map"],
         "application/x-www-form-urlencoded": [],
         "application/xml": ["xml","xsl","xsd"],
         "application/javascript": ["js"],
-        
+
         "image/bmp": ["bmp"],
         "image/png": ["png"],
         "image/gif": ["gif"],
         "image/jpeg": ["jpeg","jpg","jpe"],
-        
+        "image/svg+xml": ["svg","svgz"]
     ]
-    
+
 }
