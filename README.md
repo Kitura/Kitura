@@ -91,3 +91,50 @@ Kitura is a web framework and web server that is created for web services writte
 10. Run the sample program: 
 
  `<path_to_kitura_repo>./.build/debug/KituraSample`. You should see a message that says "Listening on port 8090".
+
+## Usage
+
+1) Add to your project's Package.swift file:
+
+ ```
+ .Package(url: "https://github.com/IBM-Swift/Kitura-router.git", majorVersion: 0),
+ ```
+
+2) Swift build to add dependencies
+
+  ```swift build```
+
+3) Copy the Makefile.client from KituraNet to your project as Makefile:
+
+  ```cp Packages/Kitura-net--version/Makefile.client Makefile```
+  
+4) Import the modules in your code:
+
+   ```swift
+   import KituraRouter
+   import KituraNet
+   import KituraSys
+   ```
+5) Add a router and a path:
+
+  ```swift
+  let router = Router()
+  
+  router.get("/") {
+    request, response, next in
+
+     response.status(HttpStatusCode.OK).send("Hello, World!")
+     
+     next()
+   }
+  ```
+  6) Create and start a HTTPServer:
+  
+     ```swift
+     let server = HttpServer.listen(8090, delegate: router)
+     Server.run()
+     ```
+     
+   7) Run make.
+   
+   8) Open your browser at [http://localhost:8090](http://localhost:8090)
