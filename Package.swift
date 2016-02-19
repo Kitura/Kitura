@@ -27,7 +27,7 @@ import PackageDescription
 #endif
 
 let package = Package(
-    name: "router",
+    name: "KituraRouter",
         dependencies: [
             //.Package(url: "https://github.com/IBM-Swift/Kitura-net.git", majorVersion: 0),
             .Package(url: "git@github.com:IBM-Swift/Kitura-net.git", majorVersion: 0),
@@ -42,4 +42,3 @@ let package = Package(
             .Package(url: swiftyJsonUrl, majorVersion: swiftyJsonVersion)
         ]
 )
-
