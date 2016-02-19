@@ -20,7 +20,7 @@ Kitura is a web framework and web server that is created for web services writte
 - JSON parsing
 - Pluggable middleware
 
-## Installation (OS X - El Capitan)
+## Installation (OS X)
 
 1. Clone this repository:
 
