@@ -2,14 +2,23 @@
 
 **A Swift Web Framework**
 
-
 ![Build Status](https://travis-ci.com/IBM-Swift/Kitura.svg?token=HbPXgFCvQeph5JZPCbdW&branch=master)
 ![Mac OS X](https://img.shields.io/badge/os-Mac%20OS%20X-green.svg?style=flat)
 ![Linux](https://img.shields.io/badge/os-linux-green.svg?style=flat)
 ![Swift 2 compatible](https://img.shields.io/badge/swift2-compatible-4BC51D.svg?style=flat)
 ![Apache 2](https://img.shields.io/badge/license-Apache2-blue.svg?style=flat)
 
+## Summary
+
 Kitura is a web framework and web server that is created for web services written in Swift. It has support for URL routing and middleware.
+
+## Features:
+
+- URL routing (GET, POST, PUT, DELETE)
+- URL parameters
+- Static file serving
+- JSON parsing
+- Pluggable middleware
 
 ## Installation (OS X - El Capitan)
 
@@ -43,22 +52,13 @@ Kitura is a web framework and web server that is created for web services writte
 
 ## Installation (Linux)
 
-### Setting up a VM (optional)
+1. Install the following system linux libraries: 
+ 
+ `sudo apt-get install libhttp-parser-dev libcurl4-openssl-dev libhiredis-dev`
 
-1. If you choose to set up a virtual machine on your development system, you can download and install [Virtual Box]( https://www.virtualbox.org/wiki/Downloads). If you are installing natively on Linux, skip to step 4.
-
-2. Download the ISO image for [Ubuntu 15.10](http://www.ubuntu.com/download/desktop).
-
-3. Create a virtual machine that uses the Ubuntu ISO image. The following links provide further details on how to do this:
-
-  * [How to create a VM](https://docs.oracle.com/cd/E26217_01/E26796/html/qs-create-vm.html)
-  * [How to install Ubuntu on a VirtualBox client](http://askubuntu.com/questions/64915/how-do-i-install-ubuntu-on-a-virtualbox-client-from-an-iso-image)
-
-### Configuring dependencies and installation
-
-1. Install the following system linux libraries: `sudo apt-get install libhttp-parser-dev libcurl4-openssl-dev libhiredis-dev`
-
-2. Install the latest [Swift compiler for Linux](https://swift.org/download/). Follow the instructions provided on that page. After installing it (i.e. uncompressing the tar file), make sure you update your PATH environment variable so that it includes the extracted tools: `export PATH=/<path to uncompress tar contents>/usr/bin:$PATH`. To update the PATH env variable, you can update your .bashrc file (for further information on .bashrc and .bash_profile see http://www.joshstaiger.org/archives/2005/07/bash_profile_vs.html).
+2. Install the latest [Swift compiler for Linux](https://swift.org/download/). 
+ 
+ Follow the instructions provided on that page. After installing it (i.e. uncompressing the tar file), make sure you update your PATH environment variable so that it includes the extracted tools: `export PATH=/<path to uncompress tar contents>/usr/bin:$PATH`. To update the PATH env variable, you can update your .bashrc file (for further information on .bashrc and .bash_profile see http://www.joshstaiger.org/archives/2005/07/bash_profile_vs.html).
 
 3. Clone the patched libdispatch library: `git clone -b opaque-pointer git://github.com/seabaylea/swift-corelibs-libdispatch`
 
