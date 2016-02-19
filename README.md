@@ -130,10 +130,10 @@ Kitura is a web framework and web server that is created for web services writte
   ```
   6) Create and start a HTTPServer:
   
-     ```swift
-     let server = HttpServer.listen(8090, delegate: router)
-     Server.run()
-     ```
+```swift
+let server = HttpServer.listen(8090, delegate: router)
+Server.run()
+```
      
    7) Run make.
    
