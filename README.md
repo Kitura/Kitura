@@ -100,7 +100,9 @@ Kitura is a web framework and web server that is created for web services writte
  .Package(url: "https://github.com/IBM-Swift/Kitura-router.git", majorVersion: 0),
  ```
 
-2) Swift build to add dependencies
+2) Swift build to download the dependencies. 
+
+ Because Swift Package Manager does not compile C code, expect this step to fail because of a linker error.
 
   ```swift build```
 
