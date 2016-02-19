@@ -16,7 +16,7 @@
 
 import router
 import net
-import sys
+import KituraSys
 import HeliumLogger
 
 import Foundation

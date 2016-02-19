@@ -16,7 +16,7 @@
 
 // KituraSample shows examples for creating custom routes.
 
-import sys
+import KituraSys
 import net
 import router
 
