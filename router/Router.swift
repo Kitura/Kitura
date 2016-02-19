@@ -15,7 +15,7 @@
  **/
 
 import net
-import sys
+import KituraSys
 
 import LoggerAPI
 

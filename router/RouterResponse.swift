@@ -15,7 +15,7 @@
  **/
 
 import net
-import sys
+import KituraSys
 
 // For JSON parsing support
 import SwiftyJSON

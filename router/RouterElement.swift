@@ -15,7 +15,7 @@
  **/
 
 
-import sys
+import KituraSys
 
 import Foundation
 

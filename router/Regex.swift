@@ -14,7 +14,7 @@
  * limitations under the License.
  **/
 
-import sys
+import KituraSys
 import pcre2
 
 import Foundation
