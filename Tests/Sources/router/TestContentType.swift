@@ -14,7 +14,7 @@
  * limitations under the License.
  **/
 
-import router
+import KituraRouter
 
 import Foundation
 import XCTest
