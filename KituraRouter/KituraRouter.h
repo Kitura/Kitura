@@ -16,12 +16,10 @@
 
 #import <Cocoa/Cocoa.h>
 
-//! Project version number for router.
-FOUNDATION_EXPORT double routerVersionNumber;
+//! Project version number for KituraRouter.
+FOUNDATION_EXPORT double KituraRouterVersionNumber;
 
-//! Project version string for router.
-FOUNDATION_EXPORT const unsigned char routerVersionString[];
+//! Project version string for KituraRouter.
+FOUNDATION_EXPORT const unsigned char KituraRouterVersionString[];
 
-// In this header, you should import all the public headers of your framework using statements like #import <router/PublicHeader.h>
-
-
+// In this header, you should import all the public headers of your framework using statements like #import <KituraRouter/PublicHeader.h>
