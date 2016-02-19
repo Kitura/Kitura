@@ -60,18 +60,34 @@ Kitura is a web framework and web server that is created for web services writte
  
  Follow the instructions provided on that page. After installing it (i.e. uncompressing the tar file), make sure you update your PATH environment variable so that it includes the extracted tools: `export PATH=/<path to uncompress tar contents>/usr/bin:$PATH`. To update the PATH env variable, you can update your .bashrc file (for further information on .bashrc and .bash_profile see http://www.joshstaiger.org/archives/2005/07/bash_profile_vs.html).
 
-3. Clone the patched libdispatch library: `git clone -b opaque-pointer git://github.com/seabaylea/swift-corelibs-libdispatch`
+3. Clone the patched libdispatch library: 
+ 
+ `git clone -b opaque-pointer git://github.com/seabaylea/swift-corelibs-libdispatch`
 
-4. Build and install the patched libdispatch library. Please note that the complete instructions for building and installing this library are found [here](https://github.com/seabaylea/swift-corelibs-libdispatch/blob/opaque-pointer/INSTALL). Though, all you need to do is just this: `cd swift-corelibs-libdispatch && sh ./autogen.sh && ./configure && make && sudo make install`
+4. Build and install the patched libdispatch library: 
+ 
+ Please note that the complete instructions for building and installing this library are found [here](https://github.com/seabaylea/swift-corelibs-libdispatch/blob/opaque-pointer/INSTALL). Though, all you need to do is just this: `cd swift-corelibs-libdispatch && sh ./autogen.sh && ./configure && make && sudo make install`
 
-5. Add a modulemap file for the libdispatch library to the following folder: `/usr/local/include/dispatch`. You can simply copy the contents of the following map module file in [module.modulemap](https://github.com/IBM-Swift/Kitura/blob/master/Sources/Modulemaps/module.modulemap).
+5. Install modulemap on the system:
+ 
+  Add a modulemap file for the libdispatch library to the following folder: `/usr/local/include/dispatch`. You can simply copy the contents of the following map module file in [module.modulemap](https://github.com/IBM-Swift/Kitura/blob/master/Sources/Modulemaps/module.modulemap).
 
-6. Download the [pcre2](http://ftp.exim.org/pub/pcre/pcre2-10.20.tar.gz) source code. Unpack the tar. Run ./configure && make && sudo make install. This will place the necessary headers and libraries into /usr/local/include and /user/local/libs.
+6. Compile and install PCRE2:
+ 
+ Download the [pcre2](http://ftp.exim.org/pub/pcre/pcre2-10.20.tar.gz) source code. Unpack the tar. Run ./configure && make && sudo make install. This will place the necessary headers and libraries into /usr/local/include and /user/local/libs.
 
-7. In the root directory of this project run `swift build` to copy the dependencies. **Note the build process itself will fail!**
+7. Download the Kitura dependencies with Swift Package Manager:
 
-8. On the root folder of the Kitura repo, run `make` to build the helper libraries, Kitura framework, and the sample program.
+ In the root directory of this project run `swift build` to copy the dependencies. **Note the build process itself will fail!**
 
-9. In order to run the sample, first you need to point to the shared libraries that have been built by running `export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH`
+8. Build the helper modules:
 
-10. Run the sample program: `<path_to_kitura_repo>./.build/debug/KituraSample`. You should see a message that says "Listening on port 8090".
+ On the root folder of the Kitura repo, run `make` to build the helper libraries, Kitura framework, and the sample program.
+
+9. Set the dynamic library loading path:
+
+ In order to run the sample, first you need to point to the shared libraries that have been built by running `export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH`
+
+10. Run the sample program: 
+
+ `<path_to_kitura_repo>./.build/debug/KituraSample`. You should see a message that says "Listening on port 8090".
