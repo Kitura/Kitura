@@ -17,7 +17,7 @@
 import SwiftyJSON
 
 import KituraSys
-import net
+import KituraNet
 import BlueSocket
 
 import Foundation

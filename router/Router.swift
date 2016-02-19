@@ -14,7 +14,7 @@
  * limitations under the License.
  **/
 
-import net
+import KituraNet
 import KituraSys
 
 import LoggerAPI
