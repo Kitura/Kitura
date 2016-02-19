@@ -1,4 +1,4 @@
-<img src="Documentation/images/KituraLogo-wide.png" width="634">
+<img src="Documentation/images/KituraLogo-wide.png" width="317">
 
 **A Swift Web Framework**
 
