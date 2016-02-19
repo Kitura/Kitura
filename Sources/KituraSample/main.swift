@@ -17,7 +17,7 @@
 // KituraSample shows examples for creating custom routes.
 
 import KituraSys
-import net
+import KituraNet
 import router
 
 import LoggerAPI

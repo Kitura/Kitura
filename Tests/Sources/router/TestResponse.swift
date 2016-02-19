@@ -15,7 +15,7 @@
  **/
 
 import router
-import net
+import KituraNet
 import KituraSys
 import HeliumLogger
 
