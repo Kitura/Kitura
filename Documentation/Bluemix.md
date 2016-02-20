@@ -96,7 +96,7 @@ Here's the quick way:
 
 ----------
 
-## Setup Phoenix Server
+## Setup Kitura Server
 
 1. Install dependencies *before* following the Linux setup instructions. Run each of these individually:
     
@@ -113,7 +113,7 @@ Here's the quick way:
 
     Make a zip file of the Phoenix project directory on your local machine, then upload it to the VM using the ```scp``` command:
     
-    Ex: ```scp Phoenix.zip ubuntu@159.122.254.71:Phoenix.zip```
+    Ex: ```scp Kitura.zip ubuntu@159.122.254.71:Kitura.zip```
     
     **Be sure to delete the existing ```.build``` hidden folder if you happened to copy it over to the cloud VM, otherwise your build will fail.**
 
