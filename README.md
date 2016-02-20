@@ -1,6 +1,6 @@
 <img src="Documentation/images/KituraLogo-wide.png" width="317">
 
-**A Swift Web Framework**
+**A Swift Web Framework and HTTP Server**
 
 <!--
 ![Build Status](https://travis-ci.com/IBM-Swift/Kitura.svg?token=HbPXgFCvQeph5JZPCbdW&branch=master)
