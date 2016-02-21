@@ -99,16 +99,17 @@ Let's write our first Kitura-based Web Application written in Swift!
 
 1) First we need to create a new project directory
 
-```
+```bash
 mkdir myFirstProject
 ```
 
 2) Next we need to go in an initialize this project as a new Swift package project
 
-```
+```bash
 cd myFirstProject
 swift build --init
 ```
+
 Now your directory structure under myFirstProject should look like this:
 <pre>
 myFirstProject
@@ -123,7 +124,7 @@ Note: For more information on the Swift Package Manager, go [here](https://swift
 
 3) Now we need to add Kitura as a dependency for your project (Package.swift):
 
- ```
+```swift
 import PackageDescription
 
 let package = Package(
@@ -134,38 +135,42 @@ let package = Package(
 	]
 
 )
- ```
+```
 
 4) Now we can issue a `swift build` command to to download the dependencies.
 
  Because Swift Package Manager does not compile C code, expect this step to fail because of a linker error.
 
-  ```swift build```
+```bash
+swift build
+```
 
 5) Copy the Makefile.client from KituraNet to your project as Makefile:
 
-  ```cp Packages/Kitura-net-0.2.0/Makefile-client Makefile```
+```bash
+cp Packages/Kitura-net-0.2.0/Makefile-client Makefile
+```
 
 6) Import the modules in your code:
 
-   ```swift
-   import KituraRouter
-   import KituraNet
-   import KituraSys
-   ```
+```swift
+import KituraRouter
+import KituraNet
+import KituraSys
+```
 7) Add a router and a path:
 
-  ```swift
-  let router = Router()
+```swift
+let router = Router()
 
-  router.get("/") {
-    request, response, next in
+router.get("/") {
+	request, response, next in
 
-     response.status(HttpStatusCode.OK).send("Hello, World!")
+	response.status(HttpStatusCode.OK).send("Hello, World!")
 
-     next()
-   }
-  ```
+	next()
+}
+```
   
 8) Create and start a HTTPServer:
 
