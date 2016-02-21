@@ -121,7 +121,7 @@ myFirstProject
 
 Note: For more information on the Swift Package Manager, go [here](https://swift.org/package-manager) 
 
-1) Now we need to add Kitura as a dependency for your project (Package.swift):
+3) Now we need to add Kitura as a dependency for your project (Package.swift):
 
  ```
 import PackageDescription
@@ -136,24 +136,24 @@ let package = Package(
 )
  ```
 
-2) Now we can issue a `swift build` command to to download the dependencies.
+4) Now we can issue a `swift build` command to to download the dependencies.
 
  Because Swift Package Manager does not compile C code, expect this step to fail because of a linker error.
 
   ```swift build```
 
-3) Copy the Makefile.client from KituraNet to your project as Makefile:
+5) Copy the Makefile.client from KituraNet to your project as Makefile:
 
   ```cp Packages/Kitura-net-0.2.0/Makefile-client Makefile```
 
-4) Import the modules in your code:
+6) Import the modules in your code:
 
    ```swift
    import KituraRouter
    import KituraNet
    import KituraSys
    ```
-5) Add a router and a path:
+7) Add a router and a path:
 
   ```swift
   let router = Router()
@@ -167,14 +167,14 @@ let package = Package(
    }
   ```
   
-6) Create and start a HTTPServer:
+8) Create and start a HTTPServer:
 
 ```swift
 let server = HttpServer.listen(8090, delegate: router)
 Server.run()
 ```
 
-7) Sources/main.swift file should now look like this:
+9) Sources/main.swift file should now look like this:
 
 ```swift
 import KituraRouter
@@ -195,15 +195,19 @@ let server = HttpServer.listen(8090, delegate: router)
 Server.run()
 ```
 
-7) Run make
+10) Run make
+
+```
+make
+```
    
-8) Now run your new web application 
+11) Now run your new web application 
 
 ```
 .build/debug/myFirstProject
 ```
 
-   8) Open your browser at [http://localhost:8090](http://localhost:8090)
+12) Open your browser at [http://localhost:8090](http://localhost:8090)
 
 ## License
 
