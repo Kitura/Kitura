@@ -12,7 +12,7 @@
 
 ## Summary
 
-Kitura is a web framework and web server that is created for web services written in Swift. It has support for URL routing and middleware.
+Kitura is a web framework and web server that is created for web services written in Swift. 
 
 ## Features:
 
