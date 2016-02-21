@@ -95,14 +95,48 @@ Kitura is a web framework and web server that is created for web services writte
  `<path_to_kitura_repo>./.build/debug/KituraSample`. You should see a message that says "Listening on port 8090".
 
 ## Usage
+Let's write our first Kitura-based Web Application written in Swift!
 
-1) Add to your project's Package.swift file:
+1) First we need to create a new project directory
+
+```
+mkdir myFirstProject
+```
+
+2) Next we need to go in an initialize this project as a new Swift package project
+
+```
+cd myFirstProject
+swift build --init
+```
+Now your directory structure under myFirstProject should look like this:
+<pre>
+myFirstProject
+├── Package.swift
+├── Sources
+│   └── main.swift
+└── Tests
+    └── <i>empty</i>
+</pre>
+
+Note: For more information on the Swift Package Manager, go [here](https://swift.org/package-manager) 
+
+1) Now we need to add Kitura as a dependency for your project (Package.swift):
 
  ```
- .Package(url: "https://github.com/IBM-Swift/Kitura-router.git", majorVersion: 0),
+import PackageDescription
+
+let package = Package(
+    name: "myFirstProject",
+
+    dependencies: [
+ 		.Package(url: "https://github.com/IBM-Swift/Kitura-router.git", majorVersion: 0),
+	]
+
+)
  ```
 
-2) Swift build to download the dependencies.
+2) Now we can issue a `swift build` command to to download the dependencies.
 
  Because Swift Package Manager does not compile C code, expect this step to fail because of a linker error.
 
@@ -132,14 +166,42 @@ Kitura is a web framework and web server that is created for web services writte
      next()
    }
   ```
-  6) Create and start a HTTPServer:
+  
+6) Create and start a HTTPServer:
 
 ```swift
 let server = HttpServer.listen(8090, delegate: router)
 Server.run()
 ```
 
-   7) Run make.
+7) Sources/main.swift file should now look like this:
+
+```swift
+import KituraRouter
+import KituraNet
+import KituraSys
+   
+let router = Router()
+
+router.get("/") {
+request, response, next in
+
+	response.status(HttpStatusCode.OK).send("Hello, World!")
+
+	next()
+}
+
+let server = HttpServer.listen(8090, delegate: router)
+Server.run()
+```
+
+7) Run make
+   
+8) Now run your new web application 
+
+```
+.build/debug/myFirstProject
+```
 
    8) Open your browser at [http://localhost:8090](http://localhost:8090)
 
