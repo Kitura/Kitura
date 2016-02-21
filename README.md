@@ -110,7 +110,7 @@ Kitura is a web framework and web server that is created for web services writte
 
 3) Copy the Makefile.client from KituraNet to your project as Makefile:
 
-  ```cp Packages/Kitura-net--version/Makefile.client Makefile```
+  ```cp Packages/Kitura-net-0.2.0/Makefile-client Makefile```
 
 4) Import the modules in your code:
 
