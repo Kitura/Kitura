@@ -1,10 +1,9 @@
-<img src="Documentation/images/KituraLogo-wide.png" width="317">
+![Kitura](Documentation/KituraLogo.png)
 
 **A Swift Web Framework and HTTP Server**
 
-<!--
 ![Build Status](https://travis-ci.com/IBM-Swift/Kitura.svg?token=HbPXgFCvQeph5JZPCbdW&branch=master)
--->
+![Build Status](https://travis-ci.com/IBM-Swift/Kitura.svg?token=HbPXgFCvQeph5JZPCbdW&branch=develop)
 ![Mac OS X](https://img.shields.io/badge/os-Mac%20OS%20X-green.svg?style=flat)
 ![Linux](https://img.shields.io/badge/os-linux-green.svg?style=flat)
 ![Swift 2 compatible](https://img.shields.io/badge/swift2-compatible-4BC51D.svg?style=flat)
@@ -12,7 +11,7 @@
 
 ## Summary
 
-Kitura is a web framework and web server that is created for web services written in Swift. It has support for URL routing and middleware.
+Kitura is a web framework and web server that is created for web services written in Swift.
 
 ## Features:
 
@@ -95,53 +94,124 @@ Kitura is a web framework and web server that is created for web services writte
  `<path_to_kitura_repo>./.build/debug/KituraSample`. You should see a message that says "Listening on port 8090".
 
 ## Usage
+Let's write our first Kitura-based Web Application written in Swift!
 
-1) Add to your project's Package.swift file:
+1) First we need to create a new project directory
 
- ```
- .Package(url: "https://github.com/IBM-Swift/Kitura-router.git", majorVersion: 0),
- ```
+```bash
+mkdir myFirstProject
+```
 
-2) Swift build to download the dependencies.
+2) Next we need to go in an initialize this project as a new Swift package project
+
+```bash
+cd myFirstProject
+swift build --init
+```
+
+Now your directory structure under myFirstProject should look like this:
+<pre>
+myFirstProject
+├── Package.swift
+├── Sources
+│   └── main.swift
+└── Tests
+    └── <i>empty</i>
+</pre>
+
+Note: For more information on the Swift Package Manager, go [here](https://swift.org/package-manager)
+
+3) Now we need to add Kitura as a dependency for your project (Package.swift):
+
+```swift
+import PackageDescription
+
+let package = Package(
+    name: "myFirstProject",
+
+    dependencies: [
+ 		.Package(url: "https://github.com/IBM-Swift/Kitura-router.git", majorVersion: 0),
+	]
+
+)
+```
+
+4) Now we can issue a `swift build` command to to download the dependencies.
 
  Because Swift Package Manager does not compile C code, expect this step to fail because of a linker error.
 
-  ```swift build```
+```bash
+swift build
+```
 
-3) Copy the Makefile.client from KituraNet to your project as Makefile:
+5) Copy the Makefile.client from KituraNet to your project as Makefile:
 
-  ```cp Packages/Kitura-net--version/Makefile.client Makefile```
+```bash
+cp Packages/Kitura-net-0.2.0/Makefile-client Makefile
+```
 
-4) Import the modules in your code:
+6) Import the modules in your code:
 
-   ```swift
-   import KituraRouter
-   import KituraNet
-   import KituraSys
-   ```
-5) Add a router and a path:
+```swift
+import KituraRouter
+import KituraNet
+import KituraSys
+```
+7) Add a router and a path:
 
-  ```swift
-  let router = Router()
+```swift
+let router = Router()
 
-  router.get("/") {
-    request, response, next in
+router.get("/") {
+	request, response, next in
 
-     response.status(HttpStatusCode.OK).send("Hello, World!")
+	response.status(HttpStatusCode.OK).send("Hello, World!")
 
-     next()
-   }
-  ```
-  6) Create and start a HTTPServer:
+	next()
+}
+```
+
+8) Create and start a HTTPServer:
 
 ```swift
 let server = HttpServer.listen(8090, delegate: router)
 Server.run()
 ```
 
-   7) Run make.
+9) Sources/main.swift file should now look like this:
 
-   8) Open your browser at [http://localhost:8090](http://localhost:8090)
+```swift
+import KituraRouter
+import KituraNet
+import KituraSys
+
+let router = Router()
+
+router.get("/") {
+request, response, next in
+
+	response.status(HttpStatusCode.OK).send("Hello, World!")
+
+	next()
+}
+
+let server = HttpServer.listen(8090, delegate: router)
+Server.run()
+```
+
+10) Run make
+
+```
+make
+```
+
+11) Now run your new web application
+
+```
+.build/debug/myFirstProject
+```
+
+12) Open your browser at [http://localhost:8090](http://localhost:8090)
 
 ## License
 
