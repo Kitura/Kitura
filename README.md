@@ -2,9 +2,8 @@
 
 **A Swift Web Framework and HTTP Server**
 
-<!--
 ![Build Status](https://travis-ci.com/IBM-Swift/Kitura.svg?token=HbPXgFCvQeph5JZPCbdW&branch=master)
--->
+![Build Status](https://travis-ci.com/IBM-Swift/Kitura.svg?token=HbPXgFCvQeph5JZPCbdW&branch=develop)
 ![Mac OS X](https://img.shields.io/badge/os-Mac%20OS%20X-green.svg?style=flat)
 ![Linux](https://img.shields.io/badge/os-linux-green.svg?style=flat)
 ![Swift 2 compatible](https://img.shields.io/badge/swift2-compatible-4BC51D.svg?style=flat)
@@ -12,7 +11,7 @@
 
 ## Summary
 
-Kitura is a web framework and web server that is created for web services written in Swift. 
+Kitura is a web framework and web server that is created for web services written in Swift.
 
 ## Features:
 
@@ -120,7 +119,7 @@ myFirstProject
     └── <i>empty</i>
 </pre>
 
-Note: For more information on the Swift Package Manager, go [here](https://swift.org/package-manager) 
+Note: For more information on the Swift Package Manager, go [here](https://swift.org/package-manager)
 
 3) Now we need to add Kitura as a dependency for your project (Package.swift):
 
@@ -171,7 +170,7 @@ router.get("/") {
 	next()
 }
 ```
-  
+
 8) Create and start a HTTPServer:
 
 ```swift
@@ -185,7 +184,7 @@ Server.run()
 import KituraRouter
 import KituraNet
 import KituraSys
-   
+
 let router = Router()
 
 router.get("/") {
@@ -205,8 +204,8 @@ Server.run()
 ```
 make
 ```
-   
-11) Now run your new web application 
+
+11) Now run your new web application
 
 ```
 .build/debug/myFirstProject
