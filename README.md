@@ -1,4 +1,4 @@
-<img src="Documentation/KituraLogo.png" width="317">
+![Kitura](Documentation/KituraLogo.png)
 
 **A Swift Web Framework and HTTP Server**
 
