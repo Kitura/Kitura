@@ -1,5 +1,5 @@
 # .travis.yml for Kitura sample app
-# See the following URLs for further details
+# See the following URLs for further details on Travis CI
 # https://docs.travis-ci.com/user/customizing-the-build/
 # https://docs.travis-ci.com/user/docker/
 
@@ -18,8 +18,7 @@ services:
   - docker
 
 before_install:
-  - docker login -e $DOCKER_HUB_EMAIL -u $DOCKER_HUB_USERID -p $DOCKER_HUB_PWD
-  - docker pull milbuild/kitura-ubuntu:latest
+  - docker pull ibmcom/kitura-ubuntu:latest
 
 script:
   - echo "About to run docker container to build and test Kitura for branch '$TRAVIS_BRANCH'."
