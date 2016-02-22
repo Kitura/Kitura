@@ -1,4 +1,4 @@
-![Kitura](Documentation/KituraLogo.png)
+![Kitura](https://raw.githubusercontent.com/IBM-Swift/Kitura/master/Documentation/KituraLogo.png)
 
 **A Swift Web Framework and HTTP Server**
 
