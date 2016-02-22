@@ -11,6 +11,8 @@
 
 ## Summary
 
+[![Join the chat at https://gitter.im/IBM-Swift/Kitura](https://badges.gitter.im/IBM-Swift/Kitura.svg)](https://gitter.im/IBM-Swift/Kitura?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Kitura is a web framework and web server that is created for web services written in Swift.
 
 ## Features:
