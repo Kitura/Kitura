@@ -76,7 +76,7 @@ Kitura is a web framework and web server that is created for web services writte
 
 6. Compile and install PCRE2:
 
- Download the [pcre2](http://ftp.exim.org/pub/pcre/pcre2-10.20.tar.gz) source code. Unpack the tar. Run ./configure && make && sudo make install. This will place the necessary headers and libraries into /usr/local/include and /user/local/libs.
+ Download the [pcre2](http://ftp.exim.org/pub/pcre/pcre2-10.20.tar.gz) source code. Unpack the tar. Run `./configure && make && sudo make install`. This will place the necessary headers and libraries into /usr/local/include and /user/local/libs.
 
 7. Download the Kitura dependencies with Swift Package Manager:
 
