@@ -22,6 +22,7 @@ services:
   - docker
 
 before_install:
+  - echo "Operating system -> $TRAVIS_OS_NAME"
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; docker pull ibmcom/kitura-ubuntu:latest ; fi
 # - docker pull ibmcom/kitura-ubuntu:latest
 
