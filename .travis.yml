@@ -22,5 +22,5 @@ before_install:
 
 script:
   - echo "About to run docker container to build and test Kitura for branch '$TRAVIS_BRANCH'."
-  - docker run --rm -e KITURA_BRANCH=$TRAVIS_BRANCH milbuild/kitura-ubuntu:latest
+  - docker run --rm -e KITURA_BRANCH=$TRAVIS_BRANCH ibmcom/kitura-ubuntu:latest
   - echo "Build and tests completed. See above for status."
