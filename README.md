@@ -22,6 +22,30 @@ Kitura is a web framework and web server that is created for web services writte
 - JSON parsing
 - Pluggable middleware
 
+## Installation (Docker development environment)
+
+1. Install [Docker](https://docs.docker.com/engine/installation/) on your development system and start a Docker session/terminal.
+
+2. From the Docker session, pull down the `kitura-ubuntu` image from Docker Hub:
+
+  `docker pull ibmcom/kitura-ubuntu:latest`
+
+3. Create a Docker container using the `kitura-ubuntu` image you just downloaded:
+
+  `docker run -i -t ibmcom/kitura-ubuntu:latest /bin/bash`
+
+4. From within the Docker container, execute the `ci.sh` script to build Kitura and execute the test cases:
+
+  `source /root/ci.sh`
+
+  The last output line from executing the `ci.sh` script should be similar to `>> Build and execution of test cases completed (see above for results).`
+
+5. You can now run the KituraSample executable inside the Docker container:
+
+  `/root/Kitura/.build/debug/KituraSample`
+
+  You should see a message that says "Listening on port 8090".
+
 ## Installation (Vagrant development environment)
 
 1. Download [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
