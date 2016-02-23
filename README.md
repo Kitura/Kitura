@@ -60,15 +60,11 @@ Kitura is a web framework and web server that is created for web services writte
 
  Make sure the latest Swift compiler is installed https://swift.org/download/. After installing it, make sure you update your PATH environment variable as described in the installation instructions (e.g. export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH)
 
-5. Grab the Swift package dependencies using Swift Package Manager
+5. Build Kitura and Kitura Sample
 
- In the root directory of this project run `swift build` to copy the dependencies. **Note the build process itself will fail!**
+ Run `make` to build the helper libraries, Kitura framework, and the sample program (invokes swift build).
 
-6. Build Kitura and Kitura Sample
-
- Then run `make` to build the helper libraries, Kitura framework, and the sample program.
-
-7. Run KituraSample:
+6. Run KituraSample:
 
  You can run the sample program which located in: `<path-to-repo>/.build/debug`. From the project root, execute the `./.build/debug/KituraSample` command from a terminal window. You should see a message that says "Listening on port 8090".
 
@@ -98,19 +94,15 @@ Kitura is a web framework and web server that is created for web services writte
 
  Download the [pcre2](http://ftp.exim.org/pub/pcre/pcre2-10.20.tar.gz) source code. Unpack the tar. Run `./configure && make && sudo make install`. This will place the necessary headers and libraries into /usr/local/include and /user/local/libs.
 
-7. Download the Kitura dependencies with Swift Package Manager:
+7. Build the helper modules:
 
- In the root directory of this project run `swift build` to copy the dependencies. **Note the build process itself will fail!**
+ On the root folder of the Kitura repo, run `make` to build the helper libraries, Kitura framework, and the sample program (invokes swift build).
 
-8. Build the helper modules:
-
- On the root folder of the Kitura repo, run `make` to build the helper libraries, Kitura framework, and the sample program.
-
-9. Set the dynamic library loading path:
+8. Set the dynamic library loading path:
 
  In order to run the sample, first you need to point to the shared libraries that have been built by running `export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH`
 
-10. Run the sample program:
+9. Run the sample program:
 
  `<path_to_kitura_repo>./.build/debug/KituraSample`. You should see a message that says "Listening on port 8090".
 
