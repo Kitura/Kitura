@@ -1,13 +1,14 @@
-![Kitura](Documentation/KituraLogo.png)
+![Kitura](https://raw.githubusercontent.com/IBM-Swift/Kitura/master/Documentation/KituraLogo.png)
 
 **A Swift Web Framework and HTTP Server**
 
-![Build Status](https://travis-ci.com/IBM-Swift/Kitura.svg?token=HbPXgFCvQeph5JZPCbdW&branch=master)
-![Build Status](https://travis-ci.com/IBM-Swift/Kitura.svg?token=HbPXgFCvQeph5JZPCbdW&branch=develop)
+![Build Status](https://travis-ci.org/IBM-Swift/Kitura.svg?branch=master)
+![Build Status](https://travis-ci.org/IBM-Swift/Kitura.svg?branch=develop)
 ![Mac OS X](https://img.shields.io/badge/os-Mac%20OS%20X-green.svg?style=flat)
 ![Linux](https://img.shields.io/badge/os-linux-green.svg?style=flat)
 ![Swift 2 compatible](https://img.shields.io/badge/swift2-compatible-4BC51D.svg?style=flat)
 ![Apache 2](https://img.shields.io/badge/license-Apache2-blue.svg?style=flat)
+[![Join the chat at https://gitter.im/IBM-Swift/Kitura](https://badges.gitter.im/IBM-Swift/Kitura.svg)](https://gitter.im/IBM-Swift/Kitura?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Summary
 
@@ -75,7 +76,7 @@ Kitura is a web framework and web server that is created for web services writte
 
 6. Compile and install PCRE2:
 
- Download the [pcre2](http://ftp.exim.org/pub/pcre/pcre2-10.20.tar.gz) source code. Unpack the tar. Run ./configure && make && sudo make install. This will place the necessary headers and libraries into /usr/local/include and /user/local/libs.
+ Download the [pcre2](http://ftp.exim.org/pub/pcre/pcre2-10.20.tar.gz) source code. Unpack the tar. Run `./configure && make && sudo make install`. This will place the necessary headers and libraries into /usr/local/include and /user/local/libs.
 
 7. Download the Kitura dependencies with Swift Package Manager:
 
