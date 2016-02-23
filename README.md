@@ -2,8 +2,8 @@
 
 **A Swift Web Framework and HTTP Server**
 
-![Build Status](https://travis-ci.com/IBM-Swift/Kitura.svg?token=HbPXgFCvQeph5JZPCbdW&branch=master)
-![Build Status](https://travis-ci.com/IBM-Swift/Kitura.svg?token=HbPXgFCvQeph5JZPCbdW&branch=develop)
+![Build Status](https://travis-ci.org/IBM-Swift/Kitura.svg?branch=master)
+![Build Status](https://travis-ci.org/IBM-Swift/Kitura.svg?branch=develop)
 ![Mac OS X](https://img.shields.io/badge/os-Mac%20OS%20X-green.svg?style=flat)
 ![Linux](https://img.shields.io/badge/os-linux-green.svg?style=flat)
 ![Swift 2 compatible](https://img.shields.io/badge/swift2-compatible-4BC51D.svg?style=flat)
