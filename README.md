@@ -54,7 +54,7 @@ Kitura is a web framework and web server that is created for web services writte
 
 3. Install the necessary dependencies:
 
- `brew install http-parser`, `brew install pcre2`, `brew install curl`, and `brew install hiredis`
+ `brew install http-parser pcre2 curl hiredis`
 
 4. Download and install the latest Swift compiler.
 
