@@ -73,7 +73,7 @@ if [ $(grep -c "#{SWIFT_FILE}" .profile) -eq 0 ]; then
 
 ### Download and install Kitura
     git clone #{KITURA_URL}
-    cd Kitura && swift build
+    cd Kitura
     make
     cd ..
 
