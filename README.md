@@ -2,8 +2,8 @@
 
 **A Swift Web Framework and HTTP Server**
 
-![Build Status](https://travis-ci.org/IBM-Swift/Kitura.svg?branch=master)
-![Build Status](https://travis-ci.org/IBM-Swift/Kitura.svg?branch=develop)
+[![Build Status](https://travis-ci.org/IBM-Swift/Kitura.svg?branch=master)](https://travis-ci.org/IBM-Swift/Kitura)
+[![Build Status](https://travis-ci.org/IBM-Swift/Kitura.svg?branch=develop)](https://travis-ci.org/IBM-Swift/Kitura)
 ![Mac OS X](https://img.shields.io/badge/os-Mac%20OS%20X-green.svg?style=flat)
 ![Linux](https://img.shields.io/badge/os-linux-green.svg?style=flat)
 ![Swift 2 compatible](https://img.shields.io/badge/swift2-compatible-4BC51D.svg?style=flat)
@@ -35,12 +35,12 @@ Kitura is a web framework and web server that is created for web services writte
 4. SSH into the Vagrant machine:
 
  `vagrant ssh`
- 
+
 5. From the Vagrant shell, run the sample program:
 
  `Kitura/.build/debug/KituraSample`. You should see a message that says "Listening on port 8090".
 
-6. As needed for development, edit the `vagrantfile` to setup [Synced Folders](https://www.vagrantup.com/docs/synced-folders/basic_usage.html) to share files between your host and guest machine. 
+6. As needed for development, edit the `vagrantfile` to setup [Synced Folders](https://www.vagrantup.com/docs/synced-folders/basic_usage.html) to share files between your host and guest machine.
 
 ## Installation (OS X)
 
@@ -54,7 +54,7 @@ Kitura is a web framework and web server that is created for web services writte
 
 3. Install the necessary dependencies:
 
- `brew install http-parser`, `brew install pcre2`, `brew install curl`, and `brew install hiredis`
+ `brew install http-parser pcre2 curl hiredis`
 
 4. Download and install the latest Swift compiler.
 
