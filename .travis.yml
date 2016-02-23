@@ -14,20 +14,13 @@ branches:
 notifications:
   slack: ibmswift:RHkwcHYh4kkYVRVzm9nZk5TF
 
-os:
-  - linux
-  - osx
-
 services:
   - docker
 
 before_install:
-  - echo "Operating system -> $TRAVIS_OS_NAME"
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; docker pull ibmcom/kitura-ubuntu:latest ; fi
-# - docker pull ibmcom/kitura-ubuntu:latest
+  - docker pull ibmcom/kitura-ubuntu:latest
 
 script:
   - echo "About to run docker container to build and test Kitura for branch '$TRAVIS_BRANCH'."
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; docker run --rm -e KITURA_BRANCH=$TRAVIS_BRANCH ibmcom/kitura-ubuntu:latest ; fi
-#  - docker run --rm -e KITURA_BRANCH=$TRAVIS_BRANCH ibmcom/kitura-ubuntu:latest
+  - docker run --rm -e KITURA_BRANCH=$TRAVIS_BRANCH ibmcom/kitura-ubuntu:latest
   - echo "Build and tests completed. See above for status."
