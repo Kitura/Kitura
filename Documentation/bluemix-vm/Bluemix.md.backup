@@ -1,6 +1,6 @@
 ## Setup a Virtual Machine on Bluemix that uses Swift
 
-**This document is work in progress. Please ignore for now!**
+**THIS DOCUMENT IS WORK IN PROGRESS. PLEASE IGNORE FOR NOW!**
 
 1. First create a SSH key that will be used to authenticate the VM instance. From a terminal window, run the following command:
 
