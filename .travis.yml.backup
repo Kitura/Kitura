@@ -1,0 +1,26 @@
+# .travis.yml for Kitura sample app
+# See the following URLs for further details on Travis CI
+# https://docs.travis-ci.com/user/customizing-the-build/
+# https://docs.travis-ci.com/user/docker/
+
+sudo: true
+
+# whitelist
+branches:
+  only:
+    - master
+    - develop
+
+notifications:
+  slack: ibmswift:RHkwcHYh4kkYVRVzm9nZk5TF
+
+services:
+  - docker
+
+before_install:
+  - docker pull ibmcom/kitura-ubuntu:latest
+
+script:
+  - echo "About to run docker container to build and test Kitura for branch '$TRAVIS_BRANCH'."
+  - docker run --rm -e KITURA_BRANCH=$TRAVIS_BRANCH ibmcom/kitura-ubuntu:latest
+  - echo "Build and tests completed. See above for status."

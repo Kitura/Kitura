@@ -22,6 +22,26 @@ Kitura is a web framework and web server that is created for web services writte
 - JSON parsing
 - Pluggable middleware
 
+## Installation (Vagrant development environment)
+
+1. Download [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
+
+2. Download [Vagrant](https://www.vagrantup.com/downloads.html).
+
+3. From the root of the Kitura folder containing the `vagrantfile`, create and configure a guest machine:
+
+ `vagrant up`
+
+4. SSH into the Vagrant machine:
+
+ `vagrant ssh`
+ 
+5. From the Vagrant shell, run the sample program:
+
+ `Kitura/.build/debug/KituraSample`. You should see a message that says "Listening on port 8090".
+
+6. As needed for development, edit the `vagrantfile` to setup [Synced Folders](https://www.vagrantup.com/docs/synced-folders/basic_usage.html) to share files between your host and guest machine. 
+
 ## Installation (OS X)
 
 1. Clone this repository:
