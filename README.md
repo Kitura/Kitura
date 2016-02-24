@@ -184,7 +184,7 @@ swift build
 5) Copy the Makefile.client from KituraNet to your project as Makefile:
 
 ```bash
-cp Packages/Kitura-net-0.2.0/Makefile-client Makefile
+cp Packages/Kitura-net-0.3.0/Makefile-client Makefile
 ```
 
 6) Import the modules in your code:
