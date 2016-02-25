@@ -38,7 +38,9 @@ Kitura is a web framework and web server that is created for web services writte
 
   `/root/ci.sh`
 
-  The last output line from executing the `ci.sh` script should be similar to `>> Build and execution of test cases completed (see above for results).`
+  The last output line from executing the `ci.sh` script should be similar to:
+
+  `>> Build and execution of test cases completed (see above for results).`
 
 5. You can now run the KituraSample executable inside the Docker container:
 
