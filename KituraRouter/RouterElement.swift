@@ -191,6 +191,11 @@ class RouterElement {
             
             let paths = p.bridge().componentsSeparatedByString("/")
             
+            // Special case where only back slashes are specified
+            if paths.filter({$0 != ""}).count == 0 {
+                regexStr.appendContentsOf("/")
+            }
+            
             for path in paths {
                 // If there was a leading slash, there will be an empty component in the split
                 if  path.characters.count > 0  {
