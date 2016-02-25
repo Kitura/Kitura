@@ -84,6 +84,24 @@ public class Router {
     public func delete(path: String, handler: RouterHandler) -> Router {
         return routingHelper(.Delete, pattern: path, handler: handler)
     }
+    
+    // options
+    public func options(handler: RouterHandler) -> Router {
+        return routingHelper(.Options, pattern: nil, handler: handler)
+    }
+    
+    public func options(path: String, handler: RouterHandler) -> Router {
+        return routingHelper(.Options, pattern: path, handler: handler)
+    }
+    
+    // patch
+    public func patch(handler: RouterHandler) -> Router {
+        return routingHelper(.Patch, pattern: nil, handler: handler)
+    }
+    
+    public func patch(path: String, handler: RouterHandler) -> Router {
+        return routingHelper(.Patch, pattern: path, handler: handler)
+    }
 
     public func use(middleware: RouterMiddleware) -> Router {
         routeElems.append(RouterElement(method: .All, pattern: nil, middleware: middleware))

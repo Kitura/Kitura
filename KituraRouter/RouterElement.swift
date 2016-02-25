@@ -285,7 +285,7 @@ class RouterElement {
 ///
 enum RouterMethod :Int {
     
-    case All, Get, Post, Put, Delete, Head, Unknown
+    case All, Get, Post, Put, Delete, Head, Options, Patch, Unknown
     
     
     init(string: String) {
@@ -307,6 +307,10 @@ enum RouterMethod :Int {
                 break
             case "head":
                 self = .Head
+            case "options":
+                self = .Options
+            case "patch":
+                self = .Patch
             default:
                 self = .Unknown
         }
