@@ -36,7 +36,7 @@ Kitura is a web framework and web server that is created for web services writte
 
 4. From within the Docker container, execute the `ci.sh` script to build Kitura and execute the test cases:
 
-  `source /root/ci.sh`
+  `/root/ci.sh`
 
   The last output line from executing the `ci.sh` script should be similar to `>> Build and execution of test cases completed (see above for results).`
 
