@@ -10,6 +10,7 @@ branches:
   only:
     - master
     - develop
+    - travis-ci-tests
 
 notifications:
   slack: ibmswift:RHkwcHYh4kkYVRVzm9nZk5TF
