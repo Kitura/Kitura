@@ -19,7 +19,6 @@ import PackageDescription
 // Dual pathing for O/S differences
 #if os(Linux)
    let swiftyJsonUrl = "https://github.com/IBM-Swift/SwiftyJSON.git"
-   //let swiftyJsonUrl = "git@github.com:IBM-Swift/SwiftyJSON.git"
    let swiftyJsonVersion = 3
 #else
    let swiftyJsonUrl = "https://github.com/SwiftyJSON/SwiftyJSON.git"
@@ -27,18 +26,13 @@ import PackageDescription
 #endif
 
 let package = Package(
-    name: "KituraRouter",
+    name: "Kitura-Router",
         dependencies: [
             .Package(url: "https://github.com/IBM-Swift/Kitura-net.git", versions: Version(0,3,0)..<Version(0,4,0)),
-            //.Package(url: "git@github.com:IBM-Swift/Kitura-net.git", majorVersion: 0),
             .Package(url: "https://github.com/IBM-Swift/LoggerAPI.git", versions: Version(0,2,0)..<Version(0,3,0)),
-            //.Package(url: "git@github.com:IBM-Swift/LoggerAPI.git", majorVersion: 0),
             .Package(url: "https://github.com/IBM-Swift/Kitura-Pcre2.git", versions: Version(0,2,0)..<Version(0,3,0)),
-            //.Package(url: "git@github.com:IBM-Swift/Kitura-Pcre2.git", majorVersion: 0),
             .Package(url: "https://github.com/IBM-Swift/Kitura-CurlHelpers.git", versions: Version(0,2,0)..<Version(0,3,0)),
-            //.Package(url: "git@github.com:IBM-Swift/Kitura-CurlHelpers.git", majorVersion: 0),
             .Package(url: "https://github.com/IBM-Swift/Kitura-HttpParserHelper.git", versions: Version(0,2,0)..<Version(0,3,0)),
-            //.Package(url: "git@github.com:IBM-Swift/Kitura-HttpParserHelper.git", majorVersion: 0),
             .Package(url: swiftyJsonUrl, majorVersion: swiftyJsonVersion)
         ]
 )
