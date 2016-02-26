@@ -290,7 +290,7 @@ class RouterElement {
 ///
 enum RouterMethod :Int {
     
-    case All, Get, Post, Put, Delete, Head, Options, Patch, Unknown
+    case All, Get, Post, Put, Head, Delete, Options, Trace, Copy, Lock, MkCol, Move, Purge, PropFind, PropPatch, Unlock, Report, MkActivity, Checkout, Merge, MSearch, Notify, Subscribe, Unsubscribe, Patch, Search, Connect, Unknown
     
     
     init(string: String) {
@@ -307,15 +307,75 @@ enum RouterMethod :Int {
             case "put":
                 self = .Put
                 break
+            case "head":
+                self = .Head
+                break
             case "delete":
                 self = .Delete
                 break
-            case "head":
-                self = .Head
             case "options":
                 self = .Options
+                break
+            case "trace":
+                self = .Trace
+                break
+            case "copy":
+                self = .Copy
+                break
+            case "lock":
+                self = .Lock
+                break
+            case "mkcol":
+                self = .MkCol
+                break
+            case "move":
+                self = .Move
+                break
+            case "purge":
+                self = .Purge
+                break
+            case "propfind":
+                self = .PropFind
+                break
+            case "proppatch":
+                self = .PropPatch
+                break
+            case "unlock":
+                self = .Unlock
+                break
+            case "report":
+                self = .Report
+                break
+            case "mkactivity":
+                self = .MkActivity
+                break
+            case "checkout":
+                self = .Checkout
+                break
+            case "merge":
+                self = .Merge
+                break
+            case "m-search":
+                self = .MSearch
+                break
+            case "notify":
+                self = .Notify
+                break
+            case "subscribe":
+                self = .Subscribe
+                break
+            case "unsubscribe":
+                self = .Unsubscribe
+                break
             case "patch":
                 self = .Patch
+                break
+            case "search":
+                self = .Search
+                break
+            case "connect":
+                self = .Connect
+                break
             default:
                 self = .Unknown
         }
