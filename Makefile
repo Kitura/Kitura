@@ -19,4 +19,4 @@
 make:
 # run swift build with - to ignore its failure since swift build is expected to fail
 	-swift build
-	make -f Packages/Kitura-net*/Makefile
+	make -f Packages/KituraNet*/Makefile
