@@ -17,6 +17,8 @@
 ##
 
 # This script builds the Kitura sample app on OS X (Travis CI).
+# Homebrew (http://brew.sh/) must be installed on the OS X system for this
+# script to work.
 
 # If any commands fail, we want the shell script to exit immediately.
 set -e
@@ -26,7 +28,7 @@ SWIFT_SNAPSHOT=swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a
 
 # Install system level dependencies for Kitura
 brew update
-brew install http-parser pcre2 curl hiredis
+brew install http-parser pcre2 curl hiredis wget
 
 # Install Swift binaries
 # See http://apple.stackexchange.com/questions/72226/installing-pkg-with-terminal
