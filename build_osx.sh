@@ -28,7 +28,8 @@ SWIFT_SNAPSHOT=swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a
 
 # Install system level dependencies for Kitura
 brew update
-brew install --force http-parser pcre2 curl hiredis wget
+brew install http-parser pcre2 curl hiredis
+brew install wget || brew outdated wget || brew upgrade wget
 
 # Install Swift binaries
 # See http://apple.stackexchange.com/questions/72226/installing-pkg-with-terminal
