@@ -1,26 +1,35 @@
-# .travis.yml for Kitura sample app
+# Travis CI build file for Kitura sample app.
+# Kitura runs on OS X and Linux (Ubuntu).
 # See the following URLs for further details on Travis CI
 # https://docs.travis-ci.com/user/customizing-the-build/
 # https://docs.travis-ci.com/user/docker/
+# https://docs.travis-ci.com/user/multi-os/
 
-sudo: true
-
-# whitelist
+# whitelist (branches that should be built)
 branches:
   only:
     - master
     - develop
+    - travis-ci-tests
 
 notifications:
   slack: ibmswift:RHkwcHYh4kkYVRVzm9nZk5TF
 
-services:
-  - docker
+matrix:
+  include:
+    - os: linux
+      services: docker
+      sudo: required
+    - os: osx
+      osx_image: xcode7.2
+      sudo: required
 
 before_install:
-  - docker pull ibmcom/kitura-ubuntu:latest
+  - echo "Operating system -> '$TRAVIS_OS_NAME'"
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker pull ibmcom/kitura-ubuntu:latest ; fi
 
 script:
-  - echo "About to run docker container to build and test Kitura for branch '$TRAVIS_BRANCH'."
-  - docker run --rm -e KITURA_BRANCH=$TRAVIS_BRANCH ibmcom/kitura-ubuntu:latest
+  - echo "About to build and test Kitura for branch '$TRAVIS_BRANCH'."
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker run --rm -e KITURA_BRANCH=$TRAVIS_BRANCH ibmcom/kitura-ubuntu:latest ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./build_osx.sh ; fi
   - echo "Build and tests completed. See above for status."
