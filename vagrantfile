@@ -6,15 +6,13 @@ BOX_URL =  "https://cloud-images.ubuntu.com/vagrant/wily/current/wily-server-clo
 SWIFT_PATH = "https://swift.org/builds/development/ubuntu1510/swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a"
 SWIFT_DIRECTORY = "swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a-ubuntu15.10"
 SWIFT_FILE = "#{SWIFT_DIRECTORY}.tar.gz"
+SWIFT_HOME = "/home/vagrant/#{SWIFT_DIRECTORY}"
 
 PCRE_PATH = "http://ftp.exim.org/pub/pcre"
 PCRE_DIRECTORY = "pcre2-10.20"
 PCRE_FILE = "#{PCRE_DIRECTORY}.tar.gz"
 
 LIBDISPATCH_URL = "git://github.com/seabaylea/swift-corelibs-libdispatch"
-LIBDISPATCH_BRANCH = "opaque-pointer"
-
-MODULEMAP_URL = "https://raw.githubusercontent.com/IBM-Swift/Kitura/master/Sources/Modulemaps/module.modulemap"
 
 KITURA_URL = "https://github.com/IBM-Swift/Kitura.git"
 
@@ -51,18 +49,14 @@ Vagrant.configure(2) do |config|
     tar zxf #{SWIFT_FILE}
 
 if [ $(grep -c "#{SWIFT_FILE}" .profile) -eq 0 ]; then
-        echo "export PATH=/home/vagrant/#{SWIFT_DIRECTORY}/usr/bin:\"${PATH}\"" >> .profile
+        echo "export PATH=#{SWIFT_HOME}/usr/bin:\"${PATH}\"" >> .profile
         source .profile
     fi
 
-### Download and build patched libdispatch
-    git clone -b #{LIBDISPATCH_BRANCH} #{LIBDISPATCH_URL}
-    cd swift-corelibs-libdispatch && sh ./autogen.sh && ./configure && make && sudo make install
+### Download and build libdispatch
+    git clone #{LIBDISPATCH_URL}
+    cd swift-corelibs-libdispatch && git submodule init && git submodule update && sh ./autogen.sh && ./configure --with-swift-toolchain=#{SWIFT_HOME}/usr --prefix=#{SWIFT_HOME}/usr && make && sudo make install
     cd ..
-
-### Download module map and copy insto /usr/local/include/dispatch
-    mkdir -p /usr/local/include/dispatch
-    curl #{MODULEMAP_URL} -o /usr/local/include/dispatch/module.modulemap
 
 ### Download and build pcre
      if [ ! -f "#{PCRE_FILE}" ]; then
