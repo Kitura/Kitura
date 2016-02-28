@@ -367,7 +367,7 @@ extension Router : HttpServerDelegate {
     /// Get the directory we were compiled from
     ///
     private func sendResourceIfExisting(routeResp: RouterResponse, resource: String)  {
-        let fileName = NSString(string: __FILE__)
+        let fileName = NSString(string: #file)
         let jsonFilePrefixRange: NSRange
         let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch)
         if  lastSlash.location != NSNotFound  {
