@@ -24,7 +24,8 @@
 set -e
 
 # Variables
-SWIFT_SNAPSHOT=swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a
+#SWIFT_SNAPSHOT=swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a
+SWIFT_SNAPSHOT=swift-DEVELOPMENT-SNAPSHOT-2016-02-25-a
 
 # Install system level dependencies for Kitura
 brew update
@@ -39,9 +40,10 @@ export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:"${PA
 
 # Build kitura
 echo ">> About to build Kitura..."
-make
+#make
+swift build -Xcc -fblocks -Xswiftc -I/usr/local/include -Xlinker -L/usr/local/lib
 
 # Execute test cases for Kitura
 echo ">> About to build and execute test cases for Kitura..."
-cd ./buildTests.sh && ./runTests.sh
+sh ./buildTests.sh && ./runTests.sh
 echo ">> Build and execution of test cases completed (see above for results)."
