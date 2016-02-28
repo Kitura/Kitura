@@ -29,7 +29,7 @@ let package = Package(
     name: "Kitura-Router",
         dependencies: [
             .Package(url: "https://github.com/IBM-Swift/Kitura-net.git", versions: Version(0,3,0)..<Version(0,4,0)),
-            .Package(url: "https://github.com/IBM-Swift/LoggerAPI.git", versions: Version(0,2,0)..<Version(0,3,0)),
+            .Package(url: "https://github.com/IBM-Swift/LoggerAPI.git", versions: Version(0,3,0)..<Version(0,4,0)),
             .Package(url: "https://github.com/IBM-Swift/Kitura-Pcre2.git", versions: Version(0,2,0)..<Version(0,3,0)),
             .Package(url: "https://github.com/IBM-Swift/Kitura-CurlHelpers.git", versions: Version(0,2,0)..<Version(0,3,0)),
             .Package(url: "https://github.com/IBM-Swift/Kitura-HttpParserHelper.git", versions: Version(0,2,0)..<Version(0,3,0)),
