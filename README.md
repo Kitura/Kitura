@@ -227,7 +227,7 @@ Server.run()
 
 10. Open your browser at [http://localhost:8090](http://localhost:8090)
 
-## Kitura wiki
+## Kitura Wiki
 Feel free to visit our [Wiki](https://github.com/IBM-Swift/Kitura/wiki/Kitura-Wiki) (which, btw, is in very early stages).
 
 ## License
