@@ -327,17 +327,15 @@ extension Router : HttpServerDelegate {
         
             let callbackHandler = {[unowned routeReq, unowned routeResp] () -> Void in
                 elemIndex+=1
-                if  elemIndex < self.routeElems.count  &&  routeResp.error == nil {
-                    self.routeElems[elemIndex].process(method, urlPath: urlPath!, request: routeReq, response: routeResp, next: callback!)
+                if  elemIndex < self.routeElems.count {
+                    print(self.routeElems[elemIndex].method)
+                    if routeResp.error == nil || self.routeElems[elemIndex].method == .Error {
+                        self.routeElems[elemIndex].process(method, urlPath: urlPath!, request: routeReq, response: routeResp, next: callback!)
+                    }
                 }
                 else {
                     do {
-                        if  routeResp.error != nil  {
-                            let message = "Server error: \(routeResp.error!.localizedDescription)"
-                            Log.error(message)
-                            try routeResp.status(.INTERNAL_SERVER_ERROR).end(message)
-                        }
-                        else if  !routeResp.invokedEnd {
+                        if  !routeResp.invokedEnd {
                             if  response.statusCode == HttpStatusCode.NOT_FOUND  {
                                 self.sendDefaultIndexHtml(routeReq, routeResp: routeResp)
                             }

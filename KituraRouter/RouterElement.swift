@@ -41,7 +41,7 @@ class RouterElement {
     ///
     /// The routing method (get, post, put, delete)
     ///
-    private let method: RouterMethod
+    let method: RouterMethod
     
     ///
     /// The regular expression pattern
@@ -127,7 +127,7 @@ class RouterElement {
     ///
     func process(httpMethod: RouterMethod, urlPath: NSData, request: RouterRequest, response: RouterResponse, next: () -> Void) {
         
-        if  method == .All  ||  method == httpMethod {
+        if  method == .All  ||  method == httpMethod || (response.error != nil && method == .Error){
             if  let r = regex  {
                 let matcher = r.matcher!
                 if  matcher.match(urlPath) {
