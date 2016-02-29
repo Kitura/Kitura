@@ -74,7 +74,7 @@ Kitura is a web framework and web server that is created for web services writte
 
  `git clone https://github.com/IBM-Swift/Kitura`
 
-2. Install [Homebrew](http://brew.sh/):
+2. Install [Homebrew](http://brew.sh/) (if you don't already have it installed):
 
  `ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
 
@@ -88,7 +88,9 @@ Kitura is a web framework and web server that is created for web services writte
 
 5. Build Kitura and Kitura Sample
 
- Run `make` to build the helper libraries, Kitura framework, and the sample program (invokes swift build).
+ `swift build -Xcc -fblocks -Xswiftc -I/usr/local/include -Xlinker -L/usr/local/lib`
+ 
+ Homebrew by default installs libraries to `/usr/local`, if yours is different, change the path to find curl and http-parser libraries.
 
 6. Run KituraSample:
 
@@ -116,15 +118,11 @@ Kitura is a web framework and web server that is created for web services writte
 
  Download the [pcre2](http://ftp.exim.org/pub/pcre/pcre2-10.20.tar.gz) source code. Unpack the tar. Run `./configure && make && sudo make install`. This will place the necessary headers and libraries into /usr/local/include and /user/local/libs.
 
-6. Build Kitura and Kitura Sample
+6. Build Kitura and KituraSample
 
- On the root folder of the Kitura repo, run `make` to build the helper libraries, Kitura framework, and the sample program (invokes swift build).
+  `swift build -Xcc -fblocks`
 
-7. Set the dynamic library loading path:
-
- In order to run the sample, first you need to point to the shared libraries that have been built by running `export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH`
-
-8. Run the sample program:
+7. Run the sample program:
 
  `<path_to_kitura_repo>./.build/debug/KituraSample`. You should see a message that says "Listening on port 8090".
 
