@@ -20,6 +20,7 @@ import KituraSys
 import HeliumLogger
 
 import Foundation
+
 import XCTest
 
 #if os(Linux)
@@ -27,6 +28,7 @@ import XCTest
 #else
     import Darwin
 #endif
+
 
 class TestErrors : XCTestCase {
     
@@ -42,7 +44,7 @@ class TestErrors : XCTestCase {
 
     var serverQueue = Queue(type: QueueType.PARALLEL)
 
-    func tearDown() {
+    override func tearDown() {
         sleep(10)
     }
 
