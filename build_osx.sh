@@ -29,7 +29,7 @@ SWIFT_SNAPSHOT=swift-DEVELOPMENT-SNAPSHOT-2016-02-25-a
 
 # Install system level dependencies for Kitura
 brew update
-brew install http-parser pcre2 curl hiredis
+brew install http-parser pcre2 curl hiredis swiftlint
 brew install wget || brew outdated wget || brew upgrade wget
 
 # Install Swift binaries
@@ -37,6 +37,10 @@ brew install wget || brew outdated wget || brew upgrade wget
 wget https://swift.org/builds/development/xcode/$SWIFT_SNAPSHOT/$SWIFT_SNAPSHOT-osx.pkg
 sudo installer -pkg $SWIFT_SNAPSHOT-osx.pkg -target /
 export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:"${PATH}"
+
+# Run SwiftLint to ensure Swift style and conventions
+swift build --fetch
+swiftlint
 
 # Build kitura
 echo ">> About to build Kitura..."
