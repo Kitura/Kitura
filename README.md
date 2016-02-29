@@ -216,8 +216,8 @@ Server.run()
 
 8. Compile your application:
 
-  Mac OS X: `swift build -Xcc -fblocks -Xswiftc -I/usr/local/include -Xlinker -L/usr/local/lib`
-  Linux:  `swift build -Xcc -fblocks`
+  - Mac OS X: `swift build -Xcc -fblocks -Xswiftc -I/usr/local/include -Xlinker -L/usr/local/lib`
+  - Linux:  `swift build -Xcc -fblocks`
   
 9. Now run your new web application:
 
