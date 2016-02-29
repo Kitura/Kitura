@@ -45,5 +45,6 @@ swift build -Xcc -fblocks -Xswiftc -I/usr/local/include -Xlinker -L/usr/local/li
 
 # Execute test cases for Kitura
 echo ">> About to build and execute test cases for Kitura..."
-sh ./buildTests.sh && ./runTests.sh
+#sh ./buildTests.sh && ./runTests.sh
+swift test
 echo ">> Build and execution of test cases completed (see above for results)."
