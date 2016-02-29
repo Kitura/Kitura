@@ -40,7 +40,7 @@ export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:"${PA
 
 # Run SwiftLint to ensure Swift style and conventions
 swift build --fetch
-swiftlint
+# swiftlint
 
 # Build kitura
 echo ">> About to build Kitura..."
