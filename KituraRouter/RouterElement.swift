@@ -290,7 +290,7 @@ class RouterElement {
 ///
 enum RouterMethod :Int {
     
-    case All, Get, Post, Put, Head, Delete, Options, Trace, Copy, Lock, MkCol, Move, Purge, PropFind, PropPatch, Unlock, Report, MkActivity, Checkout, Merge, MSearch, Notify, Subscribe, Unsubscribe, Patch, Search, Connect, Unknown
+    case All, Get, Post, Put, Head, Delete, Options, Trace, Copy, Lock, MkCol, Move, Purge, PropFind, PropPatch, Unlock, Report, MkActivity, Checkout, Merge, MSearch, Notify, Subscribe, Unsubscribe, Patch, Search, Connect, Error, Unknown
     
     
     init(string: String) {
@@ -375,6 +375,9 @@ enum RouterMethod :Int {
                 break
             case "connect":
                 self = .Connect
+                break
+            case "error":
+                self = .Error
                 break
             default:
                 self = .Unknown

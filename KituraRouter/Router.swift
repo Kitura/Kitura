@@ -289,6 +289,11 @@ public class Router {
         return self
     }
 
+    // MARK: error
+    public func error(handler: RouterHandler) -> Router {
+        return routingHelper(.Error, pattern: nil, handler: handler)
+    }
+
     private func routingHelper(method: RouterMethod, pattern: String?, handler: RouterHandler) -> Router {
         routeElems.append(RouterElement(method: method, pattern: pattern, handler: handler))
         return self
