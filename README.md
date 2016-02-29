@@ -89,7 +89,7 @@ Kitura is a web framework and web server that is created for web services writte
 5. Build Kitura and Kitura Sample
 
  `swift build -Xcc -fblocks -Xswiftc -I/usr/local/include -Xlinker -L/usr/local/lib`
- 
+
  Homebrew by default installs libraries to `/usr/local`, if yours is different, change the path to find curl and http-parser libraries.
 
 6. Run KituraSample:
@@ -218,7 +218,7 @@ Server.run()
 
   - Mac OS X: `swift build -Xcc -fblocks -Xswiftc -I/usr/local/include -Xlinker -L/usr/local/lib`
   - Linux:  `swift build -Xcc -fblocks`
-  
+
 9. Now run your new web application:
 
 ```
@@ -226,6 +226,9 @@ Server.run()
 ```
 
 10. Open your browser at [http://localhost:8090](http://localhost:8090)
+
+## Kitura wiki
+Feel free to visit our [Wiki](https://github.com/IBM-Swift/Kitura/wiki/Kitura-Wiki) (which, btw, is in very early stages).
 
 ## License
 
