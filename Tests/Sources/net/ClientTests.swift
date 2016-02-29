@@ -28,7 +28,7 @@ import XCTest
             ]
         }
     }
-    #endif
+#endif
 
 class ClientTests: XCTestCase {
     

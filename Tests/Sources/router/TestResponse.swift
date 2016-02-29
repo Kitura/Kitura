@@ -14,18 +14,31 @@
  * limitations under the License.
  **/
 
-import KituraRouter
-import KituraNet
-import KituraSys
-import HeliumLogger
-
 import Foundation
 import XCTest
+
+@testable import KituraRouter
+@testable import KituraNet
+@testable import KituraSys
+@testable import HeliumLogger
 
 #if os(Linux)
     import Glibc
 #else
     import Darwin
+#endif
+
+#if os(Linux)
+    extension TestResponse : XCTestCaseProvider {
+        var allTests : [(String, () throws -> Void)] {
+            return [
+                ("testSimpleResponse", testSimpleResponse),
+                ("testPostRequest", testPostRequest),
+                ("testParameter", testParameter),
+                ("testRedirect", testRedirect)
+            ]
+        }
+    }
 #endif
 
 class TestResponse : XCTestCase {
@@ -38,15 +51,6 @@ class TestResponse : XCTestCase {
         sleep(10)
     }
 
-    var allTests : [(String, () throws -> Void)] {
-        return [
-            ("testSimpleResponse", testSimpleResponse),
-            ("testPostRequest", testPostRequest),
-            ("testParameter", testParameter),
-            ("testRedirect", testRedirect)
-        ]
-    }
-    
     func testSimpleResponse() {
     	let server = setupServer(8090, delegate: router)
 

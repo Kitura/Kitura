@@ -14,10 +14,10 @@
  * limitations under the License.
  **/
 
-import KituraNet
-
 import Foundation
 import XCTest
+
+@testable import KituraNet
 
 class ParserTests: XCTestCase {
     var allTests : [(String, () throws -> Void)] {
