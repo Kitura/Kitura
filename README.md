@@ -129,13 +129,13 @@ Kitura is a web framework and web server that is created for web services writte
 ## Usage
 Let's write our first Kitura-based Web Application written in Swift!
 
-1) First we need to create a new project directory
+1. First we need to create a new project directory
 
 ```bash
 mkdir myFirstProject
 ```
 
-2) Next we need to go in an initialize this project as a new Swift package project
+2. Next we need to go in an initialize this project as a new Swift package project
 
 ```bash
 cd myFirstProject
@@ -154,64 +154,46 @@ myFirstProject
 
 Note: For more information on the Swift Package Manager, go [here](https://swift.org/package-manager)
 
-3) Now we need to add Kitura as a dependency for your project (Package.swift):
+3. Now we need to add Kitura as a dependency for your project (Package.swift):
 
 ```swift
 import PackageDescription
 
 let package = Package(
-    name: "myFirstProject",
-
-    dependencies: [
- 		.Package(url: "https://github.com/IBM-Swift/Kitura-router.git", majorVersion: 0),
-	]
-
+  name: "myFirstProject",
+  dependencies: [
+    .Package(url: "https://github.com/IBM-Swift/Kitura-router.git", versions: Version(0,3,0)..<Version(0,4,0)),
+  ]
 )
 ```
 
-4) Now we can issue a `swift build` command to to download the dependencies.
-
- Because Swift Package Manager does not compile C code, expect this step to fail because of a linker error.
-
-```bash
-swift build
-```
-
-5) Copy the Makefile.client from KituraNet to your project as Makefile:
-
-```bash
-cp Packages/Kitura-net-0.3.0/Makefile-client Makefile
-```
-
-6) Import the modules in your code:
+4. Import the modules in your code:
 
 ```swift
 import KituraRouter
 import KituraNet
 import KituraSys
 ```
-7) Add a router and a path:
+5. Add a router and a path:
 
 ```swift
 let router = Router()
 
 router.get("/") {
-	request, response, next in
-
-	response.status(HttpStatusCode.OK).send("Hello, World!")
-
-	next()
+  request, response, next in
+  response.status(HttpStatusCode.OK).send("Hello, World!")
+  next()
 }
 ```
 
-8) Create and start a HTTPServer:
+6. Create and start a HTTPServer:
 
 ```swift
 let server = HttpServer.listen(8090, delegate: router)
 Server.run()
 ```
 
-9) Sources/main.swift file should now look like this:
+7. Sources/main.swift file should now look like this:
 
 ```swift
 import KituraRouter
@@ -232,19 +214,18 @@ let server = HttpServer.listen(8090, delegate: router)
 Server.run()
 ```
 
-10) Run make
+8. Compile your application:
 
-```
-make
-```
-
-11) Now run your new web application
+  Mac OS X: `swift build -Xcc -fblocks -Xswiftc -I/usr/local/include -Xlinker -L/usr/local/lib`
+  Linux:  `swift build -Xcc -fblocks`
+  
+9. Now run your new web application:
 
 ```
 .build/debug/myFirstProject
 ```
 
-12) Open your browser at [http://localhost:8090](http://localhost:8090)
+10. Open your browser at [http://localhost:8090](http://localhost:8090)
 
 ## License
 
