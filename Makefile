@@ -13,10 +13,14 @@
 # limitations under the License.
 
 # Makefile
+#
+# DEPRECATED: Makefile usage is no longer required
 # This is a makefile that conveniently calls Kitura-net's makefile when Kitura-net is a dependency
 # Should be copied to project's root directory
 
 make:
+	echo "Building Kitura..."
+	swift build -Xcc -fblocks
 # run swift build with - to ignore its failure since swift build is expected to fail
-	-swift build
-	make -f Packages/Kitura-net*/Makefile
+	#-swift build
+	#make -f Packages/Kitura-net*/Makefile

@@ -24,11 +24,12 @@
 set -e
 
 # Variables
-SWIFT_SNAPSHOT=swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a
+#SWIFT_SNAPSHOT=swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a
+SWIFT_SNAPSHOT=swift-DEVELOPMENT-SNAPSHOT-2016-02-25-a
 
 # Install system level dependencies for Kitura
 brew update
-brew install http-parser pcre2 curl hiredis
+brew install http-parser pcre2 curl hiredis swiftlint
 brew install wget || brew outdated wget || brew upgrade wget
 
 # Install Swift binaries
@@ -37,11 +38,17 @@ wget https://swift.org/builds/development/xcode/$SWIFT_SNAPSHOT/$SWIFT_SNAPSHOT-
 sudo installer -pkg $SWIFT_SNAPSHOT-osx.pkg -target /
 export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:"${PATH}"
 
+# Run SwiftLint to ensure Swift style and conventions
+swift build --fetch
+# swiftlint
+
 # Build kitura
 echo ">> About to build Kitura..."
-make
+#make
+swift build -Xcc -fblocks -Xswiftc -I/usr/local/include -Xlinker -L/usr/local/lib
 
 # Execute test cases for Kitura
 echo ">> About to build and execute test cases for Kitura..."
-cd ./buildTests.sh && ./runTests.sh
+#sh ./buildTests.sh && ./runTests.sh
+swift test
 echo ">> Build and execution of test cases completed (see above for results)."
