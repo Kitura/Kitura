@@ -74,7 +74,7 @@ if [ $(grep -c "#{SWIFT_FILE}" .profile) -eq 0 ]; then
 ### Download and install Kitura
     git clone #{KITURA_URL}
     cd Kitura
-    make
+    swift build -Xcc -fblocks
     cd ..
 
 ### Export LD_LIBRARY_PATH
