@@ -29,7 +29,9 @@ public class Router {
     /// Contains the list of routing elements
     ///
     private var routeElems: [RouterElement] = []
-    
+
+    internal var templateEngine: TemplateEngine? = nil
+
     ///
     /// Initializes a Router 
     ///
@@ -292,6 +294,11 @@ public class Router {
     private func routingHelper(method: RouterMethod, pattern: String?, handler: RouterHandler) -> Router {
         routeElems.append(RouterElement(method: method, pattern: pattern, handler: handler))
         return self
+    }
+
+    // MARK: Template Engine
+    public func setTemplateEngine(templateEngine: TemplateEngine?) {
+        self.templateEngine = templateEngine
     }
 }
 
