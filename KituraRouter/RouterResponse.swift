@@ -402,7 +402,7 @@ public class RouterResponse {
         }
         let filePath = router.getResourceFilePath(resourceWithExtension)
         if let templateEngine = router.templateEngine {
-            let renderedResource = try templateEngine.render(resource, context: context)
+            let renderedResource = try templateEngine.render(filePath, context: context)
             return send(renderedResource)
         }
         // no template engine set or error in rendering - send file as is
