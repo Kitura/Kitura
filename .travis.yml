@@ -25,10 +25,9 @@ matrix:
 
 before_install:
   - echo "Operating system -> '$TRAVIS_OS_NAME'"
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker pull ibmcom/kitura-ubuntu:latest ; fi
 
 script:
   - echo "About to build and test Kitura for branch '$TRAVIS_BRANCH'."
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker run --rm -e KITURA_BRANCH=$TRAVIS_BRANCH ibmcom/kitura-ubuntu:latest ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./build_ubuntu.sh $TRAVIS_BRANCH; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./build_osx.sh ; fi
   - echo "Build and tests completed. See above for status."
