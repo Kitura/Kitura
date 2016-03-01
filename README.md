@@ -22,6 +22,9 @@ Kitura is a web framework and web server that is created for web services writte
 - JSON parsing
 - Pluggable middleware
 
+## Swift version
+The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-02-25-a version of the Swift binaries. You can download this version of the Swift binaries by following this [link](https://swift.org/download/).
+
 ## Installation (Docker development environment)
 
 1. Install [Docker](https://docs.docker.com/engine/installation/) on your development system and start a Docker session/terminal.
@@ -82,14 +85,14 @@ Kitura is a web framework and web server that is created for web services writte
 
  `brew install http-parser pcre2 curl hiredis`
 
-4. Download and install the latest Swift compiler.
+4. Download and install the [supported Swift compiler](#swift-version).
 
- Make sure the latest Swift compiler is installed https://swift.org/download/. After installing it, make sure you update your PATH environment variable as described in the installation instructions (e.g. export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH)
+ After installing it, make sure you update your PATH environment variable as described in the installation instructions (e.g. export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH)
 
 5. Build Kitura and Kitura Sample
 
  `swift build -Xcc -fblocks -Xswiftc -I/usr/local/include -Xlinker -L/usr/local/lib`
- 
+
  Homebrew by default installs libraries to `/usr/local`, if yours is different, change the path to find curl and http-parser libraries.
 
 6. Run KituraSample:
@@ -102,7 +105,7 @@ Kitura is a web framework and web server that is created for web services writte
 
  `sudo apt-get install libhttp-parser-dev libcurl4-openssl-dev libhiredis-dev`
 
-2. Install the latest [Swift compiler for Linux](https://swift.org/download/).
+2. Install the [supported Swift compiler](#swift-version) for Linux.
 
  Follow the instructions provided on that page. After installing it (i.e. uncompressing the tar file), make sure you update your PATH environment variable so that it includes the extracted tools: `export PATH=/<path to uncompress tar contents>/usr/bin:$PATH`. To update the PATH env variable, you can update your .bashrc file (for further information on .bashrc and .bash_profile see http://www.joshstaiger.org/archives/2005/07/bash_profile_vs.html).
 
@@ -218,7 +221,7 @@ Server.run()
 
   - Mac OS X: `swift build -Xcc -fblocks -Xswiftc -I/usr/local/include -Xlinker -L/usr/local/lib`
   - Linux:  `swift build -Xcc -fblocks`
-  
+
 9. Now run your new web application:
 
 ```
@@ -226,6 +229,9 @@ Server.run()
 ```
 
 10. Open your browser at [http://localhost:8090](http://localhost:8090)
+
+## Kitura Wiki
+Feel free to visit our [Wiki](https://github.com/IBM-Swift/Kitura/wiki/Kitura-Wiki) (which, btw, is in very early stages).
 
 ## License
 

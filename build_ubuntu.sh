@@ -1,3 +1,6 @@
+#!/bin/bash
+
+##
 # Copyright IBM Corporation 2016
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,16 +14,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+##
 
-# Makefile
-#
-# DEPRECATED: Makefile usage is no longer required
-# This is a makefile that conveniently calls Kitura-net's makefile when Kitura-net is a dependency
-# Should be copied to project's root directory
+# This script builds the Kitura sample app using a Docker container (Travis CI).
 
-make:
-	echo "Building Kitura..."
-	swift build -Xcc -fblocks
-# run swift build with - to ignore its failure since swift build is expected to fail
-	#-swift build
-	#make -f Packages/Kitura-net*/Makefile
+# If any commands fail, we want the shell script to exit immediately.
+set -e
+docker pull ibmcom/kitura-ubuntu:latest
+docker run --rm -e KITURA_BRANCH=$1 ibmcom/kitura-ubuntu:latest
