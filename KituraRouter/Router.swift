@@ -37,7 +37,8 @@ public class Router {
     ///
     /// Views directory path
     ///
-    public var viewsPath: String { "./Views/" }
+
+    public var viewsPath: String { return "./Views/" }
 
     ///
     /// Initializes a Router 
