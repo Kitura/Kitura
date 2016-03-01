@@ -30,4 +30,4 @@ Please ensure you follow the coding standards used throughout the existing
 code base. Some basic rules include:
 
  - all files must have the Apache license in the header.
- - all PRs must have passing builds for all operating systems
+ - all PRs must have passing builds for all operating systems.
