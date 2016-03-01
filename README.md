@@ -78,17 +78,13 @@ Kitura is a web framework and web server that is created for web services writte
 
 3. Install the necessary dependencies:
 
- `brew install http-parser pcre2 curl hiredis`
+ `brew install http-parser pcre2 curl hiredis wget`
 
-4. Download and install the latest Swift compiler.
+4. Build Kitura script
 
- Make sure the latest Swift compiler is installed https://swift.org/download/. After installing it, make sure you update your PATH environment variable as described in the installation instructions (e.g. export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH)
+ Run `build_osx.sh` from the project root folder.
 
-5. Build Kitura and Kitura Sample
-
- Run `make` to build the helper libraries, Kitura framework, and the sample program (invokes swift build).
-
-6. Run KituraSample:
+5. Run KituraSample:
 
  You can run the sample program which located in: `<path-to-repo>/.build/debug`. From the project root, execute the `./.build/debug/KituraSample` command from a terminal window. You should see a message that says "Listening on port 8090".
 
