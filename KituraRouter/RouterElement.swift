@@ -126,24 +126,29 @@ class RouterElement {
     /// - Parameter response: the response
     ///
     func process(httpMethod: RouterMethod, urlPath: NSData, request: RouterRequest, response: RouterResponse, next: () -> Void) {
-        if  (response.error == nil && (method == .All  ||  method == httpMethod)) || (response.error != nil && method == .Error) {
-            if  let r = regex  {
-                let matcher = r.matcher!
-                if  matcher.match(urlPath) {
-                    request.route = pattern
-                    updateRequestParams(matcher, request: request)
-                    processHelper(request, response: response, next: next)
-                } else {
-                    next()
+        if response.error == nil || method == .Error {
+            if response.error != nil || method == .All || method == httpMethod {
+                // Either response error exists and method is error, or method matches
+                if  let r = regex  {
+                    let matcher = r.matcher!
+                    if  matcher.match(urlPath) {
+                        request.route = pattern
+                        updateRequestParams(matcher, request: request)
+                        processHelper(request, response: response, next: next)
+                    } else {
+                        next()
+                    }
                 }
-            }
-            else {
-                request.route = pattern
-                request.params = [:]
-                processHelper(request, response: response, next: next)
+                else {
+                    request.route = pattern
+                    request.params = [:]
+                    processHelper(request, response: response, next: next)
+                }
+            } else {
+                next ()
             }
         } else {
-            next()
+            next ()
         }
     }
     
