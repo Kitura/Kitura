@@ -386,4 +386,35 @@ public class RouterResponse {
         return self
         
     }
+
+    ///
+    /// Renders a resource using Router's template engine
+    ///
+    /// - Parameter resource: the resource name without extension
+    ///
+    /// - Returns: a RouterResponse instance
+    ///
+    // influenced by http://expressjs.com/en/4x/api.html#app.render
+    public func render(resource: String, context: [ String: Any]) -> RouterResponse {
+        var resourceWithExtension = resource
+        if let fileExtension = router.templateEngine?.fileExtension {
+            resourceWithExtension += ("." + fileExtension)
+        }
+        let filePath = router.getResourceFilePath(resourceWithExtension)
+        if let templateEngine = router.templateEngine {
+            do {
+                let renderedResource = try templateEngine.render(resource, context: context)
+                return send(renderedResource)
+            } catch {
+                // to handle failure
+            }
+        }
+        // no template engine set or error in rendering - send file as is
+        do {
+            return try sendFile(filePath)
+        } catch {
+            // to handle failure
+        }
+        return self
+    }
 }
