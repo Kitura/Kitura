@@ -126,8 +126,7 @@ class RouterElement {
     /// - Parameter response: the response
     ///
     func process(httpMethod: RouterMethod, urlPath: NSData, request: RouterRequest, response: RouterResponse, next: () -> Void) {
-        
-        if  method == .All  ||  method == httpMethod || (response.error != nil && method == .Error){
+        if  (response.error == nil && (method == .All  ||  method == httpMethod)) || (response.error != nil && method == .Error) {
             if  let r = regex  {
                 let matcher = r.matcher!
                 if  matcher.match(urlPath) {

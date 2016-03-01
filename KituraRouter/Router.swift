@@ -328,16 +328,13 @@ extension Router : HttpServerDelegate {
             let callbackHandler = {[unowned routeReq, unowned routeResp] () -> Void in
                 elemIndex+=1
                 if  elemIndex < self.routeElems.count {
-                    print(self.routeElems[elemIndex].method)
-                    if routeResp.error == nil || self.routeElems[elemIndex].method == .Error {
                         self.routeElems[elemIndex].process(method, urlPath: urlPath!, request: routeReq, response: routeResp, next: callback!)
-                    }
                 }
                 else {
                     do {
                         if  !routeResp.invokedEnd {
                             if  response.statusCode == HttpStatusCode.NOT_FOUND  {
-                                self.sendDefaultIndexHtml(routeReq, routeResp: routeResp)
+                                self.sendDefaultResponse(routeReq, routeResp: routeResp, method: method)
                             }
                             try routeResp.end()
                         }
@@ -355,14 +352,20 @@ extension Router : HttpServerDelegate {
     }
 
     ///
-    /// Send default index.html file and it's resources if appropriate
+    /// Send default index.html file and it's resources if appropriate, otherwise send default 404 message
     ///
-    private func sendDefaultIndexHtml(routeReq: RouterRequest, routeResp: RouterResponse) {
+    private func sendDefaultResponse(routeReq: RouterRequest, routeResp: RouterResponse, method: RouterMethod) {
          if  routeReq.parsedUrl.path! == "/"  {
               sendResourceIfExisting(routeResp, resource: "index.html")
          }
          else if routeReq.parsedUrl.path! == "/@@Kitura-router@@/kitura.svg"  {
               sendResourceIfExisting(routeResp, resource: "kitura.svg")
+         }
+         else {
+            do {
+                try routeResp.status(HttpStatusCode.NOT_FOUND).send("Cannot \(String(method).uppercaseString) \(routeReq.parsedUrl.path!).").end()
+            }
+            catch {}
          }
     }
 
