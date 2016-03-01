@@ -35,6 +35,11 @@ public class Router {
     internal var templateEngine: TemplateEngine? = nil
 
     ///
+    /// Views directory path
+    ///
+    public var viewsPath: String { "./Views/" }
+
+    ///
     /// Initializes a Router 
     ///
     /// - Returns: a Router instance
@@ -298,19 +303,6 @@ public class Router {
         return self
     }
 
-    func getResourceFilePath(resource: String) -> String {
-        let fileName = NSString(string: #file)
-        let resourceFilePrefixRange: NSRange
-        let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch)
-        if  lastSlash.location != NSNotFound  {
-            resourceFilePrefixRange = NSMakeRange(0, lastSlash.location+1)
-        }
-        else {
-            resourceFilePrefixRange = NSMakeRange(0, fileName.length)
-        }
-        return fileName.substringWithRange(resourceFilePrefixRange) + "resources/" + resource
-    }
-
     // MARK: Template Engine
     public func setTemplateEngine(templateEngine: TemplateEngine?) {
         self.templateEngine = templateEngine
@@ -384,6 +376,20 @@ extension Router : HttpServerDelegate {
               sendResourceIfExisting(routeResp, resource: "kitura.svg")
          }
     }
+
+    private func getResourceFilePath(resource: String) -> String {
+        let fileName = NSString(string: #file)
+        let resourceFilePrefixRange: NSRange
+        let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch)
+        if  lastSlash.location != NSNotFound  {
+            resourceFilePrefixRange = NSMakeRange(0, lastSlash.location+1)
+        }
+        else {
+            resourceFilePrefixRange = NSMakeRange(0, fileName.length)
+        }
+        return fileName.substringWithRange(resourceFilePrefixRange) + "resources/" + resource
+    }
+
 
     ///
     /// Get the directory we were compiled from

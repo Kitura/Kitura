@@ -400,7 +400,7 @@ public class RouterResponse {
         if let fileExtension = router.templateEngine?.fileExtension {
             resourceWithExtension += ("." + fileExtension)
         }
-        let filePath = router.getResourceFilePath(resourceWithExtension)
+        let filePath =  router.viewsPath + resourceWithExtension
         if let templateEngine = router.templateEngine {
             let renderedResource = try templateEngine.render(filePath, context: context)
             return send(renderedResource)
