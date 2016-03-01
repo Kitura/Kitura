@@ -83,7 +83,7 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-02-25-a ve
 
 3. Install the necessary dependencies:
 
- `brew install http-parser pcre2 curl hiredis`
+ `brew install http-parser curl hiredis`
 
 4. Download and install the [supported Swift compiler](#swift-version).
 
@@ -117,15 +117,11 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-02-25-a ve
 
  Please note that the complete instructions for building and installing this library are found [here](https://github.com/apple/swift-corelibs-libdispatch/blob/master/INSTALL). Though, all you need to do is just this: `cd swift-corelibs-libdispatch && git submodule init && git submodule update && sh ./autogen.sh && ./configure --with-swift-toolchain=<path-to-swift>/usr --prefix=<path-to-swift>/usr && make && make install`
 
-5. Compile and install PCRE2:
-
- Download the [pcre2](http://ftp.exim.org/pub/pcre/pcre2-10.20.tar.gz) source code. Unpack the tar. Run `./configure && make && sudo make install`. This will place the necessary headers and libraries into /usr/local/include and /user/local/libs.
-
-6. Build Kitura and KituraSample
+5. Build Kitura and KituraSample
 
   `swift build -Xcc -fblocks`
 
-7. Run the sample program:
+6. Run the sample program:
 
  `<path_to_kitura_repo>./.build/debug/KituraSample`. You should see a message that says "Listening on port 8090".
 
@@ -208,9 +204,9 @@ let router = Router()
 router.get("/") {
 request, response, next in
 
-	response.status(HttpStatusCode.OK).send("Hello, World!")
+    response.status(HttpStatusCode.OK).send("Hello, World!")
 
-	next()
+    next()
 }
 
 let server = HttpServer.listen(8090, delegate: router)
