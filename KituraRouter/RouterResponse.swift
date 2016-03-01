@@ -30,7 +30,12 @@ public class RouterResponse {
     /// The server response
     ///
     let response: ServerResponse
-    
+
+    ///
+    /// The router
+    ///
+    let router: Router
+
     ///
     /// The buffer used for output
     ///
@@ -54,11 +59,11 @@ public class RouterResponse {
     ///
     /// - Returns: a ServerResponse instance
     ///
-    init(response: ServerResponse) {
+    init(response: ServerResponse, router: Router) {
         
         self.response = response
+        self.router = router
         status(HttpStatusCode.NOT_FOUND)
-        
     }
     
     ///

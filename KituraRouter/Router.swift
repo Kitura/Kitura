@@ -330,7 +330,7 @@ extension Router : HttpServerDelegate {
     public func handleRequest(request: ServerRequest, response: ServerResponse) {
         
         let routeReq = RouterRequest(request: request)
-        let routeResp = RouterResponse(response: response)
+        let routeResp = RouterResponse(response: response, router: self)
         let method = RouterMethod(string: request.method)
         
         let urlPath = StringUtils.toUtf8String(routeReq.parsedUrl.path!)
