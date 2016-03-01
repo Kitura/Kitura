@@ -103,6 +103,7 @@ router.delete("/hello") {request, response, next in
 
 // Error handling example
 router.get("/error") { _, response, next in
+    Log.error("Example of error being set")
     response.error = NSError(domain: "RouterTestDomain", code: 1, userInfo: [:])
     next()
 }
@@ -188,6 +189,26 @@ router.get("/") { _, response, next in
   catch {}
   next()
 }
+
+// Handles any errors that get set
+router.error { request, response, next in
+  response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
+    do {
+        try response.status(HttpStatusCode.OK).send("Caught the error: \(response.error!.localizedDescription)").end()
+    }
+    catch {}
+  next()
+}
+
+// Accepts any other routes that couldn't be matched and returns a 404 error
+router.all { request, response, next in
+    do {
+        try response.status(HttpStatusCode.NOT_FOUND).send("Route not found in sample application").end()
+    }
+    catch{}
+    next()
+}
+
 
 // Listen on port 8090
 let server = HttpServer.listen(8090,
