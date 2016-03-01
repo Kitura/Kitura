@@ -297,58 +297,56 @@ public class Router {
 
 
 ///
-/// HttpServerDelegate extensions 
+/// HttpServerDelegate extensions
 ///
 extension Router : HttpServerDelegate {
 
     ///
-    /// Handle the request 
+    /// Handle the request
     ///
-    /// - Parameter request: the server request 
-    /// - Parameter response: the server response 
+    /// - Parameter request: the server request
+    /// - Parameter response: the server response
     ///
     public func handleRequest(request: ServerRequest, response: ServerResponse) {
-        
+
         let routeReq = RouterRequest(request: request)
         let routeResp = RouterResponse(response: response)
         let method = RouterMethod(string: request.method)
-        
-        let urlPath = StringUtils.toUtf8String(routeReq.parsedUrl.path!)
-        if  urlPath != nil  {
-            var elemIndex = -1
-        
-            // Extra variable to get around use of variable in its own initializer
-            var callback: (()->Void)? = nil
-        
-            let callbackHandler = {[unowned routeReq, unowned routeResp] () -> Void in
-                elemIndex+=1
-                if  elemIndex < self.routeElems.count  &&  routeResp.error == nil {
-                    self.routeElems[elemIndex].process(method, urlPath: urlPath!, request: routeReq, response: routeResp, next: callback!)
+
+        let urlPath = routeReq.parsedUrl.path!
+        var elemIndex = -1
+
+        // Extra variable to get around use of variable in its own initializer
+        var callback: (()->Void)? = nil
+
+        let callbackHandler = {[unowned routeReq, unowned routeResp] () -> Void in
+            elemIndex+=1
+            if  elemIndex < self.routeElems.count  &&  routeResp.error == nil {
+                self.routeElems[elemIndex].process(method, urlPath: urlPath, request: routeReq, response: routeResp, next: callback!)
+            }
+            else {
+                do {
+                    if  routeResp.error != nil  {
+                        let message = "Server error: \(routeResp.error!.localizedDescription)"
+                        Log.error(message)
+                        try routeResp.status(.INTERNAL_SERVER_ERROR).end(message)
+                    }
+                    else if  !routeResp.invokedEnd {
+                        if  response.statusCode == HttpStatusCode.NOT_FOUND  {
+                            self.sendDefaultIndexHtml(routeReq, routeResp: routeResp)
+                        }
+                        try routeResp.end()
+                    }
                 }
-                else {
-                    do {
-                        if  routeResp.error != nil  {
-                            let message = "Server error: \(routeResp.error!.localizedDescription)"
-                            Log.error(message)
-                            try routeResp.status(.INTERNAL_SERVER_ERROR).end(message)
-                        }
-                        else if  !routeResp.invokedEnd {
-                            if  response.statusCode == HttpStatusCode.NOT_FOUND  {
-                                self.sendDefaultIndexHtml(routeReq, routeResp: routeResp)
-                            }
-                            try routeResp.end()
-                        }
-                    }
-                    catch {
-                        // Not much to do here
-                        Log.error("Failed to send response to the client")
-                    }
+                catch {
+                    // Not much to do here
+                    Log.error("Failed to send response to the client")
                 }
             }
-            callback = callbackHandler
-
-            callbackHandler()
         }
+        callback = callbackHandler
+
+        callbackHandler()
     }
 
     ///
