@@ -85,7 +85,7 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-02-25-a ve
 
  `brew install http-parser pcre2 curl hiredis`
 
-4. Download and install the [supported Swift compiler](#swift-version)
+4. Download and install the [supported Swift compiler](#swift-version).
 
  After installing it, make sure you update your PATH environment variable as described in the installation instructions (e.g. export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH)
 
@@ -105,7 +105,7 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-02-25-a ve
 
  `sudo apt-get install libhttp-parser-dev libcurl4-openssl-dev libhiredis-dev`
 
-2. Install the Swift compiler for Linux (see [Swift version](#Swift version)).
+2. Install the [supported Swift compiler](#swift-version) for Linux.
 
  Follow the instructions provided on that page. After installing it (i.e. uncompressing the tar file), make sure you update your PATH environment variable so that it includes the extracted tools: `export PATH=/<path to uncompress tar contents>/usr/bin:$PATH`. To update the PATH env variable, you can update your .bashrc file (for further information on .bashrc and .bash_profile see http://www.joshstaiger.org/archives/2005/07/bash_profile_vs.html).
 
