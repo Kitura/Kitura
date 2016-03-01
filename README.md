@@ -85,7 +85,7 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-02-25-a ve
 
  `brew install http-parser pcre2 curl hiredis`
 
-4. Download and install the Swift compiler (see [Swift version](#Swift version)).
+4. Download and install the Swift compiler (see [Swift-version](#Swift version)).
 
  After installing it, make sure you update your PATH environment variable as described in the installation instructions (e.g. export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH)
 
