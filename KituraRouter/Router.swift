@@ -21,6 +21,8 @@ import LoggerAPI
 
 import Foundation
 
+import KituraTemplateEngine
+
 // MARK Router 
 
 public class Router {
