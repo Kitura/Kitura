@@ -296,6 +296,19 @@ public class Router {
         return self
     }
 
+    func getResourceFilePath(resource: String) -> String {
+        let fileName = NSString(string: #file)
+        let resourceFilePrefixRange: NSRange
+        let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch)
+        if  lastSlash.location != NSNotFound  {
+            resourceFilePrefixRange = NSMakeRange(0, lastSlash.location+1)
+        }
+        else {
+            resourceFilePrefixRange = NSMakeRange(0, fileName.length)
+        }
+        return fileName.substringWithRange(resourceFilePrefixRange) + "resources/" + resource
+    }
+
     // MARK: Template Engine
     public func setTemplateEngine(templateEngine: TemplateEngine?) {
         self.templateEngine = templateEngine
@@ -374,16 +387,7 @@ extension Router : HttpServerDelegate {
     /// Get the directory we were compiled from
     ///
     private func sendResourceIfExisting(routeResp: RouterResponse, resource: String)  {
-        let fileName = NSString(string: #file)
-        let resourceFilePrefixRange: NSRange
-        let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch)
-        if  lastSlash.location != NSNotFound  {
-            resourceFilePrefixRange = NSMakeRange(0, lastSlash.location+1)
-        }
-        else {
-            resourceFilePrefixRange = NSMakeRange(0, fileName.length)
-        }
-        let resourceFileName = fileName.substringWithRange(resourceFilePrefixRange) + "resources/" + resource
+        let resourceFileName = getResourceFilePath(resource)
 
         do {
             try routeResp.sendFile(resourceFileName)
