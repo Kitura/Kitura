@@ -368,15 +368,15 @@ extension Router : HttpServerDelegate {
     ///
     private func sendResourceIfExisting(routeResp: RouterResponse, resource: String)  {
         let fileName = NSString(string: #file)
-        let jsonFilePrefixRange: NSRange
+        let resourceFilePrefixRange: NSRange
         let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch)
         if  lastSlash.location != NSNotFound  {
-            jsonFilePrefixRange = NSMakeRange(0, lastSlash.location+1)
+            resourceFilePrefixRange = NSMakeRange(0, lastSlash.location+1)
         }
         else {
-            jsonFilePrefixRange = NSMakeRange(0, fileName.length)
+            resourceFilePrefixRange = NSMakeRange(0, fileName.length)
         }
-        let resourceFileName = fileName.substringWithRange(jsonFilePrefixRange) + "resources/" + resource
+        let resourceFileName = fileName.substringWithRange(resourceFilePrefixRange) + "resources/" + resource
 
         do {
             try routeResp.sendFile(resourceFileName)
