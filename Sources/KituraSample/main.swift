@@ -104,6 +104,7 @@ router.delete("/hello") {request, response, next in
 // Error handling example
 router.get("/error") { _, response, next in
     Log.error("Example of error being set")
+    response.status(HttpStatusCode.INTERNAL_SERVER_ERROR)
     response.error = NSError(domain: "RouterTestDomain", code: 1, userInfo: [:])
     next()
 }
@@ -194,7 +195,7 @@ router.get("/") { _, response, next in
 router.error { request, response, next in
   response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
     do {
-        try response.status(HttpStatusCode.OK).send("Caught the error: \(response.error!.localizedDescription)").end()
+        try response.send("Caught the error: \(response.error!.localizedDescription)").end()
     }
     catch {}
   next()
