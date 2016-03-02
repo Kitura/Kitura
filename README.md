@@ -91,7 +91,7 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-02-25-a ve
 
 5. Build Kitura and Kitura Sample
 
- `swift build -Xcc -fblocks -Xswiftc -I/usr/local/include -Xlinker -L/usr/local/lib`
+ `swift build -Xswiftc -I/usr/local/include -Xlinker -L/usr/local/lib`
 
  Homebrew by default installs libraries to `/usr/local`, if yours is different, change the path to find curl and http-parser libraries.
 
