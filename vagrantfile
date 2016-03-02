@@ -3,8 +3,8 @@
 
 BOX_URL =  "https://cloud-images.ubuntu.com/vagrant/wily/current/wily-server-cloudimg-amd64-vagrant-disk1.box"
 
-SWIFT_PATH = "https://swift.org/builds/development/ubuntu1510/swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a"
-SWIFT_DIRECTORY = "swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a-ubuntu15.10"
+SWIFT_PATH = "https://swift.org/builds/development/ubuntu1510/swift-DEVELOPMENT-SNAPSHOT-2016-02-25-a"
+SWIFT_DIRECTORY = "swift-DEVELOPMENT-SNAPSHOT-2016-02-25-a-ubuntu15.10"
 SWIFT_FILE = "#{SWIFT_DIRECTORY}.tar.gz"
 SWIFT_HOME = "/home/vagrant/#{SWIFT_DIRECTORY}"
 
@@ -12,9 +12,10 @@ PCRE_PATH = "http://ftp.exim.org/pub/pcre"
 PCRE_DIRECTORY = "pcre2-10.20"
 PCRE_FILE = "#{PCRE_DIRECTORY}.tar.gz"
 
-LIBDISPATCH_URL = "git://github.com/seabaylea/swift-corelibs-libdispatch"
+LIBDISPATCH_URL = "https://github.com/apple/swift-corelibs-libdispatch"
 
 KITURA_URL = "https://github.com/IBM-Swift/Kitura.git"
+KITURA_BRANCH = "develop"
 
 Vagrant.configure(2) do |config|
     config.vm.box = BOX_URL
@@ -38,8 +39,6 @@ Vagrant.configure(2) do |config|
     sudo apt-get --assume-yes install libblocksruntime-dev libkqueue-dev libpthread-workqueue-dev libbsd-dev
 # 4. Kitura packages
     sudo apt-get --assume-yes install libhttp-parser-dev libcurl4-openssl-dev libhiredis-dev
-# 5. Git
-    sudo apt-get --assume-yes install git
 
 
 ### Download Swift binary if not found, install it, and add it to the path
@@ -59,14 +58,14 @@ if [ $(grep -c "#{SWIFT_FILE}" .profile) -eq 0 ]; then
     cd ..
 
 ### Download and build pcre
-     if [ ! -f "#{PCRE_FILE}" ]; then
+    if [ ! -f "#{PCRE_FILE}" ]; then
         curl -O "#{PCRE_PATH}/#{PCRE_FILE}"
     fi
     tar zxf #{PCRE_FILE}
     cd #{PCRE_DIRECTORY} && ./configure && make && sudo make install && cd ..
 
 ### Download and install Kitura
-    git clone #{KITURA_URL}
+    git clone #{KITURA_URL} -b #{KITURA_BRANCH}
     cd Kitura
     swift build -Xcc -fblocks
     cd ..
