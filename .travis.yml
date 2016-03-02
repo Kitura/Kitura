@@ -24,14 +24,12 @@ matrix:
       sudo: required
 
 before_install:
-  - echo "Operating system -> '$TRAVIS_OS_NAME'"
-  - echo "Travis build directory -> '$TRAVIS_BUILD_DIR'"
   - git clone https://github.com/IBM-Swift/Kitura-CI.git
   - cp ./Kitura-CI/*.sh $TRAVIS_BUILD_DIR/
   - rm -rf ./Kitura-CI
 
 script:
   - echo "About to build and test Kitura for branch '$TRAVIS_BRANCH'."
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./build_ubuntu.sh $TRAVIS_BRANCH; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./build_ubuntu.sh $TRAVIS_BRANCH Kitura; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./build_osx.sh ; fi
   - echo "Build and tests completed. See above for status."
