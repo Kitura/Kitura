@@ -202,8 +202,9 @@ class RouterElement {
                 // If there was a leading slash, there will be an empty component in the split
                 if  path.characters.count > 0  {
                     var matched = false
-                    var prefix: String = ""
-                    var matchExp: String?
+                    var prefix = ""
+                    var matchExp = "[^/]+?"
+                    var plusQuestStar = ""
 
                     if  path == "*"  {
                         // Handle a path element of * specially
@@ -211,7 +212,6 @@ class RouterElement {
                         matched = true
                     }
                     else {
-                        //var plusQuestStar: String?
                         let range = NSMakeRange(0, path.characters.count)
                         if  let keyMatch = RouterElement.keyRegex!.firstMatchInString(path, options: [], range: range)  {
                             // We found a path element with a named/key capture
@@ -223,10 +223,10 @@ class RouterElement {
                             if  matchExpRange.location != NSNotFound  &&  matchExpRange.location != -1  {
                                 matchExp = path.bridge().substringWithRange(matchExpRange)
                             }
-                            else  {
-                                matchExp = "[^/]+?"
+                            let pqsRange = keyMatch.rangeAtIndex(4)
+                            if  pqsRange.location != NSNotFound  &&  pqsRange.location != -1  {
+                                plusQuestStar = path.bridge().substringWithRange(pqsRange)
                             }
-                            //plusQuestStar = path.bridge().substringWithRange(keyMatch.rangeAtIndex(4))
                             keys.append(path.bridge().substringWithRange(keyMatch.rangeAtIndex(2)))
                             matched = true
                         }
@@ -240,10 +240,10 @@ class RouterElement {
                             if  matchExpRange.location != NSNotFound  &&  matchExpRange.location != -1  {
                                 matchExp = path.bridge().substringWithRange(matchExpRange)
                             }
-                            else  {
-                                matchExp = "[^/]+?"
+                            let pqsRange = nonKeyMatch.rangeAtIndex(3)
+                            if  pqsRange.location != NSNotFound  &&  pqsRange.location != -1  {
+                                plusQuestStar = path.bridge().substringWithRange(pqsRange)
                             }
-                            //plusQuestStar = path.bridge().substringWithRange(nonKeyMatch.rangeAtIndex(3))
                             keys.append(String(nonKeyIndex))
                             nonKeyIndex+=1
                             matched = true
@@ -252,12 +252,53 @@ class RouterElement {
 
                     if  matched  {
                         // We have some kind of capture for this path element
-                        regexStr.appendContentsOf("/")
-                        regexStr.appendContentsOf(prefix)
-
-                        regexStr.appendContentsOf("(?:(")
-                        regexStr.appendContentsOf(matchExp!)
-                        regexStr.appendContentsOf("))")
+                        // Build the runtime regex depending on whether or not there is "repetition"
+                        switch(plusQuestStar) {
+                            case "+":
+                                regexStr.appendContentsOf("/")
+                                regexStr.appendContentsOf(prefix)
+                                regexStr.appendContentsOf("(")
+                                regexStr.appendContentsOf(matchExp)
+                                regexStr.appendContentsOf("(?:/")
+                                regexStr.appendContentsOf(matchExp)
+                                regexStr.appendContentsOf(")*)")
+                            case "?":
+                                if  prefix.isEmpty  {
+                                    regexStr.appendContentsOf("(?:/(")
+                                    regexStr.appendContentsOf(matchExp)
+                                    regexStr.appendContentsOf("))?")
+                                }
+                                else {
+                                    regexStr.appendContentsOf("/")
+                                    regexStr.appendContentsOf(prefix)
+                                    regexStr.appendContentsOf("(?:(")
+                                    regexStr.appendContentsOf(matchExp)
+                                    regexStr.appendContentsOf("))?")
+                                }
+                            case "*":
+                                if  prefix.isEmpty  {
+                                    regexStr.appendContentsOf("(?:/(")
+                                    regexStr.appendContentsOf(matchExp)
+                                    regexStr.appendContentsOf("(?:/")
+                                    regexStr.appendContentsOf(matchExp)
+                                    regexStr.appendContentsOf(")*))?")
+                                }
+                                else {
+                                    regexStr.appendContentsOf("/")
+                                    regexStr.appendContentsOf(prefix)
+                                    regexStr.appendContentsOf("(?:(")
+                                    regexStr.appendContentsOf(matchExp)
+                                    regexStr.appendContentsOf("(?:/")
+                                    regexStr.appendContentsOf(matchExp)
+                                    regexStr.appendContentsOf(")*))?")
+                                }
+                            default:
+                                regexStr.appendContentsOf("/")
+                                regexStr.appendContentsOf(prefix)
+                                regexStr.appendContentsOf("(?:(")
+                                regexStr.appendContentsOf(matchExp)
+                                regexStr.appendContentsOf("))")
+                        }
                     }
                     else {
                         // A path element with no capture
@@ -266,7 +307,7 @@ class RouterElement {
                     }
                 }
             }
-            regexStr.appendContentsOf("?(?:/)?$")
+            regexStr.appendContentsOf("(?:/(?=$))?$")
 
             var regex: NSRegularExpression? = nil
             do {
@@ -294,7 +335,10 @@ class RouterElement {
         if  let keys = keys {
             var params: [String:String] = [:]
             for index in 0..<keys.count {
-                params[keys[index]] = urlPath.bridge().substringWithRange(match.rangeAtIndex(index+1))
+                let matchRange = match.rangeAtIndex(index+1)
+                if  matchRange.location != NSNotFound  &&  matchRange.location != -1  {
+                    params[keys[index]] = urlPath.bridge().substringWithRange(matchRange)
+                }
             }
             request.params = params
         }
@@ -306,10 +350,10 @@ class RouterElement {
 /// Values for Router methods (Get, Post, Put, Delete, etc)
 ///
 enum RouterMethod :Int {
-    
+
     case All, Get, Post, Put, Head, Delete, Options, Trace, Copy, Lock, MkCol, Move, Purge, PropFind, PropPatch, Unlock, Report, MkActivity, Checkout, Merge, MSearch, Notify, Subscribe, Unsubscribe, Patch, Search, Connect, Unknown
-    
-    
+
+
     init(string: String) {
         switch string.lowercaseString {
             case "all":
