@@ -42,7 +42,7 @@ class RouterElement {
     ///
     /// The routing method (get, post, put, delete)
     ///
-    private let method: RouterMethod
+    let method: RouterMethod
 
     ///
     /// The regular expression pattern
@@ -132,21 +132,26 @@ class RouterElement {
     /// - Parameter response: the response
     ///
     func process(httpMethod: RouterMethod, urlPath: String, request: RouterRequest, response: RouterResponse, next: () -> Void) {
-
-        if  method == .All  ||  method == httpMethod {
-            if  let regex = regex  {
-                if  let match = regex.firstMatchInString(urlPath, options: [], range: NSMakeRange(0, urlPath.characters.count))  {
-                    request.route = pattern
-                    updateRequestParams(urlPath, match: match, request: request)
-                    processHelper(request, response: response, next: next)
-                } else {
-                    next()
+        
+        if response.error == nil || method == .Error {
+            if response.error != nil || method == .All || method == httpMethod {
+                // Either response error exists and method is error, or method matches
+                if  let regex = regex  {
+                    if  let match = regex.firstMatchInString(urlPath, options: [], range: NSMakeRange(0, urlPath.characters.count))  {
+                        request.route = pattern
+                        updateRequestParams(urlPath, match: match, request: request)
+                        processHelper(request, response: response, next: next)
+                    } else {
+                        next()
+                    }
                 }
-            }
-            else {
-                request.route = pattern
-                request.params = [:]
-                processHelper(request, response: response, next: next)
+                else {
+                    request.route = pattern
+                    request.params = [:]
+                    processHelper(request, response: response, next: next)
+                } 
+            } else {
+                next()
             }
         } else {
             next()
@@ -350,10 +355,9 @@ class RouterElement {
 /// Values for Router methods (Get, Post, Put, Delete, etc)
 ///
 enum RouterMethod :Int {
-
-    case All, Get, Post, Put, Head, Delete, Options, Trace, Copy, Lock, MkCol, Move, Purge, PropFind, PropPatch, Unlock, Report, MkActivity, Checkout, Merge, MSearch, Notify, Subscribe, Unsubscribe, Patch, Search, Connect, Unknown
-
-
+    
+    case All, Get, Post, Put, Head, Delete, Options, Trace, Copy, Lock, MkCol, Move, Purge, PropFind, PropPatch, Unlock, Report, MkActivity, Checkout, Merge, MSearch, Notify, Subscribe, Unsubscribe, Patch, Search, Connect, Error, Unknown
+    
     init(string: String) {
         switch string.lowercaseString {
             case "all":
@@ -436,6 +440,9 @@ enum RouterMethod :Int {
                 break
             case "connect":
                 self = .Connect
+                break
+            case "error":
+                self = .Error
                 break
             default:
                 self = .Unknown
