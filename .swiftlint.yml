@@ -14,9 +14,22 @@
  #* limitations under the License.
  #**/
 
-# disabling particular libraries
-# (when we merge everything into Kitura we can omit the entire Packages directory
-#)
+disabled_rules:
+  #   - opening_brace
+  # - colon
+  # - comma
+  # - control_statement
+  # - force_cast
+   - trailing_whitespace
+
+opt_in_rules:
+   - empty_count
+   - missing_docs
+
 excluded:
   - Packages/Mustache-1.0.3
   - Packages/SwiftyJSON-2.3.3
+
+line_length: 100
+
+#reporter: "checkstyle"
