@@ -25,6 +25,10 @@ matrix:
 
 before_install:
   - echo "Operating system -> '$TRAVIS_OS_NAME'"
+  - echo "Travis build directory -> '$TRAVIS_BUILD_DIR'"
+  - git clone https://github.com/IBM-Swift/Kitura-CI.git
+  - cp ./Kitura-CI/*.sh $TRAVIS_BUILD_DIR/
+  - rm -rf ./Kitura-CI
 
 script:
   - echo "About to build and test Kitura for branch '$TRAVIS_BRANCH'."
