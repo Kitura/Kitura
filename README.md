@@ -2,8 +2,8 @@
 
 **A Swift Web Framework and HTTP Server**
 
-[![Build Status](https://travis-ci.org/IBM-Swift/Kitura.svg?branch=master)](https://travis-ci.org/IBM-Swift/Kitura)
-[![Build Status](https://travis-ci.org/IBM-Swift/Kitura.svg?branch=develop)](https://travis-ci.org/IBM-Swift/Kitura)
+[![Build Status - Master](https://travis-ci.org/IBM-Swift/Kitura.svg?branch=master)](https://travis-ci.org/IBM-Swift/Kitura)
+[![Build Status - Develop](https://travis-ci.org/IBM-Swift/Kitura.svg?branch=develop)](https://travis-ci.org/IBM-Swift/Kitura)
 ![Mac OS X](https://img.shields.io/badge/os-Mac%20OS%20X-green.svg?style=flat)
 ![Linux](https://img.shields.io/badge/os-linux-green.svg?style=flat)
 ![Swift 2 compatible](https://img.shields.io/badge/swift2-compatible-4BC51D.svg?style=flat)
@@ -53,9 +53,9 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-02-25-a ve
 
 ## Installation (Vagrant development environment)
 
-1. Download [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
+1. Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
 
-2. Download [Vagrant](https://www.vagrantup.com/downloads.html).
+2. Install [Vagrant](https://www.vagrantup.com/downloads.html).
 
 3. From the root of the Kitura folder containing the `vagrantfile`, create and configure a guest machine:
 
