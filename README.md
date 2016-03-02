@@ -39,15 +39,15 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-02-25-a ve
 
 4. From within the Docker container, execute the `ci.sh` script to build Kitura and execute the test cases:
 
-  `/root/ci.sh`
+  `/root/clone_build_kitura.sh`
 
-  The last output line from executing the `ci.sh` script should be similar to:
+  The last output line from executing the `clone_build_kitura.sh` script should be similar to:
 
   `>> Build and execution of test cases completed (see above for results).`
 
 5. You can now run the KituraSample executable inside the Docker container:
 
-  `/root/Kitura/.build/debug/KituraSample`
+  `/root/start_kitura_sample.sh`
 
   You should see a message that says "Listening on port 8090".
 
@@ -91,7 +91,7 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-02-25-a ve
 
 5. Build Kitura and Kitura Sample
 
- `swift build -Xcc -fblocks -Xswiftc -I/usr/local/include -Xlinker -L/usr/local/lib`
+ `swift build -Xswiftc -I/usr/local/include -Xlinker -L/usr/local/lib`
 
  Homebrew by default installs libraries to `/usr/local`, if yours is different, change the path to find curl and http-parser libraries.
 
