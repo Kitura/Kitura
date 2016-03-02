@@ -169,7 +169,7 @@ let package = Package(
 )
 ```
 
-4) Now we can issue a `swift build` command to to download the dependencies.
+4) Now we can issue a `swift build` command to download the dependencies.
 
  Because Swift Package Manager does not compile C code, expect this step to fail because of a linker error.
 
