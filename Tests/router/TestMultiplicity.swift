@@ -43,7 +43,7 @@ import XCTest
 
 class TestMultiplicity : XCTestCase {
 
-	let serverTask = NSTask()
+    let serverTask = NSTask()
     let serverQueue = Queue(type: QueueType.PARALLEL)
     let router = TestMultiplicity.setupRouter()
 
@@ -59,15 +59,6 @@ class TestMultiplicity : XCTestCase {
 
    private func doTearDown() {
         sleep(10)
-    }
-
-    var allTests : [(String, () throws -> Void)] {
-        return [
-            ("testPlus", testPlus),
-            ("testStar", testStar),
-            ("testQuestion", testQuestion),
-            ("testCombined", testCombined)
-        ]
     }
 
     func testPlus() {
