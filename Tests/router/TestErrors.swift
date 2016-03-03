@@ -44,7 +44,17 @@ class TestErrors : XCTestCase {
 
     var serverQueue = Queue(type: QueueType.PARALLEL)
 
-    override func tearDown() {
+    #if os(Linux)
+       func tearDown() {
+           doTearDown()
+       }
+    #else
+       override func tearDown() {
+           doTearDown()
+       }
+   #endif
+
+   private func doTearDown() {
         sleep(10)
     }
 

@@ -47,7 +47,17 @@ class TestResponse : XCTestCase {
     let serverQueue = Queue(type: QueueType.PARALLEL)
     let router = TestResponse.setupRouter()
 
-    override func tearDown() {
+    #if os(Linux)
+       func tearDown() {
+           doTearDown()
+       }
+    #else
+       override func tearDown() {
+           doTearDown()
+       }
+   #endif
+
+   private func doTearDown() {
         sleep(10)
     }
 
