@@ -16,8 +16,8 @@
 
 import XCTest
 
-@testable import net
-@testable import router
+@testable import nettest
+@testable import routertest
 
 XCTMain([
     TestContentType(),
