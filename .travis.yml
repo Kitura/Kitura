@@ -29,7 +29,7 @@ before_install:
   - rm -rf ./Kitura-CI
 
 script:
-  - echo "About to build and test Kitura for branch '$TRAVIS_BRANCH'."
+  - echo ">> Let's build and test Kitura for branch '$TRAVIS_BRANCH'."
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./run_kitura_ubuntu_container.sh $TRAVIS_BRANCH $TRAVIS_BUILD_DIR Kitura; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./build_kitura_package.sh ; fi
-  - echo "Build and tests completed. See above for status."
+  - echo ">> Build and tests completed. See above for status."
