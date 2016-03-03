@@ -29,7 +29,7 @@ import XCTest
 #endif
 
 #if os(Linux)
-    extension TestResponse : XCTestCaseProvider {
+    extension TestMultiplicity : XCTestCaseProvider {
         var allTests : [(String, () throws -> Void)] {
             return [
                 ("testPlus", testPlus),
