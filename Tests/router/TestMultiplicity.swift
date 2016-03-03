@@ -28,6 +28,19 @@ import XCTest
     import Darwin
 #endif
 
+#if os(Linux)
+    extension TestResponse : XCTestCaseProvider {
+        var allTests : [(String, () throws -> Void)] {
+            return [
+                ("testPlus", testPlus),
+                ("testStar", testStar),
+                ("testQuestion", testQuestion),
+                ("testCombined", testCombined)
+            ]
+        }
+    }
+#endif
+
 class TestMultiplicity : XCTestCase {
 
 	let serverTask = NSTask()
