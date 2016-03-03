@@ -27,6 +27,9 @@ before_install:
   - git submodule init
   - git submodule update
   - cd Kitura-CI && git checkout master
+  - pwd
+  - ls -la
+  - ls -la ./Kitura-CI
 
 script:
   - echo ">> Let's build and test Kitura for branch '$TRAVIS_BRANCH'."
