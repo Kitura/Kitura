@@ -166,7 +166,7 @@ let package = Package(
 )
 ```
 
-4. Import the modules in your code:
+4. Import the modules in your code (Sources/main.swift):
 
 ```swift
 import KituraRouter
