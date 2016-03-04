@@ -96,7 +96,7 @@ Kitura is a web framework and web server that is created for web services writte
 
 1. Install the following system linux libraries:
 
- `sudo apt-get install autoconf libtool libkqueue-dev libkqueue0 libdispatch-dev libdispatch0 libhttp-parser-dev libcurl4-openssl-dev libhiredis-dev`
+ `sudo apt-get install autoconf libtool libkqueue-dev libkqueue0 libdispatch-dev libdispatch0 libhttp-parser-dev libcurl4-openssl-dev libhiredis-dev libbsd-dev`
 
 2. Install the latest [Swift compiler for Linux](https://swift.org/download/).
 
