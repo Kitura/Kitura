@@ -14,19 +14,10 @@
  * limitations under the License.
  **/
 
-import KituraRouter
-import KituraNet
-import KituraSys
-import HeliumLogger
-
-import Foundation
 import XCTest
 
-#if os(Linux)
-    import Glibc
-#else
-    import Darwin
-#endif
+@testable import KituraRouter
+@testable import KituraNet
 
 #if os(Linux)
     extension TestMultiplicity : XCTestCaseProvider {
@@ -41,167 +32,72 @@ import XCTest
     }
 #endif
 
-class TestMultiplicity : XCTestCase {
-
-	let serverTask = NSTask()
-    let serverQueue = Queue(type: QueueType.PARALLEL)
+class TestMultiplicity : KituraTest {
     let router = TestMultiplicity.setupRouter()
 
-    #if os(Linux)
-       func tearDown() {
-           doTearDown()
-       }
-    #else
-       override func tearDown() {
-           doTearDown()
-       }
-   #endif
-
-   private func doTearDown() {
-        sleep(10)
-    }
-
-    var allTests : [(String, () throws -> Void)] {
-        return [
-            ("testPlus", testPlus),
-            ("testStar", testStar),
-            ("testQuestion", testQuestion),
-            ("testCombined", testCombined)
-        ]
-    }
-
     func testPlus() {
-		let server = setupServer(8090, delegate: router)
-
-        let requestQueue = Queue(type: QueueType.SERIAL)
-        requestQueue.queueAsync {
-        	let headers = ["Content-Type": "text/plain"]
-                let req = Http.request([.Method("get"), .Hostname("localhost"), .Port(8090), .Path("/1/plus"), .Headers(headers)]) {response in
-                	XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "Plus route did not match single path request")
-                }
-                req.end()
-        }
-        requestQueue.queueAsync {
-        	let headers = ["Content-Type": "text/plain"]
-                let req = Http.request([.Method("get"), .Hostname("localhost"), .Port(8090), .Path("/1/plus/plus"), .Headers(headers)]) {response in
-                	XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "Plus route did not match multiple path request")
-                }
-                req.end()
-        }
-        requestQueue.queueAsync {
-        	let headers = ["Content-Type": "text/plain"]
-                let req = Http.request([.Method("get"), .Hostname("localhost"), .Port(8090), .Path("/1"), .Headers(headers)]) {response in
-                	XCTAssertEqual(response!.statusCode, HttpStatusCode.NOT_FOUND, "Plus route did not miss empty path request")
-                }
-                req.end()
-        }
-
-        requestQueue.queueSync {
-                // blocks test until request completes
-		        server.stop()
+        performServerTest(router, asyncTasks: {
+            self.performRequest("get", path: "/1/plus") {response in
+                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "Plus route did not match single path request")
             }
-	}
+        }, {
+            self.performRequest("get", path: "/1/plus/plus") {response in
+                    XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "Plus route did not match multiple path request")
+                }
+        }, {
+            self.performRequest("get", path: "/1") {response in
+                    XCTAssertEqual(response!.statusCode, HttpStatusCode.NOT_FOUND, "Plus route did not miss empty path request")
+                }
+        })
+    }
 
 	func testStar() {
-		let server = setupServer(8090, delegate: router)
-
-        let requestQueue = Queue(type: QueueType.SERIAL)
-        requestQueue.queueAsync {
-        	let headers = ["Content-Type": "text/plain"]
-                let req = Http.request([.Method("get"), .Hostname("localhost"), .Port(8090), .Path("/2/star"), .Headers(headers)]) {response in
+		performServerTest(router, asyncTasks: {
+            self.performRequest("get", path: "/2/star") {response in
                 	XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "Star route did not match single path request")
-                }
-                req.end()
-        }
-        requestQueue.queueAsync {
-        	let headers = ["Content-Type": "text/plain"]
-                let req = Http.request([.Method("get"), .Hostname("localhost"), .Port(8090), .Path("/2/star/star"), .Headers(headers)]) {response in
+            }
+        }, {
+            self.performRequest("get", path: "/2/star/star") {response in
                 	XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "Star route did not match multiple path request")
                 }
-                req.end()
-        }
-        requestQueue.queueAsync {
-        	let headers = ["Content-Type": "text/plain"]
-                let req = Http.request([.Method("get"), .Hostname("localhost"), .Port(8090), .Path("/2"), .Headers(headers)]) {response in
+        }, {
+            self.performRequest("get", path: "/2") {response in
                 	XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "Star route did not match empty path request")
                 }
-                req.end()
-        }
-
-        requestQueue.queueSync {
-                // blocks test until request completes
-		        server.stop()
-            }
+        })
 	}
 
 	func testQuestion() {
-		let server = setupServer(8090, delegate: router)
-
-        let requestQueue = Queue(type: QueueType.SERIAL)
-        requestQueue.queueAsync {
-        	let headers = ["Content-Type": "text/plain"]
-                let req = Http.request([.Method("get"), .Hostname("localhost"), .Port(8090), .Path("/3/question"), .Headers(headers)]) {response in
+		performServerTest(router, asyncTasks: {
+            self.performRequest("get", path: "/3/question") {response in
                 	XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "Question route did not match single path request")
                 }
-                req.end()
-        }
-        requestQueue.queueAsync {
-        	let headers = ["Content-Type": "text/plain"]
-                let req = Http.request([.Method("get"), .Hostname("localhost"), .Port(8090), .Path("/3/question/question"), .Headers(headers)]) {response in
+        }, {
+            self.performRequest("get", path: "/3/question/question") {response in
                 	XCTAssertEqual(response!.statusCode, HttpStatusCode.NOT_FOUND, "Question route did not miss multiple path request")
                 }
-                req.end()
-        }
-        requestQueue.queueAsync {
-        	let headers = ["Content-Type": "text/plain"]
-                let req = Http.request([.Method("get"), .Hostname("localhost"), .Port(8090), .Path("/3"), .Headers(headers)]) {response in
+        }, {
+            self.performRequest("get", path: "/3") {response in
                 	XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "Question route did not match empty path request")
                 }
-                req.end()
-        }
-
-        requestQueue.queueSync {
-                // blocks test until request completes
-		        server.stop()
-            }
+        })
 	}
 
 	func testCombined() {
-		let server = setupServer(8090, delegate: router)
-
-        let requestQueue = Queue(type: QueueType.SERIAL)
-        requestQueue.queueAsync {
-        	let headers = ["Content-Type": "text/plain"]
-                let req = Http.request([.Method("get"), .Hostname("localhost"), .Port(8090), .Path("/4/question/plus"), .Headers(headers)]) {response in
+        performServerTest(router, asyncTasks: {
+            self.performRequest("get", path: "/4/question/plus") {response in
                 	XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "Complex route did not match dropped star ending")
                 }
-                req.end()
-        }
-        requestQueue.queueAsync {
-        	let headers = ["Content-Type": "text/plain"]
-                let req = Http.request([.Method("get"), .Hostname("localhost"), .Port(8090), .Path("/4/plus/plus/star"), .Headers(headers)]) {response in
+        }, {
+            self.performRequest("get", path: "/4/plus/plus/star") {response in
                 	XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "Complex route did not match dropped beginning with extra middle")
                 }
-                req.end()
-        }
-        requestQueue.queueAsync {
-        	let headers = ["Content-Type": "text/plain"]
-                let req = Http.request([.Method("get"), .Hostname("localhost"), .Port(8090), .Path("/4/question/plusssssss/plus/pluss/star/star"), .Headers(headers)]) {response in
+        }, {
+            self.performRequest("get", path: "/4/question/plusssssss/plus/pluss/star/star") {response in
                 	XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "Complex route did not match internal extra plus signs with multiple extras")
                 }
-                req.end()
-        }
-
-        requestQueue.queueSync {
-                // blocks test until request completes
-		        server.stop()
-            }
+        })
 	}
-
-	func setupServer(port: Int, delegate: HttpServerDelegate) -> HttpServer {
-	return HttpServer.listen(port, delegate: delegate, 
-		     		       notOnMainQueue:true)
-    }
 
     static func setupRouter() -> Router {
     	let router = Router()
