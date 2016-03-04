@@ -42,7 +42,7 @@ class TestResponse : KituraTest {
 
     func testSimpleResponse() {
     	performServerTest(router) {
-            self.performRequest("get", path:"/qwer") {response in
+            self.performRequest("get", path:"/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
@@ -54,13 +54,13 @@ class TestResponse : KituraTest {
                 catch{
                     XCTFail("No respose body")
                 }
-            }
+            })
         }
     }
 
     func testPostRequest() {
     	performServerTest(router) {
-            self.performRequest("post", path: "/bodytest") {response in
+            self.performRequest("post", path: "/bodytest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 //XCTAssertEqual(response!.method, "POST", "The request wasn't recognized as a post")
                 XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
@@ -71,14 +71,16 @@ class TestResponse : KituraTest {
                 catch{
                     XCTFail("No respose body")
                 }
+            }) {req in
+                req.writeString("plover\n")
+                req.writeString("xyzzy\n")
             }
         }
-        //plover\nxyzzy\n
     }
 
     func testParameter() {
     	performServerTest(router) {
-            self.performRequest("get", path: "/zxcv/test?q=test2") {response in
+            self.performRequest("get", path: "/zxcv/test?q=test2", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response!.readString()
@@ -87,13 +89,13 @@ class TestResponse : KituraTest {
                 catch{
                     XCTFail("No respose body")
                 }
-            }
+            })
         }
     }
 
     func testRedirect() {
         performServerTest(router) {
-            self.performRequest("get", path: "/redir") {response in
+            self.performRequest("get", path: "/redir", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response!.readString()
@@ -102,7 +104,7 @@ class TestResponse : KituraTest {
                 catch{
                     XCTFail("No respose body")
                 }
-            }
+            })
         }
     }
 

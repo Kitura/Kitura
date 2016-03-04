@@ -30,92 +30,45 @@ import XCTest
 #endif
 
 
-class TestErrors : XCTestCase {
-    
-    let router = Router()
-
-    var allTests : [(String, () throws -> Void)] {
-        return [
-            ("testInvalidMethod", testInvalidMethod),
-            ("testInvalidEndpoint", testInvalidEndpoint),
-            ("testInvalidHeader", testInvalidHeader)
-        ]
-    }
-
-    var serverQueue = Queue(type: QueueType.PARALLEL)
-
+class TestErrors : KituraTest {
     #if os(Linux)
-       func tearDown() {
-           doTearDown()
-       }
-    #else
-       override func tearDown() {
-           doTearDown()
-       }
-   #endif
+        override var allTests : [(String, () throws -> Void)] {
+            return [
+                ("testInvalidMethod", testInvalidMethod),
+                ("testInvalidEndpoint", testInvalidEndpoint),
+                ("testInvalidHeader", testInvalidHeader)
+            ]
+        }
+    #endif
 
-   private func doTearDown() {
-        sleep(10)
-    }
-
-    func setupServer(port: Int, delegate: HttpServerDelegate) -> HttpServer {
-	return HttpServer.listen(port, delegate: delegate, 
-		     		       notOnMainQueue:true)
-    }
+    let router = Router()
     
     func testInvalidMethod() {
-    	let server = setupServer(8090, delegate: router)
-
-        let requestQueue = Queue(type: QueueType.SERIAL)
-        requestQueue.queueAsync {
-                let headers = ["Content-Type": "text/plain"]
-                let req = Http.request([.Method("invalid"), .Hostname("localhost"), .Port(8090), .Path("/qwer"), .Headers(headers)]) {response in
-                    XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    XCTAssertEqual(response!.statusCode, HttpStatusCode.BAD_REQUEST, "HTTP Status code was \(response!.statusCode)")
-                }
-                req.end()
-            }
-        requestQueue.queueSync {
-                // blocks test until request completes
-		        server.stop()
-            }
+        performServerTest(router) {
+            self.performRequest("invalid", path: "/qwer", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HttpStatusCode.BAD_REQUEST, "HTTP Status code was \(response!.statusCode)")
+            })
+        }
     }
 
     func testInvalidEndpoint() {
-        let server = setupServer(8090, delegate: router)
-        
-        // the sample from .build/debug/sample must be running
-
-        let requestQueue = Queue(type: QueueType.SERIAL)
-        requestQueue.queueAsync {
-                let headers = ["Content-Type": "text/plain"]
-                let req = Http.request([.Method("get"), .Hostname("localhost"), .Port(8090), .Path("/notreal"), .Headers(headers)]) {response in
-                    XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    XCTAssertEqual(response!.statusCode, HttpStatusCode.NOT_FOUND, "HTTP Status code was \(response!.statusCode)")
-                }
-                req.end()
-            }
-        requestQueue.queueSync {
-                // blocks test until request completes
-		        server.stop()
-            }
+        performServerTest(router) {
+            self.performRequest("get", path: "/notreal", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HttpStatusCode.NOT_FOUND, "HTTP Status code was \(response!.statusCode)")
+            })
+        }
     }
 
     func testInvalidHeader() {
-        let server = setupServer(8090, delegate: router)
-
-        let requestQueue = Queue(type: QueueType.SERIAL)
-        requestQueue.queueAsync {
-                let headers = ["garbage" : "dfsfdsf"]
-                let req = Http.request([.Method("get"), .Hostname("localhost"), .Port(8090), .Path("/qwer"), .Headers(headers)]) {response in
-                    XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    // should this be ok?
-                }
-                req.end()
+        performServerTest(router) {
+            self.performRequest("get", path: "/qwer", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                // should this be ok?
+            }) {req in 
+                req.headers = ["garbage" : "dfsfdsf"]
             }
-        requestQueue.queueSync {
-                // blocks test until request completes
-                server.stop()
         }
     }
 

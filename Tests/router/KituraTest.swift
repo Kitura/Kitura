@@ -57,9 +57,12 @@ class KituraTest : XCTestCase {
         }
     }
 
-    func performRequest(method: String, path: String, callback: ClientRequestCallback) {
+    func performRequest(method: String, path: String, callback: ClientRequestCallback, requestModifier: ((ClientRequest) -> Void)? = nil) {
         let headers = ["Content-Type": "text/plain"]
         let req = Http.request([.Method(method), .Hostname("localhost"), .Port(8090), .Path(path), .Headers(headers)], callback: callback)
+        if let requestModifier = requestModifier {
+            requestModifier(req)
+        }
         req.end()
     }
 
