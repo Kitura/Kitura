@@ -92,11 +92,11 @@ Kitura is a web framework and web server that is created for web services writte
 
  You can run the sample program which located in: `<path-to-repo>/.build/debug`. From the project root, execute the `./.build/debug/KituraSample` command from a terminal window. You should see a message that says "Listening on port 8090".
 
-## Installation (Linux)
+## Installation (Linux, Apt-based)
 
 1. Install the following system linux libraries:
 
- `sudo apt-get install libhttp-parser-dev libcurl4-openssl-dev libhiredis-dev`
+ `sudo apt-get install autoconf libtool libkqueue-dev libkqueue0 libdispatch-dev libdispatch0 libhttp-parser-dev libcurl4-openssl-dev libhiredis-dev`
 
 2. Install the latest [Swift compiler for Linux](https://swift.org/download/).
 
