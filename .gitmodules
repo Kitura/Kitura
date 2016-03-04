@@ -1,0 +1,3 @@
+[submodule "Kitura-CI"]
+	path = Kitura-CI
+	url = https://github.com/IBM-Swift/Kitura-CI.git
