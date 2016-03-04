@@ -89,15 +89,24 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-03-01-a ve
 
  After installing it, make sure you update your PATH environment variable as described in the installation instructions (e.g. export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH)
 
-5. Build Kitura and Kitura Sample
+ 5. Clone this repository, `develop` branch
 
- `swift build -Xswiftc -I/usr/local/include -Xlinker -L/usr/local/lib`
+   `git clone -b develop https://github.com/IBM-Swift/Kitura`
 
- Homebrew by default installs libraries to `/usr/local`, if yours is different, change the path to find curl and http-parser libraries.
+ 6. build and run Kitura Sample
 
-6. Run KituraSample:
+  `make run`
 
- You can run the sample program which located in: `<path-to-repo>/.build/debug`. From the project root, execute the `./.build/debug/KituraSample` command from a terminal window. You should see a message that says "Listening on port 8090".
+ You should see a message that says "Listening on port 8090".
+
+ ### Notes
+ * Homebrew by default installs libraries to `/usr/local`, if yours is different, change the path to find curl and http-parser libraries, in Scripts/Makefile:
+ ```
+ SWIFTC_FLAGS =  -Xswiftc -I/usr/local/include
+ LINKER_FLAGS = -Xlinker -L/usr/local/lib
+ ```
+
+ * The result executable is located in `.build/debug` folder in the cloned repository: `./.build/debug/KituraSample`
 
 ## Installation (Linux)
 
@@ -109,21 +118,22 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-03-01-a ve
 
  Follow the instructions provided on that page. After installing it (i.e. uncompressing the tar file), make sure you update your PATH environment variable so that it includes the extracted tools: `export PATH=/<path to uncompress tar contents>/usr/bin:$PATH`. To update the PATH env variable, you can update your .bashrc file (for further information on .bashrc and .bash_profile see http://www.joshstaiger.org/archives/2005/07/bash_profile_vs.html).
 
-3. Clone the libdispatch library:
+3. Clone, build and install the libdispatch library.
+The complete instructions for building and installing this library are  [here](https://github.com/apple/swift-corelibs-libdispatch/blob/master/INSTALL), though, all you need to do is just this
+ `git clone https://github.com/apple/swift-corelibs-libdispatch.git && cd swift-corelibs-libdispatch && git submodule init && git submodule update && sh ./autogen.sh && ./configure --with-swift-toolchain=<path-to-swift>/usr --prefix=<path-to-swift>/usr && make && make install`
 
- `git clone https://github.com/apple/swift-corelibs-libdispatch.git`
+4. Clone this repository, `develop` branch
 
-4. Build and install the libdispatch library:
+  `git clone -b develop https://github.com/IBM-Swift/Kitura`
 
- Please note that the complete instructions for building and installing this library are found [here](https://github.com/apple/swift-corelibs-libdispatch/blob/master/INSTALL). Though, all you need to do is just this: `cd swift-corelibs-libdispatch && git submodule init && git submodule update && sh ./autogen.sh && ./configure --with-swift-toolchain=<path-to-swift>/usr --prefix=<path-to-swift>/usr && make && make install`
+5. build and run Kitura Sample
 
-5. Clone this repository using `git clone -b develop https://github.com/IBM-Swift/Kitura` and build Kitura and KituraSample:
+ `make run`
 
-  `swift build -Xcc -fblocks`
+ You should see a message that says "Listening on port 8090". The result executable is located in `.build/debug` folder in the cloned repository: `./.build/debug/KituraSample`
 
-6. Run the sample program:
-
- `<path_to_kitura_repo>./.build/debug/KituraSample`. You should see a message that says "Listening on port 8090".
+## Run Kitura tests (optional)
+`make test`
 
 ## Usage
 Let's write our first Kitura-based Web Application written in Swift!
@@ -217,6 +227,7 @@ Server.run()
 
   - Mac OS X: `swift build -Xcc -fblocks -Xswiftc -I/usr/local/include -Xlinker -L/usr/local/lib`
   - Linux:  `swift build -Xcc -fblocks`
+
 
 9. Now run your new web application:
 
