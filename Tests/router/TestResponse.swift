@@ -19,8 +19,6 @@ import XCTest
 
 @testable import KituraRouter
 @testable import KituraNet
-@testable import KituraSys
-@testable import HeliumLogger
 
 #if os(Linux)
     import Glibc
@@ -28,9 +26,9 @@ import XCTest
     import Darwin
 #endif
 
-#if os(Linux)
-    extension TestResponse : XCTestCaseProvider {
-        var allTests : [(String, () throws -> Void)] {
+class TestResponse : KituraTest {
+    #if os(Linux)
+        override var allTests : [(String, () throws -> Void)] {
             return [
                 ("testSimpleResponse", testSimpleResponse),
                 ("testPostRequest", testPostRequest),
@@ -38,141 +36,79 @@ import XCTest
                 ("testRedirect", testRedirect)
             ]
         }
-    }
-#endif
+    #endif
 
-class TestResponse : XCTestCase {
-
-    let serverTask = NSTask()
-    let serverQueue = Queue(type: QueueType.PARALLEL)
     let router = TestResponse.setupRouter()
 
-    #if os(Linux)
-       func tearDown() {
-           doTearDown()
-       }
-    #else
-       override func tearDown() {
-           doTearDown()
-       }
-   #endif
-
-   private func doTearDown() {
-        sleep(10)
-    }
-
     func testSimpleResponse() {
-    	let server = setupServer(8090, delegate: router)
-
-        let requestQueue = Queue(type: QueueType.SERIAL)
-        requestQueue.queueAsync {
-                let headers = ["Content-Type": "text/plain"]
-                let req = Http.request([.Method("get"), .Hostname("localhost"), .Port(8090), .Path("/qwer"), .Headers(headers)]) {response in
-                    XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
-                    XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
-                    //XCTAssertEqual(response!.method, "GET", "The request wasn't recognized as a get")
-                    do {
-                        let body = try response!.readString()
-                        XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
-                    }
-                    catch{
-                        XCTFail("No respose body")
-                    }
+    	performServerTest(router) {
+            self.performRequest("get", path:"/qwer") {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
+                //XCTAssertEqual(response!.method, "GET", "The request wasn't recognized as a get")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
                 }
-                req.end()
+                catch{
+                    XCTFail("No respose body")
+                }
             }
-        requestQueue.queueSync {
-                // blocks test until request completes
-		        server.stop()
-            }
+        }
     }
 
     func testPostRequest() {
-    	let server = setupServer(8090, delegate: router)
-
-        let requestQueue = Queue(type: QueueType.SERIAL)
-        requestQueue.queueAsync {
-                let headers = ["Content-Type": "text/plain"]
-                let req = Http.request([.Method("post"), .Hostname("localhost"), .Port(8090), .Path("/bodytest"), .Headers(headers)]) {response in
-                    XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    //XCTAssertEqual(response!.method, "POST", "The request wasn't recognized as a post")
-                    XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
-                    do {
-                        let body = try response!.readString()
-                        XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received text body: </b>plover\nxyzzy\n</body></html>\n\n")
-                    }
-                    catch{
-                        XCTFail("No respose body")
-                    }
+    	performServerTest(router) {
+            self.performRequest("post", path: "/bodytest") {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                //XCTAssertEqual(response!.method, "POST", "The request wasn't recognized as a post")
+                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received text body: </b>plover\nxyzzy\n</body></html>\n\n")
                 }
-                req.writeString("plover\n")
-                req.writeString("xyzzy\n")
-                req.end()
+                catch{
+                    XCTFail("No respose body")
+                }
             }
-        requestQueue.queueSync {
-                // blocks test until request completes
-		        server.stop()
-            }
+        }
+        //plover\nxyzzy\n
     }
 
     func testParameter() {
-    	let server = setupServer(8090, delegate: router)
-
-        let requestQueue = Queue(type: QueueType.SERIAL)
-        requestQueue.queueAsync {
-                let headers = ["Content-Type": "text/plain"]
-                let req = Http.request([.Method("get"), .Hostname("localhost"), .Port(8090), .Path("/zxcv/test?q=test2"), .Headers(headers)]) {response in
-                    XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    do {
-                        let body = try response!.readString()
-                        XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=test<p><p>q=test2<p><p>u1=Ploni Almoni</body></html>\n\n")
-                    }
-                    catch{
-                        XCTFail("No respose body")
-                    }
+    	performServerTest(router) {
+            self.performRequest("get", path: "/zxcv/test?q=test2") {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=test<p><p>q=test2<p><p>u1=Ploni Almoni</body></html>\n\n")
                 }
-                req.end()
+                catch{
+                    XCTFail("No respose body")
+                }
             }
-        requestQueue.queueSync {
-                // blocks test until request completes
-		        server.stop()
-            }
+        }
     }
 
     func testRedirect() {
-    	let server = setupServer(8090, delegate: router)
-
-        let requestQueue = Queue(type: QueueType.SERIAL)
-        requestQueue.queueAsync {
-                let headers = ["Content-Type": "text/plain"]
-                let req = Http.request([.Method("get"), .Hostname("localhost"), .Port(8090), .Path("/redir"), .Headers(headers)]) {response in
-                    XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    do {
-                        let body = try response!.readString()
-                        XCTAssertNotNil(body!.rangeOfString("ibm"),"response does not contain IBM")
-                    }
-                    catch{
-                        XCTFail("No respose body")
-                    }
+        performServerTest(router) {
+            self.performRequest("get", path: "/redir") {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertNotNil(body!.rangeOfString("ibm"),"response does not contain IBM")
                 }
-                req.end()
+                catch{
+                    XCTFail("No respose body")
+                }
             }
-        requestQueue.queueSync {
-                // blocks test until request completes
-		        server.stop()
-            }
-    }
-    
-    func setupServer(port: Int, delegate: HttpServerDelegate) -> HttpServer {
-	return HttpServer.listen(port, delegate: delegate, 
-		     		       notOnMainQueue:true)
+        }
     }
 
     static func setupRouter() -> Router {
         let router = Router()
         // the same router definition is used for all these test cases
-        router.use("/zxcv/*", middleware: EchoTest())
         router.all("/zxcv/:p1") { request, _, next in
             request.userInfo["u1"] = "Ploni Almoni".bridge()
             next()
@@ -234,15 +170,6 @@ class TestResponse : XCTestCase {
             next()
         }
 	return router
-    }
-}
-
-class EchoTest: RouterMiddleware {
-    func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
-        for  (key, value) in request.headers {
-            print("EchoTest. key=\(key). value=\(value).")
-        }
-        next()
     }
 }
 
