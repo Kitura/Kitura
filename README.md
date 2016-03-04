@@ -37,7 +37,7 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-03-01-a ve
 
   `docker run -i -t ibmcom/kitura-ubuntu:latest /bin/bash`
 
-4. From within the Docker container, execute the `ci.sh` script to build Kitura and execute the test cases:
+4. From within the Docker container, execute the `clone_build_kitura.sh` script to build Kitura and execute the test cases:
 
   `/root/clone_build_kitura.sh`
 
