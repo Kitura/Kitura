@@ -37,13 +37,13 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-03-01-a ve
 
   `docker run -i -t ibmcom/kitura-ubuntu:latest /bin/bash`
 
-4. From within the Docker container, execute the `clone_build_kitura.sh` script to build Kitura and execute the test cases:
+4. From within the Docker container, execute the `clone_build_test_kitura.sh` script to build Kitura and execute the test cases:
 
-  `/root/clone_build_kitura.sh`
+  `/root/clone_build_test_kitura.sh`
 
-  The last output line from executing the `clone_build_kitura.sh` script should be similar to:
+  The last output line from executing the `clone_build_test_kitura.sh` script should be similar to:
 
-  `>> Build and execution of test cases completed (see above for results).`
+  `>> Finished execution of tests for Kitura (see above for results).`
 
 5. You can now run the KituraSample executable inside the Docker container:
 
