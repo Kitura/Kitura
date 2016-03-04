@@ -19,9 +19,9 @@ import XCTest
 @testable import KituraRouter
 @testable import KituraNet
 
-#if os(Linux)
-    extension TestMultiplicity : XCTestCaseProvider {
-        var allTests : [(String, () throws -> Void)] {
+class TestMultiplicity : KituraTest {
+    #if os(Linux)
+        override var allTests : [(String, () throws -> Void)] {
             return [
                 ("testPlus", testPlus),
                 ("testStar", testStar),
@@ -29,10 +29,8 @@ import XCTest
                 ("testCombined", testCombined)
             ]
         }
-    }
-#endif
+    #endif
 
-class TestMultiplicity : KituraTest {
     let router = TestMultiplicity.setupRouter()
 
     func testPlus() {

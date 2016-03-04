@@ -19,10 +19,15 @@ import XCTest
 @testable import KituraNet
 @testable import KituraSys
 
+import Foundation
+
 class KituraTest : XCTestCase {
 
-    let serverTask = NSTask()
-    let serverQueue = Queue(type: QueueType.PARALLEL)
+    #if os(Linux)
+        var allTests : [(String, () throws -> Void)] {
+            return []
+        }
+    #endif
 
      #if os(Linux)
        func tearDown() {
