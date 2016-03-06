@@ -228,7 +228,7 @@ Server.run()
   - Mac OS X: `swift build -Xcc -fblocks -Xswiftc -I/usr/local/include -Xlinker -L/usr/local/lib`
   - Linux:  `swift build -Xcc -fblocks`
 
-  Or copy [Makefile and scripts](https://github.com/IBM-Swift/Kitura-CI/blob/master/build) to your project directory and run `make build`. You may want to customize this Makefile and use it for building, testing and running your application.
+  Or copy [Makefile and build scripts](https://github.com/IBM-Swift/Kitura-CI/blob/master/build) to your project directory and run `make build`. You may want to customize this Makefile and use it for building, testing and running your application. For example, you can clean your build directory, refetch all the dependencies, build, test and run your application by running `make clean refetch test run`.
 
 9. Now run your new web application:
 
