@@ -28,7 +28,7 @@ let package = Package(
         .Package(url: "https://github.com/vadimeisenbergibm/Kitura-router.git", versions: Version(0,3,0)..<Version(0,4,0)),
         .Package(url: "https://github.com/IBM-Swift/HeliumLogger.git", versions: Version(0,3,0)..<Version(0,4,0)),
         .Package(url: "https://github.com/IBM-Swift/LoggerAPI.git", versions: Version(0,3,0)..<Version(0,4,0)),
-        .Package(url: "https://github.com/vadimeisenbergibm/Kitura-MustacheTemplateEngine.git",
+        .Package(url: "https://github.com/IBM-Swift/Kitura-MustacheTemplateEngine.git",
                  versions: Version(0,0,0)..<Version(0,1,0)),
     ]
 )
