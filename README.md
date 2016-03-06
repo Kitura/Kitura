@@ -140,7 +140,7 @@ Let's write our first Kitura-based Web Application written in Swift!
   mkdir myFirstProject
   ```
 
-2. Next we need to go in an initialize this project as a new Swift package project
+2. Next we initialize this project as a new Swift package project
 
   ```bash
   cd myFirstProject
