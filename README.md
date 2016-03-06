@@ -100,7 +100,7 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-03-01-a ve
  You should see a message that says "Listening on port 8090".
 
  ### Notes
- * Homebrew by default installs libraries to `/usr/local`, if yours is different, change the path to find curl and http-parser libraries, in Scripts/Makefile:
+ * Homebrew by default installs libraries to `/usr/local`, if yours is different, change the path to find curl and http-parser libraries, in Kitura-CI/build/Makefile:
  ```
  SWIFTC_FLAGS =  -Xswiftc -I/usr/local/include
  LINKER_FLAGS = -Xlinker -L/usr/local/lib
