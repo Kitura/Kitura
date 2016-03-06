@@ -75,7 +75,7 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-03-01-a ve
 
 1. Clone this repository:
 
- `git clone https://github.com/IBM-Swift/Kitura`
+ `git clone -b develop https://github.com/IBM-Swift/Kitura`
 
 2. Install [Homebrew](http://brew.sh/) (if you don't already have it installed):
 
@@ -117,7 +117,7 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-03-01-a ve
 
  Please note that the complete instructions for building and installing this library are found [here](https://github.com/apple/swift-corelibs-libdispatch/blob/master/INSTALL). Though, all you need to do is just this: `cd swift-corelibs-libdispatch && git submodule init && git submodule update && sh ./autogen.sh && ./configure --with-swift-toolchain=<path-to-swift>/usr --prefix=<path-to-swift>/usr && make && make install`
 
-5. Build Kitura and KituraSample
+5. Clone this repository using `git clone -b develop https://github.com/IBM-Swift/Kitura` and build Kitura and KituraSample:
 
   `swift build -Xcc -fblocks`
 
