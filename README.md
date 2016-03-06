@@ -73,27 +73,23 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-03-01-a ve
 
 ## Installation (OS X)
 
-1. Clone this repository:
-
- `git clone -b develop https://github.com/IBM-Swift/Kitura`
-
-2. Install [Homebrew](http://brew.sh/) (if you don't already have it installed):
+1. Install [Homebrew](http://brew.sh/) (if you don't already have it installed):
 
  `ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
 
-3. Install the necessary dependencies:
+2. Install the necessary dependencies:
 
  `brew install http-parser curl hiredis`
 
-4. Download and install the [supported Swift compiler](#swift-version).
+3. Download and install the [supported Swift compiler](#swift-version).
 
  After installing it, make sure you update your PATH environment variable as described in the installation instructions (e.g. export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH)
 
-5. Clone this repository, `develop` branch
+4. Clone this repository, `develop` branch
 
    `git clone -b develop https://github.com/IBM-Swift/Kitura`
 
-6. build and run Kitura Sample
+5. build and run Kitura Sample
 
   `make run`
 
