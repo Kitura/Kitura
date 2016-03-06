@@ -29,9 +29,8 @@ import HeliumLogger
 
 import Foundation
 
-#if os(OSX)
-    import Mustache
-#endif
+import KituraMustache
+
 
 // All Web apps need a router to define routes
 let router = Router()
@@ -135,51 +134,32 @@ router.get("/users/:user") { request, response, next in
 }
 
 // Example using templating of strings
-#if os(OSX) // Mustache implented for OSX only yet
-router.get("/mustache") { _, response, next in
+// Support for Mustache implented for OSX only yet
+router.setTemplateEngine(MustacheTemplateEngine())
+
+router.get("/document") { _, response, next in
     defer {
         next()
     }
     do {
         // the example from https://github.com/groue/GRMustache.swift/blob/master/README.md
-        let template = try Template(string: "Hello {{name}}\n" +
-            "Your beard trimmer will arrive on {{format(date)}}.\n" +
-            "{{#late}}" +
-            "Well, on {{format(realDate)}} because of a Martian attack." +
-            "{{/late}}")
-        // Let template format dates with `{{format(...)}}`
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateStyle = .MediumStyle
-        template.registerInBaseContext("format", Box(dateFormatter))
-
-        // The rendered data
-        let data = [
+        var context: [String: Any] = [
             "name": "Arthur",
             "date": NSDate(),
             "realDate": NSDate().dateByAddingTimeInterval(60*60*24*3),
             "late": true
         ]
-        var rendering = ""
-        // The rendering: "Hello Arthur..."
-        do {
-            rendering = try template.render(Box(data))
-        }
-        catch {
-            Log.error("Failed to render mustache template")
-        }
 
-        do {
-            try response.status(HttpStatusCode.OK).end(rendering)
-        }
-        catch {
-            Log.error("Failed to send response")
-        }
-    }
-    catch {
-        Log.error("Failed to create mustache template")
+        // Let template format dates with `{{format(...)}}`
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateStyle = .MediumStyle
+        context["format"] = dateFormatter
+
+        try response.render("document", context: context)
+    } catch {
+        Log.error("Failed to render template \(error)")
     }
 }
-#endif
 
 // Handle the GET request at the root path
 router.get("/") { _, response, next in
