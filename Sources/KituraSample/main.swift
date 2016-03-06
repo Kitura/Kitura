@@ -155,7 +155,7 @@ router.get("/document") { _, response, next in
         dateFormatter.dateStyle = .MediumStyle
         context["format"] = dateFormatter
 
-        try response.render("document", context: context)
+        try response.render("document", context: context).end()
     } catch {
         Log.error("Failed to render template \(error)")
     }
