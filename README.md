@@ -89,11 +89,11 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-03-01-a ve
 
  After installing it, make sure you update your PATH environment variable as described in the installation instructions (e.g. export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH)
 
- 5. Clone this repository, `develop` branch
+5. Clone this repository, `develop` branch
 
    `git clone -b develop https://github.com/IBM-Swift/Kitura`
 
- 6. build and run Kitura Sample
+6. build and run Kitura Sample
 
   `make run`
 
