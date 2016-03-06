@@ -148,14 +148,14 @@ Let's write our first Kitura-based Web Application written in Swift!
   ```
 
   Now your directory structure under myFirstProject should look like this:
-<pre>
-myFirstProject
-├── Package.swift
-├── Sources
-│   └── main.swift
-└── Tests
-    └── <i>empty</i>
-</pre>
+  <pre>
+  myFirstProject
+  ├── Package.swift
+  ├── Sources
+  │   └── main.swift
+  └── Tests
+      └── <i>empty</i>
+  </pre>
 
   Note: For more information on the Swift Package Manager, go [here](https://swift.org/package-manager)
 
