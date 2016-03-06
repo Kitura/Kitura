@@ -21,6 +21,8 @@ import LoggerAPI
 
 import Foundation
 
+import KituraTemplateEngine
+
 // MARK Router 
 
 public class Router {
@@ -29,7 +31,15 @@ public class Router {
     /// Contains the list of routing elements
     ///
     private var routeElems: [RouterElement] = []
-    
+
+    internal var templateEngine: TemplateEngine? = nil
+
+    ///
+    /// Views directory path
+    ///
+
+    public var viewsPath: String { return "./Views/" }
+
     ///
     /// Initializes a Router 
     ///
@@ -298,6 +308,11 @@ public class Router {
         routeElems.append(RouterElement(method: method, pattern: pattern, handler: handler))
         return self
     }
+
+    // MARK: Template Engine
+    public func setTemplateEngine(templateEngine: TemplateEngine?) {
+        self.templateEngine = templateEngine
+    }
 }
 
 
@@ -315,7 +330,7 @@ extension Router : HttpServerDelegate {
     public func handleRequest(request: ServerRequest, response: ServerResponse) {
 
         let routeReq = RouterRequest(request: request)
-        let routeResp = RouterResponse(response: response)
+        let routeResp = RouterResponse(response: response, router: self)
         let method = RouterMethod(string: request.method)
 
         let urlPath = routeReq.parsedUrl.path!
@@ -367,20 +382,25 @@ extension Router : HttpServerDelegate {
          }
     }
 
+    private func getResourceFilePath(resource: String) -> String {
+        let fileName = NSString(string: #file)
+        let resourceFilePrefixRange: NSRange
+        let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch)
+        if  lastSlash.location != NSNotFound  {
+            resourceFilePrefixRange = NSMakeRange(0, lastSlash.location+1)
+        }
+        else {
+            resourceFilePrefixRange = NSMakeRange(0, fileName.length)
+        }
+        return fileName.substringWithRange(resourceFilePrefixRange) + "resources/" + resource
+    }
+
+
     ///
     /// Get the directory we were compiled from
     ///
     private func sendResourceIfExisting(routeResp: RouterResponse, resource: String)  {
-        let fileName = NSString(string: #file)
-        let jsonFilePrefixRange: NSRange
-        let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch)
-        if  lastSlash.location != NSNotFound  {
-            jsonFilePrefixRange = NSMakeRange(0, lastSlash.location+1)
-        }
-        else {
-            jsonFilePrefixRange = NSMakeRange(0, fileName.length)
-        }
-        let resourceFileName = fileName.substringWithRange(jsonFilePrefixRange) + "resources/" + resource
+        let resourceFileName = getResourceFilePath(resource)
 
         do {
             try routeResp.sendFile(resourceFileName)

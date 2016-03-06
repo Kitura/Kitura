@@ -30,7 +30,12 @@ public class RouterResponse {
     /// The server response
     ///
     let response: ServerResponse
-    
+
+    ///
+    /// The router
+    ///
+    let router: Router
+
     ///
     /// The buffer used for output
     ///
@@ -54,11 +59,11 @@ public class RouterResponse {
     ///
     /// - Returns: a ServerResponse instance
     ///
-    init(response: ServerResponse) {
+    init(response: ServerResponse, router: Router) {
         
         self.response = response
+        self.router = router
         status(HttpStatusCode.NOT_FOUND)
-        
     }
     
     ///
@@ -380,5 +385,27 @@ public class RouterResponse {
         setHeader("Location", value: p)
         return self
         
+    }
+
+    ///
+    /// Renders a resource using Router's template engine
+    ///
+    /// - Parameter resource: the resource name without extension
+    ///
+    /// - Returns: a RouterResponse instance
+    ///
+    // influenced by http://expressjs.com/en/4x/api.html#app.render
+    public func render(resource: String, context: [ String: Any]) throws -> RouterResponse {
+        var resourceWithExtension = resource
+        if let fileExtension = router.templateEngine?.fileExtension {
+            resourceWithExtension += ("." + fileExtension)
+        }
+        let filePath =  router.viewsPath + resourceWithExtension
+        if let templateEngine = router.templateEngine {
+            let renderedResource = try templateEngine.render(filePath, context: context)
+            return send(renderedResource)
+        }
+        // no template engine set or error in rendering - send file as is
+        return try sendFile(filePath)
     }
 }
