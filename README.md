@@ -134,7 +134,7 @@ The complete instructions for building and installing this library are  [here](h
 ## Usage
 Let's write our first Kitura-based Web Application written in Swift!
 
-1. First we need to create a new project directory
+1. First we create a new project directory
 
   ```bash
   mkdir myFirstProject
@@ -159,7 +159,7 @@ Let's write our first Kitura-based Web Application written in Swift!
 
   Note: For more information on the Swift Package Manager, go [here](https://swift.org/package-manager)
 
-3. Now we need to add Kitura as a dependency for your project (Package.swift):
+3. Now we add Kitura as a dependency for your project (Package.swift):
 
   ```swift
   import PackageDescription
