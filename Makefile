@@ -13,6 +13,8 @@
 # limitations under the License.
 
 # Makefile
+export KITURA_CI_BUILD_SCRIPTS_DIR=Kitura-CI/build
+
 -include Kitura-CI/build/Makefile
 
 Kitura-CI/build/Makefile:
