@@ -46,121 +46,149 @@ public class ContentType {
     ///
     /// - Returns: the data from the types.json file
     public class func loadDataFromFile (paths: [String]) -> NSData? {
-        
+
         for path in paths {
-            
+
             let data = NSData(contentsOfFile: path)
-            
+
             if data != nil {
                 return data
             }
         }
-        
+
         return nil
-        
+
     }
-    
-    
+
+
     ///
     /// The following function loads the MIME types from an external file
     ///
     public class func initialize () {
-        
+
         // MARK: Remove this when Linux reading of JSON files works.
         if MIME_TYPE_EMBEDDED {
-            
+
             Log.warning("Loading embedded MIME types.")
-            
+
             for (contentType, exts) in rawTypes {
                 for ext in exts {
                     extToContentType[ext] = contentType
                 }
             }
-            
+
             return
         }
-        
+
         // New behavior of using a file
-        
+
         Log.verbose("Loading MIME types from file")
-        
+
         let contentTypesData = loadDataFromFile(TYPES_PATH)
-        
+
         guard let ct = contentTypesData else {
             print("Could not find a MIME types file")
             return
         }
-        
+
         do {
-            
+
             // MARK: Linux Foundation will return an Any instead of an AnyObject
             // Need to test if this breaks the Linux build.
             let jsonData = try NSJSONSerialization.JSONObjectWithData(ct,
                 options: NSJSONReadingOptions.MutableContainers) as? NSDictionary
-            
+
             guard jsonData != nil else {
                 Log.error("JSON could not be parsed")
                 return
             }
-                
+
             for (contentType, exts) in jsonData! {
-                    
+
                 let e = exts as! [String]
                 for ext in e {
-                 
+
                     extToContentType[ext] = contentType as? String
 
                 }
             }
-                
-            
+
+
         } catch {
-                
+
             Log.error("Error reading \(TYPES_PATH)")
             return
         }
-        
+
     }
-    
-    /// 
+
+    ///
     /// Get the content type for the given file extension
     ///
-    /// - Parameter ext: the file extension 
-    /// 
-    /// - Returns: an Optional String for the content type 
+    /// - Parameter ext: the file extension
+    ///
+    /// - Returns: an Optional String for the content type
     ///
     public class func contentTypeForExtension (ext: String) -> String? {
         return extToContentType[ext]
     }
-    
-    /// 
+
+    ///
+    /// Get the content type for the given file based on its extension
+    ///
+    /// - Parameter fileName: the file
+    ///
+    /// - Returns: an Optional String for the content type
+    ///
+    public class func contentTypeForFile (fileName: String) -> String? {
+        let lastPathElemRange: Range<String.Index>
+        if  let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch)  {
+            lastPathElemRange = Range(start: lastSlash.startIndex.successor(), end: fileName.characters.endIndex)
+        }
+        else {
+            lastPathElemRange = Range(start: fileName.characters.startIndex, end: fileName.characters.endIndex)
+        }
+
+        let extRange: Range<String.Index>
+        if  let lastDot = fileName.rangeOfString(".", range: lastPathElemRange)  {
+            extRange = Range(start: lastDot.startIndex.successor(), end: fileName.characters.endIndex)
+        }
+        else {
+            // No "extension", use the entire last path element as the "extension"
+            extRange = lastPathElemRange
+        }
+
+        return contentTypeForExtension(fileName.substringWithRange(extRange))
+    }
+
+    ///
     /// Check if the message content type matches the type descriptor
     ///
-    /// - Parameter messageContentType: the content type 
+    /// - Parameter messageContentType: the content type
     /// - Parameter typeDescriptor: the description of the type
     ///
-    /// - Returns: whether the types matched 
+    /// - Returns: whether the types matched
     ///
     public class func isType (messageContentType: String, typeDescriptor: String) -> Bool {
-        
+
         let type = typeDescriptor.lowercaseString
         let typeAndSubtype = messageContentType.bridge().componentsSeparatedByString(";")[0].lowercaseString
-        
+
         if typeAndSubtype == type {
             return true
         }
-        
+
         // typeDescriptor is file extension
         if typeAndSubtype == extToContentType[type] {
             return true
         }
-        
+
         // typeDescriptor is a shortcut
         let normalizedType = normalizeType(type)
         if typeAndSubtype == normalizedType {
             return true
         }
-        
+
         // the types match and the subtype in typeDescriptor is "*"
         let messageTypePair = typeAndSubtype.bridge().componentsSeparatedByString("/")
         let normalizedTypePair = normalizedType.bridge().componentsSeparatedByString("/")

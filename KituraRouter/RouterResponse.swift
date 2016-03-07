@@ -161,24 +161,7 @@ public class RouterResponse {
     public func sendFile(fileName: String) throws -> RouterResponse {
         let data = try NSData(contentsOfFile: fileName, options: [])
 
-        let lastPathElemRange: Range<String.Index>
-        if  let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch)  {
-            lastPathElemRange = Range(start: lastSlash.startIndex.successor(), end: fileName.characters.endIndex)
-        }
-        else {
-            lastPathElemRange = Range(start: fileName.characters.startIndex, end: fileName.characters.endIndex)
-        }
-
-        let extRange: Range<String.Index>
-        if  let lastDot = fileName.rangeOfString(".", range: lastPathElemRange)  {
-            extRange = Range(start: lastDot.startIndex.successor(), end: fileName.characters.endIndex)
-        }
-        else {
-            // No "extension", use the entire last path element as the "extension"
-            extRange = lastPathElemRange
-        }
-
-        let contentType =  ContentType.contentTypeForExtension(fileName.substringWithRange(extRange))
+        let contentType =  ContentType.contentTypeForFile(fileName)
         if  let contentType = contentType  {
             setHeader("Content-Type", value: contentType)
         }
