@@ -18,5 +18,6 @@ export KITURA_CI_BUILD_SCRIPTS_DIR=Kitura-CI/build
 -include Kitura-CI/build/Makefile
 
 Kitura-CI/build/Makefile:
+	@echo --- Fetching Kitura-CI submodule
 	git submodule init
 	git submodule update --remote --merge
