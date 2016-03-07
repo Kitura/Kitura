@@ -9,6 +9,7 @@
 ![Swift 2 compatible](https://img.shields.io/badge/swift2-compatible-4BC51D.svg?style=flat)
 ![Apache 2](https://img.shields.io/badge/license-Apache2-blue.svg?style=flat)
 [![Join the chat at https://gitter.im/IBM-Swift/Kitura](https://badges.gitter.im/IBM-Swift/Kitura.svg)](https://gitter.im/IBM-Swift/Kitura?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![codebeat](https://codebeat.co/badges/d2d1cb10-e587-44b7-b63a-0a76ffb7bd96)](https://codebeat.co/projects/github-com-ibm-swift-kitura)
 
 ## Summary
 
