@@ -23,6 +23,7 @@ XCTMain([
     TestContentType(),
     TestErrors(),
     TestResponse(),
+    TestMultiplicity(),
     ClientTests(),
     ParserTests()
 ])
