@@ -346,34 +346,41 @@ extension Router : HttpServerDelegate {
         let routeResp = RouterResponse(response: response, router: self, request: routeReq)
 
         let urlPath = routeReq.parsedUrl.path!
-        var elemIndex = -1
 
-        // Extra variable to get around use of variable in its own initializer
-        var callback: (()->Void)? = nil
+        if  urlPath.characters.count > kituraResourcePrefix.characters.count  &&  urlPath.bridge().substringToIndex(kituraResourcePrefix.characters.count) == kituraResourcePrefix  {
+            let resource = urlPath.bridge().substringFromIndex(kituraResourcePrefix.characters.count)
+            sendResourceIfExisting(routeResp, resource: resource)
+        }
+        else {
+            var elemIndex = -1
 
-        let callbackHandler = {[unowned routeReq, unowned routeResp] () -> Void in
-            elemIndex+=1
-            if  elemIndex < self.routeElems.count {
-                self.routeElems[elemIndex].process(urlPath, request: routeReq, response: routeResp, next: callback!)
-            }
-            else {
-                do {
-                    if  !routeResp.invokedEnd {
-                        if  response.statusCode == HttpStatusCode.NOT_FOUND  {
-                            self.sendDefaultResponse(routeReq, routeResp: routeResp)
+            // Extra variable to get around use of variable in its own initializer
+            var callback: (()->Void)? = nil
+
+            let callbackHandler = {[unowned routeReq, unowned routeResp] () -> Void in
+                elemIndex+=1
+                if  elemIndex < self.routeElems.count {
+                    self.routeElems[elemIndex].process(urlPath, request: routeReq, response: routeResp, next: callback!)
+                }
+                else {
+                    do {
+                        if  !routeResp.invokedEnd {
+                            if  response.statusCode == HttpStatusCode.NOT_FOUND  {
+                                self.sendDefaultResponse(routeReq, routeResp: routeResp)
+                            }
+                            try routeResp.end()
                         }
-                        try routeResp.end()
+                    }
+                    catch {
+                        // Not much to do here
+                        Log.error("Failed to send response to the client")
                     }
                 }
-                catch {
-                    // Not much to do here
-                    Log.error("Failed to send response to the client")
-                }
             }
-        }
-        callback = callbackHandler
+            callback = callbackHandler
 
-        callbackHandler()
+            callbackHandler()
+        }
     }
 
     ///
@@ -384,17 +391,10 @@ extension Router : HttpServerDelegate {
             sendResourceIfExisting(routeResp, resource: "index.html")
         }
         else {
-            let path = routeReq.parsedUrl.path!.bridge()
-            if  path.substringToIndex(kituraResourcePrefix.characters.count) == kituraResourcePrefix  {
-                let resource = path.substringFromIndex(kituraResourcePrefix.characters.count)
-                sendResourceIfExisting(routeResp, resource: resource)
+            do {
+                try routeResp.status(HttpStatusCode.NOT_FOUND).send("Cannot \(String(routeReq.method).uppercaseString) \(routeReq.parsedUrl.path!).").end()
             }
-            else {
-                do {
-                    try routeResp.status(HttpStatusCode.NOT_FOUND).send("Cannot \(String(routeReq.method).uppercaseString) \(routeReq.parsedUrl.path!).").end()
-                }
-                catch {}
-            }
+            catch {}
         }
     }
 
@@ -421,6 +421,7 @@ extension Router : HttpServerDelegate {
         do {
             try routeResp.sendFile(resourceFileName)
             routeResp.status(HttpStatusCode.OK)
+            try routeResp.end()
         }
         catch {
             // Fail silently
