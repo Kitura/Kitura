@@ -61,6 +61,8 @@ class BasicAuthMiddleware: RouterMiddleware {
 // This route executes the echo middleware
 router.use("/*", middleware: BasicAuthMiddleware())
 
+router.use("/static/*", middleware: StaticFileServer())
+
 router.get("/hello") { _, response, next in
      response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
      do {
@@ -180,16 +182,6 @@ router.error { request, response, next in
     catch {}
   next()
 }
-
-// Accepts any other routes that couldn't be matched and returns a 404 error
-router.all { request, response, next in
-    do {
-        try response.status(HttpStatusCode.NOT_FOUND).send("Route not found in sample application").end()
-    }
-    catch{}
-    next()
-}
-
 
 // Listen on port 8090
 let server = HttpServer.listen(8090,
