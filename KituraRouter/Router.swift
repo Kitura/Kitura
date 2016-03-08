@@ -37,8 +37,12 @@ public class Router {
     ///
     /// Views directory path
     ///
-
     public var viewsPath: String { return "./Views/" }
+
+    ///
+    /// Prefix for special page resources
+    ///
+    private let kituraResourcePrefix = "/@@Kitura-router@@/"
 
     ///
     /// Initializes a Router
@@ -302,7 +306,7 @@ public class Router {
         routeElems.append(RouterElement(method: .All, pattern: nil, middleware: middleware))
         return self
     }
-    
+
     public func use(path: String, middleware: RouterMiddleware) -> Router {
         routeElems.append(RouterElement(method: .All, pattern: path, middleware: middleware))
         return self
@@ -376,18 +380,22 @@ extension Router : HttpServerDelegate {
     /// Send default index.html file and it's resources if appropriate, otherwise send default 404 message
     ///
     private func sendDefaultResponse(routeReq: RouterRequest, routeResp: RouterResponse) {
-         if  routeReq.parsedUrl.path! == "/"  {
-              sendResourceIfExisting(routeResp, resource: "index.html")
-         }
-         else if routeReq.parsedUrl.path! == "/@@Kitura-router@@/kitura.svg"  {
-              sendResourceIfExisting(routeResp, resource: "kitura.svg")
-         }
-         else {
-            do {
-                try routeResp.status(HttpStatusCode.NOT_FOUND).send("Cannot \(String(routeReq.method).uppercaseString) \(routeReq.parsedUrl.path!).").end()
+        if  routeReq.parsedUrl.path! == "/"  {
+            sendResourceIfExisting(routeResp, resource: "index.html")
+        }
+        else {
+            let path = routeReq.parsedUrl.path!.bridge()
+            if  path.substringToIndex(kituraResourcePrefix.characters.count) == kituraResourcePrefix  {
+                let resource = path.substringFromIndex(kituraResourcePrefix.characters.count)
+                sendResourceIfExisting(routeResp, resource: resource)
             }
-            catch {}
-         }
+            else {
+                do {
+                    try routeResp.status(HttpStatusCode.NOT_FOUND).send("Cannot \(String(routeReq.method).uppercaseString) \(routeReq.parsedUrl.path!).").end()
+                }
+                catch {}
+            }
+        }
     }
 
     private func getResourceFilePath(resource: String) -> String {
