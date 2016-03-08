@@ -37,6 +37,11 @@ public class RouterResponse {
     let router: Router
 
     ///
+    /// The associated request
+    ///
+    let request: RouterRequest
+
+    ///
     /// The buffer used for output
     ///
     private let buffer = BufferList()
@@ -59,13 +64,14 @@ public class RouterResponse {
     ///
     /// - Returns: a ServerResponse instance
     ///
-    init(response: ServerResponse, router: Router) {
-        
+    init(response: ServerResponse, router: Router, request: RouterRequest) {
+
         self.response = response
         self.router = router
+        self.request = request
         status(HttpStatusCode.NOT_FOUND)
     }
-    
+
     ///
     /// Ends the response
     ///
@@ -73,19 +79,21 @@ public class RouterResponse {
     /// - Returns: a RouterResponse instance
     ///
     public func end() throws -> RouterResponse {
-        
+
         if  let data = buffer.data  {
             let contentLength = getHeader("Content-Length")
             if  contentLength == nil  {
                 setHeader("Content-Length", value: String(buffer.count))
             }
-            try response.writeData(data)
+            if  request.method != .Head  {
+                try response.writeData(data)
+            }
         }
         invokedEnd = true
         try response.end()
         return self
     }
-    
+
     ///
     /// Ends the response and sends a string
     ///

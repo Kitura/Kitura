@@ -27,54 +27,59 @@ public class RouterRequest: BlueSocketReader {
     /// The server request
     ///
     let serverRequest: ServerRequest
-    
+
+    ///
+    /// The method of the request
+    ///
+    public let method: RouterMethod
+
     ///
     /// The parsed url
     ///
     let parsedUrl: UrlParser
-    
+
     ///
     /// The router as a String
     ///
     public internal(set) var route: String?
-    
+
     ///
     /// The original url as a string
     ///
     public var originalUrl: String {
         return serverRequest.urlString
     }
-    
+
     ///
     /// The URL
     ///
     public var url: String
-    
+
     ///
     /// List of HTTP headers
     ///
     public var headers: [String:String] { return serverRequest.headers }
-    
+
     ///
     /// List of URL parameters
     ///
     public var params: [String:String] = [:]
-    
+
     ///
     /// List of query parameters
     ///
     public var queryParams: [String:String] { return parsedUrl.queryParams }
-    
+
     ///
     /// User info
     ///
     public var userInfo: [String: AnyObject] = [:]
 
-    /// 
+    ///
     /// Body of the message
     ///
     public internal(set) var body: ParsedBody? = nil
-    
+
     ///
     /// Initializes a RouterRequest instance
     ///
@@ -84,10 +89,11 @@ public class RouterRequest: BlueSocketReader {
     ///
     init(request: ServerRequest) {
         serverRequest = request
+        method = RouterMethod(string: serverRequest.method)
         parsedUrl = UrlParser(url: serverRequest.url, isConnect: false)
         url = String(serverRequest.urlString)
     }
-    
+
     ///
     /// Read data
     ///

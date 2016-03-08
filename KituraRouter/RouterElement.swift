@@ -131,10 +131,10 @@ class RouterElement {
     /// - Parameter request: the request
     /// - Parameter response: the response
     ///
-    func process(httpMethod: RouterMethod, urlPath: String, request: RouterRequest, response: RouterResponse, next: () -> Void) {
-        
+    func process(urlPath: String, request: RouterRequest, response: RouterResponse, next: () -> Void) {
+
         if response.error == nil || method == .Error {
-            if response.error != nil || method == .All || method == httpMethod {
+            if response.error != nil || method == .All || method == request.method {
                 // Either response error exists and method is error, or method matches
                 if  let regex = regex  {
                     if  let match = regex.firstMatchInString(urlPath, options: [], range: NSMakeRange(0, urlPath.characters.count))  {
@@ -354,10 +354,10 @@ class RouterElement {
 ///
 /// Values for Router methods (Get, Post, Put, Delete, etc)
 ///
-enum RouterMethod :Int {
-    
+public enum RouterMethod :Int {
+
     case All, Get, Post, Put, Head, Delete, Options, Trace, Copy, Lock, MkCol, Move, Purge, PropFind, PropPatch, Unlock, Report, MkActivity, Checkout, Merge, MSearch, Notify, Subscribe, Unsubscribe, Patch, Search, Connect, Error, Unknown
-    
+
     init(string: String) {
         switch string.lowercaseString {
             case "all":
