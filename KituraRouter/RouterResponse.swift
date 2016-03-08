@@ -218,7 +218,25 @@ public class RouterResponse {
         response.statusCode = status
         return self
     }
-    
+
+    ///
+    /// Get the status code as an integer
+    ///
+    /// - Returns: The currently set status code as an integer
+    ///
+    public func getStatus() -> Int {
+        return response.status
+    }
+
+    ///
+    /// Get the status code as an HttpStatusCode
+    ///
+    /// - Returns: The currently set status code as an HttpStatusCode
+    ///
+    public func getStatusCode() -> HttpStatusCode {
+        return response.statusCode ?? .UNKNOWN
+    }
+
     ///
     /// Sends the status code
     ///
