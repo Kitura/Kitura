@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="197px" height="138px" viewBox="0 0 197 138" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 3.6.1 (26313) - http://www.bohemiancoding.com/sketch -->
+    <title>Group</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group">
+            <g id="Shape">
+                <path d="M99.8,82.7 C81.9,82.7 66,91.4 56,104.7 C50.5,101.6 44.3,99.8 37.5,99.8 C16.9,99.8 0.1,116.5 0.1,137.2 L154.2,137.2 C154.3,107.1 129.9,82.7 99.8,82.7 L99.8,82.7 Z" fill="#00BBE6"></path>
+                <path d="M185.5,111.8 C185.7,111.1 185.8,110.3 185.8,109.6 C185.8,106.3 184,103.5 181.4,102 L160.2,90.1 C167.4,81 167.7,68.2 160.6,58.7 L125.7,12.2 C112.2,25.7 106.9,44.3 109.8,61.8 L0.2,0.2 C9.3,32.9 38.4,54.7 70.6,55.9 C72,59.6 79.2,78.6 79.2,78.6 C88.5,102.5 111.5,118.3 137.2,118.3 L196.9,118.3 L196.9,118.3 L185.5,111.8 L185.5,111.8 Z" fill="#152333"></path>
+                <path d="M150.9,118.2 C143.2,97.5 123.2,82.7 99.8,82.7 C93.7,82.7 87.9,83.7 82.5,85.5 C93.3,105.4 114.1,118.2 137.2,118.2 L150.9,118.2 L150.9,118.2 Z" fill="#FFFFFF"></path>
+                <path d="M150.9,118.2 C143.2,97.5 123.2,82.7 99.8,82.7 C93.7,82.7 87.9,83.7 82.5,85.5 C93.3,105.4 114.1,118.2 137.2,118.2 L150.9,118.2 L150.9,118.2 Z" fill="#FFFFFF"></path>
+            </g>
+            <circle id="Oval" fill="#FFFFFF" cx="177.2" cy="109.6" r="2.8"></circle>
+        </g>
+    </g>
+</svg>
