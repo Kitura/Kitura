@@ -163,16 +163,6 @@ router.get("/document") { _, response, next in
     }
 }
 
-// Handle the GET request at the root path
-router.get("/") { _, response, next in
-  response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
-  do {
-      try response.status(HttpStatusCode.OK).send("You're running Kitura").end()
-  }
-  catch {}
-  next()
-}
-
 // Handles any errors that get set
 router.error { request, response, next in
   response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
@@ -181,6 +171,21 @@ router.error { request, response, next in
     }
     catch {}
   next()
+}
+
+// A custom Not found handler
+router.all { request, response, next in
+    if  response.getStatusCode() == .NOT_FOUND  {
+        // Remove this wrapping if statement, if you want to handle requests to / as well
+        if  request.originalUrl != "/"  &&  request.originalUrl != ""  {
+            do {
+                try response.send("Route not found in Sample application!").end()
+            }
+            catch {}
+        }
+    }
+
+    next()
 }
 
 // Listen on port 8090
