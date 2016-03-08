@@ -176,8 +176,7 @@ public class StaticFileServer : RouterMiddleware {
     
     private func serveFile(filePath: String, fileManager: NSFileManager, response: RouterResponse) {
         do {
-            var attributes : [String:AnyObject]
-            try attributes = fileManager.attributesOfItemAtPath(filePath)
+            let attributes = try fileManager.attributesOfItemAtPath(filePath)
             response.setHeader("Cache-Control", value: "max-age=\(maxAgeCacheControlHeader)")
             if let date = attributes[NSFileModificationDate] as? NSDate where addLastModifiedHeader {
                 response.setHeader("Last-Modified", value: SpiUtils.httpDate(date))
@@ -205,10 +204,15 @@ public class StaticFileServer : RouterMiddleware {
 
 }
 
+#if os(Linux)
+    public typealias CustomResponseHeaderAttributes = [String : Any]
+#else
+    public typealias CustomResponseHeaderAttributes = [String : AnyObject]
+#endif
 
 public protocol ResponseHeadersSetter {
     
-    func setCustomResponseHeaders (response: RouterResponse, filePath: String, fileAttributes: [String : AnyObject])
+    func setCustomResponseHeaders (response: RouterResponse, filePath: String, fileAttributes: CustomResponseHeaderAttributes)
     
 }
 
