@@ -231,7 +231,7 @@ Let's write our first Kitura-based Web Application written in Swift!
 10. Open your browser at [http://localhost:8090](http://localhost:8090)
 
 ## Kitura Wiki
-Feel free to visit our [Wiki](https://github.com/IBM-Swift/Kitura/wiki) (which, btw, is in very early stages).
+Feel free to visit our [Wiki](https://github.com/IBM-Swift/Kitura/wiki) for our roadmap and some tutorials.
 
 ## License
 
