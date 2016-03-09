@@ -17,7 +17,7 @@
 import XCTest
 
 @testable import nettest
-@testable import routertest
+@testable import Kituratest
 
 XCTMain([
     TestContentType(),

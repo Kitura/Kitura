@@ -26,7 +26,7 @@ import PackageDescription
 #endif
 
 let package = Package(
-    name: "Kitura-Router",
+    name: "Kitura",
         dependencies: [
             .Package(url: "https://github.com/IBM-Swift/Kitura-net.git", majorVersion: 0, minor: 5),
             .Package(url: "https://github.com/IBM-Swift/LoggerAPI.git", majorVersion: 0, minor: 4),

@@ -17,7 +17,7 @@
 import Foundation
 import XCTest
 
-@testable import KituraRouter
+@testable import Kitura
 @testable import KituraNet
 
 #if os(Linux)

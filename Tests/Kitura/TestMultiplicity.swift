@@ -16,7 +16,7 @@
 
 import XCTest
 
-@testable import KituraRouter
+@testable import Kitura
 @testable import KituraNet
 
 class TestMultiplicity : KituraTest {
