@@ -84,9 +84,9 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-03-01-a ve
 
  After installing it, make sure you update your PATH environment variable as described in the installation instructions (e.g. export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH)
 
-4. Clone this repository, `develop` branch
+4. Clone this repository
 
-   `git clone -b develop https://github.com/IBM-Swift/Kitura`
+   `git clone https://github.com/IBM-Swift/Kitura`
 
 5. build and run Kitura Sample
 
@@ -117,9 +117,9 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-03-01-a ve
 The complete instructions for building and installing this library are  [here](https://github.com/apple/swift-corelibs-libdispatch/blob/master/INSTALL), though, all you need to do is just this
  `git clone https://github.com/apple/swift-corelibs-libdispatch.git && cd swift-corelibs-libdispatch && git submodule init && git submodule update && sh ./autogen.sh && ./configure --with-swift-toolchain=<path-to-swift>/usr --prefix=<path-to-swift>/usr && make && make install`
 
-4. Clone this repository, `develop` branch
+4. Clone this repository
 
-  `git clone -b develop https://github.com/IBM-Swift/Kitura`
+  `git clone https://github.com/IBM-Swift/Kitura`
 
 5. build and run Kitura Sample
 
