@@ -14,17 +14,23 @@
  * limitations under the License.
  **/
 
-import KituraNet
-
 import Foundation
+
 import XCTest
 
-class ClientTests: XCTestCase {
-    var allTests : [(String, () throws -> Void)] {
-        return [
-            ("testSimpleHttpClient", testSimpleHttpClient)
-        ]
+@testable import KituraNet
+
+#if os(Linux)
+    extension ClientTests : XCTestCaseProvider {
+        var allTests : [(String, () throws -> Void)] {
+            return [
+                ("testSimpleHttpClient", testSimpleHttpClient)
+            ]
+        }
     }
+#endif
+
+class ClientTests: XCTestCase {
     
     func testSimpleHttpClient() {
         _ = Http.get("http://www.ibm.com") {response in

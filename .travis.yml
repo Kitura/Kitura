@@ -24,11 +24,12 @@ matrix:
       sudo: required
 
 before_install:
-  - echo "Operating system -> '$TRAVIS_OS_NAME'"
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker pull ibmcom/kitura-ubuntu:latest ; fi
+  - git submodule init
+  - git submodule update
+  - cd Kitura-CI && git checkout $TRAVIS_BRANCH && cd $TRAVIS_BUILD_DIR
 
 script:
-  - echo "About to build and test Kitura for branch '$TRAVIS_BRANCH'."
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker run --rm -e KITURA_BRANCH=$TRAVIS_BRANCH ibmcom/kitura-ubuntu:latest ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./build_osx.sh ; fi
-  - echo "Build and tests completed. See above for status."
+  - echo ">> Let's build and test the '$TRAVIS_BRANCH' branch for Kitura."
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./Kitura-CI/run_kitura_ubuntu_container.sh $TRAVIS_BRANCH $TRAVIS_BUILD_DIR Kitura; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./Kitura-CI/build_kitura_package.sh ; fi
+  - echo ">> Build and tests completed. See above for status."

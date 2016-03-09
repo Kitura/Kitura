@@ -13,10 +13,11 @@
 # limitations under the License.
 
 # Makefile
-# This is a makefile that conveniently calls Kitura-net's makefile when Kitura-net is a dependency
-# Should be copied to project's root directory
+export KITURA_CI_BUILD_SCRIPTS_DIR=Kitura-CI/build
 
-make:
-# run swift build with - to ignore its failure since swift build is expected to fail
-	-swift build
-	make -f Packages/Kitura*[Nn]et*/Makefile
+-include Kitura-CI/build/Makefile
+
+Kitura-CI/build/Makefile:
+	@echo --- Fetching Kitura-CI submodule
+	git submodule init
+	git submodule update --remote --merge

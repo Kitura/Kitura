@@ -14,13 +14,12 @@
  * limitations under the License.
  **/
 
-import KituraRouter
-
 import Foundation
 import XCTest
 
-class TestContentType : XCTestCase {
+@testable import KituraRouter
 
+class TestContentType : XCTestCase {
 
     var allTests : [(String, () throws -> Void)] {
         return [
