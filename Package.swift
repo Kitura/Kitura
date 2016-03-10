@@ -34,8 +34,5 @@ let package = Package(
             .Package(url: "https://github.com/IBM-Swift/Kitura-HttpParserHelper.git", majorVersion: 0, minor: 4),
             .Package(url: swiftyJsonUrl, majorVersion: swiftyJsonVersion),
             .Package(url: "https://github.com/IBM-Swift/Kitura-TemplateEngine.git", majorVersion: 0, minor: 0)
-        ],
-        testDependencies: [
-            .Package(url: "https://github.com/IBM-Swift/Kitura-Sample.git", majorVersion: 0, minor: 5)
         ]
 )
