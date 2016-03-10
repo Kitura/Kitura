@@ -91,7 +91,7 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-03-01-a ve
    make test
   ```
 
-5. If the tests pass, you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#Developing-Kitura-applications).
+5. If the tests pass, you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
 
  ### Notes
  * Homebrew by default installs libraries to `/usr/local`, if yours is different, change the path to find curl and http-parser libraries, in Kitura-CI/build/Makefile:
@@ -120,7 +120,7 @@ The complete instructions for building and installing this library are  [here](h
    cd Kitura
    make test
   ```
-5. If the tests pass, you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#Developing-Kitura-applications).
+5. If the tests pass, you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
 
 ## Developing Kitura applications
 Let's develop our first Kitura Web Application written in Swift!
