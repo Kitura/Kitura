@@ -53,6 +53,13 @@ public class StaticFileServer : RouterMiddleware {
     //
     private var customResponseHeadersSetter : ResponseHeadersSetter?
     
+    //
+    // Generate ETag. Defaults to true.
+    //
+    private var generateETag = true
+    
+    
+    
     private var path : String
     
     public convenience init (options: [Options]) {
@@ -92,6 +99,8 @@ public class StaticFileServer : RouterMiddleware {
                     redirect = value
                 case .CustomResponseHeadersSetter(let value):
                     customResponseHeadersSetter = value
+                case .GenerateETag (let value):
+                    generateETag = value
                 }
             }
         }
@@ -178,8 +187,19 @@ public class StaticFileServer : RouterMiddleware {
         do {
             let attributes = try fileManager.attributesOfItemAtPath(filePath)
             response.setHeader("Cache-Control", value: "max-age=\(maxAgeCacheControlHeader)")
-            if let date = attributes[NSFileModificationDate] as? NSDate where addLastModifiedHeader {
-                response.setHeader("Last-Modified", value: SpiUtils.httpDate(date))
+            if addLastModifiedHeader {
+                if let date = attributes[NSFileModificationDate] as? NSDate {
+                    response.setHeader("Last-Modified", value: SpiUtils.httpDate(date))
+                }
+            }
+            if generateETag {
+                if let date = attributes[NSFileModificationDate] as? NSDate,
+                    let size = attributes[NSFileSize] as? Int {
+                        let sizeHex = String(size, radix: 16, uppercase: false)
+                        let timeHex = String(Int(date.timeIntervalSince1970), radix: 16, uppercase: false)
+                        let etag = "W/\"\(sizeHex)-\(timeHex)\""
+                        response.setHeader("Etag", value: etag)
+                 }
             }
             if let _ = customResponseHeadersSetter {
                 customResponseHeadersSetter!.setCustomResponseHeaders(response, filePath: filePath, fileAttributes: attributes)
@@ -200,6 +220,7 @@ public class StaticFileServer : RouterMiddleware {
         case MaxAgeCacheControlHeader(Int)
         case Redirect(Bool)
         case CustomResponseHeadersSetter(ResponseHeadersSetter)
+        case GenerateETag(Bool)
     }
 
 }
