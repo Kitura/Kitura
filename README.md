@@ -13,6 +13,19 @@
 
 Kitura is a web framework and web server that is created for web services written in Swift.
 
+## Table of Contents
+* [Summary](#summary)
+* [Features](#features)
+* [Swift version](#swift-version)
+* [Installation (Docker development environment)](#installation-docker-development-environment)
+* [Installation (Vagrant development environment)](#installation-vagrant-development-environment)
+* [Installation (OS X)](#installation-os-x)
+* [Installation (Linux, Apt-based)](#installation-linux-apt-based)
+* [Developing Kitura applications](#developing-kitura-applications)
+* [Kitura Wiki](#kitura-wiki)
+* [Developing Kitura](#developing-kitura)
+* [License](#license)
+
 ## Features:
 
 - URL routing (GET, POST, PUT, DELETE)
