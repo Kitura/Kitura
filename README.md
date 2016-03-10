@@ -205,6 +205,21 @@ Let's develop our first Kitura Web Application written in Swift!
 ## Kitura Wiki
 Feel free to visit our [Wiki](https://github.com/IBM-Swift/Kitura/wiki) for our roadmap and some tutorials.
 
+## Developing Kitura
+
+1. Clone this repository, `develop` branch
+  `git clone -b develop https://github.com/IBM-Swift/Kitura`
+2. Build and run tests
+  `make test`
+
+ ### Notes
+ * Homebrew by default installs libraries to `/usr/local`, if yours is different, change the path to find curl and http-parser libraries, in `Kitura-CI/build/Makefile`:
+ 
+   ```Makefile
+   SWIFTC_FLAGS = -Xswiftc -I/usr/local/include
+   LINKER_FLAGS = -Xlinker -L/usr/local/lib
+   ```
+
 ## License
 
 This library is licensed under Apache 2.0. Full license text is available in [LICENSE](LICENSE.txt).
