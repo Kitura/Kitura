@@ -22,12 +22,17 @@
 
 .contentCenter {
     display: inline-block;
-    margin: 3px 0 0 112px;
+    margin-top: 3px;
     vertical-align: top;
 }
 
 .contentCenterApp {
     margin-bottom: 20px;
+}
+
+.contentCenterSpacer {
+    display: inline-block;
+    width: 8%;
 }
 
 .contentLeading {
@@ -78,7 +83,7 @@
 
 .contentTrailing {
     display: inline-block;
-    margin: 5px 0 0 122px;
+    margin-top: 5px;
     vertical-align: top;
 }
 
@@ -86,8 +91,13 @@
     margin-bottom: 30px;
 }
 
+.contentTrailingSpacer {
+    display: inline-block;
+    width: 8%;
+}
+
 .documentContents {
-    padding-bottom: 80px; /* Height of footerBar */
+    padding-bottom: 60px; /* Height of footerBar */
 }
 
 .documentWrapper {
@@ -98,7 +108,7 @@
 .footerBar {
     background: #0099e7;
     bottom: 0;
-    height: 80px;
+    height: 60px;
     left: 0;
     position: absolute;
     width: 100%;
@@ -111,16 +121,18 @@
     float: right;
     font-family: HelveticaNeue-Light;
     font-size: 25px;
-    margin: 30px 40px 0 0;
+    font-weight: 300;
+    margin: 20px 40px 0 0;
     text-align: right;
+    text-decoration: none;
 }
 
 .footerText {
     color: #ffffff;
     display: inline-block;
     font-family: HelveticaNeue-Light;
-    font-size:  18px;
-    margin-top: 30px;
+    font-size:  14px;
+    margin-top: 23px;
 }
 
 .statusText {
@@ -156,6 +168,7 @@
     display: inline-block;
     font-family: HelveticaNeue-Light;
     font-size: 22px;
+    font-weight: 300;
     letter-spacing: 1px;
     margin: 10px 0 0 16px;
     vertical-align: top;
