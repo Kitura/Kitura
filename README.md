@@ -84,22 +84,7 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-03-01-a ve
 
  After installing it, make sure you update your PATH environment variable as described in the installation instructions (e.g. export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH)
 
-4. To build and test Kitura, clone this repository, `develop` branch, and perform `make test`
-   ```
-   git clone -b develop https://github.com/IBM-Swift/Kitura
-   cd Kitura
-   make test
-  ```
-
-5. If the tests pass, you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
-
- ### Notes
- * Homebrew by default installs libraries to `/usr/local`, if yours is different, change the path to find curl and http-parser libraries, in Kitura-CI/build/Makefile:
- 
-   ```Makefile
-   SWIFTC_FLAGS = -Xswiftc -I/usr/local/include
-   LINKER_FLAGS = -Xlinker -L/usr/local/lib
-   ```
+4. Now you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
 
 ## Installation (Linux, Apt-based)
 
@@ -115,13 +100,7 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-03-01-a ve
 The complete instructions for building and installing this library are  [here](https://github.com/apple/swift-corelibs-libdispatch/blob/master/INSTALL), though, all you need to do is just this
  `git clone https://github.com/apple/swift-corelibs-libdispatch.git && cd swift-corelibs-libdispatch && git submodule init && git submodule update && sh ./autogen.sh && ./configure --with-swift-toolchain=<path-to-swift>/usr --prefix=<path-to-swift>/usr && make && make install`
 
-4. To build and test Kitura, clone this repository, `develop` branch, and perform `make test`
-   ```
-   git clone -b develop https://github.com/IBM-Swift/Kitura
-   cd Kitura
-   make test
-  ```
-5. If the tests pass, you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
+4. Now you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
 
 ## Developing Kitura applications
 Let's develop our first Kitura Web Application written in Swift!
