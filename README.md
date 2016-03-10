@@ -130,8 +130,8 @@ The complete instructions for building and installing this library are  [here](h
 ## Run Kitura tests (optional)
 `make test`
 
-## Usage
-Let's write our first Kitura-based Web Application written in Swift!
+## Developing Kitura applications
+Let's develop our first Kitura Web Application written in Swift!
 
 1. First we create a new project directory
 
