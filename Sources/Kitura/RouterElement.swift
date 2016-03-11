@@ -73,7 +73,7 @@ class RouterElement {
     ///
     /// - Returns: a RouterElement instance
     ///
-    private init(method: RouterMethod, pattern: String?, middleware: [RouterMiddleware]) {
+    init(method: RouterMethod, pattern: String?, middleware: [RouterMiddleware]) {
 
         self.method = method
         self.pattern = pattern
@@ -99,17 +99,9 @@ class RouterElement {
     ///
     /// Convenience initializer
     ///
-    convenience init(method: RouterMethod, pattern: String? , handler: RouterHandler...) {
+    convenience init(method: RouterMethod, pattern: String? , handler: [RouterHandler]) {
 
         self.init(method: method, pattern: pattern, middleware: handler.map{RouterMiddlewareGenerator(handler: $0)})
-    }
-
-    ///
-    /// Convenience initializer
-    ///
-    convenience init(method: RouterMethod, pattern: String? , middleware: RouterMiddleware...) {
-
-        self.init(method: method, pattern: pattern, middleware: middleware)
     }
 
     ///
