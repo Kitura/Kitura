@@ -60,31 +60,26 @@ class RouterElement {
     private var keys:[String]?
 
     ///
-    /// The handler
-    ///
-    private var handler: RouterHandler?
-
-    ///
     /// The middleware to use
     ///
-    private var middleware: RouterMiddleware?
+    private var middleware: RouterMiddleware
 
     ///
     /// initializes a RouterElement
     ///
     /// - Parameter method: the RouterMethod
     /// - Parameter pattern: the String pattern to use
+    /// - Parameter middleware: the RouterMiddleware used to handle
     ///
     /// - Returns: a RouterElement instance
     ///
-    private init(method: RouterMethod, pattern: String?) {
+    init(method: RouterMethod, pattern: String?, middleware: RouterMiddleware) {
 
         self.method = method
         self.pattern = pattern
         self.regex = nil
         self.keys = nil
-        self.handler = nil
-        self.middleware = nil
+        self.middleware = middleware
 
         SysUtils.doOnce(&RouterElement.regexInit) {
             do {
@@ -106,21 +101,7 @@ class RouterElement {
     ///
     convenience init(method: RouterMethod, pattern: String? , handler: RouterHandler) {
 
-        self.init(method: method, pattern: pattern)
-
-        self.handler = handler
-
-    }
-
-    ///
-    /// Convenience initializer
-    ///
-    convenience init(method: RouterMethod, pattern: String?, middleware: RouterMiddleware) {
-
-        self.init(method: method, pattern: pattern)
-
-        self.middleware = middleware
-
+        self.init(method: method, pattern: pattern, middleware: RouterMiddlewareGenerator(handler: handler))
     }
 
     ///
@@ -166,20 +147,10 @@ class RouterElement {
     /// - Parameter next: the closure for the next execution block
     ///
     private func processHelper(request: RouterRequest, response: RouterResponse, next: () -> Void) {
-        
-        if  let handler = handler  {
-            handler(request: request, response: response) { () in
-                request.params = [:]
-                next()
-            }
+        middleware.handle(request, response: response) { () in
+            request.params = [:]
+            next()
         }
-        else if  let middleware = middleware  {
-            middleware.handle(request, response: response) { () in
-                request.params = [:]
-                next()
-            }
-        }
-
     }
 
     ///
