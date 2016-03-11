@@ -108,6 +108,21 @@ class TestResponse : KituraTest {
         }
     }
 
+    func testErrorHandler() {
+        performServerTest(router) {
+            self.performRequest("get", path: "/error", callback: {response in 
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!,"Caught the error: The operation couldn’t be completed. (RouterTestDomain error 1.)")
+                }
+                catch{
+                    XCTFail("No respose body")
+                }
+            })
+        }
+    }
+
     static func setupRouter() -> Router {
         let router = Router()
         // the same router definition is used for all these test cases
@@ -147,6 +162,13 @@ class TestResponse : KituraTest {
             next()
         }
 
+        // Error handling example
+        router.get("/error") { _, response, next in
+            response.status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+            response.error = NSError(domain: "RouterTestDomain", code: 1, userInfo: [:])
+            next()
+        }
+
 
         router.use("/bodytest", middleware: BodyParser())
                 
@@ -171,6 +193,16 @@ class TestResponse : KituraTest {
 
             next()
         }
+
+        router.error { request, response, next in
+            response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
+            do {
+                try response.send("Caught the error: \(response.error!.localizedDescription)").end()
+            }
+            catch {}
+            next()
+        }
+
 	return router
     }
 }
