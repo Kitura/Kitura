@@ -62,7 +62,7 @@ class RouterElement {
     ///
     /// The middleware to use
     ///
-    private var middleware: RouterMiddleware
+    private let middlewares: [RouterMiddleware]
 
     ///
     /// initializes a RouterElement
@@ -73,13 +73,13 @@ class RouterElement {
     ///
     /// - Returns: a RouterElement instance
     ///
-    init(method: RouterMethod, pattern: String?, middleware: RouterMiddleware) {
+    private init(method: RouterMethod, pattern: String?, middleware: [RouterMiddleware]) {
 
         self.method = method
         self.pattern = pattern
         self.regex = nil
         self.keys = nil
-        self.middleware = middleware
+        self.middlewares = middleware
 
         SysUtils.doOnce(&RouterElement.regexInit) {
             do {
@@ -99,9 +99,17 @@ class RouterElement {
     ///
     /// Convenience initializer
     ///
-    convenience init(method: RouterMethod, pattern: String? , handler: RouterHandler) {
+    convenience init(method: RouterMethod, pattern: String? , handler: RouterHandler...) {
 
-        self.init(method: method, pattern: pattern, middleware: RouterMiddlewareGenerator(handler: handler))
+        self.init(method: method, pattern: pattern, middleware: handler.map{RouterMiddlewareGenerator(handler: $0)})
+    }
+
+    ///
+    /// Convenience initializer
+    ///
+    convenience init(method: RouterMethod, pattern: String? , middleware: RouterMiddleware...) {
+
+        self.init(method: method, pattern: pattern, middleware: middleware)
     }
 
     ///
@@ -147,9 +155,11 @@ class RouterElement {
     /// - Parameter next: the closure for the next execution block
     ///
     private func processHelper(request: RouterRequest, response: RouterResponse, next: () -> Void) {
-        middleware.handle(request, response: response) { () in
-            request.params = [:]
-            next()
+        for middleware in middlewares {
+            middleware.handle(request, response: response) { () in
+                request.params = [:]
+                next()
+            }
         }
     }
 
