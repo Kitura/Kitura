@@ -158,7 +158,7 @@ Let's develop our first Kitura Web Application written in Swift!
 4. Import the modules in your code (Sources/main.swift):
 
   ```swift
-  import KituraRouter
+  import Kitura
   import KituraNet
   import KituraSys
   ```
@@ -184,7 +184,7 @@ Let's develop our first Kitura Web Application written in Swift!
 7. Sources/main.swift file should now look like this:
 
   ```swift
-  import KituraRouter
+  import Kitura
   import KituraNet
   import KituraSys
 
