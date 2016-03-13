@@ -25,5 +25,6 @@ XCTMain([
     TestResponse(),
     TestMultiplicity(),
     ClientTests(),
-    ParserTests()
+    ParserTests(),
+    TestCookies()
 ])
