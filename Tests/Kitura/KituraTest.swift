@@ -57,9 +57,15 @@ class KituraTest : XCTestCase {
         }
     }
 
-    func performRequest(method: String, path: String, callback: ClientRequestCallback, requestModifier: ((ClientRequest) -> Void)? = nil) {
-        let headers = ["Content-Type": "text/plain"]
-        let req = Http.request([.Method(method), .Hostname("localhost"), .Port(8090), .Path(path), .Headers(headers)], callback: callback)
+    func performRequest(method: String, path: String, callback: ClientRequestCallback, headers: [String: String]? = nil, requestModifier: ((ClientRequest) -> Void)? = nil) {
+        var allHeaders = [String: String]()
+        if  let headers = headers  {
+            for  (headerName, headerValue) in headers  {
+                allHeaders[headerName] = headerValue
+            }
+        }
+        allHeaders["Content-Type"] = "text/plain"
+        let req = Http.request([.Method(method), .Hostname("localhost"), .Port(8090), .Path(path), .Headers(allHeaders)], callback: callback)
         if let requestModifier = requestModifier {
             requestModifier(req)
         }
@@ -67,7 +73,7 @@ class KituraTest : XCTestCase {
     }
 
     private func setupServer(port: Int, delegate: HttpServerDelegate) -> HttpServer {
-        return HttpServer.listen(port, delegate: delegate, 
+        return HttpServer.listen(port, delegate: delegate,
                            notOnMainQueue:true)
     }
 }
