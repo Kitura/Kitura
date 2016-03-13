@@ -60,6 +60,47 @@ public class RouterRequest: BlueSocketReader {
     ///
     public var headers: [String:String] { return serverRequest.headers }
 
+    //
+    // Parsed Cookies, used to do a lazy parsing of the appropriate headers
+    //
+    private var _cookies: [String: NSHTTPCookie]?
+
+    //
+    // Static for Cookie header key value
+    //
+    private let cookieHeader = "cookie"
+
+    ///
+    /// Set of parsed cookies
+    ///
+    public var cookies: [String: NSHTTPCookie] {
+        if  _cookies == nil  {
+            _cookies = [String: NSHTTPCookie]()
+            var cookieString: String?
+            for  (header, value)  in headers  {
+                if  header.bridge().lowercaseString == cookieHeader {
+                    cookieString = value
+                    break
+                }
+            }
+            if  let cookieString = cookieString {
+                let cookieNameValues = cookieString.bridge().componentsSeparatedByString("; ")
+                for  cookieNameValue  in  cookieNameValues  {
+                    let cookieNameValueParts = cookieNameValue.bridge().componentsSeparatedByString("=")
+                    if   cookieNameValueParts.count == 2  {
+                        let theCookie = NSHTTPCookie(properties:
+                                                       [NSHTTPCookieDomain: ".",
+                                                        NSHTTPCookiePath: "/",
+                                                        NSHTTPCookieName: cookieNameValueParts[0] ,
+                                                        NSHTTPCookieValue: cookieNameValueParts[1]])
+                        _cookies![cookieNameValueParts[0]] = theCookie
+                    }
+                }
+            }
+        }
+        return _cookies!
+    }
+
     ///
     /// List of URL parameters
     ///
