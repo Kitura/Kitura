@@ -154,7 +154,7 @@ class RouterElement {
 
         let nextCallback = {
             middlewareCount += 1
-            if middlewareCount < self.middlewares.count {
+            if middlewareCount < self.middlewares.count && (response.error == nil || self.method == .Error) {
                 self.middlewares[middlewareCount].handle(request, response: response, next: nextCallbackPlaceholder!)
             }
             else {
