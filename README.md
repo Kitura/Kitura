@@ -128,7 +128,7 @@ Let's develop our first Kitura Web Application written in Swift!
 
   ```bash
   cd myFirstProject
-  swift build --init
+  swift-build --init
   ```
 
   Now your directory structure under myFirstProject should look like this:
