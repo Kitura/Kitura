@@ -128,7 +128,7 @@ Let's develop our first Kitura Web Application written in Swift!
 
   ```bash
   cd myFirstProject
-  swift build --init
+  swift-build --init
   ```
 
   Now your directory structure under myFirstProject should look like this:
@@ -202,7 +202,7 @@ Let's develop our first Kitura Web Application written in Swift!
 
 8. Compile your application:
 
-  - Mac OS X: `swift build -Xcc -fblocks -Xswiftc -I/usr/local/include -Xlinker -L/usr/local/lib`
+  - Mac OS X: `swift-build -Xcc -fblocks -Xswiftc -I/usr/local/include -Xlinker -L/usr/local/lib`
   - Linux:  `swift build -Xcc -fblocks`
 
   Or copy [Makefile and build scripts](https://github.com/IBM-Swift/Kitura-CI/blob/master/build) to your project directory and run `make build`. You may want to customize this Makefile and use it for building, testing and running your application. For example, you can clean your build directory, refetch all the dependencies, build, test and run your application by running `make clean refetch test run`.
