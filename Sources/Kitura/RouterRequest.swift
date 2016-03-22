@@ -56,9 +56,14 @@ public class RouterRequest: BlueSocketReader {
     public var url: String
 
     ///
-    /// List of HTTP headers
+    /// List of HTTP headers with simple String values
     ///
-    public var headers: [String:String] { return serverRequest.headers }
+    public var headers: SimpleHeaders { return serverRequest.headers }
+
+    ///
+    /// List of HTTP headers with String array values
+    ///
+    public var headersAsArrays: ArrayHeaders { return serverRequest.headersAsArrays }
 
     //
     // Parsed Cookies, used to do a lazy parsing of the appropriate headers
