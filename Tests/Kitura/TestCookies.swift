@@ -113,7 +113,14 @@ class TestCookies : KituraTest {
                     XCTAssertEqual(nameValue.count, 2, "Malformed Set-Cookie header \(headerValue)")
 
                     if  nameValue[0] == named  {
-                        var properties = [NSHTTPCookieName: nameValue[0], NSHTTPCookieValue: nameValue[1]]
+                        #if os(Linux)
+                            var properties = [String: Any]()
+                        #else
+                            var properties = [String: AnyObject]()
+                        #endif
+
+                        properties[NSHTTPCookieName]  =  nameValue[0]
+                        properties[NSHTTPCookieValue] =  nameValue[1]
 
                         for  part in parts[1..<parts.count] {
                             var pieces = part.bridge().componentsSeparatedByString("=")
