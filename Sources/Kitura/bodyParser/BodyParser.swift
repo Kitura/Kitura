@@ -45,7 +45,7 @@ public class BodyParser : RouterMiddleware {
     ///
     public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
         
-        request.body = BodyParser.parse(request, contentType: request.serverRequest.headers["Content-Type"])
+        request.body = BodyParser.parse(request, contentType: request.serverRequest.headers["content-type"])
         next()
         
     }
