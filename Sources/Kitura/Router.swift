@@ -59,254 +59,472 @@ public class Router {
     }
 
     // MARK: All
-    public func all(handler: RouterHandler...) -> Router {
-        return routingHelper(.All, pattern: nil, handler: handler)
-    }
-
-    public func all(path: String, handler: RouterHandler...) -> Router {
+    public func all(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.All, pattern: path, handler: handler)
     }
 
-    // MARK: Get
-    public func get(handler: RouterHandler...) -> Router {
-        return routingHelper(.Get, pattern: nil, handler: handler)
+    public func all(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.All, pattern: path, handler: handler)
     }
 
-    public func get(path: String, handler: RouterHandler...) -> Router {
+    public func all(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.All, pattern: path, middleware: middleware)
+    }
+
+    public func all(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.All, pattern: path, middleware: middleware)
+    }
+
+    // MARK: Get
+    public func get(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Get, pattern: path, handler: handler)
     }
 
-    // MARK: Head
-    public func head(handler: RouterHandler...) -> Router {
-        return routingHelper(.Head, pattern: nil, handler: handler)
+    public func get(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.Get, pattern: path, handler: handler)
     }
 
-    public func head(path: String, handler: RouterHandler...) -> Router {
+    public func get(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.Get, pattern: path, middleware: middleware)
+    }
+
+    public func get(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.Get, pattern: path, middleware: middleware)
+    }
+
+    // MARK: Head
+    public func head(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Head, pattern: path, handler: handler)
     }
 
-    // MARK: Post
-    public func post(handler: RouterHandler...) -> Router {
-        return routingHelper(.Post, pattern: nil, handler: handler)
+    public func head(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.Head, pattern: path, handler: handler)
     }
 
-    public func post(path: String, handler: RouterHandler...) -> Router {
+    public func head(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.Head, pattern: path, middleware: middleware)
+    }
+
+    public func head(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.Head, pattern: path, middleware: middleware)
+    }
+
+    // MARK: Post
+    public func post(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Post, pattern: path, handler: handler)
     }
 
-    // MARK: Put
-    public func put(handler: RouterHandler...) -> Router {
-        return routingHelper(.Put, pattern: nil, handler: handler)
+    public func post(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.Post, pattern: path, handler: handler)
     }
 
-    public func put(path: String, handler: RouterHandler...) -> Router {
+    public func post(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.Post, pattern: path, middleware: middleware)
+    }
+
+    public func post(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.Post, pattern: path, middleware: middleware)
+    }
+
+    // MARK: Put
+    public func put(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Put, pattern: path, handler: handler)
     }
 
-    // MARK: Delete
-    public func delete(handler: RouterHandler...) -> Router {
-        return routingHelper(.Delete, pattern: nil, handler: handler)
+    public func put(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.Put, pattern: path, handler: handler)
     }
 
-    public func delete(path: String, handler: RouterHandler...) -> Router {
+    public func put(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.Put, pattern: path, middleware: middleware)
+    }
+
+    public func put(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.Put, pattern: path, middleware: middleware)
+    }
+
+    // MARK: Delete
+    public func delete(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Delete, pattern: path, handler: handler)
     }
 
-    // MARK: Options
-    public func options(handler: RouterHandler...) -> Router {
-        return routingHelper(.Options, pattern: nil, handler: handler)
+    public func delete(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.Delete, pattern: path, handler: handler)
     }
 
-    public func options(path: String, handler: RouterHandler...) -> Router {
+    public func delete(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.Delete, pattern: path, middleware: middleware)
+    }
+
+    public func delete(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.Delete, pattern: path, middleware: middleware)
+    }
+
+    // MARK: Options
+    public func options(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Options, pattern: path, handler: handler)
     }
 
-    // MARK: Trace
-    public func trace(handler: RouterHandler...) -> Router {
-        return routingHelper(.Trace, pattern: nil, handler: handler)
+    public func options(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.Options, pattern: path, handler: handler)
     }
 
-    public func trace(path: String, handler: RouterHandler...) -> Router {
+    public func options(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.Options, pattern: path, middleware: middleware)
+    }
+
+    public func options(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.Options, pattern: path, middleware: middleware)
+    }
+
+    // MARK: Trace
+    public func trace(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Trace, pattern: path, handler: handler)
     }
 
-    // MARK: Copy
-    public func copy(handler: RouterHandler...) -> Router {
-        return routingHelper(.Copy, pattern: nil, handler: handler)
+    public func trace(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.Trace, pattern: path, handler: handler)
     }
 
-    public func copy(path: String, handler: RouterHandler...) -> Router {
+    public func trace(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.Trace, pattern: path, middleware: middleware)
+    }
+
+    public func trace(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.Trace, pattern: path, middleware: middleware)
+    }
+
+    // MARK: Copy
+    public func copy(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Copy, pattern: path, handler: handler)
     }
 
-    // MARK: Lock
-    public func lock(handler: RouterHandler...) -> Router {
-        return routingHelper(.Lock, pattern: nil, handler: handler)
+    public func copy(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.Copy, pattern: path, handler: handler)
     }
 
-    public func lock(path: String, handler: RouterHandler...) -> Router {
+    public func copy(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.Copy, pattern: path, middleware: middleware)
+    }
+
+    public func copy(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.Copy, pattern: path, middleware: middleware)
+    }
+
+    // MARK: Lock
+    public func lock(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Lock, pattern: path, handler: handler)
     }
 
-    // MARK: MkCol
-    public func mkCol(handler: RouterHandler...) -> Router {
-        return routingHelper(.MkCol, pattern: nil, handler: handler)
+    public func lock(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.Lock, pattern: path, handler: handler)
     }
 
-    public func mkCol(path: String, handler: RouterHandler...) -> Router {
+    public func lock(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.Lock, pattern: path, middleware: middleware)
+    }
+
+    public func lock(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.Lock, pattern: path, middleware: middleware)
+    }
+
+    // MARK: MkCol
+    public func mkCol(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.MkCol, pattern: path, handler: handler)
     }
 
-    // MARK: Move
-    public func move(handler: RouterHandler...) -> Router {
-        return routingHelper(.Move, pattern: nil, handler: handler)
+    public func mkCol(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.MkCol, pattern: path, handler: handler)
     }
 
-    public func move(path: String, handler: RouterHandler...) -> Router {
+    public func mkCol(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.MkCol, pattern: path, middleware: middleware)
+    }
+
+    public func mkCol(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.MkCol, pattern: path, middleware: middleware)
+    }
+
+    // MARK: Move
+    public func move(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Move, pattern: path, handler: handler)
     }
 
-    // MARK: Purge
-    public func purge(handler: RouterHandler...) -> Router {
-        return routingHelper(.Purge, pattern: nil, handler: handler)
+    public func move(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.Move, pattern: path, handler: handler)
     }
 
-    public func purge(path: String, handler: RouterHandler...) -> Router {
+    public func move(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.Move, pattern: path, middleware: middleware)
+    }
+
+    public func move(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.Move, pattern: path, middleware: middleware)
+    }
+
+    // MARK: Purge
+    public func purge(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Purge, pattern: path, handler: handler)
     }
 
-    // MARK: Propfind
-    public func propFind(handler: RouterHandler...) -> Router {
-        return routingHelper(.PropFind, pattern: nil, handler: handler)
+    public func purge(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.Purge, pattern: path, handler: handler)
     }
 
-    public func propFind(path: String, handler: RouterHandler...) -> Router {
+    public func purge(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.Purge, pattern: path, middleware: middleware)
+    }
+
+    public func purge(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.Purge, pattern: path, middleware: middleware)
+    }
+
+    // MARK: PropFind
+    public func propFind(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.PropFind, pattern: path, handler: handler)
     }
 
-    // MARK: PropPatch
-    public func propPatch(handler: RouterHandler...) -> Router {
-        return routingHelper(.PropPatch, pattern: nil, handler: handler)
+    public func propFind(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.PropFind, pattern: path, handler: handler)
     }
 
-    public func propPatch(path: String, handler: RouterHandler...) -> Router {
+    public func propFind(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.PropFind, pattern: path, middleware: middleware)
+    }
+
+    public func propFind(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.PropFind, pattern: path, middleware: middleware)
+    }
+
+    // MARK: PropPatch
+    public func propPatch(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.PropPatch, pattern: path, handler: handler)
     }
 
-    // MARK: Unlock
-    public func unlock(handler: RouterHandler...) -> Router {
-        return routingHelper(.Unlock, pattern: nil, handler: handler)
+    public func propPatch(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.PropPatch, pattern: path, handler: handler)
     }
 
-    public func unlock(path: String, handler: RouterHandler...) -> Router {
+    public func propPatch(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.PropPatch, pattern: path, middleware: middleware)
+    }
+
+    public func propPatch(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.PropPatch, pattern: path, middleware: middleware)
+    }
+
+    // MARK: Unlock
+    public func unlock(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Unlock, pattern: path, handler: handler)
     }
 
-    // MARK: Report
-    public func report(handler: RouterHandler...) -> Router {
-        return routingHelper(.Report, pattern: nil, handler: handler)
+    public func unlock(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.Unlock, pattern: path, handler: handler)
     }
 
-    public func report(path: String, handler: RouterHandler...) -> Router {
+    public func unlock(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.Unlock, pattern: path, middleware: middleware)
+    }
+
+    public func unlock(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.Unlock, pattern: path, middleware: middleware)
+    }
+
+    // MARK: Report
+    public func report(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Report, pattern: path, handler: handler)
     }
 
-    // MARK: MkActivity
-    public func mkActivity(handler: RouterHandler...) -> Router {
-        return routingHelper(.MkActivity, pattern: nil, handler: handler)
+    public func report(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.Report, pattern: path, handler: handler)
     }
 
-    public func mkActivity(path: String, handler: RouterHandler...) -> Router {
+    public func report(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.Report, pattern: path, middleware: middleware)
+    }
+
+    public func report(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.Report, pattern: path, middleware: middleware)
+    }
+
+    // MARK: MkActivity
+    public func mkActivity(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.MkActivity, pattern: path, handler: handler)
     }
 
-    // MARK: Checkout
-    public func checkout(handler: RouterHandler...) -> Router {
-        return routingHelper(.Checkout, pattern: nil, handler: handler)
+    public func mkActivity(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.MkActivity, pattern: path, handler: handler)
     }
 
-    public func checkout(path: String, handler: RouterHandler...) -> Router {
+    public func mkActivity(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.MkActivity, pattern: path, middleware: middleware)
+    }
+
+    public func mkActivity(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.MkActivity, pattern: path, middleware: middleware)
+    }
+
+    // MARK: Checkout
+    public func checkout(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Checkout, pattern: path, handler: handler)
     }
 
-    // MARK: Merge
-    public func merge(handler: RouterHandler...) -> Router {
-        return routingHelper(.Merge, pattern: nil, handler: handler)
+    public func checkout(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.Checkout, pattern: path, handler: handler)
     }
 
-    public func merge(path: String, handler: RouterHandler...) -> Router {
+    public func checkout(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.Checkout, pattern: path, middleware: middleware)
+    }
+
+    public func checkout(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.Checkout, pattern: path, middleware: middleware)
+    }
+
+    // MARK: Merge
+    public func merge(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Merge, pattern: path, handler: handler)
     }
 
-    // MARK: MSearch
-    public func mSearch(handler: RouterHandler...) -> Router {
-        return routingHelper(.MSearch, pattern: nil, handler: handler)
+    public func merge(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.Merge, pattern: path, handler: handler)
     }
 
-    public func mSearch(path: String, handler: RouterHandler...) -> Router {
+    public func merge(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.Merge, pattern: path, middleware: middleware)
+    }
+
+    public func merge(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.Merge, pattern: path, middleware: middleware)
+    }
+
+    // MARK: MSearch
+    public func mSearch(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.MSearch, pattern: path, handler: handler)
     }
 
-    // MARK: Notify
-    public func notify(handler: RouterHandler...) -> Router {
-        return routingHelper(.Notify, pattern: nil, handler: handler)
+    public func mSearch(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.MSearch, pattern: path, handler: handler)
     }
 
-    public func notify(path: String, handler: RouterHandler...) -> Router {
+    public func mSearch(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.MSearch, pattern: path, middleware: middleware)
+    }
+
+    public func mSearch(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.MSearch, pattern: path, middleware: middleware)
+    }
+
+    // MARK: Notify
+    public func notify(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Notify, pattern: path, handler: handler)
     }
 
-    // MARK: Subscribe
-    public func subscribe(handler: RouterHandler...) -> Router {
-        return routingHelper(.Subscribe, pattern: nil, handler: handler)
+    public func notify(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.Notify, pattern: path, handler: handler)
     }
 
-    public func subscribe(path: String, handler: RouterHandler...) -> Router {
+    public func notify(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.Notify, pattern: path, middleware: middleware)
+    }
+
+    public func notify(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.Notify, pattern: path, middleware: middleware)
+    }
+
+    // MARK: Subscribe
+    public func subscribe(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Subscribe, pattern: path, handler: handler)
     }
 
-    // MARK: Unsubscribe
-    public func unsubscribe(handler: RouterHandler...) -> Router {
-        return routingHelper(.Unsubscribe, pattern: nil, handler: handler)
+    public func subscribe(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.Subscribe, pattern: path, handler: handler)
     }
 
-    public func unsubscribe(path: String, handler: RouterHandler...) -> Router {
+    public func subscribe(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.Subscribe, pattern: path, middleware: middleware)
+    }
+
+    public func subscribe(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.Subscribe, pattern: path, middleware: middleware)
+    }
+
+    // MARK: Unsubscribe
+    public func unsubscribe(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Unsubscribe, pattern: path, handler: handler)
     }
 
-    // MARK: Patch
-    public func patch(handler: RouterHandler...) -> Router {
-        return routingHelper(.Patch, pattern: nil, handler: handler)
+    public func unsubscribe(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.Unsubscribe, pattern: path, handler: handler)
     }
 
-    public func patch(path: String, handler: RouterHandler...) -> Router {
+    public func unsubscribe(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.Unsubscribe, pattern: path, middleware: middleware)
+    }
+
+    public func unsubscribe(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.Unsubscribe, pattern: path, middleware: middleware)
+    }
+
+    // MARK: Patch
+    public func patch(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Patch, pattern: path, handler: handler)
     }
 
-    // MARK: Search
-    public func search(handler: RouterHandler...) -> Router {
-        return routingHelper(.Search, pattern: nil, handler: handler)
+    public func patch(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.Patch, pattern: path, handler: handler)
     }
 
-    public func search(path: String, handler: RouterHandler...) -> Router {
+    public func patch(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.Patch, pattern: path, middleware: middleware)
+    }
+
+    public func patch(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.Patch, pattern: path, middleware: middleware)
+    }
+
+    // MARK: Search
+    public func search(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Search, pattern: path, handler: handler)
     }
 
-    // MARK: Connect
-    public func connect(handler: RouterHandler...) -> Router {
-        return routingHelper(.Connect, pattern: nil, handler: handler)
+    public func search(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.Search, pattern: path, handler: handler)
     }
 
-    public func connect(path: String, handler: RouterHandler...) -> Router {
+    public func search(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.Search, pattern: path, middleware: middleware)
+    }
+
+    public func search(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.Search, pattern: path, middleware: middleware)
+    }
+
+    // MARK: Connect
+    public func connect(path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Connect, pattern: path, handler: handler)
     }
 
+    public func connect(path: String?=nil, handler: [RouterHandler]) -> Router {
+        return routingHelper(.Connect, pattern: path, handler: handler)
+    }
+
+    public func connect(path: String?=nil, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.Connect, pattern: path, middleware: middleware)
+    }
+
+    public func connect(path: String?=nil, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.Connect, pattern: path, middleware: middleware)
+    }
+
     // MARK: Use
+    @available(*, deprecated, message="Use Router.all instead")
     public func use(middleware: RouterMiddleware...) -> Router {
         routeElems.append(RouterElement(method: .All, pattern: nil, middleware: middleware))
         return self
     }
 
+    @available(*, deprecated, message="Use Router.all instead")
     public func use(path: String, middleware: RouterMiddleware...) -> Router {
         routeElems.append(RouterElement(method: .All, pattern: path, middleware: middleware))
         return self
@@ -317,8 +535,25 @@ public class Router {
         return routingHelper(.Error, pattern: nil, handler: handler)
     }
 
+    public func error(handler: [RouterHandler]) -> Router {
+        return routingHelper(.Error, pattern: nil, handler: handler)
+    }
+
+    public func error(middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.Error, pattern: nil, middleware: middleware)
+    }
+
+    public func error(middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.Error, pattern: nil, middleware: middleware)
+    }
+
     private func routingHelper(method: RouterMethod, pattern: String?, handler: [RouterHandler]) -> Router {
         routeElems.append(RouterElement(method: method, pattern: pattern, handler: handler))
+        return self
+    }
+
+    private func routingHelper(method: RouterMethod, pattern: String?, middleware: [RouterMiddleware]) -> Router {
+        routeElems.append(RouterElement(method: method, pattern: pattern, middleware: middleware))
         return self
     }
 
