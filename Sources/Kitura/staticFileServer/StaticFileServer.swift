@@ -22,54 +22,54 @@ import Foundation
 // MARK: StaticFileServer
 
 public class StaticFileServer : RouterMiddleware {
-    
+
     //
     // If a file is not found, the given extensions will be added to the file name and searched for. The first that exists will be served. Example: ['html', 'htm'].
     //
     private var possibleExtensions : [String]?
-    
+
     //
     // Serve "index.html" files in response to a request on a directory.  Defaults to true.
     //
     private var serveIndexForDir = true
-    
+
     //
     // Uses the file system's last modified value.  Defaults to true.
     //
     private var addLastModifiedHeader = true
-    
+
     //
     // Value of max-age in Cache-Control header.  Defaults to 0.
     //
     private var maxAgeCacheControlHeader = 0
-    
+
     //
     // Redirect to trailing "/" when the pathname is a dir. Defaults to true.
     //
     private var redirect = true
-    
+
     //
     // A setter for custom response headers.
     //
     private var customResponseHeadersSetter : ResponseHeadersSetter?
-    
+
     //
     // Generate ETag. Defaults to true.
     //
     private var generateETag = true
-    
-    
-    
+
+
+
     private var path : String
-    
+
     public convenience init (options: [Options]) {
-        self.init(path: "/public", options: options)
+        self.init(path: "./public", options: options)
     }
-    
+
     public convenience init () {
-        self.init(path: "/public", options: nil)
+        self.init(path: "./public", options: nil)
     }
-    
+
     ///
     /// Initializes a StaticFileServer instance
     ///
@@ -80,10 +80,9 @@ public class StaticFileServer : RouterMiddleware {
         else {
             self.path = path
         }
-        if !self.path.hasPrefix("/") {
-            self.path = "/" + self.path
-        }
-        
+        // If we received a path with a tlde (~) in the front, expand it.
+        self.path = self.path.bridge().stringByExpandingTildeInPath
+
         if let options = options {
             for option in options {
                 switch option {
@@ -135,9 +134,7 @@ public class StaticFileServer : RouterMiddleware {
                 filePath += "/" + url
             }
         }
-        
-        filePath = "." + filePath
-        
+
         if filePath.hasSuffix("/") {
             if serveIndexForDir {
                 filePath += "index.html"
@@ -178,41 +175,54 @@ public class StaticFileServer : RouterMiddleware {
                 }
             }
         }
-        
-        next()
-        
-    }    
-    
-    private func serveFile(filePath: String, fileManager: NSFileManager, response: RouterResponse) {
-        do {
-            let attributes = try fileManager.attributesOfItemAtPath(filePath)
-            response.setHeader("Cache-Control", value: "max-age=\(maxAgeCacheControlHeader)")
-            if addLastModifiedHeader {
-                if let date = attributes[NSFileModificationDate] as? NSDate {
-                    response.setHeader("Last-Modified", value: SpiUtils.httpDate(date))
-                }
-            }
-            if generateETag {
-                if let date = attributes[NSFileModificationDate] as? NSDate,
-                    let size = attributes[NSFileSize] as? Int {
-                        let sizeHex = String(size, radix: 16, uppercase: false)
-                        let timeHex = String(Int(date.timeIntervalSince1970), radix: 16, uppercase: false)
-                        let etag = "W/\"\(sizeHex)-\(timeHex)\""
-                        response.setHeader("Etag", value: etag)
-                 }
-            }
-            if let _ = customResponseHeadersSetter {
-                customResponseHeadersSetter!.setCustomResponseHeaders(response, filePath: filePath, fileAttributes: attributes)
-            }
 
-            try response.sendFile(filePath)
-        }
-        catch {
-            // Nothing
-        }
-        response.status(HttpStatusCode.OK)
+        next()
+
     }
-    
+
+    private func serveFile(filePath: String, fileManager: NSFileManager, response: RouterResponse) {
+        // Check that no-one is using ..'s in the path to poke around the filesystem
+        let tempAbsoluteBasePath = NSURL(fileURLWithPath: path).absoluteString
+        let tempAbsoluteFilePath = NSURL(fileURLWithPath: filePath).absoluteString
+        #if os(Linux)
+        let absoluteBasePath = tempAbsoluteBasePath!
+        let absoluteFilePath = tempAbsoluteFilePath!
+        #else
+        let absoluteBasePath = tempAbsoluteBasePath
+        let absoluteFilePath = tempAbsoluteFilePath
+        #endif
+
+        if  absoluteFilePath.hasPrefix(absoluteBasePath)  {
+            do {
+                let attributes = try fileManager.attributesOfItemAtPath(filePath)
+                response.setHeader("Cache-Control", value: "max-age=\(maxAgeCacheControlHeader)")
+                if addLastModifiedHeader {
+                    if let date = attributes[NSFileModificationDate] as? NSDate {
+                        response.setHeader("Last-Modified", value: SpiUtils.httpDate(date))
+                    }
+                }
+                if generateETag {
+                    if let date = attributes[NSFileModificationDate] as? NSDate,
+                        let size = attributes[NSFileSize] as? Int {
+                            let sizeHex = String(size, radix: 16, uppercase: false)
+                            let timeHex = String(Int(date.timeIntervalSince1970), radix: 16, uppercase: false)
+                            let etag = "W/\"\(sizeHex)-\(timeHex)\""
+                        response.setHeader("Etag", value: etag)
+                    }
+                }
+                if let _ = customResponseHeadersSetter {
+                    customResponseHeadersSetter!.setCustomResponseHeaders(response, filePath: filePath, fileAttributes: attributes)
+                }
+
+                try response.sendFile(filePath)
+            }
+            catch {
+                // Nothing
+            }
+            response.status(HttpStatusCode.OK)
+        }
+    }
+
     public enum Options {
         case PossibleExtensions([String])
         case ServeIndexForDir(Bool)
