@@ -17,7 +17,7 @@
 import Foundation
 import XCTest
 
-@testable import KituraRouter
+@testable import Kitura
 @testable import KituraNet
 
 #if os(Linux)
@@ -33,7 +33,8 @@ class TestResponse : KituraTest {
                 ("testSimpleResponse", testSimpleResponse),
                 ("testPostRequest", testPostRequest),
                 ("testParameter", testParameter),
-                ("testRedirect", testRedirect)
+                ("testRedirect", testRedirect),
+                ("testErrorHandler", testErrorHandler)
             ]
         }
     #endif
@@ -108,6 +109,26 @@ class TestResponse : KituraTest {
         }
     }
 
+    func testErrorHandler() {
+        performServerTest(router) {
+            self.performRequest("get", path: "/error", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                do {
+                    let body = try response!.readString()
+                    #if os(Linux)
+                    let errorDescription = "The operation could not be completed"
+                    #else
+                    let errorDescription = "The operation couldn’t be completed. (RouterTestDomain error 1.)"
+                    #endif
+                    XCTAssertEqual(body!,"Caught the error: \(errorDescription)")
+                }
+                catch{
+                    XCTFail("No respose body")
+                }
+            })
+        }
+    }
+
     static func setupRouter() -> Router {
         let router = Router()
         // the same router definition is used for all these test cases
@@ -147,9 +168,16 @@ class TestResponse : KituraTest {
             next()
         }
 
+        // Error handling example
+        router.get("/error") { _, response, next in
+            response.status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+            response.error = NSError(domain: "RouterTestDomain", code: 1, userInfo: [:])
+            next()
+        }
 
-        router.use("/bodytest", middleware: BodyParser())
-                
+
+        router.all("/bodytest", middleware: BodyParser())
+
         router.post("/bodytest") { request, response, next in
             if let body = request.body?.asUrlEncoded() {
                 response.setHeader("Content-Type", value: "text/html; charset=utf-8")
@@ -171,6 +199,16 @@ class TestResponse : KituraTest {
 
             next()
         }
+
+        router.error { request, response, next in
+            response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
+            do {
+                try response.send("Caught the error: \(response.error!.localizedDescription)").end()
+            }
+            catch {}
+            next()
+        }
+
 	return router
     }
 }

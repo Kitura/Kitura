@@ -27,39 +27,9 @@ public class ContentType {
     private static let MIME_TYPE_EMBEDDED: Bool = true
     
     ///
-    // A list of paths to check for the types.json file
-    ///
-    private static let TYPES_PATH: [String] = [
-        "Sources/router/contentType/types.json",
-        "Packages/Kitura-net/Sources/router/contentType/types.json",
-        "./types.json"]
-    
-    ///
     /// A dictionary of extensions to MIME type descriptions
     ///
     private static var extToContentType = [String:String]()
-    
-    ///
-    /// Attempt to load data from the filesystem in order from the following paths
-    ///
-    /// - Parameter paths: a list of paths to check for the file
-    ///
-    /// - Returns: the data from the types.json file
-    public class func loadDataFromFile (paths: [String]) -> NSData? {
-
-        for path in paths {
-
-            let data = NSData(contentsOfFile: path)
-
-            if data != nil {
-                return data
-            }
-        }
-
-        return nil
-
-    }
-
 
     ///
     /// The following function loads the MIME types from an external file
@@ -80,46 +50,32 @@ public class ContentType {
             return
         }
 
-        // New behavior of using a file
+        let contentTypesData = contentTypesString.bridge().dataUsingEncoding(NSUTF8StringEncoding)
 
-        Log.verbose("Loading MIME types from file")
-
-        let contentTypesData = loadDataFromFile(TYPES_PATH)
-
-        guard let ct = contentTypesData else {
-            print("Could not find a MIME types file")
+        if contentTypesData == nil {
+            Log.error("Error parsing \(contentTypesString)")
             return
         }
 
-        do {
+        // MARK: Linux Foundation will return an Any instead of an AnyObject
+        // Need to test if this breaks the Linux build.
+        let jsonData = try? NSJSONSerialization.JSONObjectWithData(contentTypesData!,
+            options: NSJSONReadingOptions.MutableContainers) as? NSDictionary
 
-            // MARK: Linux Foundation will return an Any instead of an AnyObject
-            // Need to test if this breaks the Linux build.
-            let jsonData = try NSJSONSerialization.JSONObjectWithData(ct,
-                options: NSJSONReadingOptions.MutableContainers) as? NSDictionary
-
-            guard jsonData != nil else {
-                Log.error("JSON could not be parsed")
-                return
-            }
-
-            for (contentType, exts) in jsonData! {
-
-                let e = exts as! [String]
-                for ext in e {
-
-                    extToContentType[ext] = contentType as? String
-
-                }
-            }
-
-
-        } catch {
-
-            Log.error("Error reading \(TYPES_PATH)")
+        if jsonData == nil || jsonData! == nil {
+            Log.error("JSON could not be parsed")
             return
         }
 
+        for (contentType, exts) in jsonData!! {
+
+            let e = exts as! [String]
+            for ext in e {
+
+                extToContentType[ext] = contentType as? String
+
+            }
+        }
     }
 
     ///

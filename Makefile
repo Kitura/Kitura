@@ -13,11 +13,11 @@
 # limitations under the License.
 
 # Makefile
-export KITURA_CI_BUILD_SCRIPTS_DIR=Kitura-CI/build
+export KITURA_CI_BUILD_SCRIPTS_DIR=Kitura-Build/build
 
--include Kitura-CI/build/Makefile
+-include Kitura-Build/build/Makefile
 
-Kitura-CI/build/Makefile:
-	@echo --- Fetching Kitura-CI submodule
+Kitura-Build/build/Makefile:
+	@echo --- Fetching Kitura-Build submodule
 	git submodule init
 	git submodule update --remote --merge

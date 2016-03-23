@@ -1,6 +1,6 @@
 # Contributing to Kitura
 
-We welcome contributions, but request you follow these guidelines.
+We welcome contributions, and request you follow these guidelines.
 
  - [Raising issues](#raising-issues)
  - [Contributor License Agreement](#contributor-license-agreement)

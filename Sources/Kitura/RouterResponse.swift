@@ -50,13 +50,17 @@ public class RouterResponse {
     /// Whether the response has ended
     ///
     var invokedEnd = false
-    
-    /// 
+
+    ///
+    /// Set of cookies to return with the response
+    ///
+    public var cookies = [String: NSHTTPCookie]()
+
+    ///
     /// Optional error value
     ///
     public var error: NSError?
-    
-    
+
     ///
     /// Initializes a RouterResponse instance
     ///
@@ -85,6 +89,8 @@ public class RouterResponse {
             if  contentLength == nil  {
                 setHeader("Content-Length", value: String(buffer.count))
             }
+            addCookies()
+
             if  request.method != .Head  {
                 try response.writeData(data)
             }
@@ -92,6 +98,26 @@ public class RouterResponse {
         invokedEnd = true
         try response.end()
         return self
+    }
+
+    //
+    // Add Set-Cookie headers
+    //
+    private func addCookies() {
+        var cookieStrings = [String]()
+
+        for  (_, cookie) in cookies {
+            var cookieString = cookie.name + "=" + cookie.value + "; path=" + cookie.path + "; domain=" + cookie.domain
+            if  let expiresDate = cookie.expiresDate  {
+                cookieString += "; expires=" + SpiUtils.httpDate(expiresDate)
+            }
+            if  cookie.secure  {
+                cookieString += "; secure; HttpOnly"
+            }
+
+            cookieStrings.append(cookieString)
+        }
+        setHeader("Set-Cookie", value: cookieStrings)
     }
 
     ///

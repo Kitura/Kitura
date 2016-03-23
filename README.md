@@ -13,6 +13,19 @@
 
 Kitura is a web framework and web server that is created for web services written in Swift.
 
+## Table of Contents
+* [Summary](#summary)
+* [Features](#features)
+* [Swift version](#swift-version)
+* [Installation (Docker development environment)](#installation-docker-development-environment)
+* [Installation (Vagrant development environment)](#installation-vagrant-development-environment)
+* [Installation (OS X)](#installation-os-x)
+* [Installation (Linux, Apt-based)](#installation-linux-apt-based)
+* [Developing Kitura applications](#developing-kitura-applications)
+* [Kitura Wiki](#kitura-wiki)
+* [Developing Kitura](#developing-kitura)
+* [License](#license)
+
 ## Features:
 
 - URL routing (GET, POST, PUT, DELETE)
@@ -84,54 +97,26 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-03-01-a ve
 
  After installing it, make sure you update your PATH environment variable as described in the installation instructions (e.g. export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH)
 
-4. Clone this repository
-
-   `git clone https://github.com/IBM-Swift/Kitura`
-
-5. build and run Kitura Sample
-
-  `make run`
-
- You should see a message that says "Listening on port 8090".
-
- ### Notes
- * Homebrew by default installs libraries to `/usr/local`, if yours is different, change the path to find curl and http-parser libraries, in Kitura-CI/build/Makefile:
-   ```
-   SWIFTC_FLAGS =  -Xswiftc -I/usr/local/include
-   LINKER_FLAGS = -Xlinker -L/usr/local/lib
-   ```
-
- * The result executable is located in `.build/debug` folder in the cloned repository: `./.build/debug/KituraSample`
+4. Now you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
 
 ## Installation (Linux, Apt-based)
 
 1. Install the following system linux libraries:
 
- `sudo apt-get install autoconf libtool libkqueue-dev libkqueue0 libdispatch-dev libdispatch0 libhttp-parser-dev libcurl4-openssl-dev libhiredis-dev`
+ `sudo apt-get install autoconf libtool libkqueue-dev libkqueue0 libdispatch-dev libdispatch0 libhttp-parser-dev libcurl4-openssl-dev libhiredis-dev libbsd-dev`
 
 2. Install the [supported Swift compiler](#swift-version) for Linux.
 
- Follow the instructions provided on that page. After installing it (i.e. uncompressing the tar file), make sure you update your PATH environment variable so that it includes the extracted tools: `export PATH=/<path to uncompress tar contents>/usr/bin:$PATH`. To update the PATH env variable, you can update your .bashrc file (for further information on .bashrc and .bash_profile see http://www.joshstaiger.org/archives/2005/07/bash_profile_vs.html).
+ Follow the instructions provided on that page. After installing it (i.e. uncompressing the tar file), make sure you update your PATH environment variable so that it includes the extracted tools: `export PATH=/<path to uncompress tar contents>/usr/bin:$PATH`. To update the PATH env variable, you can update your [.bashrc file](http://www.joshstaiger.org/archives/2005/07/bash_profile_vs.html).
 
 3. Clone, build and install the libdispatch library.
 The complete instructions for building and installing this library are  [here](https://github.com/apple/swift-corelibs-libdispatch/blob/master/INSTALL), though, all you need to do is just this
  `git clone https://github.com/apple/swift-corelibs-libdispatch.git && cd swift-corelibs-libdispatch && git submodule init && git submodule update && sh ./autogen.sh && ./configure --with-swift-toolchain=<path-to-swift>/usr --prefix=<path-to-swift>/usr && make && make install`
 
-4. Clone this repository
+4. Now you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
 
-  `git clone https://github.com/IBM-Swift/Kitura`
-
-5. build and run Kitura Sample
-
- `make run`
-
- You should see a message that says "Listening on port 8090". The result executable is located in `.build/debug` folder in the cloned repository: `./.build/debug/KituraSample`
-
-## Run Kitura tests (optional)
-`make test`
-
-## Usage
-Let's write our first Kitura-based Web Application written in Swift!
+## Developing Kitura applications
+Let's develop our first Kitura Web Application written in Swift!
 
 1. First we create a new project directory
 
@@ -166,14 +151,14 @@ Let's write our first Kitura-based Web Application written in Swift!
   let package = Package(
       name: "myFirstProject",
       dependencies: [
-          .Package(url: "https://github.com/IBM-Swift/Kitura-router.git", majorVersion: 0, minor: 4),
+          .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 6)
       ])
   ```
 
 4. Import the modules in your code (Sources/main.swift):
 
   ```swift
-  import KituraRouter
+  import Kitura
   import KituraNet
   import KituraSys
   ```
@@ -199,7 +184,7 @@ Let's write our first Kitura-based Web Application written in Swift!
 7. Sources/main.swift file should now look like this:
 
   ```swift
-  import KituraRouter
+  import Kitura
   import KituraNet
   import KituraSys
 
@@ -232,6 +217,21 @@ Let's write our first Kitura-based Web Application written in Swift!
 
 ## Kitura Wiki
 Feel free to visit our [Wiki](https://github.com/IBM-Swift/Kitura/wiki) for our roadmap and some tutorials.
+
+## Developing Kitura
+
+1. Clone this repository, `master` branch
+  `git clone -b master https://github.com/IBM-Swift/Kitura`
+2. Build and run tests
+  `make test`
+
+ ### Notes
+ * Homebrew by default installs libraries to `/usr/local`, if yours is different, change the path to find curl and http-parser libraries, in `Kitura-CI/build/Makefile`:
+ 
+   ```Makefile
+   SWIFTC_FLAGS = -Xswiftc -I/usr/local/include
+   LINKER_FLAGS = -Xlinker -L/usr/local/lib
+   ```
 
 ## License
 

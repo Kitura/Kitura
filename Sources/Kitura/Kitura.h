@@ -1,4 +1,3 @@
-{{!
 /**
  * Copyright IBM Corporation 2016
  *
@@ -15,11 +14,12 @@
  * limitations under the License.
  **/
 
-The example from https://github.com/groue/GRMustache.swift/blob/master/README.md
-}}
+#import <Cocoa/Cocoa.h>
 
-Hello {{name}}
-Your beard trimmer will arrive on {{format(date)}}.
-{{#late}}
-Well, on {{format(realDate)}} because of a Martian attack.
-{{/late}}
+//! Project version number for Kitura.
+FOUNDATION_EXPORT double KituraVersionNumber;
+
+//! Project version string for Kitura.
+FOUNDATION_EXPORT const unsigned char KituraVersionString[];
+
+// In this header, you should import all the public headers of your framework using statements like #import <KituraRouter/PublicHeader.h>

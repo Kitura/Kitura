@@ -60,31 +60,26 @@ class RouterElement {
     private var keys:[String]?
 
     ///
-    /// The handler
-    ///
-    private var handler: RouterHandler?
-
-    ///
     /// The middleware to use
     ///
-    private var middleware: RouterMiddleware?
+    private let middlewares: [RouterMiddleware]
 
     ///
     /// initializes a RouterElement
     ///
     /// - Parameter method: the RouterMethod
     /// - Parameter pattern: the String pattern to use
+    /// - Parameter middleware: the RouterMiddleware used to handle
     ///
     /// - Returns: a RouterElement instance
     ///
-    private init(method: RouterMethod, pattern: String?) {
+    init(method: RouterMethod, pattern: String?, middleware: [RouterMiddleware]) {
 
         self.method = method
         self.pattern = pattern
         self.regex = nil
         self.keys = nil
-        self.handler = nil
-        self.middleware = nil
+        self.middlewares = middleware
 
         SysUtils.doOnce(&RouterElement.regexInit) {
             do {
@@ -104,23 +99,9 @@ class RouterElement {
     ///
     /// Convenience initializer
     ///
-    convenience init(method: RouterMethod, pattern: String? , handler: RouterHandler) {
+    convenience init(method: RouterMethod, pattern: String? , handler: [RouterHandler]) {
 
-        self.init(method: method, pattern: pattern)
-
-        self.handler = handler
-
-    }
-
-    ///
-    /// Convenience initializer
-    ///
-    convenience init(method: RouterMethod, pattern: String?, middleware: RouterMiddleware) {
-
-        self.init(method: method, pattern: pattern)
-
-        self.middleware = middleware
-
+        self.init(method: method, pattern: pattern, middleware: handler.map{RouterMiddlewareGenerator(handler: $0)})
     }
 
     ///
@@ -166,20 +147,23 @@ class RouterElement {
     /// - Parameter next: the closure for the next execution block
     ///
     private func processHelper(request: RouterRequest, response: RouterResponse, next: () -> Void) {
-        
-        if  let handler = handler  {
-            handler(request: request, response: response) { () in
-                request.params = [:]
-                next()
-            }
-        }
-        else if  let middleware = middleware  {
-            middleware.handle(request, response: response) { () in
-                request.params = [:]
-                next()
-            }
-        }
+        var middlewareCount = -1
 
+        // Extra variable since closures cannot be used in their own initalizer
+        var nextCallbackPlaceholder: (()->Void)? = nil
+
+        let nextCallback = {
+            middlewareCount += 1
+            if middlewareCount < self.middlewares.count && (response.error == nil || self.method == .Error) {
+                self.middlewares[middlewareCount].handle(request, response: response, next: nextCallbackPlaceholder!)
+            }
+            else {
+                request.params = [:]
+                next()
+            }
+        }
+        nextCallbackPlaceholder = nextCallback
+        nextCallback()
     }
 
     ///
