@@ -176,8 +176,8 @@ class TestResponse : KituraTest {
         }
 
 
-        router.use("/bodytest", middleware: BodyParser())
-                
+        router.all("/bodytest", middleware: BodyParser())
+
         router.post("/bodytest") { request, response, next in
             if let body = request.body?.asUrlEncoded() {
                 response.setHeader("Content-Type", value: "text/html; charset=utf-8")
