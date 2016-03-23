@@ -33,7 +33,8 @@ class TestResponse : KituraTest {
                 ("testSimpleResponse", testSimpleResponse),
                 ("testPostRequest", testPostRequest),
                 ("testParameter", testParameter),
-                ("testRedirect", testRedirect)
+                ("testRedirect", testRedirect),
+                ("testErrorHandler", testErrorHandler)
             ]
         }
     #endif
@@ -110,11 +111,16 @@ class TestResponse : KituraTest {
 
     func testErrorHandler() {
         performServerTest(router) {
-            self.performRequest("get", path: "/error", callback: {response in 
+            self.performRequest("get", path: "/error", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!,"Caught the error: The operation couldn’t be completed. (RouterTestDomain error 1.)")
+                    #if os(Linux)
+                    let errorDescription = "The operation could not be completed"
+                    #else
+                    let errorDescription = "The operation couldn’t be completed. (RouterTestDomain error 1.)"
+                    #endif
+                    XCTAssertEqual(body!,"Caught the error: \(errorDescription)")
                 }
                 catch{
                     XCTFail("No respose body")
