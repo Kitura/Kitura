@@ -331,7 +331,7 @@ public class Router {
     public func setDefaultTemplateEngine(templateEngine: TemplateEngine?) {
         if let templateEngine = templateEngine {
             defaultEngineFileExtension = templateEngine.fileExtension
-            templateEngines[templateEngine.fileExtension] = templateEngine
+            addTemplateEngine(templateEngine)
             return
         }
         defaultEngineFileExtension = nil
