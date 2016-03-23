@@ -16,11 +16,8 @@
 
 import KituraNet
 import KituraSys
-
 import LoggerAPI
-
 import Foundation
-
 import KituraTemplateEngine
 
 // MARK Router 
@@ -32,12 +29,20 @@ public class Router {
     ///
     private var routeElems: [RouterElement] = []
 
-    internal var templateEngine: TemplateEngine? = nil
+    ///
+    /// Map from file extensiont to Template Engines
+    ///
+    private var templateEngines = [String: TemplateEngine]()
+
+    ///
+    /// Default template engine extension
+    ///
+    private var defaultEngineFileExtension: String?
 
     ///
     /// Views directory path
     ///
-    public var viewsPath: String { return "./Views/" }
+    private var viewsPath: String { return "./Views/" }
 
     ///
     /// Prefix for special page resources
@@ -323,8 +328,39 @@ public class Router {
     }
 
     // MARK: Template Engine
-    public func setTemplateEngine(templateEngine: TemplateEngine?) {
-        self.templateEngine = templateEngine
+    public func setDefaultTemplateEngine(templateEngine: TemplateEngine?) {
+        if let templateEngine = templateEngine {
+            defaultEngineFileExtension = templateEngine.fileExtension
+            templateEngines[templateEngine.fileExtension] = templateEngine
+            return
+        }
+        defaultEngineFileExtension = nil
+    }
+
+    internal func render(resource: String, context: [String: Any]) throws -> String {
+        let resourceExtension = resource.bridge().pathExtension
+        let fileExtension: String
+        let resourceWithExtension: String
+
+        if resourceExtension.isEmpty {
+            fileExtension = defaultEngineFileExtension ?? ""
+            //TODO use stringByAppendingPathExtension once issue https://bugs.swift.org/browse/SR-999 is resolved
+            resourceWithExtension = resource + "." + fileExtension
+        } else {
+            fileExtension = resourceExtension
+            resourceWithExtension = resource
+        }
+
+        if fileExtension.isEmpty {
+            throw RouterError.NoDefaultTemplateEngineAndNoExtensionSpecified
+        }
+
+        guard let templateEngine = templateEngines[fileExtension] else {
+            throw (RouterError.getNoTemplateEngineForExtensionError(fileExtension))
+        }
+
+        let filePath =  viewsPath + resourceWithExtension
+        return try templateEngine.render(filePath, context: context)
     }
 }
 
