@@ -154,7 +154,7 @@ public class StaticFileServer : RouterMiddleware {
                         try response.redirect(originalUrl + "/")
                     }
                     catch {
-                        response.error = NSError(domain: "Kitura-router", code: 1, userInfo: [NSLocalizedDescriptionKey:"Failed to redirect a request for directory"])
+                        response.error = RouterError.FailedToRedirectRequest
                     }
                 }
             }
