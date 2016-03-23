@@ -337,6 +337,10 @@ public class Router {
         defaultEngineFileExtension = nil
     }
 
+    public func setTemplateEngineFor(fileExtension: String, templateEngine: TemplateEngine?) {
+        templateEngines[fileExtension] = templateEngine
+    }
+
     internal func render(resource: String, context: [String: Any]) throws -> String {
         let resourceExtension = resource.bridge().pathExtension
         let fileExtension: String
