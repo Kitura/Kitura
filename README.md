@@ -168,8 +168,9 @@ Let's develop our first Kitura Web Application written in Swift!
   let router = Router()
 
   router.get("/") {
-      request, response, next in
-      response.status(HttpStatusCode.OK).send("Hello, World!")
+  request, response, next in
+      response.send("Hello, World!")
+      next()
   }
   ```
 
@@ -191,7 +192,8 @@ Let's develop our first Kitura Web Application written in Swift!
 
   router.get("/") {
   request, response, next in
-      response.status(HttpStatusCode.OK).send("Hello, World!")
+      response.send("Hello, World!")
+      next()
   }
 
   let server = HttpServer.listen(8090, delegate: router)
