@@ -68,42 +68,16 @@ public class RouterRequest: BlueSocketReader {
     //
     // Parsed Cookies, used to do a lazy parsing of the appropriate headers
     //
-    private var _cookies: [String: NSHTTPCookie]?
-
-    //
-    // Static for Cookie header key value
-    //
-    private let cookieHeader = "cookie"
+    private var _cookies: Cookies?
 
     ///
     /// Set of parsed cookies
     ///
     public var cookies: [String: NSHTTPCookie] {
         if  _cookies == nil  {
-            _cookies = [String: NSHTTPCookie]()
-            var cookieString: String?
-            for  (header, value)  in headers  {
-                if  header.bridge().lowercaseString == cookieHeader {
-                    cookieString = value
-                    break
-                }
-            }
-            if  let cookieString = cookieString {
-                let cookieNameValues = cookieString.bridge().componentsSeparatedByString("; ")
-                for  cookieNameValue  in  cookieNameValues  {
-                    let cookieNameValueParts = cookieNameValue.bridge().componentsSeparatedByString("=")
-                    if   cookieNameValueParts.count == 2  {
-                        let theCookie = NSHTTPCookie(properties:
-                                                       [NSHTTPCookieDomain: ".",
-                                                        NSHTTPCookiePath: "/",
-                                                        NSHTTPCookieName: cookieNameValueParts[0] ,
-                                                        NSHTTPCookieValue: cookieNameValueParts[1]])
-                        _cookies![cookieNameValueParts[0]] = theCookie
-                    }
-                }
-            }
+            _cookies = Cookies(headers: headers)
         }
-        return _cookies!
+        return _cookies!.cookies
     }
 
     ///
@@ -151,7 +125,7 @@ public class RouterRequest: BlueSocketReader {
     public func readData(data: NSMutableData) throws -> Int {
         return try serverRequest.readData(data)
     }
-    
+
     ///
     /// Read string
     ///
@@ -161,5 +135,42 @@ public class RouterRequest: BlueSocketReader {
     public func readString() throws -> String? {
         return try serverRequest.readString()
     }
-    
+
+}
+
+private class Cookies {
+    //
+    // Storage o parsed Cookie headers
+    //
+    private var cookies = [String: NSHTTPCookie]()
+
+    //
+    // Static for Cookie header key value
+    //
+    private let cookieHeader = "cookie"
+
+    private init(headers: SimpleHeaders) {
+        var cookieString: String?
+        for  (header, value)  in headers  {
+            if  header.bridge().lowercaseString == cookieHeader {
+                cookieString = value
+                break
+            }
+        }
+
+        if  let cookieString = cookieString {
+            let cookieNameValues = cookieString.bridge().componentsSeparatedByString("; ")
+            for  cookieNameValue  in  cookieNameValues  {
+                let cookieNameValueParts = cookieNameValue.bridge().componentsSeparatedByString("=")
+                if   cookieNameValueParts.count == 2  {
+                    let theCookie = NSHTTPCookie(properties:
+                                               [NSHTTPCookieDomain: ".",
+                                                NSHTTPCookiePath: "/",
+                                                NSHTTPCookieName: cookieNameValueParts[0] ,
+                                                NSHTTPCookieValue: cookieNameValueParts[1]])
+                    cookies[cookieNameValueParts[0]] = theCookie
+                }
+            }
+        }
+    }
 }
