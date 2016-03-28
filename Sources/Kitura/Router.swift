@@ -44,6 +44,8 @@ public class Router {
     ///
     private let kituraResourcePrefix = "/@@Kitura-router@@/"
 
+    internal (set) var prefix: String?
+
     ///
     /// Initializes a Router
     ///
@@ -553,13 +555,26 @@ public class Router {
     }
 
     private func routingHelper(method: RouterMethod, pattern: String?, middleware: [RouterMiddleware]) -> Router {
-        routeElems.append(RouterElement(method: method, pattern: pattern, middleware: middleware))
+        for mid in middleware {
+            if let subrouter = mid as? Router {
+                subrouter.prefix = pattern
+            }
+        }
+        let path = pattern ??  ""
+        routeElems.append(RouterElement(method: method, pattern: path + "/*", middleware: middleware))
         return self
     }
 
     // MARK: Template Engine
     public func setTemplateEngine(templateEngine: TemplateEngine?) {
         self.templateEngine = templateEngine
+    }
+}
+
+extension Router : RouterMiddleware {
+    public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
+        processRequest(request, response: response)
+        next()
     }
 }
 
@@ -579,12 +594,16 @@ extension Router : HttpServerDelegate {
 
         let routeReq = RouterRequest(request: request)
         let routeResp = RouterResponse(response: response, router: self, request: routeReq)
+        processRequest(routeReq, response: routeResp)
+    }
 
-        let urlPath = routeReq.parsedUrl.path!
+    private func processRequest(request: RouterRequest, response: RouterResponse) {
+
+        let urlPath = request.parsedUrl.path!
 
         if  urlPath.characters.count > kituraResourcePrefix.characters.count  &&  urlPath.bridge().substringToIndex(kituraResourcePrefix.characters.count) == kituraResourcePrefix  {
             let resource = urlPath.bridge().substringFromIndex(kituraResourcePrefix.characters.count)
-            sendResourceIfExisting(routeResp, resource: resource)
+            sendResourceIfExisting(response, resource: resource)
         }
         else {
             var elemIndex = -1
@@ -592,18 +611,18 @@ extension Router : HttpServerDelegate {
             // Extra variable to get around use of variable in its own initializer
             var callback: (()->Void)? = nil
 
-            let callbackHandler = {[unowned routeReq, unowned routeResp] () -> Void in
+            let callbackHandler = {[unowned request, unowned response, unowned self] () -> Void in
                 elemIndex+=1
                 if  elemIndex < self.routeElems.count {
-                    self.routeElems[elemIndex].process(urlPath, request: routeReq, response: routeResp, next: callback!)
+                    self.routeElems[elemIndex].process(self.prefix, urlPath: urlPath, request: request, response: response, next: callback!)
                 }
                 else {
                     do {
-                        if  !routeResp.invokedEnd {
-                            if  response.statusCode == HttpStatusCode.NOT_FOUND  {
-                                self.sendDefaultResponse(routeReq, routeResp: routeResp)
+                        if  !response.invokedEnd {
+                            if  response.response.statusCode == HttpStatusCode.NOT_FOUND  {
+                                self.sendDefaultResponse(request, routeResp: response)
                             }
-                            try routeResp.end()
+                            try response.end()
                         }
                     }
                     catch {
