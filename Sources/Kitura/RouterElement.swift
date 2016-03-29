@@ -73,7 +73,7 @@ class RouterElement {
     ///
     /// - Returns: a RouterElement instance
     ///
-    init(method: RouterMethod, pattern: String?, middleware: [RouterMiddleware]) {
+    init(method: RouterMethod, pattern: String?, middleware: [RouterMiddleware], allowPartialMatch: Bool = true) {
 
         self.method = method
         self.pattern = pattern
@@ -92,7 +92,7 @@ class RouterElement {
         }
 
         // Needs to be after the initialization of the static Regex's
-        (regex, keys) = buildRegexFromPattern(pattern)
+        (regex, keys) = buildRegexFromPattern(pattern, allowPartialMatch: allowPartialMatch)
 
     }
 
@@ -101,7 +101,7 @@ class RouterElement {
     ///
     convenience init(method: RouterMethod, pattern: String? , handler: [RouterHandler]) {
 
-        self.init(method: method, pattern: pattern, middleware: handler.map{RouterMiddlewareGenerator(handler: $0)})
+        self.init(method: method, pattern: pattern, middleware: handler.map{RouterMiddlewareGenerator(handler: $0)}, allowPartialMatch: false)
     }
 
     ///

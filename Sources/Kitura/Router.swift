@@ -561,7 +561,7 @@ public class Router {
             }
         }
         let path = pattern ??  ""
-        routeElems.append(RouterElement(method: method, pattern: path + "/*", middleware: middleware))
+        routeElems.append(RouterElement(method: method, pattern: path, middleware: middleware))
         return self
     }
 
