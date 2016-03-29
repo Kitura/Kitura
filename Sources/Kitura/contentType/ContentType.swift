@@ -24,7 +24,11 @@ public class ContentType {
     ///
     /// Whether to use the local mime-type definitions or the ones in the file
     ///
-    private static let MIME_TYPE_EMBEDDED: Bool = true
+    #if os(Linux)
+        private static let MIME_TYPE_EMBEDDED: Bool = true
+    #else
+        private static let MIME_TYPE_EMBEDDED: Bool = false
+    #endif
     
     ///
     /// A dictionary of extensions to MIME type descriptions
