@@ -220,8 +220,7 @@ Feel free to visit our [Wiki](https://github.com/IBM-Swift/Kitura/wiki) for our 
 
 ## Developing Kitura
 
-1. Clone this repository, `develop` branch
-  `git clone -b develop https://github.com/IBM-Swift/Kitura`
+1. Clone this repository, `git clone https://github.com/IBM-Swift/Kitura`
 2. Build and run tests
   `make test`
 
@@ -232,6 +231,8 @@ Feel free to visit our [Wiki](https://github.com/IBM-Swift/Kitura/wiki) for our 
    SWIFTC_FLAGS = -Xswiftc -I/usr/local/include
    LINKER_FLAGS = -Xlinker -L/usr/local/lib
    ```
+   
+You can find info on contributing to Kitura in our [contributing guidelines](.github/CONTRIBUTING.md).
 
 ## License
 
