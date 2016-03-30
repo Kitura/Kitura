@@ -112,23 +112,17 @@ class RouterElement {
     /// - Parameter request: the request
     /// - Parameter response: the response
     ///
-    func process(prefix: String?, urlPath: String, request: RouterRequest, response: RouterResponse, next: () -> Void) {
-        var newUrlPath = urlPath
-        if let prefix = prefix {
-            let (prefixRegex, _) = buildRegexFromPattern(prefix, allowPartialMatch: true)
-            if let match = prefixRegex!.firstMatchInString(urlPath, options: [], range: NSMakeRange(0, urlPath.characters.count)) {
-                newUrlPath = urlPath.bridge().stringByReplacingCharactersInRange(match.range, withString: "")
-                newUrlPath = newUrlPath == "" ? "/" : newUrlPath
-            }
-        }
+    func process(request: RouterRequest, response: RouterResponse, next: () -> Void) {
+        let urlPath = request.parsedUrl.path!
 
         if response.error == nil || method == .Error {
             if response.error != nil || method == .All || method == request.method {
                 // Either response error exists and method is error, or method matches
                 if  let regex = regex  {
-                    if  let match = regex.firstMatchInString(newUrlPath, options: [], range: NSMakeRange(0, newUrlPath.characters.count))  {
+                    if  let match = regex.firstMatchInString(urlPath, options: [], range: NSMakeRange(0, urlPath.characters.count))  {
+                        request.matchedPath = urlPath.bridge().substringWithRange(match.range)
                         request.route = pattern
-                        updateRequestParams(newUrlPath, match: match, request: request)
+                        updateRequestParams(urlPath, match: match, request: request)
                         processHelper(request, response: response, next: next)
                     } else {
                         next()

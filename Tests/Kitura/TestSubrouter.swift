@@ -30,17 +30,15 @@ class TestSubrouter : KituraTest {
     #if os(Linux)
     override var allTests : [(String, () throws -> Void)] {
         return [
-                ("testSimpleResponse", testSimpleResponse),
-                ("testPostRequest", testPostRequest),
-                ("testParameter", testParameter),
-                ("testRedirect", testRedirect),
-                ("testErrorHandler", testErrorHandler)
+                ("testSimpleSub", testSimpleSub),
+                ("testExternSub", testExternSub),
+                ("testSubSubs", testSubSubs)
             ]
         }
     #endif
     
     let router = TestSubrouter.setupRouter()
-    
+
     func testSimpleSub() {
         performServerTest(router, asyncTasks: {
             self.performRequest("get", path:"/sub", callback: {response in
@@ -67,10 +65,80 @@ class TestSubrouter : KituraTest {
                     XCTFail("No respose body")
                 }
             })
-        	})
+        })
+    }
+
+    func testExternSub() {
+        router.all("/extern", middleware: ExternSubrouter.getRouter())
+
+        performServerTest(router, asyncTasks: {
+            self.performRequest("get", path:"/extern", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
+                //XCTAssertEqual(response!.method, "GET", "The request wasn't recognized as a get")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!,"hello from the sub")
+                }
+                catch{
+                    XCTFail("No respose body")
+                }
+            })
+        }, {
+            self.performRequest("get", path:"/extern/sub1", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!,"sub1")
+                }
+                catch{
+                    XCTFail("No respose body")
+                }
+            })
+        })
+    }
+
+    func testSubSubs() {
+        performServerTest(router, asyncTasks: {
+            self.performRequest("get", path:"/sub/sub2", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
+                //XCTAssertEqual(response!.method, "GET", "The request wasn't recognized as a get")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!,"hello from the sub sub")
+                }
+                catch{
+                    XCTFail("No respose body")
+                }
+            })
+        }, {
+            self.performRequest("get", path:"/sub/sub2/sub1", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!,"subsub1")
+                }
+                catch{
+                    XCTFail("No respose body")
+                }
+            })
+        })
     }
     
     static func setupRouter() -> Router {
+        let subsubRouter = Router()
+        subsubRouter.get("/") { request, response, next in
+            response.status(HttpStatusCode.OK).send("hello from the sub sub")
+            next()
+        }
+        subsubRouter.get("/sub1") { request, response, next in
+            response.status(HttpStatusCode.OK).send("subsub1")
+            next()
+        }
+
         let subRouter = Router()
         subRouter.get("/") { request, response, next in
             response.status(HttpStatusCode.OK).send("hello from the sub")
@@ -80,6 +148,8 @@ class TestSubrouter : KituraTest {
             response.status(HttpStatusCode.OK).send("sub1")
             next()
         }
+
+        subRouter.all("/sub2", middleware: subsubRouter)
         
         let router = Router()
         router.all("/sub", middleware: subRouter)

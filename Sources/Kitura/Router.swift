@@ -44,8 +44,6 @@ public class Router {
     ///
     private let kituraResourcePrefix = "/@@Kitura-router@@/"
 
-    internal (set) var prefix: String?
-
     ///
     /// Initializes a Router
     ///
@@ -555,13 +553,7 @@ public class Router {
     }
 
     private func routingHelper(method: RouterMethod, pattern: String?, middleware: [RouterMiddleware]) -> Router {
-        for mid in middleware {
-            if let subrouter = mid as? Router {
-                subrouter.prefix = pattern
-            }
-        }
-        let path = pattern ??  ""
-        routeElems.append(RouterElement(method: method, pattern: path, middleware: middleware))
+        routeElems.append(RouterElement(method: method, pattern: pattern, middleware: middleware))
         return self
     }
 
@@ -573,7 +565,17 @@ public class Router {
 
 extension Router : RouterMiddleware {
     public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
+        let urlPath = request.parsedUrl.path!
+        let mountpath = request.matchedPath
+        let prefixRange = urlPath.rangeOfString(mountpath)
+        request.parsedUrl.path!.removeRange(prefixRange!)
+        if request.parsedUrl.path! == "" {
+            request.parsedUrl.path! = "/"
+        }
+
         processRequest(request, response: response)
+        request.parsedUrl.path! = urlPath
+        
         next()
     }
 }
@@ -614,7 +616,7 @@ extension Router : HttpServerDelegate {
             let callbackHandler = {[unowned request, unowned response, unowned self] () -> Void in
                 elemIndex+=1
                 if  elemIndex < self.routeElems.count {
-                    self.routeElems[elemIndex].process(self.prefix, urlPath: urlPath, request: request, response: response, next: callback!)
+                    self.routeElems[elemIndex].process(request, response: response, next: callback!)
                 }
                 else {
                     do {

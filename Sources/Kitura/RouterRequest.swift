@@ -43,6 +43,8 @@ public class RouterRequest: BlueSocketReader {
     ///
     public internal(set) var route: String?
 
+    public var matchedPath = ""
+
     ///
     /// The original url as a string
     ///
