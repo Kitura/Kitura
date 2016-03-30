@@ -19,7 +19,7 @@ import KituraSys
 
 public class RouterGroup {
 
-    private var router: Router
+    private (set) var router: Router
     private var path: String?
 
     ///
@@ -33,6 +33,12 @@ public class RouterGroup {
     public init(router: Router, path: String?) {
         self.router = router
         self.path = path
+    }
+
+    // MARK: RouterGroup
+    public func group(path: String?=nil) -> RouterGroup {
+        let group = RouterGroup(router: self.router, path: path)
+        return group
     }
 
     // MARK: All
