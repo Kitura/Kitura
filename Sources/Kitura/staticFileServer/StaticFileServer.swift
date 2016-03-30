@@ -81,7 +81,7 @@ public class StaticFileServer : RouterMiddleware {
             self.path = path
         }
         // If we received a path with a tlde (~) in the front, expand it.
-        self.path = self.path.bridge().stringByExpandingTildeInPath
+        self.path = self.path.bridge().expandingTildeInPath
 
         if let options = options {
             for option in options {
@@ -147,7 +147,7 @@ public class StaticFileServer : RouterMiddleware {
         
         let fileManager = NSFileManager()
         var isDirectory = ObjCBool(false)
-        if fileManager.fileExistsAtPath(filePath, isDirectory: &isDirectory) {
+        if fileManager.fileExists(atPath: filePath, isDirectory: &isDirectory) {
             if isDirectory.boolValue {
                 if redirect {
                     do {
@@ -166,7 +166,7 @@ public class StaticFileServer : RouterMiddleware {
             if let _ = possibleExtensions {
                 for ext in possibleExtensions! {
                     let newFilePath = filePath + "." + ext
-                    if fileManager.fileExistsAtPath(newFilePath, isDirectory: &isDirectory) {
+                    if fileManager.fileExists(atPath: newFilePath, isDirectory: &isDirectory) {
                         if !isDirectory.boolValue {
                             serveFile(newFilePath, fileManager: fileManager, response: response)
                             break
@@ -194,7 +194,7 @@ public class StaticFileServer : RouterMiddleware {
 
         if  absoluteFilePath.hasPrefix(absoluteBasePath)  {
             do {
-                let attributes = try fileManager.attributesOfItemAtPath(filePath)
+                let attributes = try fileManager.attributesOfItem(atPath: filePath)
                 response.setHeader("Cache-Control", value: "max-age=\(maxAgeCacheControlHeader)")
                 if addLastModifiedHeader {
                     if let date = attributes[NSFileModificationDate] as? NSDate {

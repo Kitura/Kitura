@@ -54,7 +54,7 @@ public class ContentType {
             return
         }
 
-        let contentTypesData = contentTypesString.bridge().dataUsingEncoding(NSUTF8StringEncoding)
+        let contentTypesData = contentTypesString.bridge().data(usingEncoding: NSUTF8StringEncoding)
 
         if contentTypesData == nil {
             Log.error("Error parsing \(contentTypesString)")
@@ -63,8 +63,8 @@ public class ContentType {
 
         // MARK: Linux Foundation will return an Any instead of an AnyObject
         // Need to test if this breaks the Linux build.
-        let jsonData = try? NSJSONSerialization.JSONObjectWithData(contentTypesData!,
-            options: NSJSONReadingOptions.MutableContainers) as? NSDictionary
+        let jsonData = try? NSJSONSerialization.jsonObject(with: contentTypesData!,
+            options: NSJSONReadingOptions.mutableContainers) as? NSDictionary
 
         if jsonData == nil || jsonData! == nil {
             Log.error("JSON could not be parsed")
@@ -102,23 +102,23 @@ public class ContentType {
     ///
     public class func contentTypeForFile (fileName: String) -> String? {
         let lastPathElemRange: Range<String.Index>
-        if  let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch)  {
-            lastPathElemRange = Range(start: lastSlash.startIndex.successor(), end: fileName.characters.endIndex)
+        if  let lastSlash = fileName.range(of: "/", options: NSStringCompareOptions.backwardsSearch)  {
+            lastPathElemRange = lastSlash.startIndex.successor()..<fileName.characters.endIndex
         }
         else {
-            lastPathElemRange = Range(start: fileName.characters.startIndex, end: fileName.characters.endIndex)
+            lastPathElemRange = fileName.characters.startIndex..<fileName.characters.endIndex
         }
 
         let extRange: Range<String.Index>
-        if  let lastDot = fileName.rangeOfString(".", range: lastPathElemRange)  {
-            extRange = Range(start: lastDot.startIndex.successor(), end: fileName.characters.endIndex)
+        if  let lastDot = fileName.range(of: ".", range: lastPathElemRange)  {
+            extRange = lastDot.startIndex.successor()..<fileName.characters.endIndex
         }
         else {
             // No "extension", use the entire last path element as the "extension"
             extRange = lastPathElemRange
         }
 
-        return contentTypeForExtension(fileName.substringWithRange(extRange))
+        return contentTypeForExtension(fileName.substring(with: extRange))
     }
 
     ///
@@ -131,8 +131,8 @@ public class ContentType {
     ///
     public class func isType (messageContentType: String, typeDescriptor: String) -> Bool {
 
-        let type = typeDescriptor.lowercaseString
-        let typeAndSubtype = messageContentType.bridge().componentsSeparatedByString(";")[0].lowercaseString
+        let type = typeDescriptor.lowercased()
+        let typeAndSubtype = messageContentType.bridge().componentsSeparated(by: ";")[0].lowercased()
 
         if typeAndSubtype == type {
             return true
@@ -150,8 +150,8 @@ public class ContentType {
         }
 
         // the types match and the subtype in typeDescriptor is "*"
-        let messageTypePair = typeAndSubtype.bridge().componentsSeparatedByString("/")
-        let normalizedTypePair = normalizedType.bridge().componentsSeparatedByString("/")
+        let messageTypePair = typeAndSubtype.bridge().componentsSeparated(by: "/")
+        let normalizedTypePair = normalizedType.bridge().componentsSeparated(by: "/")
         if messageTypePair.count == 2 && normalizedTypePair.count == 2
             && messageTypePair[0] == normalizedTypePair[0] && normalizedTypePair[1] == "*" {
             return true

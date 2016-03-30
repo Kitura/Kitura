@@ -518,13 +518,13 @@ public class Router {
     }
 
     // MARK: Use
-    @available(*, deprecated, message="Use Router.all instead")
+    @available(*, deprecated, message:"Use Router.all instead")
     public func use(middleware: RouterMiddleware...) -> Router {
         routeElems.append(RouterElement(method: .All, pattern: nil, middleware: middleware))
         return self
     }
 
-    @available(*, deprecated, message="Use Router.all instead")
+    @available(*, deprecated, message:"Use Router.all instead")
     public func use(path: String, middleware: RouterMiddleware...) -> Router {
         routeElems.append(RouterElement(method: .All, pattern: path, middleware: middleware))
         return self
@@ -632,8 +632,8 @@ extension Router : HttpServerDelegate {
 
         let urlPath = request.parsedUrl.path!
 
-        if  urlPath.characters.count > kituraResourcePrefix.characters.count  &&  urlPath.bridge().substringToIndex(kituraResourcePrefix.characters.count) == kituraResourcePrefix  {
-            let resource = urlPath.bridge().substringFromIndex(kituraResourcePrefix.characters.count)
+        if  urlPath.characters.count > kituraResourcePrefix.characters.count  &&  urlPath.bridge().substring(to: kituraResourcePrefix.characters.count) == kituraResourcePrefix  {
+            let resource = urlPath.bridge().substring(from: kituraResourcePrefix.characters.count)
             sendResourceIfExisting(response, resource: resource)
         }
         else {
@@ -675,14 +675,14 @@ extension Router : HttpServerDelegate {
     private func getResourceFilePath(resource: String) -> String {
         let fileName = NSString(string: #file)
         let resourceFilePrefixRange: NSRange
-        let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch)
+        let lastSlash = fileName.range(of: "/", options: NSStringCompareOptions.backwardsSearch)
         if  lastSlash.location != NSNotFound  {
             resourceFilePrefixRange = NSMakeRange(0, lastSlash.location+1)
         }
         else {
             resourceFilePrefixRange = NSMakeRange(0, fileName.length)
         }
-        return fileName.substringWithRange(resourceFilePrefixRange) + "resources/" + resource
+        return fileName.substring(with: resourceFilePrefixRange) + "resources/" + resource
     }
 
 

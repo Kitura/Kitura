@@ -15,13 +15,13 @@
  **/
 
 import KituraNet
-import BlueSocket
+import Socket
 
 import Foundation
 
 // MARK: RouterRequest
 
-public class RouterRequest: BlueSocketReader {
+public class RouterRequest: SocketReader {
 
     ///
     /// The server request
@@ -140,8 +140,8 @@ public class RouterRequest: BlueSocketReader {
     /// - Throws: ???
     /// - Returns: the number of bytes read
     ///
-    public func readData(data: NSMutableData) throws -> Int {
-        return try serverRequest.readData(data)
+    public func read(into data: NSMutableData) throws -> Int {
+        return try serverRequest.read(into: data)
     }
 
     ///
@@ -170,16 +170,16 @@ private class Cookies {
     private init(headers: SimpleHeaders) {
         var cookieString: String?
         for  (header, value)  in headers  {
-            if  header.bridge().lowercaseString == cookieHeader {
+            if  header.bridge().lowercased() == cookieHeader {
                 cookieString = value
                 break
             }
         }
 
         if  let cookieString = cookieString {
-            let cookieNameValues = cookieString.bridge().componentsSeparatedByString("; ")
+            let cookieNameValues = cookieString.bridge().componentsSeparated(by: "; ")
             for  cookieNameValue  in  cookieNameValues  {
-                let cookieNameValueParts = cookieNameValue.bridge().componentsSeparatedByString("=")
+                let cookieNameValueParts = cookieNameValue.bridge().componentsSeparated(by: "=")
                 if   cookieNameValueParts.count == 2  {
                     let theCookie = NSHTTPCookie(properties:
                                                [NSHTTPCookieDomain: ".",
