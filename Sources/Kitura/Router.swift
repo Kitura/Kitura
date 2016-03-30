@@ -356,11 +356,11 @@ public class Router {
         }
 
         if fileExtension.isEmpty {
-            throw RouterError.NoDefaultTemplateEngineAndNoExtensionSpecified
+            throw Router.Error.NoDefaultTemplateEngineAndNoExtensionSpecified
         }
 
         guard let templateEngine = templateEngines[fileExtension] else {
-            throw (RouterError.getNoTemplateEngineForExtensionError(fileExtension))
+            throw (Router.Error.getNoTemplateEngineForExtensionError(fileExtension))
         }
 
         let filePath =  viewsPath + resourceWithExtension

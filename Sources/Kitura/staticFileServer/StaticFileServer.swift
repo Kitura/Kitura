@@ -154,7 +154,7 @@ public class StaticFileServer : RouterMiddleware {
                         try response.redirect(originalUrl + "/")
                     }
                     catch {
-                        response.error = RouterError.FailedToRedirectRequest
+                        response.error = Router.Error.FailedToRedirectRequest
                     }
                 }
             }
