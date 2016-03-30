@@ -338,7 +338,9 @@ public class Router {
     }
 
     public func addTemplateEngine(templateEngine: TemplateEngine) {
-        templateEngines[templateEngine.fileExtension] = templateEngine
+        if let fileExtension = templateEngine.fileExtension {
+            templateEngines[fileExtension] = templateEngine
+        }
     }
 
     internal func render(resource: String, context: [String: Any]) throws -> String {
