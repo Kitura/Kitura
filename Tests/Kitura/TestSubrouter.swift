@@ -32,7 +32,8 @@ class TestSubrouter : KituraTest {
         return [
                 ("testSimpleSub", testSimpleSub),
                 ("testExternSub", testExternSub),
-                ("testSubSubs", testSubSubs)
+                ("testSubSubs", testSubSubs),
+                ("testMultipleMiddleware", testMultipleMiddleware)
             ]
         }
     #endif
@@ -127,6 +128,24 @@ class TestSubrouter : KituraTest {
             })
         })
     }
+
+    func testMultipleMiddleware() {
+        performServerTest(router) {
+            self.performRequest("get", path:"/middle/sub1", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
+                //XCTAssertEqual(response!.method, "GET", "The request wasn't recognized as a get")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!,"first middle\nsub1lastmiddle\n")
+                }
+                catch{
+                    XCTFail("No respose body")
+                }
+            })
+        }
+    }
     
     static func setupRouter() -> Router {
         let subsubRouter = Router()
@@ -152,6 +171,18 @@ class TestSubrouter : KituraTest {
         subRouter.all("/sub2", middleware: subsubRouter)
         
         let router = Router()
+        let middleware = RouterMiddlewareGenerator { (request: RouterRequest, response: RouterResponse, next: () -> Void) in
+            response.status(HttpStatusCode.OK).send("first middle\n")
+            next()
+        }
+        let middleware2 = RouterMiddlewareGenerator { (request: RouterRequest, response: RouterResponse, next: () -> Void) in
+            response.status(HttpStatusCode.OK).send("last middle\n")
+            next()
+        }
+        router.all("/middle", middleware: middleware)
+        router.all("/middle", middleware: subRouter)
+        router.all("/middle", middleware: middleware2)
+
         router.all("/sub", middleware: subRouter)
         
         return router
