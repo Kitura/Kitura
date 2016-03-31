@@ -215,7 +215,7 @@ public class RouterResponse {
     public func sendJson(json: JSON) -> RouterResponse {
         
         let jsonStr = json.description
-        setHeader("Content-Type", value: ContentType.contentTypeForExtension("json")!)
+        type("json")
         send(jsonStr)
         return self
         
