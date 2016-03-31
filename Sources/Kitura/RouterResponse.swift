@@ -443,4 +443,16 @@ public class RouterResponse {
         // no template engine set or error in rendering - send file as is
         return try sendFile(filePath)
     }
+
+    ///
+    /// Sets the Content-Type HTTP header
+    ///
+    /// - Parameter type: the type to set to 
+    ///
+    public func type(type: String) {
+        let contentType =  ContentType.contentTypeForExtension(type)
+        if  let contentType = contentType  {
+            setHeader("Content-Type", value: contentType)
+        }
+    }
 }
