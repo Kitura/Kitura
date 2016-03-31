@@ -563,7 +563,17 @@ public class Router {
     }
 }
 
+///
+/// RouterMiddleware extensions
+///
 extension Router : RouterMiddleware {
+
+    ///
+    /// Handle the request as a middleware. Used for subrouting.
+    ///
+    /// - Parameter request: the router request
+    /// - Parameter response: the router response
+    ///
     public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
         let urlPath = request.parsedUrl.path!
         let mountpath = request.matchedPath
@@ -612,6 +622,12 @@ extension Router : HttpServerDelegate {
         }
     }
 
+    ///
+    /// Processes the request
+    ///
+    /// - Parameter request: the server request
+    /// - Parameter response: the server response
+    ///
     private func processRequest(request: RouterRequest, response: RouterResponse, callback: () -> Void) {
 
         let urlPath = request.parsedUrl.path!
