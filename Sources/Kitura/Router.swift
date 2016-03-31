@@ -570,13 +570,13 @@ extension Router : RouterMiddleware {
         let prefixRange = urlPath.rangeOfString(mountpath)
         request.parsedUrl.path!.removeRange(prefixRange!)
         if request.parsedUrl.path! == "" {
-            request.parsedUrl.path! = "/"
+            request.parsedUrl.path = "/"
         }
 
-        processRequest(request, response: response)
-        request.parsedUrl.path! = urlPath
-        
-        next()
+        processRequest(request, response: response) {
+            request.parsedUrl.path = urlPath
+            next()
+        }
     }
 }
 
@@ -596,10 +596,23 @@ extension Router : HttpServerDelegate {
 
         let routeReq = RouterRequest(request: request)
         let routeResp = RouterResponse(response: response, router: self, request: routeReq)
-        processRequest(routeReq, response: routeResp)
+        processRequest(routeReq, response: routeResp) { [unowned self] () in
+            do {
+                if  !routeResp.invokedEnd {
+                    if  routeResp.response.statusCode == HttpStatusCode.NOT_FOUND  {
+                        self.sendDefaultResponse(routeReq, routeResp: routeResp)
+                    }
+                    try routeResp.end()
+                }
+            }
+            catch {
+                // Not much to do here
+                Log.error("Failed to send response to the client")
+            }
+        }
     }
 
-    private func processRequest(request: RouterRequest, response: RouterResponse) {
+    private func processRequest(request: RouterRequest, response: RouterResponse, callback: () -> Void) {
 
         let urlPath = request.parsedUrl.path!
 
@@ -611,31 +624,20 @@ extension Router : HttpServerDelegate {
             var elemIndex = -1
 
             // Extra variable to get around use of variable in its own initializer
-            var callback: (()->Void)? = nil
+            var nextElemCallback: (()->Void)? = nil
 
-            let callbackHandler = {[unowned request, unowned response, unowned self] () -> Void in
+            let nextElemCallbackHandler = {[unowned request, unowned response, unowned self] () -> Void in
                 elemIndex+=1
                 if  elemIndex < self.routeElems.count {
-                    self.routeElems[elemIndex].process(request, response: response, next: callback!)
+                    self.routeElems[elemIndex].process(request, response: response, next: nextElemCallback!)
                 }
                 else {
-                    do {
-                        if  !response.invokedEnd {
-                            if  response.response.statusCode == HttpStatusCode.NOT_FOUND  {
-                                self.sendDefaultResponse(request, routeResp: response)
-                            }
-                            try response.end()
-                        }
-                    }
-                    catch {
-                        // Not much to do here
-                        Log.error("Failed to send response to the client")
-                    }
+                    callback()
                 }
             }
-            callback = callbackHandler
+            nextElemCallback = nextElemCallbackHandler
 
-            callbackHandler()
+            nextElemCallbackHandler()
         }
     }
 

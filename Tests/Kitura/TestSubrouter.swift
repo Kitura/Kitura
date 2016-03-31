@@ -138,7 +138,7 @@ class TestSubrouter : KituraTest {
                 //XCTAssertEqual(response!.method, "GET", "The request wasn't recognized as a get")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!,"first middle\nsub1lastmiddle\n")
+                    XCTAssertEqual(body!,"first middle\nsub1last middle\n")
                 }
                 catch{
                     XCTFail("No respose body")
