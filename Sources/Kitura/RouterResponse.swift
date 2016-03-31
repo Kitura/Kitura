@@ -455,4 +455,26 @@ public class RouterResponse {
             setHeader("Content-Type", value: contentType)
         }
     }
+
+    ///
+    /// Sets the Content-Disposition to "attachment" and optionally
+    /// sets filename parameter in Content-Disposition and Content-Type
+    ///
+    /// - Parameter filePath: the file to set the filename to
+    ///
+    public func attachment(filePath: String? = nil) {
+        guard let filePath = filePath else {
+            setHeader("Content-Disposition", value: "attachment")
+            return
+        }
+
+        let filePaths = filePath.characters.split{$0 == "/"}.map(String.init)
+        let fileName = filePaths.last
+        setHeader("Content-Disposition", value: "attachment; fileName = \"\(fileName)\"")
+        
+        let contentType =  ContentType.contentTypeForFile(fileName!)
+        if  let contentType = contentType  {
+            setHeader("Content-Type", value: contentType)
+        }
+    }
 }
