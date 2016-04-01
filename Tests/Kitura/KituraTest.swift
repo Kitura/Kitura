@@ -29,15 +29,9 @@ class KituraTest : XCTestCase {
         }
     #endif
 
-     #if os(Linux)
-       func tearDown() {
-           doTearDown()
-       }
-    #else
-       override func tearDown() {
-           doTearDown()
-       }
-    #endif
+   override func tearDown() {
+       doTearDown()
+   }
 
     private func doTearDown() {
         sleep(10)

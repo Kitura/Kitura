@@ -20,17 +20,13 @@ import XCTest
 
 @testable import KituraNet
 
-#if os(Linux)
-    extension ClientTests : XCTestCaseProvider {
-        var allTests : [(String, () throws -> Void)] {
-            return [
-                ("testSimpleHttpClient", testSimpleHttpClient)
-            ]
-        }
-    }
-#endif
-
 class ClientTests: XCTestCase {
+
+    var allTests : [(String, () throws -> Void)] {
+        return [
+            ("testSimpleHttpClient", testSimpleHttpClient)
+        ]
+    }
     
     func testSimpleHttpClient() {
         _ = Http.get("http://www.ibm.com") {response in
