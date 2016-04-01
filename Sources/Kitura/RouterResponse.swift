@@ -470,7 +470,7 @@ public class RouterResponse {
 
         let filePaths = filePath.characters.split{$0 == "/"}.map(String.init)
         let fileName = filePaths.last
-        setHeader("Content-Disposition", value: "attachment; fileName = \"\(fileName)\"")
+        setHeader("Content-Disposition", value: "attachment; fileName = \"\(fileName!)\"")
         
         let contentType =  ContentType.contentTypeForFile(fileName!)
         if  let contentType = contentType  {
