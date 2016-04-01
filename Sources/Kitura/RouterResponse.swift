@@ -118,7 +118,12 @@ public class RouterResponse {
             if  let expiresDate = cookie.expiresDate  {
                 cookieString += "; expires=" + SpiUtils.httpDate(expiresDate)
             }
-            if  cookie.isSecure  {
+#if os(Linux)  
+            let isSecure = cookie.secure
+#else
+            let isSecure = cookie.isSecure
+#endif
+            if  isSecure  {
                 cookieString += "; secure; HttpOnly"
             }
 

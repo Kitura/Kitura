@@ -170,16 +170,29 @@ private class Cookies {
     private init(headers: SimpleHeaders) {
         var cookieString: String?
         for  (header, value)  in headers  {
-            if  header.bridge().lowercased() == cookieHeader {
+            #if os(Linux)
+            let lowercasedHeader = header.bridge().lowercaseString
+            #else
+            let lowercasedHeader = header.lowercased()
+            #endif
+            if  lowercasedHeader  == cookieHeader {
                 cookieString = value
                 break
             }
         }
 
         if  let cookieString = cookieString {
-            let cookieNameValues = cookieString.bridge().componentsSeparated(by: "; ")
+            #if os(Linux)
+            let cookieNameValues = cookieString.bridge().componentsSeparatedByString("; ")
+            #else
+            let cookieNameValues = cookieString.componentsSeparated(by: "; ")
+            #endif
             for  cookieNameValue  in  cookieNameValues  {
-                let cookieNameValueParts = cookieNameValue.bridge().componentsSeparated(by: "=")
+                #if os(Linux)
+                let cookieNameValueParts = cookieNameValue.bridge().componentsSeparatedByString("=")
+                #else
+                let cookieNameValueParts = cookieNameValue.componentsSeparated(by: "=")
+                #endif
                 if   cookieNameValueParts.count == 2  {
                     let theCookie = NSHTTPCookie(properties:
                                                [NSHTTPCookieDomain: ".",
