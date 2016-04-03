@@ -29,6 +29,11 @@ public class RouterRequest: BlueSocketReader {
     let serverRequest: ServerRequest
 
     ///
+    /// The hostname of the request
+    ///
+    public var hostname: String { return parsedUrl.host ?? "" }
+
+    ///
     /// The method of the request
     ///
     public let method: RouterMethod
