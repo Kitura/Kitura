@@ -32,7 +32,13 @@ public class RouterRequest: BlueSocketReader {
     /// The hostname of the request
     ///
     public var hostname: String {
-        return headers["host"] ?? parsedUrl.host ?? ""
+        if  let host = headers["host"]  {
+            let range = host.rangeOfString(":")
+            return  range == nil ? host : host.substringToIndex(range!.startIndex)
+        }
+        else {
+            return parsedUrl.host ?? ""
+        }
     }
 
     ///
