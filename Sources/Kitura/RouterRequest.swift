@@ -31,7 +31,9 @@ public class RouterRequest: BlueSocketReader {
     ///
     /// The hostname of the request
     ///
-    public var hostname: String { return parsedUrl.host ?? "" }
+    public var hostname: String {
+        return headers["host"] ?? parsedUrl.host ?? ""
+    }
 
     ///
     /// The method of the request
