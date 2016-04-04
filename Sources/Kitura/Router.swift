@@ -563,6 +563,33 @@ public class Router {
     }
 }
 
+///
+/// RouterMiddleware extensions
+///
+extension Router : RouterMiddleware {
+
+    ///
+    /// Handle the request as a middleware. Used for subrouting.
+    ///
+    /// - Parameter request: the router request
+    /// - Parameter response: the router response
+    ///
+    public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
+        let urlPath = request.parsedUrl.path!
+        let mountpath = request.matchedPath
+        let prefixRange = urlPath.rangeOfString(mountpath)
+        request.parsedUrl.path!.removeRange(prefixRange!)
+        if request.parsedUrl.path! == "" {
+            request.parsedUrl.path = "/"
+        }
+
+        processRequest(request, response: response) {
+            request.parsedUrl.path = urlPath
+            next()
+        }
+    }
+}
+
 
 ///
 /// HttpServerDelegate extensions
@@ -579,42 +606,54 @@ extension Router : HttpServerDelegate {
 
         let routeReq = RouterRequest(request: request)
         let routeResp = RouterResponse(response: response, router: self, request: routeReq)
+        processRequest(routeReq, response: routeResp) { [unowned self] () in
+            do {
+                if  !routeResp.invokedEnd {
+                    if  routeResp.response.statusCode == HttpStatusCode.NOT_FOUND  {
+                        self.sendDefaultResponse(routeReq, routeResp: routeResp)
+                    }
+                    try routeResp.end()
+                }
+            }
+            catch {
+                // Not much to do here
+                Log.error("Failed to send response to the client")
+            }
+        }
+    }
 
-        let urlPath = routeReq.parsedUrl.path!
+    ///
+    /// Processes the request
+    ///
+    /// - Parameter request: the server request
+    /// - Parameter response: the server response
+    ///
+    private func processRequest(request: RouterRequest, response: RouterResponse, callback: () -> Void) {
+
+        let urlPath = request.parsedUrl.path!
 
         if  urlPath.characters.count > kituraResourcePrefix.characters.count  &&  urlPath.bridge().substringToIndex(kituraResourcePrefix.characters.count) == kituraResourcePrefix  {
             let resource = urlPath.bridge().substringFromIndex(kituraResourcePrefix.characters.count)
-            sendResourceIfExisting(routeResp, resource: resource)
+            sendResourceIfExisting(response, resource: resource)
         }
         else {
             var elemIndex = -1
 
             // Extra variable to get around use of variable in its own initializer
-            var callback: (()->Void)? = nil
+            var nextElemCallback: (()->Void)? = nil
 
-            let callbackHandler = {[unowned routeReq, unowned routeResp] () -> Void in
+            let nextElemCallbackHandler = {[unowned request, unowned response, unowned self] () -> Void in
                 elemIndex+=1
                 if  elemIndex < self.routeElems.count {
-                    self.routeElems[elemIndex].process(urlPath, request: routeReq, response: routeResp, next: callback!)
+                    self.routeElems[elemIndex].process(request, response: response, next: nextElemCallback!)
                 }
                 else {
-                    do {
-                        if  !routeResp.invokedEnd {
-                            if  response.statusCode == HttpStatusCode.NOT_FOUND  {
-                                self.sendDefaultResponse(routeReq, routeResp: routeResp)
-                            }
-                            try routeResp.end()
-                        }
-                    }
-                    catch {
-                        // Not much to do here
-                        Log.error("Failed to send response to the client")
-                    }
+                    callback()
                 }
             }
-            callback = callbackHandler
+            nextElemCallback = nextElemCallbackHandler
 
-            callbackHandler()
+            nextElemCallbackHandler()
         }
     }
 

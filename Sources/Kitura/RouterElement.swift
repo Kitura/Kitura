@@ -73,7 +73,7 @@ class RouterElement {
     ///
     /// - Returns: a RouterElement instance
     ///
-    init(method: RouterMethod, pattern: String?, middleware: [RouterMiddleware]) {
+    init(method: RouterMethod, pattern: String?, middleware: [RouterMiddleware], allowPartialMatch: Bool = true) {
 
         self.method = method
         self.pattern = pattern
@@ -92,7 +92,7 @@ class RouterElement {
         }
 
         // Needs to be after the initialization of the static Regex's
-        (regex, keys) = buildRegexFromPattern(pattern)
+        (regex, keys) = buildRegexFromPattern(pattern, allowPartialMatch: allowPartialMatch)
 
     }
 
@@ -101,7 +101,7 @@ class RouterElement {
     ///
     convenience init(method: RouterMethod, pattern: String? , handler: [RouterHandler]) {
 
-        self.init(method: method, pattern: pattern, middleware: handler.map{RouterMiddlewareGenerator(handler: $0)})
+        self.init(method: method, pattern: pattern, middleware: handler.map{RouterMiddlewareGenerator(handler: $0)}, allowPartialMatch: false)
     }
 
     ///
@@ -112,13 +112,15 @@ class RouterElement {
     /// - Parameter request: the request
     /// - Parameter response: the response
     ///
-    func process(urlPath: String, request: RouterRequest, response: RouterResponse, next: () -> Void) {
+    func process(request: RouterRequest, response: RouterResponse, next: () -> Void) {
+        let urlPath = request.parsedUrl.path!
 
         if response.error == nil || method == .Error {
             if response.error != nil || method == .All || method == request.method {
                 // Either response error exists and method is error, or method matches
                 if  let regex = regex  {
                     if  let match = regex.firstMatchInString(urlPath, options: [], range: NSMakeRange(0, urlPath.characters.count))  {
+                        request.matchedPath = urlPath.bridge().substringWithRange(match.range)
                         request.route = pattern
                         updateRequestParams(urlPath, match: match, request: request)
                         processHelper(request, response: response, next: next)
@@ -173,7 +175,7 @@ class RouterElement {
     ///
     /// - Returns:
     ///
-    private func buildRegexFromPattern(pattern: String?) -> (NSRegularExpression?, [String]?) {
+    private func buildRegexFromPattern(pattern: String?, allowPartialMatch: Bool = false) -> (NSRegularExpression?, [String]?) {
 
         if  let pattern = pattern  {
             var regexStr = "^"
@@ -296,7 +298,10 @@ class RouterElement {
                     }
                 }
             }
-            regexStr.appendContentsOf("(?:/(?=$))?$")
+            regexStr.appendContentsOf("(?:/(?=$))?")
+            if !allowPartialMatch {
+                regexStr.appendContentsOf("$")
+            }
 
             var regex: NSRegularExpression? = nil
             do {

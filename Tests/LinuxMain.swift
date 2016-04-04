@@ -26,5 +26,6 @@ XCTMain([
     TestMultiplicity(),
     ClientTests(),
     ParserTests(),
-    TestCookies()
+    TestCookies(),
+    TestSubrouter()
 ])
