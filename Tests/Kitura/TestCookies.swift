@@ -30,15 +30,18 @@ let cookie3Value = "A-testing-we-go"
 
 let cookieHost = "localhost"
 
-class TestCookies : KituraTest {
-    #if os(Linux)
-        override var allTests : [(String, () throws -> Void)] {
-            return [
-                ("testCookieToServer", testCookieToServer),
-                ("testCookieFromServer", testCookieFromServer)
-            ]
-        }
-    #endif
+class TestCookies : XCTestCase, KituraTest {
+
+    static var allTests : [(String, TestCookies -> () throws -> Void)] {
+        return [
+            ("testCookieToServer", testCookieToServer),
+            ("testCookieFromServer", testCookieFromServer)
+        ]
+    }
+
+    override func tearDown() {
+        doTearDown()
+    }
 
     let router = TestCookies.setupRouter()
 

@@ -26,18 +26,21 @@ import XCTest
     import Darwin
 #endif
 
-class TestResponse : KituraTest {
-    #if os(Linux)
-        override var allTests : [(String, () throws -> Void)] {
-            return [
-                ("testSimpleResponse", testSimpleResponse),
-                ("testPostRequest", testPostRequest),
-                ("testParameter", testParameter),
-                ("testRedirect", testRedirect),
-                ("testErrorHandler", testErrorHandler)
-            ]
-        }
-    #endif
+class TestResponse : XCTestCase, KituraTest {
+
+    static var allTests : [(String, TestResponse -> () throws -> Void)] {
+        return [
+            ("testSimpleResponse", testSimpleResponse),
+            ("testPostRequest", testPostRequest),
+            ("testParameter", testParameter),
+            ("testRedirect", testRedirect),
+            ("testErrorHandler", testErrorHandler)
+        ]
+    }
+
+    override func tearDown() {
+        doTearDown()
+    }
 
     let router = TestResponse.setupRouter()
 
