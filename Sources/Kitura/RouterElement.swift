@@ -121,12 +121,15 @@ class RouterElement {
                 if  let regex = regex  {
 #if os(Linux)  
                     let tempMatch = regex.firstMatchInString(urlPath, options: [], range: NSMakeRange(0, urlPath.characters.count))
-                    request.matchedPath = urlPath.bridge().substringWithRange(tempMatch.range)
 #else
                     let tempMatch = regex.firstMatch(in: urlPath, options: [], range: NSMakeRange(0, urlPath.characters.count))
-                    request.matchedPath = urlPath.bridge().substring(with: tempMatch.range)
 #endif
                     if  let match = tempMatch  {
+#if os(Linux)  
+                    request.matchedPath = urlPath.bridge().substringWithRange(match.range)
+#else
+                    request.matchedPath = urlPath.bridge().substring(with: match.range)
+#endif
                         request.route = pattern
                         updateRequestParams(urlPath, match: match, request: request)
                         processHelper(request, response: response, next: next)

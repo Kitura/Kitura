@@ -577,8 +577,12 @@ extension Router : RouterMiddleware {
     public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
         let urlPath = request.parsedUrl.path!
         let mountpath = request.matchedPath
+#if os(Linux)
         let prefixRange = urlPath.rangeOfString(mountpath)
-        request.parsedUrl.path!.removeRange(prefixRange!)
+#else
+        let prefixRange = urlPath.range(of: mountpath)
+#endif
+        request.parsedUrl.path!.removeSubrange(prefixRange!)
         if request.parsedUrl.path! == "" {
             request.parsedUrl.path = "/"
         }
