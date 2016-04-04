@@ -99,7 +99,7 @@ public class RouterResponse {
             addCookies()
 
             if  request.method != .Head  {
-                try response.writeData(data)
+                try response.write(from: data)
             }
         }
         invokedEnd = true
@@ -118,7 +118,12 @@ public class RouterResponse {
             if  let expiresDate = cookie.expiresDate  {
                 cookieString += "; expires=" + SpiUtils.httpDate(expiresDate)
             }
-            if  cookie.secure  {
+#if os(Linux)  
+            let isSecure = cookie.secure
+#else
+            let isSecure = cookie.isSecure
+#endif
+            if  isSecure  {
                 cookieString += "; secure; HttpOnly"
             }
 

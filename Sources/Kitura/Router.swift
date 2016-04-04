@@ -518,13 +518,13 @@ public class Router {
     }
 
     // MARK: Use
-    @available(*, deprecated, message="Use Router.all instead")
+    @available(*, deprecated, message:"Use Router.all instead")
     public func use(middleware: RouterMiddleware...) -> Router {
         routeElems.append(RouterElement(method: .All, pattern: nil, middleware: middleware))
         return self
     }
 
-    @available(*, deprecated, message="Use Router.all instead")
+    @available(*, deprecated, message:"Use Router.all instead")
     public func use(path: String, middleware: RouterMiddleware...) -> Router {
         routeElems.append(RouterElement(method: .All, pattern: path, middleware: middleware))
         return self
@@ -577,8 +577,12 @@ extension Router : RouterMiddleware {
     public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
         let urlPath = request.parsedUrl.path!
         let mountpath = request.matchedPath
+#if os(Linux)
         let prefixRange = urlPath.rangeOfString(mountpath)
-        request.parsedUrl.path!.removeRange(prefixRange!)
+#else
+        let prefixRange = urlPath.range(of: mountpath)
+#endif
+        request.parsedUrl.path!.removeSubrange(prefixRange!)
         if request.parsedUrl.path! == "" {
             request.parsedUrl.path = "/"
         }
@@ -631,9 +635,18 @@ extension Router : HttpServerDelegate {
     private func processRequest(request: RouterRequest, response: RouterResponse, callback: () -> Void) {
 
         let urlPath = request.parsedUrl.path!
-
-        if  urlPath.characters.count > kituraResourcePrefix.characters.count  &&  urlPath.bridge().substringToIndex(kituraResourcePrefix.characters.count) == kituraResourcePrefix  {
-            let resource = urlPath.bridge().substringFromIndex(kituraResourcePrefix.characters.count)
+#if os(Linux)
+        let shouldContinue = urlPath.characters.count > kituraResourcePrefix.characters.count && urlPath.bridge().substringToIndex(kituraResourcePrefix.characters.count) == kituraResourcePrefix 
+#else
+        let lengthIndex = kituraResourcePrefix.startIndex.advanced(by: kituraResourcePrefix.characters.count)
+        let shouldContinue = urlPath.characters.count > kituraResourcePrefix.characters.count && urlPath.substring(to: lengthIndex) == kituraResourcePrefix
+#endif
+        if  shouldContinue {
+#if os(Linux)  
+            let resource = urlPath.bridge().substringFromIndex(kituraResourcePrefix.characters.count)   
+#else
+            let resource = urlPath.substring(from: lengthIndex)
+#endif
             sendResourceIfExisting(response, resource: resource)
         }
         else {
@@ -666,7 +679,7 @@ extension Router : HttpServerDelegate {
         }
         else {
             do {
-                try routeResp.status(HttpStatusCode.NOT_FOUND).send("Cannot \(String(routeReq.method).uppercaseString) \(routeReq.parsedUrl.path!).").end()
+                try routeResp.status(HttpStatusCode.NOT_FOUND).send("Cannot \(String(routeReq.method).uppercased()) \(routeReq.parsedUrl.path!).").end()
             }
             catch {}
         }
@@ -675,14 +688,22 @@ extension Router : HttpServerDelegate {
     private func getResourceFilePath(resource: String) -> String {
         let fileName = NSString(string: #file)
         let resourceFilePrefixRange: NSRange
+#if os(Linux)  
         let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch)
+#else
+        let lastSlash = fileName.range(of: "/", options: NSStringCompareOptions.backwardsSearch)
+#endif
         if  lastSlash.location != NSNotFound  {
             resourceFilePrefixRange = NSMakeRange(0, lastSlash.location+1)
         }
         else {
             resourceFilePrefixRange = NSMakeRange(0, fileName.length)
         }
+#if os(Linux)  
         return fileName.substringWithRange(resourceFilePrefixRange) + "resources/" + resource
+#else
+        return fileName.substring(with: resourceFilePrefixRange) + "resources/" + resource
+#endif
     }
 
 

@@ -26,17 +26,20 @@ import XCTest
     import Darwin
 #endif
 
-class TestSubrouter : KituraTest {
-    #if os(Linux)
-    override var allTests : [(String, () throws -> Void)] {
+class TestSubrouter : XCTestCase, KituraTest {
+
+    static var allTests : [(String, TestSubrouter -> () throws -> Void)] {
         return [
-                ("testSimpleSub", testSimpleSub),
-                ("testExternSub", testExternSub),
-                ("testSubSubs", testSubSubs),
-                ("testMultipleMiddleware", testMultipleMiddleware)
-            ]
-        }
-    #endif
+            ("testSimpleSub", testSimpleSub),
+            ("testExternSub", testExternSub),
+            ("testSubSubs", testSubSubs),
+            ("testMultipleMiddleware", testMultipleMiddleware)
+        ]
+    }
+
+    override func tearDown() {
+        doTearDown()
+    }
     
     let router = TestSubrouter.setupRouter()
 

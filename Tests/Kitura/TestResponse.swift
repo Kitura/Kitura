@@ -26,18 +26,21 @@ import XCTest
     import Darwin
 #endif
 
-class TestResponse : KituraTest {
-    #if os(Linux)
-        override var allTests : [(String, () throws -> Void)] {
-            return [
-                ("testSimpleResponse", testSimpleResponse),
-                ("testPostRequest", testPostRequest),
-                ("testParameter", testParameter),
-                ("testRedirect", testRedirect),
-                ("testErrorHandler", testErrorHandler)
-            ]
-        }
-    #endif
+class TestResponse : XCTestCase, KituraTest {
+
+    static var allTests : [(String, TestResponse -> () throws -> Void)] {
+        return [
+            ("testSimpleResponse", testSimpleResponse),
+            ("testPostRequest", testPostRequest),
+            ("testParameter", testParameter),
+            ("testRedirect", testRedirect),
+            ("testErrorHandler", testErrorHandler)
+        ]
+    }
+
+    override func tearDown() {
+        doTearDown()
+    }
 
     let router = TestResponse.setupRouter()
 
@@ -73,8 +76,8 @@ class TestResponse : KituraTest {
                     XCTFail("No respose body")
                 }
             }) {req in
-                req.writeString("plover\n")
-                req.writeString("xyzzy\n")
+                req.write(from: "plover\n")
+                req.write(from: "xyzzy\n")
             }
         }
     }
@@ -100,7 +103,11 @@ class TestResponse : KituraTest {
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response!.readString()
+#if os(Linux)
                     XCTAssertNotNil(body!.rangeOfString("ibm"),"response does not contain IBM")
+#else
+                    XCTAssertNotNil(body!.range(of: "ibm"),"response does not contain IBM")
+#endif 
                 }
                 catch{
                     XCTFail("No respose body")

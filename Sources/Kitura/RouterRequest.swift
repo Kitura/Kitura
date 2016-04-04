@@ -15,13 +15,13 @@
  **/
 
 import KituraNet
-import BlueSocket
+import Socket
 
 import Foundation
 
 // MARK: RouterRequest
 
-public class RouterRequest: BlueSocketReader {
+public class RouterRequest: SocketReader {
 
     ///
     /// The server request
@@ -33,8 +33,13 @@ public class RouterRequest: BlueSocketReader {
     ///
     public var hostname: String {
         if  let host = headers["host"]  {
+#if os(Linux)
             let range = host.rangeOfString(":")
             return  range == nil ? host : host.substringToIndex(range!.startIndex)
+#else
+            let range = host.range(of: ":")
+            return  range == nil ? host : host.substring(to: range!.startIndex)
+#endif
         }
         else {
             return parsedUrl.host ?? ""
@@ -140,8 +145,8 @@ public class RouterRequest: BlueSocketReader {
     /// - Throws: ???
     /// - Returns: the number of bytes read
     ///
-    public func readData(data: NSMutableData) throws -> Int {
-        return try serverRequest.readData(data)
+    public func read(into data: NSMutableData) throws -> Int {
+        return try serverRequest.read(into: data)
     }
 
     ///
@@ -170,16 +175,29 @@ private class Cookies {
     private init(headers: SimpleHeaders) {
         var cookieString: String?
         for  (header, value)  in headers  {
-            if  header.bridge().lowercaseString == cookieHeader {
+            #if os(Linux)
+            let lowercasedHeader = header.bridge().lowercaseString
+            #else
+            let lowercasedHeader = header.lowercased()
+            #endif
+            if  lowercasedHeader  == cookieHeader {
                 cookieString = value
                 break
             }
         }
 
         if  let cookieString = cookieString {
+            #if os(Linux)
             let cookieNameValues = cookieString.bridge().componentsSeparatedByString("; ")
+            #else
+            let cookieNameValues = cookieString.componentsSeparated(by: "; ")
+            #endif
             for  cookieNameValue  in  cookieNameValues  {
+                #if os(Linux)
                 let cookieNameValueParts = cookieNameValue.bridge().componentsSeparatedByString("=")
+                #else
+                let cookieNameValueParts = cookieNameValue.componentsSeparated(by: "=")
+                #endif
                 if   cookieNameValueParts.count == 2  {
                     let theCookie = NSHTTPCookie(properties:
                                                [NSHTTPCookieDomain: ".",
