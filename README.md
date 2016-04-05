@@ -41,7 +41,7 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-03-24-a ve
 
 1. Install [Docker](https://docs.docker.com/engine/installation/) on your development system and start a Docker session/terminal.
 
-2. From the Docker session, pull down the `kitura-ubuntu` image from Docker Hub:
+2. From the Docker session, pull down the [kitura-ubuntu](https://hub.docker.com/r/ibmcom/kitura-ubuntu/) image from Docker Hub:
 
   `docker pull ibmcom/kitura-ubuntu:latest`
 
