@@ -34,7 +34,8 @@ class TestResponse : XCTestCase, KituraTest {
             ("testPostRequest", testPostRequest),
             ("testParameter", testParameter),
             ("testRedirect", testRedirect),
-            ("testErrorHandler", testErrorHandler)
+            ("testErrorHandler", testErrorHandler),
+            ("testHeaderModifiers", testHeaderModifiers)
         ]
     }
 
@@ -134,6 +135,52 @@ class TestResponse : XCTestCase, KituraTest {
                 }
             })
         }
+    }
+
+    func testHeaderModifiers() {
+
+        router.get("/headerTest") { _, response, next in
+
+            response.append("Content-Type", value: "text/html")
+            XCTAssertEqual(response.getHeader("Content-Type"), "text/html")
+
+            response.append("Content-Type", value: "text/plain; charset=utf-8")
+            XCTAssertNil(response.getHeader("Content-Type"))
+            XCTAssertEqual(response.getHeaders("Content-Type")!, ["text/html", "text/plain; charset=utf-8"])
+
+            response.removeHeader("Content-Type")
+            XCTAssertNil(response.getHeader("Content-Type"))
+
+            response.append("Content-Type", value: ["text/plain", "image/png"])
+            XCTAssertEqual(response.getHeaders("Content-Type")!, ["text/plain", "image/png"])
+
+            response.append("Content-Type", value: ["text/html", "image/jpeg"])
+            XCTAssertEqual(response.getHeaders("Content-Type")!, ["text/plain", "image/png", "text/html", "image/jpeg"])
+
+            response.append("Content-Type", value: "charset=UTF-8")
+            XCTAssertEqual(response.getHeaders("Content-Type")!, ["text/plain", "image/png", "text/html", "image/jpeg", "charset=UTF-8"])
+
+            response.removeHeader("Content-Type")
+
+            response.append("Content-Type", value: ["text/plain"])
+            XCTAssertEqual(response.getHeader("Content-Type"), "text/plain")
+
+            response.append("Content-Type", value: ["image/png", "text/html"])
+            XCTAssertEqual(response.getHeaders("Content-Type")!, ["text/plain", "image/png", "text/html"])
+
+            do {
+                try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+            }
+            catch {}
+            next()
+        }
+
+        performServerTest(router) {
+            self.performRequest("get", path: "/headerTest", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+            })
+        }
+
     }
 
     static func setupRouter() -> Router {

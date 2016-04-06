@@ -357,6 +357,28 @@ public class RouterResponse {
         response.setHeader(key, value: value)
         
     }
+
+    ///
+    /// Append a value to the header
+    /// 
+    /// - Parameter key: the header key
+    ///
+    public func append(key: String, value: String) {
+
+        response.append(key, value: value)
+
+    }
+
+    ///
+    /// Append values to the header
+    /// 
+    /// - Parameter key: the key
+    ///
+    public func append(key: String, value: [String]) {
+
+        response.append(key, value: value)
+
+    }
     
     ///
     /// Remove the header by key
