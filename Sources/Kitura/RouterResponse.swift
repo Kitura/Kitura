@@ -491,6 +491,16 @@ public class RouterResponse {
     }
 
     ///
+    /// Sets headers and attaches file for downloading
+    ///
+    /// - Parameter filePath: the file to download
+    ///
+    public func download(filePath: String) throws {
+        try sendFile(filePath)
+        attachment(filePath)
+    }
+
+    ///
     /// Sets the pre-flush lifecycle handler and returns the previous one
     ///
     /// - Parameter newPreFlush: The new pre-flush lifecycle handler
