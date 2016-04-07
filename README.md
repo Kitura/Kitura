@@ -77,11 +77,9 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-03-24-a ve
 
  `vagrant ssh`
 
-5. From the Vagrant shell, run the sample program:
+5. As needed for development, edit the `vagrantfile` to setup [Synced Folders](https://www.vagrantup.com/docs/synced-folders/basic_usage.html) to share files between your host and guest machine.
 
- `Kitura/.build/debug/KituraSample`. You should see a message that says "Listening on port 8090".
-
-6. As needed for development, edit the `vagrantfile` to setup [Synced Folders](https://www.vagrantup.com/docs/synced-folders/basic_usage.html) to share files between your host and guest machine.
+6. Now you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
 
 ## Installation (OS X)
 
