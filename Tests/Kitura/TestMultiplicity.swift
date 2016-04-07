@@ -36,10 +36,11 @@ class TestMultiplicity : XCTestCase, KituraTest {
     }
 
     func expectation(index index: Int) -> XCTestExpectation {
+        let expectationDescription = "TestMultiplicity-\(index)"
         #if os(Linux)
-        return self.expectationWithDescription("TestMultiplicity-\(index)")
+        return self.expectationWithDescription(expectationDescription)
         #else
-        return self.expectation(withDescription: "TestMultiplicity-\(index)")
+        return self.expectation(withDescription: expectationDescription)
         #endif
     }
 

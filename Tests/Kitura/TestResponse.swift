@@ -45,10 +45,11 @@ class TestResponse : XCTestCase, KituraTest {
     }
 
     func expectation(index index: Int) -> XCTestExpectation {
+        let expectationDescription = "TestResponse-\(index)"
         #if os(Linux)
-        return self.expectationWithDescription("TestResponse-\(index)")
+        return self.expectationWithDescription(expectationDescription)
         #else
-        return self.expectation(withDescription: "TestResponse-\(index)")
+        return self.expectation(withDescription: expectationDescription)
         #endif
     }
 

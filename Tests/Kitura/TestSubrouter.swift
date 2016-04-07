@@ -42,10 +42,11 @@ class TestSubrouter : XCTestCase, KituraTest {
     }
 
     func expectation(index index: Int) -> XCTestExpectation {
+        let expectationDescription = "TestSubrouter-\(index)"
         #if os(Linux)
-        return self.expectationWithDescription("TestSubrouter-\(index)")
+        return self.expectationWithDescription(expectationDescription)
         #else
-        return self.expectation(withDescription: "TestSubrouter-\(index)")
+        return self.expectation(withDescription: expectationDescription)
         #endif
     }
 

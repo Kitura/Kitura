@@ -44,10 +44,11 @@ class TestCookies : XCTestCase, KituraTest {
     }
 
     func expectation(index index: Int) -> XCTestExpectation {
+        let expectationDescription = "TestCookie-\(index)"
         #if os(Linux)
-        return self.expectationWithDescription("TestCookie-\(index)")
+        return self.expectationWithDescription(expectationDescription)
         #else
-        return self.expectation(withDescription: "TestCookie-\(index)")
+        return self.expectation(withDescription: expectationDescription)
         #endif
     }
 
