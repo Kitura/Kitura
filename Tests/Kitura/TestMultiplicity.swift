@@ -36,15 +36,11 @@ class TestMultiplicity : XCTestCase, KituraTest {
     }
 
     func expectation(index index: Int) -> XCTestExpectation {
-        let expectation: XCTestExpectation
-
         #if os(Linux)
         return self.expectationWithDescription("TestMultiplicity-\(index)")
         #else
         return self.expectation(withDescription: "TestMultiplicity-\(index)")
         #endif
-
-        return expectation
     }
 
     func waitExpectation(timeout t: NSTimeInterval, handler: XCWaitCompletionHandler?) {

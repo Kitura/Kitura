@@ -42,15 +42,11 @@ class TestSubrouter : XCTestCase, KituraTest {
     }
 
     func expectation(index index: Int) -> XCTestExpectation {
-        let expectation: XCTestExpectation
-
         #if os(Linux)
         return self.expectationWithDescription("TestSubrouter-\(index)")
         #else
         return self.expectation(withDescription: "TestSubrouter-\(index)")
         #endif
-
-        return expectation
     }
 
     func waitExpectation(timeout t: NSTimeInterval, handler: XCWaitCompletionHandler?) {

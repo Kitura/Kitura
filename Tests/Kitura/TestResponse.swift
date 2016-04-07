@@ -45,15 +45,11 @@ class TestResponse : XCTestCase, KituraTest {
     }
 
     func expectation(index index: Int) -> XCTestExpectation {
-        let expectation: XCTestExpectation
-
         #if os(Linux)
         return self.expectationWithDescription("TestResponse-\(index)")
         #else
         return self.expectation(withDescription: "TestResponse-\(index)")
         #endif
-
-        return expectation
     }
 
     func waitExpectation(timeout t: NSTimeInterval, handler: XCWaitCompletionHandler?) {
