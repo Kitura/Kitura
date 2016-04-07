@@ -23,10 +23,10 @@ import Foundation
 
 import KituraTemplateEngine
 
-// MARK Router 
+// MARK Router
 
 public class Router {
-    
+
     ///
     /// Contains the list of routing elements
     ///
@@ -56,6 +56,12 @@ public class Router {
 
         Log.verbose("Router initialized")
 
+    }
+
+    // MARK: RouterGroup
+    public func group(path: String?=nil) -> RouterGroup {
+        let group = RouterGroup(router: self, path: path)
+        return group
     }
 
     // MARK: All
