@@ -30,7 +30,7 @@ let cookie3Value = "A-testing-we-go"
 
 let cookieHost = "localhost"
 
-class TestCookies : XCTestCase, KituraTest {
+class TestCookies : XCTestCase {
 
     static var allTests : [(String, TestCookies -> () throws -> Void)] {
         return [
@@ -41,23 +41,6 @@ class TestCookies : XCTestCase, KituraTest {
 
     override func tearDown() {
         doTearDown()
-    }
-
-    func expectation(index index: Int) -> XCTestExpectation {
-        let expectationDescription = "TestCookie-\(index)"
-        #if os(Linux)
-        return self.expectationWithDescription(expectationDescription)
-        #else
-        return self.expectation(withDescription: expectationDescription)
-        #endif
-    }
-
-    func waitExpectation(timeout t: NSTimeInterval, handler: XCWaitCompletionHandler?) {
-        #if os(Linux)
-        self.waitForExpectationsWithTimeout(t, handler: handler)
-        #else
-        self.waitForExpectations(withTimeout: t, handler: handler)
-        #endif
     }
 
     let router = TestCookies.setupRouter()

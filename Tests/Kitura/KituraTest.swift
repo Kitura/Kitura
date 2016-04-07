@@ -32,8 +32,6 @@ extension KituraTest {
   //       sleep(10)
     }
 
-
-
     func performServerTest(router: HttpServerDelegate, asyncTasks: (expectation: XCTestExpectation) -> Void...) {
         let server = setupServer(8090, delegate: router)
         let requestQueue = Queue(type: QueueType.SERIAL)
@@ -70,5 +68,24 @@ extension KituraTest {
     private func setupServer(port: Int, delegate: HttpServerDelegate) -> HttpServer {
         return HttpServer.listen(port, delegate: delegate,
                            notOnMainQueue:true)
+    }
+}
+
+extension XCTestCase: KituraTest {
+    func expectation(index index: Int) -> XCTestExpectation {
+        let expectationDescription = "\(self.dynamicType)-\(index)"
+        #if os(Linux)
+        return self.expectationWithDescription(expectationDescription)
+        #else
+        return self.expectation(withDescription: expectationDescription)
+        #endif
+    }
+
+    func waitExpectation(timeout t: NSTimeInterval, handler: XCWaitCompletionHandler?) {
+        #if os(Linux)
+        self.waitForExpectationsWithTimeout(t, handler: handler)
+        #else
+        self.waitForExpectations(withTimeout: t, handler: handler)
+        #endif
     }
 }

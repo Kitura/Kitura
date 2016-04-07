@@ -20,7 +20,7 @@ import XCTest
 @testable import Kitura
 @testable import KituraNet
 
-class TestMultiplicity : XCTestCase, KituraTest {
+class TestMultiplicity : XCTestCase {
 
     static var allTests : [(String, TestMultiplicity -> () throws -> Void)] {
         return [
@@ -33,23 +33,6 @@ class TestMultiplicity : XCTestCase, KituraTest {
 
     override func tearDown() {
         doTearDown()
-    }
-
-    func expectation(index index: Int) -> XCTestExpectation {
-        let expectationDescription = "TestMultiplicity-\(index)"
-        #if os(Linux)
-        return self.expectationWithDescription(expectationDescription)
-        #else
-        return self.expectation(withDescription: expectationDescription)
-        #endif
-    }
-
-    func waitExpectation(timeout t: NSTimeInterval, handler: XCWaitCompletionHandler?) {
-        #if os(Linux)
-        self.waitForExpectationsWithTimeout(t, handler: handler)
-        #else
-        self.waitForExpectations(withTimeout: t, handler: handler)
-        #endif
     }
 
     let router = TestMultiplicity.setupRouter()

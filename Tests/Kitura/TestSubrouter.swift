@@ -26,7 +26,7 @@ import XCTest
     import Darwin
 #endif
 
-class TestSubrouter : XCTestCase, KituraTest {
+class TestSubrouter : XCTestCase {
 
     static var allTests : [(String, TestSubrouter -> () throws -> Void)] {
         return [
@@ -39,23 +39,6 @@ class TestSubrouter : XCTestCase, KituraTest {
 
     override func tearDown() {
         doTearDown()
-    }
-
-    func expectation(index index: Int) -> XCTestExpectation {
-        let expectationDescription = "TestSubrouter-\(index)"
-        #if os(Linux)
-        return self.expectationWithDescription(expectationDescription)
-        #else
-        return self.expectation(withDescription: expectationDescription)
-        #endif
-    }
-
-    func waitExpectation(timeout t: NSTimeInterval, handler: XCWaitCompletionHandler?) {
-        #if os(Linux)
-        self.waitForExpectationsWithTimeout(t, handler: handler)
-        #else
-        self.waitForExpectations(withTimeout: t, handler: handler)
-        #endif
     }
 
     let router = TestSubrouter.setupRouter()
