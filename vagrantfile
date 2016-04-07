@@ -8,7 +8,7 @@ SWIFT_DIRECTORY = 'swift-DEVELOPMENT-SNAPSHOT-2016-03-24-a-ubuntu15.10'.freeze
 SWIFT_FILE = "#{SWIFT_DIRECTORY}.tar.gz".freeze
 SWIFT_HOME = "/home/vagrant/#{SWIFT_DIRECTORY}".freeze
 
-LIBDISPATCH_URL = 'https://github.com/apple/swift-corelibs-libdispatch'.freeze
+LIBDISPATCH_URL = '-b experimental/foundation https://github.com/apple/swift-corelibs-libdispatch'.freeze
 
 KITURA_URL = 'https://github.com/IBM-Swift/Kitura.git'.freeze
 KITURA_BRANCH = 'develop'.freeze
