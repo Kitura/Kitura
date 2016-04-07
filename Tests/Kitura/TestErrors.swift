@@ -44,11 +44,23 @@ class TestErrors : XCTestCase, KituraTest {
     }
 
     func expectation(index index: Int) -> XCTestExpectation {
+        let expectation: XCTestExpectation
+
+        #if os(Linux)
+        return self.expectationWithDescription("TestErrors-\(index)")
+        #else
         return self.expectation(withDescription: "TestErrors-\(index)")
+        #endif
+
+        return expectation
     }
 
     func waitExpectation(timeout t: NSTimeInterval, handler: XCWaitCompletionHandler?) {
+        #if os(Linux)
+        self.waitForExpectationsWithTimeout(t, handler: handler)
+        #else
         self.waitForExpectations(withTimeout: t, handler: handler)
+        #endif
     }
 
     let router = Router()

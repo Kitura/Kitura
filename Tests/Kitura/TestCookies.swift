@@ -44,11 +44,23 @@ class TestCookies : XCTestCase, KituraTest {
     }
 
     func expectation(index index: Int) -> XCTestExpectation {
+        let expectation: XCTestExpectation
+
+        #if os(Linux)
+        return self.expectationWithDescription("TestCookie-\(index)")
+        #else
         return self.expectation(withDescription: "TestCookie-\(index)")
+        #endif
+
+        return expectation
     }
 
     func waitExpectation(timeout t: NSTimeInterval, handler: XCWaitCompletionHandler?) {
+        #if os(Linux)
+        self.waitForExpectationsWithTimeout(t, handler: handler)
+        #else
         self.waitForExpectations(withTimeout: t, handler: handler)
+        #endif
     }
 
     let router = TestCookies.setupRouter()
