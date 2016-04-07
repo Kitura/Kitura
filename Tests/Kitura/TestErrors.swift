@@ -43,32 +43,43 @@ class TestErrors : XCTestCase, KituraTest {
         doTearDown()
     }
 
+    func expectation(index index: Int) -> XCTestExpectation {
+        return self.expectation(withDescription: "TestErrors-\(index)")
+    }
+
+    func waitExpectation(timeout t: NSTimeInterval, handler: XCWaitCompletionHandler?) {
+        self.waitForExpectations(withTimeout: t, handler: handler)
+    }
+
     let router = Router()
-    
+
     func testInvalidMethod() {
-        performServerTest(router) {
+        performServerTest(router) { expectation in
             self.performRequest("invalid", path: "/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.BAD_REQUEST, "HTTP Status code was \(response!.statusCode)")
+                expectation.fulfill()
             })
         }
     }
 
     func testInvalidEndpoint() {
-        performServerTest(router) {
+        performServerTest(router) { expectation in
             self.performRequest("get", path: "/notreal", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.NOT_FOUND, "HTTP Status code was \(response!.statusCode)")
+                expectation.fulfill()
             })
         }
     }
 
     func testInvalidHeader() {
-        performServerTest(router) {
+        performServerTest(router) { expectation in
             self.performRequest("get", path: "/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 // should this be ok?
-            }) {req in 
+                expectation.fulfill()
+            }) {req in
                 req.headers = ["garbage" : "dfsfdsf"]
             }
         }

@@ -21,25 +21,34 @@ import XCTest
 
 import Foundation
 
-protocol KituraTest {}
+protocol KituraTest {
+    func expectation(index index: Int) -> XCTestExpectation
+    func waitExpectation(timeout t: NSTimeInterval, handler: XCWaitCompletionHandler?)
+}
 
 extension KituraTest {
 
    func doTearDown() {
-        sleep(10)
+  //       sleep(10)
     }
 
-    func performServerTest(router: HttpServerDelegate, asyncTasks: () -> Void...) {
+
+
+    func performServerTest(router: HttpServerDelegate, asyncTasks: (expectation: XCTestExpectation) -> Void...) {
         let server = setupServer(8090, delegate: router)
         let requestQueue = Queue(type: QueueType.SERIAL)
 
-        for asyncTask in asyncTasks {
-            requestQueue.queueAsync(asyncTask)
+        for (index, asyncTask) in asyncTasks.enumerated() {
+            let expectation = self.expectation(index: index)
+            requestQueue.queueAsync {
+                asyncTask(expectation: expectation)
+            }
         }
 
-        requestQueue.queueSync {
+        waitExpectation(timeout: 10) { error in
                 // blocks test until request completes
                 server.stop()
+                XCTAssertNil(error);
         }
     }
 
