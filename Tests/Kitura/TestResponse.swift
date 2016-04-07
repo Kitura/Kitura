@@ -137,6 +137,34 @@ class TestResponse : XCTestCase, KituraTest {
         }
     }
 
+    func testRouteFunc() {
+        performServerTest(router, asyncTasks: {
+            self.performRequest("get", path: "/route", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!,"get 1\nget 2\n")
+                }
+                catch{
+                    XCTFail("No respose body")
+                }
+            })
+        }, {
+            self.performRequest("post", path: "/route", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!,"post received")
+                }
+                catch{
+                    XCTFail("No respose body")
+                }
+            })
+        })
+    }
+
     func testHeaderModifiers() {
 
         router.get("/headerTest") { _, response, next in
@@ -226,6 +254,20 @@ class TestResponse : XCTestCase, KituraTest {
         router.get("/error") { _, response, next in
             response.status(HttpStatusCode.INTERNAL_SERVER_ERROR)
             response.error = NSError(domain: "RouterTestDomain", code: 1, userInfo: [:])
+            next()
+        }
+
+        router.route("/route")
+        .get { _, response, next in
+            response.status(HttpStatusCode.OK).send("get 1\n")
+            next()
+        }
+        .post {_, response, next in
+            response.status(HttpStatusCode.OK).send("post received")
+            next()
+        }
+        .get { _, response, next in
+            response.status(HttpStatusCode.OK).send("get 2\n")
             next()
         }
 

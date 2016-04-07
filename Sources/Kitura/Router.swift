@@ -561,6 +561,12 @@ public class Router {
     public func setTemplateEngine(templateEngine: TemplateEngine?) {
         self.templateEngine = templateEngine
     }
+
+    public func route(route: String) -> Router {
+        let subrouter = Router()
+        self.all(route, middleware: subrouter)
+        return subrouter
+    }
 }
 
 ///
