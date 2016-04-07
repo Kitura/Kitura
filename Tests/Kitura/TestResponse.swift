@@ -35,7 +35,8 @@ class TestResponse : XCTestCase, KituraTest {
             ("testParameter", testParameter),
             ("testRedirect", testRedirect),
             ("testErrorHandler", testErrorHandler),
-            ("testHeaderModifiers", testHeaderModifiers)
+            ("testHeaderModifiers", testHeaderModifiers),
+            ("testRouteFunc", testRouteFunc)
         ]
     }
 
