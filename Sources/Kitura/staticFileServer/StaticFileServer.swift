@@ -81,8 +81,11 @@ public class StaticFileServer : RouterMiddleware {
             self.path = path
         }
         // If we received a path with a tlde (~) in the front, expand it.
+#if os(Linux)  
         self.path = self.path.bridge().stringByExpandingTildeInPath
-
+#else
+        self.path = self.path.bridge().expandingTildeInPath
+#endif
         if let options = options {
             for option in options {
                 switch option {
@@ -147,7 +150,12 @@ public class StaticFileServer : RouterMiddleware {
         
         let fileManager = NSFileManager()
         var isDirectory = ObjCBool(false)
-        if fileManager.fileExistsAtPath(filePath, isDirectory: &isDirectory) {
+#if os(Linux)  
+        let fileExists = fileManager.fileExistsAtPath(filePath, isDirectory: &isDirectory)
+#else
+        let fileExists = fileManager.fileExists(atPath: filePath, isDirectory: &isDirectory)
+#endif
+        if fileExists {
             if isDirectory.boolValue {
                 if redirect {
                     do {
@@ -166,7 +174,12 @@ public class StaticFileServer : RouterMiddleware {
             if let _ = possibleExtensions {
                 for ext in possibleExtensions! {
                     let newFilePath = filePath + "." + ext
-                    if fileManager.fileExistsAtPath(newFilePath, isDirectory: &isDirectory) {
+#if os(Linux)  
+                    let newFileExists = fileManager.fileExistsAtPath(newFilePath, isDirectory: &isDirectory)
+#else
+                    let newFileExists = fileManager.fileExists(atPath: newFilePath, isDirectory: &isDirectory)
+#endif
+                    if newFileExists {
                         if !isDirectory.boolValue {
                             serveFile(newFilePath, fileManager: fileManager, response: response)
                             break
@@ -184,17 +197,16 @@ public class StaticFileServer : RouterMiddleware {
         // Check that no-one is using ..'s in the path to poke around the filesystem
         let tempAbsoluteBasePath = NSURL(fileURLWithPath: path).absoluteString
         let tempAbsoluteFilePath = NSURL(fileURLWithPath: filePath).absoluteString
-        #if os(Linux)
-        let absoluteBasePath = tempAbsoluteBasePath!
-        let absoluteFilePath = tempAbsoluteFilePath!
-        #else
         let absoluteBasePath = tempAbsoluteBasePath
         let absoluteFilePath = tempAbsoluteFilePath
-        #endif
 
         if  absoluteFilePath.hasPrefix(absoluteBasePath)  {
             do {
+#if os(Linux)  
                 let attributes = try fileManager.attributesOfItemAtPath(filePath)
+#else
+                let attributes = try fileManager.attributesOfItem(atPath: filePath)
+#endif
                 response.setHeader("Cache-Control", value: "max-age=\(maxAgeCacheControlHeader)")
                 if addLastModifiedHeader {
                     if let date = attributes[NSFileModificationDate] as? NSDate {

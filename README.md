@@ -35,13 +35,13 @@ Kitura is a web framework and web server that is created for web services writte
 - Pluggable middleware
 
 ## Swift version
-The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-03-01-a version of the Swift binaries. You can download this version of the Swift binaries by following this [link](https://swift.org/download/).
+The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-03-24-a version of the Swift binaries. You can download this version of the Swift binaries by following this [link](https://swift.org/download/). Compatibility with other Swift versions is not guaranteed.
 
 ## Installation (Docker development environment)
 
 1. Install [Docker](https://docs.docker.com/engine/installation/) on your development system and start a Docker session/terminal.
 
-2. From the Docker session, pull down the `kitura-ubuntu` image from Docker Hub:
+2. From the Docker session, pull down the [kitura-ubuntu](https://hub.docker.com/r/ibmcom/kitura-ubuntu/) image from Docker Hub:
 
   `docker pull ibmcom/kitura-ubuntu:latest`
 
@@ -77,11 +77,9 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-03-01-a ve
 
  `vagrant ssh`
 
-5. From the Vagrant shell, run the sample program:
+5. As needed for development, edit the `vagrantfile` to setup [Synced Folders](https://www.vagrantup.com/docs/synced-folders/basic_usage.html) to share files between your host and guest machine.
 
- `Kitura/.build/debug/KituraSample`. You should see a message that says "Listening on port 8090".
-
-6. As needed for development, edit the `vagrantfile` to setup [Synced Folders](https://www.vagrantup.com/docs/synced-folders/basic_usage.html) to share files between your host and guest machine.
+6. Now you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
 
 ## Installation (OS X)
 
@@ -110,8 +108,8 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-03-01-a ve
  Follow the instructions provided on that page. After installing it (i.e. uncompressing the tar file), make sure you update your PATH environment variable so that it includes the extracted tools: `export PATH=/<path to uncompress tar contents>/usr/bin:$PATH`. To update the PATH env variable, you can update your [.bashrc file](http://www.joshstaiger.org/archives/2005/07/bash_profile_vs.html).
 
 3. Clone, build and install the libdispatch library.
-The complete instructions for building and installing this library are  [here](https://github.com/apple/swift-corelibs-libdispatch/blob/master/INSTALL), though, all you need to do is just this
- `git clone https://github.com/apple/swift-corelibs-libdispatch.git && cd swift-corelibs-libdispatch && git submodule init && git submodule update && sh ./autogen.sh && ./configure --with-swift-toolchain=<path-to-swift>/usr --prefix=<path-to-swift>/usr && make && make install`
+The complete instructions for building and installing this library are  [here](https://github.com/apple/swift-corelibs-libdispatch/blob/experimental/foundation/INSTALL), though, all you need to do is just this
+ `git clone -b experimental/foundation https://github.com/apple/swift-corelibs-libdispatch.git && cd swift-corelibs-libdispatch && git submodule init && git submodule update && sh ./autogen.sh && ./configure --with-swift-toolchain=<path-to-swift>/usr --prefix=<path-to-swift>/usr && make && make install`
 
 4. Now you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
 
@@ -151,7 +149,7 @@ Let's develop our first Kitura Web Application written in Swift!
   let package = Package(
       name: "myFirstProject",
       dependencies: [
-          .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 5)
+          .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 7)
       ])
   ```
 
@@ -168,8 +166,8 @@ Let's develop our first Kitura Web Application written in Swift!
   let router = Router()
 
   router.get("/") {
-      request, response, next in
-      response.status(HttpStatusCode.OK).send("Hello, World!")
+  request, response, next in
+      response.send("Hello, World!")
       next()
   }
   ```
@@ -192,7 +190,7 @@ Let's develop our first Kitura Web Application written in Swift!
 
   router.get("/") {
   request, response, next in
-      response.status(HttpStatusCode.OK).send("Hello, World!")
+      response.send("Hello, World!")
       next()
   }
 
@@ -220,8 +218,7 @@ Feel free to visit our [Wiki](https://github.com/IBM-Swift/Kitura/wiki) for our 
 
 ## Developing Kitura
 
-1. Clone this repository, `develop` branch
-  `git clone -b develop https://github.com/IBM-Swift/Kitura`
+1. Clone this repository, `git clone https://github.com/IBM-Swift/Kitura`
 2. Build and run tests
   `make test`
 
@@ -232,6 +229,8 @@ Feel free to visit our [Wiki](https://github.com/IBM-Swift/Kitura/wiki) for our 
    SWIFTC_FLAGS = -Xswiftc -I/usr/local/include
    LINKER_FLAGS = -Xlinker -L/usr/local/lib
    ```
+   
+You can find info on contributing to Kitura in our [contributing guidelines](.github/CONTRIBUTING.md).
 
 ## License
 

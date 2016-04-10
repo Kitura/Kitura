@@ -29,16 +29,19 @@ import XCTest
 #endif
 
 
-class TestErrors : KituraTest {
-    #if os(Linux)
-        override var allTests : [(String, () throws -> Void)] {
-            return [
-                ("testInvalidMethod", testInvalidMethod),
-                ("testInvalidEndpoint", testInvalidEndpoint),
-                ("testInvalidHeader", testInvalidHeader)
-            ]
-        }
-    #endif
+class TestErrors : XCTestCase, KituraTest {
+
+    static var allTests : [(String, TestErrors -> () throws -> Void)] {
+        return [
+            ("testInvalidMethod", testInvalidMethod),
+            ("testInvalidEndpoint", testInvalidEndpoint),
+            ("testInvalidHeader", testInvalidHeader)
+        ]
+    }
+
+    override func tearDown() {
+        doTearDown()
+    }
 
     let router = Router()
     
