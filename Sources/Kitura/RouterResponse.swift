@@ -65,7 +65,7 @@ public class RouterResponse {
     ///
     /// Optional error value
     ///
-    public var error: NSError?
+    public var error: Error?
 
     ///
     /// Initializes a RouterResponse instance
