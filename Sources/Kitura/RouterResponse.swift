@@ -483,10 +483,14 @@ public class RouterResponse {
     ///
     /// - Parameter type: the type to set to 
     ///
-    public func type(type: String) {
+    public func type(type: String, charset: String? = nil) {
         let contentType =  ContentType.contentTypeForExtension(type)
         if  let contentType = contentType  {
-            setHeader("Content-Type", value: contentType)
+            var content = contentType
+            if let charset = charset {
+                content += "; charset=\(charset)"
+            }
+            setHeader("Content-Type", value: content)
         }
     }
 
