@@ -124,11 +124,7 @@ class TestResponse : XCTestCase, KituraTest {
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response!.readString()
-                    #if os(Linux)
-                    let errorDescription = "The operation could not be completed"
-                    #else
-                    let errorDescription = "The operation couldn’t be completed. (RouterTestDomain error 1.)"
-                    #endif
+                    let errorDescription = "Internal Server Error"
                     XCTAssertEqual(body!,"Caught the error: \(errorDescription)")
                 }
                 catch{
@@ -254,7 +250,7 @@ class TestResponse : XCTestCase, KituraTest {
         // Error handling example
         router.get("/error") { _, response, next in
             response.status(HttpStatusCode.INTERNAL_SERVER_ERROR)
-            response.error = NSError(domain: "RouterTestDomain", code: 1, userInfo: [:])
+            response.error = Error(message: "Internal Server Error")
             next()
         }
 
@@ -291,7 +287,7 @@ class TestResponse : XCTestCase, KituraTest {
                 catch {}
             }
             else {
-                response.error = NSError(domain: "RouterTestDomain", code: 1, userInfo: [NSLocalizedDescriptionKey:"Failed to parse request body"])
+                response.error = Error(message: "Failed to parse request body")
             }
 
             next()
@@ -300,7 +296,7 @@ class TestResponse : XCTestCase, KituraTest {
         router.error { request, response, next in
             response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
             do {
-                try response.send("Caught the error: \(response.error!.localizedDescription)").end()
+                try response.send("Caught the error: \(response.error!.message)").end()
             }
             catch {}
             next()

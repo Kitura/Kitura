@@ -467,7 +467,7 @@ public class RouterResponse {
     // influenced by http://expressjs.com/en/4x/api.html#app.render
     public func render(resource: String, context: [ String: Any]) throws -> RouterResponse {
         guard let router = router else {
-            throw Router.Error.InternalError
+            throw Error(message: "router is nil")
         }
         let renderedResource = try router.render(resource, context: context)
         return send(renderedResource)
