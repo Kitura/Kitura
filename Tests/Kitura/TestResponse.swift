@@ -26,18 +26,23 @@ import XCTest
     import Darwin
 #endif
 
-class TestResponse : KituraTest {
-    #if os(Linux)
-        override var allTests : [(String, () throws -> Void)] {
-            return [
-                ("testSimpleResponse", testSimpleResponse),
-                ("testPostRequest", testPostRequest),
-                ("testParameter", testParameter),
-                ("testRedirect", testRedirect),
-                ("testErrorHandler", testErrorHandler)
-            ]
-        }
-    #endif
+class TestResponse : XCTestCase, KituraTest {
+
+    static var allTests : [(String, TestResponse -> () throws -> Void)] {
+        return [
+            ("testSimpleResponse", testSimpleResponse),
+            ("testPostRequest", testPostRequest),
+            ("testParameter", testParameter),
+            ("testRedirect", testRedirect),
+            ("testErrorHandler", testErrorHandler),
+            ("testHeaderModifiers", testHeaderModifiers),
+            ("testRouteFunc", testRouteFunc)
+        ]
+    }
+
+    override func tearDown() {
+        doTearDown()
+    }
 
     let router = TestResponse.setupRouter()
 
@@ -73,8 +78,8 @@ class TestResponse : KituraTest {
                     XCTFail("No respose body")
                 }
             }) {req in
-                req.writeString("plover\n")
-                req.writeString("xyzzy\n")
+                req.write(from: "plover\n")
+                req.write(from: "xyzzy\n")
             }
         }
     }
@@ -100,7 +105,11 @@ class TestResponse : KituraTest {
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response!.readString()
+#if os(Linux)
                     XCTAssertNotNil(body!.rangeOfString("ibm"),"response does not contain IBM")
+#else
+                    XCTAssertNotNil(body!.range(of: "ibm"),"response does not contain IBM")
+#endif 
                 }
                 catch{
                     XCTFail("No respose body")
@@ -127,6 +136,80 @@ class TestResponse : KituraTest {
                 }
             })
         }
+    }
+
+    func testRouteFunc() {
+        performServerTest(router, asyncTasks: {
+            self.performRequest("get", path: "/route", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!,"get 1\nget 2\n")
+                }
+                catch{
+                    XCTFail("No respose body")
+                }
+            })
+        }, {
+            self.performRequest("post", path: "/route", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!,"post received")
+                }
+                catch{
+                    XCTFail("No respose body")
+                }
+            })
+        })
+    }
+
+    func testHeaderModifiers() {
+
+        router.get("/headerTest") { _, response, next in
+
+            response.append("Content-Type", value: "text/html")
+            XCTAssertEqual(response.getHeader("Content-Type"), "text/html")
+
+            response.append("Content-Type", value: "text/plain; charset=utf-8")
+            XCTAssertNil(response.getHeader("Content-Type"))
+            XCTAssertEqual(response.getHeaders("Content-Type")!, ["text/html", "text/plain; charset=utf-8"])
+
+            response.removeHeader("Content-Type")
+            XCTAssertNil(response.getHeader("Content-Type"))
+
+            response.append("Content-Type", value: ["text/plain", "image/png"])
+            XCTAssertEqual(response.getHeaders("Content-Type")!, ["text/plain", "image/png"])
+
+            response.append("Content-Type", value: ["text/html", "image/jpeg"])
+            XCTAssertEqual(response.getHeaders("Content-Type")!, ["text/plain", "image/png", "text/html", "image/jpeg"])
+
+            response.append("Content-Type", value: "charset=UTF-8")
+            XCTAssertEqual(response.getHeaders("Content-Type")!, ["text/plain", "image/png", "text/html", "image/jpeg", "charset=UTF-8"])
+
+            response.removeHeader("Content-Type")
+
+            response.append("Content-Type", value: ["text/plain"])
+            XCTAssertEqual(response.getHeader("Content-Type"), "text/plain")
+
+            response.append("Content-Type", value: ["image/png", "text/html"])
+            XCTAssertEqual(response.getHeaders("Content-Type")!, ["text/plain", "image/png", "text/html"])
+
+            do {
+                try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+            }
+            catch {}
+            next()
+        }
+
+        performServerTest(router) {
+            self.performRequest("get", path: "/headerTest", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+            })
+        }
+
     }
 
     static func setupRouter() -> Router {
@@ -172,6 +255,20 @@ class TestResponse : KituraTest {
         router.get("/error") { _, response, next in
             response.status(HttpStatusCode.INTERNAL_SERVER_ERROR)
             response.error = NSError(domain: "RouterTestDomain", code: 1, userInfo: [:])
+            next()
+        }
+
+        router.route("/route")
+        .get { _, response, next in
+            response.status(HttpStatusCode.OK).send("get 1\n")
+            next()
+        }
+        .post {_, response, next in
+            response.status(HttpStatusCode.OK).send("post received")
+            next()
+        }
+        .get { _, response, next in
+            response.status(HttpStatusCode.OK).send("get 2\n")
             next()
         }
 

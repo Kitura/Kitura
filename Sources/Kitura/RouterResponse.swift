@@ -51,6 +51,11 @@ public class RouterResponse {
     ///
     var invokedEnd = false
 
+    //
+    // Current pre-flush lifecycle handler
+    //
+    private var preFlush: PreFlushLifecycleHandler = {request, response in }
+
     ///
     /// Set of cookies to return with the response
     ///
@@ -84,6 +89,8 @@ public class RouterResponse {
     ///
     public func end() throws -> RouterResponse {
 
+        preFlush(request: request, response: self)
+
         if  let data = buffer.data  {
             let contentLength = getHeader("Content-Length")
             if  contentLength == nil  {
@@ -92,7 +99,7 @@ public class RouterResponse {
             addCookies()
 
             if  request.method != .Head  {
-                try response.writeData(data)
+                try response.write(from: data)
             }
         }
         invokedEnd = true
@@ -111,7 +118,12 @@ public class RouterResponse {
             if  let expiresDate = cookie.expiresDate  {
                 cookieString += "; expires=" + SpiUtils.httpDate(expiresDate)
             }
-            if  cookie.secure  {
+#if os(Linux)  
+            let isSecure = cookie.secure
+#else
+            let isSecure = cookie.isSecure
+#endif
+            if  isSecure  {
                 cookieString += "; secure; HttpOnly"
             }
 
@@ -215,7 +227,7 @@ public class RouterResponse {
     public func sendJson(json: JSON) -> RouterResponse {
         
         let jsonStr = json.description
-        setHeader("Content-Type", value: ContentType.contentTypeForExtension("json")!)
+        type("json")
         send(jsonStr)
         return self
         
@@ -345,6 +357,28 @@ public class RouterResponse {
         response.setHeader(key, value: value)
         
     }
+
+    ///
+    /// Append a value to the header
+    /// 
+    /// - Parameter key: the header key
+    ///
+    public func append(key: String, value: String) {
+
+        response.append(key, value: value)
+
+    }
+
+    ///
+    /// Append values to the header
+    /// 
+    /// - Parameter key: the key
+    ///
+    public func append(key: String, value: [String]) {
+
+        response.append(key, value: value)
+
+    }
     
     ///
     /// Remove the header by key
@@ -443,4 +477,66 @@ public class RouterResponse {
         // no template engine set or error in rendering - send file as is
         return try sendFile(filePath)
     }
+
+    ///
+    /// Sets the Content-Type HTTP header
+    ///
+    /// - Parameter type: the type to set to 
+    ///
+    public func type(type: String, charset: String? = nil) {
+        let contentType =  ContentType.contentTypeForExtension(type)
+        if  let contentType = contentType  {
+            var content = contentType
+            if let charset = charset {
+                content += "; charset=\(charset)"
+            }
+            setHeader("Content-Type", value: content)
+        }
+    }
+
+    ///
+    /// Sets the Content-Disposition to "attachment" and optionally
+    /// sets filename parameter in Content-Disposition and Content-Type
+    ///
+    /// - Parameter filePath: the file to set the filename to
+    ///
+    public func attachment(filePath: String? = nil) {
+        guard let filePath = filePath else {
+            setHeader("Content-Disposition", value: "attachment")
+            return
+        }
+
+        let filePaths = filePath.characters.split{$0 == "/"}.map(String.init)
+        let fileName = filePaths.last
+        setHeader("Content-Disposition", value: "attachment; fileName = \"\(fileName!)\"")
+
+        let contentType =  ContentType.contentTypeForFile(fileName!)
+        if  let contentType = contentType  {
+            setHeader("Content-Type", value: contentType)
+        }
+    }
+
+    ///
+    /// Sets headers and attaches file for downloading
+    ///
+    /// - Parameter filePath: the file to download
+    ///
+    public func download(filePath: String) throws {
+        try sendFile(filePath)
+        attachment(filePath)
+    }
+
+    ///
+    /// Sets the pre-flush lifecycle handler and returns the previous one
+    ///
+    /// - Parameter newPreFlush: The new pre-flush lifecycle handler
+    public func setPreFlushHandler(newPreFlush: PreFlushLifecycleHandler) -> PreFlushLifecycleHandler {
+        let oldPreFlush = preFlush
+        preFlush = newPreFlush
+        return oldPreFlush
+    }
 }
+
+///
+/// Type alias for "Before flush" (i.e. before headers and body are written) lifecycle handler
+public typealias PreFlushLifecycleHandler = (request: RouterRequest, response: RouterResponse) -> Void

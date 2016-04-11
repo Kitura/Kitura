@@ -21,25 +21,11 @@ import XCTest
 
 import Foundation
 
-class KituraTest : XCTestCase {
+protocol KituraTest {}
 
-    #if os(Linux)
-        var allTests : [(String, () throws -> Void)] {
-            return []
-        }
-    #endif
+extension KituraTest {
 
-     #if os(Linux)
-       func tearDown() {
-           doTearDown()
-       }
-    #else
-       override func tearDown() {
-           doTearDown()
-       }
-    #endif
-
-    private func doTearDown() {
+   func doTearDown() {
         sleep(10)
     }
 

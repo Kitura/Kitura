@@ -18,7 +18,7 @@ import SwiftyJSON
 
 import KituraSys
 import KituraNet
-import BlueSocket
+import Socket
 
 import Foundation
 
@@ -56,7 +56,7 @@ public class BodyParser : RouterMiddleware {
     /// - Parameter message: message coming from the socket
     /// - Parameter contentType: the contentType as a string 
     ///
-    public class func parse(message: BlueSocketReader, contentType: String?) -> ParsedBody? {
+    public class func parse(message: SocketReader, contentType: String?) -> ParsedBody? {
         
         if let contentType = contentType {
             do {
@@ -74,9 +74,17 @@ public class BodyParser : RouterMiddleware {
           var success = true
           if let bodyAsString: String = String(data: bodyData, encoding: NSUTF8StringEncoding) {
 
+#if os(Linux)
             let bodyAsArray = bodyAsString.bridge().componentsSeparatedByString("&")
+#else
+            let bodyAsArray = bodyAsString.componentsSeparated(by: "&")
+#endif
             for element in bodyAsArray {
+#if os(Linux)  
               let elementPair = element.bridge().componentsSeparatedByString("=")
+#else
+              let elementPair = element.componentsSeparated(by: "=")
+#endif
               if elementPair.count == 2 {
                 parsedBody[elementPair[0]] = elementPair[1]
               }
@@ -114,13 +122,13 @@ public class BodyParser : RouterMiddleware {
     /// - Throws: ???
     /// - Returns: data for the body 
     ///
-    public class func readBodyData(reader: BlueSocketReader) throws -> NSMutableData {
+    public class func readBodyData(reader: SocketReader) throws -> NSMutableData {
         
         let bodyData = NSMutableData()
 
-        var length = try reader.readData(bodyData)
+        var length = try reader.read(into: bodyData)
         while length != 0 {
-            length = try reader.readData(bodyData)
+            length = try reader.read(into: bodyData)
         }
         return bodyData
     }
