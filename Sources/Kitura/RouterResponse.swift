@@ -65,7 +65,7 @@ public class RouterResponse {
     ///
     /// Optional error value
     ///
-    public var error: Error?
+    public var error: ErrorProtocol?
 
     ///
     /// Initializes a RouterResponse instance
