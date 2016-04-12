@@ -88,6 +88,11 @@ public class RouterRequest: SocketReader {
     ///
     public var headersAsArrays: ArrayHeaders { return serverRequest.headersAsArrays }
 
+    ///
+    /// IP address string of server
+    ///
+    public var remoteAddress: String { return serverRequest.remoteAddress }
+
     //
     // Parsed Cookies, used to do a lazy parsing of the appropriate headers
     //
