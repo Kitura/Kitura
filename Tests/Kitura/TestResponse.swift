@@ -26,7 +26,7 @@ import XCTest
     import Darwin
 #endif
 
-class TestResponse : XCTestCase, KituraTest {
+class TestResponse : XCTestCase {
 
     static var allTests : [(String, TestResponse -> () throws -> Void)] {
         return [
@@ -47,7 +47,7 @@ class TestResponse : XCTestCase, KituraTest {
     let router = TestResponse.setupRouter()
 
     func testSimpleResponse() {
-    	performServerTest(router) {
+    	performServerTest(router) { expectation in
             self.performRequest("get", path:"/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
@@ -60,12 +60,13 @@ class TestResponse : XCTestCase, KituraTest {
                 catch{
                     XCTFail("No respose body")
                 }
+                expectation.fulfill()
             })
         }
     }
 
     func testPostRequest() {
-    	performServerTest(router) {
+    	performServerTest(router) { expectation in
             self.performRequest("post", path: "/bodytest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 //XCTAssertEqual(response!.method, "POST", "The request wasn't recognized as a post")
@@ -77,6 +78,7 @@ class TestResponse : XCTestCase, KituraTest {
                 catch{
                     XCTFail("No respose body")
                 }
+                expectation.fulfill()
             }) {req in
                 req.write(from: "plover\n")
                 req.write(from: "xyzzy\n")
@@ -85,7 +87,7 @@ class TestResponse : XCTestCase, KituraTest {
     }
 
     func testParameter() {
-    	performServerTest(router) {
+    	performServerTest(router) { expectation in
             self.performRequest("get", path: "/zxcv/test?q=test2", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
@@ -95,12 +97,13 @@ class TestResponse : XCTestCase, KituraTest {
                 catch{
                     XCTFail("No respose body")
                 }
+                expectation.fulfill()
             })
         }
     }
 
     func testRedirect() {
-        performServerTest(router) {
+        performServerTest(router) { expectation in
             self.performRequest("get", path: "/redir", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
@@ -109,17 +112,18 @@ class TestResponse : XCTestCase, KituraTest {
                     XCTAssertNotNil(body!.rangeOfString("ibm"),"response does not contain IBM")
 #else
                     XCTAssertNotNil(body!.range(of: "ibm"),"response does not contain IBM")
-#endif 
+#endif
                 }
                 catch{
                     XCTFail("No respose body")
                 }
+                expectation.fulfill()
             })
         }
     }
 
     func testErrorHandler() {
-        performServerTest(router) {
+        performServerTest(router) { expectation in
             self.performRequest("get", path: "/error", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
@@ -134,12 +138,13 @@ class TestResponse : XCTestCase, KituraTest {
                 catch{
                     XCTFail("No respose body")
                 }
+                expectation.fulfill()
             })
         }
     }
 
     func testRouteFunc() {
-        performServerTest(router, asyncTasks: {
+        performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path: "/route", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
@@ -150,8 +155,9 @@ class TestResponse : XCTestCase, KituraTest {
                 catch{
                     XCTFail("No respose body")
                 }
+                expectation.fulfill()
             })
-        }, {
+        }, { expectation in
             self.performRequest("post", path: "/route", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
@@ -162,6 +168,7 @@ class TestResponse : XCTestCase, KituraTest {
                 catch{
                     XCTFail("No respose body")
                 }
+                expectation.fulfill()
             })
         })
     }
@@ -204,9 +211,10 @@ class TestResponse : XCTestCase, KituraTest {
             next()
         }
 
-        performServerTest(router) {
+        performServerTest(router) { expectation in
             self.performRequest("get", path: "/headerTest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                expectation.fulfill()
             })
         }
 
@@ -241,7 +249,7 @@ class TestResponse : XCTestCase, KituraTest {
             catch {}
             next()
         }
-    
+
         router.get("/redir") { _, response, next in
             do {
                 try response.redirect("http://www.ibm.com")
@@ -309,4 +317,3 @@ class TestResponse : XCTestCase, KituraTest {
 	return router
     }
 }
-

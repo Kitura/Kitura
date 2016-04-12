@@ -26,25 +26,25 @@ class TestContentType : XCTestCase {
             ("test_initialize", test_initialize),
         ]
     }
-    
+
     func test_initialize() {
 
         ContentType.initialize()
-        
+
         print("Type for png is: \(ContentType.contentTypeForExtension("png"))")
-        
+
         let pngType = ContentType.contentTypeForExtension("png")
-        
+
         XCTAssertEqual(pngType, "image/png")
         XCTAssertNotEqual(pngType, "application/javascript")
-        
+
         let htmlType = ContentType.contentTypeForExtension("html")
-        
+
         XCTAssertEqual(htmlType, "text/html")
         XCTAssertNotEqual(pngType, "application/javascript")
-        
+
         let jsType = ContentType.contentTypeForExtension("js")
-        
+
         XCTAssertEqual(jsType, "application/javascript")
 
 
