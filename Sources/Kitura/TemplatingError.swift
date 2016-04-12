@@ -16,21 +16,19 @@
 
 import Foundation
 
-// possibly known error, e.g. user tries to access an invalid url path
-// it makes sense to send the error as HTTP response
-enum Error: ErrorProtocol {
-    case FailedToParseRequestBody(body: String)
-    case FailedToRedirectRequest(path: String, chainedError: ErrorProtocol)
+enum TemplatingError: ErrorProtocol {
+    case NoDefaultTemplateEngineAndNoExtensionSpecified
+    case NoTemplateEngineForExtension(extension: String)
 }
 
-extension Error: CustomStringConvertible {
+
+extension TemplatingError: CustomStringConvertible {
     var description: String {
         switch self {
-        case FailedToParseRequestBody(let body):
-             return "Failed to parse request body \(body)"
-        case FailedToRedirectRequest(let path, let chainedError):
-            return "Failed to redirect a request for directory at \(path)" +
-                     "caught error = \(chainedError)"
+        case NoDefaultTemplateEngineAndNoExtensionSpecified:
+            return "No default template engine set and no file extension specified"
+        case NoTemplateEngineForExtension(let fileExtension):
+            return "No template engine defined for extension \(fileExtension)"
         }
     }
 }

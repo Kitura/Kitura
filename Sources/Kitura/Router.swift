@@ -591,11 +591,11 @@ public class Router {
         }
 
         if fileExtension.isEmpty {
-            throw Error(message: "No default template engine and no file extension specified")
+            throw TemplatingError.NoDefaultTemplateEngineAndNoExtensionSpecified
         }
 
         guard let templateEngine = templateEngines[fileExtension] else {
-            throw Error(message: "No template engine for extension \(fileExtension)")
+            throw TemplatingError.NoTemplateEngineForExtension(extension: fileExtension)
         }
 
         let filePath =  viewsPath + resourceWithExtension

@@ -162,7 +162,7 @@ public class StaticFileServer : RouterMiddleware {
                         try response.redirect(originalUrl + "/")
                     }
                     catch {
-                        response.error = Error(message: "failed to redirect \(originalUrl)/")
+                        response.error = Error.FailedToRedirectRequest(path: originalUrl + "/", chainedError: error)
                     }
                 }
             }

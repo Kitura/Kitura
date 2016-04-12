@@ -124,7 +124,7 @@ class TestResponse : XCTestCase, KituraTest {
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response!.readString()
-                    let errorDescription = "Internal Server Error"
+                    let errorDescription = "foo is nil"
                     XCTAssertEqual(body!,"Caught the error: \(errorDescription)")
                 }
                 catch{
@@ -250,7 +250,7 @@ class TestResponse : XCTestCase, KituraTest {
         // Error handling example
         router.get("/error") { _, response, next in
             response.status(HttpStatusCode.INTERNAL_SERVER_ERROR)
-            response.error = Error(message: "Internal Server Error")
+            response.error = InternalError.NilVariable(variable: "foo")
             next()
         }
 
@@ -287,7 +287,7 @@ class TestResponse : XCTestCase, KituraTest {
                 catch {}
             }
             else {
-                response.error = Error(message: "Failed to parse request body")
+                response.error = Error.FailedToParseRequestBody(body: "\(request.body)")
             }
 
             next()
@@ -296,7 +296,14 @@ class TestResponse : XCTestCase, KituraTest {
         router.error { request, response, next in
             response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
             do {
-                try response.send("Caught the error: \(response.error!.message)").end()
+                let errorDescription: String
+                if let error = response.error {
+                    errorDescription = "\(error)"
+                }
+                else {
+                    errorDescription = ""
+                }
+                try response.send("Caught the error: \(errorDescription)").end()
             }
             catch {}
             next()
