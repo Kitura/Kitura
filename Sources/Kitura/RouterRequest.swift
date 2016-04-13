@@ -164,6 +164,57 @@ public class RouterRequest: SocketReader {
         return try serverRequest.readString()
     }
 
+    public func accepts(types: [String]) -> String? {
+        guard let acceptHeaderValue = headers["accept"] else {
+            return types.count == 0 ? nil : types.first!
+        }
+
+        // loop through header values, keep track of key values of matches, decide afterward which is best
+        let trimmedValues = acceptHeaderValue.trimmingCharacters(in: NSCharacterSet.whitespace())
+        let headerValues = trimmedValues.characters.split(separator: ",").map(String.init)
+        var criteriaMatches = [String : Int]()
+
+        for value in headerValues {
+            for type in types {
+            
+                print("trimmeddd: \(value) and Type: \(type)")
+                // given acceptsCriteria, look for exact match in headers accept field
+                if value == type {
+                    criteriaMatches[type] = 1
+                } else if let _ = value.range(of: "/\(type)", options: .regularExpressionSearch) { // If no match, look for extensions like /json
+
+                    if (criteriaMatches[type] != nil && criteriaMatches[type] > 2) || (criteriaMatches[type] == nil) {
+                        criteriaMatches[type] = 2
+                    }
+                } else if let _ = type.range(of: value, options: .regularExpressionSearch) { // if no match, look for asterisks options, just looking for prefix like text/* applies text/html
+                    
+                    if (criteriaMatches[type] != nil && criteriaMatches[type] > 3) || (criteriaMatches[type] == nil) {
+                        criteriaMatches[type] = 3
+                    }
+                } else if value == "*/*" {
+                    if criteriaMatches[type] == nil {
+                        criteriaMatches[type] = 4
+                    }
+                }
+            }
+        }
+        // determine best option of types passed in
+        print("Criteria: \(criteriaMatches)")
+        let sortedMatches = Array(criteriaMatches).sorted {$0.1 < $1.1}
+        if let bestMatch = sortedMatches.first {
+            return bestMatch.0
+        }
+        return nil
+    }
+
+    public func accepts(types: String...) -> String? {
+        return accepts(types)
+    }
+
+    public func accepts(type: String) -> String? {
+        return accepts([type])
+    }
+
 }
 
 private class Cookies {

@@ -36,7 +36,8 @@ class TestResponse : XCTestCase {
             ("testRedirect", testRedirect),
             ("testErrorHandler", testErrorHandler),
             ("testHeaderModifiers", testHeaderModifiers),
-            ("testRouteFunc", testRouteFunc)
+            ("testRouteFunc", testRouteFunc),
+            ("testAcceptTypes", testAcceptTypes)
         ]
     }
 
@@ -216,8 +217,38 @@ class TestResponse : XCTestCase {
 
     }
 
+    func testAcceptTypes() {
+
+        router.get("/customPage") { request, response, next in
+            print("RoutherHeaders: \(request.serverRequest.rawHeaders)")
+            if let acceptValue = request.accepts(["json", "text"]) {
+                print("accepted!: \(acceptValue)")
+            }
+            if let acceptValue2 = request.accepts("json") {
+                print("accepted!2: \(acceptValue2)")
+            }
+            if let acceptValue3 = request.accepts("json", "text") {
+                print("accepted!3: \(acceptValue3)")
+            }
+            do {
+                try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+            }
+            catch {}
+            next()
+        }
+
+        performServerTest(router) {
+            self.performRequest("get", path: "/customPage", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+            }) {req in 
+                req.headers = ["Accept" : "text/*, application/json"]
+            }
+        }
+    }
+
     static func setupRouter() -> Router {
         let router = Router()
+
         // the same router definition is used for all these test cases
         router.all("/zxcv/:p1") { request, _, next in
             request.userInfo["u1"] = "Ploni Almoni".bridge()
