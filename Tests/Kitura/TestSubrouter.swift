@@ -26,7 +26,7 @@ import XCTest
     import Darwin
 #endif
 
-class TestSubrouter : XCTestCase, KituraTest {
+class TestSubrouter : XCTestCase {
 
     static var allTests : [(String, TestSubrouter -> () throws -> Void)] {
         return [
@@ -40,11 +40,11 @@ class TestSubrouter : XCTestCase, KituraTest {
     override func tearDown() {
         doTearDown()
     }
-    
+
     let router = TestSubrouter.setupRouter()
 
     func testSimpleSub() {
-        performServerTest(router, asyncTasks: {
+        performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path:"/sub", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
@@ -57,8 +57,9 @@ class TestSubrouter : XCTestCase, KituraTest {
                 catch{
                     XCTFail("No respose body")
                 }
+                expectation.fulfill()
             })
-        }, {
+        }, { expectation in
         	self.performRequest("get", path:"/sub/sub1", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
@@ -68,6 +69,7 @@ class TestSubrouter : XCTestCase, KituraTest {
                 catch{
                     XCTFail("No respose body")
                 }
+                expectation.fulfill()
             })
         })
     }
@@ -75,7 +77,7 @@ class TestSubrouter : XCTestCase, KituraTest {
     func testExternSub() {
         router.all("/extern", middleware: ExternSubrouter.getRouter())
 
-        performServerTest(router, asyncTasks: {
+        performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path:"/extern", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
@@ -88,8 +90,9 @@ class TestSubrouter : XCTestCase, KituraTest {
                 catch{
                     XCTFail("No respose body")
                 }
+                expectation.fulfill()
             })
-        }, {
+        }, { expectation in
             self.performRequest("get", path:"/extern/sub1", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
@@ -99,12 +102,13 @@ class TestSubrouter : XCTestCase, KituraTest {
                 catch{
                     XCTFail("No respose body")
                 }
+                expectation.fulfill()
             })
         })
     }
 
     func testSubSubs() {
-        performServerTest(router, asyncTasks: {
+        performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path:"/sub/sub2", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
@@ -117,8 +121,9 @@ class TestSubrouter : XCTestCase, KituraTest {
                 catch{
                     XCTFail("No respose body")
                 }
+                expectation.fulfill()
             })
-        }, {
+        }, { expectation in
             self.performRequest("get", path:"/sub/sub2/sub1", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
@@ -128,12 +133,13 @@ class TestSubrouter : XCTestCase, KituraTest {
                 catch{
                     XCTFail("No respose body")
                 }
+                expectation.fulfill()
             })
         })
     }
 
     func testMultipleMiddleware() {
-        performServerTest(router) {
+        performServerTest(router) { expectation in
             self.performRequest("get", path:"/middle/sub1", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
@@ -146,10 +152,11 @@ class TestSubrouter : XCTestCase, KituraTest {
                 catch{
                     XCTFail("No respose body")
                 }
+                expectation.fulfill()
             })
         }
     }
-    
+
     static func setupRouter() -> Router {
         let subsubRouter = Router()
         subsubRouter.get("/") { request, response, next in
@@ -172,7 +179,7 @@ class TestSubrouter : XCTestCase, KituraTest {
         }
 
         subRouter.all("/sub2", middleware: subsubRouter)
-        
+
         let router = Router()
         let middleware = RouterMiddlewareGenerator { (request: RouterRequest, response: RouterResponse, next: () -> Void) in
             response.status(HttpStatusCode.OK).send("first middle\n")
@@ -187,7 +194,7 @@ class TestSubrouter : XCTestCase, KituraTest {
         router.all("/middle", middleware: middleware2)
 
         router.all("/sub", middleware: subRouter)
-        
+
         return router
     }
 }
