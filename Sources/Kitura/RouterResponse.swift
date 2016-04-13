@@ -80,6 +80,8 @@ public class RouterResponse {
         self.router = router
         self.request = request
         status(HttpStatusCode.NOT_FOUND)
+        
+        setHeader("Server", value: ServerInfo.description)
     }
 
     ///
