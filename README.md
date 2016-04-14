@@ -176,7 +176,7 @@ Let's develop our first Kitura Web Application written in Swift!
 
   ```swift
   let server = HttpServer.listen(8090, delegate: router)
-  Server.run()
+  server.run()
   ```
 
 7. Sources/main.swift file should now look like this:
@@ -195,7 +195,7 @@ Let's develop our first Kitura Web Application written in Swift!
   }
 
   let server = HttpServer.listen(8090, delegate: router)
-  Server.run()
+  server.run()
   ```
 
 8. Compile your application:
