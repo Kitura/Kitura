@@ -164,43 +164,83 @@ public class RouterRequest: SocketReader {
         return try serverRequest.readString()
     }
 
+    private func extToMime(type: String) -> String {
+
+        if let mimeType = ContentType.contentTypeForExtension(type) {
+            return mimeType
+        }
+        return type
+    }
+
+    private func parseMeidaType(type: String) -> (type: String, qValue: Double) {
+        var finishedPair = ("", 1.0)
+#if os(Linux)
+        let trimmed = type.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+#else
+        let trimmed = type.trimmingCharacters(in: NSCharacterSet.whitespace())
+#endif
+        let components = trimmed.characters.split(separator: ";").map(String.init)
+        
+        if let mediaType = components.first {
+            finishedPair.0 = mediaType
+        }
+        if let qPreference = components.last {
+            let qualityComponents = qPreference.characters.split(separator: "=").map(String.init)
+            if let q = qualityComponents.first, value = qualityComponents.last where q == "q" {
+                finishedPair.1 = Double(value)!
+            }
+        }
+        
+        return finishedPair
+    }
+
     public func accepts(types: [String]) -> String? {
+
         guard let acceptHeaderValue = headers["accept"] else {
-            return types.count == 0 ? nil : types.first!
+            return nil
         }
 
         // loop through header values, keep track of key values of matches, decide afterward which is best
-        let trimmedValues = acceptHeaderValue.trimmingCharacters(in: NSCharacterSet.whitespace())
-        let headerValues = trimmedValues.characters.split(separator: ",").map(String.init)
-        var criteriaMatches = [String : Int]()
+        let headerValues = acceptHeaderValue.characters.split(separator: ",").map(String.init) // check on linux, change
+        var criteriaMatches = [String : (priority: Int, qValue: Double)]()
 
-        for value in headerValues {
+        for rawHeaderValue in headerValues {
             for type in types {
             
-                print("trimmeddd: \(value) and Type: \(type)")
-                // given acceptsCriteria, look for exact match in headers accept field
-                if value == type {
-                    criteriaMatches[type] = 1
-                } else if let _ = value.range(of: "/\(type)", options: .regularExpressionSearch) { // If no match, look for extensions like /json
-
-                    if (criteriaMatches[type] != nil && criteriaMatches[type] > 2) || (criteriaMatches[type] == nil) {
-                        criteriaMatches[type] = 2
-                    }
-                } else if let _ = type.range(of: value, options: .regularExpressionSearch) { // if no match, look for asterisks options, just looking for prefix like text/* applies text/html
+                
+                let parsedHeaderValue = parseMeidaType(rawHeaderValue)
+                let mimeType = extToMime(type)
+                
+                if parsedHeaderValue.type == mimeType { // given headerValue and type, look for exact match
+                    criteriaMatches[type] = (priority: 1, qValue: parsedHeaderValue.qValue)
+                } else {
+#if os(Linux)
+                    let rangeMatch = mimeType.rangeOfString(parsedHeaderValue.type, options: .RegularExpressionSearch)
+#else
+                    let rangeMatch = mimeType.range(of: parsedHeaderValue.type, options: .regularExpressionSearch)
+#endif
+                    if rangeMatch != nil { // if no match, look for asterisks options, just looking for prefix like text/* applies text/html
                     
-                    if (criteriaMatches[type] != nil && criteriaMatches[type] > 3) || (criteriaMatches[type] == nil) {
-                        criteriaMatches[type] = 3
-                    }
-                } else if value == "*/*" {
-                    if criteriaMatches[type] == nil {
-                        criteriaMatches[type] = 4
+                        if criteriaMatches[type]?.priority > 2 || criteriaMatches[type] == nil {
+                            criteriaMatches[type] = (priority: 2, qValue: parsedHeaderValue.qValue)
+                        }
+                    } else if parsedHeaderValue.type == "*/*" {
+                        if criteriaMatches[type] == nil {
+                            criteriaMatches[type] = (priority: 3, qValue: parsedHeaderValue.qValue)
+                        }
                     }
                 }
             }
         }
         // determine best option of types passed in
-        print("Criteria: \(criteriaMatches)")
-        let sortedMatches = Array(criteriaMatches).sorted {$0.1 < $1.1}
+        let sortedMatches = Array(criteriaMatches).sorted {
+            if $0.1.priority != $1.1.priority {
+                return $0.1.priority < $1.1.priority
+            } else {
+                return $0.1.qValue > $1.1.qValue
+            }
+        }
+
         if let bestMatch = sortedMatches.first {
             return bestMatch.0
         }

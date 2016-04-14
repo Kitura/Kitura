@@ -220,16 +220,22 @@ class TestResponse : XCTestCase {
     func testAcceptTypes() {
 
         router.get("/customPage") { request, response, next in
-            print("RoutherHeaders: \(request.serverRequest.rawHeaders)")
-            if let acceptValue = request.accepts(["json", "text"]) {
-                print("accepted!: \(acceptValue)")
-            }
-            if let acceptValue2 = request.accepts("json") {
-                print("accepted!2: \(acceptValue2)")
-            }
-            if let acceptValue3 = request.accepts("json", "text") {
-                print("accepted!3: \(acceptValue3)")
-            }
+
+            XCTAssertEqual(request.accepts("html"), "html", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts("text/html"), "text/html", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(["json", "text"]), "json", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts("application/json"), "application/json", "Accepts did not return expected value")
+
+            // test for headers with * subtype
+            XCTAssertEqual(request.accepts("application/xml"), "application/xml", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts("xml", "json"), "json", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts("html", "xml", "png"), "html", "Accepts did not return expected value")
+
+            // shouldn't match anything
+            XCTAssertNil(request.accepts("image/png"), "Request accepts this type when it shouldn't")
+            XCTAssertNil(request.accepts("png"), "Request accepts this type when it shouldn't")
+            XCTAssertNil(request.accepts("unreal"), "Invalid extension was accepted!")
+
             do {
                 try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
             }
@@ -237,13 +243,34 @@ class TestResponse : XCTestCase {
             next()
         }
 
-        performServerTest(router) {
+        router.get("/customPage2") { request, response, next in
+
+            XCTAssertEqual(request.accepts("image/png"), "image/png", "Request accepts this type when it shouldn't")
+            XCTAssertEqual(request.accepts("image/tiff"), "image/tiff", "Request accepts this type when it shouldn't")
+            XCTAssertEqual(request.accepts("json", "jpeg", "html"), "html", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(["png", "html", "text/html"]), "html", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(["xml", "html", "unreal"]), "html", "Accepts did not return expected value")
+
+            do {
+                try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+            }
+            catch {}
+            next()
+        }
+
+        performServerTest(router, asyncTasks: {
             self.performRequest("get", path: "/customPage", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
             }) {req in 
-                req.headers = ["Accept" : "text/*, application/json"]
+                req.headers = ["Accept" : "text/*;q=.5, application/json, application/*;q=.3"]
             }
-        }
+        }, {
+            self.performRequest("get", path:"/customPage2", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+            }) {req in 
+                req.headers = ["Accept" : "application/*;q=0.2, image/jpeg;q=0.8, text/html, text/plain, */*;q=.7"]
+            }
+        })
     }
 
     static func setupRouter() -> Router {
