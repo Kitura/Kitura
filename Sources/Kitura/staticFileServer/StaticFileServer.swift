@@ -193,7 +193,7 @@ public class StaticFileServer : RouterMiddleware {
 
     }
 
-    private func serveFile(filePath: String, fileManager: NSFileManager, response: RouterResponse) {
+    private func serveFile(_ filePath: String, fileManager: NSFileManager, response: RouterResponse) {
         // Check that no-one is using ..'s in the path to poke around the filesystem
         let tempAbsoluteBasePath = NSURL(fileURLWithPath: path).absoluteString
         let tempAbsoluteFilePath = NSURL(fileURLWithPath: filePath).absoluteString
@@ -223,10 +223,10 @@ public class StaticFileServer : RouterMiddleware {
                     }
                 }
                 if let _ = customResponseHeadersSetter {
-                    customResponseHeadersSetter!.setCustomResponseHeaders(response, filePath: filePath, fileAttributes: attributes)
+                    customResponseHeadersSetter!.setCustomResponseHeaders(response: response, filePath: filePath, fileAttributes: attributes)
                 }
 
-                try response.sendFile(filePath)
+                try response.send(fileName: filePath)
             }
             catch {
                 // Nothing

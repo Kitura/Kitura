@@ -22,7 +22,7 @@ import XCTest
 import Foundation
 
 protocol KituraTest {
-    func expectation(index index: Int) -> XCTestExpectation
+    func expectation(_ index: Int) -> XCTestExpectation
     func waitExpectation(timeout t: NSTimeInterval, handler: XCWaitCompletionHandler?)
 }
 
@@ -32,12 +32,12 @@ extension KituraTest {
   //       sleep(10)
     }
 
-    func performServerTest(router: HttpServerDelegate, asyncTasks: (expectation: XCTestExpectation) -> Void...) {
-        let server = setupServer(8090, delegate: router)
+    func performServerTest(_ router: HttpServerDelegate, asyncTasks: (expectation: XCTestExpectation) -> Void...) {
+        let server = setupServer(port: 8090, delegate: router)
         let requestQueue = Queue(type: QueueType.SERIAL)
 
         for (index, asyncTask) in asyncTasks.enumerated() {
-            let expectation = self.expectation(index: index)
+            let expectation = self.expectation(index)
             requestQueue.queueAsync {
                 asyncTask(expectation: expectation)
             }
@@ -50,7 +50,7 @@ extension KituraTest {
         }
     }
 
-    func performRequest(method: String, path: String, callback: ClientRequestCallback, headers: [String: String]? = nil, requestModifier: ((ClientRequest) -> Void)? = nil) {
+    func performRequest(_ method: String, path: String, callback: ClientRequestCallback, headers: [String: String]? = nil, requestModifier: ((ClientRequest) -> Void)? = nil) {
         var allHeaders = [String: String]()
         if  let headers = headers  {
             for  (headerName, headerValue) in headers  {
@@ -66,26 +66,18 @@ extension KituraTest {
     }
 
     private func setupServer(port: Int, delegate: HttpServerDelegate) -> HttpServer {
-        return HttpServer.listen(port, delegate: delegate,
+        return HttpServer.listen(port: port, delegate: delegate,
                            notOnMainQueue:true)
     }
 }
 
 extension XCTestCase: KituraTest {
-    func expectation(index index: Int) -> XCTestExpectation {
+    func expectation(_ index: Int) -> XCTestExpectation {
         let expectationDescription = "\(self.dynamicType)-\(index)"
-        #if os(Linux)
-        return self.expectationWithDescription(expectationDescription)
-        #else
         return self.expectation(withDescription: expectationDescription)
-        #endif
     }
 
     func waitExpectation(timeout t: NSTimeInterval, handler: XCWaitCompletionHandler?) {
-        #if os(Linux)
-        self.waitForExpectationsWithTimeout(t, handler: handler)
-        #else
         self.waitForExpectations(withTimeout: t, handler: handler)
-        #endif
     }
 }

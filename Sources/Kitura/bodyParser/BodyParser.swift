@@ -45,7 +45,7 @@ public class BodyParser : RouterMiddleware {
     ///
     public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
         
-        request.body = BodyParser.parse(request, contentType: request.serverRequest.headers["Content-Type"])
+        request.body = BodyParser.parse(message: request, contentType: request.serverRequest.headers["Content-Type"])
         next()
         
     }
@@ -62,14 +62,14 @@ public class BodyParser : RouterMiddleware {
             do {
 
         if ContentType.isType(contentType, typeDescriptor: "json") {
-            let bodyData = try readBodyData(message)
+            let bodyData = try readBodyData(with: message)
             let json = JSON(data: bodyData)
             if json != JSON.null {
                return ParsedBody(json: json)
             }
         }
         else if ContentType.isType(contentType, typeDescriptor: "urlencoded") {
-          let bodyData = try readBodyData(message)
+          let bodyData = try readBodyData(with: message)
           var parsedBody = [String:String]()
           var success = true
           if let bodyAsString: String = String(data: bodyData, encoding: NSUTF8StringEncoding) {
@@ -77,13 +77,13 @@ public class BodyParser : RouterMiddleware {
 #if os(Linux)
             let bodyAsArray = bodyAsString.bridge().componentsSeparatedByString("&")
 #else
-            let bodyAsArray = bodyAsString.componentsSeparated(by: "&")
+            let bodyAsArray = bodyAsString.components(separatedBy: "&")
 #endif
             for element in bodyAsArray {
 #if os(Linux)  
               let elementPair = element.bridge().componentsSeparatedByString("=")
 #else
-              let elementPair = element.componentsSeparated(by: "=")
+              let elementPair = element.components(separatedBy: "=")
 #endif
               if elementPair.count == 2 {
                 parsedBody[elementPair[0]] = elementPair[1]
@@ -100,8 +100,8 @@ public class BodyParser : RouterMiddleware {
         // There was no support for the application/json MIME type
         else if (ContentType.isType(contentType, typeDescriptor: "text/*") ||
           ContentType.isType(contentType, typeDescriptor: "application/json")) {
-          let bodyData = try readBodyData(message)
-          if let bodyAsString: String = String(data: bodyData, encoding: NSUTF8StringEncoding) {
+            let bodyData = try readBodyData(with: message)
+            if let bodyAsString: String = String(data: bodyData, encoding: NSUTF8StringEncoding) {
             return ParsedBody(text:  bodyAsString)
           }
         }
@@ -122,7 +122,7 @@ public class BodyParser : RouterMiddleware {
     /// - Throws: ???
     /// - Returns: data for the body 
     ///
-    public class func readBodyData(reader: SocketReader) throws -> NSMutableData {
+    public class func readBodyData(with reader: SocketReader) throws -> NSMutableData {
         
         let bodyData = NSMutableData()
 

@@ -92,7 +92,7 @@ class RouterElement {
         }
 
         // Needs to be after the initialization of the static Regex's
-        (regex, keys) = buildRegexFromPattern(pattern, allowPartialMatch: allowPartialMatch)
+        (regex, keys) = buildRegex(fromPattern: pattern, allowPartialMatch: allowPartialMatch)
 
     }
 
@@ -132,7 +132,7 @@ class RouterElement {
 #endif
                         request.route = pattern
                         updateRequestParams(urlPath, match: match, request: request)
-                        processHelper(request, response: response, next: next)
+                        processHelper(request: request, response: response, next: next)
                     } else {
                         next()
                     }
@@ -140,7 +140,7 @@ class RouterElement {
                 else {
                     request.route = pattern
                     request.params = [:]
-                    processHelper(request, response: response, next: next)
+                    processHelper(request: request, response: response, next: next)
                 } 
             } else {
                 next()
@@ -166,7 +166,7 @@ class RouterElement {
         let nextCallback = {
             middlewareCount += 1
             if middlewareCount < self.middlewares.count && (response.error == nil || self.method == .Error) {
-                self.middlewares[middlewareCount].handle(request, response: response, next: nextCallbackPlaceholder!)
+                self.middlewares[middlewareCount].handle(request: request, response: response, next: nextCallbackPlaceholder!)
             }
             else {
                 request.params = [:]
@@ -184,7 +184,7 @@ class RouterElement {
     ///
     /// - Returns:
     ///
-    private func buildRegexFromPattern(pattern: String?, allowPartialMatch: Bool = false) -> (NSRegularExpression?, [String]?) {
+    private func buildRegex(fromPattern: String?, allowPartialMatch: Bool = false) -> (NSRegularExpression?, [String]?) {
 
         if  let pattern = pattern  {
             var regexStr = "^"
@@ -194,7 +194,7 @@ class RouterElement {
 #if os(Linux)  
             let paths = pattern.bridge().componentsSeparatedByString("/")  
 #else
-            let paths = pattern.bridge().componentsSeparated(by: "/")
+            let paths = pattern.bridge().components(separatedBy: "/")
 #endif
 
             // Special case where only back slashes are specified
@@ -375,7 +375,7 @@ class RouterElement {
     /// - Parameter match: the regular expression result
     /// - Parameter request:
     ///
-    private func updateRequestParams(urlPath: String, match: NSTextCheckingResult, request: RouterRequest) {
+    private func updateRequestParams(_ urlPath: String, match: NSTextCheckingResult, request: RouterRequest) {
 
         if  let keys = keys {
             var params: [String:String] = [:]

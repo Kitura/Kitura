@@ -57,7 +57,7 @@ public class ContentType {
 #if os(Linux)  
         let contentTypesData = contentTypesString.bridge().dataUsingEncoding(NSUTF8StringEncoding)
 #else
-        let contentTypesData = contentTypesString.bridge().data(usingEncoding: NSUTF8StringEncoding)
+        let contentTypesData = contentTypesString.bridge().data(using: NSUTF8StringEncoding)
 #endif
 
         if contentTypesData == nil {
@@ -99,7 +99,7 @@ public class ContentType {
     ///
     /// - Returns: an Optional String for the content type
     ///
-    public class func contentTypeForExtension (ext: String) -> String? {
+    public class func contentTypeForExtension (_ ext: String) -> String? {
         return extToContentType[ext]
     }
 
@@ -110,7 +110,7 @@ public class ContentType {
     ///
     /// - Returns: an Optional String for the content type
     ///
-    public class func contentTypeForFile (fileName: String) -> String? {
+    public class func contentTypeForFile (_ fileName: String) -> String? {
         let lastPathElemRange: Range<String.Index>
         let extRange: Range<String.Index>
 #if os(Linux)  
@@ -156,13 +156,13 @@ public class ContentType {
     ///
     /// - Returns: whether the types matched
     ///
-    public class func isType (messageContentType: String, typeDescriptor: String) -> Bool {
+    public class func isType (_ messageContentType: String, typeDescriptor: String) -> Bool {
 
         let type = typeDescriptor.lowercased()
 #if os(Linux)  
         let typeAndSubtype = messageContentType.bridge().componentsSeparatedByString(";")[0].lowercased()
 #else
-        let typeAndSubtype = messageContentType.componentsSeparated(by: ";")[0].lowercased()
+        let typeAndSubtype = messageContentType.components(separatedBy: ";")[0].lowercased()
 #endif
 
         if typeAndSubtype == type {
@@ -175,7 +175,7 @@ public class ContentType {
         }
 
         // typeDescriptor is a shortcut
-        let normalizedType = normalizeType(type)
+        let normalizedType = normalize(type: type)
         if typeAndSubtype == normalizedType {
             return true
         }
@@ -185,8 +185,8 @@ public class ContentType {
         let messageTypePair = typeAndSubtype.bridge().componentsSeparatedByString("/")
         let normalizedTypePair = normalizedType.bridge().componentsSeparatedByString("/")
 #else
-        let messageTypePair = typeAndSubtype.componentsSeparated(by: "/")
-        let normalizedTypePair = normalizedType.componentsSeparated(by: "/")
+        let messageTypePair = typeAndSubtype.components(separatedBy: "/")
+        let normalizedTypePair = normalizedType.components(separatedBy: "/")
 #endif
         if messageTypePair.count == 2 && normalizedTypePair.count == 2
             && messageTypePair[0] == normalizedTypePair[0] && normalizedTypePair[1] == "*" {
@@ -202,7 +202,7 @@ public class ContentType {
     /// 
     /// - Returns: the normalized String 
     ///
-    private class func normalizeType (type: String) -> String {
+    private class func normalize (type: String) -> String {
         
         switch type {
         case "urlencoded":

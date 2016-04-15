@@ -195,13 +195,13 @@ private class Cookies {
             #if os(Linux)
             let cookieNameValues = cookieString.bridge().componentsSeparatedByString("; ")
             #else
-            let cookieNameValues = cookieString.componentsSeparated(by: "; ")
+            let cookieNameValues = cookieString.components(separatedBy: "; ")
             #endif
             for  cookieNameValue  in  cookieNameValues  {
                 #if os(Linux)
                 let cookieNameValueParts = cookieNameValue.bridge().componentsSeparatedByString("=")
                 #else
-                let cookieNameValueParts = cookieNameValue.componentsSeparated(by: "=")
+                let cookieNameValueParts = cookieNameValue.components(separatedBy: "=")
                 #endif
                 if   cookieNameValueParts.count == 2  {
                     let theCookie = NSHTTPCookie(properties:
