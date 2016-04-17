@@ -30,7 +30,7 @@ extension Error: CustomStringConvertible {
              return "Failed to parse request body \(body)"
         case FailedToRedirectRequest(let path, let chainedError):
             return "Failed to redirect a request for directory at \(path)" +
-                     "caught error = \(chainedError)"
+                     " caught error = \(chainedError)"
         }
     }
 }
