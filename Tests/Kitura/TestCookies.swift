@@ -51,7 +51,7 @@ class TestCookies : XCTestCase {
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "cookiedump route did not match single path request")
                 do {
                     let data = NSMutableData()
-                    let count = try response!.readAllData(into: data)
+                    let count = try response!.readAllData(data: data)
                     XCTAssertEqual(count, 4, "Plover's value should have been four bytes")
                     if  let ploverValue = NSString(data: data, encoding: NSUTF8StringEncoding) {
                         XCTAssertEqual(ploverValue.bridge(), "qwer")
@@ -96,7 +96,7 @@ class TestCookies : XCTestCase {
                 XCTAssertFalse(cookie2!.isSecure, "\(cookie2Name) was marked as secure. Should have not been marked so.")
 #endif
                 XCTAssertNotNil(cookie2Expire, "\(cookie2Name) had no expiration date. It should have had one")
-                XCTAssertEqual(cookie2Expire!, SpiUtils.httpDate(cookie2ExpireExpected))
+                XCTAssertEqual(cookie2Expire!, SpiUtils.httpDate(date: cookie2ExpireExpected))
                 expectation.fulfill()
             })
         },
