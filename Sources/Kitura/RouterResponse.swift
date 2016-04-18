@@ -117,7 +117,7 @@ public class RouterResponse {
         for  (_, cookie) in cookies {
             var cookieString = cookie.name + "=" + cookie.value + "; path=" + cookie.path + "; domain=" + cookie.domain
             if  let expiresDate = cookie.expiresDate  {
-                cookieString += "; expires=" + SpiUtils.httpDate(expiresDate)
+                cookieString += "; expires=" + SpiUtils.httpDate(date: expiresDate)
             }
 #if os(Linux)  
             let isSecure = cookie.secure
@@ -322,7 +322,7 @@ public class RouterResponse {
     ///
     public func getHeader(_ key: String) -> String? {
         
-        return response.getHeader(key)
+        return response.getHeader(key: key)
         
     }
     
@@ -335,7 +335,7 @@ public class RouterResponse {
     ///
     public func getHeaders(_ key: String) -> [String]? {
         
-        return response.getHeaders(key)
+        return response.getHeaders(key: key)
         
     }
     
@@ -349,13 +349,13 @@ public class RouterResponse {
     ///
     public func setHeader(_ key: String, value: String) {
         
-        response.setHeader(key, value: value)
+        response.setHeader(key: key, value: value)
         
     }
     
     public func setHeader(_ key: String, value: [String]) {
         
-        response.setHeader(key, value: value)
+        response.setHeader(key: key, value: value)
         
     }
 
