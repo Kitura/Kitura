@@ -258,15 +258,17 @@ class TestResponse : XCTestCase {
             next()
         }
 
-        performServerTest(router, asyncTasks: {
+        performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path: "/customPage", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                expectation.fulfill()
             }) {req in 
                 req.headers = ["Accept" : "text/*;q=.5, application/json, application/*;q=.3"]
             }
-        }, {
+        }, { expectation in
             self.performRequest("get", path:"/customPage2", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                expectation.fulfill()
             }) {req in 
                 req.headers = ["Accept" : "application/*;q=0.2, image/jpeg;q=0.8, text/html, text/plain, */*;q=.7"]
             }

@@ -164,6 +164,13 @@ public class RouterRequest: SocketReader {
         return try serverRequest.readString()
     }
 
+    ///
+    /// Finds the full mime type for a given extension
+    ///
+    /// - Parameter type: mime type extension String
+    ///
+    /// - Returns the full mime type
+    ///
     private func extToMime(type: String) -> String {
 
         if let mimeType = ContentType.contentTypeForExtension(type) {
@@ -172,6 +179,13 @@ public class RouterRequest: SocketReader {
         return type
     }
 
+    ///
+    /// Parse mime type string into a digestable tuple format
+    ///
+    /// - Parameter type: raw mime type String
+    ///
+    /// - Returns a tuple with the mime type and q parameter value if present, qValue defaults to 1
+    ///
     private func parseMeidaType(type: String) -> (type: String, qValue: Double) {
         var finishedPair = ("", 1.0)
 #if os(Linux)
@@ -194,14 +208,20 @@ public class RouterRequest: SocketReader {
         return finishedPair
     }
 
+    ///
+    /// Checks if passed in content types are acceptable based on the request's Accept header field
+    ///
+    /// - Parameter types: array of content/mime type strings
+    ///
+    /// - Returns most acceptable type or nil if there are none
+    ///
     public func accepts(types: [String]) -> String? {
 
         guard let acceptHeaderValue = headers["accept"] else {
             return nil
         }
 
-        // loop through header values, keep track of key values of matches, decide afterward which is best
-        let headerValues = acceptHeaderValue.characters.split(separator: ",").map(String.init) // check on linux, change
+        let headerValues = acceptHeaderValue.characters.split(separator: ",").map(String.init)
         var criteriaMatches = [String : (priority: Int, qValue: Double)]()
 
         for rawHeaderValue in headerValues {
@@ -210,29 +230,30 @@ public class RouterRequest: SocketReader {
                 
                 let parsedHeaderValue = parseMeidaType(rawHeaderValue)
                 let mimeType = extToMime(type)
-                
-                if parsedHeaderValue.type == mimeType { // given headerValue and type, look for exact match
+
+                if parsedHeaderValue.type == mimeType { // exact match, e.g. text/html == text/html
+
                     criteriaMatches[type] = (priority: 1, qValue: parsedHeaderValue.qValue)
+                } else if parsedHeaderValue.type == "*/*" {
+
+                    if criteriaMatches[type] == nil { // else do nothing
+                        criteriaMatches[type] = (priority: 3, qValue: parsedHeaderValue.qValue)
+                    }
                 } else {
 #if os(Linux)
                     let rangeMatch = mimeType.rangeOfString(parsedHeaderValue.type, options: .RegularExpressionSearch)
 #else
                     let rangeMatch = mimeType.range(of: parsedHeaderValue.type, options: .regularExpressionSearch)
 #endif
-                    if rangeMatch != nil { // if no match, look for asterisks options, just looking for prefix like text/* applies text/html
-                    
+                    if rangeMatch != nil { // partial match, e.g. text/html == text/*
                         if criteriaMatches[type]?.priority > 2 || criteriaMatches[type] == nil {
                             criteriaMatches[type] = (priority: 2, qValue: parsedHeaderValue.qValue)
                         }
-                    } else if parsedHeaderValue.type == "*/*" {
-                        if criteriaMatches[type] == nil {
-                            criteriaMatches[type] = (priority: 3, qValue: parsedHeaderValue.qValue)
-                        }
-                    }
+                    } 
                 }
             }
         }
-        // determine best option of types passed in
+        // sort by priority and by qValue to determine best type to return
         let sortedMatches = Array(criteriaMatches).sorted {
             if $0.1.priority != $1.1.priority {
                 return $0.1.priority < $1.1.priority
