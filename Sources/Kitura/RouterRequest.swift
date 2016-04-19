@@ -186,7 +186,7 @@ public class RouterRequest: SocketReader {
     ///
     /// - Returns a tuple with the mime type and q parameter value if present, qValue defaults to 1
     ///
-    private func parseMeidaType(type: String) -> (type: String, qValue: Double) {
+    private func parseMediaType(type: String) -> (type: String, qValue: Double) {
         var finishedPair = ("", 1.0)
 #if os(Linux)
         let trimmed = type.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
@@ -228,7 +228,7 @@ public class RouterRequest: SocketReader {
             for type in types {
             
                 
-                let parsedHeaderValue = parseMeidaType(rawHeaderValue)
+                let parsedHeaderValue = parseMediaType(rawHeaderValue)
                 let mimeType = extToMime(type)
 
                 if parsedHeaderValue.type == mimeType { // exact match, e.g. text/html == text/html
