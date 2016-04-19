@@ -116,9 +116,8 @@ public class StaticFileServer : RouterMiddleware {
     /// - Parameter next: the closure for the next execution block
     ///
     public func handle (request: RouterRequest, response: RouterResponse, next: () -> Void) {
-        if (request.serverRequest.method != "GET" && request.serverRequest.method != "HEAD") {
-            next()
-            return
+        guard request.serverRequest.method == "GET" || request.serverRequest.method == "HEAD" else{
+            return next()
         }
         
         var filePath = path
