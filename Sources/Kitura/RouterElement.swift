@@ -22,7 +22,7 @@ import Foundation
 
 // MARK: RouterElement
 
-class RouterElement {
+struct RouterElement {
 
     ///
     /// The regular expression matcher
@@ -99,7 +99,7 @@ class RouterElement {
     ///
     /// Convenience initializer
     ///
-    convenience init(method: RouterMethod, pattern: String? , handler: [RouterHandler]) {
+    init(method: RouterMethod, pattern: String? , handler: [RouterHandler]) {
 
         self.init(method: method, pattern: pattern, middleware: handler.map{RouterMiddlewareGenerator(handler: $0)}, allowPartialMatch: false)
     }
