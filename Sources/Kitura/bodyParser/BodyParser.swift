@@ -19,6 +19,7 @@ import SwiftyJSON
 import KituraSys
 import KituraNet
 import Socket
+import LoggerAPI
 
 import Foundation
 
@@ -94,8 +95,8 @@ public class BodyParser : RouterMiddleware {
         do {
             let bodyData = try readBodyData(message)
             return parser(bodyData)
-        } catch{
-            // response.error = error
+        } catch {
+            Log.error("failed to read body data, error = \(error)")
         }
         return nil
     }
