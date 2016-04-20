@@ -37,9 +37,9 @@ public class BodyParser : RouterMiddleware {
     ///
     /// BodyParser archiver
     ///
-    private static let parserArchiver: [String: ((NSMutableData) -> ParsedBody?)] = ["application/json": BodyParser.json ,
-                                                                                     "application/x-www-form-urlencoded": BodyParser.urlencoded ,
-                                                                                     "text": BodyParser.text]
+    private static let parserMap: [String: ((NSMutableData) -> ParsedBody?)] = ["application/json": BodyParser.json,
+                                                                                "application/x-www-form-urlencoded": BodyParser.urlencoded,
+                                                                                "text": BodyParser.text]
     ///
     /// Initializes a BodyParser instance
     ///
@@ -76,10 +76,10 @@ public class BodyParser : RouterMiddleware {
             return nil
         }
         
-        if let parser = parserArchiver[contentType] {
+        if let parser = parserMap[contentType] {
             return parse(message, parser: parser)
-        }else if contentType.hasPrefix("text/"){
-            return parse(message, parser: parserArchiver["text"]!)
+        } else if contentType.hasPrefix("text/") {
+            return parse(message, parser: parserMap["text"]!)
         }
         
         return nil
@@ -89,7 +89,7 @@ public class BodyParser : RouterMiddleware {
     /// Read incoming message for Parse
     ///
     /// - Parameter message: message coming from the socket
-    /// - Parameter parser: ((NSMutableData) -> ParsedBody?) store at parserArchiver
+    /// - Parameter parser: ((NSMutableData) -> ParsedBody?) store at parserMap
     ///
     private class func parse(message: SocketReader, parser: ((NSMutableData) -> ParsedBody?)) -> ParsedBody? {
         do {
