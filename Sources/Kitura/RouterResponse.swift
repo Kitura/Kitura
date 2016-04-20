@@ -21,6 +21,7 @@ import KituraSys
 import SwiftyJSON
 
 import Foundation
+import LoggerAPI
 
 // MARK: RouterResponse
 
@@ -34,7 +35,7 @@ public class RouterResponse {
     ///
     /// The router
     ///
-    let router: Router
+    weak var router: Router?
 
     ///
     /// The associated request
@@ -64,7 +65,7 @@ public class RouterResponse {
     ///
     /// Optional error value
     ///
-    public var error: NSError?
+    public var error: ErrorProtocol?
 
     ///
     /// Initializes a RouterResponse instance
@@ -465,17 +466,11 @@ public class RouterResponse {
     ///
     // influenced by http://expressjs.com/en/4x/api.html#app.render
     public func render(resource: String, context: [ String: Any]) throws -> RouterResponse {
-        var resourceWithExtension = resource
-        if let fileExtension = router.templateEngine?.fileExtension {
-            resourceWithExtension += ("." + fileExtension)
+        guard let router = router else {
+            throw InternalError.NilVariable(variable: "router")
         }
-        let filePath =  router.viewsPath + resourceWithExtension
-        if let templateEngine = router.templateEngine {
-            let renderedResource = try templateEngine.render(filePath, context: context)
-            return send(renderedResource)
-        }
-        // no template engine set or error in rendering - send file as is
-        return try sendFile(filePath)
+        let renderedResource = try router.render(resource, context: context)
+        return send(renderedResource)
     }
 
     ///
@@ -484,13 +479,12 @@ public class RouterResponse {
     /// - Parameter type: the type to set to 
     ///
     public func type(type: String, charset: String? = nil) {
-        let contentType =  ContentType.contentTypeForExtension(type)
-        if  let contentType = contentType  {
-            var content = contentType
+        if  let contentType = ContentType.contentTypeForExtension(type)  {
+            var contentCharset = ""
             if let charset = charset {
-                content += "; charset=\(charset)"
+                contentCharset = "; charset=\(charset)"
             }
-            setHeader("Content-Type", value: content)
+            setHeader("Content-Type", value:  contentType + contentCharset)
         }
     }
 

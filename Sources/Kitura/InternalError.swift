@@ -14,14 +14,21 @@
  * limitations under the License.
  **/
 
-import PackageDescription
+import Foundation
 
-let package = Package(
-    name: "Kitura",
-        dependencies: [
-            .Package(url: "https://github.com/IBM-Swift/Kitura-net.git", majorVersion: 0, minor: 10),
-            .Package(url: "https://github.com/IBM-Swift/LoggerAPI.git", majorVersion: 0, minor: 4),
-            .Package(url: "https://github.com/IBM-Swift/SwiftyJSON.git", majorVersion: 5),
-            .Package(url: "https://github.com/IBM-Swift/Kitura-TemplateEngine.git", majorVersion: 0, minor: 10)
-        ]
-)
+// programming error - nothing a client can do
+// no need to send an HTTP response with the error details to the client
+// just log it
+// for example - uninitialized variable
+enum InternalError: ErrorProtocol {
+    case NilVariable(variable: String)
+}
+
+extension InternalError: CustomStringConvertible {
+    var description: String {
+        switch self {
+        case NilVariable(let variable):
+            return "\(variable) is nil"
+        }
+    }
+}

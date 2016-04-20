@@ -30,7 +30,7 @@ let cookie3Value = "A-testing-we-go"
 
 let cookieHost = "localhost"
 
-class TestCookies : XCTestCase, KituraTest {
+class TestCookies : XCTestCase {
 
     static var allTests : [(String, TestCookies -> () throws -> Void)] {
         return [
@@ -46,7 +46,7 @@ class TestCookies : XCTestCase, KituraTest {
     let router = TestCookies.setupRouter()
 
     func testCookieToServer() {
-        performServerTest(router, asyncTasks: {
+        performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path: "/1/cookiedump", callback: {response in
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "cookiedump route did not match single path request")
                 do {
@@ -63,12 +63,13 @@ class TestCookies : XCTestCase, KituraTest {
                 catch {
                     XCTFail("Failed reading the body of the response")
                 }
+                expectation.fulfill()
             }, headers: ["Cookie": "Plover=qwer; Zxcv=tyuiop"])
         })
     }
 
     func testCookieFromServer() {
-        performServerTest(router, asyncTasks: {
+        performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path: "/1/sendcookie", callback: {response in
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "/1/sendcookie route did not match single path request")
 
@@ -81,7 +82,7 @@ class TestCookies : XCTestCase, KituraTest {
                 XCTAssertFalse(cookie1!.secure, "\(cookie1Name) was marked as secure. Should have not been marked so.")
 #else
                 XCTAssertFalse(cookie1!.isSecure, "\(cookie1Name) was marked as secure. Should have not been marked so.")
-#endif 
+#endif
                 XCTAssertNil(cookie1Expire, "\(cookie1Name) had an expiration date. It shouldn't have had one")
 
                 let (cookie2, cookie2Expire) = self.cookieFromResponse(response!, named: cookie2Name)
@@ -93,13 +94,14 @@ class TestCookies : XCTestCase, KituraTest {
                 XCTAssertFalse(cookie2!.secure, "\(cookie2Name) was marked as secure. Should have not been marked so.")
 #else
                 XCTAssertFalse(cookie2!.isSecure, "\(cookie2Name) was marked as secure. Should have not been marked so.")
-#endif 
+#endif
                 XCTAssertNotNil(cookie2Expire, "\(cookie2Name) had no expiration date. It should have had one")
                 XCTAssertEqual(cookie2Expire!, SpiUtils.httpDate(cookie2ExpireExpected))
+                expectation.fulfill()
             })
         },
-        {
-            self.performRequest("get", path: "/2/sendcookie", callback: {response in
+        { expectation in
+            self.performRequest("get", path: "/2/sendcookie", callback: { response in
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "/2/sendcookie route did not match single path request")
 
                 let (cookie, cookieExpire) = self.cookieFromResponse(response!, named: cookie3Name)
@@ -111,8 +113,9 @@ class TestCookies : XCTestCase, KituraTest {
                 XCTAssertTrue(cookie!.secure, "\(cookie3Name) wasn't marked as secure. It should have been marked so.")
 #else
                 XCTAssertTrue(cookie!.isSecure, "\(cookie3Name) wasn't marked as secure. It should have been marked so.")
-#endif 
+#endif
                 XCTAssertNil(cookieExpire, "\(cookie3Name) had an expiration date. It shouldn't have had one")
+                expectation.fulfill()
             })
         })
     }
@@ -125,7 +128,7 @@ class TestCookies : XCTestCase, KituraTest {
             let lowercaseHeaderKey = headerKey.bridge().lowercaseString
 #else
             let lowercaseHeaderKey = headerKey.lowercased()
-#endif 
+#endif
             if  lowercaseHeaderKey  ==  "set-cookie"  {
                 for headerValue in headerValues {
 #if os(Linux)
@@ -154,7 +157,7 @@ class TestCookies : XCTestCase, KituraTest {
 #else
                             var pieces = part.componentsSeparated(by: "=")
                             let piece = pieces[0].bridge().lowercased()
-#endif 
+#endif
                             switch(piece) {
                                 case "secure", "httponly":
                                     properties[NSHTTPCookieSecure] = "Yes"

@@ -116,9 +116,8 @@ public class StaticFileServer : RouterMiddleware {
     /// - Parameter next: the closure for the next execution block
     ///
     public func handle (request: RouterRequest, response: RouterResponse, next: () -> Void) {
-        if (request.serverRequest.method != "GET" && request.serverRequest.method != "HEAD") {
-            next()
-            return
+        guard request.serverRequest.method == "GET" || request.serverRequest.method == "HEAD" else{
+            return next()
         }
         
         var filePath = path
@@ -162,7 +161,7 @@ public class StaticFileServer : RouterMiddleware {
                         try response.redirect(originalUrl + "/")
                     }
                     catch {
-                        response.error = NSError(domain: "Kitura-router", code: 1, userInfo: [NSLocalizedDescriptionKey:"Failed to redirect a request for directory"])
+                        response.error = Error.FailedToRedirectRequest(path: originalUrl + "/", chainedError: error)
                     }
                 }
             }

@@ -19,108 +19,159 @@ import SwiftyJSON
 import KituraSys
 import KituraNet
 import Socket
+import LoggerAPI
 
 import Foundation
 
 // MARK: BodyParser
 
-public class BodyParser : RouterMiddleware {
 
+public class BodyParser : RouterMiddleware {
+    
     ///
     /// Default buffer size (in bytes)
     ///
     private static let BUFFER_SIZE = 2000
-
-    /// 
+    
+    
+    ///
+    /// BodyParser archiver
+    ///
+    private static let parserMap: [String: ((NSMutableData) -> ParsedBody?)] = ["application/json": BodyParser.json,
+                                                                                "application/x-www-form-urlencoded": BodyParser.urlencoded,
+                                                                                "text": BodyParser.text]
+    ///
     /// Initializes a BodyParser instance
     ///
     public init() {}
-
+    
     ///
     /// Handle the request
     ///
     /// - Parameter request: the router request
     /// - Parameter response: the router response
-    /// - Parameter next: the closure for the next execution block 
+    /// - Parameter next: the closure for the next execution block
     ///
     public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
+        
+        
+        guard request.serverRequest.headers["Content-Length"] != nil else {
+            return next()
+        }
         
         request.body = BodyParser.parse(request, contentType: request.serverRequest.headers["Content-Type"])
         next()
         
     }
-
+    
     ///
     /// Parse the incoming message
     ///
     /// - Parameter message: message coming from the socket
-    /// - Parameter contentType: the contentType as a string 
+    /// - Parameter contentType: the contentType as a string
     ///
     public class func parse(message: SocketReader, contentType: String?) -> ParsedBody? {
         
-        if let contentType = contentType {
-            do {
-
-        if ContentType.isType(contentType, typeDescriptor: "json") {
-            let bodyData = try readBodyData(message)
-            let json = JSON(data: bodyData)
-            if json != JSON.null {
-               return ParsedBody(json: json)
-            }
+        guard let contentType = contentType else {
+            return nil
         }
-        else if ContentType.isType(contentType, typeDescriptor: "urlencoded") {
-          let bodyData = try readBodyData(message)
-          var parsedBody = [String:String]()
-          var success = true
-          if let bodyAsString: String = String(data: bodyData, encoding: NSUTF8StringEncoding) {
-
+        
+        if let parser = parserMap[contentType] {
+            return parse(message, parser: parser)
+        } else if contentType.hasPrefix("text/") {
+            return parse(message, parser: parserMap["text"]!)
+        }
+        
+        return nil
+    }
+    
+    ///
+    /// Read incoming message for Parse
+    ///
+    /// - Parameter message: message coming from the socket
+    /// - Parameter parser: ((NSMutableData) -> ParsedBody?) store at parserMap
+    ///
+    private class func parse(message: SocketReader, parser: ((NSMutableData) -> ParsedBody?)) -> ParsedBody? {
+        do {
+            let bodyData = try readBodyData(message)
+            return parser(bodyData)
+        } catch {
+            Log.error("failed to read body data, error = \(error)")
+        }
+        return nil
+    }
+    
+    ///
+    /// Json pase Funtion
+    ///
+    /// - Parameter bodyData: read data
+    ///
+    private class func json(bodyData: NSMutableData)-> ParsedBody? {
+        let json = JSON(data: bodyData)
+        if json != JSON.null {
+            return ParsedBody(json: json)
+        }
+        return nil
+    }
+    
+    ///
+    /// Urlencoded pase Funtion
+    ///
+    /// - Parameter bodyData: read data
+    ///
+    private class func urlencoded(bodyData: NSMutableData)-> ParsedBody? {
+        var parsedBody = [String:String]()
+        var success = true
+        if let bodyAsString: String = String(data: bodyData, encoding: NSUTF8StringEncoding) {
+            
 #if os(Linux)
             let bodyAsArray = bodyAsString.bridge().componentsSeparatedByString("&")
 #else
             let bodyAsArray = bodyAsString.componentsSeparated(by: "&")
 #endif
+
             for element in bodyAsArray {
+
 #if os(Linux)  
-              let elementPair = element.bridge().componentsSeparatedByString("=")
+                let elementPair = element.bridge().componentsSeparatedByString("=")
 #else
-              let elementPair = element.componentsSeparated(by: "=")
+                let elementPair = element.componentsSeparated(by: "=")
 #endif
-              if elementPair.count == 2 {
-                parsedBody[elementPair[0]] = elementPair[1]
-              }
-              else {
-                success = false
-              }
+
+                if elementPair.count == 2 {
+                    parsedBody[elementPair[0]] = elementPair[1]
+                }
+                else {
+                    success = false
+                }
             }
             if success && parsedBody.count > 0 {
-              return ParsedBody(urlEncoded: parsedBody)
+                return ParsedBody(urlEncoded: parsedBody)
             }
-          }
         }
-        // There was no support for the application/json MIME type
-        else if (ContentType.isType(contentType, typeDescriptor: "text/*") ||
-          ContentType.isType(contentType, typeDescriptor: "application/json")) {
-          let bodyData = try readBodyData(message)
-          if let bodyAsString: String = String(data: bodyData, encoding: NSUTF8StringEncoding) {
-            return ParsedBody(text:  bodyAsString)
-          }
-        }
-      }
-      catch {
-        // response.error = error
-      }
+        return nil
     }
-
-    return nil
-  }
-
+    
+    ///
+    /// text pase Funtion
+    ///
+    /// - Parameter bodyData: read data
+    ///
+    private class func text(bodyData: NSMutableData)-> ParsedBody? {
+        // There was no support for the application/json MIME type
+        if let bodyAsString: String = String(data: bodyData, encoding: NSUTF8StringEncoding) {
+            return ParsedBody(text:  bodyAsString)
+        }
+        return nil
+    }
+    
     ///
     /// Read the Body data
     ///
-    /// - Parameter reader: the socket reader 
+    /// - Parameter reader: the socket reader
     ///
     /// - Throws: ???
-    /// - Returns: data for the body 
+    /// - Returns: data for the body
     ///
     public class func readBodyData(reader: SocketReader) throws -> NSMutableData {
         
@@ -132,7 +183,7 @@ public class BodyParser : RouterMiddleware {
         }
         return bodyData
     }
-
+    
 }
 
 // MARK: ParsedBody
@@ -143,7 +194,7 @@ public class ParsedBody {
     /// JSON body if the body is JSON
     ///
     private var jsonBody: JSON?
-  
+    
     ///
     /// URL encoded body
     ///
@@ -153,8 +204,8 @@ public class ParsedBody {
     /// Plain-text body
     ///
     private var textBody: String?
-
-    /// 
+    
+    ///
     /// Initializes a ParsedBody instance
     ///
     /// - Parameter json: JSON formatted data
@@ -166,7 +217,7 @@ public class ParsedBody {
         jsonBody = json
         
     }
-
+    
     ///
     /// Initializes a ParsedBody instance
     ///
@@ -177,7 +228,7 @@ public class ParsedBody {
     public init (urlEncoded: [String:String]) {
         urlEncodedBody = urlEncoded
     }
-
+    
     ///
     /// Initializes a ParsedBody instance
     ///
@@ -188,16 +239,16 @@ public class ParsedBody {
     public init (text: String) {
         textBody = text
     }
-
+    
     ///
     /// Returns the body as JSON
     ///
-    /// - Returns: the JSON 
+    /// - Returns: the JSON
     ///
     public func asJson() -> JSON? {
-      return jsonBody
+        return jsonBody
     }
-
+    
     ///
     /// Returns the body as URL encoded strings
     ///
@@ -206,9 +257,9 @@ public class ParsedBody {
     public func asUrlEncoded() -> [String:String]? {
         return urlEncodedBody
     }
-
+    
     ///
-    /// Returns the body as plain-text 
+    /// Returns the body as plain-text
     ///
     /// - Returns: the plain text
     ///

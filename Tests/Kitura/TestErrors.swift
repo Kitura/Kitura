@@ -29,7 +29,7 @@ import XCTest
 #endif
 
 
-class TestErrors : XCTestCase, KituraTest {
+class TestErrors : XCTestCase {
 
     static var allTests : [(String, TestErrors -> () throws -> Void)] {
         return [
@@ -44,31 +44,34 @@ class TestErrors : XCTestCase, KituraTest {
     }
 
     let router = Router()
-    
+
     func testInvalidMethod() {
-        performServerTest(router) {
+        performServerTest(router) { expectation in
             self.performRequest("invalid", path: "/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.BAD_REQUEST, "HTTP Status code was \(response!.statusCode)")
+                expectation.fulfill()
             })
         }
     }
 
     func testInvalidEndpoint() {
-        performServerTest(router) {
+        performServerTest(router) { expectation in
             self.performRequest("get", path: "/notreal", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.NOT_FOUND, "HTTP Status code was \(response!.statusCode)")
+                expectation.fulfill()
             })
         }
     }
 
     func testInvalidHeader() {
-        performServerTest(router) {
+        performServerTest(router) { expectation in
             self.performRequest("get", path: "/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 // should this be ok?
-            }) {req in 
+                expectation.fulfill()
+            }) {req in
                 req.headers = ["garbage" : "dfsfdsf"]
             }
         }
