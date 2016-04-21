@@ -36,8 +36,7 @@ public class ContentType {
     private var extToContentType = [String:String]()
 
     ///
-    /// Shared sq
-    ingleton instance
+    /// Shared singleton instance
     ///
     public static let sharedInstance = ContentType()
     
