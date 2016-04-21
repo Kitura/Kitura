@@ -25,20 +25,26 @@ public class ContentType {
     /// Whether to use the local mime-type definitions or the ones in the file
     ///
     #if os(Linux)
-        private static let MIME_TYPE_EMBEDDED: Bool = true
+        private let MIME_TYPE_EMBEDDED: Bool = true
     #else
-        private static let MIME_TYPE_EMBEDDED: Bool = false
+        private let MIME_TYPE_EMBEDDED: Bool = false
     #endif
     
     ///
     /// A dictionary of extensions to MIME type descriptions
     ///
-    private static var extToContentType = [String:String]()
+    private var extToContentType = [String:String]()
 
+    ///
+    /// Shared sq
+    ingleton instance
+    ///
+    public static let sharedInstance = ContentType()
+    
     ///
     /// The following function loads the MIME types from an external file
     ///
-    public class func initialize () {
+    private init () {
 
         // MARK: Remove this when Linux reading of JSON files works.
         if MIME_TYPE_EMBEDDED {
@@ -99,7 +105,7 @@ public class ContentType {
     ///
     /// - Returns: an Optional String for the content type
     ///
-    public class func contentTypeForExtension (ext: String) -> String? {
+    public func contentTypeForExtension (ext: String) -> String? {
         return extToContentType[ext]
     }
 
@@ -110,7 +116,7 @@ public class ContentType {
     ///
     /// - Returns: an Optional String for the content type
     ///
-    public class func contentTypeForFile (fileName: String) -> String? {
+    public func contentTypeForFile (fileName: String) -> String? {
         let lastPathElemRange: Range<String.Index>
         let extRange: Range<String.Index>
 #if os(Linux)  
@@ -156,7 +162,7 @@ public class ContentType {
     ///
     /// - Returns: whether the types matched
     ///
-    public class func isType (messageContentType: String, typeDescriptor: String) -> Bool {
+    public func isType (messageContentType: String, typeDescriptor: String) -> Bool {
 
         let type = typeDescriptor.lowercased()
 #if os(Linux)  
@@ -202,7 +208,7 @@ public class ContentType {
     /// 
     /// - Returns: the normalized String 
     ///
-    private class func normalizeType (type: String) -> String {
+    private func normalizeType (type: String) -> String {
         
         switch type {
         case "urlencoded":
@@ -225,7 +231,7 @@ public class ContentType {
     /// The raw types
     /// *Note*: This will be removed once JSON parsing and the types.json file can be read. 
     ///
-    private static var rawTypes = [
+    private var rawTypes = [
         "text/plain": ["txt","text","conf","def","list","log","in","ini"],
         "text/html": ["html", "htm"],
         "text/css": ["css"],

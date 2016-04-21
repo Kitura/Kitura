@@ -56,11 +56,7 @@ public class Router {
     ///
     public init() {
 
-        // Read the MIME types
-        ContentType.initialize()
-
         Log.verbose("Router initialized")
-
     }
 
     // MARK: All

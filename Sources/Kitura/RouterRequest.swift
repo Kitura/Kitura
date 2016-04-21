@@ -173,7 +173,7 @@ public class RouterRequest: SocketReader {
     ///
     private func extToMime(type: String) -> String {
 
-        if let mimeType = ContentType.contentTypeForExtension(type) {
+        if let mimeType = ContentType.sharedInstance.contentTypeForExtension(type) {
             return mimeType
         }
         return type
