@@ -17,10 +17,10 @@
 import Foundation
 import LoggerAPI
 
-// MARK: ContentType 
+// MARK: ContentType
 
 public class ContentType {
-    
+
     ///
     /// Whether to use the local mime-type definitions or the ones in the file
     ///
@@ -29,7 +29,7 @@ public class ContentType {
     #else
         private let MIME_TYPE_EMBEDDED: Bool = false
     #endif
-    
+
     ///
     /// A dictionary of extensions to MIME type descriptions
     ///
@@ -39,7 +39,7 @@ public class ContentType {
     /// Shared singleton instance
     ///
     public static let sharedInstance = ContentType()
-    
+
     ///
     /// The following function loads the MIME types from an external file
     ///
@@ -59,40 +59,44 @@ public class ContentType {
             return
         }
 
-#if os(Linux)  
-        let contentTypesData = contentTypesString.bridge().dataUsingEncoding(NSUTF8StringEncoding)
-#else
-        let contentTypesData = contentTypesString.bridge().data(usingEncoding: NSUTF8StringEncoding)
-#endif
-
-        if contentTypesData == nil {
+#if os(Linux)
+        guard let contentTypesData = contentTypesString.bridge().dataUsingEncoding(NSUTF8StringEncoding) else {
             Log.error("Error parsing \(contentTypesString)")
             return
         }
+#else
+        guard let contentTypesData = contentTypesString.bridge().data(usingEncoding: NSUTF8StringEncoding) else {
+            Log.error("Error parsing \(contentTypesString)")
+            return
+        }
+#endif
 
         // MARK: Linux Foundation will return an Any instead of an AnyObject
         // Need to test if this breaks the Linux build.
-#if os(Linux)  
-        let jsonData = try? NSJSONSerialization.JSONObjectWithData(contentTypesData!,
-            options: NSJSONReadingOptions.MutableContainers) as? NSDictionary 
+#if os(Linux)
+        guard let parsedObject = try? NSJSONSerialization.JSONObjectWithData(contentTypesData,
+            options: NSJSONReadingOptions.MutableContainers) else {
+                Log.error("JSON could not be parsed")
+                return
+            }
 #else
-        let jsonData = try? NSJSONSerialization.jsonObject(with: contentTypesData!, 
-            options: NSJSONReadingOptions.mutableContainers) as? NSDictionary
+        guard let parsedObject = try? NSJSONSerialization.jsonObject(with: contentTypesData,
+            options: NSJSONReadingOptions.mutableContainers) else {
+                Log.error("JSON could not be parsed")
+                return
+            }
 #endif
-            
 
-        if jsonData == nil || jsonData! == nil {
+        // Should be moved to single guard statement with parsedObject
+        // when Linux Api is updated
+        guard let jsonData = parsedObject as? [String : [String]] else {
             Log.error("JSON could not be parsed")
             return
         }
 
-        for (contentType, exts) in jsonData!! {
-
-            let e = exts as! [String]
-            for ext in e {
-
-                extToContentType[ext] = contentType as? String
-
+        for (contentType, exts) in jsonData {
+            for ext in exts {
+                extToContentType[ext] = contentType
             }
         }
     }
@@ -118,7 +122,7 @@ public class ContentType {
     public func contentTypeForFile (fileName: String) -> String? {
         let lastPathElemRange: Range<String.Index>
         let extRange: Range<String.Index>
-#if os(Linux)  
+#if os(Linux)
         if  let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch)  {
             lastPathElemRange = lastSlash.startIndex.successor()..<fileName.characters.endIndex
         } else {
@@ -132,7 +136,7 @@ public class ContentType {
             extRange = lastPathElemRange
         }
 
-        return contentTypeForExtension(fileName.substringWithRange(extRange))      
+        return contentTypeForExtension(fileName.substringWithRange(extRange))
 #else
         if  let lastSlash = fileName.range(of: "/", options: NSStringCompareOptions.backwardsSearch)  {
             lastPathElemRange = lastSlash.startIndex.successor()..<fileName.characters.endIndex
@@ -164,7 +168,7 @@ public class ContentType {
     public func isType (messageContentType: String, typeDescriptor: String) -> Bool {
 
         let type = typeDescriptor.lowercased()
-#if os(Linux)  
+#if os(Linux)
         let typeAndSubtype = messageContentType.bridge().componentsSeparatedByString(";")[0].lowercased()
 #else
         let typeAndSubtype = messageContentType.componentsSeparated(by: ";")[0].lowercased()
@@ -186,7 +190,7 @@ public class ContentType {
         }
 
         // the types match and the subtype in typeDescriptor is "*"
-#if os(Linux)  
+#if os(Linux)
         let messageTypePair = typeAndSubtype.bridge().componentsSeparatedByString("/")
         let normalizedTypePair = normalizedType.bridge().componentsSeparatedByString("/")
 #else
@@ -199,17 +203,17 @@ public class ContentType {
         }
         return false
     }
-    
+
     ///
-    /// Normalized the type 
+    /// Normalized the type
     ///
     /// - Parameter type: the content type
-    /// 
-    /// - Returns: the normalized String 
     ///
-    private func normalizeType (type: String) -> String {
-        
-        switch type {
+    /// - Returns: the normalized String
+    ///
+   private func normalizeType (type: String) -> String {
+
+       switch type {
         case "urlencoded":
             return "application/x-www-form-urlencoded"
         case "multipart":
@@ -225,10 +229,10 @@ public class ContentType {
             return type
         }
     }
-    
+
     ///
     /// The raw types
-    /// *Note*: This will be removed once JSON parsing and the types.json file can be read. 
+    /// *Note*: This will be removed once JSON parsing and the types.json file can be read.
     ///
     private var rawTypes = [
         "text/plain": ["txt","text","conf","def","list","log","in","ini"],
