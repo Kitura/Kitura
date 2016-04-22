@@ -114,43 +114,45 @@ class RouterElement {
     ///
     func process(request: RouterRequest, response: RouterResponse, next: () -> Void) {
         guard let urlPath = request.parsedUrl.path else {
-            Log.error("Failed to process request")
+            Log.error("Failed to process request (path is nil)")
             return
         }
 
-        if response.error == nil || method == .Error {
-            if response.error != nil || method == .All || method == request.method {
-                // Either response error exists and method is error, or method matches
-                if  let regex = regex  {
-#if os(Linux)
-                    let tempMatch = regex.firstMatchInString(urlPath, options: [], range: NSMakeRange(0, urlPath.characters.count))
-#else
-                    let tempMatch = regex.firstMatch(in: urlPath, options: [], range: NSMakeRange(0, urlPath.characters.count))
-#endif
-                    if  let match = tempMatch  {
-#if os(Linux)
-                    request.matchedPath = urlPath.bridge().substringWithRange(match.range)
-#else
-                    request.matchedPath = urlPath.bridge().substring(with: match.range)
-#endif
-                        request.route = pattern
-                        updateRequestParams(urlPath, match: match, request: request)
-                        processHelper(request, response: response, next: next)
-                    } else {
-                        next()
-                    }
-                }
-                else {
-                    request.route = pattern
-                    request.params = [:]
-                    processHelper(request, response: response, next: next)
-                }
-            } else {
-                next()
-            }
-        } else {
+        guard (response.error != nil && method == .Error)
+        || (response.error == nil && (method == request.method || method == .All)) else {
             next()
+            return
         }
+
+        // Either response error exists and method is error, or method matches
+        guard let regex = regex else {
+            request.route = pattern
+            request.params = [:]
+            processHelper(request, response: response, next: next)
+            return
+        }
+
+#if os(Linux)
+        guard let match = regex.firstMatchInString(urlPath, options: [], range: NSMakeRange(0, urlPath.characters.count)) else {
+            next()
+            return
+        }
+#else
+        guard let match = regex.firstMatch(in: urlPath, options: [], range: NSMakeRange(0, urlPath.characters.count)) else {
+            next()
+            return
+        }
+#endif
+
+#if os(Linux)
+          request.matchedPath = urlPath.bridge().substringWithRange(match.range)
+#else
+          request.matchedPath = urlPath.bridge().substring(with: match.range)
+#endif
+          request.route = pattern
+          updateRequestParams(urlPath, match: match, request: request)
+          processHelper(request, response: response, next: next)
+
     }
 
     ///
