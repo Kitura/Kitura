@@ -20,10 +20,10 @@ import LoggerAPI
 import Foundation
 import KituraTemplateEngine
 
-// MARK Router 
+// MARK Router
 
 public class Router {
-    
+
     ///
     /// Contains the list of routing elements
     ///
@@ -617,15 +617,19 @@ extension Router : RouterMiddleware {
     /// - Parameter response: the router response
     ///
     public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
-        let urlPath = request.parsedUrl.path!
+        guard let urlPath = request.parsedUrl.path else {
+            Log.error("Failed to handle request")
+            return
+        }
+
         let mountpath = request.matchedPath
 #if os(Linux)
         let prefixRange = urlPath.rangeOfString(mountpath)
 #else
         let prefixRange = urlPath.range(of: mountpath)
 #endif
-        request.parsedUrl.path!.removeSubrange(prefixRange!)
-        if request.parsedUrl.path! == "" {
+        request.parsedUrl.path?.removeSubrange(prefixRange!)
+        if request.parsedUrl.path == "" {
             request.parsedUrl.path = "/"
         }
 
@@ -676,16 +680,20 @@ extension Router : HttpServerDelegate {
     ///
     private func processRequest(request: RouterRequest, response: RouterResponse, callback: () -> Void) {
 
-        let urlPath = request.parsedUrl.path!
+        guard let urlPath = request.parsedUrl.path else {
+            Log.error("Failed to process request")
+            return
+        }
+
 #if os(Linux)
-        let shouldContinue = urlPath.characters.count > kituraResourcePrefix.characters.count && urlPath.bridge().substringToIndex(kituraResourcePrefix.characters.count) == kituraResourcePrefix 
+        let shouldContinue = urlPath.characters.count > kituraResourcePrefix.characters.count && urlPath.bridge().substringToIndex(kituraResourcePrefix.characters.count) == kituraResourcePrefix
 #else
         let lengthIndex = kituraResourcePrefix.startIndex.advanced(by: kituraResourcePrefix.characters.count)
         let shouldContinue = urlPath.characters.count > kituraResourcePrefix.characters.count && urlPath.substring(to: lengthIndex) == kituraResourcePrefix
 #endif
         if  shouldContinue {
-#if os(Linux)  
-            let resource = urlPath.bridge().substringFromIndex(kituraResourcePrefix.characters.count)   
+#if os(Linux)
+            let resource = urlPath.bridge().substringFromIndex(kituraResourcePrefix.characters.count)
 #else
             let resource = urlPath.substring(from: lengthIndex)
 #endif
@@ -700,7 +708,10 @@ extension Router : HttpServerDelegate {
             let nextElemCallbackHandler = {[unowned request, unowned response, unowned self] () -> Void in
                 elemIndex+=1
                 if  elemIndex < self.routeElems.count {
-                    self.routeElems[elemIndex].process(request, response: response, next: nextElemCallback!)
+                    guard let nextElemCallback = nextElemCallback else {
+                        return
+                    }
+                    self.routeElems[elemIndex].process(request, response: response, next: nextElemCallback)
                 }
                 else {
                     callback()
@@ -716,12 +727,12 @@ extension Router : HttpServerDelegate {
     /// Send default index.html file and it's resources if appropriate, otherwise send default 404 message
     ///
     private func sendDefaultResponse(routeReq: RouterRequest, routeResp: RouterResponse) {
-        if  routeReq.parsedUrl.path! == "/"  {
+        if  routeReq.parsedUrl.path == "/"  {
             sendResourceIfExisting(routeResp, resource: "index.html")
         }
         else {
             do {
-                try routeResp.status(HttpStatusCode.NOT_FOUND).send("Cannot \(String(routeReq.method).uppercased()) \(routeReq.parsedUrl.path!).").end()
+                try routeResp.status(HttpStatusCode.NOT_FOUND).send("Cannot \(String(routeReq.method).uppercased()) \(routeReq.parsedUrl.path ?? "").").end()
             }
             catch {}
         }
@@ -730,7 +741,7 @@ extension Router : HttpServerDelegate {
     private func getResourceFilePath(resource: String) -> String {
         let fileName = NSString(string: #file)
         let resourceFilePrefixRange: NSRange
-#if os(Linux)  
+#if os(Linux)
         let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch)
 #else
         let lastSlash = fileName.range(of: "/", options: NSStringCompareOptions.backwardsSearch)
@@ -741,7 +752,7 @@ extension Router : HttpServerDelegate {
         else {
             resourceFilePrefixRange = NSMakeRange(0, fileName.length)
         }
-#if os(Linux)  
+#if os(Linux)
         return fileName.substringWithRange(resourceFilePrefixRange) + "resources/" + resource
 #else
         return fileName.substring(with: resourceFilePrefixRange) + "resources/" + resource
