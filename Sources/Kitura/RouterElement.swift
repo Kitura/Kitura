@@ -57,7 +57,7 @@ class RouterElement {
     ///
     /// The list of keys
     ///
-    private var keys:[String]?
+    private var keys: [String]?
 
     ///
     /// The middleware to use
@@ -85,8 +85,7 @@ class RouterElement {
             do {
                 RouterElement.keyRegex = try NSRegularExpression(pattern: "(.*)?(?:\\:(\\w+)(?:\\(((?:\\\\.|[^()])+)\\))?(?:([+*?])?))", options: [])
                 RouterElement.nonKeyRegex = try NSRegularExpression(pattern: "(.*)?(?:(?:\\(((?:\\\\.|[^()])+)\\))(?:([+*?])?))", options: [])
-            }
-            catch {
+            } catch {
                 Log.error("Failed to create regular expressions used to parse Route patterns")
             }
         }
@@ -99,9 +98,9 @@ class RouterElement {
     ///
     /// Convenience initializer
     ///
-    convenience init(method: RouterMethod, pattern: String? , handler: [RouterHandler]) {
+    convenience init(method: RouterMethod, pattern: String?, handler: [RouterHandler]) {
 
-        self.init(method: method, pattern: pattern, middleware: handler.map{RouterMiddlewareGenerator(handler: $0)}, allowPartialMatch: false)
+        self.init(method: method, pattern: pattern, middleware: handler.map {RouterMiddlewareGenerator(handler: $0)}, allowPartialMatch: false)
     }
 
     ///
@@ -118,14 +117,14 @@ class RouterElement {
         if response.error == nil || method == .Error {
             if response.error != nil || method == .All || method == request.method {
                 // Either response error exists and method is error, or method matches
-                if  let regex = regex  {
-#if os(Linux)  
+                if  let regex = regex {
+#if os(Linux)
                     let tempMatch = regex.firstMatchInString(urlPath, options: [], range: NSMakeRange(0, urlPath.characters.count))
 #else
                     let tempMatch = regex.firstMatch(in: urlPath, options: [], range: NSMakeRange(0, urlPath.characters.count))
 #endif
                     if  let match = tempMatch  {
-#if os(Linux)  
+#if os(Linux)
                     request.matchedPath = urlPath.bridge().substringWithRange(match.range)
 #else
                     request.matchedPath = urlPath.bridge().substring(with: match.range)
@@ -136,12 +135,11 @@ class RouterElement {
                     } else {
                         next()
                     }
-                }
-                else {
+                } else {
                     request.route = pattern
                     request.params = [:]
                     processHelper(request, response: response, next: next)
-                } 
+                }
             } else {
                 next()
             }
@@ -149,12 +147,12 @@ class RouterElement {
             next()
         }
     }
-    
+
     ///
     /// Process the helper
     ///
     /// - Parameter request: the request
-    /// - Parameter response: the router response 
+    /// - Parameter response: the router response
     /// - Parameter next: the closure for the next execution block
     ///
     private func processHelper(request: RouterRequest, response: RouterResponse, next: () -> Void) {
@@ -167,8 +165,7 @@ class RouterElement {
             middlewareCount += 1
             if middlewareCount < self.middlewares.count && (response.error == nil || self.method == .Error) {
                 self.middlewares[middlewareCount].handle(request, response: response, next: nextCallbackPlaceholder!)
-            }
-            else {
+            } else {
                 request.params = [:]
                 next()
             }
@@ -186,13 +183,13 @@ class RouterElement {
     ///
     private func buildRegexFromPattern(pattern: String?, allowPartialMatch: Bool = false) -> (NSRegularExpression?, [String]?) {
 
-        if  let pattern = pattern  {
+        if  let pattern = pattern {
             var regexStr = "^"
             var keys: [String] = []
             var nonKeyIndex = 0
 
-#if os(Linux)  
-            let paths = pattern.bridge().componentsSeparatedByString("/")  
+#if os(Linux)
+            let paths = pattern.bridge().componentsSeparatedByString("/")
 #else
             let paths = pattern.bridge().componentsSeparated(by: "/")
 #endif
@@ -204,49 +201,47 @@ class RouterElement {
 
             for path in paths {
                 // If there was a leading slash, there will be an empty component in the split
-                if  path.characters.count > 0  {
+                if  path.characters.count > 0 {
                     var matched = false
                     var prefix = ""
                     var matchExp = "[^/]+?"
                     var plusQuestStar = ""
 
-                    if  path == "*"  {
+                    if  path == "*" {
                         // Handle a path element of * specially
                         matchExp = ".*"
                         matched = true
-                    }
-                    else {
+                    } else {
                         let range = NSMakeRange(0, path.characters.count)
-#if os(Linux)  
-                        if  let keyMatch = RouterElement.keyRegex!.firstMatchInString(path, options: [], range: range)  {
+#if os(Linux)
+                        if  let keyMatch = RouterElement.keyRegex!.firstMatchInString(path, options: [], range: range) {
                             // We found a path element with a named/key capture
                             let prefixRange = keyMatch.rangeAtIndex(1)
-                            if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1  {
+                            if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1 {
                                 prefix = path.bridge().substringWithRange(prefixRange)
                             }
                             let matchExpRange = keyMatch.rangeAtIndex(3)
-                            if  matchExpRange.location != NSNotFound  &&  matchExpRange.location != -1  {
+                            if  matchExpRange.location != NSNotFound  &&  matchExpRange.location != -1 {
                                 matchExp = path.bridge().substringWithRange(matchExpRange)
                             }
                             let pqsRange = keyMatch.rangeAtIndex(4)
-                            if  pqsRange.location != NSNotFound  &&  pqsRange.location != -1  {
+                            if  pqsRange.location != NSNotFound  &&  pqsRange.location != -1 {
                                 plusQuestStar = path.bridge().substringWithRange(pqsRange)
                             }
                             keys.append(path.bridge().substringWithRange(keyMatch.rangeAtIndex(2)))
                             matched = true
-                        }
-                        else if  let nonKeyMatch = RouterElement.nonKeyRegex!.firstMatchInString(path, options: [], range: range) {
+                        } else if  let nonKeyMatch = RouterElement.nonKeyRegex!.firstMatchInString(path, options: [], range: range) {
                             // We found a path element with an unnamed capture
                             let prefixRange = nonKeyMatch.rangeAtIndex(1)
-                            if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1  {
+                            if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1 {
                                 prefix = path.bridge().substringWithRange(prefixRange)
                             }
                             let matchExpRange = nonKeyMatch.rangeAtIndex(2)
-                            if  matchExpRange.location != NSNotFound  &&  matchExpRange.location != -1  {
+                            if  matchExpRange.location != NSNotFound  &&  matchExpRange.location != -1 {
                                 matchExp = path.bridge().substringWithRange(matchExpRange)
                             }
                             let pqsRange = nonKeyMatch.rangeAtIndex(3)
-                            if  pqsRange.location != NSNotFound  &&  pqsRange.location != -1  {
+                            if  pqsRange.location != NSNotFound  &&  pqsRange.location != -1 {
                                 plusQuestStar = path.bridge().substringWithRange(pqsRange)
                             }
                             keys.append(String(nonKeyIndex))
@@ -254,35 +249,34 @@ class RouterElement {
                             matched = true
                         }
 #else
-                        if  let keyMatch = RouterElement.keyRegex!.firstMatch(in: path, options: [], range: range)  {
+                        if  let keyMatch = RouterElement.keyRegex!.firstMatch(in: path, options: [], range: range) {
                             // We found a path element with a named/key capture
                             let prefixRange = keyMatch.range(at: 1)
-                            if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1  {
+                            if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1 {
                                 prefix = path.bridge().substring(with: prefixRange)
                             }
                             let matchExpRange = keyMatch.range(at: 3)
-                            if  matchExpRange.location != NSNotFound  &&  matchExpRange.location != -1  {
+                            if  matchExpRange.location != NSNotFound  &&  matchExpRange.location != -1 {
                                 matchExp = path.bridge().substring(with: matchExpRange)
                             }
                             let pqsRange = keyMatch.range(at: 4)
-                            if  pqsRange.location != NSNotFound  &&  pqsRange.location != -1  {
+                            if  pqsRange.location != NSNotFound  &&  pqsRange.location != -1 {
                                 plusQuestStar = path.bridge().substring(with: pqsRange)
                             }
                             keys.append(path.bridge().substring(with: keyMatch.range(at: 2)))
                             matched = true
-                        }
-                        else if  let nonKeyMatch = RouterElement.nonKeyRegex!.firstMatch(in: path, options: [], range: range) {
+                        } else if  let nonKeyMatch = RouterElement.nonKeyRegex!.firstMatch(in: path, options: [], range: range) {
                             // We found a path element with an unnamed capture
                             let prefixRange = nonKeyMatch.range(at: 1)
-                            if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1  {
+                            if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1 {
                                 prefix = path.bridge().substring(with: prefixRange)
                             }
                             let matchExpRange = nonKeyMatch.range(at: 2)
-                            if  matchExpRange.location != NSNotFound  &&  matchExpRange.location != -1  {
+                            if  matchExpRange.location != NSNotFound  &&  matchExpRange.location != -1 {
                                 matchExp = path.bridge().substring(with: matchExpRange)
                             }
                             let pqsRange = nonKeyMatch.range(at: 3)
-                            if  pqsRange.location != NSNotFound  &&  pqsRange.location != -1  {
+                            if  pqsRange.location != NSNotFound  &&  pqsRange.location != -1 {
                                 plusQuestStar = path.bridge().substring(with: pqsRange)
                             }
                             keys.append(String(nonKeyIndex))
@@ -305,12 +299,11 @@ class RouterElement {
                                 regexStr.append(matchExp)
                                 regexStr.append(")*)")
                             case "?":
-                                if  prefix.isEmpty  {
+                                if  prefix.isEmpty {
                                     regexStr.append("(?:/(")
                                     regexStr.append(matchExp)
                                     regexStr.append("))?")
-                                }
-                                else {
+                                } else {
                                     regexStr.append("/")
                                     regexStr.append(prefix)
                                     regexStr.append("(?:(")
@@ -318,14 +311,13 @@ class RouterElement {
                                     regexStr.append("))?")
                                 }
                             case "*":
-                                if  prefix.isEmpty  {
+                                if  prefix.isEmpty {
                                     regexStr.append("(?:/(")
                                     regexStr.append(matchExp)
                                     regexStr.append("(?:/")
                                     regexStr.append(matchExp)
                                     regexStr.append(")*))?")
-                                }
-                                else {
+                                } else {
                                     regexStr.append("/")
                                     regexStr.append(prefix)
                                     regexStr.append("(?:(")
@@ -341,8 +333,7 @@ class RouterElement {
                                 regexStr.append(matchExp)
                                 regexStr.append("))")
                         }
-                    }
-                    else {
+                    } else {
                         // A path element with no capture
                         regexStr.append("/")
                         regexStr.append(path)
@@ -357,14 +348,12 @@ class RouterElement {
             var regex: NSRegularExpression? = nil
             do {
                 regex = try NSRegularExpression(pattern: regexStr, options: [])
-            }
-            catch {
+            } catch {
                 Log.error("Failed to compile the regular expression for the route \(pattern)")
             }
 
             return (regex, keys)
-        }
-        else {
+        } else {
             return (nil, nil)
         }
     }
@@ -380,14 +369,14 @@ class RouterElement {
         if  let keys = keys {
             var params: [String:String] = [:]
             for index in 0..<keys.count {
-#if os(Linux)  
+#if os(Linux)
                 let matchRange = match.rangeAtIndex(index+1)
 #else
                 let matchRange = match.range(at: index+1)
 #endif
                 if  matchRange.location != NSNotFound  &&  matchRange.location != -1  {
-#if os(Linux)  
-                    params[keys[index]] = urlPath.bridge().substringWithRange(matchRange)  
+#if os(Linux)
+                    params[keys[index]] = urlPath.bridge().substringWithRange(matchRange)
 #else
                     params[keys[index]] = urlPath.bridge().substring(with: matchRange)
 #endif
@@ -402,7 +391,7 @@ class RouterElement {
 ///
 /// Values for Router methods (Get, Post, Put, Delete, etc)
 ///
-public enum RouterMethod :Int {
+public enum RouterMethod: Int {
 
     case All, Get, Post, Put, Head, Delete, Options, Trace, Copy, Lock, MkCol, Move, Purge, PropFind, PropPatch, Unlock, Report, MkActivity, Checkout, Merge, MSearch, Notify, Subscribe, Unsubscribe, Patch, Search, Connect, Error, Unknown
 

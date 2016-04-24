@@ -21,12 +21,12 @@ import Foundation
 
 // MARK: StaticFileServer
 
-public class StaticFileServer : RouterMiddleware {
+public class StaticFileServer: RouterMiddleware {
 
     //
     // If a file is not found, the given extensions will be added to the file name and searched for. The first that exists will be served. Example: ['html', 'htm'].
     //
-    private var possibleExtensions : [String]?
+    private var possibleExtensions: [String]?
 
     //
     // Serve "index.html" files in response to a request on a directory.  Defaults to true.
@@ -51,7 +51,7 @@ public class StaticFileServer : RouterMiddleware {
     //
     // A setter for custom response headers.
     //
-    private var customResponseHeadersSetter : ResponseHeadersSetter?
+    private var customResponseHeadersSetter: ResponseHeadersSetter?
 
     //
     // Generate ETag. Defaults to true.
@@ -60,7 +60,7 @@ public class StaticFileServer : RouterMiddleware {
 
 
 
-    private var path : String
+    private var path: String
 
     public convenience init (options: [Options]) {
         self.init(path: "./public", options: options)
@@ -76,12 +76,11 @@ public class StaticFileServer : RouterMiddleware {
     public init (path: String, options: [Options]?) {
         if path.hasSuffix("/") {
             self.path = String(path.characters.dropLast())
-        }
-        else {
+        } else {
             self.path = path
         }
         // If we received a path with a tlde (~) in the front, expand it.
-#if os(Linux)  
+#if os(Linux)
         self.path = self.path.bridge().stringByExpandingTildeInPath
 #else
         self.path = self.path.bridge().expandingTildeInPath
@@ -107,7 +106,7 @@ public class StaticFileServer : RouterMiddleware {
             }
         }
     }
-    
+
     ///
     /// Handle the request
     ///
@@ -116,10 +115,10 @@ public class StaticFileServer : RouterMiddleware {
     /// - Parameter next: the closure for the next execution block
     ///
     public func handle (request: RouterRequest, response: RouterResponse, next: () -> Void) {
-        guard request.serverRequest.method == "GET" || request.serverRequest.method == "HEAD" else{
+        guard request.serverRequest.method == "GET" || request.serverRequest.method == "HEAD" else {
             return next()
         }
-        
+
         var filePath = path
         let originalUrl = request.originalUrl
         if let requestRoute = request.route {
@@ -140,16 +139,15 @@ public class StaticFileServer : RouterMiddleware {
         if filePath.hasSuffix("/") {
             if serveIndexForDir {
                 filePath += "index.html"
-            }
-            else {
+            } else {
                 next()
                 return
             }
         }
-        
+
         let fileManager = NSFileManager()
         var isDirectory = ObjCBool(false)
-#if os(Linux)  
+#if os(Linux)
         let fileExists = fileManager.fileExistsAtPath(filePath, isDirectory: &isDirectory)
 #else
         let fileExists = fileManager.fileExists(atPath: filePath, isDirectory: &isDirectory)
@@ -159,21 +157,18 @@ public class StaticFileServer : RouterMiddleware {
                 if redirect {
                     do {
                         try response.redirect(originalUrl + "/")
-                    }
-                    catch {
+                    } catch {
                         response.error = Error.FailedToRedirectRequest(path: originalUrl + "/", chainedError: error)
                     }
                 }
-            }
-            else {
+            } else {
                 serveFile(filePath, fileManager: fileManager, response: response)
             }
-        }
-        else {
+        } else {
             if let extensions = possibleExtensions {
                 for ext in extensions {
                     let newFilePath = filePath + "." + ext
-#if os(Linux)  
+#if os(Linux)
                     let newFileExists = fileManager.fileExistsAtPath(newFilePath, isDirectory: &isDirectory)
 #else
                     let newFileExists = fileManager.fileExists(atPath: newFilePath, isDirectory: &isDirectory)
@@ -199,9 +194,9 @@ public class StaticFileServer : RouterMiddleware {
         let absoluteBasePath = tempAbsoluteBasePath
         let absoluteFilePath = tempAbsoluteFilePath
 
-        if  absoluteFilePath.hasPrefix(absoluteBasePath)  {
+        if  absoluteFilePath.hasPrefix(absoluteBasePath) {
             do {
-#if os(Linux)  
+#if os(Linux)
                 let attributes = try fileManager.attributesOfItemAtPath(filePath)
 #else
                 let attributes = try fileManager.attributesOfItem(atPath: filePath)
@@ -226,8 +221,7 @@ public class StaticFileServer : RouterMiddleware {
                 }
 
                 try response.sendFile(filePath)
-            }
-            catch {
+            } catch {
                 // Nothing
             }
             response.status(HttpStatusCode.OK)
@@ -253,10 +247,7 @@ public class StaticFileServer : RouterMiddleware {
 #endif
 
 public protocol ResponseHeadersSetter {
-    
+
     func setCustomResponseHeaders (response: RouterResponse, filePath: String, fileAttributes: CustomResponseHeaderAttributes)
-    
+
 }
-
-
-
