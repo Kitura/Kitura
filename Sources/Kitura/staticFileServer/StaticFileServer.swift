@@ -170,8 +170,8 @@ public class StaticFileServer : RouterMiddleware {
             }
         }
         else {
-            if let _ = possibleExtensions {
-                for ext in possibleExtensions! {
+            if let extensions = possibleExtensions {
+                for ext in extensions {
                     let newFilePath = filePath + "." + ext
 #if os(Linux)  
                     let newFileExists = fileManager.fileExistsAtPath(newFilePath, isDirectory: &isDirectory)

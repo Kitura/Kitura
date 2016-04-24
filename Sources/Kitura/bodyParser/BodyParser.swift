@@ -102,7 +102,7 @@ public class BodyParser : RouterMiddleware {
     }
     
     ///
-    /// Json parse Funtion
+    /// Json parse Function
     ///
     /// - Parameter bodyData: read data
     ///
@@ -115,7 +115,7 @@ public class BodyParser : RouterMiddleware {
     }
     
     ///
-    /// Urlencoded pase Funtion
+    /// Urlencoded parse Function
     ///
     /// - Parameter bodyData: read data
     ///
@@ -153,7 +153,7 @@ public class BodyParser : RouterMiddleware {
     }
     
     ///
-    /// text pase Funtion
+    /// text parse Function
     ///
     /// - Parameter bodyData: read data
     ///
