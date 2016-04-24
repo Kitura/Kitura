@@ -102,7 +102,7 @@ public class BodyParser : RouterMiddleware {
     }
     
     ///
-    /// Json pase Funtion
+    /// Json parse Funtion
     ///
     /// - Parameter bodyData: read data
     ///

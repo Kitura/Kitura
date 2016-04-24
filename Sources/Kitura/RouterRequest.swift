@@ -280,7 +280,7 @@ public class RouterRequest: SocketReader {
 
 private class Cookies {
     //
-    // Storage o parsed Cookie headers
+    // Storage of parsed Cookie headers
     //
     private var cookies = [String: NSHTTPCookie]()
 
