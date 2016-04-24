@@ -26,14 +26,14 @@ import Foundation
 // MARK: BodyParser
 
 
-public class BodyParser : RouterMiddleware {
-    
+public class BodyParser: RouterMiddleware {
+
     ///
     /// Default buffer size (in bytes)
     ///
     private static let BUFFER_SIZE = 2000
-    
-    
+
+
     ///
     /// BodyParser archiver
     ///
@@ -44,7 +44,7 @@ public class BodyParser : RouterMiddleware {
     /// Initializes a BodyParser instance
     ///
     public init() {}
-    
+
     ///
     /// Handle the request
     ///
@@ -53,17 +53,17 @@ public class BodyParser : RouterMiddleware {
     /// - Parameter next: the closure for the next execution block
     ///
     public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
-        
-        
+
+
         guard request.serverRequest.headers["Content-Length"] != nil else {
             return next()
         }
-        
+
         request.body = BodyParser.parse(request, contentType: request.serverRequest.headers["Content-Type"])
         next()
-        
+
     }
-    
+
     ///
     /// Parse the incoming message
     ///
@@ -71,20 +71,20 @@ public class BodyParser : RouterMiddleware {
     /// - Parameter contentType: the contentType as a string
     ///
     public class func parse(message: SocketReader, contentType: String?) -> ParsedBody? {
-        
+
         guard let contentType = contentType else {
             return nil
         }
-        
+
         if let parser = parserMap[contentType] {
             return parse(message, parser: parser)
         } else if contentType.hasPrefix("text/") {
             return parse(message, parser: parserMap["text"]!)
         }
-        
+
         return nil
     }
-    
+
     ///
     /// Read incoming message for Parse
     ///
@@ -100,9 +100,9 @@ public class BodyParser : RouterMiddleware {
         }
         return nil
     }
-    
+
     ///
-    /// Json pase Funtion
+    /// Json parse Function
     ///
     /// - Parameter bodyData: read data
     ///
@@ -113,9 +113,9 @@ public class BodyParser : RouterMiddleware {
         }
         return nil
     }
-    
+
     ///
-    /// Urlencoded pase Funtion
+    /// Urlencoded parse Function
     ///
     /// - Parameter bodyData: read data
     ///
@@ -123,7 +123,7 @@ public class BodyParser : RouterMiddleware {
         var parsedBody = [String:String]()
         var success = true
         if let bodyAsString: String = String(data: bodyData, encoding: NSUTF8StringEncoding) {
-            
+
 #if os(Linux)
             let bodyAsArray = bodyAsString.bridge().componentsSeparatedByString("&")
 #else
@@ -132,7 +132,7 @@ public class BodyParser : RouterMiddleware {
 
             for element in bodyAsArray {
 
-#if os(Linux)  
+#if os(Linux)
                 let elementPair = element.bridge().componentsSeparatedByString("=")
 #else
                 let elementPair = element.componentsSeparated(by: "=")
@@ -140,8 +140,7 @@ public class BodyParser : RouterMiddleware {
 
                 if elementPair.count == 2 {
                     parsedBody[elementPair[0]] = elementPair[1]
-                }
-                else {
+                } else {
                     success = false
                 }
             }
@@ -151,9 +150,9 @@ public class BodyParser : RouterMiddleware {
         }
         return nil
     }
-    
+
     ///
-    /// text pase Funtion
+    /// text parse Function
     ///
     /// - Parameter bodyData: read data
     ///
@@ -164,7 +163,7 @@ public class BodyParser : RouterMiddleware {
         }
         return nil
     }
-    
+
     ///
     /// Read the Body data
     ///
@@ -174,7 +173,7 @@ public class BodyParser : RouterMiddleware {
     /// - Returns: data for the body
     ///
     public class func readBodyData(reader: SocketReader) throws -> NSMutableData {
-        
+
         let bodyData = NSMutableData()
 
         var length = try reader.read(into: bodyData)
@@ -183,28 +182,28 @@ public class BodyParser : RouterMiddleware {
         }
         return bodyData
     }
-    
+
 }
 
 // MARK: ParsedBody
 
 public class ParsedBody {
-    
+
     ///
     /// JSON body if the body is JSON
     ///
     private var jsonBody: JSON?
-    
+
     ///
     /// URL encoded body
     ///
     private var urlEncodedBody: [String:String]?
-    
+
     ///
     /// Plain-text body
     ///
     private var textBody: String?
-    
+
     ///
     /// Initializes a ParsedBody instance
     ///
@@ -213,11 +212,11 @@ public class ParsedBody {
     /// - Returns: a ParsedBody instance
     ///
     public init (json: JSON) {
-        
+
         jsonBody = json
-        
+
     }
-    
+
     ///
     /// Initializes a ParsedBody instance
     ///
@@ -228,7 +227,7 @@ public class ParsedBody {
     public init (urlEncoded: [String:String]) {
         urlEncodedBody = urlEncoded
     }
-    
+
     ///
     /// Initializes a ParsedBody instance
     ///
@@ -239,7 +238,7 @@ public class ParsedBody {
     public init (text: String) {
         textBody = text
     }
-    
+
     ///
     /// Returns the body as JSON
     ///
@@ -248,7 +247,7 @@ public class ParsedBody {
     public func asJson() -> JSON? {
         return jsonBody
     }
-    
+
     ///
     /// Returns the body as URL encoded strings
     ///
@@ -257,7 +256,7 @@ public class ParsedBody {
     public func asUrlEncoded() -> [String:String]? {
         return urlEncodedBody
     }
-    
+
     ///
     /// Returns the body as plain-text
     ///
@@ -266,5 +265,5 @@ public class ParsedBody {
     public func asText() -> String? {
         return textBody
     }
-    
+
 }

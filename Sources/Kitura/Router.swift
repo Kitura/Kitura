@@ -659,13 +659,12 @@ extension Router : HttpServerDelegate {
         processRequest(routeReq, response: routeResp) { [unowned self] () in
             do {
                 if  !routeResp.invokedEnd {
-                    if  routeResp.response.statusCode == HttpStatusCode.NOT_FOUND  {
+                    if  routeResp.response.statusCode == HttpStatusCode.NOT_FOUND {
                         self.sendDefaultResponse(routeReq, routeResp: routeResp)
                     }
                     try routeResp.end()
                 }
-            }
-            catch {
+            } catch {
                 // Not much to do here
                 Log.error("Failed to send response to the client")
             }
@@ -698,8 +697,7 @@ extension Router : HttpServerDelegate {
             let resource = urlPath.substring(from: lengthIndex)
 #endif
             sendResourceIfExisting(response, resource: resource)
-        }
-        else {
+        } else {
             var elemIndex = -1
 
             // Extra variable to get around use of variable in its own initializer
@@ -712,8 +710,7 @@ extension Router : HttpServerDelegate {
                         return
                     }
                     self.routeElems[elemIndex].process(request, response: response, next: nextElemCallback)
-                }
-                else {
+                } else {
                     callback()
                 }
             }
@@ -727,14 +724,12 @@ extension Router : HttpServerDelegate {
     /// Send default index.html file and it's resources if appropriate, otherwise send default 404 message
     ///
     private func sendDefaultResponse(routeReq: RouterRequest, routeResp: RouterResponse) {
-        if  routeReq.parsedUrl.path == "/"  {
+        if routeReq.parsedUrl.path == "/" {
             sendResourceIfExisting(routeResp, resource: "index.html")
-        }
-        else {
+        } else {
             do {
                 try routeResp.status(HttpStatusCode.NOT_FOUND).send("Cannot \(String(routeReq.method).uppercased()) \(routeReq.parsedUrl.path ?? "").").end()
-            }
-            catch {}
+            } catch {}
         }
     }
 
@@ -748,8 +743,7 @@ extension Router : HttpServerDelegate {
 #endif
         if  lastSlash.location != NSNotFound  {
             resourceFilePrefixRange = NSMakeRange(0, lastSlash.location+1)
-        }
-        else {
+        } else {
             resourceFilePrefixRange = NSMakeRange(0, fileName.length)
         }
 #if os(Linux)
@@ -770,8 +764,7 @@ extension Router : HttpServerDelegate {
             try routeResp.sendFile(resourceFileName)
             routeResp.status(HttpStatusCode.OK)
             try routeResp.end()
-        }
-        catch {
+        } catch {
             // Fail silently
         }
     }

@@ -123,13 +123,13 @@ public class ContentType {
         let lastPathElemRange: Range<String.Index>
         let extRange: Range<String.Index>
 #if os(Linux)
-        if  let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch)  {
+        if let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch) {
             lastPathElemRange = lastSlash.startIndex.successor()..<fileName.characters.endIndex
         } else {
             lastPathElemRange = fileName.characters.startIndex..<fileName.characters.endIndex
         }
 
-        if  let lastDot = fileName.rangeOfString(".", range: lastPathElemRange)  {
+        if let lastDot = fileName.rangeOfString(".", range: lastPathElemRange) {
             extRange = lastDot.startIndex.successor()..<fileName.characters.endIndex
         } else {
             // No "extension", use the entire last path element as the "extension"
@@ -138,13 +138,13 @@ public class ContentType {
 
         return contentTypeForExtension(fileName.substringWithRange(extRange))
 #else
-        if  let lastSlash = fileName.range(of: "/", options: NSStringCompareOptions.backwardsSearch)  {
+        if let lastSlash = fileName.range(of: "/", options: NSStringCompareOptions.backwardsSearch) {
             lastPathElemRange = lastSlash.startIndex.successor()..<fileName.characters.endIndex
         } else {
             lastPathElemRange = fileName.characters.startIndex..<fileName.characters.endIndex
         }
 
-        if  let lastDot = fileName.range(of: ".", range: lastPathElemRange)  {
+        if let lastDot = fileName.range(of: ".", range: lastPathElemRange) {
             extRange = lastDot.startIndex.successor()..<fileName.characters.endIndex
         } else {
             // No "extension", use the entire last path element as the "extension"
@@ -211,9 +211,9 @@ public class ContentType {
     ///
     /// - Returns: the normalized String
     ///
-   private func normalizeType (type: String) -> String {
+    private func normalizeType (type: String) -> String {
 
-       switch type {
+        switch type {
         case "urlencoded":
             return "application/x-www-form-urlencoded"
         case "multipart":
@@ -235,25 +235,25 @@ public class ContentType {
     /// *Note*: This will be removed once JSON parsing and the types.json file can be read.
     ///
     private var rawTypes = [
-        "text/plain": ["txt","text","conf","def","list","log","in","ini"],
+        "text/plain": ["txt", "text", "conf", "def", "list", "log", "in", "ini"],
         "text/html": ["html", "htm"],
         "text/css": ["css"],
         "text/csv": ["csv"],
         "text/xml": [],
         "text/javascript": [],
         "text/markdown": [],
-        "text/x-markdown": ["markdown","md","mkd"],
+        "text/x-markdown": ["markdown", "md", "mkd"],
 
-        "application/json": ["json","map"],
+        "application/json": ["json", "map"],
         "application/x-www-form-urlencoded": [],
-        "application/xml": ["xml","xsl","xsd"],
+        "application/xml": ["xml", "xsl", "xsd"],
         "application/javascript": ["js"],
 
         "image/bmp": ["bmp"],
         "image/png": ["png"],
         "image/gif": ["gif"],
-        "image/jpeg": ["jpeg","jpg","jpe"],
-        "image/svg+xml": ["svg","svgz"]
+        "image/jpeg": ["jpeg", "jpg", "jpe"],
+        "image/svg+xml": ["svg", "svgz"]
     ]
 
 }

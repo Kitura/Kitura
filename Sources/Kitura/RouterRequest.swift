@@ -32,7 +32,7 @@ public class RouterRequest: SocketReader {
     /// The hostname of the request
     ///
     public var hostname: String {
-        if  let host = headers["host"]  {
+        if  let host = headers["host"] {
 #if os(Linux)
             let range = host.rangeOfString(":")
             return  range == nil ? host : host.substringToIndex(range!.startIndex)
@@ -40,8 +40,7 @@ public class RouterRequest: SocketReader {
             let range = host.range(of: ":")
             return  range == nil ? host : host.substring(to: range!.startIndex)
 #endif
-        }
-        else {
+        } else {
             return parsedUrl.host ?? ""
         }
     }
@@ -102,7 +101,7 @@ public class RouterRequest: SocketReader {
     /// Set of parsed cookies
     ///
     public var cookies: [String: NSHTTPCookie] {
-        if  _cookies == nil  {
+        if  _cookies == nil {
             _cookies = Cookies(headers: headers)
         }
         return _cookies!.cookies
@@ -194,7 +193,7 @@ public class RouterRequest: SocketReader {
         let trimmed = type.trimmingCharacters(in: NSCharacterSet.whitespace())
 #endif
         let components = trimmed.characters.split(separator: ";").map(String.init)
-        
+
         if let mediaType = components.first {
             finishedPair.0 = mediaType
         }
@@ -204,7 +203,7 @@ public class RouterRequest: SocketReader {
                 finishedPair.1 = Double(value)!
             }
         }
-        
+
         return finishedPair
     }
 
@@ -226,8 +225,8 @@ public class RouterRequest: SocketReader {
 
         for rawHeaderValue in headerValues {
             for type in types {
-            
-                
+
+
                 let parsedHeaderValue = parseMediaType(rawHeaderValue)
                 let mimeType = extToMime(type)
 
@@ -249,7 +248,7 @@ public class RouterRequest: SocketReader {
                         if criteriaMatches[type]?.priority > 2 || criteriaMatches[type] == nil {
                             criteriaMatches[type] = (priority: 2, qValue: parsedHeaderValue.qValue)
                         }
-                    } 
+                    }
                 }
             }
         }
@@ -280,7 +279,7 @@ public class RouterRequest: SocketReader {
 
 private class Cookies {
     //
-    // Storage o parsed Cookie headers
+    // Storage of parsed Cookie headers
     //
     private var cookies = [String: NSHTTPCookie]()
 
@@ -291,7 +290,7 @@ private class Cookies {
 
     private init(headers: SimpleHeaders) {
         var cookieString: String?
-        for  (header, value)  in headers  {
+        for  (header, value)  in headers {
             #if os(Linux)
             let lowercasedHeader = header.bridge().lowercaseString
             #else

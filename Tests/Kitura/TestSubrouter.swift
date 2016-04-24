@@ -55,7 +55,7 @@ class TestSubrouter : XCTestCase {
                     XCTAssertEqual(body!,"hello from the sub")
                 }
                 catch{
-                    XCTFail("No respose body")
+                    XCTFail("No response body")
                 }
                 expectation.fulfill()
             })
@@ -67,7 +67,7 @@ class TestSubrouter : XCTestCase {
                     XCTAssertEqual(body!,"sub1")
                 }
                 catch{
-                    XCTFail("No respose body")
+                    XCTFail("No response body")
                 }
                 expectation.fulfill()
             })
@@ -88,7 +88,7 @@ class TestSubrouter : XCTestCase {
                     XCTAssertEqual(body!,"hello from the sub")
                 }
                 catch{
-                    XCTFail("No respose body")
+                    XCTFail("No response body")
                 }
                 expectation.fulfill()
             })
@@ -100,7 +100,7 @@ class TestSubrouter : XCTestCase {
                     XCTAssertEqual(body!,"sub1")
                 }
                 catch{
-                    XCTFail("No respose body")
+                    XCTFail("No response body")
                 }
                 expectation.fulfill()
             })
@@ -119,7 +119,7 @@ class TestSubrouter : XCTestCase {
                     XCTAssertEqual(body!,"hello from the sub sub")
                 }
                 catch{
-                    XCTFail("No respose body")
+                    XCTFail("No response body")
                 }
                 expectation.fulfill()
             })
@@ -131,7 +131,7 @@ class TestSubrouter : XCTestCase {
                     XCTAssertEqual(body!,"subsub1")
                 }
                 catch{
-                    XCTFail("No respose body")
+                    XCTFail("No response body")
                 }
                 expectation.fulfill()
             })
@@ -150,7 +150,7 @@ class TestSubrouter : XCTestCase {
                     XCTAssertEqual(body!,"first middle\nsub1last middle\n")
                 }
                 catch{
-                    XCTFail("No respose body")
+                    XCTFail("No response body")
                 }
                 expectation.fulfill()
             })

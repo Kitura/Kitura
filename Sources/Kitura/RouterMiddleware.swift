@@ -17,7 +17,7 @@
 // MARK: RouterMiddleware protocol
 
 public protocol RouterMiddleware {
-    
+
     ///
     /// The handle operation
     ///
@@ -26,5 +26,5 @@ public protocol RouterMiddleware {
     /// - Parameter next: the closure to the next operation
     ///
     func handle(request: RouterRequest, response: RouterResponse, next: () -> Void)
-    
+
 }

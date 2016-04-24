@@ -59,7 +59,7 @@ class TestResponse : XCTestCase {
                     XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
                 }
                 catch{
-                    XCTFail("No respose body")
+                    XCTFail("No response body")
                 }
                 expectation.fulfill()
             })
@@ -77,7 +77,7 @@ class TestResponse : XCTestCase {
                     XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received text body: </b>plover\nxyzzy\n</body></html>\n\n")
                 }
                 catch{
-                    XCTFail("No respose body")
+                    XCTFail("No response body")
                 }
                 expectation.fulfill()
             }) {req in
@@ -96,7 +96,7 @@ class TestResponse : XCTestCase {
                     XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=test<p><p>q=test2<p><p>u1=Ploni Almoni</body></html>\n\n")
                 }
                 catch{
-                    XCTFail("No respose body")
+                    XCTFail("No response body")
                 }
                 expectation.fulfill()
             })
@@ -116,7 +116,7 @@ class TestResponse : XCTestCase {
 #endif
                 }
                 catch{
-                    XCTFail("No respose body")
+                    XCTFail("No response body")
                 }
                 expectation.fulfill()
             })
@@ -133,7 +133,7 @@ class TestResponse : XCTestCase {
                     XCTAssertEqual(body!,"Caught the error: \(errorDescription)")
                 }
                 catch{
-                    XCTFail("No respose body")
+                    XCTFail("No response body")
                 }
                 expectation.fulfill()
             })
@@ -150,7 +150,7 @@ class TestResponse : XCTestCase {
                     XCTAssertEqual(body!,"get 1\nget 2\n")
                 }
                 catch{
-                    XCTFail("No respose body")
+                    XCTFail("No response body")
                 }
                 expectation.fulfill()
             })
@@ -163,7 +163,7 @@ class TestResponse : XCTestCase {
                     XCTAssertEqual(body!,"post received")
                 }
                 catch{
-                    XCTFail("No respose body")
+                    XCTFail("No response body")
                 }
                 expectation.fulfill()
             })
