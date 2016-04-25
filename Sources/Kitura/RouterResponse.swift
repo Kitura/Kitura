@@ -313,29 +313,15 @@ public class RouterResponse {
     }
 
     ///
-    /// Gets the header
+    /// Gets the header (case insensitive)
     ///
     /// - Parameter key: the key
     ///
     /// - Returns: the value for the key
     ///
-    public func getHeader(key: String) -> String? {
+    public func getHeader(key: String) -> [String]? {
 
-        return response.getHeader(key)
-
-    }
-
-    ///
-    /// Gets the header that contains multiple values
-    ///
-    /// - Parameter key: the key
-    ///
-    /// - Returns: the value for the key as a list
-    ///
-    public func getHeaders(key: String) -> [String]? {
-
-        return response.getHeaders(key)
-
+        return response.headers.getHeader(key)
     }
 
     ///
@@ -348,14 +334,12 @@ public class RouterResponse {
     ///
     public func setHeader(key: String, value: String) {
 
-        response.setHeader(key, value: value)
-
+        response.headers.setHeader(key, value: value)
     }
 
     public func setHeader(key: String, value: [String]) {
 
-        response.setHeader(key, value: value)
-
+        response.headers.setHeader(key, value: value)
     }
 
     ///
@@ -365,8 +349,7 @@ public class RouterResponse {
     ///
     public func append(key: String, value: String) {
 
-        response.append(key, value: value)
-
+        response.headers.append(key, value: value)
     }
 
     ///
@@ -375,20 +358,18 @@ public class RouterResponse {
     /// - Parameter key: the key
     ///
     public func append(key: String, value: [String]) {
-
-        response.append(key, value: value)
-
+        
+        response.headers.append(key, value: value)
     }
 
     ///
-    /// Remove the header by key
+    /// Remove the header by key (case insensitive)
     ///
     /// - Parameter key: the key
     ///
     public func removeHeader(key: String) {
-
-        response.removeHeader(key)
-
+        
+        response.headers.removeHeader(key)
     }
 
     ///
@@ -444,7 +425,7 @@ public class RouterResponse {
         var p = path
         if  p == "back" {
             let referrer = getHeader("referrer")
-            if  let r = referrer {
+            if  let r = referrer?.first {
                 p = r
             } else {
                 p = "/"
