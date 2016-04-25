@@ -36,8 +36,8 @@ class TestRouterElement : XCTestCase {
     
     func testBuildRegexFromPattern() {
         let element = RouterElement(method: RouterMethod.All, pattern: nil, handler: [])
-        var regex:NSRegularExpression? = NSRegularExpression()
-        var strings:[String]? = []
+        var regex:NSRegularExpression?
+        var strings:[String]?
 
         //Partial match false adds '$' end of string special character
         (regex,strings) = element.buildRegexFromPattern("test", allowPartialMatch: false)
