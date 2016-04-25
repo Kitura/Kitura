@@ -42,14 +42,16 @@ class TestRouterElement : XCTestCase {
         //Partial match false adds '$' end of string special character
         (regex,strings) = element.buildRegexFromPattern("test", allowPartialMatch: false)
         XCTAssertEqual(regex!.pattern,"^/test(?:/(?=$))?$")
+        XCTAssertTrue(strings!.isEmpty)
 
         //Partial match true does not include '$' end of string special character
         (regex,strings) = element.buildRegexFromPattern("test", allowPartialMatch: true)
         XCTAssertEqual(regex!.pattern,"^/test(?:/(?=$))?")
+        XCTAssertTrue(strings!.isEmpty)
 
         //Invalid regular expression
         (regex,strings) = element.buildRegexFromPattern("\\", allowPartialMatch: false)
         XCTAssertNil(regex)
-    
+        XCTAssertTrue(strings!.isEmpty)
     }
 }
