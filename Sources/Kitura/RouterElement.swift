@@ -165,17 +165,19 @@ class RouterElement {
         var middlewareCount = -1
 
         // Extra variable since closures cannot be used in their own initalizer
-        var nextCallbackPlaceholder: (()->Void)? = nil
+        var nextCallbackPlaceholder: (()->Void)?
 
         let nextCallback = {
             middlewareCount += 1
             if middlewareCount < self.middlewares.count && (response.error == nil || self.method == .Error) {
-                self.middlewares[middlewareCount].handle(request, response: response, next: nextCallbackPlaceholder!)
+                guard let nextCallbackPlaceholder = nextCallbackPlaceholder else { return }
+                self.middlewares[middlewareCount].handle(request, response: response, next: nextCallbackPlaceholder)
             } else {
                 request.params = [:]
                 next()
             }
         }
+
         nextCallbackPlaceholder = nextCallback
         nextCallback()
     }
