@@ -32,7 +32,7 @@ public class RouterRequest: SocketReader {
     /// The hostname of the request
     ///
     public var hostname: String {
-        if  let host = headers["host"] {
+        if  let host = headers.getHeader("host")?.first {
 #if os(Linux)
             let range = host.rangeOfString(":")
             return  range == nil ? host : host.substringToIndex(range!.startIndex)
@@ -80,12 +80,7 @@ public class RouterRequest: SocketReader {
     ///
     /// List of HTTP headers with simple String values
     ///
-    public var headers: SimpleHeaders { return serverRequest.headers }
-
-    ///
-    /// List of HTTP headers with String array values
-    ///
-    public var headersAsArrays: ArrayHeaders { return serverRequest.headersAsArrays }
+    public var headers: Headers { return serverRequest.headers }
 
     ///
     /// IP address string of server
@@ -216,7 +211,7 @@ public class RouterRequest: SocketReader {
     ///
     public func accepts(types: [String]) -> String? {
 
-        guard let acceptHeaderValue = headers["accept"] else {
+        guard let acceptHeaderValue = headers.getHeader("accept")?.first else {
             return nil
         }
 
@@ -288,38 +283,29 @@ private class Cookies {
     //
     private let cookieHeader = "cookie"
 
-    private init(headers: SimpleHeaders) {
-        var cookieString: String?
-        for  (header, value)  in headers {
-            #if os(Linux)
-            let lowercasedHeader = header.bridge().lowercaseString
-            #else
-            let lowercasedHeader = header.lowercased()
-            #endif
-            if  lowercasedHeader  == cookieHeader {
-                cookieString = value
-                break
-            }
-        }
+    private init(headers: Headers) {
 
-        if  let cookieString = cookieString {
+        guard let rawCookies = headers.getHeader(cookieHeader) else {
+            return
+        }
+        for cookie in rawCookies {
             #if os(Linux)
-            let cookieNameValues = cookieString.bridge().componentsSeparatedByString("; ")
+                let cookieNameValues = cookie.bridge().componentsSeparatedByString("; ")
             #else
-            let cookieNameValues = cookieString.componentsSeparated(by: "; ")
+                let cookieNameValues = cookie.componentsSeparated(by: "; ")
             #endif
             for  cookieNameValue  in  cookieNameValues  {
                 #if os(Linux)
-                let cookieNameValueParts = cookieNameValue.bridge().componentsSeparatedByString("=")
+                    let cookieNameValueParts = cookieNameValue.bridge().componentsSeparatedByString("=")
                 #else
-                let cookieNameValueParts = cookieNameValue.componentsSeparated(by: "=")
+                    let cookieNameValueParts = cookieNameValue.componentsSeparated(by: "=")
                 #endif
                 if   cookieNameValueParts.count == 2  {
                     let theCookie = NSHTTPCookie(properties:
-                                               [NSHTTPCookieDomain: ".",
-                                                NSHTTPCookiePath: "/",
-                                                NSHTTPCookieName: cookieNameValueParts[0] ,
-                                                NSHTTPCookieValue: cookieNameValueParts[1]])
+                        [NSHTTPCookieDomain: ".",
+                         NSHTTPCookiePath: "/",
+                         NSHTTPCookieName: cookieNameValueParts[0] ,
+                         NSHTTPCookieValue: cookieNameValueParts[1]])
                     cookies[cookieNameValueParts[0]] = theCookie
                 }
             }

@@ -123,7 +123,7 @@ class TestCookies : XCTestCase {
     func cookieFromResponse(response: ClientResponse, named: String) -> (NSHTTPCookie?, String?) {
         var resultCookie: NSHTTPCookie? = nil
         var resultExpire: String?
-        for (headerKey, headerValues) in response.headersAsArrays  {
+        for (headerKey, headerValues) in response.headers.headers  {
 #if os(Linux)
             let lowercaseHeaderKey = headerKey.bridge().lowercaseString
 #else

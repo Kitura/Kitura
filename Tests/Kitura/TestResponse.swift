@@ -52,7 +52,7 @@ class TestResponse : XCTestCase {
             self.performRequest("get", path:"/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
-                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
+                XCTAssertNotNil(response!.headers.getHeader("Date"), "There was No Date header in the response")
                 //XCTAssertEqual(response!.method, "GET", "The request wasn't recognized as a get")
                 do {
                     let body = try response!.readString()
@@ -71,7 +71,7 @@ class TestResponse : XCTestCase {
             self.performRequest("post", path: "/bodytest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 //XCTAssertEqual(response!.method, "POST", "The request wasn't recognized as a post")
-                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
+                XCTAssertNotNil(response!.headers.getHeader("Date"), "There was No Date header in the response")
                 do {
                     let body = try response!.readString()
                     XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received text body: </b>plover\nxyzzy\n</body></html>\n\n")

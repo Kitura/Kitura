@@ -48,7 +48,7 @@ class TestSubrouter : XCTestCase {
             self.performRequest("get", path:"/sub", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
-                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
+                XCTAssertNotNil(response!.headers.getHeader("Date"), "There was No Date header in the response")
                 //XCTAssertEqual(response!.method, "GET", "The request wasn't recognized as a get")
                 do {
                     let body = try response!.readString()
@@ -81,7 +81,7 @@ class TestSubrouter : XCTestCase {
             self.performRequest("get", path:"/extern", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
-                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
+                XCTAssertNotNil(response!.headers.getHeader("Date"), "There was No Date header in the response")
                 //XCTAssertEqual(response!.method, "GET", "The request wasn't recognized as a get")
                 do {
                     let body = try response!.readString()
@@ -112,7 +112,7 @@ class TestSubrouter : XCTestCase {
             self.performRequest("get", path:"/sub/sub2", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
-                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
+                XCTAssertNotNil(response!.headers.getHeader("Date"), "There was No Date header in the response")
                 //XCTAssertEqual(response!.method, "GET", "The request wasn't recognized as a get")
                 do {
                     let body = try response!.readString()
@@ -143,7 +143,7 @@ class TestSubrouter : XCTestCase {
             self.performRequest("get", path:"/middle/sub1", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
-                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
+                XCTAssertNotNil(response!.headers.getHeader("Date"), "There was No Date header in the response")
                 //XCTAssertEqual(response!.method, "GET", "The request wasn't recognized as a get")
                 do {
                     let body = try response!.readString()
