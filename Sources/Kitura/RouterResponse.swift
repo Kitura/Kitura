@@ -66,6 +66,17 @@ public class RouterResponse {
     /// Optional error value
     ///
     public var error: ErrorProtocol?
+    
+    public var headers: Headers {
+        
+        get {
+            return response.headers
+        }
+        
+        set(value) {
+            response.headers = value
+        }
+    }
 
     ///
     /// Initializes a RouterResponse instance
@@ -93,9 +104,9 @@ public class RouterResponse {
         preFlush(request: request, response: self)
 
         if  let data = buffer.data {
-            let contentLength = getHeader("Content-Length")
+            let contentLength = headers.get("Content-Length")
             if  contentLength == nil {
-                setHeader("Content-Length", value: String(buffer.count))
+                headers.set("Content-Length", value: String(buffer.count))
             }
             addCookies()
 
@@ -130,7 +141,7 @@ public class RouterResponse {
 
             cookieStrings.append(cookieString)
         }
-        setHeader("Set-Cookie", value: cookieStrings)
+        headers.set("Set-Cookie", value: cookieStrings)
     }
 
     ///
@@ -210,7 +221,7 @@ public class RouterResponse {
 
         let contentType =  ContentType.sharedInstance.contentTypeForFile(fileName)
         if  let contentType = contentType {
-            setHeader("Content-Type", value: contentType)
+            headers.set("Content-Type", value: contentType)
         }
 
         buffer.appendData(data)
@@ -313,66 +324,6 @@ public class RouterResponse {
     }
 
     ///
-    /// Gets the header (case insensitive)
-    ///
-    /// - Parameter key: the key
-    ///
-    /// - Returns: the value for the key
-    ///
-    public func getHeader(key: String) -> [String]? {
-
-        return response.headers.getHeader(key)
-    }
-
-    ///
-    /// Set the header value
-    ///
-    /// - Parameter key: the key
-    /// - Parameter value: the value
-    ///
-    /// - Returns: the value for the key as a list
-    ///
-    public func setHeader(key: String, value: String) {
-
-        response.headers.setHeader(key, value: value)
-    }
-
-    public func setHeader(key: String, value: [String]) {
-
-        response.headers.setHeader(key, value: value)
-    }
-
-    ///
-    /// Append a value to the header
-    ///
-    /// - Parameter key: the header key
-    ///
-    public func append(key: String, value: String) {
-
-        response.headers.append(key, value: value)
-    }
-
-    ///
-    /// Append values to the header
-    ///
-    /// - Parameter key: the key
-    ///
-    public func append(key: String, value: [String]) {
-        
-        response.headers.append(key, value: value)
-    }
-
-    ///
-    /// Remove the header by key (case insensitive)
-    ///
-    /// - Parameter key: the key
-    ///
-    public func removeHeader(key: String) {
-        
-        response.headers.removeHeader(key)
-    }
-
-    ///
     /// Redirect to path
     ///
     /// - Parameter: the path for the redirect
@@ -424,14 +375,14 @@ public class RouterResponse {
 
         var p = path
         if  p == "back" {
-            let referrer = getHeader("referrer")
+            let referrer = headers.get("referrer")
             if  let r = referrer?.first {
                 p = r
             } else {
                 p = "/"
             }
         }
-        setHeader("Location", value: p)
+        headers.set("Location", value: p)
         return self
 
     }
@@ -463,7 +414,7 @@ public class RouterResponse {
             if let charset = charset {
                 contentCharset = "; charset=\(charset)"
             }
-            setHeader("Content-Type", value:  contentType + contentCharset)
+            headers.set("Content-Type", value:  contentType + contentCharset)
         }
     }
 
@@ -475,17 +426,17 @@ public class RouterResponse {
     ///
     public func attachment(filePath: String? = nil) {
         guard let filePath = filePath else {
-            setHeader("Content-Disposition", value: "attachment")
+            headers.set("Content-Disposition", value: "attachment")
             return
         }
 
         let filePaths = filePath.characters.split {$0 == "/"}.map(String.init)
         let fileName = filePaths.last
-        setHeader("Content-Disposition", value: "attachment; fileName = \"\(fileName!)\"")
+        headers.set("Content-Disposition", value: "attachment; fileName = \"\(fileName!)\"")
 
         let contentType =  ContentType.sharedInstance.contentTypeForFile(fileName!)
         if  let contentType = contentType {
-            setHeader("Content-Type", value: contentType)
+            headers.set("Content-Type", value: contentType)
         }
     }
 

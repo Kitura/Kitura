@@ -55,7 +55,7 @@ public class BodyParser: RouterMiddleware {
     public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
 
 
-        guard request.headers.getHeader("Content-Length") != nil, let contentType = request.headers.getHeader("Content-Type") else {
+        guard request.headers.get("Content-Length") != nil, let contentType = request.headers.get("Content-Type") else {
             return next()
         }
 

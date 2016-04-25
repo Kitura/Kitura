@@ -32,7 +32,7 @@ public class RouterRequest: SocketReader {
     /// The hostname of the request
     ///
     public var hostname: String {
-        if  let host = headers.getHeader("host")?.first {
+        if  let host = headers.get("host")?.first {
 #if os(Linux)
             let range = host.rangeOfString(":")
             return  range == nil ? host : host.substringToIndex(range!.startIndex)
@@ -211,7 +211,7 @@ public class RouterRequest: SocketReader {
     ///
     public func accepts(types: [String]) -> String? {
 
-        guard let acceptHeaderValue = headers.getHeader("accept")?.first else {
+        guard let acceptHeaderValue = headers.get("accept")?.first else {
             return nil
         }
 
@@ -285,7 +285,7 @@ private class Cookies {
 
     private init(headers: Headers) {
 
-        guard let rawCookies = headers.getHeader(cookieHeader) else {
+        guard let rawCookies = headers.get(cookieHeader) else {
             return
         }
         for cookie in rawCookies {
