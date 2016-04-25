@@ -27,12 +27,12 @@ class RouterElement {
     ///
     /// The regular expression matcher
     ///
-    static var keyRegex: NSRegularExpression? = nil
+    static var keyRegex: NSRegularExpression?
 
     ///
     /// The regular expression matcher
     ///
-    static var nonKeyRegex: NSRegularExpression? = nil
+    static var nonKeyRegex: NSRegularExpression?
 
     ///
     /// Status of regex initialization
@@ -365,7 +365,7 @@ class RouterElement {
             regexStr.append("$")
         }
 
-        var regex: NSRegularExpression? = nil
+        var regex: NSRegularExpression?
         do {
             regex = try NSRegularExpression(pattern: regexStr, options: [])
         } catch {

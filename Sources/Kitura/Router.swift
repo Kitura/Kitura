@@ -701,7 +701,7 @@ extension Router : HttpServerDelegate {
             var elemIndex = -1
 
             // Extra variable to get around use of variable in its own initializer
-            var nextElemCallback: (()->Void)? = nil
+            var nextElemCallback: (()->Void)?
 
             let nextElemCallbackHandler = {[unowned request, unowned response, unowned self] () -> Void in
                 elemIndex+=1
