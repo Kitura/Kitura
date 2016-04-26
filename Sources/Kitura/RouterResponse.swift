@@ -66,6 +66,16 @@ public class RouterResponse {
     /// Optional error value
     ///
     public var error: ErrorProtocol?
+    
+    public var statusCode: HttpStatusCode {
+        get {
+            return response.statusCode ?? .UNKNOWN
+        }
+        
+        set(newValue) {
+            response.statusCode = newValue
+        }
+    }
 
     ///
     /// Initializes a RouterResponse instance
@@ -237,18 +247,6 @@ public class RouterResponse {
     ///
     /// Set the status code
     ///
-    /// - Parameter status: the status code integer
-    ///
-    /// - Returns: a RouterResponse instance
-    ///
-    public func status(status: Int) -> RouterResponse {
-        response.status = status
-        return self
-    }
-
-    ///
-    /// Set the status code
-    ///
     /// - Parameter status: the status code object
     ///
     /// - Returns: a RouterResponse instance
@@ -256,44 +254,6 @@ public class RouterResponse {
     public func status(status: HttpStatusCode) -> RouterResponse {
         response.statusCode = status
         return self
-    }
-
-    ///
-    /// Get the status code as an integer
-    ///
-    /// - Returns: The currently set status code as an integer
-    ///
-    public func getStatus() -> Int {
-        return response.status
-    }
-
-    ///
-    /// Get the status code as an HttpStatusCode
-    ///
-    /// - Returns: The currently set status code as an HttpStatusCode
-    ///
-    public func getStatusCode() -> HttpStatusCode {
-        return response.statusCode ?? .UNKNOWN
-    }
-
-    ///
-    /// Sends the status code
-    ///
-    /// - Parameter status: the status code integer
-    ///
-    /// - Throws: ???
-    /// - Returns: a RouterResponse instance
-    ///
-    public func sendStatus(status: Int) throws -> RouterResponse {
-
-        self.status(status)
-        if  let statusText = Http.statusCodes[status] {
-            send(statusText)
-        } else {
-            send(String(status))
-        }
-        return self
-
     }
 
     ///
@@ -411,21 +371,6 @@ public class RouterResponse {
     /// - Returns: a RouterResponse instance
     ///
     public func redirect(status: HttpStatusCode, path: String) throws -> RouterResponse {
-
-        try redirect(status.rawValue, path: path)
-        return self
-
-    }
-
-    ///
-    /// Redirect to path with status code
-    ///
-    /// - Parameter: the status code for the redirect
-    /// - Parameter: the path for the redirect
-    ///
-    /// - Returns: a RouterResponse instance
-    ///
-    public func redirect(status: Int, path: String) throws -> RouterResponse {
 
         try self.status(status).location(path).end()
         return self
