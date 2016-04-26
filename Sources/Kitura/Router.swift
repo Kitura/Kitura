@@ -722,24 +722,67 @@ extension Router : HttpServerDelegate {
         }
     }
 
-    private func getResourceFilePath(resource: String) -> String {
+    private func getResourceFilePath(resource: String) -> String? {
+        let fileManager = NSFileManager.defaultManager()
+        let potentialResource = constructResourcePathFromSourceLocation(resource)
+        
+        #if os(Linux)
+            let fileExists = fileManager.fileExistsAtPath(potentialResource)
+        #else
+            let fileExists = fileManager.fileExists(atPath: potentialResource)
+        #endif
+        if fileExists {
+            return potentialResource
+        }
+        else {
+            return constructResourcePathFromCurrentDirectory(resource, fileManager: fileManager)
+        }
+    }
+    
+    private func constructResourcePathFromSourceLocation(resource: String) -> String {
         let fileName = NSString(string: #file)
         let resourceFilePrefixRange: NSRange
-#if os(Linux)
-        let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch)
-#else
-        let lastSlash = fileName.range(of: "/", options: NSStringCompareOptions.backwardsSearch)
-#endif
+        #if os(Linux)
+            let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch)
+        #else
+            let lastSlash = fileName.range(of: "/", options: NSStringCompareOptions.backwardsSearch)
+        #endif
         if  lastSlash.location != NSNotFound  {
             resourceFilePrefixRange = NSMakeRange(0, lastSlash.location+1)
         } else {
             resourceFilePrefixRange = NSMakeRange(0, fileName.length)
         }
-#if os(Linux)
-        return fileName.substringWithRange(resourceFilePrefixRange) + "resources/" + resource
-#else
-        return fileName.substring(with: resourceFilePrefixRange) + "resources/" + resource
-#endif
+        #if os(Linux)
+            return fileName.substringWithRange(resourceFilePrefixRange) + "resources/" + resource
+        #else
+            return fileName.substring(with: resourceFilePrefixRange) + "resources/" + resource
+        #endif
+    }
+    
+    private func constructResourcePathFromCurrentDirectory(resource: String, fileManager: NSFileManager) -> String? {
+        do {
+            let packagePath = fileManager.currentDirectoryPath + "/Packages"
+            #if os(Linux)
+                let packages = try fileManager.contentsOfDirectoryAtPath(packagePath)
+            #else
+                let packages = try fileManager.contentsOfDirectory(atPath: packagePath)
+            #endif
+            for package in packages {
+                let potentalResource = "\(packagePath)/\(package)/Sources/Kitura/resources/\(resource)"
+                #if os(Linux)
+                    let resourceExists = fileManager.fileExistsAtPath(potentalResource)
+                #else
+                    let resourceExists = fileManager.fileExists(atPath: potentalResource)
+                #endif
+                if resourceExists {
+                    return potentalResource
+                }
+            }
+        }
+        catch {
+            return nil
+        }
+        return nil
     }
 
 
@@ -747,8 +790,10 @@ extension Router : HttpServerDelegate {
     /// Get the directory we were compiled from
     ///
     private func sendResourceIfExisting(routeResp: RouterResponse, resource: String)  {
-        let resourceFileName = getResourceFilePath(resource)
-
+        guard let resourceFileName = getResourceFilePath(resource) else {
+            return
+        }
+        
         do {
             try routeResp.sendFile(resourceFileName)
             routeResp.status(HttpStatusCode.OK)
