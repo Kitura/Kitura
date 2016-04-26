@@ -18,40 +18,34 @@ import Foundation
 import XCTest
 
 @testable import Kitura
-@testable import KituraNet
 
-#if os(Linux)
-    import Glibc
-#else
-    import Darwin
-#endif
-
-class TestRouterElement : XCTestCase {
+class TestRouteRegex : XCTestCase {
     
-    static var allTests : [(String, TestRouterElement -> () throws -> Void)] {
+    static var allTests : [(String, TestRouteRegex -> () throws -> Void)] {
         return [
                    ("testBuildRegexFromPattern", testBuildRegexFromPattern)
         ]
     }
     
     func testBuildRegexFromPattern() {
-        let element = RouterElement(method: RouterMethod.All, pattern: nil, handler: [])
         var regex:NSRegularExpression?
         var strings:[String]?
 
         //Partial match false adds '$' end of string special character
-        (regex,strings) = element.buildRegexFromPattern("test", allowPartialMatch: false)
+        (regex,strings) = RouteRegex.sharedInstance.buildRegexFromPattern("test", allowPartialMatch: false)
         XCTAssertEqual(regex!.pattern,"^/test(?:/(?=$))?$")
         XCTAssertTrue(strings!.isEmpty)
 
         //Partial match true does not include '$' end of string special character
-        (regex,strings) = element.buildRegexFromPattern("test", allowPartialMatch: true)
+        (regex,strings) = RouteRegex.sharedInstance.buildRegexFromPattern("test", allowPartialMatch: true)
         XCTAssertEqual(regex!.pattern,"^/test(?:/(?=$))?")
         XCTAssertTrue(strings!.isEmpty)
 
         //Invalid regular expression
-        (regex,strings) = element.buildRegexFromPattern("\\", allowPartialMatch: false)
+        #if os(OSX)
+        (regex,strings) = RouteRegex.sharedInstance.buildRegexFromPattern("\\", allowPartialMatch: false)
         XCTAssertNil(regex)
         XCTAssertTrue(strings!.isEmpty)
+        #endif
     }
 }
