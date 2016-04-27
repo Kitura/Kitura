@@ -119,11 +119,7 @@ class RouterElement {
             if response.error != nil || method == .All || method == request.method {
                 // Either response error exists and method is error, or method matches
                 if  let regex = regex  {
-#if os(Linux)  
-                    let tempMatch = regex.firstMatchInString(urlPath, options: [], range: NSMakeRange(0, urlPath.characters.count))
-#else
                     let tempMatch = regex.firstMatch(in: urlPath, options: [], range: NSMakeRange(0, urlPath.characters.count))
-#endif
                     if  let match = tempMatch  {
 #if os(Linux)  
                     request.matchedPath = urlPath.bridge().substringWithRange(match.range)
@@ -218,7 +214,7 @@ class RouterElement {
                     else {
                         let range = NSMakeRange(0, path.characters.count)
 #if os(Linux)  
-                        if  let keyMatch = RouterElement.keyRegex!.firstMatchInString(path, options: [], range: range)  {
+                        if  let keyMatch = RouterElement.keyRegex!.firstMatch(in: path, options: [], range: range)  {
                             // We found a path element with a named/key capture
                             let prefixRange = keyMatch.rangeAtIndex(1)
                             if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1  {
@@ -235,7 +231,7 @@ class RouterElement {
                             keys.append(path.bridge().substringWithRange(keyMatch.rangeAtIndex(2)))
                             matched = true
                         }
-                        else if  let nonKeyMatch = RouterElement.nonKeyRegex!.firstMatchInString(path, options: [], range: range) {
+                        else if  let nonKeyMatch = RouterElement.nonKeyRegex!.firstMatch(in: path, options: [], range: range) {
                             // We found a path element with an unnamed capture
                             let prefixRange = nonKeyMatch.rangeAtIndex(1)
                             if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1  {

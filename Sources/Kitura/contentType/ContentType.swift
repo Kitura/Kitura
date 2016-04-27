@@ -68,7 +68,7 @@ public class ContentType {
         // MARK: Linux Foundation will return an Any instead of an AnyObject
         // Need to test if this breaks the Linux build.
 #if os(Linux)  
-        let jsonData = try? NSJSONSerialization.JSONObjectWithData(contentTypesData!,
+        let jsonData = try? NSJSONSerialization.jsonObject(with: contentTypesData!,
             options: NSJSONReadingOptions.MutableContainers) as? NSDictionary 
 #else
         let jsonData = try? NSJSONSerialization.jsonObject(with: contentTypesData!, 
