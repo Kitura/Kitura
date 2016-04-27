@@ -10,6 +10,7 @@ branches:
   only:
     - master
     - develop
+    - 4/12_migration
 
 notifications:
   slack: ibmswift:RHkwcHYh4kkYVRVzm9nZk5TF
