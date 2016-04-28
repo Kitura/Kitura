@@ -205,88 +205,60 @@ public enum RouterMethod: Int {
         switch string.lowercased() {
             case "all":
                 self = .All
-                break
             case "get":
                 self = .Get
-                break
             case "post":
                 self = .Post
-                break
             case "put":
                 self = .Put
-                break
             case "head":
                 self = .Head
-                break
             case "delete":
                 self = .Delete
-                break
             case "options":
                 self = .Options
-                break
             case "trace":
                 self = .Trace
-                break
             case "copy":
                 self = .Copy
-                break
             case "lock":
                 self = .Lock
-                break
             case "mkcol":
                 self = .MkCol
-                break
             case "move":
                 self = .Move
-                break
             case "purge":
                 self = .Purge
-                break
             case "propfind":
                 self = .PropFind
-                break
             case "proppatch":
                 self = .PropPatch
-                break
             case "unlock":
                 self = .Unlock
-                break
             case "report":
                 self = .Report
-                break
             case "mkactivity":
                 self = .MkActivity
-                break
             case "checkout":
                 self = .Checkout
-                break
             case "merge":
                 self = .Merge
-                break
             case "m-search":
                 self = .MSearch
-                break
             case "notify":
                 self = .Notify
-                break
             case "subscribe":
                 self = .Subscribe
-                break
             case "unsubscribe":
                 self = .Unsubscribe
-                break
             case "patch":
                 self = .Patch
-                break
             case "search":
                 self = .Search
-                break
             case "connect":
                 self = .Connect
-                break
             case "error":
                 self = .Error
-                break
             default:
                 self = .Unknown
         }
