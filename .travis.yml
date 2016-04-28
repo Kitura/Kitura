@@ -10,7 +10,6 @@ branches:
   only:
     - master
     - develop
-    - 4/12_migration
 
 notifications:
   slack:
