@@ -20,10 +20,10 @@ import LoggerAPI
 import Foundation
 import KituraTemplateEngine
 
-// MARK Router 
+// MARK Router
 
 public class Router {
-    
+
     ///
     /// Contains the list of routing elements
     ///
@@ -56,11 +56,7 @@ public class Router {
     ///
     public init() {
 
-        // Read the MIME types
-        ContentType.initialize()
-
         Log.verbose("Router initialized")
-
     }
 
     // MARK: All
@@ -659,13 +655,12 @@ extension Router : HttpServerDelegate {
         process(request: routeReq, response: routeResp) { [unowned self] () in
             do {
                 if  !routeResp.invokedEnd {
-                    if  routeResp.response.statusCode == HttpStatusCode.NOT_FOUND  {
+                    if  routeResp.response.statusCode == HttpStatusCode.NOT_FOUND {
                         self.sendDefaultResponse(routeReq, routeResp: routeResp)
                     }
                     try routeResp.end()
                 }
-            }
-            catch {
+            } catch {
                 // Not much to do here
                 Log.error("Failed to send response to the client")
             }
@@ -682,20 +677,19 @@ extension Router : HttpServerDelegate {
 
         let urlPath = request.parsedUrl.path!
 #if os(Linux)
-        let shouldContinue = urlPath.characters.count > kituraResourcePrefix.characters.count && urlPath.bridge().substringToIndex(kituraResourcePrefix.characters.count) == kituraResourcePrefix 
+        let shouldContinue = urlPath.characters.count > kituraResourcePrefix.characters.count && urlPath.bridge().substringToIndex(kituraResourcePrefix.characters.count) == kituraResourcePrefix
 #else
         let lengthIndex = kituraResourcePrefix.startIndex.advanced(by: kituraResourcePrefix.characters.count)
         let shouldContinue = urlPath.characters.count > kituraResourcePrefix.characters.count && urlPath.substring(to: lengthIndex) == kituraResourcePrefix
 #endif
         if  shouldContinue {
-#if os(Linux)  
-            let resource = urlPath.bridge().substringFromIndex(kituraResourcePrefix.characters.count)   
+#if os(Linux)
+            let resource = urlPath.bridge().substringFromIndex(kituraResourcePrefix.characters.count)
 #else
             let resource = urlPath.substring(from: lengthIndex)
 #endif
             sendResourceIfExisting(response, resource: resource)
-        }
-        else {
+        } else {
             var elemIndex = -1
 
             // Extra variable to get around use of variable in its own initializer
@@ -705,8 +699,7 @@ extension Router : HttpServerDelegate {
                 elemIndex+=1
                 if  elemIndex < self.routeElems.count {
                     self.routeElems[elemIndex].process(request: request, response: response, next: nextElemCallback!)
-                }
-                else {
+                } else {
                     callback()
                 }
             }
@@ -722,34 +715,62 @@ extension Router : HttpServerDelegate {
     private func sendDefaultResponse(_ routeReq: RouterRequest, routeResp: RouterResponse) {
         if  routeReq.parsedUrl.path! == "/"  {
             sendResourceIfExisting(routeResp, resource: "index.html")
-        }
-        else {
+        } else {
             do {
                 try routeResp.status(HttpStatusCode.NOT_FOUND).send("Cannot \(String(routeReq.method).uppercased()) \(routeReq.parsedUrl.path!).").end()
-            }
-            catch {}
+            } catch {}
         }
     }
 
-    private func getResourceFilePath(_ resource: String) -> String {
-        let fileName = NSString(string: #file)
-        let resourceFilePrefixRange: NSRange
-#if os(Linux)  
-        let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch)
-#else
-        let lastSlash = fileName.range(of: "/", options: NSStringCompareOptions.backwardsSearch)
-#endif
-        if  lastSlash.location != NSNotFound  {
-            resourceFilePrefixRange = NSMakeRange(0, lastSlash.location+1)
+    private func getResourceFilePath(_ resource: String) -> String? {
+        let fileManager = NSFileManager.defaultManager()
+        let potentialResource = constructResourcePathFromSourceLocation(resource)
+        
+        let fileExists = fileManager.fileExists(atPath: potentialResource)
+        if fileExists {
+            return potentialResource
         }
         else {
+            return constructResourcePathFromCurrentDirectory(resource, fileManager: fileManager)
+        }
+    }
+    
+    private func constructResourcePathFromSourceLocation(_ resource: String) -> String {
+        let fileName = NSString(string: #file)
+        let resourceFilePrefixRange: NSRange
+        #if os(Linux)
+            let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch)
+        #else
+            let lastSlash = fileName.range(of: "/", options: NSStringCompareOptions.backwardsSearch)
+        #endif
+        if  lastSlash.location != NSNotFound  {
+            resourceFilePrefixRange = NSMakeRange(0, lastSlash.location+1)
+        } else {
             resourceFilePrefixRange = NSMakeRange(0, fileName.length)
         }
-#if os(Linux)  
-        return fileName.substringWithRange(resourceFilePrefixRange) + "resources/" + resource
-#else
-        return fileName.substring(with: resourceFilePrefixRange) + "resources/" + resource
-#endif
+        #if os(Linux)
+            return fileName.substringWithRange(resourceFilePrefixRange) + "resources/" + resource
+        #else
+            return fileName.substring(with: resourceFilePrefixRange) + "resources/" + resource
+        #endif
+    }
+    
+    private func constructResourcePathFromCurrentDirectory(_ resource: String, fileManager: NSFileManager) -> String? {
+        do {
+            let packagePath = fileManager.currentDirectoryPath + "/Packages"
+            let packages = try fileManager.contentsOfDirectory(atPath: packagePath)
+            for package in packages {
+                let potentalResource = "\(packagePath)/\(package)/Sources/Kitura/resources/\(resource)"
+                let resourceExists = fileManager.fileExists(atPath: potentalResource)
+                if resourceExists {
+                    return potentalResource
+                }
+            }
+        }
+        catch {
+            return nil
+        }
+        return nil
     }
 
 
@@ -757,14 +778,15 @@ extension Router : HttpServerDelegate {
     /// Get the directory we were compiled from
     ///
     private func sendResourceIfExisting(_ routeResp: RouterResponse, resource: String)  {
-        let resourceFileName = getResourceFilePath(resource)
-
+        guard let resourceFileName = getResourceFilePath(resource) else {
+            return
+        }
+        
         do {
             try routeResp.send(fileName: resourceFileName)
             routeResp.status(HttpStatusCode.OK)
             try routeResp.end()
-        }
-        catch {
+        } catch {
             // Fail silently
         }
     }

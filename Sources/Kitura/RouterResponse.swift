@@ -66,6 +66,16 @@ public class RouterResponse {
     /// Optional error value
     ///
     public var error: ErrorProtocol?
+    
+    public var statusCode: HttpStatusCode {
+        get {
+            return response.statusCode ?? .UNKNOWN
+        }
+        
+        set(newValue) {
+            response.statusCode = newValue
+        }
+    }
 
     ///
     /// Initializes a RouterResponse instance
@@ -92,14 +102,14 @@ public class RouterResponse {
 
         preFlush(request: request, response: self)
 
-        if  let data = buffer.data  {
+        if  let data = buffer.data {
             let contentLength = getHeader("Content-Length")
-            if  contentLength == nil  {
+            if  contentLength == nil {
                 setHeader("Content-Length", value: String(buffer.count))
             }
             addCookies()
 
-            if  request.method != .Head  {
+            if  request.method != .Head {
                 try response.write(from: data)
             }
         }
@@ -116,10 +126,10 @@ public class RouterResponse {
 
         for  (_, cookie) in cookies {
             var cookieString = cookie.name + "=" + cookie.value + "; path=" + cookie.path + "; domain=" + cookie.domain
-            if  let expiresDate = cookie.expiresDate  {
+            if  let expiresDate = cookie.expiresDate {
                 cookieString += "; expires=" + SpiUtils.httpDate(expiresDate)
             }
-#if os(Linux)  
+#if os(Linux)
             let isSecure = cookie.secure
 #else
             let isSecure = cookie.isSecure
@@ -146,9 +156,9 @@ public class RouterResponse {
         send(str)
         try end()
         return self
-        
+
     }
-    
+
     ///
     /// Ends the response and sends data
     ///
@@ -162,9 +172,9 @@ public class RouterResponse {
         send(data: data)
         try end()
         return self
-        
+
     }
-    
+
     ///
     /// Sends a string
     ///
@@ -178,7 +188,7 @@ public class RouterResponse {
             buffer.append(data: data)
         }
         return self
-        
+
     }
 
     ///
@@ -192,7 +202,7 @@ public class RouterResponse {
         
         buffer.append(data: data)
         return self
-        
+
     }
 
     ///
@@ -208,8 +218,8 @@ public class RouterResponse {
     public func send(fileName: String) throws -> RouterResponse {
         let data = try NSData(contentsOfFile: fileName, options: [])
 
-        let contentType =  ContentType.contentTypeForFile(fileName)
-        if  let contentType = contentType  {
+        let contentType =  ContentType.sharedInstance.contentTypeForFile(fileName)
+        if  let contentType = contentType {
             setHeader("Content-Type", value: contentType)
         }
 
@@ -217,7 +227,7 @@ public class RouterResponse {
 
         return self
     }
-    
+
     ///
     /// Sends JSON
     ///
@@ -231,21 +241,8 @@ public class RouterResponse {
         type("json")
         send(jsonStr)
         return self
-        
     }
-    
-    ///
-    /// Set the status code
-    ///
-    /// - Parameter status: the status code integer
-    ///
-    /// - Returns: a RouterResponse instance
-    ///
-    public func status(_ status: Int) -> RouterResponse {
-        response.status = status
-        return self
-    }
-    
+
     ///
     /// Set the status code
     ///
@@ -258,45 +255,6 @@ public class RouterResponse {
         return self
     }
 
-    ///
-    /// Get the status code as an integer
-    ///
-    /// - Returns: The currently set status code as an integer
-    ///
-    public func getStatus() -> Int {
-        return response.status
-    }
-
-    ///
-    /// Get the status code as an HttpStatusCode
-    ///
-    /// - Returns: The currently set status code as an HttpStatusCode
-    ///
-    public func getStatusCode() -> HttpStatusCode {
-        return response.statusCode ?? .UNKNOWN
-    }
-
-    ///
-    /// Sends the status code
-    ///
-    /// - Parameter status: the status code integer
-    ///
-    /// - Throws: ???
-    /// - Returns: a RouterResponse instance
-    ///
-    public func send(status: Int) throws -> RouterResponse {
-        
-        self.status(status)
-        if  let statusText = Http.statusCodes[status] {
-            send(statusText)
-        }
-        else {
-            send(String(status))
-        }
-        return self
-
-    }
-    
     ///
     /// Sends the status code
     ///
@@ -312,20 +270,20 @@ public class RouterResponse {
         return self
 
     }
-    
+
     ///
     /// Gets the header
-    /// 
+    ///
     /// - Parameter key: the key
-    /// 
+    ///
     /// - Returns: the value for the key
     ///
     public func getHeader(_ key: String) -> String? {
         
         return response.getHeader(key)
-        
+
     }
-    
+
     ///
     /// Gets the header that contains multiple values
     ///
@@ -336,9 +294,9 @@ public class RouterResponse {
     public func getHeaders(_ key: String) -> [String]? {
         
         return response.getHeaders(key)
-        
+
     }
-    
+
     ///
     /// Set the header value
     ///
@@ -350,18 +308,18 @@ public class RouterResponse {
     public func setHeader(_ key: String, value: String) {
         
         response.setHeader(key, value: value)
-        
+
     }
     
     public func setHeader(_ key: String, value: [String]) {
         
         response.setHeader(key, value: value)
-        
+
     }
 
     ///
     /// Append a value to the header
-    /// 
+    ///
     /// - Parameter key: the header key
     ///
     public func append(_ key: String, value: String) {
@@ -372,7 +330,7 @@ public class RouterResponse {
 
     ///
     /// Append values to the header
-    /// 
+    ///
     /// - Parameter key: the key
     ///
     public func append(_ key: String, value: [String]) {
@@ -380,10 +338,10 @@ public class RouterResponse {
         response.append(key: key, value: value)
 
     }
-    
+
     ///
     /// Remove the header by key
-    /// 
+    ///
     /// - Parameter key: the key
     ///
     public func removeHeader(_ key: String) {
@@ -391,18 +349,18 @@ public class RouterResponse {
         response.removeHeader(key: key)
         
     }
-    
+
     ///
     /// Redirect to path
     ///
-    /// - Parameter: the path for the redirect 
+    /// - Parameter: the path for the redirect
     ///
     /// - Returns: a RouterResponse instance
     ///
     public func redirect(_ path: String) throws -> RouterResponse {
         return try redirect(.MOVED_TEMPORARILY, path: path)
     }
-    
+
     ///
     /// Redirect to path with status code
     ///
@@ -412,31 +370,16 @@ public class RouterResponse {
     /// - Returns: a RouterResponse instance
     ///
     public func redirect(_ status: HttpStatusCode, path: String) throws -> RouterResponse {
-        
-        try redirect(status.rawValue, path: path)
+
+        try self.status(status).location(path).end()
         return self
-        
+
     }
 
     ///
-    /// Redirect to path with status code
-    ///
-    /// - Parameter: the status code for the redirect
-    /// - Parameter: the path for the redirect
-    ///
-    /// - Returns: a RouterResponse instance
-    ///
-    public func redirect(_ status: Int, path: String) throws -> RouterResponse {
-        
-        try self.status(status).location(path).end()
-        return self
-        
-    }
-    
-    ///
     /// Sets the location path
     ///
-    /// - Parameter path: the path 
+    /// - Parameter path: the path
     ///
     /// - Returns: a RouterResponse instance
     ///
@@ -447,14 +390,13 @@ public class RouterResponse {
             let referrer = getHeader("referrer")
             if  let r = referrer {
                 p = r
-            }
-            else {
+            } else {
                 p = "/"
             }
         }
         setHeader("Location", value: p)
         return self
-        
+
     }
 
     ///
@@ -476,16 +418,15 @@ public class RouterResponse {
     ///
     /// Sets the Content-Type HTTP header
     ///
-    /// - Parameter type: the type to set to 
+    /// - Parameter type: the type to set to
     ///
     public func type(_ type: String, charset: String? = nil) {
-        let contentType =  ContentType.contentTypeForExtension(type)
-        if  let contentType = contentType  {
-            var content = contentType
+        if  let contentType = ContentType.sharedInstance.contentTypeForExtension(type) {
+            var contentCharset = ""
             if let charset = charset {
-                content += "; charset=\(charset)"
+                contentCharset = "; charset=\(charset)"
             }
-            setHeader("Content-Type", value: content)
+            setHeader("Content-Type", value:  contentType + contentCharset)
         }
     }
 
@@ -501,12 +442,12 @@ public class RouterResponse {
             return
         }
 
-        let filePaths = filePath.characters.split{$0 == "/"}.map(String.init)
+        let filePaths = filePath.characters.split {$0 == "/"}.map(String.init)
         let fileName = filePaths.last
         setHeader("Content-Disposition", value: "attachment; fileName = \"\(fileName!)\"")
 
-        let contentType =  ContentType.contentTypeForFile(fileName!)
-        if  let contentType = contentType  {
+        let contentType =  ContentType.sharedInstance.contentTypeForFile(fileName!)
+        if  let contentType = contentType {
             setHeader("Content-Type", value: contentType)
         }
     }
