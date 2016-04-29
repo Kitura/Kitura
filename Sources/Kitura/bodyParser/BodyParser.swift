@@ -172,7 +172,7 @@ public class BodyParser: RouterMiddleware {
     /// - Returns: data for the body
     ///
     public class func readBodyData(with reader: SocketReader) throws -> NSMutableData {
-        
+
         let bodyData = NSMutableData()
 
         var length = try reader.read(into: bodyData)
@@ -182,10 +182,4 @@ public class BodyParser: RouterMiddleware {
         return bodyData
     }
 
-}
-
-//// MARK: ParsedBody
-///
-public enum ParsedBody {
-    case Json(JSON), UrlEncoded([String:String]), Text(String)
 }
