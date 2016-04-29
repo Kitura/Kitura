@@ -78,6 +78,16 @@ public class RouterResponse {
         }
     }
 
+    public var statusCode: HttpStatusCode {
+        get {
+            return response.statusCode ?? .UNKNOWN
+        }
+        
+        set(newValue) {
+            response.statusCode = newValue
+        }
+    }
+
     ///
     /// Initializes a RouterResponse instance
     ///
@@ -104,7 +114,7 @@ public class RouterResponse {
         preFlush(request: request, response: self)
 
         if  let data = buffer.data {
-            let contentLength = headers.get("Content-Length")
+            let contentLength = headers["Content-Length"]
             if  contentLength == nil {
                 headers.set("Content-Length", value: String(buffer.count))
             }
@@ -152,8 +162,8 @@ public class RouterResponse {
     /// - Throws: ???
     /// - Returns: a RouterResponse instance
     ///
-    public func end(str: String) throws -> RouterResponse {
-
+    public func end(_ str: String) throws -> RouterResponse {
+        
         send(str)
         try end()
         return self
@@ -168,9 +178,9 @@ public class RouterResponse {
     /// - Throws: ???
     /// - Returns: a RouterResponse instance
     ///
-    public func end(data: NSData) throws -> RouterResponse {
-
-        sendData(data)
+    public func end(_ data: NSData) throws -> RouterResponse {
+        
+        send(data: data)
         try end()
         return self
 
@@ -183,10 +193,10 @@ public class RouterResponse {
     ///
     /// - Returns: a RouterResponse instance
     ///
-    public func send(str: String) -> RouterResponse {
-
-        if  let data = StringUtils.toUtf8String(str) {
-            buffer.appendData(data)
+    public func send(_ str: String) -> RouterResponse {
+        
+        if  let data = StringUtils.toUtf8String(str)  {
+            buffer.append(data: data)
         }
         return self
 
@@ -199,9 +209,9 @@ public class RouterResponse {
     ///
     /// - Returns: a RouterResponse instance
     ///
-    public func sendData(data: NSData) -> RouterResponse {
-
-        buffer.appendData(data)
+    public func send(data: NSData) -> RouterResponse {
+        
+        buffer.append(data: data)
         return self
 
     }
@@ -216,7 +226,7 @@ public class RouterResponse {
     /// Note: Sets the Content-Type header based on the "extension" of the file
     ///       If the fileName is relative, it is relative to the current directory
     ///
-    public func sendFile(fileName: String) throws -> RouterResponse {
+    public func send(fileName: String) throws -> RouterResponse {
         let data = try NSData(contentsOfFile: fileName, options: [])
 
         let contentType =  ContentType.sharedInstance.contentTypeForFile(fileName)
@@ -224,7 +234,7 @@ public class RouterResponse {
             headers.set("Content-Type", value: contentType)
         }
 
-        buffer.appendData(data)
+        buffer.append(data: data)
 
         return self
     }
@@ -236,24 +246,11 @@ public class RouterResponse {
     ///
     /// - Returns: a RouterResponse instance
     ///
-    public func sendJson(json: JSON) -> RouterResponse {
-
+    public func send(json: JSON) -> RouterResponse {
+        
         let jsonStr = json.description
         type("json")
         send(jsonStr)
-        return self
-
-    }
-
-    ///
-    /// Set the status code
-    ///
-    /// - Parameter status: the status code integer
-    ///
-    /// - Returns: a RouterResponse instance
-    ///
-    public func status(status: Int) -> RouterResponse {
-        response.status = status
         return self
     }
 
@@ -264,50 +261,12 @@ public class RouterResponse {
     ///
     /// - Returns: a RouterResponse instance
     ///
-    public func status(status: HttpStatusCode) -> RouterResponse {
+    public func status(_ status: HttpStatusCode) -> RouterResponse {
         response.statusCode = status
         return self
     }
 
     ///
-    /// Get the status code as an integer
-    ///
-    /// - Returns: The currently set status code as an integer
-    ///
-    public func getStatus() -> Int {
-        return response.status
-    }
-
-    ///
-    /// Get the status code as an HttpStatusCode
-    ///
-    /// - Returns: The currently set status code as an HttpStatusCode
-    ///
-    public func getStatusCode() -> HttpStatusCode {
-        return response.statusCode ?? .UNKNOWN
-    }
-
-    ///
-    /// Sends the status code
-    ///
-    /// - Parameter status: the status code integer
-    ///
-    /// - Throws: ???
-    /// - Returns: a RouterResponse instance
-    ///
-    public func sendStatus(status: Int) throws -> RouterResponse {
-
-        self.status(status)
-        if  let statusText = Http.statusCodes[status] {
-            send(statusText)
-        } else {
-            send(String(status))
-        }
-        return self
-
-    }
-
-    ///
     /// Sends the status code
     ///
     /// - Parameter status: the status code object
@@ -315,8 +274,8 @@ public class RouterResponse {
     /// - Throws: ???
     /// - Returns: a RouterResponse instance
     ///
-    public func sendStatus(status: HttpStatusCode) throws -> RouterResponse {
-
+    public func send(status: HttpStatusCode) throws -> RouterResponse {
+        
         self.status(status)
         send(Http.statusCodes[status.rawValue]!)
         return self
@@ -330,7 +289,7 @@ public class RouterResponse {
     ///
     /// - Returns: a RouterResponse instance
     ///
-    public func redirect(path: String) throws -> RouterResponse {
+    public func redirect(_ path: String) throws -> RouterResponse {
         return try redirect(.MOVED_TEMPORARILY, path: path)
     }
 
@@ -342,22 +301,7 @@ public class RouterResponse {
     ///
     /// - Returns: a RouterResponse instance
     ///
-    public func redirect(status: HttpStatusCode, path: String) throws -> RouterResponse {
-
-        try redirect(status.rawValue, path: path)
-        return self
-
-    }
-
-    ///
-    /// Redirect to path with status code
-    ///
-    /// - Parameter: the status code for the redirect
-    /// - Parameter: the path for the redirect
-    ///
-    /// - Returns: a RouterResponse instance
-    ///
-    public func redirect(status: Int, path: String) throws -> RouterResponse {
+    public func redirect(_ status: HttpStatusCode, path: String) throws -> RouterResponse {
 
         try self.status(status).location(path).end()
         return self
@@ -371,11 +315,11 @@ public class RouterResponse {
     ///
     /// - Returns: a RouterResponse instance
     ///
-    public func location(path: String) -> RouterResponse {
-
+    public func location(_ path: String) -> RouterResponse {
+        
         var p = path
         if  p == "back" {
-            let referrer = headers.get("referrer")
+            let referrer = headers["referrer"]
             if  let r = referrer?.first {
                 p = r
             } else {
@@ -395,7 +339,7 @@ public class RouterResponse {
     /// - Returns: a RouterResponse instance
     ///
     // influenced by http://expressjs.com/en/4x/api.html#app.render
-    public func render(resource: String, context: [ String: Any]) throws -> RouterResponse {
+    public func render(_ resource: String, context: [ String: Any]) throws -> RouterResponse {
         guard let router = router else {
             throw InternalError.NilVariable(variable: "router")
         }
@@ -408,7 +352,7 @@ public class RouterResponse {
     ///
     /// - Parameter type: the type to set to
     ///
-    public func type(type: String, charset: String? = nil) {
+    public func type(_ type: String, charset: String? = nil) {
         if  let contentType = ContentType.sharedInstance.contentTypeForExtension(type) {
             var contentCharset = ""
             if let charset = charset {
@@ -424,7 +368,7 @@ public class RouterResponse {
     ///
     /// - Parameter filePath: the file to set the filename to
     ///
-    public func attachment(filePath: String? = nil) {
+    public func attachment(_ filePath: String? = nil) {
         guard let filePath = filePath else {
             headers.set("Content-Disposition", value: "attachment")
             return
@@ -445,8 +389,8 @@ public class RouterResponse {
     ///
     /// - Parameter filePath: the file to download
     ///
-    public func download(filePath: String) throws {
-        try sendFile(filePath)
+    public func download(_ filePath: String) throws {
+        try send(fileName: filePath)
         attachment(filePath)
     }
 
@@ -454,7 +398,7 @@ public class RouterResponse {
     /// Sets the pre-flush lifecycle handler and returns the previous one
     ///
     /// - Parameter newPreFlush: The new pre-flush lifecycle handler
-    public func setPreFlushHandler(newPreFlush: PreFlushLifecycleHandler) -> PreFlushLifecycleHandler {
+    public func setPreFlushHandler(_ newPreFlush: PreFlushLifecycleHandler) -> PreFlushLifecycleHandler {
         let oldPreFlush = preFlush
         preFlush = newPreFlush
         return oldPreFlush

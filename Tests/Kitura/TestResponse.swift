@@ -52,7 +52,7 @@ class TestResponse : XCTestCase {
             self.performRequest("get", path:"/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
-                XCTAssertNotNil(response!.headers.get("Date"), "There was No Date header in the response")
+                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
                 //XCTAssertEqual(response!.method, "GET", "The request wasn't recognized as a get")
                 do {
                     let body = try response!.readString()
@@ -71,7 +71,7 @@ class TestResponse : XCTestCase {
             self.performRequest("post", path: "/bodytest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 //XCTAssertEqual(response!.method, "POST", "The request wasn't recognized as a post")
-                XCTAssertNotNil(response!.headers.get("Date"), "There was No Date header in the response")
+                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
                 do {
                     let body = try response!.readString()
                     XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received text body: </b>plover\nxyzzy\n</body></html>\n\n")
@@ -175,30 +175,30 @@ class TestResponse : XCTestCase {
         router.get("/headerTest") { _, response, next in
 
             response.headers.append("Content-Type", value: "text/html")
-            XCTAssertEqual(response.headers.get("Content-Type")!, ["text/html"])
+            XCTAssertEqual(response.headers["Content-Type"]!, ["text/html"])
 
             response.headers.append("Content-Type", value: "text/plain; charset=utf-8")
-            XCTAssertEqual(response.headers.get("Content-Type")!, ["text/html", "text/plain; charset=utf-8"])
+            XCTAssertEqual(response.headers["Content-Type"]!, ["text/html", "text/plain; charset=utf-8"])
 
             response.headers.remove("Content-Type")
-            XCTAssertNil(response.headers.get("Content-Type"))
+            XCTAssertNil(response.headers["Content-Type"])
 
             response.headers.append("Content-Type", value: ["text/plain", "image/png"])
-            XCTAssertEqual(response.headers.get("Content-Type")!, ["text/plain", "image/png"])
+            XCTAssertEqual(response.headers["Content-Type"]!, ["text/plain", "image/png"])
 
             response.headers.append("Content-Type", value: ["text/html", "image/jpeg"])
-            XCTAssertEqual(response.headers.get("Content-Type")!, ["text/plain", "image/png", "text/html", "image/jpeg"])
+            XCTAssertEqual(response.headers["Content-Type"]!, ["text/plain", "image/png", "text/html", "image/jpeg"])
 
             response.headers.append("Content-Type", value: "charset=UTF-8")
-            XCTAssertEqual(response.headers.get("Content-Type")!, ["text/plain", "image/png", "text/html", "image/jpeg", "charset=UTF-8"])
+            XCTAssertEqual(response.headers["Content-Type"]!, ["text/plain", "image/png", "text/html", "image/jpeg", "charset=UTF-8"])
 
             response.headers.remove("Content-Type")
 
             response.headers.append("Content-Type", value: ["text/plain"])
-            XCTAssertEqual(response.headers.get("Content-Type")!, ["text/plain"])
+            XCTAssertEqual(response.headers["Content-Type"]!, ["text/plain"])
 
             response.headers.append("Content-Type", value: ["image/png", "text/html"])
-            XCTAssertEqual(response.headers.get("Content-Type")!, ["text/plain", "image/png", "text/html"])
+            XCTAssertEqual(response.headers["Content-Type"]!, ["text/plain", "image/png", "text/html"])
 
             do {
                 try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
@@ -339,29 +339,32 @@ class TestResponse : XCTestCase {
         router.all("/bodytest", middleware: BodyParser())
 
         router.post("/bodytest") { request, response, next in
-            if let body = request.body?.asUrlEncoded() {
-                response.headers.set("Content-Type", value: "text/html; charset=utf-8")
-                do {
-                    try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> \(body) </body></html>\n\n")
-                }
-                catch {}
+            response.headers["Content-Type"] = ["text/html; charset=utf-8"]
+            guard let requestBody = request.body else {
+                next ()
+                return
             }
-            else if let text = request.body?.asText() {
-                response.headers.set("Content-Type", value: "text/html; charset=utf-8")
-                do {
-                    try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received text body: </b>\(text)</body></html>\n\n")
-                }
-                catch {}
-            }
-            else {
-                response.error = Error.FailedToParseRequestBody(body: "\(request.body)")
+            switch (requestBody) {
+                case .UrlEncoded(let value):
+                    do {
+                        try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> \(value) </body></html>\n\n")
+                    }
+                    catch {}
+                case .Text(let value):
+                    do {
+                        try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received text body: </b>\(value)</body></html>\n\n")
+                    }
+                    catch {}
+                default:
+                    response.error = Error.FailedToParseRequestBody(body: "\(request.body)")
+                
             }
 
             next()
         }
 
         router.error { request, response, next in
-            response.headers.set("Content-Type", value: "text/plain; charset=utf-8")
+            response.headers["Content-Type"] = ["text/html; charset=utf-8"]
             do {
                 let errorDescription: String
                 if let error = response.error {

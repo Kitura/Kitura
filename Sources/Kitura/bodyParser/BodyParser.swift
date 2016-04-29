@@ -54,8 +54,7 @@ public class BodyParser: RouterMiddleware {
     ///
     public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
 
-
-        guard request.headers.get("Content-Length") != nil, let contentType = request.headers.get("Content-Type") else {
+        guard request.headers["Content-Length"] != nil, let contentType = request.headers["Content-Type"] else {
             return next()
         }
 
@@ -70,7 +69,7 @@ public class BodyParser: RouterMiddleware {
     /// - Parameter message: message coming from the socket
     /// - Parameter contentType: the contentType as a string
     ///
-    public class func parse(message: SocketReader, contentType: String?) -> ParsedBody? {
+    public class func parse(_ message: SocketReader, contentType: String?) -> ParsedBody? {
 
         guard let contentType = contentType else {
             return nil
@@ -91,9 +90,9 @@ public class BodyParser: RouterMiddleware {
     /// - Parameter message: message coming from the socket
     /// - Parameter parser: ((NSMutableData) -> ParsedBody?) store at parserMap
     ///
-    private class func parse(message: SocketReader, parser: ((NSMutableData) -> ParsedBody?)) -> ParsedBody? {
+    private class func parse(_ message: SocketReader, parser: ((NSMutableData) -> ParsedBody?)) -> ParsedBody? {
         do {
-            let bodyData = try readBodyData(message)
+            let bodyData = try readBodyData(with: message)
             return parser(bodyData)
         } catch {
             Log.error("failed to read body data, error = \(error)")
@@ -109,7 +108,7 @@ public class BodyParser: RouterMiddleware {
     private class func json(bodyData: NSMutableData)-> ParsedBody? {
         let json = JSON(data: bodyData)
         if json != JSON.null {
-            return ParsedBody(json: json)
+            return .Json(json)
         }
         return nil
     }
@@ -119,7 +118,7 @@ public class BodyParser: RouterMiddleware {
     ///
     /// - Parameter bodyData: read data
     ///
-    private class func urlencoded(bodyData: NSMutableData)-> ParsedBody? {
+    private class func urlencoded(_ bodyData: NSMutableData)-> ParsedBody? {
         var parsedBody = [String:String]()
         var success = true
         if let bodyAsString: String = String(data: bodyData, encoding: NSUTF8StringEncoding) {
@@ -127,7 +126,7 @@ public class BodyParser: RouterMiddleware {
 #if os(Linux)
             let bodyAsArray = bodyAsString.bridge().componentsSeparatedByString("&")
 #else
-            let bodyAsArray = bodyAsString.componentsSeparated(by: "&")
+            let bodyAsArray = bodyAsString.components(separatedBy: "&")
 #endif
 
             for element in bodyAsArray {
@@ -135,7 +134,7 @@ public class BodyParser: RouterMiddleware {
 #if os(Linux)
                 let elementPair = element.bridge().componentsSeparatedByString("=")
 #else
-                let elementPair = element.componentsSeparated(by: "=")
+                let elementPair = element.components(separatedBy: "=")
 #endif
 
                 if elementPair.count == 2 {
@@ -145,7 +144,7 @@ public class BodyParser: RouterMiddleware {
                 }
             }
             if success && parsedBody.count > 0 {
-                return ParsedBody(urlEncoded: parsedBody)
+                return .UrlEncoded(parsedBody)
             }
         }
         return nil
@@ -156,10 +155,10 @@ public class BodyParser: RouterMiddleware {
     ///
     /// - Parameter bodyData: read data
     ///
-    private class func text(bodyData: NSMutableData)-> ParsedBody? {
+    private class func text(_ bodyData: NSMutableData)-> ParsedBody? {
         // There was no support for the application/json MIME type
         if let bodyAsString: String = String(data: bodyData, encoding: NSUTF8StringEncoding) {
-            return ParsedBody(text:  bodyAsString)
+            return .Text(bodyAsString)
         }
         return nil
     }
@@ -172,8 +171,8 @@ public class BodyParser: RouterMiddleware {
     /// - Throws: ???
     /// - Returns: data for the body
     ///
-    public class func readBodyData(reader: SocketReader) throws -> NSMutableData {
-
+    public class func readBodyData(with reader: SocketReader) throws -> NSMutableData {
+        
         let bodyData = NSMutableData()
 
         var length = try reader.read(into: bodyData)
@@ -185,85 +184,8 @@ public class BodyParser: RouterMiddleware {
 
 }
 
-// MARK: ParsedBody
-
-public class ParsedBody {
-
-    ///
-    /// JSON body if the body is JSON
-    ///
-    private var jsonBody: JSON?
-
-    ///
-    /// URL encoded body
-    ///
-    private var urlEncodedBody: [String:String]?
-
-    ///
-    /// Plain-text body
-    ///
-    private var textBody: String?
-
-    ///
-    /// Initializes a ParsedBody instance
-    ///
-    /// - Parameter json: JSON formatted data
-    ///
-    /// - Returns: a ParsedBody instance
-    ///
-    public init (json: JSON) {
-
-        jsonBody = json
-
-    }
-
-    ///
-    /// Initializes a ParsedBody instance
-    ///
-    /// - Parameter urlEncoded: a list of String,String tuples
-    ///
-    /// - Returns a parsed body instance
-    ///
-    public init (urlEncoded: [String:String]) {
-        urlEncodedBody = urlEncoded
-    }
-
-    ///
-    /// Initializes a ParsedBody instance
-    ///
-    /// - Parameter text: the String plain-text
-    ///
-    /// - Returns a parsed body instance
-    ///
-    public init (text: String) {
-        textBody = text
-    }
-
-    ///
-    /// Returns the body as JSON
-    ///
-    /// - Returns: the JSON
-    ///
-    public func asJson() -> JSON? {
-        return jsonBody
-    }
-
-    ///
-    /// Returns the body as URL encoded strings
-    ///
-    /// - Returns: the list of string, string tuples
-    ///
-    public func asUrlEncoded() -> [String:String]? {
-        return urlEncodedBody
-    }
-
-    ///
-    /// Returns the body as plain-text
-    ///
-    /// - Returns: the plain text
-    ///
-    public func asText() -> String? {
-        return textBody
-    }
-
+//// MARK: ParsedBody
+///
+public enum ParsedBody {
+    case Json(JSON), UrlEncoded([String:String]), Text(String)
 }

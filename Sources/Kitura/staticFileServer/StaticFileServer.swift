@@ -147,12 +147,8 @@ public class StaticFileServer: RouterMiddleware {
 
         let fileManager = NSFileManager()
         var isDirectory = ObjCBool(false)
-#if os(Linux)
-        let fileExists = fileManager.fileExistsAtPath(filePath, isDirectory: &isDirectory)
-#else
-        let fileExists = fileManager.fileExists(atPath: filePath, isDirectory: &isDirectory)
-#endif
-        if fileExists {
+
+        if fileManager.fileExists(atPath: filePath, isDirectory: &isDirectory) {
             if isDirectory.boolValue {
                 if redirect {
                     do {
@@ -168,12 +164,7 @@ public class StaticFileServer: RouterMiddleware {
             if let extensions = possibleExtensions {
                 for ext in extensions {
                     let newFilePath = filePath + "." + ext
-#if os(Linux)
-                    let newFileExists = fileManager.fileExistsAtPath(newFilePath, isDirectory: &isDirectory)
-#else
-                    let newFileExists = fileManager.fileExists(atPath: newFilePath, isDirectory: &isDirectory)
-#endif
-                    if newFileExists {
+                    if fileManager.fileExists(atPath: newFilePath, isDirectory: &isDirectory) {
                         if !isDirectory.boolValue {
                             serveFile(newFilePath, fileManager: fileManager, response: response)
                             break
@@ -187,7 +178,7 @@ public class StaticFileServer: RouterMiddleware {
 
     }
 
-    private func serveFile(filePath: String, fileManager: NSFileManager, response: RouterResponse) {
+    private func serveFile(_ filePath: String, fileManager: NSFileManager, response: RouterResponse) {
         // Check that no-one is using ..'s in the path to poke around the filesystem
         let tempAbsoluteBasePath = NSURL(fileURLWithPath: path).absoluteString
         let tempAbsoluteFilePath = NSURL(fileURLWithPath: filePath).absoluteString
@@ -196,12 +187,9 @@ public class StaticFileServer: RouterMiddleware {
 
         if  absoluteFilePath.hasPrefix(absoluteBasePath) {
             do {
-#if os(Linux)
-                let attributes = try fileManager.attributesOfItemAtPath(filePath)
-#else
                 let attributes = try fileManager.attributesOfItem(atPath: filePath)
-#endif
-                response.headers.set("Cache-Control", value: "max-age=\(maxAgeCacheControlHeader)")
+                
+                response.headers["Cache-Control"] = ["max-age=\(maxAgeCacheControlHeader)"]
                 if addLastModifiedHeader {
                     if let date = attributes[NSFileModificationDate] as? NSDate {
                         response.headers.set("Last-Modified", value: SpiUtils.httpDate(date))
@@ -217,10 +205,10 @@ public class StaticFileServer: RouterMiddleware {
                     }
                 }
                 if let _ = customResponseHeadersSetter {
-                    customResponseHeadersSetter!.setCustomResponseHeaders(response, filePath: filePath, fileAttributes: attributes)
+                    customResponseHeadersSetter!.setCustomResponseHeaders(response: response, filePath: filePath, fileAttributes: attributes)
                 }
 
-                try response.sendFile(filePath)
+                try response.send(fileName: filePath)
             } catch {
                 // Nothing
             }
