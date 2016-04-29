@@ -1,3 +1,4 @@
+
 /**
  * Copyright IBM Corporation 2016
  *
@@ -71,25 +72,17 @@ public class ContentType {
         }
 #endif
 
-        // MARK: Linux Foundation will return an Any instead of an AnyObject
-        // Need to test if this breaks the Linux build.
 #if os(Linux)
-        guard let parsedObject = try? NSJSONSerialization.jsonObject(with: contentTypesData,
-            options: NSJSONReadingOptions.MutableContainers) else {
-                Log.error("JSON could not be parsed")
-                return
-            }
+        let jsonParseOptions = NSJSONReadingOptions.MutableContainers
 #else
-        guard let parsedObject = try? NSJSONSerialization.jsonObject(with: contentTypesData,
-            options: NSJSONReadingOptions.mutableContainers) else {
-                Log.error("JSON could not be parsed")
-                return
-            }
+        let jsonParseOptions = NSJSONReadingOptions.mutableContainers
 #endif
 
-        // Should be moved to single guard statement with parsedObject
-        // when Linux Api is updated
-        guard let jsonData = parsedObject as? [String : [String]] else {
+        // MARK: Linux Foundation will return an Any instead of an AnyObject
+        // Need to test if this breaks the Linux build.
+        guard let parsedObject = try? NSJSONSerialization.jsonObject(with: contentTypesData,
+            options: jsonParseOptions),
+            let jsonData = parsedObject as? [String : [String]] else {
             Log.error("JSON could not be parsed")
             return
         }
