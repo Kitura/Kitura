@@ -226,15 +226,3 @@ public class StaticFileServer: RouterMiddleware {
     }
 
 }
-
-#if os(Linux)
-    public typealias CustomResponseHeaderAttributes = [String : Any]
-#else
-    public typealias CustomResponseHeaderAttributes = [String : AnyObject]
-#endif
-
-public protocol ResponseHeadersSetter {
-
-    func setCustomResponseHeaders (response: RouterResponse, filePath: String, fileAttributes: CustomResponseHeaderAttributes)
-
-}
