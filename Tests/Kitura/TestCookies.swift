@@ -51,7 +51,7 @@ class TestCookies : XCTestCase {
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "cookiedump route did not match single path request")
                 do {
                     let data = NSMutableData()
-                    let count = try response!.readAllData(data)
+                    let count = try response!.readAllData(into: data)
                     XCTAssertEqual(count, 4, "Plover's value should have been four bytes")
                     if  let ploverValue = NSString(data: data, encoding: NSUTF8StringEncoding) {
                         XCTAssertEqual(ploverValue.bridge(), "qwer")
@@ -73,7 +73,7 @@ class TestCookies : XCTestCase {
             self.performRequest("get", path: "/1/sendcookie", callback: {response in
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "/1/sendcookie route did not match single path request")
 
-                let (cookie1, cookie1Expire) = self.cookieFromResponse(response!, named: cookie1Name)
+                let (cookie1, cookie1Expire) = self.cookieFrom(response: response!, named: cookie1Name)
                 XCTAssert(cookie1 != nil, "Cookie \(cookie1Name) wasn't found in the response.")
                 XCTAssertEqual(cookie1!.value, cookie1Value, "Value of Cookie \(cookie1Name) is not \(cookie1Value), was \(cookie1!.value)")
                 XCTAssertEqual(cookie1!.path, "/", "Path of Cookie \(cookie1Name) is not (/), was \(cookie1!.path)")
@@ -85,7 +85,7 @@ class TestCookies : XCTestCase {
 #endif
                 XCTAssertNil(cookie1Expire, "\(cookie1Name) had an expiration date. It shouldn't have had one")
 
-                let (cookie2, cookie2Expire) = self.cookieFromResponse(response!, named: cookie2Name)
+                let (cookie2, cookie2Expire) = self.cookieFrom(response: response!, named: cookie2Name)
                 XCTAssert(cookie2 != nil, "Cookie \(cookie2Name) wasn't found in the response.")
                 XCTAssertEqual(cookie2!.value, cookie2Value, "Value of Cookie \(cookie2Name) is not \(cookie2Value), was \(cookie2!.value)")
                 XCTAssertEqual(cookie2!.path, "/", "Path of Cookie \(cookie2Name) is not (/), was \(cookie2!.path)")
@@ -104,7 +104,7 @@ class TestCookies : XCTestCase {
             self.performRequest("get", path: "/2/sendcookie", callback: { response in
                 XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "/2/sendcookie route did not match single path request")
 
-                let (cookie, cookieExpire) = self.cookieFromResponse(response!, named: cookie3Name)
+                let (cookie, cookieExpire) = self.cookieFrom(response: response!, named: cookie3Name)
                 XCTAssertNotNil(cookie, "Cookie \(cookie3Name) wasn't found in the response.")
                 XCTAssertEqual(cookie!.value, cookie3Value, "Value of Cookie \(cookie3Name) is not \(cookie3Value), was \(cookie!.value)")
                 XCTAssertEqual(cookie!.path, "/", "Path of Cookie \(cookie3Name) is not (/), was \(cookie!.path)")
@@ -120,7 +120,7 @@ class TestCookies : XCTestCase {
         })
     }
 
-    func cookieFromResponse(response: ClientResponse, named: String) -> (NSHTTPCookie?, String?) {
+    func cookieFrom(response: ClientResponse, named: String) -> (NSHTTPCookie?, String?) {
         var resultCookie: NSHTTPCookie? = nil
         var resultExpire: String?
         for (headerKey, headerValues) in response.headersAsArrays  {
@@ -135,8 +135,8 @@ class TestCookies : XCTestCase {
             let parts = headerValue.bridge().componentsSeparatedByString("; ")
             let nameValue = parts[0].bridge().componentsSeparatedByString("=")
 #else
-            let parts = headerValue.componentsSeparated(by: "; ")
-            let nameValue = parts[0].componentsSeparated(by: "=")
+            let parts = headerValue.components(separatedBy: "; ")
+            let nameValue = parts[0].components(separatedBy: "=")
 #endif
                     XCTAssertEqual(nameValue.count, 2, "Malformed Set-Cookie header \(headerValue)")
 
@@ -155,7 +155,7 @@ class TestCookies : XCTestCase {
                             var pieces = part.bridge().componentsSeparatedByString("=")
                             let piece = pieces[0].bridge().lowercaseString
 #else
-                            var pieces = part.componentsSeparated(by: "=")
+                            var pieces = part.components(separatedBy: "=")
                             let piece = pieces[0].bridge().lowercased()
 #endif
                             switch(piece) {

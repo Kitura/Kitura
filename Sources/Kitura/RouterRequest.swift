@@ -170,7 +170,7 @@ public class RouterRequest: SocketReader {
     ///
     /// - Returns the full mime type
     ///
-    private func extToMime(type: String) -> String {
+    private func extToMime(_ type: String) -> String {
 
         if let mimeType = ContentType.sharedInstance.contentTypeForExtension(type) {
             return mimeType
@@ -185,12 +185,12 @@ public class RouterRequest: SocketReader {
     ///
     /// - Returns a tuple with the mime type and q parameter value if present, qValue defaults to 1
     ///
-    private func parseMediaType(type: String) -> (type: String, qValue: Double) {
+    private func parseMediaType(_ type: String) -> (type: String, qValue: Double) {
         var finishedPair = ("", 1.0)
 #if os(Linux)
         let trimmed = type.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
 #else
-        let trimmed = type.trimmingCharacters(in: NSCharacterSet.whitespace())
+        let trimmed = type.trimmingCharacters(in: NSCharacterSet.whitespaces())
 #endif
         let components = trimmed.characters.split(separator: ";").map(String.init)
 
@@ -214,7 +214,7 @@ public class RouterRequest: SocketReader {
     ///
     /// - Returns most acceptable type or nil if there are none
     ///
-    public func accepts(types: [String]) -> String? {
+    public func accepts(_ types: [String]) -> String? {
 
         guard let acceptHeaderValue = headers["accept"] else {
             return nil
@@ -267,11 +267,11 @@ public class RouterRequest: SocketReader {
         return nil
     }
 
-    public func accepts(types: String...) -> String? {
+    public func accepts(_ types: String...) -> String? {
         return accepts(types)
     }
 
-    public func accepts(type: String) -> String? {
+    public func accepts(_ type: String) -> String? {
         return accepts([type])
     }
 
@@ -306,13 +306,13 @@ private class Cookies {
             #if os(Linux)
             let cookieNameValues = cookieString.bridge().componentsSeparatedByString("; ")
             #else
-            let cookieNameValues = cookieString.componentsSeparated(by: "; ")
+            let cookieNameValues = cookieString.components(separatedBy: "; ")
             #endif
             for  cookieNameValue  in  cookieNameValues  {
                 #if os(Linux)
                 let cookieNameValueParts = cookieNameValue.bridge().componentsSeparatedByString("=")
                 #else
-                let cookieNameValueParts = cookieNameValue.componentsSeparated(by: "=")
+                let cookieNameValueParts = cookieNameValue.components(separatedBy: "=")
                 #endif
                 if   cookieNameValueParts.count == 2  {
                     let theCookie = NSHTTPCookie(properties:
