@@ -125,7 +125,7 @@ public class RouterRequest: SocketReader {
     ///
     /// Body of the message
     ///
-    public internal(set) var body: ParsedBody? = nil
+    public internal(set) var body: ParsedBody?
 
     ///
     /// Initializes a RouterRequest instance

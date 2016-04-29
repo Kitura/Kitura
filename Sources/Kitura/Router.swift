@@ -343,177 +343,177 @@ public class Router {
     public func report(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
         return routingHelper(.Report, pattern: path, middleware: middleware)
     }
-    
+
     public func report(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
         return routingHelper(.Report, pattern: path, middleware: middleware)
     }
-    
+
     // MARK: MkActivity
     public func mkActivity(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.MkActivity, pattern: path, handler: handler)
     }
-    
+
     public func mkActivity(_ path: String?=nil, handler: [RouterHandler]) -> Router {
         return routingHelper(.MkActivity, pattern: path, handler: handler)
     }
-    
+
     public func mkActivity(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
         return routingHelper(.MkActivity, pattern: path, middleware: middleware)
     }
-    
+
     public func mkActivity(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
         return routingHelper(.MkActivity, pattern: path, middleware: middleware)
     }
-    
+
     // MARK: Checkout
     public func checkout(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Checkout, pattern: path, handler: handler)
     }
-    
+
     public func checkout(_ path: String?=nil, handler: [RouterHandler]) -> Router {
         return routingHelper(.Checkout, pattern: path, handler: handler)
     }
-    
+
     public func checkout(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
         return routingHelper(.Checkout, pattern: path, middleware: middleware)
     }
-    
+
     public func checkout(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
         return routingHelper(.Checkout, pattern: path, middleware: middleware)
     }
-    
+
     // MARK: Merge
     public func merge(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Merge, pattern: path, handler: handler)
     }
-    
+
     public func merge(_ path: String?=nil, handler: [RouterHandler]) -> Router {
         return routingHelper(.Merge, pattern: path, handler: handler)
     }
-    
+
     public func merge(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
         return routingHelper(.Merge, pattern: path, middleware: middleware)
     }
-    
+
     public func merge(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
         return routingHelper(.Merge, pattern: path, middleware: middleware)
     }
-    
+
     // MARK: MSearch
     public func mSearch(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.MSearch, pattern: path, handler: handler)
     }
-    
+
     public func mSearch(_ path: String?=nil, handler: [RouterHandler]) -> Router {
         return routingHelper(.MSearch, pattern: path, handler: handler)
     }
-    
+
     public func mSearch(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
         return routingHelper(.MSearch, pattern: path, middleware: middleware)
     }
-    
+
     public func mSearch(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
         return routingHelper(.MSearch, pattern: path, middleware: middleware)
     }
-    
+
     // MARK: Notify
     public func notify(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Notify, pattern: path, handler: handler)
     }
-    
+
     public func notify(_ path: String?=nil, handler: [RouterHandler]) -> Router {
         return routingHelper(.Notify, pattern: path, handler: handler)
     }
-    
+
     public func notify(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
         return routingHelper(.Notify, pattern: path, middleware: middleware)
     }
-    
+
     public func notify(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
         return routingHelper(.Notify, pattern: path, middleware: middleware)
     }
-    
+
     // MARK: Subscribe
     public func subscribe(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Subscribe, pattern: path, handler: handler)
     }
-    
+
     public func subscribe(_ path: String?=nil, handler: [RouterHandler]) -> Router {
         return routingHelper(.Subscribe, pattern: path, handler: handler)
     }
-    
+
     public func subscribe(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
         return routingHelper(.Subscribe, pattern: path, middleware: middleware)
     }
-    
+
     public func subscribe(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
         return routingHelper(.Subscribe, pattern: path, middleware: middleware)
     }
-    
+
     // MARK: Unsubscribe
     public func unsubscribe(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Unsubscribe, pattern: path, handler: handler)
     }
-    
+
     public func unsubscribe(_ path: String?=nil, handler: [RouterHandler]) -> Router {
         return routingHelper(.Unsubscribe, pattern: path, handler: handler)
     }
-    
+
     public func unsubscribe(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
         return routingHelper(.Unsubscribe, pattern: path, middleware: middleware)
     }
-    
+
     public func unsubscribe(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
         return routingHelper(.Unsubscribe, pattern: path, middleware: middleware)
     }
-    
+
     // MARK: Patch
     public func patch(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Patch, pattern: path, handler: handler)
     }
-    
+
     public func patch(_ path: String?=nil, handler: [RouterHandler]) -> Router {
         return routingHelper(.Patch, pattern: path, handler: handler)
     }
-    
+
     public func patch(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
         return routingHelper(.Patch, pattern: path, middleware: middleware)
     }
-    
+
     public func patch(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
         return routingHelper(.Patch, pattern: path, middleware: middleware)
     }
-    
+
     // MARK: Search
     public func search(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Search, pattern: path, handler: handler)
     }
-    
+
     public func search(_ path: String?=nil, handler: [RouterHandler]) -> Router {
         return routingHelper(.Search, pattern: path, handler: handler)
     }
-    
+
     public func search(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
         return routingHelper(.Search, pattern: path, middleware: middleware)
     }
-    
+
     public func search(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
         return routingHelper(.Search, pattern: path, middleware: middleware)
     }
-    
+
     // MARK: Connect
     public func connect(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.Connect, pattern: path, handler: handler)
     }
-    
+
     public func connect(_ path: String?=nil, handler: [RouterHandler]) -> Router {
         return routingHelper(.Connect, pattern: path, handler: handler)
     }
-    
+
     public func connect(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
         return routingHelper(.Connect, pattern: path, middleware: middleware)
     }
-    
+
     public func connect(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
         return routingHelper(.Connect, pattern: path, middleware: middleware)
     }
@@ -617,15 +617,19 @@ extension Router : RouterMiddleware {
     /// - Parameter response: the router response
     ///
     public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
-        let urlPath = request.parsedUrl.path!
+        guard let urlPath = request.parsedUrl.path else {
+            Log.error("Failed to handle request")
+            return
+        }
+
         let mountpath = request.matchedPath
 #if os(Linux)
         let prefixRange = urlPath.rangeOfString(mountpath)
 #else
         let prefixRange = urlPath.range(of: mountpath)
 #endif
-        request.parsedUrl.path!.removeSubrange(prefixRange!)
-        if request.parsedUrl.path! == "" {
+        request.parsedUrl.path?.removeSubrange(prefixRange!)
+        if request.parsedUrl.path == "" {
             request.parsedUrl.path = "/"
         }
 
@@ -675,7 +679,11 @@ extension Router : HttpServerDelegate {
     ///
     private func process(request: RouterRequest, response: RouterResponse, callback: () -> Void) {
 
-        let urlPath = request.parsedUrl.path!
+        guard let urlPath = request.parsedUrl.path else {
+            Log.error("Failed to process request")
+            return
+        }
+
 #if os(Linux)
         let shouldContinue = urlPath.characters.count > kituraResourcePrefix.characters.count && urlPath.bridge().substringToIndex(kituraResourcePrefix.characters.count) == kituraResourcePrefix
 #else
@@ -693,12 +701,13 @@ extension Router : HttpServerDelegate {
             var elemIndex = -1
 
             // Extra variable to get around use of variable in its own initializer
-            var nextElemCallback: (()->Void)? = nil
+            var nextElemCallback: (()->Void)?
 
             let nextElemCallbackHandler = {[unowned request, unowned response, unowned self] () -> Void in
                 elemIndex+=1
                 if  elemIndex < self.routeElems.count {
-                    self.routeElems[elemIndex].process(request: request, response: response, next: nextElemCallback!)
+                    guard let nextElemCallback = nextElemCallback else { return }
+                    self.routeElems[elemIndex].process(request: request, response: response, next: nextElemCallback)
                 } else {
                     callback()
                 }
@@ -713,11 +722,11 @@ extension Router : HttpServerDelegate {
     /// Send default index.html file and it's resources if appropriate, otherwise send default 404 message
     ///
     private func sendDefaultResponse(_ routeReq: RouterRequest, routeResp: RouterResponse) {
-        if  routeReq.parsedUrl.path! == "/"  {
+        if routeReq.parsedUrl.path == "/" {
             sendResourceIfExisting(routeResp, resource: "index.html")
         } else {
             do {
-                try routeResp.status(HttpStatusCode.NOT_FOUND).send("Cannot \(String(routeReq.method).uppercased()) \(routeReq.parsedUrl.path!).").end()
+                try routeResp.status(HttpStatusCode.NOT_FOUND).send("Cannot \(String(routeReq.method).uppercased()) \(routeReq.parsedUrl.path ?? "").").end()
             } catch {}
         }
     }
@@ -725,7 +734,7 @@ extension Router : HttpServerDelegate {
     private func getResourceFilePath(_ resource: String) -> String? {
         let fileManager = NSFileManager.defaultManager()
         let potentialResource = constructResourcePathFromSourceLocation(resource)
-        
+
         let fileExists = fileManager.fileExists(atPath: potentialResource)
         if fileExists {
             return potentialResource
@@ -734,7 +743,7 @@ extension Router : HttpServerDelegate {
             return constructResourcePathFromCurrentDirectory(resource, fileManager: fileManager)
         }
     }
-    
+
     private func constructResourcePathFromSourceLocation(_ resource: String) -> String {
         let fileName = NSString(string: #file)
         let resourceFilePrefixRange: NSRange
@@ -754,7 +763,7 @@ extension Router : HttpServerDelegate {
             return fileName.substring(with: resourceFilePrefixRange) + "resources/" + resource
         #endif
     }
-    
+
     private func constructResourcePathFromCurrentDirectory(_ resource: String, fileManager: NSFileManager) -> String? {
         do {
             let packagePath = fileManager.currentDirectoryPath + "/Packages"
@@ -781,7 +790,7 @@ extension Router : HttpServerDelegate {
         guard let resourceFileName = getResourceFilePath(resource) else {
             return
         }
-        
+
         do {
             try routeResp.send(fileName: resourceFileName)
             routeResp.status(HttpStatusCode.OK)

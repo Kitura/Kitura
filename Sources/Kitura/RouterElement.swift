@@ -27,12 +27,12 @@ class RouterElement {
     ///
     /// The regular expression matcher
     ///
-    static var keyRegex: NSRegularExpression? = nil
+    static var keyRegex: NSRegularExpression?
 
     ///
     /// The regular expression matcher
     ///
-    static var nonKeyRegex: NSRegularExpression? = nil
+    static var nonKeyRegex: NSRegularExpression?
 
     ///
     /// Status of regex initialization
@@ -101,36 +101,39 @@ class RouterElement {
     /// - Parameter response: the response
     ///
     func process(request: RouterRequest, response: RouterResponse, next: () -> Void) {
-        let urlPath = request.parsedUrl.path!
-
-        if response.error == nil || method == .Error {
-            if response.error != nil || method == .All || method == request.method {
-                // Either response error exists and method is error, or method matches
-                if  let regex = regex  {
-                    let tempMatch = regex.firstMatch(in: urlPath, options: [], range: NSMakeRange(0, urlPath.characters.count))
-                    if  let match = tempMatch  {
-#if os(Linux)
-                    request.matchedPath = urlPath.bridge().substringWithRange(match.range)
-#else
-                    request.matchedPath = urlPath.bridge().substring(with: match.range)
-#endif
-                        request.route = pattern
-                        updateRequestParams(urlPath, match: match, request: request)
-                        processHelper(request: request, response: response, next: next)
-                    } else {
-                        next()
-                    }
-                } else {
-                    request.route = pattern
-                    request.params = [:]
-                    processHelper(request: request, response: response, next: next)
-                }
-            } else {
-                next()
-            }
-        } else {
-            next()
+        guard let urlPath = request.parsedUrl.path else {
+            Log.error("Failed to process request (path is nil)")
+            return
         }
+
+        guard (response.error != nil && method == .Error)
+        || (response.error == nil && (method == request.method || method == .All)) else {
+            next()
+            return
+        }
+
+        // Either response error exists and method is error, or method matches
+        guard let regex = regex else {
+            request.route = pattern
+            request.params = [:]
+            processHelper(request: request, response: response, next: next)
+            return
+        }
+
+        guard let match = regex.firstMatch(in: urlPath, options: [], range: NSMakeRange(0, urlPath.characters.count)) else {
+            next()
+            return
+        }
+
+#if os(Linux)
+          request.matchedPath = urlPath.bridge().substringWithRange(match.range)
+#else
+          request.matchedPath = urlPath.bridge().substring(with: match.range)
+#endif
+
+          request.route = pattern
+          updateRequestParams(urlPath, match: match, request: request)
+          processHelper(request: request, response: response, next: next)
     }
 
     ///
@@ -144,17 +147,19 @@ class RouterElement {
         var middlewareCount = -1
 
         // Extra variable since closures cannot be used in their own initalizer
-        var nextCallbackPlaceholder: (()->Void)? = nil
+        var nextCallbackPlaceholder: (()->Void)?
 
         let nextCallback = {
             middlewareCount += 1
             if middlewareCount < self.middlewares.count && (response.error == nil || self.method == .Error) {
-                self.middlewares[middlewareCount].handle(request: request, response: response, next: nextCallbackPlaceholder!)
+                guard let nextCallbackPlaceholder = nextCallbackPlaceholder else { return }
+                self.middlewares[middlewareCount].handle(request: request, response: response, next: nextCallbackPlaceholder)
             } else {
                 request.params = [:]
                 next()
             }
         }
+
         nextCallbackPlaceholder = nextCallback
         nextCallback()
     }
