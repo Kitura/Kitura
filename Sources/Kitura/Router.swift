@@ -624,11 +624,18 @@ extension Router : RouterMiddleware {
 
         let mountpath = request.matchedPath
 #if os(Linux)
-        let prefixRange = urlPath.rangeOfString(mountpath)
+        guard let prefixRange = urlPath.rangeOfString(mountpath) else {
+            Log.error("Failed to find matches in url")
+            return
+        }
 #else
-        let prefixRange = urlPath.range(of: mountpath)
+        guard let prefixRange = urlPath.range(of: mountpath) else {
+            Log.error("Failed to find matches in url")
+            return
+        }
 #endif
-        request.parsedUrl.path?.removeSubrange(prefixRange!)
+        request.parsedUrl.path?.removeSubrange(prefixRange)
+        
         if request.parsedUrl.path == "" {
             request.parsedUrl.path = "/"
         }
