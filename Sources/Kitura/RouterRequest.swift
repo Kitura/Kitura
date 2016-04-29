@@ -95,16 +95,15 @@ public class RouterRequest: SocketReader {
     //
     // Parsed Cookies, used to do a lazy parsing of the appropriate headers
     //
-    private var _cookies: Cookies?
+    private lazy var _cookies: Cookies = {
+        return Cookies(headers: self.headers)
+    }()
 
     ///
     /// Set of parsed cookies
     ///
     public var cookies: [String: NSHTTPCookie] {
-        if  _cookies == nil {
-            _cookies = Cookies(headers: headers)
-        }
-        return _cookies!.cookies
+        return _cookies.cookies
     }
 
     ///
