@@ -74,7 +74,7 @@ public class ContentType {
         // MARK: Linux Foundation will return an Any instead of an AnyObject
         // Need to test if this breaks the Linux build.
 #if os(Linux)
-        guard let parsedObject = try? NSJSONSerialization.jsonObject(with: contentTypesData!,
+        guard let parsedObject = try? NSJSONSerialization.jsonObject(with: contentTypesData,
             options: NSJSONReadingOptions.MutableContainers) else {
                 Log.error("JSON could not be parsed")
                 return
