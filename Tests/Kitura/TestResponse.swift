@@ -340,22 +340,25 @@ class TestResponse : XCTestCase {
         router.all("/bodytest", middleware: BodyParser())
 
         router.post("/bodytest") { request, response, next in
-            if let body = request.body?.asUrlEncoded() {
-                response.setHeader("Content-Type", value: "text/html; charset=utf-8")
-                do {
-                    try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> \(body) </body></html>\n\n")
-                }
-                catch {}
+            response.setHeader("Content-Type", value: "text/html; charset=utf-8")
+            guard let requestBody = request.body else {
+                next ()
+                return
             }
-            else if let text = request.body?.asText() {
-                response.setHeader("Content-Type", value: "text/html; charset=utf-8")
-                do {
-                    try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received text body: </b>\(text)</body></html>\n\n")
-                }
-                catch {}
-            }
-            else {
-                response.error = Error.FailedToParseRequestBody(body: "\(request.body)")
+            switch (requestBody) {
+                case .UrlEncoded(let value):
+                    do {
+                        try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> \(value) </body></html>\n\n")
+                    }
+                    catch {}
+                case .Text(let value):
+                    do {
+                        try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received text body: </b>\(value)</body></html>\n\n")
+                    }
+                    catch {}
+                default:
+                    response.error = Error.FailedToParseRequestBody(body: "\(request.body)")
+                
             }
 
             next()
