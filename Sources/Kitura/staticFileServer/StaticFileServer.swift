@@ -203,8 +203,8 @@ public class StaticFileServer: RouterMiddleware {
                         response.setHeader("Etag", value: etag)
                     }
                 }
-                if let _ = customResponseHeadersSetter {
-                    customResponseHeadersSetter!.setCustomResponseHeaders(response: response, filePath: filePath, fileAttributes: attributes)
+                if let customResponseHeadersSetter = customResponseHeadersSetter {
+                    customResponseHeadersSetter.setCustomResponseHeaders(response: response, filePath: filePath, fileAttributes: attributes)
                 }
 
                 try response.send(fileName: filePath)
