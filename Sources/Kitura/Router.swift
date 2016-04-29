@@ -726,8 +726,11 @@ extension Router : HttpServerDelegate {
             sendResourceIfExisting(routeResp, resource: "index.html")
         } else {
             do {
-                try routeResp.status(HttpStatusCode.NOT_FOUND).send("Cannot \(String(routeReq.method).uppercased()) \(routeReq.parsedUrl.path ?? "").").end()
-            } catch {}
+                let message = "Cannot \(String(routeReq.method).uppercased()) \(routeReq.parsedUrl.path ?? "")."
+                try routeResp.status(HttpStatusCode.NOT_FOUND).send(message).end()
+            } catch {
+                Log.error("Filed to process default response")
+            }
         }
     }
 
