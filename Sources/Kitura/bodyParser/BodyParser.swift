@@ -77,8 +77,9 @@ public class BodyParser: RouterMiddleware {
 
         if let parser = parserMap[contentType] {
             return parse(message, parser: parser)
-        } else if contentType.hasPrefix("text/") {
-            return parse(message, parser: parserMap["text"]!)
+        } else if let parserMap = parserMap["text"]
+            where contentType.hasPrefix("text/") {
+            return parse(message, parser: parserMap)
         }
 
         return nil
