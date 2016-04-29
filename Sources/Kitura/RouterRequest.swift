@@ -198,8 +198,9 @@ public class RouterRequest: SocketReader {
         }
         if let qPreference = components.last {
             let qualityComponents = qPreference.characters.split(separator: "=").map(String.init)
-            if let q = qualityComponents.first, value = qualityComponents.last where q == "q" {
-                finishedPair.1 = Double(value)!
+            if let q = qualityComponents.first, value = qualityComponents.last where q == "q",
+                let pairValue = Double(value) {
+                finishedPair.1 = pairValue
             }
         }
 
