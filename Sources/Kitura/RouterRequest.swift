@@ -31,19 +31,18 @@ public class RouterRequest: SocketReader {
     ///
     /// The hostname of the request
     ///
-    public var hostname: String {
-        if  let host = headers["host"] {
-#if os(Linux)
-            let range = host.rangeOfString(":")
-            return  range == nil ? host : host.substringToIndex(range!.startIndex)
-#else
-            let range = host.range(of: ":")
-            return  range == nil ? host : host.substring(to: range!.startIndex)
-#endif
-        } else {
-            return parsedUrl.host ?? ""
+    public private(set) lazy var hostname: String = {[unowned self] () in
+        guard let host = self.headers["host"] else {
+            return self.parsedUrl.host ?? ""
         }
-    }
+#if os(Linux)
+        let range = host.rangeOfString(":")
+        return  range == nil ? host : host.substringToIndex(range!.startIndex)
+#else
+        let range = host.range(of: ":")
+        return  range == nil ? host : host.substring(to: range!.startIndex)
+#endif
+    }()
 
     ///
     /// The method of the request
