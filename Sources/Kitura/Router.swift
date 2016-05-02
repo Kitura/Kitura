@@ -42,7 +42,7 @@ public class Router {
     ///
     /// Views directory path
     ///
-    private var viewsPath: String { return "./Views/" }
+    public var viewsPath = "./Views/"
 
     ///
     /// Prefix for special page resources
