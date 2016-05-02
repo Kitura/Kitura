@@ -193,8 +193,3 @@ class RouterElement {
 
     }
 }
-
-///
-/// RouterHandler is a closure
-///
-public typealias RouterHandler = (request: RouterRequest, response: RouterResponse, next: ()->Void) -> Void

@@ -200,8 +200,8 @@ public class StaticFileServer: RouterMiddleware {
                         response.setHeader("Etag", value: etag)
                     }
                 }
-                if let _ = customResponseHeadersSetter {
-                    customResponseHeadersSetter!.setCustomResponseHeaders(response: response, filePath: filePath, fileAttributes: attributes)
+                if let customResponseHeadersSetter = customResponseHeadersSetter {
+                    customResponseHeadersSetter.setCustomResponseHeaders(response: response, filePath: filePath, fileAttributes: attributes)
                 }
 
                 try response.send(fileName: filePath)
@@ -221,17 +221,5 @@ public class StaticFileServer: RouterMiddleware {
         case CustomResponseHeadersSetter(ResponseHeadersSetter)
         case GenerateETag(Bool)
     }
-
-}
-
-#if os(Linux)
-    public typealias CustomResponseHeaderAttributes = [String : Any]
-#else
-    public typealias CustomResponseHeaderAttributes = [String : AnyObject]
-#endif
-
-public protocol ResponseHeadersSetter {
-
-    func setCustomResponseHeaders (response: RouterResponse, filePath: String, fileAttributes: CustomResponseHeaderAttributes)
 
 }
