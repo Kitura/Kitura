@@ -416,7 +416,7 @@ class TestResponse : XCTestCase {
             next()
         }
 
-        func callbackText(response: RouterResponse) {
+        func callbackText(request: RouterRequest, response: RouterResponse) {
             do {
                 try response.status(HttpStatusCode.OK).send("Hi from Kitura!").end()
             }
@@ -424,7 +424,7 @@ class TestResponse : XCTestCase {
             
         }
         
-        func callbackHtml(response: RouterResponse) {
+        func callbackHtml(request: RouterRequest, response: RouterResponse) {
             do {
                 try response.status(HttpStatusCode.OK).send("<!DOCTYPE html><html><body>Hi from Kitura!</body></html>\n\n").end()
             }
@@ -432,7 +432,7 @@ class TestResponse : XCTestCase {
             
         }
         
-        func callbackDefault(response: RouterResponse) {
+        func callbackDefault(request: RouterRequest, response: RouterResponse) {
             do {
                 response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
                 try response.status(HttpStatusCode.OK).send("default").end()
@@ -443,10 +443,10 @@ class TestResponse : XCTestCase {
         
         router.get("/format") { request, response, next in
             do {
-                try response.format(request: request, callbacks: [
-                                                                     "text/plain" : callbackText,
-                                                                     "text/html" : callbackHtml,
-                                                                     "default" : callbackDefault])
+                try response.format(callbacks: [
+                                                   "text/plain" : callbackText,
+                                                   "text/html" : callbackHtml,
+                                                   "default" : callbackDefault])
             }
             catch {}
         }
