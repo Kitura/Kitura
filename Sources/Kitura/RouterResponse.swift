@@ -475,6 +475,31 @@ public class RouterResponse {
         preFlush = newPreFlush
         return oldPreFlush
     }
+    
+    
+    ///
+    /// Performs content-negotiation on the Accept HTTP header on the request, when present. It uses
+    /// request.accepts() to select a handler for the request, based on the acceptable types ordered by their
+    /// quality values. If the header is not specified, the default callback is invoked. When no match is found,
+    /// the server invokes the default callback if exists, or responds with 406 “Not Acceptable”.
+    /// The Content-Type response header is set when a callback is selected.
+    /// 
+    /// - Parameter callbacks: a dictionary that maps content types to handlers
+    ///
+    public func format(callbacks: [String : ((RouterRequest, RouterResponse) -> Void)]) throws {
+        let callbackTypes = Array(callbacks.keys)
+        if let acceptType = request.accepts(callbackTypes) {
+            setHeader("Content-Type", value: acceptType)
+            callbacks[acceptType]!(request, self)
+        }
+        else if let defaultCallback = callbacks["default"] {
+            defaultCallback(request, self)
+        }
+        else {
+            try status(HttpStatusCode.NOT_ACCEPTABLE).end()
+        }
+    }
+
 }
 
 ///
