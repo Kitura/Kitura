@@ -101,7 +101,7 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-04-25-a ve
 
 1. Install the following system linux libraries:
 
- `sudo apt-get install autoconf libtool libkqueue-dev libkqueue0 libdispatch-dev libdispatch0 libcurl4-openssl-dev libbsd-dev`
+ `sudo apt-get install autoconf libtool libkqueue-dev libkqueue0 libcurl4-openssl-dev libbsd-dev`
 
 2. Install the [supported Swift compiler](#swift-version) for Linux.
 
@@ -200,8 +200,8 @@ Let's develop our first Kitura Web Application written in Swift!
 
 8. Compile your application:
 
-  - Mac OS X: `swift build -Xcc -fblocks -Xswiftc -I/usr/local/include -Xlinker -L/usr/local/lib`
-  - Linux:  `swift build -Xcc -fblocks`
+  - Mac OS X: `swift build`
+  - Linux:  `swift build -Xcc -fblocks -Xlinker -rpath -Xlinker .build/debug`
 
   Or copy [Makefile and build scripts](https://github.com/IBM-Swift/Kitura-Build/blob/master/build) to your project directory and run `make build`. You may want to customize this Makefile and use it for building, testing and running your application. For example, you can clean your build directory, refetch all the dependencies, build, test and run your application by running `make clean refetch test run`.
 
