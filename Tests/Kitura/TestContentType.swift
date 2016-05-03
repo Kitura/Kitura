@@ -29,8 +29,6 @@ class TestContentType : XCTestCase {
 
     func test_initialize() {
 
-        print("Type for png is: \(ContentType.sharedInstance.contentTypeForExtension("png"))")
-
         let pngType = ContentType.sharedInstance.contentTypeForExtension("png")
 
         XCTAssertEqual(pngType, "image/png")
