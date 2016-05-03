@@ -1,3 +1,4 @@
+
 /**
  * Copyright IBM Corporation 2016
  *
@@ -60,39 +61,35 @@ public class ContentType {
         }
 
 #if os(Linux)
-        let contentTypesData = contentTypesString.bridge().dataUsingEncoding(NSUTF8StringEncoding)
-#else
-        let contentTypesData = contentTypesString.bridge().data(using: NSUTF8StringEncoding)
-#endif
-
-        if contentTypesData == nil {
+        guard let contentTypesData = contentTypesString.bridge().dataUsingEncoding(NSUTF8StringEncoding) else {
             Log.error("Error parsing \(contentTypesString)")
             return
         }
+#else
+        guard let contentTypesData = contentTypesString.bridge().data(using: NSUTF8StringEncoding) else {
+            Log.error("Error parsing \(contentTypesString)")
+            return
+        }
+#endif
+
+#if os(Linux)
+        let jsonParseOptions = NSJSONReadingOptions.MutableContainers
+#else
+        let jsonParseOptions = NSJSONReadingOptions.mutableContainers
+#endif
 
         // MARK: Linux Foundation will return an Any instead of an AnyObject
         // Need to test if this breaks the Linux build.
-#if os(Linux)  
-        let jsonData = try? NSJSONSerialization.jsonObject(with: contentTypesData!,
-            options: NSJSONReadingOptions.MutableContainers) as? NSDictionary
-#else
-        let jsonData = try? NSJSONSerialization.jsonObject(with: contentTypesData!,
-            options: NSJSONReadingOptions.mutableContainers) as? NSDictionary
-#endif
-
-
-        if jsonData == nil || jsonData! == nil {
+        guard let parsedObject = try? NSJSONSerialization.jsonObject(with: contentTypesData,
+            options: jsonParseOptions),
+            let jsonData = parsedObject as? [String : [String]] else {
             Log.error("JSON could not be parsed")
             return
         }
 
-        for (contentType, exts) in jsonData!! {
-
-            let e = exts as! [String]
-            for ext in e {
-
-                extToContentType[ext] = contentType as? String
-
+        for (contentType, exts) in jsonData {
+            for ext in exts {
+                extToContentType[ext] = contentType
             }
         }
     }
@@ -119,13 +116,13 @@ public class ContentType {
         let lastPathElemRange: Range<String.Index>
         let extRange: Range<String.Index>
 #if os(Linux)
-        if  let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch) {
+        if let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch) {
             lastPathElemRange = lastSlash.startIndex.successor()..<fileName.characters.endIndex
         } else {
             lastPathElemRange = fileName.characters.startIndex..<fileName.characters.endIndex
         }
 
-        if  let lastDot = fileName.rangeOfString(".", range: lastPathElemRange) {
+        if let lastDot = fileName.rangeOfString(".", range: lastPathElemRange) {
             extRange = lastDot.startIndex.successor()..<fileName.characters.endIndex
         } else {
             // No "extension", use the entire last path element as the "extension"
@@ -134,13 +131,13 @@ public class ContentType {
 
         return contentTypeForExtension(fileName.substringWithRange(extRange))
 #else
-        if  let lastSlash = fileName.range(of: "/", options: NSStringCompareOptions.backwardsSearch) {
+        if let lastSlash = fileName.range(of: "/", options: NSStringCompareOptions.backwardsSearch) {
             lastPathElemRange = lastSlash.startIndex.successor()..<fileName.characters.endIndex
         } else {
             lastPathElemRange = fileName.characters.startIndex..<fileName.characters.endIndex
         }
 
-        if  let lastDot = fileName.range(of: ".", range: lastPathElemRange) {
+        if let lastDot = fileName.range(of: ".", range: lastPathElemRange) {
             extRange = lastDot.startIndex.successor()..<fileName.characters.endIndex
         } else {
             // No "extension", use the entire last path element as the "extension"

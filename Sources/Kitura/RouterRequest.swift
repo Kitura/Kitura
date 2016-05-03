@@ -31,19 +31,18 @@ public class RouterRequest: SocketReader {
     ///
     /// The hostname of the request
     ///
-    public var hostname: String {
-        if  let host = headers["host"] {
-#if os(Linux)
-            let range = host.rangeOfString(":")
-            return  range == nil ? host : host.substringToIndex(range!.startIndex)
-#else
-            let range = host.range(of: ":")
-            return  range == nil ? host : host.substring(to: range!.startIndex)
-#endif
-        } else {
-            return parsedUrl.host ?? ""
+    public private(set) lazy var hostname: String = {[unowned self] () in
+        guard let host = self.headers["host"] else {
+            return self.parsedUrl.host ?? ""
         }
-    }
+#if os(Linux)
+        let range = host.rangeOfString(":")
+        return  range == nil ? host : host.substringToIndex(range!.startIndex)
+#else
+        let range = host.range(of: ":")
+        return  range == nil ? host : host.substring(to: range!.startIndex)
+#endif
+    }()
 
     ///
     /// The method of the request
@@ -95,16 +94,15 @@ public class RouterRequest: SocketReader {
     //
     // Parsed Cookies, used to do a lazy parsing of the appropriate headers
     //
-    private var _cookies: Cookies?
+    private lazy var _cookies: Cookies = {
+        return Cookies(headers: self.headers)
+    }()
 
     ///
     /// Set of parsed cookies
     ///
     public var cookies: [String: NSHTTPCookie] {
-        if  _cookies == nil {
-            _cookies = Cookies(headers: headers)
-        }
-        return _cookies!.cookies
+        return _cookies.cookies
     }
 
     ///
@@ -125,7 +123,7 @@ public class RouterRequest: SocketReader {
     ///
     /// Body of the message
     ///
-    public internal(set) var body: ParsedBody? = nil
+    public internal(set) var body: ParsedBody?
 
     ///
     /// Initializes a RouterRequest instance
@@ -199,8 +197,9 @@ public class RouterRequest: SocketReader {
         }
         if let qPreference = components.last {
             let qualityComponents = qPreference.characters.split(separator: "=").map(String.init)
-            if let q = qualityComponents.first, value = qualityComponents.last where q == "q" {
-                finishedPair.1 = Double(value)!
+            if let q = qualityComponents.first, value = qualityComponents.last where q == "q",
+                let pairValue = Double(value) {
+                finishedPair.1 = pairValue
             }
         }
 

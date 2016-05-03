@@ -66,12 +66,12 @@ public class RouterResponse {
     /// Optional error value
     ///
     public var error: ErrorProtocol?
-    
+
     public var statusCode: HttpStatusCode {
         get {
             return response.statusCode ?? .UNKNOWN
         }
-        
+
         set(newValue) {
             response.statusCode = newValue
         }
@@ -152,7 +152,7 @@ public class RouterResponse {
     /// - Returns: a RouterResponse instance
     ///
     public func end(_ str: String) throws -> RouterResponse {
-        
+
         send(str)
         try end()
         return self
@@ -168,7 +168,7 @@ public class RouterResponse {
     /// - Returns: a RouterResponse instance
     ///
     public func end(_ data: NSData) throws -> RouterResponse {
-        
+
         send(data: data)
         try end()
         return self
@@ -183,7 +183,7 @@ public class RouterResponse {
     /// - Returns: a RouterResponse instance
     ///
     public func send(_ str: String) -> RouterResponse {
-        
+
         if  let data = StringUtils.toUtf8String(str)  {
             buffer.append(data: data)
         }
@@ -199,7 +199,7 @@ public class RouterResponse {
     /// - Returns: a RouterResponse instance
     ///
     public func send(data: NSData) -> RouterResponse {
-        
+
         buffer.append(data: data)
         return self
 
@@ -236,7 +236,7 @@ public class RouterResponse {
     /// - Returns: a RouterResponse instance
     ///
     public func send(json: JSON) -> RouterResponse {
-        
+
         let jsonStr = json.description
         type("json")
         send(jsonStr)
@@ -264,9 +264,11 @@ public class RouterResponse {
     /// - Returns: a RouterResponse instance
     ///
     public func send(status: HttpStatusCode) throws -> RouterResponse {
-        
+
         self.status(status)
-        send(Http.statusCodes[status.rawValue]!)
+        if let statusCode = Http.statusCodes[status.rawValue] {
+            send(statusCode)
+        }
         return self
 
     }
@@ -279,7 +281,7 @@ public class RouterResponse {
     /// - Returns: the value for the key
     ///
     public func getHeader(_ key: String) -> String? {
-        
+
         return response.getHeader(key)
 
     }
@@ -292,7 +294,7 @@ public class RouterResponse {
     /// - Returns: the value for the key as a list
     ///
     public func getHeaders(_ key: String) -> [String]? {
-        
+
         return response.getHeaders(key)
 
     }
@@ -306,13 +308,13 @@ public class RouterResponse {
     /// - Returns: the value for the key as a list
     ///
     public func setHeader(_ key: String, value: String) {
-        
+
         response.setHeader(key, value: value)
 
     }
-    
+
     public func setHeader(_ key: String, value: [String]) {
-        
+
         response.setHeader(key, value: value)
 
     }
@@ -345,9 +347,9 @@ public class RouterResponse {
     /// - Parameter key: the key
     ///
     public func removeHeader(_ key: String) {
-        
+
         response.removeHeader(key: key)
-        
+
     }
 
     ///
@@ -384,7 +386,7 @@ public class RouterResponse {
     /// - Returns: a RouterResponse instance
     ///
     public func location(_ path: String) -> RouterResponse {
-        
+
         var p = path
         if  p == "back" {
             let referrer = getHeader("referrer")
@@ -443,10 +445,12 @@ public class RouterResponse {
         }
 
         let filePaths = filePath.characters.split {$0 == "/"}.map(String.init)
-        let fileName = filePaths.last
-        setHeader("Content-Disposition", value: "attachment; fileName = \"\(fileName!)\"")
+        guard let fileName = filePaths.last else {
+            return
+        }
+        setHeader("Content-Disposition", value: "attachment; fileName = \"\(fileName)\"")
 
-        let contentType =  ContentType.sharedInstance.contentTypeForFile(fileName!)
+        let contentType =  ContentType.sharedInstance.contentTypeForFile(fileName)
         if  let contentType = contentType {
             setHeader("Content-Type", value: contentType)
         }
@@ -471,6 +475,31 @@ public class RouterResponse {
         preFlush = newPreFlush
         return oldPreFlush
     }
+    
+    
+    ///
+    /// Performs content-negotiation on the Accept HTTP header on the request, when present. It uses
+    /// request.accepts() to select a handler for the request, based on the acceptable types ordered by their
+    /// quality values. If the header is not specified, the default callback is invoked. When no match is found,
+    /// the server invokes the default callback if exists, or responds with 406 “Not Acceptable”.
+    /// The Content-Type response header is set when a callback is selected.
+    /// 
+    /// - Parameter callbacks: a dictionary that maps content types to handlers
+    ///
+    public func format(callbacks: [String : ((RouterRequest, RouterResponse) -> Void)]) throws {
+        let callbackTypes = Array(callbacks.keys)
+        if let acceptType = request.accepts(callbackTypes) {
+            setHeader("Content-Type", value: acceptType)
+            callbacks[acceptType]!(request, self)
+        }
+        else if let defaultCallback = callbacks["default"] {
+            defaultCallback(request, self)
+        }
+        else {
+            try status(HttpStatusCode.NOT_ACCEPTABLE).end()
+        }
+    }
+
 }
 
 ///

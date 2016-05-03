@@ -118,64 +118,61 @@ public class StaticFileServer: RouterMiddleware {
         guard request.serverRequest.method == "GET" || request.serverRequest.method == "HEAD" else {
             return next()
         }
-
+        
         var filePath = path
-        let originalUrl = request.originalUrl
-        if let requestRoute = request.route {
-            var route = requestRoute
-            if route.hasSuffix("*") {
-                route = String(route.characters.dropLast())
+        if let requestPath = request.parsedUrl.path {
+            var matchedPath = request.matchedPath
+            if matchedPath.hasSuffix("*") {
+                matchedPath = String(matchedPath.characters.dropLast())
             }
-            if !route.hasSuffix("/") {
-                route += "/"
+            if !matchedPath.hasSuffix("/") {
+                matchedPath += "/"
             }
-
-            if originalUrl.hasPrefix(route) {
-                let url = String(originalUrl.characters.dropFirst(route.characters.count))
+            
+            if requestPath.hasPrefix(matchedPath) {
+                let url = String(requestPath.characters.dropFirst(matchedPath.characters.count))
                 filePath += "/" + url
             }
-        }
-
-        if filePath.hasSuffix("/") {
-            if serveIndexForDir {
-                filePath += "index.html"
-            } else {
-                next()
-                return
+            
+            if filePath.hasSuffix("/") {
+                if serveIndexForDir {
+                    filePath += "index.html"
+                } else {
+                    next()
+                    return
+                }
             }
-        }
-
-        let fileManager = NSFileManager()
-        var isDirectory = ObjCBool(false)
-
-        if fileManager.fileExists(atPath: filePath, isDirectory: &isDirectory) {
-            if isDirectory.boolValue {
-                if redirect {
-                    do {
-                        try response.redirect(originalUrl + "/")
-                    } catch {
-                        response.error = Error.FailedToRedirectRequest(path: originalUrl + "/", chainedError: error)
+            
+            let fileManager = NSFileManager()
+            var isDirectory = ObjCBool(false)
+            
+            if fileManager.fileExists(atPath: filePath, isDirectory: &isDirectory) {
+                if isDirectory.boolValue {
+                    if redirect {
+                        do {
+                            try response.redirect(requestPath + "/")
+                        } catch {
+                            response.error = Error.FailedToRedirectRequest(path: requestPath + "/", chainedError: error)
+                        }
                     }
+                } else {
+                    serveFile(filePath, fileManager: fileManager, response: response)
                 }
             } else {
-                serveFile(filePath, fileManager: fileManager, response: response)
-            }
-        } else {
-            if let extensions = possibleExtensions {
-                for ext in extensions {
-                    let newFilePath = filePath + "." + ext
-                    if fileManager.fileExists(atPath: newFilePath, isDirectory: &isDirectory) {
-                        if !isDirectory.boolValue {
-                            serveFile(newFilePath, fileManager: fileManager, response: response)
-                            break
+                if let extensions = possibleExtensions {
+                    for ext in extensions {
+                        let newFilePath = filePath + "." + ext
+                        if fileManager.fileExists(atPath: newFilePath, isDirectory: &isDirectory) {
+                            if !isDirectory.boolValue {
+                                serveFile(newFilePath, fileManager: fileManager, response: response)
+                                break
+                            }
                         }
                     }
                 }
             }
         }
-
         next()
-
     }
 
     private func serveFile(_ filePath: String, fileManager: NSFileManager, response: RouterResponse) {
@@ -203,8 +200,8 @@ public class StaticFileServer: RouterMiddleware {
                         response.setHeader("Etag", value: etag)
                     }
                 }
-                if let _ = customResponseHeadersSetter {
-                    customResponseHeadersSetter!.setCustomResponseHeaders(response: response, filePath: filePath, fileAttributes: attributes)
+                if let customResponseHeadersSetter = customResponseHeadersSetter {
+                    customResponseHeadersSetter.setCustomResponseHeaders(response: response, filePath: filePath, fileAttributes: attributes)
                 }
 
                 try response.send(fileName: filePath)
@@ -224,17 +221,5 @@ public class StaticFileServer: RouterMiddleware {
         case CustomResponseHeadersSetter(ResponseHeadersSetter)
         case GenerateETag(Bool)
     }
-
-}
-
-#if os(Linux)
-    public typealias CustomResponseHeaderAttributes = [String : Any]
-#else
-    public typealias CustomResponseHeaderAttributes = [String : AnyObject]
-#endif
-
-public protocol ResponseHeadersSetter {
-
-    func setCustomResponseHeaders (response: RouterResponse, filePath: String, fileAttributes: CustomResponseHeaderAttributes)
 
 }
