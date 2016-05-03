@@ -164,52 +164,25 @@ public class RouteRegex {
                 // Build the runtime regex depending on whether or not there is "repetition"
                 switch(plusQuestStar) {
                 case "+":
-                    regexStr.append("/")
-                    regexStr.append(prefix)
-                    regexStr.append("(")
-                    regexStr.append(matchExp)
-                    regexStr.append("(?:/")
-                    regexStr.append(matchExp)
-                    regexStr.append(")*)")
+                    regexStr.append("/\(prefix)(\(matchExp)(?:/\(matchExp))*)")
                 case "?":
                     if  prefix.isEmpty {
-                        regexStr.append("(?:/(")
-                        regexStr.append(matchExp)
-                        regexStr.append("))?")
+                        regexStr.append("(?:/(\(matchExp)))?")
                     } else {
-                        regexStr.append("/")
-                        regexStr.append(prefix)
-                        regexStr.append("(?:(")
-                        regexStr.append(matchExp)
-                        regexStr.append("))?")
+                        regexStr.append("/\(prefix)(?:(\(matchExp)))?")
                     }
                 case "*":
                     if  prefix.isEmpty {
-                        regexStr.append("(?:/(")
-                        regexStr.append(matchExp)
-                        regexStr.append("(?:/")
-                        regexStr.append(matchExp)
-                        regexStr.append(")*))?")
+                        regexStr.append("(?:/(\(matchExp)(?:/\(matchExp))*))?")
                     } else {
-                        regexStr.append("/")
-                        regexStr.append(prefix)
-                        regexStr.append("(?:(")
-                        regexStr.append(matchExp)
-                        regexStr.append("(?:/")
-                        regexStr.append(matchExp)
-                        regexStr.append(")*))?")
+                        regexStr.append("/\(prefix)(?:(\(matchExp)(?:/\(matchExp))*))?")
                     }
                 default:
-                    regexStr.append("/")
-                    regexStr.append(prefix)
-                    regexStr.append("(?:(")
-                    regexStr.append(matchExp)
-                    regexStr.append("))")
+                    regexStr.append("/\(prefix)(?:(\(matchExp)))")
                 }
             } else {
                 // A path element with no capture
-                regexStr.append("/")
-                regexStr.append(path)
+                regexStr.append("/\(path)")
             }
         }
         regexStr.append("(?:/(?=$))?")
