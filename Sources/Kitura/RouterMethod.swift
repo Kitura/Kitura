@@ -19,7 +19,9 @@
 ///
 public enum RouterMethod: Int {
     
-    case All, Get, Post, Put, Head, Delete, Options, Trace, Copy, Lock, MkCol, Move, Purge, PropFind, PropPatch, Unlock, Report, MkActivity, Checkout, Merge, MSearch, Notify, Subscribe, Unsubscribe, Patch, Search, Connect, Error, Unknown
+    case All, Get, Post, Put, Head, Delete, Options, Trace, Copy, Lock, MkCol, Move,
+            Purge, PropFind, PropPatch, Unlock, Report, MkActivity, Checkout, Merge,
+            MSearch, Notify, Subscribe, Unsubscribe, Patch, Search, Connect, Error, Unknown
     
     init(string: String) {
         switch string.lowercased() {
