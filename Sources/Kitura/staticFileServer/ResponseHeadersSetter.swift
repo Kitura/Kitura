@@ -14,17 +14,15 @@
  * limitations under the License.
  **/
 
-// MARK: RouterMiddleware protocol
 
-public protocol RouterMiddleware {
+#if os(Linux)
+    public typealias CustomResponseHeaderAttributes = [String : Any]
+#else
+    public typealias CustomResponseHeaderAttributes = [String : AnyObject]
+#endif
 
-    ///
-    /// The handle operation
-    ///
-    /// - Parameter request: the router request
-    /// - Parameter response: the router response
-    /// - Parameter next: the closure to the next operation
-    ///
-    func handle(request: RouterRequest, response: RouterResponse, next: () -> Void)
+public protocol ResponseHeadersSetter {
+
+    func setCustomResponseHeaders (response: RouterResponse, filePath: String, fileAttributes: CustomResponseHeaderAttributes)
 
 }

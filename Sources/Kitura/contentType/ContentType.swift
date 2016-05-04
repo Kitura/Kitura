@@ -1,3 +1,4 @@
+
 /**
  * Copyright IBM Corporation 2016
  *
@@ -17,28 +18,33 @@
 import Foundation
 import LoggerAPI
 
-// MARK: ContentType 
+// MARK: ContentType
 
 public class ContentType {
-    
+
     ///
     /// Whether to use the local mime-type definitions or the ones in the file
     ///
     #if os(Linux)
-        private static let MIME_TYPE_EMBEDDED: Bool = true
+        private let MIME_TYPE_EMBEDDED: Bool = true
     #else
-        private static let MIME_TYPE_EMBEDDED: Bool = false
+        private let MIME_TYPE_EMBEDDED: Bool = false
     #endif
-    
+
     ///
     /// A dictionary of extensions to MIME type descriptions
     ///
-    private static var extToContentType = [String:String]()
+    private var extToContentType = [String:String]()
+
+    ///
+    /// Shared singleton instance
+    ///
+    public static let sharedInstance = ContentType()
 
     ///
     /// The following function loads the MIME types from an external file
     ///
-    public class func initialize () {
+    private init () {
 
         // MARK: Remove this when Linux reading of JSON files works.
         if MIME_TYPE_EMBEDDED {
@@ -54,40 +60,36 @@ public class ContentType {
             return
         }
 
-#if os(Linux)  
-        let contentTypesData = contentTypesString.bridge().dataUsingEncoding(NSUTF8StringEncoding)
-#else
-        let contentTypesData = contentTypesString.bridge().data(usingEncoding: NSUTF8StringEncoding)
-#endif
-
-        if contentTypesData == nil {
+#if os(Linux)
+        guard let contentTypesData = contentTypesString.bridge().dataUsingEncoding(NSUTF8StringEncoding) else {
             Log.error("Error parsing \(contentTypesString)")
             return
         }
+#else
+        guard let contentTypesData = contentTypesString.bridge().data(using: NSUTF8StringEncoding) else {
+            Log.error("Error parsing \(contentTypesString)")
+            return
+        }
+#endif
+
+#if os(Linux)
+        let jsonParseOptions = NSJSONReadingOptions.MutableContainers
+#else
+        let jsonParseOptions = NSJSONReadingOptions.mutableContainers
+#endif
 
         // MARK: Linux Foundation will return an Any instead of an AnyObject
         // Need to test if this breaks the Linux build.
-#if os(Linux)  
-        let jsonData = try? NSJSONSerialization.JSONObjectWithData(contentTypesData!,
-            options: NSJSONReadingOptions.MutableContainers) as? NSDictionary 
-#else
-        let jsonData = try? NSJSONSerialization.jsonObject(with: contentTypesData!, 
-            options: NSJSONReadingOptions.mutableContainers) as? NSDictionary
-#endif
-            
-
-        if jsonData == nil || jsonData! == nil {
+        guard let parsedObject = try? NSJSONSerialization.jsonObject(with: contentTypesData,
+            options: jsonParseOptions),
+            let jsonData = parsedObject as? [String : [String]] else {
             Log.error("JSON could not be parsed")
             return
         }
 
-        for (contentType, exts) in jsonData!! {
-
-            let e = exts as! [String]
-            for ext in e {
-
-                extToContentType[ext] = contentType as? String
-
+        for (contentType, exts) in jsonData {
+            for ext in exts {
+                extToContentType[ext] = contentType
             }
         }
     }
@@ -99,7 +101,7 @@ public class ContentType {
     ///
     /// - Returns: an Optional String for the content type
     ///
-    public class func contentTypeForExtension (ext: String) -> String? {
+    public func contentTypeForExtension (_ ext: String) -> String? {
         return extToContentType[ext]
     }
 
@@ -110,32 +112,32 @@ public class ContentType {
     ///
     /// - Returns: an Optional String for the content type
     ///
-    public class func contentTypeForFile (fileName: String) -> String? {
+    public func contentTypeForFile (_ fileName: String) -> String? {
         let lastPathElemRange: Range<String.Index>
         let extRange: Range<String.Index>
-#if os(Linux)  
-        if  let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch)  {
+#if os(Linux)
+        if let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch) {
             lastPathElemRange = lastSlash.startIndex.successor()..<fileName.characters.endIndex
         } else {
             lastPathElemRange = fileName.characters.startIndex..<fileName.characters.endIndex
         }
 
-        if  let lastDot = fileName.rangeOfString(".", range: lastPathElemRange)  {
+        if let lastDot = fileName.rangeOfString(".", range: lastPathElemRange) {
             extRange = lastDot.startIndex.successor()..<fileName.characters.endIndex
         } else {
             // No "extension", use the entire last path element as the "extension"
             extRange = lastPathElemRange
         }
 
-        return contentTypeForExtension(fileName.substringWithRange(extRange))      
+        return contentTypeForExtension(fileName.substringWithRange(extRange))
 #else
-        if  let lastSlash = fileName.range(of: "/", options: NSStringCompareOptions.backwardsSearch)  {
+        if let lastSlash = fileName.range(of: "/", options: NSStringCompareOptions.backwardsSearch) {
             lastPathElemRange = lastSlash.startIndex.successor()..<fileName.characters.endIndex
         } else {
             lastPathElemRange = fileName.characters.startIndex..<fileName.characters.endIndex
         }
 
-        if  let lastDot = fileName.range(of: ".", range: lastPathElemRange)  {
+        if let lastDot = fileName.range(of: ".", range: lastPathElemRange) {
             extRange = lastDot.startIndex.successor()..<fileName.characters.endIndex
         } else {
             // No "extension", use the entire last path element as the "extension"
@@ -156,13 +158,13 @@ public class ContentType {
     ///
     /// - Returns: whether the types matched
     ///
-    public class func isType (messageContentType: String, typeDescriptor: String) -> Bool {
+    public func isType (_ messageContentType: String, typeDescriptor: String) -> Bool {
 
         let type = typeDescriptor.lowercased()
-#if os(Linux)  
+#if os(Linux)
         let typeAndSubtype = messageContentType.bridge().componentsSeparatedByString(";")[0].lowercased()
 #else
-        let typeAndSubtype = messageContentType.componentsSeparated(by: ";")[0].lowercased()
+        let typeAndSubtype = messageContentType.components(separatedBy: ";")[0].lowercased()
 #endif
 
         if typeAndSubtype == type {
@@ -175,18 +177,18 @@ public class ContentType {
         }
 
         // typeDescriptor is a shortcut
-        let normalizedType = normalizeType(type)
+        let normalizedType = normalize(type: type)
         if typeAndSubtype == normalizedType {
             return true
         }
 
         // the types match and the subtype in typeDescriptor is "*"
-#if os(Linux)  
+#if os(Linux)
         let messageTypePair = typeAndSubtype.bridge().componentsSeparatedByString("/")
         let normalizedTypePair = normalizedType.bridge().componentsSeparatedByString("/")
 #else
-        let messageTypePair = typeAndSubtype.componentsSeparated(by: "/")
-        let normalizedTypePair = normalizedType.componentsSeparated(by: "/")
+        let messageTypePair = typeAndSubtype.components(separatedBy: "/")
+        let normalizedTypePair = normalizedType.components(separatedBy: "/")
 #endif
         if messageTypePair.count == 2 && normalizedTypePair.count == 2
             && messageTypePair[0] == normalizedTypePair[0] && normalizedTypePair[1] == "*" {
@@ -194,16 +196,16 @@ public class ContentType {
         }
         return false
     }
-    
+
     ///
-    /// Normalized the type 
+    /// Normalized the type
     ///
     /// - Parameter type: the content type
-    /// 
-    /// - Returns: the normalized String 
     ///
-    private class func normalizeType (type: String) -> String {
-        
+    /// - Returns: the normalized String
+    ///
+    private func normalize (type: String) -> String {
+
         switch type {
         case "urlencoded":
             return "application/x-www-form-urlencoded"
@@ -220,31 +222,31 @@ public class ContentType {
             return type
         }
     }
-    
+
     ///
     /// The raw types
-    /// *Note*: This will be removed once JSON parsing and the types.json file can be read. 
+    /// *Note*: This will be removed once JSON parsing and the types.json file can be read.
     ///
-    private static var rawTypes = [
-        "text/plain": ["txt","text","conf","def","list","log","in","ini"],
+    private var rawTypes = [
+        "text/plain": ["txt", "text", "conf", "def", "list", "log", "in", "ini"],
         "text/html": ["html", "htm"],
         "text/css": ["css"],
         "text/csv": ["csv"],
         "text/xml": [],
         "text/javascript": [],
         "text/markdown": [],
-        "text/x-markdown": ["markdown","md","mkd"],
+        "text/x-markdown": ["markdown", "md", "mkd"],
 
-        "application/json": ["json","map"],
+        "application/json": ["json", "map"],
         "application/x-www-form-urlencoded": [],
-        "application/xml": ["xml","xsl","xsd"],
+        "application/xml": ["xml", "xsl", "xsd"],
         "application/javascript": ["js"],
 
         "image/bmp": ["bmp"],
         "image/png": ["png"],
         "image/gif": ["gif"],
-        "image/jpeg": ["jpeg","jpg","jpe"],
-        "image/svg+xml": ["svg","svgz"]
+        "image/jpeg": ["jpeg", "jpg", "jpe"],
+        "image/svg+xml": ["svg", "svgz"]
     ]
 
 }

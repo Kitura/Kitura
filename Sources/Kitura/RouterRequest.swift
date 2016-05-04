@@ -31,20 +31,18 @@ public class RouterRequest: SocketReader {
     ///
     /// The hostname of the request
     ///
-    public var hostname: String {
-        if  let host = headers["host"]  {
+    public private(set) lazy var hostname: String = {[unowned self] () in
+        guard let host = self.headers["host"] else {
+            return self.parsedUrl.host ?? ""
+        }
 #if os(Linux)
-            let range = host.rangeOfString(":")
-            return  range == nil ? host : host.substringToIndex(range!.startIndex)
+        let range = host.rangeOfString(":")
+        return  range == nil ? host : host.substringToIndex(range!.startIndex)
 #else
-            let range = host.range(of: ":")
-            return  range == nil ? host : host.substring(to: range!.startIndex)
+        let range = host.range(of: ":")
+        return  range == nil ? host : host.substring(to: range!.startIndex)
 #endif
-        }
-        else {
-            return parsedUrl.host ?? ""
-        }
-    }
+    }()
 
     ///
     /// The method of the request
@@ -96,16 +94,15 @@ public class RouterRequest: SocketReader {
     //
     // Parsed Cookies, used to do a lazy parsing of the appropriate headers
     //
-    private var _cookies: Cookies?
+    private lazy var _cookies: Cookies = {
+        return Cookies(headers: self.headers)
+    }()
 
     ///
     /// Set of parsed cookies
     ///
     public var cookies: [String: NSHTTPCookie] {
-        if  _cookies == nil  {
-            _cookies = Cookies(headers: headers)
-        }
-        return _cookies!.cookies
+        return _cookies.cookies
     }
 
     ///
@@ -126,7 +123,7 @@ public class RouterRequest: SocketReader {
     ///
     /// Body of the message
     ///
-    public internal(set) var body: ParsedBody? = nil
+    public internal(set) var body: ParsedBody?
 
     ///
     /// Initializes a RouterRequest instance
@@ -171,9 +168,9 @@ public class RouterRequest: SocketReader {
     ///
     /// - Returns the full mime type
     ///
-    private func extToMime(type: String) -> String {
+    private func extToMime(_ type: String) -> String {
 
-        if let mimeType = ContentType.contentTypeForExtension(type) {
+        if let mimeType = ContentType.sharedInstance.contentTypeForExtension(type) {
             return mimeType
         }
         return type
@@ -186,25 +183,26 @@ public class RouterRequest: SocketReader {
     ///
     /// - Returns a tuple with the mime type and q parameter value if present, qValue defaults to 1
     ///
-    private func parseMediaType(type: String) -> (type: String, qValue: Double) {
+    private func parseMediaType(_ type: String) -> (type: String, qValue: Double) {
         var finishedPair = ("", 1.0)
 #if os(Linux)
         let trimmed = type.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
 #else
-        let trimmed = type.trimmingCharacters(in: NSCharacterSet.whitespace())
+        let trimmed = type.trimmingCharacters(in: NSCharacterSet.whitespaces())
 #endif
         let components = trimmed.characters.split(separator: ";").map(String.init)
-        
+
         if let mediaType = components.first {
             finishedPair.0 = mediaType
         }
         if let qPreference = components.last {
             let qualityComponents = qPreference.characters.split(separator: "=").map(String.init)
-            if let q = qualityComponents.first, value = qualityComponents.last where q == "q" {
-                finishedPair.1 = Double(value)!
+            if let q = qualityComponents.first, value = qualityComponents.last where q == "q",
+                let pairValue = Double(value) {
+                finishedPair.1 = pairValue
             }
         }
-        
+
         return finishedPair
     }
 
@@ -215,7 +213,7 @@ public class RouterRequest: SocketReader {
     ///
     /// - Returns most acceptable type or nil if there are none
     ///
-    public func accepts(types: [String]) -> String? {
+    public func accepts(_ types: [String]) -> String? {
 
         guard let acceptHeaderValue = headers["accept"] else {
             return nil
@@ -226,8 +224,8 @@ public class RouterRequest: SocketReader {
 
         for rawHeaderValue in headerValues {
             for type in types {
-            
-                
+
+
                 let parsedHeaderValue = parseMediaType(rawHeaderValue)
                 let mimeType = extToMime(type)
 
@@ -249,7 +247,7 @@ public class RouterRequest: SocketReader {
                         if criteriaMatches[type]?.priority > 2 || criteriaMatches[type] == nil {
                             criteriaMatches[type] = (priority: 2, qValue: parsedHeaderValue.qValue)
                         }
-                    } 
+                    }
                 }
             }
         }
@@ -268,11 +266,11 @@ public class RouterRequest: SocketReader {
         return nil
     }
 
-    public func accepts(types: String...) -> String? {
+    public func accepts(_ types: String...) -> String? {
         return accepts(types)
     }
 
-    public func accepts(type: String) -> String? {
+    public func accepts(_ type: String) -> String? {
         return accepts([type])
     }
 
@@ -280,7 +278,7 @@ public class RouterRequest: SocketReader {
 
 private class Cookies {
     //
-    // Storage o parsed Cookie headers
+    // Storage of parsed Cookie headers
     //
     private var cookies = [String: NSHTTPCookie]()
 
@@ -291,7 +289,7 @@ private class Cookies {
 
     private init(headers: SimpleHeaders) {
         var cookieString: String?
-        for  (header, value)  in headers  {
+        for  (header, value)  in headers {
             #if os(Linux)
             let lowercasedHeader = header.bridge().lowercaseString
             #else
@@ -307,13 +305,13 @@ private class Cookies {
             #if os(Linux)
             let cookieNameValues = cookieString.bridge().componentsSeparatedByString("; ")
             #else
-            let cookieNameValues = cookieString.componentsSeparated(by: "; ")
+            let cookieNameValues = cookieString.components(separatedBy: "; ")
             #endif
             for  cookieNameValue  in  cookieNameValues  {
                 #if os(Linux)
                 let cookieNameValueParts = cookieNameValue.bridge().componentsSeparatedByString("=")
                 #else
-                let cookieNameValueParts = cookieNameValue.componentsSeparated(by: "=")
+                let cookieNameValueParts = cookieNameValue.components(separatedBy: "=")
                 #endif
                 if   cookieNameValueParts.count == 2  {
                     let theCookie = NSHTTPCookie(properties:

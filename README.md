@@ -35,7 +35,7 @@ Kitura is a web framework and web server that is created for web services writte
 - Pluggable middleware
 
 ## Swift version
-The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-03-24-a version of the Swift binaries. You can download this version of the Swift binaries by following this [link](https://swift.org/download/). Compatibility with other Swift versions is not guaranteed.
+The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-04-25-a version of the Swift binaries. You can download this version of the Swift binaries by following this [link](https://swift.org/download/). Compatibility with other Swift versions is not guaranteed.
 
 ## Installation (Docker development environment)
 
@@ -89,11 +89,13 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-03-24-a ve
 
 2. Install the necessary dependencies:
 
- `brew install http-parser curl hiredis`
+ `brew install curl`
 
 3. Download and install the [supported Swift compiler](#swift-version).
 
- After installing it, make sure you update your PATH environment variable as described in the installation instructions (e.g. export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH)
+ During installation if you are using the package installer make sure to select "all users" for the installation path in order for the correct toolchain version to be available for use with the terminal.
+
+ After installation, make sure you update your PATH environment variable as described in the installation instructions (e.g. export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH)
 
 4. Now you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
 
@@ -101,7 +103,7 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-03-24-a ve
 
 1. Install the following system linux libraries:
 
- `sudo apt-get install autoconf libtool libkqueue-dev libkqueue0 libdispatch-dev libdispatch0 libhttp-parser-dev libcurl4-openssl-dev libhiredis-dev libbsd-dev`
+ `sudo apt-get install autoconf libtool libkqueue-dev libkqueue0 libcurl4-openssl-dev libbsd-dev`
 
 2. Install the [supported Swift compiler](#swift-version) for Linux.
 
@@ -149,7 +151,7 @@ Let's develop our first Kitura Web Application written in Swift!
   let package = Package(
       name: "myFirstProject",
       dependencies: [
-          .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 10)
+          .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 12)
       ])
   ```
 
@@ -175,7 +177,7 @@ Let's develop our first Kitura Web Application written in Swift!
 6. Create and start a HTTPServer:
 
   ```swift
-  let server = HttpServer.listen(8090, delegate: router)
+  let server = HttpServer.listen(port: 8090, delegate: router)
   Server.run()
   ```
 
@@ -194,16 +196,16 @@ Let's develop our first Kitura Web Application written in Swift!
       next()
   }
 
-  let server = HttpServer.listen(8090, delegate: router)
+  let server = HttpServer.listen(port: 8090, delegate: router)
   Server.run()
   ```
 
 8. Compile your application:
 
-  - Mac OS X: `swift build -Xcc -fblocks -Xswiftc -I/usr/local/include -Xlinker -L/usr/local/lib`
-  - Linux:  `swift build -Xcc -fblocks`
+  - Mac OS X: `swift build`
+  - Linux:  `swift build -Xcc -fblocks -Xlinker -rpath -Xlinker .build/debug`
 
-  Or copy [Makefile and build scripts](https://github.com/IBM-Swift/Kitura-CI/blob/master/build) to your project directory and run `make build`. You may want to customize this Makefile and use it for building, testing and running your application. For example, you can clean your build directory, refetch all the dependencies, build, test and run your application by running `make clean refetch test run`.
+  Or copy [Makefile and build scripts](https://github.com/IBM-Swift/Kitura-Build/blob/master/build) to your project directory and run `make build`. You may want to customize this Makefile and use it for building, testing and running your application. For example, you can clean your build directory, refetch all the dependencies, build, test and run your application by running `make clean refetch test run`.
 
 9. Now run your new web application:
 
@@ -224,13 +226,13 @@ Feel free to visit our [Wiki](https://github.com/IBM-Swift/Kitura/wiki) for our 
   `make test`
 
  ### Notes
- * Homebrew by default installs libraries to `/usr/local`, if yours is different, change the path to find curl and http-parser libraries, in `Kitura-CI/build/Makefile`:
- 
+ * Homebrew by default installs libraries to `/usr/local`, if yours is different, change the path to find the curl library, in `Kitura-Build/build/Makefile`:
+
    ```Makefile
    SWIFTC_FLAGS = -Xswiftc -I/usr/local/include
    LINKER_FLAGS = -Xlinker -L/usr/local/lib
    ```
-   
+
 You can find info on contributing to Kitura in our [contributing guidelines](.github/CONTRIBUTING.md).
 
 ## License

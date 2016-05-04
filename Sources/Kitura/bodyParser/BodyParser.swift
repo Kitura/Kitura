@@ -26,14 +26,14 @@ import Foundation
 // MARK: BodyParser
 
 
-public class BodyParser : RouterMiddleware {
-    
+public class BodyParser: RouterMiddleware {
+
     ///
     /// Default buffer size (in bytes)
     ///
     private static let BUFFER_SIZE = 2000
-    
-    
+
+
     ///
     /// BodyParser archiver
     ///
@@ -44,7 +44,7 @@ public class BodyParser : RouterMiddleware {
     /// Initializes a BodyParser instance
     ///
     public init() {}
-    
+
     ///
     /// Handle the request
     ///
@@ -53,118 +53,117 @@ public class BodyParser : RouterMiddleware {
     /// - Parameter next: the closure for the next execution block
     ///
     public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
-        
-        
+
         guard request.serverRequest.headers["Content-Length"] != nil else {
             return next()
         }
-        
+
         request.body = BodyParser.parse(request, contentType: request.serverRequest.headers["Content-Type"])
         next()
-        
+
     }
-    
+
     ///
     /// Parse the incoming message
     ///
     /// - Parameter message: message coming from the socket
     /// - Parameter contentType: the contentType as a string
     ///
-    public class func parse(message: SocketReader, contentType: String?) -> ParsedBody? {
-        
+    public class func parse(_ message: SocketReader, contentType: String?) -> ParsedBody? {
+
         guard let contentType = contentType else {
             return nil
         }
-        
+
         if let parser = parserMap[contentType] {
             return parse(message, parser: parser)
-        } else if contentType.hasPrefix("text/") {
-            return parse(message, parser: parserMap["text"]!)
+        } else if let parserMap = parserMap["text"]
+            where contentType.hasPrefix("text/") {
+            return parse(message, parser: parserMap)
         }
-        
+
         return nil
     }
-    
+
     ///
     /// Read incoming message for Parse
     ///
     /// - Parameter message: message coming from the socket
     /// - Parameter parser: ((NSMutableData) -> ParsedBody?) store at parserMap
     ///
-    private class func parse(message: SocketReader, parser: ((NSMutableData) -> ParsedBody?)) -> ParsedBody? {
+    private class func parse(_ message: SocketReader, parser: ((NSMutableData) -> ParsedBody?)) -> ParsedBody? {
         do {
-            let bodyData = try readBodyData(message)
+            let bodyData = try readBodyData(with: message)
             return parser(bodyData)
         } catch {
             Log.error("failed to read body data, error = \(error)")
         }
         return nil
     }
-    
+
     ///
-    /// Json pase Funtion
+    /// Json parse Function
     ///
     /// - Parameter bodyData: read data
     ///
     private class func json(bodyData: NSMutableData)-> ParsedBody? {
         let json = JSON(data: bodyData)
         if json != JSON.null {
-            return ParsedBody(json: json)
+            return .Json(json)
         }
         return nil
     }
-    
+
     ///
-    /// Urlencoded pase Funtion
+    /// Urlencoded parse Function
     ///
     /// - Parameter bodyData: read data
     ///
-    private class func urlencoded(bodyData: NSMutableData)-> ParsedBody? {
+    private class func urlencoded(_ bodyData: NSMutableData)-> ParsedBody? {
         var parsedBody = [String:String]()
         var success = true
         if let bodyAsString: String = String(data: bodyData, encoding: NSUTF8StringEncoding) {
-            
+
 #if os(Linux)
             let bodyAsArray = bodyAsString.bridge().componentsSeparatedByString("&")
 #else
-            let bodyAsArray = bodyAsString.componentsSeparated(by: "&")
+            let bodyAsArray = bodyAsString.components(separatedBy: "&")
 #endif
 
             for element in bodyAsArray {
 
-#if os(Linux)  
+#if os(Linux)
                 let elementPair = element.bridge().componentsSeparatedByString("=")
 #else
-                let elementPair = element.componentsSeparated(by: "=")
+                let elementPair = element.components(separatedBy: "=")
 #endif
 
                 if elementPair.count == 2 {
                     parsedBody[elementPair[0]] = elementPair[1]
-                }
-                else {
+                } else {
                     success = false
                 }
             }
             if success && parsedBody.count > 0 {
-                return ParsedBody(urlEncoded: parsedBody)
+                return .UrlEncoded(parsedBody)
             }
         }
         return nil
     }
-    
+
     ///
-    /// text pase Funtion
+    /// text parse Function
     ///
     /// - Parameter bodyData: read data
     ///
-    private class func text(bodyData: NSMutableData)-> ParsedBody? {
+    private class func text(_ bodyData: NSMutableData)-> ParsedBody? {
         // There was no support for the application/json MIME type
         if let bodyAsString: String = String(data: bodyData, encoding: NSUTF8StringEncoding) {
-            return ParsedBody(text:  bodyAsString)
+            return .Text(bodyAsString)
         }
         return nil
     }
-    
+
     ///
     /// Read the Body data
     ///
@@ -173,8 +172,8 @@ public class BodyParser : RouterMiddleware {
     /// - Throws: ???
     /// - Returns: data for the body
     ///
-    public class func readBodyData(reader: SocketReader) throws -> NSMutableData {
-        
+    public class func readBodyData(with reader: SocketReader) throws -> NSMutableData {
+
         let bodyData = NSMutableData()
 
         var length = try reader.read(into: bodyData)
@@ -183,88 +182,5 @@ public class BodyParser : RouterMiddleware {
         }
         return bodyData
     }
-    
-}
 
-// MARK: ParsedBody
-
-public class ParsedBody {
-    
-    ///
-    /// JSON body if the body is JSON
-    ///
-    private var jsonBody: JSON?
-    
-    ///
-    /// URL encoded body
-    ///
-    private var urlEncodedBody: [String:String]?
-    
-    ///
-    /// Plain-text body
-    ///
-    private var textBody: String?
-    
-    ///
-    /// Initializes a ParsedBody instance
-    ///
-    /// - Parameter json: JSON formatted data
-    ///
-    /// - Returns: a ParsedBody instance
-    ///
-    public init (json: JSON) {
-        
-        jsonBody = json
-        
-    }
-    
-    ///
-    /// Initializes a ParsedBody instance
-    ///
-    /// - Parameter urlEncoded: a list of String,String tuples
-    ///
-    /// - Returns a parsed body instance
-    ///
-    public init (urlEncoded: [String:String]) {
-        urlEncodedBody = urlEncoded
-    }
-    
-    ///
-    /// Initializes a ParsedBody instance
-    ///
-    /// - Parameter text: the String plain-text
-    ///
-    /// - Returns a parsed body instance
-    ///
-    public init (text: String) {
-        textBody = text
-    }
-    
-    ///
-    /// Returns the body as JSON
-    ///
-    /// - Returns: the JSON
-    ///
-    public func asJson() -> JSON? {
-        return jsonBody
-    }
-    
-    ///
-    /// Returns the body as URL encoded strings
-    ///
-    /// - Returns: the list of string, string tuples
-    ///
-    public func asUrlEncoded() -> [String:String]? {
-        return urlEncodedBody
-    }
-    
-    ///
-    /// Returns the body as plain-text
-    ///
-    /// - Returns: the plain text
-    ///
-    public func asText() -> String? {
-        return textBody
-    }
-    
 }
