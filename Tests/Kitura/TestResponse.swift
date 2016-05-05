@@ -110,11 +110,7 @@ class TestResponse : XCTestCase {
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response!.readString()
-#if os(Linux)
-                    XCTAssertNotNil(body!.rangeOfString("ibm"),"response does not contain IBM")
-#else
                     XCTAssertNotNil(body!.range(of: "ibm"),"response does not contain IBM")
-#endif
                 }
                 catch{
                     XCTFail("No response body")

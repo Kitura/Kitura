@@ -125,15 +125,11 @@ class RouterElement {
             return
         }
 
-#if os(Linux)
-          request.matchedPath = urlPath.bridge().substringWithRange(match.range)
-#else
-          request.matchedPath = urlPath.bridge().substring(with: match.range)
-#endif
+        request.matchedPath = urlPath.bridge().substring(with: match.range)
 
-          request.route = pattern
-          updateRequestParams(urlPath, match: match, request: request)
-          processHelper(request: request, response: response, next: next)
+        request.route = pattern
+        updateRequestParams(urlPath, match: match, request: request)
+        processHelper(request: request, response: response, next: next)
     }
 
     ///
@@ -175,17 +171,9 @@ class RouterElement {
         if  let keys = keys {
             var params: [String:String] = [:]
             for index in 0..<keys.count {
-#if os(Linux)
-                let matchRange = match.rangeAtIndex(index+1)
-#else
                 let matchRange = match.range(at: index+1)
-#endif
                 if  matchRange.location != NSNotFound  &&  matchRange.location != -1  {
-#if os(Linux)
-                    params[keys[index]] = urlPath.bridge().substringWithRange(matchRange)
-#else
                     params[keys[index]] = urlPath.bridge().substring(with: matchRange)
-#endif
                 }
             }
             request.params = params

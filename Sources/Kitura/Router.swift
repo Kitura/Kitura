@@ -623,17 +623,10 @@ extension Router : RouterMiddleware {
         }
 
         let mountpath = request.matchedPath
-#if os(Linux)
-        guard let prefixRange = urlPath.rangeOfString(mountpath) else {
-            Log.error("Failed to find matches in url")
-            return
-        }
-#else
         guard let prefixRange = urlPath.range(of: mountpath) else {
             Log.error("Failed to find matches in url")
             return
         }
-#endif
         request.parsedUrl.path?.removeSubrange(prefixRange)
         
         if request.parsedUrl.path == "" {
@@ -691,18 +684,9 @@ extension Router : HttpServerDelegate {
             return
         }
 
-#if os(Linux)
-        let shouldContinue = urlPath.characters.count > kituraResourcePrefix.characters.count && urlPath.bridge().substringToIndex(kituraResourcePrefix.characters.count) == kituraResourcePrefix
-#else
-        let lengthIndex = kituraResourcePrefix.startIndex.advanced(by: kituraResourcePrefix.characters.count)
-        let shouldContinue = urlPath.characters.count > kituraResourcePrefix.characters.count && urlPath.substring(to: lengthIndex) == kituraResourcePrefix
-#endif
-        if  shouldContinue {
-#if os(Linux)
-            let resource = urlPath.bridge().substringFromIndex(kituraResourcePrefix.characters.count)
-#else
+        let lengthIndex = kituraResourcePrefix.endIndex
+        if  urlPath.characters.count > kituraResourcePrefix.characters.count && urlPath.substring(to: lengthIndex) == kituraResourcePrefix {
             let resource = urlPath.substring(from: lengthIndex)
-#endif
             sendResourceIfExisting(response, resource: resource)
         } else {
             var elemIndex = -1
@@ -742,7 +726,11 @@ extension Router : HttpServerDelegate {
     }
 
     private func getResourceFilePath(_ resource: String) -> String? {
+#if os(Linux)
         let fileManager = NSFileManager.defaultManager()
+#else
+        let fileManager = NSFileManager.default()
+#endif
         let potentialResource = constructResourcePathFromSourceLocation(resource)
 
         let fileExists = fileManager.fileExists(atPath: potentialResource)
@@ -757,21 +745,13 @@ extension Router : HttpServerDelegate {
     private func constructResourcePathFromSourceLocation(_ resource: String) -> String {
         let fileName = NSString(string: #file)
         let resourceFilePrefixRange: NSRange
-        #if os(Linux)
-            let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch)
-        #else
-            let lastSlash = fileName.range(of: "/", options: NSStringCompareOptions.backwardsSearch)
-        #endif
+        let lastSlash = fileName.range(of: "/", options: NSStringCompareOptions.backwardsSearch)
         if  lastSlash.location != NSNotFound  {
             resourceFilePrefixRange = NSMakeRange(0, lastSlash.location+1)
         } else {
             resourceFilePrefixRange = NSMakeRange(0, fileName.length)
         }
-        #if os(Linux)
-            return fileName.substringWithRange(resourceFilePrefixRange) + "resources/" + resource
-        #else
-            return fileName.substring(with: resourceFilePrefixRange) + "resources/" + resource
-        #endif
+        return fileName.substring(with: resourceFilePrefixRange) + "resources/" + resource
     }
 
     private func constructResourcePathFromCurrentDirectory(_ resource: String, fileManager: NSFileManager) -> String? {
