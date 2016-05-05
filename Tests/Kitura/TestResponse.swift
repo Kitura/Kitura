@@ -38,7 +38,8 @@ class TestResponse : XCTestCase {
             ("testHeaderModifiers", testHeaderModifiers),
             ("testRouteFunc", testRouteFunc),
             ("testAcceptTypes", testAcceptTypes),
-            ("testFormat", testFormat)
+            ("testFormat", testFormat),
+            ("testLink", testLink)
         ]
     }
 
@@ -263,14 +264,14 @@ class TestResponse : XCTestCase {
             self.performRequest("get", path: "/customPage", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 expectation.fulfill()
-            }) {req in 
+            }) {req in
                 req.headers = ["Accept" : "text/*;q=.5, application/json, application/*;q=.3"]
             }
         }, { expectation in
             self.performRequest("get", path:"/customPage2", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 expectation.fulfill()
-            }) {req in 
+            }) {req in
                 req.headers = ["Accept" : "application/*;q=0.2, image/jpeg;q=0.8, text/html, text/plain, */*;q=.7"]
             }
         })
@@ -292,7 +293,7 @@ class TestResponse : XCTestCase {
                 expectation.fulfill()
                 }, headers: ["Accept" : "text/html"])
         }
-        
+
         performServerTest(router) { expectation in
             self.performRequest("get", path:"/format", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
@@ -326,7 +327,39 @@ class TestResponse : XCTestCase {
 
     }
 
-    
+    func testLink() {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/single_link", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                let header = response!.headers["Link"]
+                XCTAssertNotNil(header, "Link header should not be nil")
+                XCTAssertEqual(header, "<https://developer.ibm.com/swift>; rel=\"root\"")
+                expectation.fulfill()
+            })
+        }
+
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/multiple_links", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                let firstLink = "<https://developer.ibm.com/swift/products/ibm-swift-sandbox/>; rel=\"next\""
+                let secondLink = "<https://developer.ibm.com/swift/products/ibm-bluemix/>; rel=\"prev\""
+                let header = response!.headers["Link"]
+                XCTAssertNotNil(header, "Link header should not be nil")
+                #if os(Linux)
+                    XCTAssertNotNil(header!.rangeOfString(firstLink), "link header should contain first link")
+                    XCTAssertNotNil(header!.rangeOfString(secondLink), "link header should contain secon link")
+                #else
+                    XCTAssertNotNil(header!.range(of: firstLink), "link header should contain first link")
+                    XCTAssertNotNil(header!.range(of: secondLink), "link header should contain secon link")
+                #endif
+                expectation.fulfill()
+            })
+        }
+    }
+
+
     static func setupRouter() -> Router {
         let router = Router()
 
@@ -410,7 +443,7 @@ class TestResponse : XCTestCase {
                     catch {}
                 default:
                     response.error = Error.FailedToParseRequestBody(body: "\(request.body)")
-                
+
             }
 
             next()
@@ -421,26 +454,26 @@ class TestResponse : XCTestCase {
                 try response.status(HttpStatusCode.OK).send("Hi from Kitura!").end()
             }
             catch {}
-            
+
         }
-        
+
         func callbackHtml(request: RouterRequest, response: RouterResponse) {
             do {
                 try response.status(HttpStatusCode.OK).send("<!DOCTYPE html><html><body>Hi from Kitura!</body></html>\n\n").end()
             }
             catch {}
-            
+
         }
-        
+
         func callbackDefault(request: RouterRequest, response: RouterResponse) {
             do {
                 response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
                 try response.status(HttpStatusCode.OK).send("default").end()
             }
             catch {}
-            
+
         }
-        
+
         router.get("/format") { request, response, next in
             do {
                 try response.format(callbacks: [
@@ -449,6 +482,25 @@ class TestResponse : XCTestCase {
                                                    "default" : callbackDefault])
             }
             catch {}
+        }
+
+        router.get("/single_link") { request, response, next in
+            do {
+                response.link([
+                    "root" : "https://developer.ibm.com/swift"
+                ])
+                try response.status(.OK).end()
+            } catch {}
+        }
+
+        router.get("/multiple_links") { request, response, next in
+            do {
+                response.link([
+                    "prev" : "https://developer.ibm.com/swift/products/ibm-bluemix/",
+                    "next" : "https://developer.ibm.com/swift/products/ibm-swift-sandbox/"
+                ])
+                try response.status(.OK).end()
+            } catch {}
         }
 
         router.error { request, response, next in
