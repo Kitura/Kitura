@@ -169,6 +169,7 @@ Let's develop our first Kitura Web Application written in Swift!
 
   router.get("/") {
   request, response, next in
+      response.statusCode = .OK
       response.send("Hello, World!")
       next()
   }
@@ -192,6 +193,7 @@ Let's develop our first Kitura Web Application written in Swift!
 
   router.get("/") {
   request, response, next in
+      response.statusCode = .OK
       response.send("Hello, World!")
       next()
   }
