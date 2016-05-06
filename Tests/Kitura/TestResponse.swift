@@ -175,19 +175,19 @@ class TestResponse : XCTestCase {
             XCTAssertEqual(response.headers["Content-Type"]!, ["text/html"])
 
             response.headers.append("Content-Type", value: "text/plain; charset=utf-8")
-            XCTAssertEqual(response.headers["Content-Type"]!, ["text/html", "text/plain; charset=utf-8"])
+            XCTAssertEqual(response.headers["Content-Type"]!, ["text/html, text/plain; charset=utf-8"])
 
             response.headers.remove("Content-Type")
             XCTAssertNil(response.headers["Content-Type"])
 
-            response.headers.append("Content-Type", value: ["text/plain", "image/png"])
-            XCTAssertEqual(response.headers["Content-Type"]!, ["text/plain", "image/png"])
+            response.headers.append("Content-Type", value: ["text/plain, image/png"])
+            XCTAssertEqual(response.headers["Content-Type"]!, ["text/plain, image/png"])
 
-            response.headers.append("Content-Type", value: ["text/html", "image/jpeg"])
-            XCTAssertEqual(response.headers["Content-Type"]!, ["text/plain", "image/png", "text/html", "image/jpeg"])
+            response.headers.append("Content-Type", value: ["text/html, image/jpeg"])
+            XCTAssertEqual(response.headers["Content-Type"]!, ["text/plain, image/png, text/html, image/jpeg"])
 
             response.headers.append("Content-Type", value: "charset=UTF-8")
-            XCTAssertEqual(response.headers["Content-Type"]!, ["text/plain", "image/png", "text/html", "image/jpeg", "charset=UTF-8"])
+            XCTAssertEqual(response.headers["Content-Type"]!, ["text/plain, image/png, text/html, image/jpeg, charset=UTF-8"])
 
             response.headers.remove("Content-Type")
 
@@ -195,7 +195,7 @@ class TestResponse : XCTestCase {
             XCTAssertEqual(response.headers["Content-Type"]!, ["text/plain"])
 
             response.headers.append("Content-Type", value: ["image/png", "text/html"])
-            XCTAssertEqual(response.headers["Content-Type"]!, ["text/plain", "image/png", "text/html"])
+            XCTAssertEqual(response.headers["Content-Type"]!, ["text/plain, image/png, text/html"])
 
             do {
                 try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
