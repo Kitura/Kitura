@@ -60,17 +60,10 @@ public class ContentType {
             return
         }
 
-#if os(Linux)
-        guard let contentTypesData = contentTypesString.bridge().dataUsingEncoding(NSUTF8StringEncoding) else {
-            Log.error("Error parsing \(contentTypesString)")
-            return
-        }
-#else
         guard let contentTypesData = contentTypesString.bridge().data(using: NSUTF8StringEncoding) else {
             Log.error("Error parsing \(contentTypesString)")
             return
         }
-#endif
 
 #if os(Linux)
         let jsonParseOptions = NSJSONReadingOptions.MutableContainers
@@ -115,39 +108,21 @@ public class ContentType {
     public func contentTypeForFile (_ fileName: String) -> String? {
         let lastPathElemRange: Range<String.Index>
         let extRange: Range<String.Index>
-#if os(Linux)
-        if let lastSlash = fileName.rangeOfString("/", options: NSStringCompareOptions.BackwardsSearch) {
-            lastPathElemRange = lastSlash.startIndex.successor()..<fileName.characters.endIndex
-        } else {
-            lastPathElemRange = fileName.characters.startIndex..<fileName.characters.endIndex
-        }
 
-        if let lastDot = fileName.rangeOfString(".", range: lastPathElemRange) {
-            extRange = lastDot.startIndex.successor()..<fileName.characters.endIndex
-        } else {
-            // No "extension", use the entire last path element as the "extension"
-            extRange = lastPathElemRange
-        }
-
-        return contentTypeForExtension(fileName.substringWithRange(extRange))
-#else
         if let lastSlash = fileName.range(of: "/", options: NSStringCompareOptions.backwardsSearch) {
-            lastPathElemRange = lastSlash.startIndex.successor()..<fileName.characters.endIndex
+            lastPathElemRange = fileName.index(after: lastSlash.lowerBound)..<fileName.characters.endIndex
         } else {
             lastPathElemRange = fileName.characters.startIndex..<fileName.characters.endIndex
         }
 
         if let lastDot = fileName.range(of: ".", range: lastPathElemRange) {
-            extRange = lastDot.startIndex.successor()..<fileName.characters.endIndex
+            extRange = fileName.index(after: lastDot.lowerBound)..<fileName.characters.endIndex
         } else {
             // No "extension", use the entire last path element as the "extension"
             extRange = lastPathElemRange
         }
 
         return contentTypeForExtension(fileName.substring(with: extRange))
-#endif
-
-
     }
 
     ///
@@ -161,11 +136,7 @@ public class ContentType {
     public func isType (_ messageContentType: String, typeDescriptor: String) -> Bool {
 
         let type = typeDescriptor.lowercased()
-#if os(Linux)
-        let typeAndSubtype = messageContentType.bridge().componentsSeparatedByString(";")[0].lowercased()
-#else
         let typeAndSubtype = messageContentType.components(separatedBy: ";")[0].lowercased()
-#endif
 
         if typeAndSubtype == type {
             return true
@@ -183,13 +154,8 @@ public class ContentType {
         }
 
         // the types match and the subtype in typeDescriptor is "*"
-#if os(Linux)
-        let messageTypePair = typeAndSubtype.bridge().componentsSeparatedByString("/")
-        let normalizedTypePair = normalizedType.bridge().componentsSeparatedByString("/")
-#else
         let messageTypePair = typeAndSubtype.components(separatedBy: "/")
         let normalizedTypePair = normalizedType.components(separatedBy: "/")
-#endif
         if messageTypePair.count == 2 && normalizedTypePair.count == 2
             && messageTypePair[0] == normalizedTypePair[0] && normalizedTypePair[1] == "*" {
             return true

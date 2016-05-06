@@ -125,15 +125,11 @@ class RouterElement {
             return
         }
 
-#if os(Linux)
-          request.matchedPath = urlPath.bridge().substringWithRange(match.range)
-#else
-          request.matchedPath = urlPath.bridge().substring(with: match.range)
-#endif
+        request.matchedPath = urlPath.bridge().substring(with: match.range)
 
-          request.route = pattern
-          updateRequestParams(urlPath, match: match, request: request)
-          processHelper(request: request, response: response, next: next)
+        request.route = pattern
+        updateRequestParams(urlPath, match: match, request: request)
+        processHelper(request: request, response: response, next: next)
     }
 
     ///
@@ -175,17 +171,9 @@ class RouterElement {
         if  let keys = keys {
             var params: [String:String] = [:]
             for index in 0..<keys.count {
-#if os(Linux)
-                let matchRange = match.rangeAtIndex(index+1)
-#else
                 let matchRange = match.range(at: index+1)
-#endif
                 if  matchRange.location != NSNotFound  &&  matchRange.location != -1  {
-#if os(Linux)
-                    params[keys[index]] = urlPath.bridge().substringWithRange(matchRange)
-#else
                     params[keys[index]] = urlPath.bridge().substring(with: matchRange)
-#endif
                 }
             }
             request.params = params
@@ -193,79 +181,3 @@ class RouterElement {
 
     }
 }
-
-///
-/// Values for Router methods (Get, Post, Put, Delete, etc)
-///
-public enum RouterMethod: Int {
-
-    case All, Get, Post, Put, Head, Delete, Options, Trace, Copy, Lock, MkCol, Move, Purge, PropFind, PropPatch, Unlock, Report, MkActivity, Checkout, Merge, MSearch, Notify, Subscribe, Unsubscribe, Patch, Search, Connect, Error, Unknown
-
-    init(string: String) {
-        switch string.lowercased() {
-            case "all":
-                self = .All
-            case "get":
-                self = .Get
-            case "post":
-                self = .Post
-            case "put":
-                self = .Put
-            case "head":
-                self = .Head
-            case "delete":
-                self = .Delete
-            case "options":
-                self = .Options
-            case "trace":
-                self = .Trace
-            case "copy":
-                self = .Copy
-            case "lock":
-                self = .Lock
-            case "mkcol":
-                self = .MkCol
-            case "move":
-                self = .Move
-            case "purge":
-                self = .Purge
-            case "propfind":
-                self = .PropFind
-            case "proppatch":
-                self = .PropPatch
-            case "unlock":
-                self = .Unlock
-            case "report":
-                self = .Report
-            case "mkactivity":
-                self = .MkActivity
-            case "checkout":
-                self = .Checkout
-            case "merge":
-                self = .Merge
-            case "m-search":
-                self = .MSearch
-            case "notify":
-                self = .Notify
-            case "subscribe":
-                self = .Subscribe
-            case "unsubscribe":
-                self = .Unsubscribe
-            case "patch":
-                self = .Patch
-            case "search":
-                self = .Search
-            case "connect":
-                self = .Connect
-            case "error":
-                self = .Error
-            default:
-                self = .Unknown
-        }
-    }
-}
-
-///
-/// RouterHandler is a closure
-///
-public typealias RouterHandler = (request: RouterRequest, response: RouterResponse, next: ()->Void) -> Void

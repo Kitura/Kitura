@@ -37,7 +37,8 @@ class TestResponse : XCTestCase {
             ("testErrorHandler", testErrorHandler),
             ("testHeaderModifiers", testHeaderModifiers),
             ("testRouteFunc", testRouteFunc),
-            ("testAcceptTypes", testAcceptTypes)
+            ("testAcceptTypes", testAcceptTypes),
+            ("testFormat", testFormat)
         ]
     }
 
@@ -109,11 +110,7 @@ class TestResponse : XCTestCase {
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response!.readString()
-#if os(Linux)
-                    XCTAssertNotNil(body!.rangeOfString("ibm"),"response does not contain IBM")
-#else
                     XCTAssertNotNil(body!.range(of: "ibm"),"response does not contain IBM")
-#endif
                 }
                 catch{
                     XCTFail("No response body")
@@ -274,6 +271,57 @@ class TestResponse : XCTestCase {
         })
     }
 
+    func testFormat() {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path:"/format", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response!.headers["Content-Type"]!.first!, "text/html")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body>Hi from Kitura!</body></html>\n\n")
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+                }, headers: ["Accept" : "text/html"])
+        }
+        
+        performServerTest(router) { expectation in
+            self.performRequest("get", path:"/format", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response!.headers["Content-Type"]!.first!, "text/plain")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!,"Hi from Kitura!")
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+                }, headers: ["Accept" : "text/plain"])
+        }
+
+        performServerTest(router) { expectation in
+            self.performRequest("get", path:"/format", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!,"default")
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+                }, headers: ["Accept" : "text/cmd"])
+        }
+
+    }
+
+    
     static func setupRouter() -> Router {
         let router = Router()
 
@@ -361,6 +409,41 @@ class TestResponse : XCTestCase {
             }
 
             next()
+        }
+
+        func callbackText(request: RouterRequest, response: RouterResponse) {
+            do {
+                try response.status(HttpStatusCode.OK).send("Hi from Kitura!").end()
+            }
+            catch {}
+            
+        }
+        
+        func callbackHtml(request: RouterRequest, response: RouterResponse) {
+            do {
+                try response.status(HttpStatusCode.OK).send("<!DOCTYPE html><html><body>Hi from Kitura!</body></html>\n\n").end()
+            }
+            catch {}
+            
+        }
+        
+        func callbackDefault(request: RouterRequest, response: RouterResponse) {
+            do {
+                response.headers["Content-Type"] = ["text/plain; charset=utf-8"]
+                try response.status(HttpStatusCode.OK).send("default").end()
+            }
+            catch {}
+            
+        }
+        
+        router.get("/format") { request, response, next in
+            do {
+                try response.format(callbacks: [
+                                                   "text/plain" : callbackText,
+                                                   "text/html" : callbackHtml,
+                                                   "default" : callbackDefault])
+            }
+            catch {}
         }
 
         router.error { request, response, next in

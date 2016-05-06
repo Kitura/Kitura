@@ -31,19 +31,13 @@ public class RouterRequest: SocketReader {
     ///
     /// The hostname of the request
     ///
-    public var hostname: String {
-        if  let host = headers["host"]?.first {
-#if os(Linux)
-            let range = host.rangeOfString(":")
-            return  range == nil ? host : host.substringToIndex(range!.startIndex)
-#else
-            let range = host.range(of: ":")
-            return  range == nil ? host : host.substring(to: range!.startIndex)
-#endif
-        } else {
-            return parsedUrl.host ?? ""
+    public private(set) lazy var hostname: String = {[unowned self] () in
+        guard let host = self.headers["host"]?.first else {
+            return self.parsedUrl.host ?? ""
         }
-    }
+        let range = host.range(of: ":")
+        return  range == nil ? host : host.substring(to: range!.lowerBound)
+    }()
 
     ///
     /// The method of the request
@@ -90,16 +84,15 @@ public class RouterRequest: SocketReader {
     //
     // Parsed Cookies, used to do a lazy parsing of the appropriate headers
     //
-    private var _cookies: Cookies?
+    private lazy var _cookies: Cookies = {
+        return Cookies(headers: self.headers)
+    }()
 
     ///
     /// Set of parsed cookies
     ///
     public var cookies: [String: NSHTTPCookie] {
-        if  _cookies == nil {
-            _cookies = Cookies(headers: headers)
-        }
-        return _cookies!.cookies
+        return _cookies.cookies
     }
 
     ///
@@ -182,11 +175,7 @@ public class RouterRequest: SocketReader {
     ///
     private func parseMediaType(_ type: String) -> (type: String, qValue: Double) {
         var finishedPair = ("", 1.0)
-#if os(Linux)
-        let trimmed = type.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
-#else
         let trimmed = type.trimmingCharacters(in: NSCharacterSet.whitespaces())
-#endif
         let components = trimmed.characters.split(separator: ";").map(String.init)
 
         if let mediaType = components.first {
@@ -194,8 +183,9 @@ public class RouterRequest: SocketReader {
         }
         if let qPreference = components.last {
             let qualityComponents = qPreference.characters.split(separator: "=").map(String.init)
-            if let q = qualityComponents.first, value = qualityComponents.last where q == "q" {
-                finishedPair.1 = Double(value)!
+            if let q = qualityComponents.first, value = qualityComponents.last where q == "q",
+                let pairValue = Double(value) {
+                finishedPair.1 = pairValue
             }
         }
 
@@ -234,12 +224,8 @@ public class RouterRequest: SocketReader {
                         criteriaMatches[type] = (priority: 3, qValue: parsedHeaderValue.qValue)
                     }
                 } else {
-#if os(Linux)
-                    let rangeMatch = mimeType.rangeOfString(parsedHeaderValue.type, options: .RegularExpressionSearch)
-#else
-                    let rangeMatch = mimeType.range(of: parsedHeaderValue.type, options: .regularExpressionSearch)
-#endif
-                    if rangeMatch != nil { // partial match, e.g. text/html == text/*
+                    
+                    if let _ = mimeType.range(of: parsedHeaderValue.type, options: .regularExpressionSearch) { // partial match, e.g. text/html == text/*
                         if criteriaMatches[type]?.priority > 2 || criteriaMatches[type] == nil {
                             criteriaMatches[type] = (priority: 2, qValue: parsedHeaderValue.qValue)
                         }
@@ -289,17 +275,9 @@ private class Cookies {
             return
         }
         for cookie in rawCookies {
-            #if os(Linux)
-                let cookieNameValues = cookie.bridge().componentsSeparatedByString("; ")
-            #else
-                let cookieNameValues = cookie.components(separatedBy: "; ")
-            #endif
+            let cookieNameValues = cookie.components(separatedBy: "; ")
             for  cookieNameValue  in  cookieNameValues  {
-                #if os(Linux)
-                    let cookieNameValueParts = cookieNameValue.bridge().componentsSeparatedByString("=")
-                #else
-                    let cookieNameValueParts = cookieNameValue.components(separatedBy: "=")
-                #endif
+                let cookieNameValueParts = cookieNameValue.components(separatedBy: "=")
                 if   cookieNameValueParts.count == 2  {
                     let theCookie = NSHTTPCookie(properties:
                         [NSHTTPCookieDomain: ".",

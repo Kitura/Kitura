@@ -78,11 +78,7 @@ class TestCookies : XCTestCase {
                 XCTAssertEqual(cookie1!.value, cookie1Value, "Value of Cookie \(cookie1Name) is not \(cookie1Value), was \(cookie1!.value)")
                 XCTAssertEqual(cookie1!.path, "/", "Path of Cookie \(cookie1Name) is not (/), was \(cookie1!.path)")
                 XCTAssertEqual(cookie1!.domain, cookieHost, "Domain of Cookie \(cookie1Name) is not \(cookieHost), was \(cookie1!.domain)")
-#if os(Linux)
-                XCTAssertFalse(cookie1!.secure, "\(cookie1Name) was marked as secure. Should have not been marked so.")
-#else
                 XCTAssertFalse(cookie1!.isSecure, "\(cookie1Name) was marked as secure. Should have not been marked so.")
-#endif
                 XCTAssertNil(cookie1Expire, "\(cookie1Name) had an expiration date. It shouldn't have had one")
 
                 let (cookie2, cookie2Expire) = self.cookieFrom(response: response!, named: cookie2Name)
@@ -90,11 +86,7 @@ class TestCookies : XCTestCase {
                 XCTAssertEqual(cookie2!.value, cookie2Value, "Value of Cookie \(cookie2Name) is not \(cookie2Value), was \(cookie2!.value)")
                 XCTAssertEqual(cookie2!.path, "/", "Path of Cookie \(cookie2Name) is not (/), was \(cookie2!.path)")
                 XCTAssertEqual(cookie2!.domain, cookieHost, "Domain of Cookie \(cookie2Name) is not \(cookieHost), was \(cookie2!.domain)")
-#if os(Linux)
-                XCTAssertFalse(cookie2!.secure, "\(cookie2Name) was marked as secure. Should have not been marked so.")
-#else
                 XCTAssertFalse(cookie2!.isSecure, "\(cookie2Name) was marked as secure. Should have not been marked so.")
-#endif
                 XCTAssertNotNil(cookie2Expire, "\(cookie2Name) had no expiration date. It should have had one")
                 XCTAssertEqual(cookie2Expire!, SpiUtils.httpDate(cookie2ExpireExpected))
                 expectation.fulfill()
@@ -109,11 +101,7 @@ class TestCookies : XCTestCase {
                 XCTAssertEqual(cookie!.value, cookie3Value, "Value of Cookie \(cookie3Name) is not \(cookie3Value), was \(cookie!.value)")
                 XCTAssertEqual(cookie!.path, "/", "Path of Cookie \(cookie3Name) is not (/), was \(cookie!.path)")
                 XCTAssertEqual(cookie!.domain, cookieHost, "Domain of Cookie \(cookie3Name) is not \(cookieHost), was \(cookie!.domain)")
-#if os(Linux)
-                XCTAssertTrue(cookie!.secure, "\(cookie3Name) wasn't marked as secure. It should have been marked so.")
-#else
                 XCTAssertTrue(cookie!.isSecure, "\(cookie3Name) wasn't marked as secure. It should have been marked so.")
-#endif
                 XCTAssertNil(cookieExpire, "\(cookie3Name) had an expiration date. It shouldn't have had one")
                 expectation.fulfill()
             })
@@ -124,20 +112,11 @@ class TestCookies : XCTestCase {
         var resultCookie: NSHTTPCookie? = nil
         var resultExpire: String?
         for (headerKey, headerValues) in response.headers.headers  {
-#if os(Linux)
-            let lowercaseHeaderKey = headerKey.bridge().lowercaseString
-#else
             let lowercaseHeaderKey = headerKey.lowercased()
-#endif
             if  lowercaseHeaderKey  ==  "set-cookie"  {
                 for headerValue in headerValues {
-#if os(Linux)
-            let parts = headerValue.bridge().componentsSeparatedByString("; ")
-            let nameValue = parts[0].bridge().componentsSeparatedByString("=")
-#else
-            let parts = headerValue.components(separatedBy: "; ")
-            let nameValue = parts[0].components(separatedBy: "=")
-#endif
+                    let parts = headerValue.components(separatedBy: "; ")
+                    let nameValue = parts[0].components(separatedBy: "=")
                     XCTAssertEqual(nameValue.count, 2, "Malformed Set-Cookie header \(headerValue)")
 
                     if  nameValue[0] == named  {
@@ -151,13 +130,8 @@ class TestCookies : XCTestCase {
                         properties[NSHTTPCookieValue] =  nameValue[1]
 
                         for  part in parts[1..<parts.count] {
-#if os(Linux)
-                            var pieces = part.bridge().componentsSeparatedByString("=")
-                            let piece = pieces[0].bridge().lowercaseString
-#else
                             var pieces = part.components(separatedBy: "=")
-                            let piece = pieces[0].bridge().lowercased()
-#endif
+                            let piece = pieces[0].lowercased()
                             switch(piece) {
                                 case "secure", "httponly":
                                     properties[NSHTTPCookieSecure] = "Yes"

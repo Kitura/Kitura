@@ -77,8 +77,9 @@ public class BodyParser: RouterMiddleware {
 
         if let parser = parserMap[contentType] {
             return parse(message, parser: parser)
-        } else if contentType.hasPrefix("text/") {
-            return parse(message, parser: parserMap["text"]!)
+        } else if let parserMap = parserMap["text"]
+            where contentType.hasPrefix("text/") {
+            return parse(message, parser: parserMap)
         }
 
         return nil
@@ -123,20 +124,11 @@ public class BodyParser: RouterMiddleware {
         var success = true
         if let bodyAsString: String = String(data: bodyData, encoding: NSUTF8StringEncoding) {
 
-#if os(Linux)
-            let bodyAsArray = bodyAsString.bridge().componentsSeparatedByString("&")
-#else
             let bodyAsArray = bodyAsString.components(separatedBy: "&")
-#endif
 
             for element in bodyAsArray {
 
-#if os(Linux)
-                let elementPair = element.bridge().componentsSeparatedByString("=")
-#else
                 let elementPair = element.components(separatedBy: "=")
-#endif
-
                 if elementPair.count == 2 {
                     parsedBody[elementPair[0]] = elementPair[1]
                 } else {
@@ -172,7 +164,7 @@ public class BodyParser: RouterMiddleware {
     /// - Returns: data for the body
     ///
     public class func readBodyData(with reader: SocketReader) throws -> NSMutableData {
-        
+
         let bodyData = NSMutableData()
 
         var length = try reader.read(into: bodyData)
@@ -182,10 +174,4 @@ public class BodyParser: RouterMiddleware {
         return bodyData
     }
 
-}
-
-//// MARK: ParsedBody
-///
-public enum ParsedBody {
-    case Json(JSON), UrlEncoded([String:String]), Text(String)
 }

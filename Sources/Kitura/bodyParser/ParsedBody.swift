@@ -14,14 +14,10 @@
  * limitations under the License.
  **/
 
-import PackageDescription
+import SwiftyJSON
 
-let package = Package(
-    name: "Kitura",
-        dependencies: [
-            .Package(url: "https://github.com/IBM-Swift/Kitura-net.git", majorVersion: 0, minor: 13),
-            .Package(url: "https://github.com/IBM-Swift/LoggerAPI.git", majorVersion: 0, minor: 5),
-            .Package(url: "https://github.com/IBM-Swift/SwiftyJSON.git", majorVersion: 7),
-            .Package(url: "https://github.com/IBM-Swift/Kitura-TemplateEngine.git", majorVersion: 0, minor: 9)
-        ]
-)
+//// MARK: ParsedBody
+///
+public enum ParsedBody {
+    case Json(JSON), UrlEncoded([String:String]), Text(String)
+}
