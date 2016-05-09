@@ -48,7 +48,7 @@ class TestCookies : XCTestCase {
     func testCookieToServer() {
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path: "/1/cookiedump", callback: {response in
-                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "cookiedump route did not match single path request")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "cookiedump route did not match single path request")
                 do {
                     let data = NSMutableData()
                     let count = try response!.readAllData(into: data)
@@ -71,7 +71,7 @@ class TestCookies : XCTestCase {
     func testCookieFromServer() {
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path: "/1/sendcookie", callback: {response in
-                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "/1/sendcookie route did not match single path request")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "/1/sendcookie route did not match single path request")
 
                 let (cookie1, cookie1Expire) = self.cookieFrom(response: response!, named: cookie1Name)
                 XCTAssert(cookie1 != nil, "Cookie \(cookie1Name) wasn't found in the response.")
@@ -88,13 +88,13 @@ class TestCookies : XCTestCase {
                 XCTAssertEqual(cookie2!.domain, cookieHost, "Domain of Cookie \(cookie2Name) is not \(cookieHost), was \(cookie2!.domain)")
                 XCTAssertFalse(cookie2!.isSecure, "\(cookie2Name) was marked as secure. Should have not been marked so.")
                 XCTAssertNotNil(cookie2Expire, "\(cookie2Name) had no expiration date. It should have had one")
-                XCTAssertEqual(cookie2Expire!, SpiUtils.httpDate(cookie2ExpireExpected))
+                XCTAssertEqual(cookie2Expire!, SPIUtils.httpDate(cookie2ExpireExpected))
                 expectation.fulfill()
             })
         },
         { expectation in
             self.performRequest("get", path: "/2/sendcookie", callback: { response in
-                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "/2/sendcookie route did not match single path request")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "/2/sendcookie route did not match single path request")
 
                 let (cookie, cookieExpire) = self.cookieFrom(response: response!, named: cookie3Name)
                 XCTAssertNotNil(cookie, "Cookie \(cookie3Name) wasn't found in the response.")
@@ -162,7 +162,7 @@ class TestCookies : XCTestCase {
         let router = Router()
 
         router.get("/1/cookiedump") {request, response, next in
-            response.status(HttpStatusCode.OK)
+            response.status(HTTPStatusCode.OK)
             if  let ploverCookie = request.cookies["Plover"]  {
                 response.send(ploverCookie.value)
             }
@@ -171,7 +171,7 @@ class TestCookies : XCTestCase {
         }
 
         router.get("/1/sendcookie") {request, response, next in
-            response.status(HttpStatusCode.OK)
+            response.status(HTTPStatusCode.OK)
 
             let cookie1 = NSHTTPCookie(properties: [NSHTTPCookieName: cookie1Name,
                                                 NSHTTPCookieValue: cookie1Value,
@@ -189,7 +189,7 @@ class TestCookies : XCTestCase {
         }
 
         router.get("/2/sendcookie") {request, response, next in
-            response.status(HttpStatusCode.OK)
+            response.status(HTTPStatusCode.OK)
 
             let cookie = NSHTTPCookie(properties: [NSHTTPCookieName: cookie3Name,
                                                 NSHTTPCookieValue: cookie3Value,

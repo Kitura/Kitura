@@ -49,7 +49,7 @@ class TestErrors : XCTestCase {
         performServerTest(router) { expectation in
             self.performRequest("invalid", path: "/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HttpStatusCode.BAD_REQUEST, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.BadRequest, "HTTP Status code was \(response!.statusCode)")
                 expectation.fulfill()
             })
         }
@@ -59,7 +59,7 @@ class TestErrors : XCTestCase {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/notreal", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HttpStatusCode.NOT_FOUND, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.NotFound, "HTTP Status code was \(response!.statusCode)")
                 expectation.fulfill()
             })
         }

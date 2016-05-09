@@ -67,9 +67,9 @@ public class RouterResponse {
     ///
     public var error: ErrorProtocol?
 
-    public var statusCode: HttpStatusCode {
+    public var statusCode: HTTPStatusCode {
         get {
-            return response.statusCode ?? .UNKNOWN
+            return response.statusCode ?? .Unknown
         }
 
         set(newValue) {
@@ -89,7 +89,7 @@ public class RouterResponse {
         self.response = response
         self.router = router
         self.request = request
-        status(HttpStatusCode.NOT_FOUND)
+        status(.NotFound)
     }
 
     ///
@@ -127,11 +127,11 @@ public class RouterResponse {
         for  (_, cookie) in cookies {
             var cookieString = cookie.name + "=" + cookie.value + "; path=" + cookie.path + "; domain=" + cookie.domain
             if  let expiresDate = cookie.expiresDate {
-                cookieString += "; expires=" + SpiUtils.httpDate(expiresDate)
+                cookieString += "; expires=" + SPIUtils.httpDate(expiresDate)
             }
 
             if  cookie.isSecure  {
-                cookieString += "; secure; HttpOnly"
+                cookieString += "; secure; HTTPOnly"
             }
 
             cookieStrings.append(cookieString)
@@ -246,7 +246,7 @@ public class RouterResponse {
     ///
     /// - Returns: a RouterResponse instance
     ///
-    public func status(_ status: HttpStatusCode) -> RouterResponse {
+    public func status(_ status: HTTPStatusCode) -> RouterResponse {
         response.statusCode = status
         return self
     }
@@ -259,10 +259,10 @@ public class RouterResponse {
     /// - Throws: ???
     /// - Returns: a RouterResponse instance
     ///
-    public func send(status: HttpStatusCode) throws -> RouterResponse {
+    public func send(status: HTTPStatusCode) throws -> RouterResponse {
 
         self.status(status)
-        if let statusCode = Http.statusCodes[status.rawValue] {
+        if let statusCode = HTTP.statusCodes[status.rawValue] {
             send(statusCode)
         }
         return self
@@ -356,7 +356,7 @@ public class RouterResponse {
     /// - Returns: a RouterResponse instance
     ///
     public func redirect(_ path: String) throws -> RouterResponse {
-        return try redirect(.MOVED_TEMPORARILY, path: path)
+        return try redirect(.MovedTemporarily, path: path)
     }
 
     ///
@@ -367,7 +367,7 @@ public class RouterResponse {
     ///
     /// - Returns: a RouterResponse instance
     ///
-    public func redirect(_ status: HttpStatusCode, path: String) throws -> RouterResponse {
+    public func redirect(_ status: HTTPStatusCode, path: String) throws -> RouterResponse {
 
         try self.status(status).location(path).end()
         return self
@@ -492,7 +492,7 @@ public class RouterResponse {
             defaultCallback(request, self)
         }
         else {
-            try status(HttpStatusCode.NOT_ACCEPTABLE).end()
+            try status(.NotAcceptable).end()
         }
     }
 

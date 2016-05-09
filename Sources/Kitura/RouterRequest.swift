@@ -47,7 +47,7 @@ public class RouterRequest: SocketReader {
     ///
     /// The parsed url
     ///
-    let parsedUrl: UrlParser
+    let parsedUrl: URLParser
 
     ///
     /// The router as a String
@@ -130,7 +130,7 @@ public class RouterRequest: SocketReader {
     init(request: ServerRequest) {
         serverRequest = request
         method = RouterMethod(string: serverRequest.method)
-        parsedUrl = UrlParser(url: serverRequest.url, isConnect: false)
+        parsedUrl = URLParser(url: serverRequest.url, isConnect: false)
         url = String(serverRequest.urlString)
     }
 

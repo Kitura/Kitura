@@ -47,7 +47,7 @@ class TestSubrouter : XCTestCase {
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path:"/sub", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
                 //XCTAssertEqual(response!.method, "GET", "The request wasn't recognized as a get")
                 do {
@@ -80,7 +80,7 @@ class TestSubrouter : XCTestCase {
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path:"/extern", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
                 //XCTAssertEqual(response!.method, "GET", "The request wasn't recognized as a get")
                 do {
@@ -111,7 +111,7 @@ class TestSubrouter : XCTestCase {
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path:"/sub/sub2", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
                 //XCTAssertEqual(response!.method, "GET", "The request wasn't recognized as a get")
                 do {
@@ -142,7 +142,7 @@ class TestSubrouter : XCTestCase {
         performServerTest(router) { expectation in
             self.performRequest("get", path:"/middle/sub1", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
                 //XCTAssertEqual(response!.method, "GET", "The request wasn't recognized as a get")
                 do {
@@ -160,21 +160,21 @@ class TestSubrouter : XCTestCase {
     static func setupRouter() -> Router {
         let subsubRouter = Router()
         subsubRouter.get("/") { request, response, next in
-            response.status(HttpStatusCode.OK).send("hello from the sub sub")
+            response.status(HTTPStatusCode.OK).send("hello from the sub sub")
             next()
         }
         subsubRouter.get("/sub1") { request, response, next in
-            response.status(HttpStatusCode.OK).send("subsub1")
+            response.status(HTTPStatusCode.OK).send("subsub1")
             next()
         }
 
         let subRouter = Router()
         subRouter.get("/") { request, response, next in
-            response.status(HttpStatusCode.OK).send("hello from the sub")
+            response.status(HTTPStatusCode.OK).send("hello from the sub")
             next()
         }
         subRouter.get("/sub1") { request, response, next in
-            response.status(HttpStatusCode.OK).send("sub1")
+            response.status(HTTPStatusCode.OK).send("sub1")
             next()
         }
 
@@ -182,11 +182,11 @@ class TestSubrouter : XCTestCase {
 
         let router = Router()
         let middleware = RouterMiddlewareGenerator { (request: RouterRequest, response: RouterResponse, next: () -> Void) in
-            response.status(HttpStatusCode.OK).send("first middle\n")
+            response.status(HTTPStatusCode.OK).send("first middle\n")
             next()
         }
         let middleware2 = RouterMiddlewareGenerator { (request: RouterRequest, response: RouterResponse, next: () -> Void) in
-            response.status(HttpStatusCode.OK).send("last middle\n")
+            response.status(HTTPStatusCode.OK).send("last middle\n")
             next()
         }
         router.all("/middle", middleware: middleware)

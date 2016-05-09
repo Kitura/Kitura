@@ -642,9 +642,9 @@ extension Router : RouterMiddleware {
 
 
 ///
-/// HttpServerDelegate extensions
+/// HTTPServerDelegate extensions
 ///
-extension Router : HttpServerDelegate {
+extension Router : HTTPServerDelegate {
 
     ///
     /// Handle the request
@@ -659,7 +659,7 @@ extension Router : HttpServerDelegate {
         process(request: routeReq, response: routeResp) { [unowned self] () in
             do {
                 if  !routeResp.invokedEnd {
-                    if  routeResp.response.statusCode == HttpStatusCode.NOT_FOUND {
+                    if  routeResp.response.statusCode == .NotFound {
                         self.sendDefaultResponse(routeReq, routeResp: routeResp)
                     }
                     try routeResp.end()
@@ -718,7 +718,7 @@ extension Router : HttpServerDelegate {
         } else {
             do {
                 let errorMessage = "Cannot \(String(routeReq.method).uppercased()) \(routeReq.parsedUrl.path ?? "")."
-                try routeResp.status(.NOT_FOUND).send(errorMessage).end()
+                try routeResp.status(.NotFound).send(errorMessage).end()
             } catch {
                 Log.error("Error sending default not found message: \(error)")
             }
@@ -783,7 +783,7 @@ extension Router : HttpServerDelegate {
 
         do {
             try routeResp.send(fileName: resourceFileName)
-            routeResp.status(HttpStatusCode.OK)
+            routeResp.status(.OK)
             try routeResp.end()
         } catch {
             // Fail silently
