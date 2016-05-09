@@ -501,17 +501,55 @@ public class RouterResponse {
     }
 
     ///
-    /// Sets Link HTTP header
+    /// Adds a link with specified parameters to Link HTTP header
     ///
-    /// - Parameter links: a dictionary that maps link rel parameter to actual link value
+    /// - Parameter link: link value
+    /// - Parameter rel:
+    /// - Parameter anchor:
+    /// - Parameter rev:
+    /// - Parameter hreflang:
+    /// - Parameter media:
+    /// - Parameter title:
+    /// - Parameter type:
     ///
-    public func link(_ links: [String: String]) {
-        var headerValue: [String] = []
-        for (rel, link) in links {
-            let value = "<\(link)>; rel=\"\(rel)\""
-            headerValue.append(value)
+    /// - Returns: a RouterResponse instance
+    ///
+    public func link(_ link: String, rel: String? = nil, anchor: String? = nil,
+      rev: String? = nil, hreflang: String? = nil, media: String? = nil,
+      title: String? = nil, type: String? = nil) -> RouterResponse {
+        var headerValue = "<\(link)>"
+
+        if let rel = rel {
+            headerValue += "; rel=\"\(rel)\""
         }
-        setHeader("Link", value: headerValue)
+
+        if let anchor = anchor {
+            headerValue += "; anchor=\"\(anchor)\""
+        }
+
+        if let rev = rev {
+            headerValue += "; rev=\"\(rev)\""
+        }
+
+        if let hreflang = hreflang {
+            headerValue += "; hreflang=\"\(hreflang)\""
+        }
+
+        if let media = media {
+            headerValue += "; media=\"\(media)\""
+        }
+
+        if let title = title {
+            headerValue += "; title=\"\(title)\""
+        }
+
+        if let type = type {
+            headerValue += "; type=\(type)"
+        }
+
+        self.append("Link", value: headerValue)
+
+        return self
     }
 }
 

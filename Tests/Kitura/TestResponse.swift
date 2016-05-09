@@ -347,13 +347,8 @@ class TestResponse : XCTestCase {
                 let secondLink = "<https://developer.ibm.com/swift/products/ibm-bluemix/>; rel=\"prev\""
                 let header = response!.headers["Link"]
                 XCTAssertNotNil(header, "Link header should not be nil")
-                #if os(Linux)
-                    XCTAssertNotNil(header!.rangeOfString(firstLink), "link header should contain first link")
-                    XCTAssertNotNil(header!.rangeOfString(secondLink), "link header should contain secon link")
-                #else
-                    XCTAssertNotNil(header!.range(of: firstLink), "link header should contain first link")
-                    XCTAssertNotNil(header!.range(of: secondLink), "link header should contain secon link")
-                #endif
+                XCTAssertNotNil(header!.range(of: firstLink), "link header should contain first link")
+                XCTAssertNotNil(header!.range(of: secondLink), "link header should contain second link")
                 expectation.fulfill()
             })
         }
@@ -486,20 +481,16 @@ class TestResponse : XCTestCase {
 
         router.get("/single_link") { request, response, next in
             do {
-                response.link([
-                    "root" : "https://developer.ibm.com/swift"
-                ])
-                try response.status(.OK).end()
+                try response.link("https://developer.ibm.com/swift", rel: "root").status(.OK).end()
             } catch {}
         }
 
         router.get("/multiple_links") { request, response, next in
             do {
-                response.link([
-                    "prev" : "https://developer.ibm.com/swift/products/ibm-bluemix/",
-                    "next" : "https://developer.ibm.com/swift/products/ibm-swift-sandbox/"
-                ])
-                try response.status(.OK).end()
+              try response
+              .link("https://developer.ibm.com/swift/products/ibm-bluemix/", rel: "prev")
+              .link("https://developer.ibm.com/swift/products/ibm-swift-sandbox/", rel: "next")
+              .status(.OK).end()
             } catch {}
         }
 
