@@ -145,7 +145,7 @@ class RouterElement {
         // Extra variable since closures cannot be used in their own initalizer
         var nextCallbackPlaceholder: (()->Void)?
 
-        let nextCallback = {
+        let nextCallback = {[unowned request, unowned response, unowned self] in
             middlewareCount += 1
             if middlewareCount < self.middlewares.count && (response.error == nil || self.method == .Error) {
                 guard let nextCallbackPlaceholder = nextCallbackPlaceholder else { return }
