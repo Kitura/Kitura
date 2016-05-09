@@ -103,7 +103,7 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-05-03-a ve
 
 1. Install the following system linux libraries:
 
- `sudo apt-get install autoconf libtool libkqueue-dev libkqueue0 libcurl4-openssl-dev libbsd-dev`
+ `sudo apt-get install autoconf libtool libkqueue-dev libkqueue0 libcurl4-openssl-dev libbsd-dev libblocksruntime-dev`
 
 2. Install the [supported Swift compiler](#swift-version) for Linux.
 
