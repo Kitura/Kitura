@@ -151,7 +151,7 @@ Let's develop our first Kitura Web Application written in Swift!
   let package = Package(
       name: "myFirstProject",
       dependencies: [
-          .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 11)
+          .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 13)
       ])
   ```
 
