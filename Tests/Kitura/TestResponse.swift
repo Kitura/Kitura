@@ -327,7 +327,7 @@ class TestResponse : XCTestCase {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/single_link", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 let header = response!.headers["Link"]
                 XCTAssertNotNil(header, "Link header should not be nil")
                 XCTAssertEqual(header, "<https://developer.ibm.com/swift>; rel=\"root\"")
@@ -338,7 +338,7 @@ class TestResponse : XCTestCase {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/multiple_links", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 let firstLink = "<https://developer.ibm.com/swift/products/ibm-swift-sandbox/>; rel=\"next\""
                 let secondLink = "<https://developer.ibm.com/swift/products/ibm-bluemix/>; rel=\"prev\""
                 let header = response!.headers["Link"]
