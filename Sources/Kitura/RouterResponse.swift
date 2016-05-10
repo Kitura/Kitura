@@ -471,15 +471,15 @@ public class RouterResponse {
         preFlush = newPreFlush
         return oldPreFlush
     }
-    
-    
+
+
     ///
     /// Performs content-negotiation on the Accept HTTP header on the request, when present. It uses
     /// request.accepts() to select a handler for the request, based on the acceptable types ordered by their
     /// quality values. If the header is not specified, the default callback is invoked. When no match is found,
     /// the server invokes the default callback if exists, or responds with 406 “Not Acceptable”.
     /// The Content-Type response header is set when a callback is selected.
-    /// 
+    ///
     /// - Parameter callbacks: a dictionary that maps content types to handlers
     ///
     public func format(callbacks: [String : ((RouterRequest, RouterResponse) -> Void)]) throws {
@@ -496,6 +496,57 @@ public class RouterResponse {
         }
     }
 
+    ///
+    /// Adds a link with specified parameters to Link HTTP header
+    ///
+    /// - Parameter link: link value
+    /// - Parameter rel:
+    /// - Parameter anchor:
+    /// - Parameter rev:
+    /// - Parameter hreflang:
+    /// - Parameter media:
+    /// - Parameter title:
+    /// - Parameter type:
+    ///
+    /// - Returns: a RouterResponse instance
+    ///
+    public func link(_ link: String, rel: String? = nil, anchor: String? = nil,
+      rev: String? = nil, hreflang: String? = nil, media: String? = nil,
+      title: String? = nil, type: String? = nil) -> RouterResponse {
+        var headerValue = "<\(link)>"
+
+        if let rel = rel {
+            headerValue += "; rel=\"\(rel)\""
+        }
+
+        if let anchor = anchor {
+            headerValue += "; anchor=\"\(anchor)\""
+        }
+
+        if let rev = rev {
+            headerValue += "; rev=\"\(rev)\""
+        }
+
+        if let hreflang = hreflang {
+            headerValue += "; hreflang=\"\(hreflang)\""
+        }
+
+        if let media = media {
+            headerValue += "; media=\"\(media)\""
+        }
+
+        if let title = title {
+            headerValue += "; title=\"\(title)\""
+        }
+
+        if let type = type {
+            headerValue += "; type=\(type)"
+        }
+
+        self.append("Link", value: headerValue)
+
+        return self
+    }
 }
 
 ///
