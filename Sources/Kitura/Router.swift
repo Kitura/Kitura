@@ -18,7 +18,7 @@ import KituraNet
 import KituraSys
 import LoggerAPI
 import Foundation
-import KituraTemplateEngine
+import Kitura_TemplateEngine
 
 // MARK Router
 
