@@ -35,13 +35,8 @@ public class RouterRequest: SocketReader {
         guard let host = self.headers["host"] else {
             return self.parsedUrl.host ?? ""
         }
-#if os(Linux)
-        let range = host.rangeOfString(":")
-        return  range == nil ? host : host.substringToIndex(range!.startIndex)
-#else
         let range = host.range(of: ":")
-        return  range == nil ? host : host.substring(to: range!.startIndex)
-#endif
+        return  range == nil ? host : host.substring(to: range!.lowerBound)
     }()
 
     ///
@@ -52,7 +47,7 @@ public class RouterRequest: SocketReader {
     ///
     /// The parsed url
     ///
-    let parsedUrl: UrlParser
+    let parsedUrl: URLParser
 
     ///
     /// The router as a String
@@ -135,7 +130,7 @@ public class RouterRequest: SocketReader {
     init(request: ServerRequest) {
         serverRequest = request
         method = RouterMethod(string: serverRequest.method)
-        parsedUrl = UrlParser(url: serverRequest.url, isConnect: false)
+        parsedUrl = URLParser(url: serverRequest.url, isConnect: false)
         url = String(serverRequest.urlString)
     }
 
@@ -185,11 +180,7 @@ public class RouterRequest: SocketReader {
     ///
     private func parseMediaType(_ type: String) -> (type: String, qValue: Double) {
         var finishedPair = ("", 1.0)
-#if os(Linux)
-        let trimmed = type.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
-#else
         let trimmed = type.trimmingCharacters(in: NSCharacterSet.whitespaces())
-#endif
         let components = trimmed.characters.split(separator: ";").map(String.init)
 
         if let mediaType = components.first {
@@ -238,12 +229,8 @@ public class RouterRequest: SocketReader {
                         criteriaMatches[type] = (priority: 3, qValue: parsedHeaderValue.qValue)
                     }
                 } else {
-#if os(Linux)
-                    let rangeMatch = mimeType.rangeOfString(parsedHeaderValue.type, options: .RegularExpressionSearch)
-#else
-                    let rangeMatch = mimeType.range(of: parsedHeaderValue.type, options: .regularExpressionSearch)
-#endif
-                    if rangeMatch != nil { // partial match, e.g. text/html == text/*
+                    
+                    if let _ = mimeType.range(of: parsedHeaderValue.type, options: .regularExpressionSearch) { // partial match, e.g. text/html == text/*
                         if criteriaMatches[type]?.priority > 2 || criteriaMatches[type] == nil {
                             criteriaMatches[type] = (priority: 2, qValue: parsedHeaderValue.qValue)
                         }
@@ -290,29 +277,16 @@ private class Cookies {
     private init(headers: SimpleHeaders) {
         var cookieString: String?
         for  (header, value)  in headers {
-            #if os(Linux)
-            let lowercasedHeader = header.bridge().lowercaseString
-            #else
-            let lowercasedHeader = header.lowercased()
-            #endif
-            if  lowercasedHeader  == cookieHeader {
+            if  header.lowercased()  == cookieHeader {
                 cookieString = value
                 break
             }
         }
 
         if  let cookieString = cookieString {
-            #if os(Linux)
-            let cookieNameValues = cookieString.bridge().componentsSeparatedByString("; ")
-            #else
             let cookieNameValues = cookieString.components(separatedBy: "; ")
-            #endif
             for  cookieNameValue  in  cookieNameValues  {
-                #if os(Linux)
-                let cookieNameValueParts = cookieNameValue.bridge().componentsSeparatedByString("=")
-                #else
                 let cookieNameValueParts = cookieNameValue.components(separatedBy: "=")
-                #endif
                 if   cookieNameValueParts.count == 2  {
                     let theCookie = NSHTTPCookie(properties:
                                                [NSHTTPCookieDomain: ".",

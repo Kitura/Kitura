@@ -35,7 +35,7 @@ Kitura is a web framework and web server that is created for web services writte
 - Pluggable middleware
 
 ## Swift version
-The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-04-25-a version of the Swift binaries. You can download this version of the Swift binaries by following this [link](https://swift.org/download/). Compatibility with other Swift versions is not guaranteed.
+The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-05-03-a version of the Swift binaries. You can download this version of the Swift binaries by following this [link](https://swift.org/download/). Compatibility with other Swift versions is not guaranteed.
 
 ## Installation (Docker development environment)
 
@@ -103,7 +103,7 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-04-25-a ve
 
 1. Install the following system linux libraries:
 
- `sudo apt-get install autoconf libtool libkqueue-dev libkqueue0 libcurl4-openssl-dev libbsd-dev`
+ `sudo apt-get install autoconf libtool libkqueue-dev libkqueue0 libcurl4-openssl-dev libbsd-dev libblocksruntime-dev`
 
 2. Install the [supported Swift compiler](#swift-version) for Linux.
 
@@ -169,7 +169,7 @@ Let's develop our first Kitura Web Application written in Swift!
 
   router.get("/") {
   request, response, next in
-      response.send("Hello, World!")
+      response.status(.OK).send("Hello, World!")
       next()
   }
   ```
@@ -192,7 +192,7 @@ Let's develop our first Kitura Web Application written in Swift!
 
   router.get("/") {
   request, response, next in
-      response.send("Hello, World!")
+      response.status(.OK).send("Hello, World!")
       next()
   }
 

@@ -50,11 +50,7 @@ public class RouteRegex {
         var keys: [String] = []
         var nonKeyIndex = 0
         
-        #if os(Linux)
-            let paths = pattern.bridge().componentsSeparatedByString("/")
-        #else
-            let paths = pattern.bridge().components(separatedBy: "/")
-        #endif
+        let paths = pattern.bridge().components(separatedBy: "/")
         
         // Special case where only back slashes are specified
         if paths.filter({$0 != ""}).isEmpty {
@@ -86,77 +82,40 @@ public class RouteRegex {
                     Log.error("RouteRegex element has invalid state: missing nonKeyRegex")
                     return(nil,nil)
                 }
-                #if os(Linux)
-                    if let keyMatch = keyRegex.firstMatch(in: path, options: [], range: range) {
-                        // We found a path element with a named/key capture
-                        let prefixRange = keyMatch.rangeAtIndex(1)
-                        if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1 {
-                            prefix = path.bridge().substringWithRange(prefixRange)
-                        }
-                        let matchExpRange = keyMatch.rangeAtIndex(3)
-                        if  matchExpRange.location != NSNotFound  &&  matchExpRange.location != -1 {
-                            matchExp = path.bridge().substringWithRange(matchExpRange)
-                        }
-                        let pqsRange = keyMatch.rangeAtIndex(4)
-                        if  pqsRange.location != NSNotFound  &&  pqsRange.location != -1 {
-                            plusQuestStar = path.bridge().substringWithRange(pqsRange)
-                        }
-                        keys.append(path.bridge().substringWithRange(keyMatch.rangeAtIndex(2)))
-                        matched = true
-                    } else if  let nonKeyMatch = nonKeyRegex.firstMatch(in: path, options: [], range: range) {
-                        // We found a path element with an unnamed capture
-                        let prefixRange = nonKeyMatch.rangeAtIndex(1)
-                        if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1 {
-                            prefix = path.bridge().substringWithRange(prefixRange)
-                        }
-                        let matchExpRange = nonKeyMatch.rangeAtIndex(2)
-                        if  matchExpRange.location != NSNotFound  &&  matchExpRange.location != -1 {
-                            matchExp = path.bridge().substringWithRange(matchExpRange)
-                        }
-                        let pqsRange = nonKeyMatch.rangeAtIndex(3)
-                        if  pqsRange.location != NSNotFound  &&  pqsRange.location != -1 {
-                            plusQuestStar = path.bridge().substringWithRange(pqsRange)
-                        }
-                        keys.append(String(nonKeyIndex))
-                        nonKeyIndex+=1
-                        matched = true
+                if let keyMatch = keyRegex.firstMatch(in: path, options: [], range: range) {
+                    // We found a path element with a named/key capture
+                    let prefixRange = keyMatch.range(at: 1)
+                    if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1 {
+                        prefix = path.bridge().substring(with: prefixRange)
                     }
-                #else
-                    if let keyMatch = keyRegex.firstMatch(in: path, options: [], range: range) {
-                        // We found a path element with a named/key capture
-                        let prefixRange = keyMatch.range(at: 1)
-                        if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1 {
-                            prefix = path.bridge().substring(with: prefixRange)
-                        }
-                        let matchExpRange = keyMatch.range(at: 3)
-                        if  matchExpRange.location != NSNotFound  &&  matchExpRange.location != -1 {
-                            matchExp = path.bridge().substring(with: matchExpRange)
-                        }
-                        let pqsRange = keyMatch.range(at: 4)
-                        if  pqsRange.location != NSNotFound  &&  pqsRange.location != -1 {
-                            plusQuestStar = path.bridge().substring(with: pqsRange)
-                        }
-                        keys.append(path.bridge().substring(with: keyMatch.range(at: 2)))
-                        matched = true
-                    } else if  let nonKeyMatch = nonKeyRegex.firstMatch(in: path, options: [], range: range) {
-                        // We found a path element with an unnamed capture
-                        let prefixRange = nonKeyMatch.range(at: 1)
-                        if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1 {
-                            prefix = path.bridge().substring(with: prefixRange)
-                        }
-                        let matchExpRange = nonKeyMatch.range(at: 2)
-                        if  matchExpRange.location != NSNotFound  &&  matchExpRange.location != -1 {
-                            matchExp = path.bridge().substring(with: matchExpRange)
-                        }
-                        let pqsRange = nonKeyMatch.range(at: 3)
-                        if  pqsRange.location != NSNotFound  &&  pqsRange.location != -1 {
-                            plusQuestStar = path.bridge().substring(with: pqsRange)
-                        }
-                        keys.append(String(nonKeyIndex))
-                        nonKeyIndex+=1
-                        matched = true
+                    let matchExpRange = keyMatch.range(at: 3)
+                    if  matchExpRange.location != NSNotFound  &&  matchExpRange.location != -1 {
+                        matchExp = path.bridge().substring(with: matchExpRange)
                     }
-                #endif
+                    let pqsRange = keyMatch.range(at: 4)
+                    if  pqsRange.location != NSNotFound  &&  pqsRange.location != -1 {
+                        plusQuestStar = path.bridge().substring(with: pqsRange)
+                    }
+                    keys.append(path.bridge().substring(with: keyMatch.range(at: 2)))
+                    matched = true
+                } else if  let nonKeyMatch = nonKeyRegex.firstMatch(in: path, options: [], range: range) {
+                    // We found a path element with an unnamed capture
+                    let prefixRange = nonKeyMatch.range(at: 1)
+                    if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1 {
+                        prefix = path.bridge().substring(with: prefixRange)
+                    }
+                    let matchExpRange = nonKeyMatch.range(at: 2)
+                    if  matchExpRange.location != NSNotFound  &&  matchExpRange.location != -1 {
+                        matchExp = path.bridge().substring(with: matchExpRange)
+                    }
+                    let pqsRange = nonKeyMatch.range(at: 3)
+                    if  pqsRange.location != NSNotFound  &&  pqsRange.location != -1 {
+                        plusQuestStar = path.bridge().substring(with: pqsRange)
+                    }
+                    keys.append(String(nonKeyIndex))
+                    nonKeyIndex+=1
+                    matched = true
+                }
             }
             
             if  matched  {

@@ -188,7 +188,7 @@ public class StaticFileServer: RouterMiddleware {
                 response.setHeader("Cache-Control", value: "max-age=\(maxAgeCacheControlHeader)")
                 if addLastModifiedHeader {
                     if let date = attributes[NSFileModificationDate] as? NSDate {
-                        response.setHeader("Last-Modified", value: SpiUtils.httpDate(date))
+                        response.setHeader("Last-Modified", value: SPIUtils.httpDate(date))
                     }
                 }
                 if generateETag {
@@ -208,7 +208,7 @@ public class StaticFileServer: RouterMiddleware {
             } catch {
                 // Nothing
             }
-            response.status(HttpStatusCode.OK)
+            response.status(.OK)
         }
     }
 

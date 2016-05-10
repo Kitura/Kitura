@@ -53,7 +53,7 @@ class TestResponse : XCTestCase {
     	performServerTest(router) { expectation in
             self.performRequest("get", path:"/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
                 //XCTAssertEqual(response!.method, "GET", "The request wasn't recognized as a get")
                 do {
@@ -111,11 +111,7 @@ class TestResponse : XCTestCase {
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response!.readString()
-#if os(Linux)
-                    XCTAssertNotNil(body!.rangeOfString("ibm"),"response does not contain IBM")
-#else
                     XCTAssertNotNil(body!.range(of: "ibm"),"response does not contain IBM")
-#endif
                 }
                 catch{
                     XCTFail("No response body")
@@ -146,7 +142,7 @@ class TestResponse : XCTestCase {
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path: "/route", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 do {
                     let body = try response!.readString()
                     XCTAssertEqual(body!,"get 1\nget 2\n")
@@ -159,7 +155,7 @@ class TestResponse : XCTestCase {
         }, { expectation in
             self.performRequest("post", path: "/route", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 do {
                     let body = try response!.readString()
                     XCTAssertEqual(body!,"post received")
@@ -204,7 +200,7 @@ class TestResponse : XCTestCase {
             XCTAssertEqual(response.getHeaders("Content-Type")!, ["text/plain", "image/png", "text/html"])
 
             do {
-                try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+                try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
             }
             catch {}
             next()
@@ -239,7 +235,7 @@ class TestResponse : XCTestCase {
             XCTAssertNil(request.accepts("unreal"), "Invalid extension was accepted!")
 
             do {
-                try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+                try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
             }
             catch {}
             next()
@@ -254,7 +250,7 @@ class TestResponse : XCTestCase {
             XCTAssertEqual(request.accepts(["xml", "html", "unreal"]), "html", "Accepts did not return expected value")
 
             do {
-                try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+                try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
             }
             catch {}
             next()
@@ -281,7 +277,7 @@ class TestResponse : XCTestCase {
         performServerTest(router) { expectation in
             self.performRequest("get", path:"/format", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 XCTAssertEqual(response!.headers["Content-Type"], "text/html")
                 do {
                     let body = try response!.readString()
@@ -297,7 +293,7 @@ class TestResponse : XCTestCase {
         performServerTest(router) { expectation in
             self.performRequest("get", path:"/format", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 XCTAssertEqual(response!.headers["Content-Type"], "text/plain")
                 do {
                     let body = try response!.readString()
@@ -313,7 +309,7 @@ class TestResponse : XCTestCase {
         performServerTest(router) { expectation in
             self.performRequest("get", path:"/format", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HttpStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 do {
                     let body = try response!.readString()
                     XCTAssertEqual(body!,"default")
@@ -367,7 +363,7 @@ class TestResponse : XCTestCase {
         router.get("/qwer") { _, response, next in
             response.setHeader("Content-Type", value: "text/html; charset=utf-8")
             do {
-                try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+                try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
             }
             catch {}
             next()
@@ -380,7 +376,7 @@ class TestResponse : XCTestCase {
             let q = request.queryParams["q"] ?? "(nil)"
             let u1 = request.userInfo["u1"] as? NSString ?? "(nil)"
             do {
-                try response.status(HttpStatusCode.OK).send("<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=\(p1)<p><p>q=\(q)<p><p>u1=\(u1)</body></html>\n\n").end()
+                try response.status(HTTPStatusCode.OK).send("<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=\(p1)<p><p>q=\(q)<p><p>u1=\(u1)</body></html>\n\n").end()
             }
             catch {}
             next()
@@ -397,22 +393,22 @@ class TestResponse : XCTestCase {
 
         // Error handling example
         router.get("/error") { _, response, next in
-            response.status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+            response.status(HTTPStatusCode.internalServerError)
             response.error = InternalError.NilVariable(variable: "foo")
             next()
         }
 
         router.route("/route")
         .get { _, response, next in
-            response.status(HttpStatusCode.OK).send("get 1\n")
+            response.status(HTTPStatusCode.OK).send("get 1\n")
             next()
         }
         .post {_, response, next in
-            response.status(HttpStatusCode.OK).send("post received")
+            response.status(HTTPStatusCode.OK).send("post received")
             next()
         }
         .get { _, response, next in
-            response.status(HttpStatusCode.OK).send("get 2\n")
+            response.status(HTTPStatusCode.OK).send("get 2\n")
             next()
         }
 
@@ -428,12 +424,12 @@ class TestResponse : XCTestCase {
             switch (requestBody) {
                 case .UrlEncoded(let value):
                     do {
-                        try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> \(value) </body></html>\n\n")
+                        try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> \(value) </body></html>\n\n")
                     }
                     catch {}
                 case .Text(let value):
                     do {
-                        try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received text body: </b>\(value)</body></html>\n\n")
+                        try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received text body: </b>\(value)</body></html>\n\n")
                     }
                     catch {}
                 default:
@@ -446,7 +442,7 @@ class TestResponse : XCTestCase {
 
         func callbackText(request: RouterRequest, response: RouterResponse) {
             do {
-                try response.status(HttpStatusCode.OK).send("Hi from Kitura!").end()
+                try response.status(HTTPStatusCode.OK).send("Hi from Kitura!").end()
             }
             catch {}
 
@@ -454,7 +450,7 @@ class TestResponse : XCTestCase {
 
         func callbackHtml(request: RouterRequest, response: RouterResponse) {
             do {
-                try response.status(HttpStatusCode.OK).send("<!DOCTYPE html><html><body>Hi from Kitura!</body></html>\n\n").end()
+                try response.status(HTTPStatusCode.OK).send("<!DOCTYPE html><html><body>Hi from Kitura!</body></html>\n\n").end()
             }
             catch {}
 
@@ -463,7 +459,7 @@ class TestResponse : XCTestCase {
         func callbackDefault(request: RouterRequest, response: RouterResponse) {
             do {
                 response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
-                try response.status(HttpStatusCode.OK).send("default").end()
+                try response.status(HTTPStatusCode.OK).send("default").end()
             }
             catch {}
 

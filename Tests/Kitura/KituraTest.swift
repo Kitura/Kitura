@@ -32,7 +32,7 @@ extension KituraTest {
   //       sleep(10)
     }
 
-    func performServerTest(_ router: HttpServerDelegate, asyncTasks: (expectation: XCTestExpectation) -> Void...) {
+    func performServerTest(_ router: HTTPServerDelegate, asyncTasks: (expectation: XCTestExpectation) -> Void...) {
         let server = setupServer(port: 8090, delegate: router)
         let requestQueue = Queue(type: QueueType.SERIAL)
 
@@ -58,15 +58,15 @@ extension KituraTest {
             }
         }
         allHeaders["Content-Type"] = "text/plain"
-        let req = Http.request([.Method(method), .Hostname("localhost"), .Port(8090), .Path(path), .Headers(allHeaders)], callback: callback)
+        let req = HTTP.request([.method(method), .hostname("localhost"), .port(8090), .path(path), .headers(allHeaders)], callback: callback)
         if let requestModifier = requestModifier {
             requestModifier(req)
         }
         req.end()
     }
 
-    private func setupServer(port: Int, delegate: HttpServerDelegate) -> HttpServer {
-        return HttpServer.listen(port: port, delegate: delegate,
+    private func setupServer(port: Int, delegate: HTTPServerDelegate) -> HTTPServer {
+        return HTTPServer.listen(port: port, delegate: delegate,
                            notOnMainQueue:true)
     }
 }
