@@ -69,7 +69,7 @@ public class RouterResponse {
 
     public var statusCode: HTTPStatusCode {
         get {
-            return response.statusCode ?? .Unknown
+            return response.statusCode ?? .unknown
         }
 
         set(newValue) {
@@ -89,7 +89,7 @@ public class RouterResponse {
         self.response = response
         self.router = router
         self.request = request
-        status(.NotFound)
+        status(.notFound)
     }
 
     ///
@@ -356,7 +356,7 @@ public class RouterResponse {
     /// - Returns: a RouterResponse instance
     ///
     public func redirect(_ path: String) throws -> RouterResponse {
-        return try redirect(.MovedTemporarily, path: path)
+        return try redirect(.movedTemporarily, path: path)
     }
 
     ///
@@ -492,7 +492,7 @@ public class RouterResponse {
             defaultCallback(request, self)
         }
         else {
-            try status(.NotAcceptable).end()
+            try status(.notAcceptable).end()
         }
     }
 

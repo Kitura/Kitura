@@ -628,7 +628,7 @@ extension Router : RouterMiddleware {
             return
         }
         request.parsedUrl.path?.removeSubrange(prefixRange)
-        
+
         if request.parsedUrl.path == "" {
             request.parsedUrl.path = "/"
         }
@@ -659,7 +659,7 @@ extension Router : HTTPServerDelegate {
         process(request: routeReq, response: routeResp) { [unowned self] () in
             do {
                 if  !routeResp.invokedEnd {
-                    if  routeResp.response.statusCode == .NotFound {
+                    if  routeResp.response.statusCode == .notFound {
                         self.sendDefaultResponse(routeReq, routeResp: routeResp)
                     }
                     try routeResp.end()
@@ -718,7 +718,7 @@ extension Router : HTTPServerDelegate {
         } else {
             do {
                 let errorMessage = "Cannot \(String(routeReq.method).uppercased()) \(routeReq.parsedUrl.path ?? "")."
-                try routeResp.status(.NotFound).send(errorMessage).end()
+                try routeResp.status(.notFound).send(errorMessage).end()
             } catch {
                 Log.error("Error sending default not found message: \(error)")
             }

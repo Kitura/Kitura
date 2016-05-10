@@ -365,7 +365,7 @@ class TestResponse : XCTestCase {
 
         // Error handling example
         router.get("/error") { _, response, next in
-            response.status(HTTPStatusCode.InternalServerError)
+            response.status(HTTPStatusCode.internalServerError)
             response.error = InternalError.NilVariable(variable: "foo")
             next()
         }
