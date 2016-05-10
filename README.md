@@ -177,7 +177,7 @@ Let's develop our first Kitura Web Application written in Swift!
 6. Create and start a HTTPServer:
 
   ```swift
-  let server = HttpServer.listen(port: 8090, delegate: router)
+  let server = HTTPServer.listen(port: 8090, delegate: router)
   Server.run()
   ```
 
@@ -196,7 +196,7 @@ Let's develop our first Kitura Web Application written in Swift!
       next()
   }
 
-  let server = HttpServer.listen(port: 8090, delegate: router)
+  let server = HTTPServer.listen(port: 8090, delegate: router)
   Server.run()
   ```
 
