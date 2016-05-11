@@ -69,9 +69,9 @@ public class RouterResponse {
     
     public var headers: Headers
 
-    public var statusCode: HttpStatusCode {
+    public var statusCode: HTTPStatusCode {
         get {
-            return response.statusCode ?? .UNKNOWN
+            return response.statusCode ?? .unknown
         }
 
         set(newValue) {
@@ -92,7 +92,7 @@ public class RouterResponse {
         self.router = router
         self.request = request
         headers = Headers(headers: response.headers)
-        status(HttpStatusCode.NOT_FOUND)
+        status(.notFound)
     }
 
     ///
@@ -112,7 +112,7 @@ public class RouterResponse {
             }
             addCookies()
 
-            if  request.method != .Head {
+            if  request.method != .head {
                 try response.write(from: data)
             }
         }
@@ -130,11 +130,11 @@ public class RouterResponse {
         for  (_, cookie) in cookies {
             var cookieString = cookie.name + "=" + cookie.value + "; path=" + cookie.path + "; domain=" + cookie.domain
             if  let expiresDate = cookie.expiresDate {
-                cookieString += "; expires=" + SpiUtils.httpDate(expiresDate)
+                cookieString += "; expires=" + SPIUtils.httpDate(expiresDate)
             }
 
             if  cookie.isSecure  {
-                cookieString += "; secure; HttpOnly"
+                cookieString += "; secure; HTTPOnly"
             }
 
             cookieStrings.append(cookieString)
@@ -249,7 +249,7 @@ public class RouterResponse {
     ///
     /// - Returns: a RouterResponse instance
     ///
-    public func status(_ status: HttpStatusCode) -> RouterResponse {
+    public func status(_ status: HTTPStatusCode) -> RouterResponse {
         response.statusCode = status
         return self
     }
@@ -262,10 +262,10 @@ public class RouterResponse {
     /// - Throws: ???
     /// - Returns: a RouterResponse instance
     ///
-    public func send(status: HttpStatusCode) throws -> RouterResponse {
+    public func send(status: HTTPStatusCode) throws -> RouterResponse {
 
         self.status(status)
-        if let statusCode = Http.statusCodes[status.rawValue] {
+        if let statusCode = HTTP.statusCodes[status.rawValue] {
             send(statusCode)
         }
         return self
@@ -280,7 +280,7 @@ public class RouterResponse {
     /// - Returns: a RouterResponse instance
     ///
     public func redirect(_ path: String) throws -> RouterResponse {
-        return try redirect(.MOVED_TEMPORARILY, path: path)
+        return try redirect(.movedTemporarily, path: path)
     }
 
     ///
@@ -291,7 +291,7 @@ public class RouterResponse {
     ///
     /// - Returns: a RouterResponse instance
     ///
-    public func redirect(_ status: HttpStatusCode, path: String) throws -> RouterResponse {
+    public func redirect(_ status: HTTPStatusCode, path: String) throws -> RouterResponse {
 
         try self.status(status).location(path).end()
         return self
@@ -330,7 +330,7 @@ public class RouterResponse {
     // influenced by http://expressjs.com/en/4x/api.html#app.render
     public func render(_ resource: String, context: [ String: Any]) throws -> RouterResponse {
         guard let router = router else {
-            throw InternalError.NilVariable(variable: "router")
+            throw InternalError.nilVariable(variable: "router")
         }
         let renderedResource = try router.render(resource, context: context)
         return send(renderedResource)
@@ -394,15 +394,15 @@ public class RouterResponse {
         preFlush = newPreFlush
         return oldPreFlush
     }
-    
-    
+
+
     ///
     /// Performs content-negotiation on the Accept HTTP header on the request, when present. It uses
     /// request.accepts() to select a handler for the request, based on the acceptable types ordered by their
     /// quality values. If the header is not specified, the default callback is invoked. When no match is found,
     /// the server invokes the default callback if exists, or responds with 406 “Not Acceptable”.
     /// The Content-Type response header is set when a callback is selected.
-    /// 
+    ///
     /// - Parameter callbacks: a dictionary that maps content types to handlers
     ///
     public func format(callbacks: [String : ((RouterRequest, RouterResponse) -> Void)]) throws {
@@ -415,10 +415,61 @@ public class RouterResponse {
             defaultCallback(request, self)
         }
         else {
-            try status(HttpStatusCode.NOT_ACCEPTABLE).end()
+            try status(.notAcceptable).end()
         }
     }
 
+    ///
+    /// Adds a link with specified parameters to Link HTTP header
+    ///
+    /// - Parameter link: link value
+    /// - Parameter rel:
+    /// - Parameter anchor:
+    /// - Parameter rev:
+    /// - Parameter hreflang:
+    /// - Parameter media:
+    /// - Parameter title:
+    /// - Parameter type:
+    ///
+    /// - Returns: a RouterResponse instance
+    ///
+    public func link(_ link: String, rel: String? = nil, anchor: String? = nil,
+      rev: String? = nil, hreflang: String? = nil, media: String? = nil,
+      title: String? = nil, type: String? = nil) -> RouterResponse {
+        var headerValue = "<\(link)>"
+
+        if let rel = rel {
+            headerValue += "; rel=\"\(rel)\""
+        }
+
+        if let anchor = anchor {
+            headerValue += "; anchor=\"\(anchor)\""
+        }
+
+        if let rev = rev {
+            headerValue += "; rev=\"\(rev)\""
+        }
+
+        if let hreflang = hreflang {
+            headerValue += "; hreflang=\"\(hreflang)\""
+        }
+
+        if let media = media {
+            headerValue += "; media=\"\(media)\""
+        }
+
+        if let title = title {
+            headerValue += "; title=\"\(title)\""
+        }
+
+        if let type = type {
+            headerValue += "; type=\(type)"
+        }
+
+        headers.append("Link", value: headerValue)
+
+        return self
+    }
 }
 
 ///

@@ -17,72 +17,38 @@
 ///
 /// Values for Router methods (Get, Post, Put, Delete, etc)
 ///
-public enum RouterMethod: Int {
-    
-    case All, Get, Post, Put, Head, Delete, Options, Trace, Copy, Lock, MkCol, Move,
-            Purge, PropFind, PropPatch, Unlock, Report, MkActivity, Checkout, Merge,
-            MSearch, Notify, Subscribe, Unsubscribe, Patch, Search, Connect, Error, Unknown
-    
-    init(string: String) {
-        switch string.lowercased() {
-        case "all":
-            self = .All
-        case "get":
-            self = .Get
-        case "post":
-            self = .Post
-        case "put":
-            self = .Put
-        case "head":
-            self = .Head
-        case "delete":
-            self = .Delete
-        case "options":
-            self = .Options
-        case "trace":
-            self = .Trace
-        case "copy":
-            self = .Copy
-        case "lock":
-            self = .Lock
-        case "mkcol":
-            self = .MkCol
-        case "move":
-            self = .Move
-        case "purge":
-            self = .Purge
-        case "propfind":
-            self = .PropFind
-        case "proppatch":
-            self = .PropPatch
-        case "unlock":
-            self = .Unlock
-        case "report":
-            self = .Report
-        case "mkactivity":
-            self = .MkActivity
-        case "checkout":
-            self = .Checkout
-        case "merge":
-            self = .Merge
-        case "m-search":
-            self = .MSearch
-        case "notify":
-            self = .Notify
-        case "subscribe":
-            self = .Subscribe
-        case "unsubscribe":
-            self = .Unsubscribe
-        case "patch":
-            self = .Patch
-        case "search":
-            self = .Search
-        case "connect":
-            self = .Connect
-        case "error":
-            self = .Error
-        default:
-            self = .Unknown
-        }
-    }
+public enum RouterMethod: String {
+    case all = "ALL"
+    case get = "GET"
+    case post = "POST"
+    case put = "PUT"
+    case head = "HEAD"
+    case delete = "DELETE"
+    case options = "OPTIONS"
+    case trace = "TRACE"
+    case copy = "COPY"
+    case lock = "LOCK"
+    case mkCol = "MKCOL"
+    case move = "MOVE"
+    case purge = "PURGE"
+    case propFind = "PROPFIND"
+    case propPatch = "PROPPATCH"
+    case unlock = "UNLOCK"
+    case report = "REPORT"
+    case mkActivity = "MKACTIVITY"
+    case checkout = "CHECKOUT"
+    case merge = "MERGE"
+    case mSearch = "MSEARCH"
+    case notify = "NOTIFY"
+    case subscribe = "SUBSCRIBE"
+    case unsubscribe = "UNSUBSCRIBE"
+    case patch = "PATCH"
+    case search = "SEARCH"
+    case connect = "CONNECT"
+    case error = "ERROR"
+    case unknown = "UNKNOWN"
+
+    init(fromRawValue: String){
+        self = RouterMethod(rawValue: fromRawValue) ?? .unknown
+    }    
 }

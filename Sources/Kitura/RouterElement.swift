@@ -106,8 +106,8 @@ class RouterElement {
             return
         }
 
-        guard (response.error != nil && method == .Error)
-        || (response.error == nil && (method == request.method || method == .All)) else {
+        guard (response.error != nil && method == .error)
+        || (response.error == nil && (method == request.method || method == .all)) else {
             next()
             return
         }
@@ -140,24 +140,8 @@ class RouterElement {
     /// - Parameter next: the closure for the next execution block
     ///
     private func processHelper(request: RouterRequest, response: RouterResponse, next: () -> Void) {
-        var middlewareCount = -1
-
-        // Extra variable since closures cannot be used in their own initalizer
-        var nextCallbackPlaceholder: (()->Void)?
-
-        let nextCallback = {
-            middlewareCount += 1
-            if middlewareCount < self.middlewares.count && (response.error == nil || self.method == .Error) {
-                guard let nextCallbackPlaceholder = nextCallbackPlaceholder else { return }
-                self.middlewares[middlewareCount].handle(request: request, response: response, next: nextCallbackPlaceholder)
-            } else {
-                request.params = [:]
-                next()
-            }
-        }
-
-        nextCallbackPlaceholder = nextCallback
-        nextCallback()
+        let looper = RouterMiddlewareWalker(middlewares: middlewares, method: method, request: request, response: response, callback: next)
+        looper.next()
     }
 
     ///

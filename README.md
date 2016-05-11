@@ -103,7 +103,7 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-05-03-a ve
 
 1. Install the following system linux libraries:
 
- `sudo apt-get install autoconf libtool libkqueue-dev libkqueue0 libcurl4-openssl-dev libbsd-dev`
+ `sudo apt-get install autoconf libtool libkqueue-dev libkqueue0 libcurl4-openssl-dev libbsd-dev libblocksruntime-dev`
 
 2. Install the [supported Swift compiler](#swift-version) for Linux.
 
@@ -151,7 +151,7 @@ Let's develop our first Kitura Web Application written in Swift!
   let package = Package(
       name: "myFirstProject",
       dependencies: [
-          .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 11)
+          .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 13)
       ])
   ```
 
@@ -169,7 +169,7 @@ Let's develop our first Kitura Web Application written in Swift!
 
   router.get("/") {
   request, response, next in
-      response.send("Hello, World!")
+      response.status(.OK).send("Hello, World!")
       next()
   }
   ```
@@ -177,7 +177,7 @@ Let's develop our first Kitura Web Application written in Swift!
 6. Create and start a HTTPServer:
 
   ```swift
-  let server = HttpServer.listen(port: 8090, delegate: router)
+  let server = HTTPServer.listen(port: 8090, delegate: router)
   Server.run()
   ```
 
@@ -192,11 +192,11 @@ Let's develop our first Kitura Web Application written in Swift!
 
   router.get("/") {
   request, response, next in
-      response.send("Hello, World!")
+      response.status(.OK).send("Hello, World!")
       next()
   }
 
-  let server = HttpServer.listen(port: 8090, delegate: router)
+  let server = HTTPServer.listen(port: 8090, delegate: router)
   Server.run()
   ```
 
