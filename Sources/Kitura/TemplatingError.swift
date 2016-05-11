@@ -17,17 +17,17 @@
 import Foundation
 
 enum TemplatingError: ErrorProtocol {
-    case NoDefaultTemplateEngineAndNoExtensionSpecified
-    case NoTemplateEngineForExtension(extension: String)
+    case noDefaultTemplateEngineAndNoExtensionSpecified
+    case noTemplateEngineForExtension(extension: String)
 }
 
 
 extension TemplatingError: CustomStringConvertible {
     var description: String {
         switch self {
-        case NoDefaultTemplateEngineAndNoExtensionSpecified:
+        case .noDefaultTemplateEngineAndNoExtensionSpecified:
             return "No default template engine set and no file extension specified"
-        case NoTemplateEngineForExtension(let fileExtension):
+        case .noTemplateEngineForExtension(let fileExtension):
             return "No template engine defined for extension \(fileExtension)"
         }
     }

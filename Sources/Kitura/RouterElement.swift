@@ -106,8 +106,8 @@ class RouterElement {
             return
         }
 
-        guard (response.error != nil && method == .Error)
-        || (response.error == nil && (method == request.method || method == .All)) else {
+        guard (response.error != nil && method == .error)
+        || (response.error == nil && (method == request.method || method == .all)) else {
             next()
             return
         }
@@ -147,7 +147,7 @@ class RouterElement {
 
         let nextCallback = {[unowned request, unowned response, unowned self] in
             middlewareCount += 1
-            if middlewareCount < self.middlewares.count && (response.error == nil || self.method == .Error) {
+            if middlewareCount < self.middlewares.count && (response.error == nil || self.method == .error) {
                 guard let nextCallbackPlaceholder = nextCallbackPlaceholder else { return }
                 self.middlewares[middlewareCount].handle(request: request, response: response, next: nextCallbackPlaceholder)
             } else {

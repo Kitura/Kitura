@@ -394,7 +394,7 @@ class TestResponse : XCTestCase {
         // Error handling example
         router.get("/error") { _, response, next in
             response.status(HTTPStatusCode.internalServerError)
-            response.error = InternalError.NilVariable(variable: "foo")
+            response.error = InternalError.nilVariable(variable: "foo")
             next()
         }
 
@@ -422,18 +422,18 @@ class TestResponse : XCTestCase {
                 return
             }
             switch (requestBody) {
-                case .UrlEncoded(let value):
+                case .urlEncoded(let value):
                     do {
                         try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> \(value) </body></html>\n\n")
                     }
                     catch {}
-                case .Text(let value):
+                case .text(let value):
                     do {
                         try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received text body: </b>\(value)</body></html>\n\n")
                     }
                     catch {}
                 default:
-                    response.error = Error.FailedToParseRequestBody(body: "\(request.body)")
+                    response.error = Error.failedToParseRequestBody(body: "\(request.body)")
 
             }
 

@@ -26,9 +26,9 @@ public class ContentType {
     /// Whether to use the local mime-type definitions or the ones in the file
     ///
     #if os(Linux)
-        private let MIME_TYPE_EMBEDDED: Bool = true
+        private let mimeTypeEmbedded: Bool = true
     #else
-        private let MIME_TYPE_EMBEDDED: Bool = false
+        private let mimeTypeEmbedded: Bool = false
     #endif
 
     ///
@@ -47,7 +47,7 @@ public class ContentType {
     private init () {
 
         // MARK: Remove this when Linux reading of JSON files works.
-        if MIME_TYPE_EMBEDDED {
+        if mimeTypeEmbedded {
 
             Log.warning("Loading embedded MIME types.")
 
