@@ -109,7 +109,7 @@ public class RouterResponse {
             }
             addCookies()
 
-            if  request.method != .Head {
+            if  request.method != .head {
                 try response.write(from: data)
             }
         }
@@ -407,7 +407,7 @@ public class RouterResponse {
     // influenced by http://expressjs.com/en/4x/api.html#app.render
     public func render(_ resource: String, context: [ String: Any]) throws -> RouterResponse {
         guard let router = router else {
-            throw InternalError.NilVariable(variable: "router")
+            throw InternalError.nilVariable(variable: "router")
         }
         let renderedResource = try router.render(resource, context: context)
         return send(renderedResource)

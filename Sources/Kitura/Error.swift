@@ -19,16 +19,16 @@ import Foundation
 // possibly known error, e.g. user tries to access an invalid url path
 // it makes sense to send the error as HTTP response
 enum Error: ErrorProtocol {
-    case FailedToParseRequestBody(body: String)
-    case FailedToRedirectRequest(path: String, chainedError: ErrorProtocol)
+    case failedToParseRequestBody(body: String)
+    case failedToRedirectRequest(path: String, chainedError: ErrorProtocol)
 }
 
 extension Error: CustomStringConvertible {
     var description: String {
         switch self {
-        case FailedToParseRequestBody(let body):
+        case .failedToParseRequestBody(let body):
              return "Failed to parse request body \(body)"
-        case FailedToRedirectRequest(let path, let chainedError):
+        case .failedToRedirectRequest(let path, let chainedError):
             return "Failed to redirect a request for directory at \(path)" +
                      " caught error = \(chainedError)"
         }

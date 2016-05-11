@@ -16,6 +16,7 @@
 
 import KituraNet
 import Socket
+import LoggerAPI
 
 import Foundation
 
@@ -129,7 +130,7 @@ public class RouterRequest: SocketReader {
     ///
     init(request: ServerRequest) {
         serverRequest = request
-        method = RouterMethod(string: serverRequest.method)
+        method = RouterMethod(fromRawValue: serverRequest.method)
         parsedUrl = URLParser(url: serverRequest.url, isConnect: false)
         url = String(serverRequest.urlString)
     }

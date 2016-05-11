@@ -31,7 +31,7 @@ public class BodyParser: RouterMiddleware {
     ///
     /// Default buffer size (in bytes)
     ///
-    private static let BUFFER_SIZE = 2000
+    private static let bufferSize = 2000
 
 
     ///
@@ -109,7 +109,7 @@ public class BodyParser: RouterMiddleware {
     private class func json(bodyData: NSMutableData)-> ParsedBody? {
         let json = JSON(data: bodyData)
         if json != JSON.null {
-            return .Json(json)
+            return .json(json)
         }
         return nil
     }
@@ -136,7 +136,7 @@ public class BodyParser: RouterMiddleware {
                 }
             }
             if success && parsedBody.count > 0 {
-                return .UrlEncoded(parsedBody)
+                return .urlEncoded(parsedBody)
             }
         }
         return nil
@@ -150,7 +150,7 @@ public class BodyParser: RouterMiddleware {
     private class func text(_ bodyData: NSMutableData)-> ParsedBody? {
         // There was no support for the application/json MIME type
         if let bodyAsString: String = String(data: bodyData, encoding: NSUTF8StringEncoding) {
-            return .Text(bodyAsString)
+            return .text(bodyAsString)
         }
         return nil
     }

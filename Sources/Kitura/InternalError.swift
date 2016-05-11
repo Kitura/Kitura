@@ -21,13 +21,13 @@ import Foundation
 // just log it
 // for example - uninitialized variable
 enum InternalError: ErrorProtocol {
-    case NilVariable(variable: String)
+    case nilVariable(variable: String)
 }
 
 extension InternalError: CustomStringConvertible {
     var description: String {
         switch self {
-        case NilVariable(let variable):
+        case .nilVariable(let variable):
             return "\(variable) is nil"
         }
     }
