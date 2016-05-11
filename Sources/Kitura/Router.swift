@@ -689,23 +689,8 @@ extension Router : HTTPServerDelegate {
             let resource = urlPath.substring(from: lengthIndex)
             sendResourceIfExisting(response, resource: resource)
         } else {
-            var elemIndex = -1
-
-            // Extra variable to get around use of variable in its own initializer
-            var nextElemCallback: (()->Void)?
-
-            let nextElemCallbackHandler = {[unowned request, unowned response, unowned self] () -> Void in
-                elemIndex+=1
-                if  elemIndex < self.routeElems.count {
-                    guard let nextElemCallback = nextElemCallback else { return }
-                    self.routeElems[elemIndex].process(request: request, response: response, next: nextElemCallback)
-                } else {
-                    callback()
-                }
-            }
-            nextElemCallback = nextElemCallbackHandler
-
-            nextElemCallbackHandler()
+            let looper = RouterHandlerWalker(routeElems: self.routeElems, request: request, response: response, callback: callback)
+            looper.next()
         }
     }
 
