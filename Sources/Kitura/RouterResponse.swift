@@ -139,7 +139,7 @@ public class RouterResponse {
 
             cookieStrings.append(cookieString)
         }
-        response.headers.set("Set-Cookie", value: cookieStrings)
+        response.headers.append("Set-Cookie", value: cookieStrings)
     }
 
     ///

@@ -27,7 +27,7 @@ public class RouterRequest: SocketReader {
     ///
     /// The server request
     ///
-    var serverRequest: ServerRequest
+    let serverRequest: ServerRequest
 
     ///
     /// The hostname of the request
