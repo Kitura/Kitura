@@ -14,17 +14,17 @@
  * limitations under the License.
  **/
 
-internal class RouterMiddlewareLooper
+class RouterMiddlewareLooper
 {
-    let middlewares: [RouterMiddleware]
-    let method: RouterMethod
-    let request: RouterRequest
-    let response: RouterResponse
-    let callback: () -> Void
+    private let middlewares: [RouterMiddleware]
+    private let method: RouterMethod
+    private let request: RouterRequest
+    private let response: RouterResponse
+    private let callback: () -> Void
 
-    var middlewareCount = -1
+    private var middlewareCount = -1
 
-    internal init(middlewares: [RouterMiddleware], method: RouterMethod, request: RouterRequest, response: RouterResponse, callback: () -> Void) {
+    init(middlewares: [RouterMiddleware], method: RouterMethod, request: RouterRequest, response: RouterResponse, callback: () -> Void) {
         self.middlewares = middlewares
         self.method = method
         self.request = request
@@ -32,7 +32,7 @@ internal class RouterMiddlewareLooper
         self.callback = callback
     }
 
-    internal func next() {
+    func next() {
         middlewareCount += 1
 
         if middlewareCount < middlewares.count && (response.error == nil || method == .error) {

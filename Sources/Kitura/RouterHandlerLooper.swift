@@ -14,23 +14,23 @@
  * limitations under the License.
  **/
 
-internal class RouterHandlerLooper
+class RouterHandlerLooper
 {
-    let routeElems: [RouterElement]
-    let request: RouterRequest
-    let response: RouterResponse
-    let callback: () -> Void
+    private let routeElems: [RouterElement]
+    private let request: RouterRequest
+    private let response: RouterResponse
+    private let callback: () -> Void
 
-    var elemIndex = -1
+    private var elemIndex = -1
 
-    internal init(routeElems: [RouterElement], request: RouterRequest, response: RouterResponse, callback: () -> Void) {
+    init(routeElems: [RouterElement], request: RouterRequest, response: RouterResponse, callback: () -> Void) {
         self.routeElems = routeElems
         self.request = request
         self.response = response
         self.callback = callback
     }
 
-    internal func next() {
+    func next() {
         elemIndex += 1
 
         if elemIndex < self.routeElems.count {
