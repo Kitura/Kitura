@@ -26,13 +26,13 @@ public class RouterRequest: SocketReader {
     ///
     /// The server request
     ///
-    let serverRequest: ServerRequest
+    var serverRequest: ServerRequest
 
     ///
     /// The hostname of the request
     ///
     public private(set) lazy var hostname: String = {[unowned self] () in
-        guard let host = self.headers["host"]?.first else {
+        guard let host = self.headers["host"] else {
             return self.parsedUrl.host ?? ""
         }
         let range = host.range(of: ":")
@@ -74,7 +74,7 @@ public class RouterRequest: SocketReader {
     ///
     /// List of HTTP headers with simple String values
     ///
-    public var headers: Headers { return serverRequest.headers }
+    public let headers:Headers
 
     ///
     /// IP address string of server
@@ -84,8 +84,8 @@ public class RouterRequest: SocketReader {
     //
     // Parsed Cookies, used to do a lazy parsing of the appropriate headers
     //
-    private lazy var _cookies: Cookies = {
-        return Cookies(headers: self.headers)
+    private lazy var _cookies: Cookies = {[unowned self] in
+        return Cookies(headers: self.serverRequest.headers)
     }()
 
     ///
@@ -127,6 +127,7 @@ public class RouterRequest: SocketReader {
         method = RouterMethod(string: serverRequest.method)
         parsedUrl = UrlParser(url: serverRequest.url, isConnect: false)
         url = String(serverRequest.urlString)
+        headers = Headers(headers: serverRequest.headers)
     }
 
     ///
@@ -201,7 +202,7 @@ public class RouterRequest: SocketReader {
     ///
     public func accepts(_ types: [String]) -> String? {
 
-        guard let acceptHeaderValue = headers["accept"]?.first else {
+        guard let acceptHeaderValue = headers["accept"] else {
             return nil
         }
 
@@ -269,7 +270,7 @@ private class Cookies {
     //
     private let cookieHeader = "cookie"
 
-    private init(headers: Headers) {
+    private init(headers: HeadersContainer) {
 
         guard let rawCookies = headers[cookieHeader] else {
             return

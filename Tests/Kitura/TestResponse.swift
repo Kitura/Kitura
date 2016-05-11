@@ -172,30 +172,30 @@ class TestResponse : XCTestCase {
         router.get("/headerTest") { _, response, next in
 
             response.headers.append("Content-Type", value: "text/html")
-            XCTAssertEqual(response.headers["Content-Type"]!, ["text/html"])
+            XCTAssertEqual(response.headers["Content-Type"]!, "text/html")
 
             response.headers.append("Content-Type", value: "text/plain; charset=utf-8")
-            XCTAssertEqual(response.headers["Content-Type"]!, ["text/html, text/plain; charset=utf-8"])
+            XCTAssertEqual(response.headers["Content-Type"]!, "text/html, text/plain; charset=utf-8")
 
             response.headers.remove("Content-Type")
             XCTAssertNil(response.headers["Content-Type"])
 
-            response.headers.append("Content-Type", value: ["text/plain, image/png"])
-            XCTAssertEqual(response.headers["Content-Type"]!, ["text/plain, image/png"])
+            response.headers.append("Content-Type", value: "text/plain, image/png")
+            XCTAssertEqual(response.headers["Content-Type"]!, "text/plain, image/png")
 
-            response.headers.append("Content-Type", value: ["text/html, image/jpeg"])
-            XCTAssertEqual(response.headers["Content-Type"]!, ["text/plain, image/png, text/html, image/jpeg"])
+            response.headers.append("Content-Type", value: "text/html, image/jpeg")
+            XCTAssertEqual(response.headers["Content-Type"]!, "text/plain, image/png, text/html, image/jpeg")
 
             response.headers.append("Content-Type", value: "charset=UTF-8")
-            XCTAssertEqual(response.headers["Content-Type"]!, ["text/plain, image/png, text/html, image/jpeg, charset=UTF-8"])
+            XCTAssertEqual(response.headers["Content-Type"]!, "text/plain, image/png, text/html, image/jpeg, charset=UTF-8")
 
             response.headers.remove("Content-Type")
 
-            response.headers.append("Content-Type", value: ["text/plain"])
-            XCTAssertEqual(response.headers["Content-Type"]!, ["text/plain"])
+            response.headers.append("Content-Type", value: "text/plain")
+            XCTAssertEqual(response.headers["Content-Type"]!, "text/plain")
 
-            response.headers.append("Content-Type", value: ["image/png", "text/html"])
-            XCTAssertEqual(response.headers["Content-Type"]!, ["text/plain, image/png, text/html"])
+            response.headers.append("Content-Type", value: "image/png, text/html")
+            XCTAssertEqual(response.headers["Content-Type"]!, "text/plain, image/png, text/html")
 
             do {
                 try response.status(HttpStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
@@ -387,7 +387,7 @@ class TestResponse : XCTestCase {
         router.all("/bodytest", middleware: BodyParser())
 
         router.post("/bodytest") { request, response, next in
-            response.headers["Content-Type"] = ["text/html; charset=utf-8"]
+            response.headers["Content-Type"] = "text/html; charset=utf-8"
             guard let requestBody = request.body else {
                 next ()
                 return
@@ -429,7 +429,7 @@ class TestResponse : XCTestCase {
         
         func callbackDefault(request: RouterRequest, response: RouterResponse) {
             do {
-                response.headers["Content-Type"] = ["text/plain; charset=utf-8"]
+                response.headers["Content-Type"] = "text/plain; charset=utf-8"
                 try response.status(HttpStatusCode.OK).send("default").end()
             }
             catch {}
@@ -447,7 +447,7 @@ class TestResponse : XCTestCase {
         }
 
         router.error { request, response, next in
-            response.headers["Content-Type"] = ["text/html; charset=utf-8"]
+            response.headers["Content-Type"] = "text/html; charset=utf-8"
             do {
                 let errorDescription: String
                 if let error = response.error {

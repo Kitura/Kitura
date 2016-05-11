@@ -58,7 +58,7 @@ public class BodyParser: RouterMiddleware {
             return next()
         }
 
-        request.body = BodyParser.parse(request, contentType: contentType.first)
+        request.body = BodyParser.parse(request, contentType: contentType)
         next()
 
     }

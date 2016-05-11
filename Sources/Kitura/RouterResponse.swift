@@ -67,16 +67,7 @@ public class RouterResponse {
     ///
     public var error: ErrorProtocol?
     
-    public var headers: Headers {
-        
-        get {
-            return response.headers
-        }
-        
-        set(value) {
-            response.headers = value
-        }
-    }
+    public var headers: Headers
 
     public var statusCode: HttpStatusCode {
         get {
@@ -100,6 +91,7 @@ public class RouterResponse {
         self.response = response
         self.router = router
         self.request = request
+        headers = Headers(headers: response.headers)
         status(HttpStatusCode.NOT_FOUND)
     }
 
@@ -147,7 +139,7 @@ public class RouterResponse {
 
             cookieStrings.append(cookieString)
         }
-        headers.set("Set-Cookie", value: cookieStrings)
+        response.headers.set("Set-Cookie", value: cookieStrings)
     }
 
     ///
@@ -317,9 +309,8 @@ public class RouterResponse {
 
         var p = path
         if  p == "back" {
-            let referrer = headers["referrer"]
-            if  let r = referrer?.first {
-                p = r
+            if let referrer = headers["referrer"] {
+                p = referrer
             } else {
                 p = "/"
             }
@@ -376,7 +367,7 @@ public class RouterResponse {
         guard let fileName = filePaths.last else {
             return
         }
-        headers["Content-Disposition"] = ["attachment; fileName = \"\(fileName)\""]
+        headers["Content-Disposition"] = "attachment; fileName = \"\(fileName)\""
 
         let contentType =  ContentType.sharedInstance.contentTypeForFile(fileName)
         if  let contentType = contentType {
@@ -417,7 +408,7 @@ public class RouterResponse {
     public func format(callbacks: [String : ((RouterRequest, RouterResponse) -> Void)]) throws {
         let callbackTypes = Array(callbacks.keys)
         if let acceptType = request.accepts(callbackTypes) {
-            headers["Content-Type"] = [acceptType]
+            headers["Content-Type"] = acceptType
             callbacks[acceptType]!(request, self)
         }
         else if let defaultCallback = callbacks["default"] {

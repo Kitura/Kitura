@@ -186,7 +186,7 @@ public class StaticFileServer: RouterMiddleware {
             do {
                 let attributes = try fileManager.attributesOfItem(atPath: filePath)
                 
-                response.headers["Cache-Control"] = ["max-age=\(maxAgeCacheControlHeader)"]
+                response.headers["Cache-Control"] = "max-age=\(maxAgeCacheControlHeader)"
                 if addLastModifiedHeader {
                     if let date = attributes[NSFileModificationDate] as? NSDate {
                         response.headers.set("Last-Modified", value: SpiUtils.httpDate(date))
