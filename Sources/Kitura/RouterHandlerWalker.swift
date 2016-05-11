@@ -14,13 +14,23 @@
  * limitations under the License.
  **/
 
+// MARK: RouterHandlerWalker
+
 class RouterHandlerWalker
 {
+    /// The array of router elements to be processed
     private let routeElems: [RouterElement]
+
+    /// The current router request
     private let request: RouterRequest
+
+    /// The current router response
     private let response: RouterResponse
+
+    /// Callback to execute once all elements have been processed
     private let callback: () -> Void
 
+    /// Index of element currently being processed
     private var elemIndex = -1
 
     init(routeElems: [RouterElement], request: RouterRequest, response: RouterResponse, callback: () -> Void) {
@@ -30,6 +40,9 @@ class RouterHandlerWalker
         self.callback = callback
     }
 
+    ///
+    /// Process the next router element
+    ///
     func next() {
         elemIndex += 1
 

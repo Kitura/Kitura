@@ -14,14 +14,26 @@
  * limitations under the License.
  **/
 
+// MARK: RouterMiddlewareWalker
+
 class RouterMiddlewareWalker
 {
+    /// The array of middlewares to handle
     private let middlewares: [RouterMiddleware]
+
+    /// The current router method
     private let method: RouterMethod
+
+    /// The current router request
     private let request: RouterRequest
+
+    /// The current router response
     private let response: RouterResponse
+
+    /// Callback to call once all middlewares have been handled
     private let callback: () -> Void
 
+    /// Index of the current middleware being handled
     private var middlewareCount = -1
 
     init(middlewares: [RouterMiddleware], method: RouterMethod, request: RouterRequest, response: RouterResponse, callback: () -> Void) {
@@ -32,6 +44,9 @@ class RouterMiddlewareWalker
         self.callback = callback
     }
 
+    ///
+    /// Handle the next middleware
+    ///
     func next() {
         middlewareCount += 1
 
