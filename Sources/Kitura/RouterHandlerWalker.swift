@@ -14,7 +14,7 @@
  * limitations under the License.
  **/
 
-class RouterHandlerLooper
+class RouterHandlerWalker
 {
     private let routeElems: [RouterElement]
     private let request: RouterRequest

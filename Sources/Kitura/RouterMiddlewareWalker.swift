@@ -14,7 +14,7 @@
  * limitations under the License.
  **/
 
-class RouterMiddlewareLooper
+class RouterMiddlewareWalker
 {
     private let middlewares: [RouterMiddleware]
     private let method: RouterMethod
