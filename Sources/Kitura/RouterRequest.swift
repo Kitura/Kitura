@@ -75,7 +75,7 @@ public class RouterRequest: SocketReader {
     ///
     /// List of HTTP headers with simple String values
     ///
-    public let headers:Headers
+    public let headers: Headers
 
     ///
     /// IP address string of server
