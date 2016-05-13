@@ -14,9 +14,9 @@
  * limitations under the License.
  **/
 
-// MARK: RouterHandlerWalker
+// MARK: RouterElementWalker
 
-class RouterHandlerWalker
+class RouterElementWalker
 {
     /// The array of router elements to be processed
     private let routeElems: [RouterElement]

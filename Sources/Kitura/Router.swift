@@ -689,7 +689,7 @@ extension Router : HTTPServerDelegate {
             let resource = urlPath.substring(from: lengthIndex)
             sendResourceIfExisting(response, resource: resource)
         } else {
-            let looper = RouterHandlerWalker(routeElems: self.routeElems, request: request, response: response, callback: callback)
+            let looper = RouterElementWalker(routeElems: self.routeElems, request: request, response: response, callback: callback)
             looper.next()
         }
     }
