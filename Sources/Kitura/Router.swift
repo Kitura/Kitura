@@ -18,7 +18,12 @@ import KituraNet
 import KituraSys
 import LoggerAPI
 import Foundation
+
+#if Xcode
+import Kitura_TemplateEngine
+#else
 import KituraTemplateEngine
+#endif
 
 // MARK Router
 
