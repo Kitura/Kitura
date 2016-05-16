@@ -30,38 +30,17 @@ public struct Headers {
     
     public subscript(key: String) -> String? {
         get {
-            return get(key)
+            return headers[key]?.first
         }
         
         set(newValue) {
             if let newValue = newValue {
-                set(key, value: newValue)
+                headers[key] = [newValue]
+            }
+            else {
+                headers[key] = nil
             }
         }
-    }
-    
-    ///
-    /// Gets the header (case insensitive)
-    ///
-    /// - Parameter key: the key
-    ///
-    /// - Returns: the value for the key
-    ///
-    public func get(_ key: String) -> String? {
-        return headers.get(key)?.first
-    }
-    
-    ///
-    /// Set the header value
-    ///
-    /// - Parameter key: the key
-    /// - Parameter value: the value
-    ///
-    /// - Returns: the value for the key as a list
-    ///
-    public mutating func set(_ key: String, value: String) {
-        
-        headers.set(key, value: value)
     }
     
     ///
@@ -73,16 +52,5 @@ public struct Headers {
     public mutating func append(_ key: String, value: String) {
         
         headers.append(key, value: value)
-    }
-
-    
-    ///
-    /// Remove the header by key (case insensitive)
-    ///
-    /// - Parameter key: the key
-    ///
-    public mutating func remove(_ key: String) {
-        
-        headers.remove(key)
     }
 }

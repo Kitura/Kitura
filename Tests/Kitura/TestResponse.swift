@@ -178,7 +178,7 @@ class TestResponse : XCTestCase {
             response.headers.append("Content-Type", value: "text/plain; charset=utf-8")
             XCTAssertEqual(response.headers["Content-Type"]!, "text/html, text/plain; charset=utf-8")
 
-            response.headers.remove("Content-Type")
+            response.headers["Content-Type"] = nil
             XCTAssertNil(response.headers["Content-Type"])
 
             response.headers.append("Content-Type", value: "text/plain, image/png")
@@ -190,7 +190,7 @@ class TestResponse : XCTestCase {
             response.headers.append("Content-Type", value: "charset=UTF-8")
             XCTAssertEqual(response.headers["Content-Type"]!, "text/plain, image/png, text/html, image/jpeg, charset=UTF-8")
 
-            response.headers.remove("Content-Type")
+            response.headers["Content-Type"] = nil
 
             response.headers.append("Content-Type", value: "text/plain")
             XCTAssertEqual(response.headers["Content-Type"]!, "text/plain")
@@ -360,7 +360,7 @@ class TestResponse : XCTestCase {
         }
 
         router.get("/qwer") { _, response, next in
-            response.headers.set("Content-Type", value: "text/html; charset=utf-8")
+            response.headers["Content-Type"] = "text/html; charset=utf-8"
             do {
                 try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
             }
@@ -370,7 +370,7 @@ class TestResponse : XCTestCase {
 
 
         router.get("/zxcv/:p1") { request, response, next in
-            response.headers.set("Content-Type", value: "text/html; charset=utf-8")
+            response.headers["Content-Type"] = "text/html; charset=utf-8"
             let p1 = request.params["p1"] ?? "(nil)"
             let q = request.queryParams["q"] ?? "(nil)"
             let u1 = request.userInfo["u1"] as? NSString ?? "(nil)"

@@ -108,7 +108,7 @@ public class RouterResponse {
         if  let data = buffer.data {
             let contentLength = headers["Content-Length"]
             if  contentLength == nil {
-                headers.set("Content-Length", value: String(buffer.count))
+                headers["Content-Length"] = String(buffer.count)
             }
             addCookies()
 
@@ -219,7 +219,7 @@ public class RouterResponse {
 
         let contentType =  ContentType.sharedInstance.contentTypeForFile(fileName)
         if  let contentType = contentType {
-            headers.set("Content-Type", value: contentType)
+            headers["Content-Type"] = contentType
         }
 
         buffer.append(data: data)
@@ -315,7 +315,7 @@ public class RouterResponse {
                 p = "/"
             }
         }
-        headers.set("Location", value: p)
+        headers["Location"] = p
         return self
 
     }
@@ -347,7 +347,7 @@ public class RouterResponse {
             if let charset = charset {
                 contentCharset = "; charset=\(charset)"
             }
-            headers.set("Content-Type", value:  contentType + contentCharset)
+            headers["Content-Type"] = contentType + contentCharset
         }
     }
 
@@ -359,7 +359,7 @@ public class RouterResponse {
     ///
     public func attachment(_ filePath: String? = nil) {
         guard let filePath = filePath else {
-            headers.set("Content-Disposition", value: "attachment")
+            headers["Content-Disposition"] = "attachment"
             return
         }
 
@@ -371,7 +371,7 @@ public class RouterResponse {
 
         let contentType =  ContentType.sharedInstance.contentTypeForFile(fileName)
         if  let contentType = contentType {
-            headers.set("Content-Type", value: contentType)
+            headers["Content-Type"] = contentType
         }
     }
 
