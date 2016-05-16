@@ -172,32 +172,31 @@ class TestResponse : XCTestCase {
 
         router.get("/headerTest") { _, response, next in
 
-            response.append("Content-Type", value: "text/html")
-            XCTAssertEqual(response.getHeader("Content-Type"), "text/html")
+            response.headers.append("Content-Type", value: "text/html")
+            XCTAssertEqual(response.headers["Content-Type"]!, "text/html")
 
-            response.append("Content-Type", value: "text/plain; charset=utf-8")
-            XCTAssertNil(response.getHeader("Content-Type"))
-            XCTAssertEqual(response.getHeaders("Content-Type")!, ["text/html", "text/plain; charset=utf-8"])
+            response.headers.append("Content-Type", value: "text/plain; charset=utf-8")
+            XCTAssertEqual(response.headers["Content-Type"]!, "text/html, text/plain; charset=utf-8")
 
-            response.removeHeader("Content-Type")
-            XCTAssertNil(response.getHeader("Content-Type"))
+            response.headers["Content-Type"] = nil
+            XCTAssertNil(response.headers["Content-Type"])
 
-            response.append("Content-Type", value: ["text/plain", "image/png"])
-            XCTAssertEqual(response.getHeaders("Content-Type")!, ["text/plain", "image/png"])
+            response.headers.append("Content-Type", value: "text/plain, image/png")
+            XCTAssertEqual(response.headers["Content-Type"]!, "text/plain, image/png")
 
-            response.append("Content-Type", value: ["text/html", "image/jpeg"])
-            XCTAssertEqual(response.getHeaders("Content-Type")!, ["text/plain", "image/png", "text/html", "image/jpeg"])
+            response.headers.append("Content-Type", value: "text/html, image/jpeg")
+            XCTAssertEqual(response.headers["Content-Type"]!, "text/plain, image/png, text/html, image/jpeg")
 
-            response.append("Content-Type", value: "charset=UTF-8")
-            XCTAssertEqual(response.getHeaders("Content-Type")!, ["text/plain", "image/png", "text/html", "image/jpeg", "charset=UTF-8"])
+            response.headers.append("Content-Type", value: "charset=UTF-8")
+            XCTAssertEqual(response.headers["Content-Type"]!, "text/plain, image/png, text/html, image/jpeg, charset=UTF-8")
 
-            response.removeHeader("Content-Type")
+            response.headers["Content-Type"] = nil
 
-            response.append("Content-Type", value: ["text/plain"])
-            XCTAssertEqual(response.getHeader("Content-Type"), "text/plain")
+            response.headers.append("Content-Type", value: "text/plain")
+            XCTAssertEqual(response.headers["Content-Type"]!, "text/plain")
 
-            response.append("Content-Type", value: ["image/png", "text/html"])
-            XCTAssertEqual(response.getHeaders("Content-Type")!, ["text/plain", "image/png", "text/html"])
+            response.headers.append("Content-Type", value: "image/png, text/html")
+            XCTAssertEqual(response.headers["Content-Type"]!, "text/plain, image/png, text/html")
 
             do {
                 try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
@@ -278,7 +277,7 @@ class TestResponse : XCTestCase {
             self.performRequest("get", path:"/format", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
-                XCTAssertEqual(response!.headers["Content-Type"], "text/html")
+                XCTAssertEqual(response!.headers["Content-Type"]!.first!, "text/html")
                 do {
                     let body = try response!.readString()
                     XCTAssertEqual(body!,"<!DOCTYPE html><html><body>Hi from Kitura!</body></html>\n\n")
@@ -294,7 +293,7 @@ class TestResponse : XCTestCase {
             self.performRequest("get", path:"/format", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
-                XCTAssertEqual(response!.headers["Content-Type"], "text/plain")
+                XCTAssertEqual(response!.headers["Content-Type"]!.first!, "text/plain")
                 do {
                     let body = try response!.readString()
                     XCTAssertEqual(body!,"Hi from Kitura!")
@@ -328,9 +327,9 @@ class TestResponse : XCTestCase {
             self.performRequest("get", path: "/single_link", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
-                let header = response!.headers["Link"]
+                let header = response!.headers["Link"]?.first
                 XCTAssertNotNil(header, "Link header should not be nil")
-                XCTAssertEqual(header, "<https://developer.ibm.com/swift>; rel=\"root\"")
+                XCTAssertEqual(header!, "<https://developer.ibm.com/swift>; rel=\"root\"")
                 expectation.fulfill()
             })
         }
@@ -341,7 +340,7 @@ class TestResponse : XCTestCase {
                 XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 let firstLink = "<https://developer.ibm.com/swift/products/ibm-swift-sandbox/>; rel=\"next\""
                 let secondLink = "<https://developer.ibm.com/swift/products/ibm-bluemix/>; rel=\"prev\""
-                let header = response!.headers["Link"]
+                let header = response!.headers["Link"]?.first
                 XCTAssertNotNil(header, "Link header should not be nil")
                 XCTAssertNotNil(header!.range(of: firstLink), "link header should contain first link")
                 XCTAssertNotNil(header!.range(of: secondLink), "link header should contain second link")
@@ -361,7 +360,7 @@ class TestResponse : XCTestCase {
         }
 
         router.get("/qwer") { _, response, next in
-            response.setHeader("Content-Type", value: "text/html; charset=utf-8")
+            response.headers["Content-Type"] = "text/html; charset=utf-8"
             do {
                 try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
             }
@@ -371,7 +370,7 @@ class TestResponse : XCTestCase {
 
 
         router.get("/zxcv/:p1") { request, response, next in
-            response.setHeader("Content-Type", value: "text/html; charset=utf-8")
+            response.headers["Content-Type"] = "text/html; charset=utf-8"
             let p1 = request.params["p1"] ?? "(nil)"
             let q = request.queryParams["q"] ?? "(nil)"
             let u1 = request.userInfo["u1"] as? NSString ?? "(nil)"
@@ -416,7 +415,7 @@ class TestResponse : XCTestCase {
         router.all("/bodytest", middleware: BodyParser())
 
         router.post("/bodytest") { request, response, next in
-            response.setHeader("Content-Type", value: "text/html; charset=utf-8")
+            response.headers["Content-Type"] = "text/html; charset=utf-8"
             guard let requestBody = request.body else {
                 next ()
                 return
@@ -458,7 +457,7 @@ class TestResponse : XCTestCase {
 
         func callbackDefault(request: RouterRequest, response: RouterResponse) {
             do {
-                response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
+                response.headers["Content-Type"] = "text/plain; charset=utf-8"
                 try response.status(HTTPStatusCode.OK).send("default").end()
             }
             catch {}
@@ -491,7 +490,7 @@ class TestResponse : XCTestCase {
         }
 
         router.error { request, response, next in
-            response.setHeader("Content-Type", value: "text/plain; charset=utf-8")
+            response.headers["Content-Type"] = "text/html; charset=utf-8"
             do {
                 let errorDescription: String
                 if let error = response.error {

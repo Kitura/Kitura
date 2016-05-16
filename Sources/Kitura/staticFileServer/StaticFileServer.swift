@@ -185,10 +185,11 @@ public class StaticFileServer: RouterMiddleware {
         if  absoluteFilePath.hasPrefix(absoluteBasePath) {
             do {
                 let attributes = try fileManager.attributesOfItem(atPath: filePath)
-                response.setHeader("Cache-Control", value: "max-age=\(maxAgeCacheControlHeader)")
+                
+                response.headers["Cache-Control"] = "max-age=\(maxAgeCacheControlHeader)"
                 if addLastModifiedHeader {
                     if let date = attributes[NSFileModificationDate] as? NSDate {
-                        response.setHeader("Last-Modified", value: SPIUtils.httpDate(date))
+                        response.headers["Last-Modified"] = SPIUtils.httpDate(date)
                     }
                 }
                 if generateETag {
@@ -197,7 +198,7 @@ public class StaticFileServer: RouterMiddleware {
                             let sizeHex = String(size, radix: 16, uppercase: false)
                             let timeHex = String(Int(date.timeIntervalSince1970), radix: 16, uppercase: false)
                             let etag = "W/\"\(sizeHex)-\(timeHex)\""
-                        response.setHeader("Etag", value: etag)
+                        response.headers["Etag"] = etag
                     }
                 }
                 if let customResponseHeadersSetter = customResponseHeadersSetter {

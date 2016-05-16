@@ -75,12 +75,7 @@ public class RouterRequest: SocketReader {
     ///
     /// List of HTTP headers with simple String values
     ///
-    public var headers: SimpleHeaders { return serverRequest.headers }
-
-    ///
-    /// List of HTTP headers with String array values
-    ///
-    public var headersAsArrays: ArrayHeaders { return serverRequest.headersAsArrays }
+    public let headers: Headers
 
     ///
     /// IP address string of server
@@ -90,8 +85,8 @@ public class RouterRequest: SocketReader {
     //
     // Parsed Cookies, used to do a lazy parsing of the appropriate headers
     //
-    private lazy var _cookies: Cookies = {
-        return Cookies(headers: self.headers)
+    private lazy var _cookies: Cookies = {[unowned self] in
+        return Cookies(headers: self.serverRequest.headers)
     }()
 
     ///
@@ -133,6 +128,7 @@ public class RouterRequest: SocketReader {
         method = RouterMethod(fromRawValue: serverRequest.method)
         parsedUrl = URLParser(url: serverRequest.url, isConnect: false)
         url = String(serverRequest.urlString)
+        headers = Headers(headers: serverRequest.headers)
     }
 
     ///
@@ -275,25 +271,21 @@ private class Cookies {
     //
     private let cookieHeader = "cookie"
 
-    private init(headers: SimpleHeaders) {
-        var cookieString: String?
-        for  (header, value)  in headers {
-            if  header.lowercased()  == cookieHeader {
-                cookieString = value
-                break
-            }
-        }
+    private init(headers: HeadersContainer) {
 
-        if  let cookieString = cookieString {
-            let cookieNameValues = cookieString.components(separatedBy: "; ")
+        guard let rawCookies = headers[cookieHeader] else {
+            return
+        }
+        for cookie in rawCookies {
+            let cookieNameValues = cookie.components(separatedBy: "; ")
             for  cookieNameValue  in  cookieNameValues  {
                 let cookieNameValueParts = cookieNameValue.components(separatedBy: "=")
                 if   cookieNameValueParts.count == 2  {
                     let theCookie = NSHTTPCookie(properties:
-                                               [NSHTTPCookieDomain: ".",
-                                                NSHTTPCookiePath: "/",
-                                                NSHTTPCookieName: cookieNameValueParts[0] ,
-                                                NSHTTPCookieValue: cookieNameValueParts[1]])
+                        [NSHTTPCookieDomain: ".",
+                         NSHTTPCookiePath: "/",
+                         NSHTTPCookieName: cookieNameValueParts[0] ,
+                         NSHTTPCookieValue: cookieNameValueParts[1]])
                     cookies[cookieNameValueParts[0]] = theCookie
                 }
             }

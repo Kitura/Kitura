@@ -66,6 +66,8 @@ public class RouterResponse {
     /// Optional error value
     ///
     public var error: ErrorProtocol?
+    
+    public var headers: Headers
 
     public var statusCode: HTTPStatusCode {
         get {
@@ -89,6 +91,7 @@ public class RouterResponse {
         self.response = response
         self.router = router
         self.request = request
+        headers = Headers(headers: response.headers)
         status(.notFound)
     }
 
@@ -103,9 +106,9 @@ public class RouterResponse {
         preFlush(request: request, response: self)
 
         if  let data = buffer.data {
-            let contentLength = getHeader("Content-Length")
+            let contentLength = headers["Content-Length"]
             if  contentLength == nil {
-                setHeader("Content-Length", value: String(buffer.count))
+                headers["Content-Length"] = String(buffer.count)
             }
             addCookies()
 
@@ -136,7 +139,7 @@ public class RouterResponse {
 
             cookieStrings.append(cookieString)
         }
-        setHeader("Set-Cookie", value: cookieStrings)
+        response.headers.append("Set-Cookie", value: cookieStrings)
     }
 
     ///
@@ -216,7 +219,7 @@ public class RouterResponse {
 
         let contentType =  ContentType.sharedInstance.contentTypeForFile(fileName)
         if  let contentType = contentType {
-            setHeader("Content-Type", value: contentType)
+            headers["Content-Type"] = contentType
         }
 
         buffer.append(data: data)
@@ -270,85 +273,6 @@ public class RouterResponse {
     }
 
     ///
-    /// Gets the header
-    ///
-    /// - Parameter key: the key
-    ///
-    /// - Returns: the value for the key
-    ///
-    public func getHeader(_ key: String) -> String? {
-
-        return response.getHeader(key)
-
-    }
-
-    ///
-    /// Gets the header that contains multiple values
-    ///
-    /// - Parameter key: the key
-    ///
-    /// - Returns: the value for the key as a list
-    ///
-    public func getHeaders(_ key: String) -> [String]? {
-
-        return response.getHeaders(key)
-
-    }
-
-    ///
-    /// Set the header value
-    ///
-    /// - Parameter key: the key
-    /// - Parameter value: the value
-    ///
-    /// - Returns: the value for the key as a list
-    ///
-    public func setHeader(_ key: String, value: String) {
-
-        response.setHeader(key, value: value)
-
-    }
-
-    public func setHeader(_ key: String, value: [String]) {
-
-        response.setHeader(key, value: value)
-
-    }
-
-    ///
-    /// Append a value to the header
-    ///
-    /// - Parameter key: the header key
-    ///
-    public func append(_ key: String, value: String) {
-
-        response.append(key: key, value: value)
-
-    }
-
-    ///
-    /// Append values to the header
-    ///
-    /// - Parameter key: the key
-    ///
-    public func append(_ key: String, value: [String]) {
-
-        response.append(key: key, value: value)
-
-    }
-
-    ///
-    /// Remove the header by key
-    ///
-    /// - Parameter key: the key
-    ///
-    public func removeHeader(_ key: String) {
-
-        response.removeHeader(key: key)
-
-    }
-
-    ///
     /// Redirect to path
     ///
     /// - Parameter: the path for the redirect
@@ -385,14 +309,13 @@ public class RouterResponse {
 
         var p = path
         if  p == "back" {
-            let referrer = getHeader("referrer")
-            if  let r = referrer {
-                p = r
+            if let referrer = headers["referrer"] {
+                p = referrer
             } else {
                 p = "/"
             }
         }
-        setHeader("Location", value: p)
+        headers["Location"] = p
         return self
 
     }
@@ -424,7 +347,7 @@ public class RouterResponse {
             if let charset = charset {
                 contentCharset = "; charset=\(charset)"
             }
-            setHeader("Content-Type", value:  contentType + contentCharset)
+            headers["Content-Type"] = contentType + contentCharset
         }
     }
 
@@ -436,7 +359,7 @@ public class RouterResponse {
     ///
     public func attachment(_ filePath: String? = nil) {
         guard let filePath = filePath else {
-            setHeader("Content-Disposition", value: "attachment")
+            headers["Content-Disposition"] = "attachment"
             return
         }
 
@@ -444,11 +367,11 @@ public class RouterResponse {
         guard let fileName = filePaths.last else {
             return
         }
-        setHeader("Content-Disposition", value: "attachment; fileName = \"\(fileName)\"")
+        headers["Content-Disposition"] = "attachment; fileName = \"\(fileName)\""
 
         let contentType =  ContentType.sharedInstance.contentTypeForFile(fileName)
         if  let contentType = contentType {
-            setHeader("Content-Type", value: contentType)
+            headers["Content-Type"] = contentType
         }
     }
 
@@ -485,7 +408,7 @@ public class RouterResponse {
     public func format(callbacks: [String : ((RouterRequest, RouterResponse) -> Void)]) throws {
         let callbackTypes = Array(callbacks.keys)
         if let acceptType = request.accepts(callbackTypes) {
-            setHeader("Content-Type", value: acceptType)
+            headers["Content-Type"] = acceptType
             callbacks[acceptType]!(request, self)
         }
         else if let defaultCallback = callbacks["default"] {
@@ -543,7 +466,7 @@ public class RouterResponse {
             headerValue += "; type=\(type)"
         }
 
-        self.append("Link", value: headerValue)
+        headers.append("Link", value: headerValue)
 
         return self
     }
