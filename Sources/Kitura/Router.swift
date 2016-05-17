@@ -603,6 +603,23 @@ public class Router {
         self.all(route, middleware: subrouter)
         return subrouter
     }
+
+    //MARK: Parameter
+
+    
+    public func parameter(_ name: String, handler: RouterParameterHandler) -> Router {
+        return self.parameter(name, handler: [handler])
+    }
+
+    public func parameter(_ name: String, handler: RouterParameterHandler...) -> Router {
+        return self.parameter(name, handler: handler)
+    }
+
+    public func parameter(_ name: String, handler: [RouterParameterHandler]) -> Router {
+        let parameterMiddleware = RouterParameter(name: name, handlers: handler)
+        self.all(nil, middleware: parameterMiddleware)
+        return self
+    }
 }
 
 ///
