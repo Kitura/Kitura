@@ -30,7 +30,7 @@ public class Router {
     private var routeElems: [RouterElement] = []
 
     ///
-    /// Map from file extensiont to Template Engines
+    /// Map from file extensions to Template Engines
     ///
     private var templateEngines = [String: TemplateEngine]()
 
