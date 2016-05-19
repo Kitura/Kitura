@@ -39,7 +39,8 @@ class TestResponse : XCTestCase {
             ("testRouteFunc", testRouteFunc),
             ("testAcceptTypes", testAcceptTypes),
             ("testFormat", testFormat),
-            ("testLink", testLink)
+            ("testLink", testLink),
+            ("testSubdomains", testSubdomains)
         ]
     }
 
@@ -349,9 +350,69 @@ class TestResponse : XCTestCase {
         }
     }
 
+    func testSubdomains() {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/subdomains", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                let hostHeader = response!.headers["Host"]?.first
+                let domainHeader = response!.headers["Domain"]?.first
+                let subdomainsHeader = response!.headers["Subdomain"]?.first
+
+                XCTAssertEqual(hostHeader, "localhost", "Wrong http response host")
+                XCTAssertEqual(domainHeader, "localhost", "Wrong http response domain")
+                XCTAssertEqual(subdomainsHeader, "", "Wrong http response subdomains")
+                expectation.fulfill()
+            })
+        }
+
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/subdomains", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                let hostHeader = response!.headers["Host"]?.first
+                let domainHeader = response!.headers["Domain"]?.first
+                let subdomainsHeader = response!.headers["Subdomain"]?.first
+
+                XCTAssertEqual(hostHeader, "a.b.c.example.com", "Wrong http response host")
+                XCTAssertEqual(domainHeader, "example.com", "Wrong http response domain")
+                XCTAssertEqual(subdomainsHeader, "a, b, c", "Wrong http response subdomains")
+                expectation.fulfill()
+            }, headers: ["Host" : "a.b.c.example.com"])
+        }
+
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/subdomains", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                let hostHeader = response!.headers["Host"]?.first
+                let domainHeader = response!.headers["Domain"]?.first
+                let subdomainsHeader = response!.headers["Subdomain"]?.first
+
+                XCTAssertEqual(hostHeader, "a.b.c.d.example.co.uk", "Wrong http response host")
+                XCTAssertEqual(domainHeader, "example.co.uk", "Wrong http response domain")
+                XCTAssertEqual(subdomainsHeader, "a, b, c, d", "Wrong http response subdomains")
+                expectation.fulfill()
+            }, headers: ["Host" : "a.b.c.d.example.co.uk"])
+        }
+    }
+
 
     static func setupRouter() -> Router {
         let router = Router()
+
+        // subdomains test
+        router.get("subdomains") { request, response, next in
+            response.headers["Host"] = request.hostname
+            response.headers["Domain"] = request.domain
+
+            let subdomains = request.subdomains
+
+            response.headers["Subdomain"] = subdomains.joined(separator: ", ")
+
+            response.status(.OK)
+            next()
+        }
 
         // the same router definition is used for all these test cases
         router.all("/zxcv/:p1") { request, _, next in
@@ -367,7 +428,6 @@ class TestResponse : XCTestCase {
             catch {}
             next()
         }
-
 
         router.get("/zxcv/:p1") { request, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
