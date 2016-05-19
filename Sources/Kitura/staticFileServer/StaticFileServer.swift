@@ -88,19 +88,19 @@ public class StaticFileServer: RouterMiddleware {
         if let options = options {
             for option in options {
                 switch option {
-                case .PossibleExtensions(let value):
+                case .possibleExtensions(let value):
                     possibleExtensions = value
-                case .ServeIndexForDir(let value):
+                case .serveIndexForDir(let value):
                     serveIndexForDir = value
-                case .AddLastModifiedHeader(let value):
+                case .addLastModifiedHeader(let value):
                     addLastModifiedHeader = value
-                case .MaxAgeCacheControlHeader(let value):
+                case .maxAgeCacheControlHeader(let value):
                     maxAgeCacheControlHeader = value
-                case .Redirect(let value):
+                case .redirect(let value):
                     redirect = value
-                case .CustomResponseHeadersSetter(let value):
+                case .customResponseHeadersSetter(let value):
                     customResponseHeadersSetter = value
-                case .GenerateETag (let value):
+                case .generateETag (let value):
                     generateETag = value
                 }
             }
@@ -152,7 +152,7 @@ public class StaticFileServer: RouterMiddleware {
                         do {
                             try response.redirect(requestPath + "/")
                         } catch {
-                            response.error = Error.FailedToRedirectRequest(path: requestPath + "/", chainedError: error)
+                            response.error = Error.failedToRedirectRequest(path: requestPath + "/", chainedError: error)
                         }
                     }
                 } else {
@@ -185,10 +185,11 @@ public class StaticFileServer: RouterMiddleware {
         if  absoluteFilePath.hasPrefix(absoluteBasePath) {
             do {
                 let attributes = try fileManager.attributesOfItem(atPath: filePath)
-                response.setHeader("Cache-Control", value: "max-age=\(maxAgeCacheControlHeader)")
+                
+                response.headers["Cache-Control"] = "max-age=\(maxAgeCacheControlHeader)"
                 if addLastModifiedHeader {
                     if let date = attributes[NSFileModificationDate] as? NSDate {
-                        response.setHeader("Last-Modified", value: SpiUtils.httpDate(date))
+                        response.headers["Last-Modified"] = SPIUtils.httpDate(date)
                     }
                 }
                 if generateETag {
@@ -197,7 +198,7 @@ public class StaticFileServer: RouterMiddleware {
                             let sizeHex = String(size, radix: 16, uppercase: false)
                             let timeHex = String(Int(date.timeIntervalSince1970), radix: 16, uppercase: false)
                             let etag = "W/\"\(sizeHex)-\(timeHex)\""
-                        response.setHeader("Etag", value: etag)
+                        response.headers["Etag"] = etag
                     }
                 }
                 if let customResponseHeadersSetter = customResponseHeadersSetter {
@@ -208,18 +209,18 @@ public class StaticFileServer: RouterMiddleware {
             } catch {
                 // Nothing
             }
-            response.status(HttpStatusCode.OK)
+            response.status(.OK)
         }
     }
 
     public enum Options {
-        case PossibleExtensions([String])
-        case ServeIndexForDir(Bool)
-        case AddLastModifiedHeader(Bool)
-        case MaxAgeCacheControlHeader(Int)
-        case Redirect(Bool)
-        case CustomResponseHeadersSetter(ResponseHeadersSetter)
-        case GenerateETag(Bool)
+        case possibleExtensions([String])
+        case serveIndexForDir(Bool)
+        case addLastModifiedHeader(Bool)
+        case maxAgeCacheControlHeader(Int)
+        case redirect(Bool)
+        case customResponseHeadersSetter(ResponseHeadersSetter)
+        case generateETag(Bool)
     }
 
 }

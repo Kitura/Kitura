@@ -9,12 +9,12 @@ class ExternSubrouter {
 		let externSubrouter = Router()
 
 		externSubrouter.get("/") { request, response, next in
-		    response.status(HttpStatusCode.OK).send("hello from the sub")
+		    response.status(HTTPStatusCode.OK).send("hello from the sub")
 		    next()
 		}
 
 		externSubrouter.get("/sub1") { request, response, next in
-		    response.status(HttpStatusCode.OK).send("sub1")
+		    response.status(HTTPStatusCode.OK).send("sub1")
 		    next()
 		}
 

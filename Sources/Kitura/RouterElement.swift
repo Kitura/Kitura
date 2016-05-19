@@ -106,8 +106,8 @@ class RouterElement {
             return
         }
 
-        guard (response.error != nil && method == .Error)
-        || (response.error == nil && (method == request.method || method == .All)) else {
+        guard (response.error != nil && method == .error)
+        || (response.error == nil && (method == request.method || method == .all)) else {
             next()
             return
         }
@@ -125,15 +125,11 @@ class RouterElement {
             return
         }
 
-#if os(Linux)
-          request.matchedPath = urlPath.bridge().substringWithRange(match.range)
-#else
-          request.matchedPath = urlPath.bridge().substring(with: match.range)
-#endif
+        request.matchedPath = urlPath.bridge().substring(with: match.range)
 
-          request.route = pattern
-          updateRequestParams(urlPath, match: match, request: request)
-          processHelper(request: request, response: response, next: next)
+        request.route = pattern
+        updateRequestParams(urlPath, match: match, request: request)
+        processHelper(request: request, response: response, next: next)
     }
 
     ///
@@ -144,24 +140,8 @@ class RouterElement {
     /// - Parameter next: the closure for the next execution block
     ///
     private func processHelper(request: RouterRequest, response: RouterResponse, next: () -> Void) {
-        var middlewareCount = -1
-
-        // Extra variable since closures cannot be used in their own initalizer
-        var nextCallbackPlaceholder: (()->Void)?
-
-        let nextCallback = {
-            middlewareCount += 1
-            if middlewareCount < self.middlewares.count && (response.error == nil || self.method == .Error) {
-                guard let nextCallbackPlaceholder = nextCallbackPlaceholder else { return }
-                self.middlewares[middlewareCount].handle(request: request, response: response, next: nextCallbackPlaceholder)
-            } else {
-                request.params = [:]
-                next()
-            }
-        }
-
-        nextCallbackPlaceholder = nextCallback
-        nextCallback()
+        let looper = RouterMiddlewareWalker(middlewares: middlewares, method: method, request: request, response: response, callback: next)
+        looper.next()
     }
 
     ///
@@ -175,17 +155,9 @@ class RouterElement {
         if  let keys = keys {
             var params: [String:String] = [:]
             for index in 0..<keys.count {
-#if os(Linux)
-                let matchRange = match.rangeAtIndex(index+1)
-#else
                 let matchRange = match.range(at: index+1)
-#endif
                 if  matchRange.location != NSNotFound  &&  matchRange.location != -1  {
-#if os(Linux)
-                    params[keys[index]] = urlPath.bridge().substringWithRange(matchRange)
-#else
                     params[keys[index]] = urlPath.bridge().substring(with: matchRange)
-#endif
                 }
             }
             request.params = params

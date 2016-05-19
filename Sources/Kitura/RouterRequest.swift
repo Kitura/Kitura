@@ -16,6 +16,7 @@
 
 import KituraNet
 import Socket
+import LoggerAPI
 
 import Foundation
 
@@ -35,13 +36,8 @@ public class RouterRequest: SocketReader {
         guard let host = self.headers["host"] else {
             return self.parsedUrl.host ?? ""
         }
-#if os(Linux)
-        let range = host.rangeOfString(":")
-        return  range == nil ? host : host.substringToIndex(range!.startIndex)
-#else
         let range = host.range(of: ":")
-        return  range == nil ? host : host.substring(to: range!.startIndex)
-#endif
+        return  range == nil ? host : host.substring(to: range!.lowerBound)
     }()
 
     ///
@@ -52,7 +48,7 @@ public class RouterRequest: SocketReader {
     ///
     /// The parsed url
     ///
-    let parsedUrl: UrlParser
+    let parsedUrl: URLParser
 
     ///
     /// The router as a String
@@ -79,12 +75,7 @@ public class RouterRequest: SocketReader {
     ///
     /// List of HTTP headers with simple String values
     ///
-    public var headers: SimpleHeaders { return serverRequest.headers }
-
-    ///
-    /// List of HTTP headers with String array values
-    ///
-    public var headersAsArrays: ArrayHeaders { return serverRequest.headersAsArrays }
+    public let headers: Headers
 
     ///
     /// IP address string of server
@@ -94,8 +85,8 @@ public class RouterRequest: SocketReader {
     //
     // Parsed Cookies, used to do a lazy parsing of the appropriate headers
     //
-    private lazy var _cookies: Cookies = {
-        return Cookies(headers: self.headers)
+    private lazy var _cookies: Cookies = {[unowned self] in
+        return Cookies(headers: self.serverRequest.headers)
     }()
 
     ///
@@ -134,9 +125,10 @@ public class RouterRequest: SocketReader {
     ///
     init(request: ServerRequest) {
         serverRequest = request
-        method = RouterMethod(string: serverRequest.method)
-        parsedUrl = UrlParser(url: serverRequest.url, isConnect: false)
+        method = RouterMethod(fromRawValue: serverRequest.method)
+        parsedUrl = URLParser(url: serverRequest.url, isConnect: false)
         url = String(serverRequest.urlString)
+        headers = Headers(headers: serverRequest.headers)
     }
 
     ///
@@ -185,11 +177,7 @@ public class RouterRequest: SocketReader {
     ///
     private func parseMediaType(_ type: String) -> (type: String, qValue: Double) {
         var finishedPair = ("", 1.0)
-#if os(Linux)
-        let trimmed = type.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
-#else
         let trimmed = type.trimmingCharacters(in: NSCharacterSet.whitespaces())
-#endif
         let components = trimmed.characters.split(separator: ";").map(String.init)
 
         if let mediaType = components.first {
@@ -238,12 +226,8 @@ public class RouterRequest: SocketReader {
                         criteriaMatches[type] = (priority: 3, qValue: parsedHeaderValue.qValue)
                     }
                 } else {
-#if os(Linux)
-                    let rangeMatch = mimeType.rangeOfString(parsedHeaderValue.type, options: .RegularExpressionSearch)
-#else
-                    let rangeMatch = mimeType.range(of: parsedHeaderValue.type, options: .regularExpressionSearch)
-#endif
-                    if rangeMatch != nil { // partial match, e.g. text/html == text/*
+                    
+                    if let _ = mimeType.range(of: parsedHeaderValue.type, options: .regularExpressionSearch) { // partial match, e.g. text/html == text/*
                         if criteriaMatches[type]?.priority > 2 || criteriaMatches[type] == nil {
                             criteriaMatches[type] = (priority: 2, qValue: parsedHeaderValue.qValue)
                         }
@@ -287,38 +271,21 @@ private class Cookies {
     //
     private let cookieHeader = "cookie"
 
-    private init(headers: SimpleHeaders) {
-        var cookieString: String?
-        for  (header, value)  in headers {
-            #if os(Linux)
-            let lowercasedHeader = header.bridge().lowercaseString
-            #else
-            let lowercasedHeader = header.lowercased()
-            #endif
-            if  lowercasedHeader  == cookieHeader {
-                cookieString = value
-                break
-            }
-        }
+    private init(headers: HeadersContainer) {
 
-        if  let cookieString = cookieString {
-            #if os(Linux)
-            let cookieNameValues = cookieString.bridge().componentsSeparatedByString("; ")
-            #else
-            let cookieNameValues = cookieString.components(separatedBy: "; ")
-            #endif
+        guard let rawCookies = headers[cookieHeader] else {
+            return
+        }
+        for cookie in rawCookies {
+            let cookieNameValues = cookie.components(separatedBy: "; ")
             for  cookieNameValue  in  cookieNameValues  {
-                #if os(Linux)
-                let cookieNameValueParts = cookieNameValue.bridge().componentsSeparatedByString("=")
-                #else
                 let cookieNameValueParts = cookieNameValue.components(separatedBy: "=")
-                #endif
                 if   cookieNameValueParts.count == 2  {
                     let theCookie = NSHTTPCookie(properties:
-                                               [NSHTTPCookieDomain: ".",
-                                                NSHTTPCookiePath: "/",
-                                                NSHTTPCookieName: cookieNameValueParts[0] ,
-                                                NSHTTPCookieValue: cookieNameValueParts[1]])
+                        [NSHTTPCookieDomain: ".",
+                         NSHTTPCookiePath: "/",
+                         NSHTTPCookieName: cookieNameValueParts[0] ,
+                         NSHTTPCookieValue: cookieNameValueParts[1]])
                     cookies[cookieNameValueParts[0]] = theCookie
                 }
             }

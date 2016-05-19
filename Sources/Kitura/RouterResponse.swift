@@ -66,10 +66,12 @@ public class RouterResponse {
     /// Optional error value
     ///
     public var error: ErrorProtocol?
+    
+    public var headers: Headers
 
-    public var statusCode: HttpStatusCode {
+    public var statusCode: HTTPStatusCode {
         get {
-            return response.statusCode ?? .UNKNOWN
+            return response.statusCode ?? .unknown
         }
 
         set(newValue) {
@@ -89,7 +91,8 @@ public class RouterResponse {
         self.response = response
         self.router = router
         self.request = request
-        status(HttpStatusCode.NOT_FOUND)
+        headers = Headers(headers: response.headers)
+        status(.notFound)
     }
 
     ///
@@ -103,13 +106,13 @@ public class RouterResponse {
         preFlush(request: request, response: self)
 
         if  let data = buffer.data {
-            let contentLength = getHeader("Content-Length")
+            let contentLength = headers["Content-Length"]
             if  contentLength == nil {
-                setHeader("Content-Length", value: String(buffer.count))
+                headers["Content-Length"] = String(buffer.count)
             }
             addCookies()
 
-            if  request.method != .Head {
+            if  request.method != .head {
                 try response.write(from: data)
             }
         }
@@ -127,20 +130,16 @@ public class RouterResponse {
         for  (_, cookie) in cookies {
             var cookieString = cookie.name + "=" + cookie.value + "; path=" + cookie.path + "; domain=" + cookie.domain
             if  let expiresDate = cookie.expiresDate {
-                cookieString += "; expires=" + SpiUtils.httpDate(expiresDate)
+                cookieString += "; expires=" + SPIUtils.httpDate(expiresDate)
             }
-#if os(Linux)
-            let isSecure = cookie.secure
-#else
-            let isSecure = cookie.isSecure
-#endif
-            if  isSecure  {
-                cookieString += "; secure; HttpOnly"
+
+            if  cookie.isSecure  {
+                cookieString += "; secure; HTTPOnly"
             }
 
             cookieStrings.append(cookieString)
         }
-        setHeader("Set-Cookie", value: cookieStrings)
+        response.headers.append("Set-Cookie", value: cookieStrings)
     }
 
     ///
@@ -220,7 +219,7 @@ public class RouterResponse {
 
         let contentType =  ContentType.sharedInstance.contentTypeForFile(fileName)
         if  let contentType = contentType {
-            setHeader("Content-Type", value: contentType)
+            headers["Content-Type"] = contentType
         }
 
         buffer.append(data: data)
@@ -250,7 +249,7 @@ public class RouterResponse {
     ///
     /// - Returns: a RouterResponse instance
     ///
-    public func status(_ status: HttpStatusCode) -> RouterResponse {
+    public func status(_ status: HTTPStatusCode) -> RouterResponse {
         response.statusCode = status
         return self
     }
@@ -263,92 +262,13 @@ public class RouterResponse {
     /// - Throws: ???
     /// - Returns: a RouterResponse instance
     ///
-    public func send(status: HttpStatusCode) throws -> RouterResponse {
+    public func send(status: HTTPStatusCode) throws -> RouterResponse {
 
         self.status(status)
-        if let statusCode = Http.statusCodes[status.rawValue] {
+        if let statusCode = HTTP.statusCodes[status.rawValue] {
             send(statusCode)
         }
         return self
-
-    }
-
-    ///
-    /// Gets the header
-    ///
-    /// - Parameter key: the key
-    ///
-    /// - Returns: the value for the key
-    ///
-    public func getHeader(_ key: String) -> String? {
-
-        return response.getHeader(key)
-
-    }
-
-    ///
-    /// Gets the header that contains multiple values
-    ///
-    /// - Parameter key: the key
-    ///
-    /// - Returns: the value for the key as a list
-    ///
-    public func getHeaders(_ key: String) -> [String]? {
-
-        return response.getHeaders(key)
-
-    }
-
-    ///
-    /// Set the header value
-    ///
-    /// - Parameter key: the key
-    /// - Parameter value: the value
-    ///
-    /// - Returns: the value for the key as a list
-    ///
-    public func setHeader(_ key: String, value: String) {
-
-        response.setHeader(key, value: value)
-
-    }
-
-    public func setHeader(_ key: String, value: [String]) {
-
-        response.setHeader(key, value: value)
-
-    }
-
-    ///
-    /// Append a value to the header
-    ///
-    /// - Parameter key: the header key
-    ///
-    public func append(_ key: String, value: String) {
-
-        response.append(key: key, value: value)
-
-    }
-
-    ///
-    /// Append values to the header
-    ///
-    /// - Parameter key: the key
-    ///
-    public func append(_ key: String, value: [String]) {
-
-        response.append(key: key, value: value)
-
-    }
-
-    ///
-    /// Remove the header by key
-    ///
-    /// - Parameter key: the key
-    ///
-    public func removeHeader(_ key: String) {
-
-        response.removeHeader(key: key)
 
     }
 
@@ -360,7 +280,7 @@ public class RouterResponse {
     /// - Returns: a RouterResponse instance
     ///
     public func redirect(_ path: String) throws -> RouterResponse {
-        return try redirect(.MOVED_TEMPORARILY, path: path)
+        return try redirect(.movedTemporarily, path: path)
     }
 
     ///
@@ -371,7 +291,7 @@ public class RouterResponse {
     ///
     /// - Returns: a RouterResponse instance
     ///
-    public func redirect(_ status: HttpStatusCode, path: String) throws -> RouterResponse {
+    public func redirect(_ status: HTTPStatusCode, path: String) throws -> RouterResponse {
 
         try self.status(status).location(path).end()
         return self
@@ -389,14 +309,13 @@ public class RouterResponse {
 
         var p = path
         if  p == "back" {
-            let referrer = getHeader("referrer")
-            if  let r = referrer {
-                p = r
+            if let referrer = headers["referrer"] {
+                p = referrer
             } else {
                 p = "/"
             }
         }
-        setHeader("Location", value: p)
+        headers["Location"] = p
         return self
 
     }
@@ -411,7 +330,7 @@ public class RouterResponse {
     // influenced by http://expressjs.com/en/4x/api.html#app.render
     public func render(_ resource: String, context: [ String: Any]) throws -> RouterResponse {
         guard let router = router else {
-            throw InternalError.NilVariable(variable: "router")
+            throw InternalError.nilVariable(variable: "router")
         }
         let renderedResource = try router.render(resource, context: context)
         return send(renderedResource)
@@ -428,7 +347,7 @@ public class RouterResponse {
             if let charset = charset {
                 contentCharset = "; charset=\(charset)"
             }
-            setHeader("Content-Type", value:  contentType + contentCharset)
+            headers["Content-Type"] = contentType + contentCharset
         }
     }
 
@@ -440,7 +359,7 @@ public class RouterResponse {
     ///
     public func attachment(_ filePath: String? = nil) {
         guard let filePath = filePath else {
-            setHeader("Content-Disposition", value: "attachment")
+            headers["Content-Disposition"] = "attachment"
             return
         }
 
@@ -448,11 +367,11 @@ public class RouterResponse {
         guard let fileName = filePaths.last else {
             return
         }
-        setHeader("Content-Disposition", value: "attachment; fileName = \"\(fileName)\"")
+        headers["Content-Disposition"] = "attachment; fileName = \"\(fileName)\""
 
         let contentType =  ContentType.sharedInstance.contentTypeForFile(fileName)
         if  let contentType = contentType {
-            setHeader("Content-Type", value: contentType)
+            headers["Content-Type"] = contentType
         }
     }
 
@@ -475,31 +394,82 @@ public class RouterResponse {
         preFlush = newPreFlush
         return oldPreFlush
     }
-    
-    
+
+
     ///
     /// Performs content-negotiation on the Accept HTTP header on the request, when present. It uses
     /// request.accepts() to select a handler for the request, based on the acceptable types ordered by their
     /// quality values. If the header is not specified, the default callback is invoked. When no match is found,
     /// the server invokes the default callback if exists, or responds with 406 “Not Acceptable”.
     /// The Content-Type response header is set when a callback is selected.
-    /// 
+    ///
     /// - Parameter callbacks: a dictionary that maps content types to handlers
     ///
     public func format(callbacks: [String : ((RouterRequest, RouterResponse) -> Void)]) throws {
         let callbackTypes = Array(callbacks.keys)
         if let acceptType = request.accepts(callbackTypes) {
-            setHeader("Content-Type", value: acceptType)
+            headers["Content-Type"] = acceptType
             callbacks[acceptType]!(request, self)
         }
         else if let defaultCallback = callbacks["default"] {
             defaultCallback(request, self)
         }
         else {
-            try status(HttpStatusCode.NOT_ACCEPTABLE).end()
+            try status(.notAcceptable).end()
         }
     }
 
+    ///
+    /// Adds a link with specified parameters to Link HTTP header
+    ///
+    /// - Parameter link: link value
+    /// - Parameter rel:
+    /// - Parameter anchor:
+    /// - Parameter rev:
+    /// - Parameter hreflang:
+    /// - Parameter media:
+    /// - Parameter title:
+    /// - Parameter type:
+    ///
+    /// - Returns: a RouterResponse instance
+    ///
+    public func link(_ link: String, rel: String? = nil, anchor: String? = nil,
+      rev: String? = nil, hreflang: String? = nil, media: String? = nil,
+      title: String? = nil, type: String? = nil) -> RouterResponse {
+        var headerValue = "<\(link)>"
+
+        if let rel = rel {
+            headerValue += "; rel=\"\(rel)\""
+        }
+
+        if let anchor = anchor {
+            headerValue += "; anchor=\"\(anchor)\""
+        }
+
+        if let rev = rev {
+            headerValue += "; rev=\"\(rev)\""
+        }
+
+        if let hreflang = hreflang {
+            headerValue += "; hreflang=\"\(hreflang)\""
+        }
+
+        if let media = media {
+            headerValue += "; media=\"\(media)\""
+        }
+
+        if let title = title {
+            headerValue += "; title=\"\(title)\""
+        }
+
+        if let type = type {
+            headerValue += "; type=\(type)"
+        }
+
+        headers.append("Link", value: headerValue)
+
+        return self
+    }
 }
 
 ///
