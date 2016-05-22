@@ -28,6 +28,25 @@ public struct Headers {
         self.headers = headers
     }
     
+    ///
+    /// Append values to the header
+    ///
+    /// - Parameter key: the key
+    /// - Parameter value: the value
+    ///
+    public mutating func append(_ key: String, value: String) {
+        
+        headers.append(key, value: value)
+    }
+}
+
+extension Headers: Collection {
+    
+    public var startIndex: HeadersIndex {return headers.startIndex }
+    public var endIndex: HeadersIndex { return headers.endIndex }
+    
+    public typealias HeadersIndex = DictionaryIndex<String, [String]>
+    
     public subscript(key: String) -> String? {
         get {
             return headers[key]?.first
@@ -43,14 +62,15 @@ public struct Headers {
         }
     }
     
-    ///
-    /// Append values to the header
-    ///
-    /// - Parameter key: the key
-    /// - Parameter value: the value
-    ///
-    public mutating func append(_ key: String, value: String) {
-        
-        headers.append(key, value: value)
+    
+    public subscript(position: HeadersIndex) -> (String, String?) {
+        get {
+            let (key, value) = headers[position]
+            return (key, value.first)
+        }
+    }
+    
+    public func index(after i: HeadersIndex) -> HeadersIndex {
+        return headers.index(after: i)
     }
 }
