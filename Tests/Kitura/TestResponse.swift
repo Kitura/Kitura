@@ -362,7 +362,7 @@ class TestResponse : XCTestCase {
         router.get("/qwer") { _, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             do {
-                try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+                try response.end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
             }
             catch {}
             next()
@@ -375,7 +375,7 @@ class TestResponse : XCTestCase {
             let q = request.queryParams["q"] ?? "(nil)"
             let u1 = request.userInfo["u1"] as? NSString ?? "(nil)"
             do {
-                try response.status(HTTPStatusCode.OK).send("<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=\(p1)<p><p>q=\(q)<p><p>u1=\(u1)</body></html>\n\n").end()
+                try response.send("<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=\(p1)<p><p>q=\(q)<p><p>u1=\(u1)</body></html>\n\n").end()
             }
             catch {}
             next()
@@ -399,15 +399,15 @@ class TestResponse : XCTestCase {
 
         router.route("/route")
         .get { _, response, next in
-            response.status(HTTPStatusCode.OK).send("get 1\n")
+            response.send("get 1\n")
             next()
         }
         .post {_, response, next in
-            response.status(HTTPStatusCode.OK).send("post received")
+            response.send("post received")
             next()
         }
         .get { _, response, next in
-            response.status(HTTPStatusCode.OK).send("get 2\n")
+            response.send("get 2\n")
             next()
         }
 
@@ -423,12 +423,12 @@ class TestResponse : XCTestCase {
             switch (requestBody) {
                 case .urlEncoded(let value):
                     do {
-                        try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> \(value) </body></html>\n\n")
+                        try response.end("<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> \(value) </body></html>\n\n")
                     }
                     catch {}
                 case .text(let value):
                     do {
-                        try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received text body: </b>\(value)</body></html>\n\n")
+                        try response.end("<!DOCTYPE html><html><body><b>Received text body: </b>\(value)</body></html>\n\n")
                     }
                     catch {}
                 default:

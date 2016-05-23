@@ -151,7 +151,7 @@ Let's develop our first Kitura Web Application written in Swift!
   let package = Package(
       name: "myFirstProject",
       dependencies: [
-          .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 13)
+          .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 15)
       ])
   ```
 
@@ -169,7 +169,7 @@ Let's develop our first Kitura Web Application written in Swift!
 
   router.get("/") {
   request, response, next in
-      response.status(.OK).send("Hello, World!")
+      response.send("Hello, World!")
       next()
   }
   ```
@@ -192,7 +192,7 @@ Let's develop our first Kitura Web Application written in Swift!
 
   router.get("/") {
   request, response, next in
-      response.status(.OK).send("Hello, World!")
+      response.send("Hello, World!")
       next()
   }
 
