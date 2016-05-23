@@ -22,13 +22,13 @@ import Foundation
 public class RouteRegex {
     public static let sharedInstance = RouteRegex()
     
-    private var keyRegex: NSRegularExpression?
-    private var nonKeyRegex: NSRegularExpression?
+    private var namedCaptureRegex: NSRegularExpression?
+    private var unnamedCaptureRegex: NSRegularExpression?
     
     private init () {
         do {
-            keyRegex = try NSRegularExpression(pattern: "(.*)?(?:\\:(\\w+)(?:\\(((?:\\\\.|[^()])+)\\))?(?:([+*?])?))", options: [])
-            nonKeyRegex = try NSRegularExpression(pattern: "(.*)?(?:(?:\\(((?:\\\\.|[^()])+)\\))(?:([+*?])?))", options: [])
+            namedCaptureRegex = try NSRegularExpression(pattern: "(.*)?(?:\\:(\\w+)(?:\\(((?:\\\\.|[^()])+)\\))?(?:([+*?])?))", options: [])
+            unnamedCaptureRegex = try NSRegularExpression(pattern: "(.*)?(?:(?:\\(((?:\\\\.|[^()])+)\\))(?:([+*?])?))", options: [])
         } catch {
             Log.error("Failed to create regular expressions used to parse Route patterns")
         }
@@ -74,11 +74,11 @@ public class RouteRegex {
                 matched = true
             } else {
                 let range = NSMakeRange(0, path.characters.count)
-                guard let keyRegex = keyRegex else {
+                guard let keyRegex = namedCaptureRegex else {
                     Log.error("RouteRegex has invalid state: missing keyRegex")
                     return(nil,nil)
                 }
-                guard let nonKeyRegex = nonKeyRegex else {
+                guard let nonKeyRegex = unnamedCaptureRegex else {
                     Log.error("RouteRegex element has invalid state: missing nonKeyRegex")
                     return(nil,nil)
                 }

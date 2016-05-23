@@ -332,7 +332,7 @@ public class RouterResponse {
         guard let router = router else {
             throw InternalError.nilVariable(variable: "router")
         }
-        let renderedResource = try router.render(resource, context: context)
+        let renderedResource = try router.render(template: resource, context: context)
         return send(renderedResource)
     }
 

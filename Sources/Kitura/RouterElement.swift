@@ -25,21 +25,6 @@ import Foundation
 class RouterElement {
 
     ///
-    /// The regular expression matcher
-    ///
-    static var keyRegex: NSRegularExpression?
-
-    ///
-    /// The regular expression matcher
-    ///
-    static var nonKeyRegex: NSRegularExpression?
-
-    ///
-    /// Status of regex initialization
-    ///
-    private static var regexInit: Int = 0
-
-    ///
     /// The routing method (get, post, put, delete)
     ///
     let method: RouterMethod
@@ -95,10 +80,9 @@ class RouterElement {
     ///
     /// Process
     ///
-    /// - Parameter httpMethod: the method
-    /// - Parameter urlPath: the path
     /// - Parameter request: the request
     /// - Parameter response: the response
+    /// - Parameter next: the callback
     ///
     func process(request: RouterRequest, response: RouterResponse, next: () -> Void) {
         guard let urlPath = request.parsedUrl.path else {
@@ -128,7 +112,7 @@ class RouterElement {
         request.matchedPath = urlPath.bridge().substring(with: match.range)
 
         request.route = pattern
-        updateRequestParams(urlPath, match: match, request: request)
+        setParameters(forRequest: request, fromUrlPath: urlPath, match: match)
         processHelper(request: request, response: response, next: next)
     }
 
@@ -145,12 +129,12 @@ class RouterElement {
     }
 
     ///
-    /// Update the update request parameters
+    /// Update the request parameters
     ///
     /// - Parameter match: the regular expression result
     /// - Parameter request:
     ///
-    private func updateRequestParams(_ urlPath: String, match: NSTextCheckingResult, request: RouterRequest) {
+    private func setParameters(forRequest request: RouterRequest, fromUrlPath urlPath: String, match: NSTextCheckingResult) {
 
         if  let keys = keys {
             var params: [String:String] = [:]
