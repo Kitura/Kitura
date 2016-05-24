@@ -371,8 +371,8 @@ class TestResponse : XCTestCase {
 
         router.get("/zxcv/:p1") { request, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
-            let p1 = request.params["p1"] ?? "(nil)"
-            let q = request.queryParams["q"] ?? "(nil)"
+            let p1 = request.parameters["p1"] ?? "(nil)"
+            let q = request.queryParameters["q"] ?? "(nil)"
             let u1 = request.userInfo["u1"] as? NSString ?? "(nil)"
             do {
                 try response.status(HTTPStatusCode.OK).send("<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=\(p1)<p><p>q=\(q)<p><p>u1=\(u1)</body></html>\n\n").end()
@@ -476,15 +476,15 @@ class TestResponse : XCTestCase {
 
         router.get("/single_link") { request, response, next in
             do {
-                try response.link("https://developer.ibm.com/swift", rel: "root").status(.OK).end()
+                try response.addLink("https://developer.ibm.com/swift", rel: "root").status(.OK).end()
             } catch {}
         }
 
         router.get("/multiple_links") { request, response, next in
             do {
               try response
-              .link("https://developer.ibm.com/swift/products/ibm-bluemix/", rel: "prev")
-              .link("https://developer.ibm.com/swift/products/ibm-swift-sandbox/", rel: "next")
+              .addLink("https://developer.ibm.com/swift/products/ibm-bluemix/", rel: "prev")
+              .addLink("https://developer.ibm.com/swift/products/ibm-swift-sandbox/", rel: "next")
               .status(.OK).end()
             } catch {}
         }

@@ -34,7 +34,7 @@ public class RouterRequest: SocketReader {
     ///
     public private(set) lazy var hostname: String = {[unowned self] () in
         guard let host = self.headers["host"] else {
-            return self.parsedUrl.host ?? ""
+            return self.parsedURL.host ?? ""
         }
         let range = host.range(of: ":")
         return  range == nil ? host : host.substring(to: range!.lowerBound)
@@ -46,9 +46,9 @@ public class RouterRequest: SocketReader {
     public let method: RouterMethod
 
     ///
-    /// The parsed url
+    /// The parsed URL
     ///
-    let parsedUrl: URLParser
+    let parsedURL: URLParser
 
     ///
     /// The router as a String
@@ -58,19 +58,19 @@ public class RouterRequest: SocketReader {
     ///
     /// The currently matched section of the url
     ///
-    public var matchedPath = ""
+    public internal(set) var matchedPath = ""
 
     ///
-    /// The original url as a string
+    /// The original URL as a string
     ///
-    public var originalUrl: String {
+    public var originalURL: String {
         return serverRequest.urlString
     }
 
     ///
     /// The URL
     ///
-    public var url: String
+    public internal(set) var url: String
 
     ///
     /// List of HTTP headers with simple String values
@@ -99,12 +99,12 @@ public class RouterRequest: SocketReader {
     ///
     /// List of URL parameters
     ///
-    public var params: [String:String] = [:]
+    public internal(set) var parameters: [String:String] = [:]
 
     ///
     /// List of query parameters
     ///
-    public var queryParams: [String:String] { return parsedUrl.queryParams }
+    public var queryParameters: [String:String] { return parsedURL.queryParams }
 
     ///
     /// User info
@@ -126,7 +126,7 @@ public class RouterRequest: SocketReader {
     init(request: ServerRequest) {
         serverRequest = request
         method = RouterMethod(fromRawValue: serverRequest.method)
-        parsedUrl = URLParser(url: serverRequest.url, isConnect: false)
+        parsedURL = URLParser(url: serverRequest.url, isConnect: false)
         url = String(serverRequest.urlString)
         headers = Headers(headers: serverRequest.headers)
     }
@@ -156,16 +156,16 @@ public class RouterRequest: SocketReader {
     ///
     /// Finds the full mime type for a given extension
     ///
-    /// - Parameter type: mime type extension String
+    /// - Parameter forExtension: mime type extension String
     ///
     /// - Returns the full mime type
     ///
-    private func extToMime(_ type: String) -> String {
+    private func getMimeType(forExtension ext: String) -> String {
 
-        if let mimeType = ContentType.sharedInstance.contentTypeForExtension(type) {
+        if let mimeType = ContentType.sharedInstance.contentTypeForExtension(ext) {
             return mimeType
         }
-        return type
+        return ext
     }
 
     ///
@@ -175,7 +175,7 @@ public class RouterRequest: SocketReader {
     ///
     /// - Returns a tuple with the mime type and q parameter value if present, qValue defaults to 1
     ///
-    private func parseMediaType(_ type: String) -> (type: String, qValue: Double) {
+    private func parse(mediaType type: String) -> (type: String, qValue: Double) {
         var finishedPair = ("", 1.0)
         let trimmed = type.trimmingCharacters(in: NSCharacterSet.whitespaces())
         let components = trimmed.characters.split(separator: ";").map(String.init)
@@ -214,8 +214,8 @@ public class RouterRequest: SocketReader {
             for type in types {
 
 
-                let parsedHeaderValue = parseMediaType(rawHeaderValue)
-                let mimeType = extToMime(type)
+                let parsedHeaderValue = parse(mediaType: rawHeaderValue)
+                let mimeType = getMimeType(forExtension: type)
 
                 if parsedHeaderValue.type == mimeType { // exact match, e.g. text/html == text/html
 

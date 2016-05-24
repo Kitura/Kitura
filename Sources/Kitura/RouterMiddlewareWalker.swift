@@ -56,7 +56,7 @@ class RouterMiddlewareWalker
                 self.next()
             }
         } else {
-            request.params = [:]
+            request.parameters = [:]
             callback()
         }
     }

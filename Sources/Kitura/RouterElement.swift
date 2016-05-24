@@ -85,7 +85,7 @@ class RouterElement {
     /// - Parameter next: the callback
     ///
     func process(request: RouterRequest, response: RouterResponse, next: () -> Void) {
-        guard let urlPath = request.parsedUrl.path else {
+        guard let urlPath = request.parsedURL.path else {
             Log.error("Failed to process request (path is nil)")
             return
         }
@@ -99,7 +99,7 @@ class RouterElement {
         // Either response error exists and method is error, or method matches
         guard let regex = regex else {
             request.route = pattern
-            request.params = [:]
+            request.parameters = [:]
             processHelper(request: request, response: response, next: next)
             return
         }
@@ -137,14 +137,14 @@ class RouterElement {
     private func setParameters(forRequest request: RouterRequest, fromUrlPath urlPath: String, match: NSTextCheckingResult) {
 
         if  let keys = keys {
-            var params: [String:String] = [:]
+            var parameters: [String:String] = [:]
             for index in 0..<keys.count {
                 let matchRange = match.range(at: index+1)
                 if  matchRange.location != NSNotFound  &&  matchRange.location != -1  {
-                    params[keys[index]] = urlPath.bridge().substring(with: matchRange)
+                    parameters[keys[index]] = urlPath.bridge().substring(with: matchRange)
                 }
             }
-            request.params = params
+            request.parameters = parameters
         }
 
     }

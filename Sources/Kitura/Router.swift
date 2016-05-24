@@ -604,7 +604,7 @@ extension Router : RouterMiddleware {
     /// - Parameter response: the router response
     ///
     public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
-        guard let urlPath = request.parsedUrl.path else {
+        guard let urlPath = request.parsedURL.path else {
             Log.error("Failed to handle request")
             return
         }
@@ -614,14 +614,14 @@ extension Router : RouterMiddleware {
             Log.error("Failed to find matches in url")
             return
         }
-        request.parsedUrl.path?.removeSubrange(prefixRange)
+        request.parsedURL.path?.removeSubrange(prefixRange)
 
-        if request.parsedUrl.path == "" {
-            request.parsedUrl.path = "/"
+        if request.parsedURL.path == "" {
+            request.parsedURL.path = "/"
         }
 
         process(request: request, response: response) {
-            request.parsedUrl.path = urlPath
+            request.parsedURL.path = urlPath
             next()
         }
     }
@@ -666,7 +666,7 @@ extension Router : HTTPServerDelegate {
     ///
     private func process(request: RouterRequest, response: RouterResponse, callback: () -> Void) {
 
-        guard let urlPath = request.parsedUrl.path else {
+        guard let urlPath = request.parsedURL.path else {
             Log.error("Failed to process request")
             return
         }
@@ -685,11 +685,11 @@ extension Router : HTTPServerDelegate {
     /// Send default index.html file and it's resources if appropriate, otherwise send default 404 message
     ///
     private func sendDefaultResponse(request: RouterRequest, response: RouterResponse) {
-        if request.parsedUrl.path == "/" {
+        if request.parsedURL.path == "/" {
             sendIfFound(resource: "index.html", usingResponse: response)
         } else {
             do {
-                let errorMessage = "Cannot \(String(request.method).uppercased()) \(request.parsedUrl.path ?? "")."
+                let errorMessage = "Cannot \(String(request.method).uppercased()) \(request.parsedURL.path ?? "")."
                 try response.status(.notFound).send(errorMessage).end()
             } catch {
                 Log.error("Error sending default not found message: \(error)")

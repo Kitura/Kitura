@@ -120,7 +120,7 @@ public class StaticFileServer: RouterMiddleware {
         }
         
         var filePath = path
-        if let requestPath = request.parsedUrl.path {
+        if let requestPath = request.parsedURL.path {
             var matchedPath = request.matchedPath
             if matchedPath.hasSuffix("*") {
                 matchedPath = String(matchedPath.characters.dropLast())

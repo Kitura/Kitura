@@ -357,7 +357,7 @@ public class RouterResponse {
     ///
     /// - Parameter filePath: the file to set the filename to
     ///
-    public func attachment(_ filePath: String? = nil) {
+    public func prepareAttachment(for filePath: String? = nil) {
         guard let filePath = filePath else {
             headers["Content-Disposition"] = "attachment"
             return
@@ -380,9 +380,9 @@ public class RouterResponse {
     ///
     /// - Parameter filePath: the file to download
     ///
-    public func download(_ filePath: String) throws {
-        try send(fileName: filePath)
-        attachment(filePath)
+    public func send(download: String) throws {
+        try send(fileName: download)
+        prepareAttachment(for: download)
     }
 
     ///
@@ -433,7 +433,7 @@ public class RouterResponse {
     ///
     /// - Returns: a RouterResponse instance
     ///
-    public func link(_ link: String, rel: String? = nil, anchor: String? = nil,
+    public func addLink(_ link: String, rel: String? = nil, anchor: String? = nil,
       rev: String? = nil, hreflang: String? = nil, media: String? = nil,
       title: String? = nil, type: String? = nil) -> RouterResponse {
         var headerValue = "<\(link)>"
