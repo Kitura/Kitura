@@ -67,15 +67,15 @@ public class RouterRequest: SocketReader {
     /// The subdomains string array of request
     ///
     public private(set) lazy var subdomains: [String] = { [unowned self] in
-        let subdomainsString = self.hostname.replacingOccurrences(of: self.domain, with: "", options: [ .backwardsSearch ], range: self.hostname.startIndex..<self.hostname.endIndex)
+        let subdomainsString = self.hostname
+            .replacingOccurrences(of: self.domain,
+                                  with: "",
+                                  options: [ .backwardsSearch ],
+                                  range: self.hostname.startIndex..<self.hostname.endIndex)
 
         var subdomains = subdomainsString.components(separatedBy: ".")
 
-        if subdomains.last?.isEmpty == true {
-            subdomains = Array(subdomains.prefix(subdomains.count - 1))
-        }
-
-        return subdomains
+        return subdomains.filter { !$0.isEmpty }
     }()
 
     ///
