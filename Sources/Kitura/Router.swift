@@ -606,11 +606,6 @@ public class Router {
 
     //MARK: Parameter
 
-    
-    public func parameter(_ name: String, handler: RouterParameterHandler) -> Router {
-        return self.parameter(name, handler: [handler])
-    }
-
     public func parameter(_ name: String, handler: RouterParameterHandler...) -> Router {
         return self.parameter(name, handler: handler)
     }
