@@ -162,7 +162,7 @@ public class RouterRequest: SocketReader {
     ///
     private func getMimeType(forExtension ext: String) -> String {
 
-        if let mimeType = ContentType.sharedInstance.contentTypeForExtension(ext) {
+        if let mimeType = ContentType.sharedInstance.getContentType(forExtension: ext) {
             return mimeType
         }
         return ext

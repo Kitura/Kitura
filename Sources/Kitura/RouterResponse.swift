@@ -217,7 +217,7 @@ public class RouterResponse {
     public func send(fileName: String) throws -> RouterResponse {
         let data = try NSData(contentsOfFile: fileName, options: [])
 
-        let contentType =  ContentType.sharedInstance.contentTypeForFile(fileName)
+        let contentType =  ContentType.sharedInstance.getContentType(forFileName: fileName)
         if  let contentType = contentType {
             headers["Content-Type"] = contentType
         }
@@ -342,7 +342,7 @@ public class RouterResponse {
     /// - Parameter type: the type to set to
     ///
     public func type(_ type: String, charset: String? = nil) {
-        if  let contentType = ContentType.sharedInstance.contentTypeForExtension(type) {
+        if  let contentType = ContentType.sharedInstance.getContentType(forExtension: type) {
             var contentCharset = ""
             if let charset = charset {
                 contentCharset = "; charset=\(charset)"
@@ -369,7 +369,7 @@ public class RouterResponse {
         }
         headers["Content-Disposition"] = "attachment; fileName = \"\(fileName)\""
 
-        let contentType =  ContentType.sharedInstance.contentTypeForFile(fileName)
+        let contentType =  ContentType.sharedInstance.getContentType(forFileName: fileName)
         if  let contentType = contentType {
             headers["Content-Type"] = contentType
         }
