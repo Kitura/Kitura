@@ -185,8 +185,6 @@ Let's develop our first Kitura Web Application written in Swift!
 
   ```swift
   import Kitura
-  import KituraNet
-  import KituraSys
 
   let router = Router()
 
@@ -196,8 +194,8 @@ Let's develop our first Kitura Web Application written in Swift!
       next()
   }
 
-  let server = HTTPServer.listen(port: 8090, delegate: router)
-  Server.run()
+  Kitura.addHTTPServer(onPort: 8090, with: router)
+  Kitura.run()
   ```
 
 8. Compile your application:
