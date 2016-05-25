@@ -155,12 +155,10 @@ Let's develop our first Kitura Web Application written in Swift!
       ])
   ```
 
-4. Import the modules in your code (Sources/main.swift):
+4. Import Kitura module in your code (Sources/main.swift):
 
   ```swift
   import Kitura
-  import KituraNet
-  import KituraSys
   ```
 5. Add a router and a path:
 
@@ -174,19 +172,17 @@ Let's develop our first Kitura Web Application written in Swift!
   }
   ```
 
-6. Create and start a HTTPServer:
+6. Add an HTTP Server to Kitura framework and start Kitura framework:
 
   ```swift
-  let server = HTTPServer.listen(port: 8090, delegate: router)
-  Server.run()
+  Kitura.addHTTPServer(onPort: 8090, with: router)
+  Kitura.run()
   ```
 
 7. Sources/main.swift file should now look like this:
 
   ```swift
   import Kitura
-  import KituraNet
-  import KituraSys
 
   let router = Router()
 
@@ -196,8 +192,8 @@ Let's develop our first Kitura Web Application written in Swift!
       next()
   }
 
-  let server = HTTPServer.listen(port: 8090, delegate: router)
-  Server.run()
+  Kitura.addHTTPServer(onPort: 8090, with: router)
+  Kitura.run()
   ```
 
 8. Compile your application:
