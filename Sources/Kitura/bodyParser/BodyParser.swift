@@ -74,14 +74,29 @@ public class BodyParser: RouterMiddleware {
         guard let contentType = contentType else {
             return nil
         }
-
-        if let parser = parserMap[contentType] {
+        
+        if let parser = getParsingFunction(contentType: contentType) {
             return parse(message, parser: parser)
-        } else if let parserMap = parserMap["text"]
-            where contentType.hasPrefix("text/") {
-            return parse(message, parser: parserMap)
         }
-
+        
+        return nil
+    }
+    
+    private class func getParsingFunction(contentType: String) -> ((NSMutableData) -> ParsedBody?)? {
+        if let parser = parserMap[contentType] {
+            return parser
+        } else if let parser = parserMap["text"]
+            where contentType.hasPrefix("text/") {
+            return parser
+        } else if contentType.hasPrefix("multipart/form-data") {
+            guard let boundryIndex = contentType.range(of: "boundary=") else {
+                return nil
+            }
+            let boundry = contentType.substring(from: boundryIndex.upperBound).replacingOccurrences(of: "\"", with: "")
+            return  {(bodyData: NSMutableData) -> ParsedBody? in
+                return parseMultipart(bodyData, boundary: boundry)
+            }
+        }
         return nil
     }
 
@@ -151,6 +166,79 @@ public class BodyParser: RouterMiddleware {
         // There was no support for the application/json MIME type
         if let bodyAsString: String = String(data: bodyData, encoding: NSUTF8StringEncoding) {
             return .text(bodyAsString)
+        }
+        return nil
+    }
+    
+    ///
+    /// Multipart form data parse function
+    ///
+    /// - Parameter bodyData: read data
+    ///
+    private class func parseMultipart(_ bodyData: NSMutableData, boundary: String) -> ParsedBody? {
+        guard let bodyAsString = String(data: bodyData, encoding: NSUTF8StringEncoding) else {
+            return nil
+        }
+        enum ParseState {
+            case preamble, body
+        }
+        var state = ParseState.preamble
+        var parts: [Part] = []
+        var currentPart = Part()
+        var data = NSMutableData()
+        // divide body by lines
+        let bodyAsStringLines = bodyAsString.components(separatedBy: NSCharacterSet.newlines()).filter({!$0.isEmpty})
+        // main parse loop
+        for bodyLine in bodyAsStringLines {
+            switch(state) {
+            case .preamble where bodyLine.hasPrefix("--" + boundary), .body where bodyLine.hasPrefix("--" + boundary):
+                // boundary found
+                if data.length > 0 {
+                    if let parser = getParsingFunction(contentType: currentPart.type), let parsedBody = parser(data) {
+                        currentPart.body = parsedBody
+                    } else {
+                        currentPart.body = .raw(data)
+                    }
+                    parts.append(currentPart)
+                }
+                currentPart = Part()
+                data = NSMutableData()
+                if bodyLine.hasPrefix("--" + boundary + "--") {
+                    // end boundary found, end of parsing
+                    return .multipart(parts)
+                }
+                state = .body
+            case .preamble:
+                // discard preamble text
+                break
+            case .body:
+                // check if header
+                if let labelRange = bodyLine.range(of: "content-type:", options: [.anchoredSearch, .caseInsensitiveSearch], range: Range<String.Index>(uncheckedBounds: (bodyLine.startIndex, bodyLine.endIndex))) {
+                    currentPart.type = bodyLine.substring(from: bodyLine.index(after: labelRange.upperBound))
+                    currentPart.headers[.type] = bodyLine
+                } else if let labelRange = bodyLine.range(of: "content-disposition:", options: [.anchoredSearch, .caseInsensitiveSearch], range: Range<String.Index>(uncheckedBounds: (bodyLine.startIndex, bodyLine.endIndex))) {
+                    if let nameRange = bodyLine.range(of: "name=", options: .caseInsensitiveSearch, range: Range<String.Index>(uncheckedBounds: (labelRange.upperBound, bodyLine.endIndex))) {
+                        let valueStartIndex = bodyLine.index(after: nameRange.upperBound)
+                        let valueEndIndex = bodyLine.range(of: "\"", range: Range<String.Index>(uncheckedBounds:(valueStartIndex, bodyLine.endIndex)))
+                        currentPart.name = bodyLine.substring(with: Range<String.Index>(uncheckedBounds: (valueStartIndex, valueEndIndex?.lowerBound ?? bodyLine.endIndex)))
+                    }
+                    currentPart.headers[.disposition] = bodyLine
+                } else if bodyLine.range(of: "content-transfer-encoding:", options: [.anchoredSearch, .caseInsensitiveSearch], range: Range<String.Index>(uncheckedBounds: (bodyLine.startIndex, bodyLine.endIndex))) != nil {
+                    //TODO: Deal with this
+                    currentPart.headers[.transferEncoding] = bodyLine
+                } else {
+                    // is data, add to data object
+                    var dataLine = bodyLine
+                    if data.length > 0 {
+                        // data is multiline, add linebreaks back in
+                        dataLine = "\r\n" + dataLine
+                    }
+                    if let lineData = dataLine.data(using: NSUTF8StringEncoding) {
+                        data.append(lineData)
+                    }
+                }
+            }
+            
         }
         return nil
     }

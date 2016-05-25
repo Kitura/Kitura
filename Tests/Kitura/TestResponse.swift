@@ -32,6 +32,7 @@ class TestResponse : XCTestCase {
         return [
             ("testSimpleResponse", testSimpleResponse),
             ("testPostRequest", testPostRequest),
+            ("testMultipartFormParsing", testMultipartFormParsing),
             ("testParameter", testParameter),
             ("testRedirect", testRedirect),
             ("testErrorHandler", testErrorHandler),
@@ -85,6 +86,36 @@ class TestResponse : XCTestCase {
             }) {req in
                 req.write(from: "plover\n")
                 req.write(from: "xyzzy\n")
+            }
+        }
+    }
+    
+    func testMultipartFormParsing() {
+        performServerTest(router) { expectation in
+            self.performRequest("post", path: "/multibodytest", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!, "text text(\"text default\") file1 text(\"Content of a.txt.\") file2 text(\"<!DOCTYPE html><title>Content of a.html.</title>\") ")
+                }
+                catch {
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            }) {req in
+                req.headers["Content-Type"] = "multipart/form-data; boundary=---------------------------9051914041544843365972754266"
+                req.write(from: "-----------------------------9051914041544843365972754266\r\n" +
+                    "Content-Disposition: form-data; name=\"text\"\r\n\r\n" +
+                    "text default\r\n" +
+                    "-----------------------------9051914041544843365972754266\r\n" +
+                    "Content-Disposition: form-data; name=\"file1\"; filename=\"a.txt\"\r\n" +
+                    "Content-Type: text/plain\r\n\r\n" +
+                    "Content of a.txt.\r\n\r\n" +
+                    "-----------------------------9051914041544843365972754266\r\n" +
+                    "Content-Disposition: form-data; name=\"file2\"; filename=\"a.html\"\r\n" +
+                    "Content-Type: text/html\r\n\r\n" +
+                    "<!DOCTYPE html><title>Content of a.html.</title>\r\n\r\n" +
+                    "-----------------------------9051914041544843365972754266--")
             }
         }
     }
@@ -411,7 +442,6 @@ class TestResponse : XCTestCase {
             next()
         }
 
-
         router.all("/bodytest", middleware: BodyParser())
 
         router.post("/bodytest") { request, response, next in
@@ -437,6 +467,34 @@ class TestResponse : XCTestCase {
             }
 
             next()
+        }
+        
+        router.all("/multibodytest", middleware: BodyParser())
+        
+        router.post("/multibodytest") { request, response, next in
+            guard let requestBody = request.body else {
+                next ()
+                return
+            }
+            switch (requestBody) {
+            case .multipart(let parts):
+                for part in parts {
+                    response.send("\(part.name) \(part.body) ")
+                }
+            default:
+                response.error = Error.failedToParseRequestBody(body: "\(request.body)")
+            }
+            next()
+        }
+        
+        router.post("/bodytest") { request, response, next in
+            response.headers["Content-Type"] = "text/html; charset=utf-8"
+            guard let requestBody = request.body else {
+                next ()
+                return
+            }
+            
+            print(requestBody)
         }
 
         func callbackText(request: RouterRequest, response: RouterResponse) {
