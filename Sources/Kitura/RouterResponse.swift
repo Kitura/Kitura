@@ -71,7 +71,7 @@ public class RouterResponse {
     /// Optional error value
     ///
     public var error: ErrorProtocol?
-    
+
     public var headers: Headers
 
     public var statusCode: HTTPStatusCode {
@@ -418,9 +418,10 @@ public class RouterResponse {
     ///
     public func format(callbacks: [String : ((RouterRequest, RouterResponse) -> Void)]) throws {
         let callbackTypes = Array(callbacks.keys)
-        if let acceptType = request.accepts(callbackTypes) {
+        if let acceptType = request.accepts(callbackTypes),
+          callback = callbacks[acceptType] {
             headers["Content-Type"] = acceptType
-            callbacks[acceptType]!(request, self)
+            callback(request, self)
         }
         else if let defaultCallback = callbacks["default"] {
             defaultCallback(request, self)

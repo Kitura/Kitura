@@ -32,12 +32,16 @@ public class RouterRequest: SocketReader {
     ///
     /// The hostname of the request
     ///
-    public private(set) lazy var hostname: String = {[unowned self] () in
+    public private(set) lazy var hostname: String = { [unowned self] () in
         guard let host = self.headers["host"] else {
             return self.parsedUrl.host ?? ""
         }
-        let range = host.range(of: ":")
-        return  range == nil ? host : host.substring(to: range!.lowerBound)
+
+        guard let range = host.range(of: ":") else {
+            return host
+        }
+
+        return  host.substring(to: range.lowerBound)
     }()
 
     ///
@@ -85,7 +89,7 @@ public class RouterRequest: SocketReader {
     //
     // Parsed Cookies, used to do a lazy parsing of the appropriate headers
     //
-    private lazy var _cookies: Cookies = {[unowned self] in
+    private lazy var _cookies: Cookies = { [unowned self] in
         return Cookies(headers: self.serverRequest.headers)
     }()
 
@@ -226,7 +230,7 @@ public class RouterRequest: SocketReader {
                         criteriaMatches[type] = (priority: 3, qValue: parsedHeaderValue.qValue)
                     }
                 } else {
-                    
+
                     if let _ = mimeType.range(of: parsedHeaderValue.type, options: .regularExpressionSearch) { // partial match, e.g. text/html == text/*
                         if criteriaMatches[type]?.priority > 2 || criteriaMatches[type] == nil {
                             criteriaMatches[type] = (priority: 2, qValue: parsedHeaderValue.qValue)

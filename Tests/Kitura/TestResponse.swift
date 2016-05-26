@@ -40,7 +40,8 @@ class TestResponse : XCTestCase {
             ("testRouteFunc", testRouteFunc),
             ("testAcceptTypes", testAcceptTypes),
             ("testFormat", testFormat),
-            ("testLink", testLink)
+            ("testLink", testLink),
+            ("testRouterParameter", testRouterParameter)
         ]
     }
 
@@ -380,9 +381,83 @@ class TestResponse : XCTestCase {
         }
     }
 
+    func testRouterParameter() {
+      performServerTest(router) { expectation in
+          self.performRequest("get", path: "/single_link?user=guest", callback: { response in
+              XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+              XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+              let header = response!.headers["User"]?.first
+              XCTAssertNotNil(header, "User header should not be nil in single_link request")
+              XCTAssertEqual(header, "guest")
+              let linkHeader = response!.headers["Link"]?.first
+              XCTAssertNotNil(linkHeader, "Link header should not be nil")
+              XCTAssertEqual(linkHeader, "<https://developer.ibm.com/swift>; rel=\"root\"")
+              expectation.fulfill()
+          })
+      }
+
+      performServerTest(router) { expectation in
+          self.performRequest("post", path: "/bodytest?user=guest", callback: { response in
+              XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+              XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+              let header = response!.headers["User"]?.first
+              XCTAssertNotNil(header, "User header should not be nil in bodytest request")
+              XCTAssertEqual(header, "guest")
+              do {
+                  let body = try response!.readString()
+                  XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received text body: </b>plover\nxyzzy\n</body></html>\n\n")
+              }
+              catch{
+                  XCTFail("No response body")
+              }
+              expectation.fulfill()
+          }) {req in
+              req.write(from: "plover\n")
+              req.write(from: "xyzzy\n")
+          }
+        }
+
+      performServerTest(router) { expectation in
+          self.performRequest("get", path: "/qwer?var=123124", callback: { response in
+              XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+              XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+              let firstHeader = response!.headers["Var-1"]?.first
+              XCTAssertNotNil(firstHeader, "Var-1 header should not be nil")
+              XCTAssertEqual(firstHeader, "123124")
+              let secondHeader = response!.headers["Var-2"]?.first
+              XCTAssertNotNil(secondHeader, "Var-2 header should not be nil")
+              XCTAssertEqual(secondHeader, "random")
+
+              do {
+                  let body = try response!.readString()
+                  XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+              }
+              catch{
+                  XCTFail("No response body")
+              }
+
+              expectation.fulfill()
+          })
+      }
+    }
+
 
     static func setupRouter() -> Router {
         let router = Router()
+
+        //parameter handling example
+        router.parameter("var", handler: { request, response, next, value in
+            response.headers["Var-1"] = value
+            next()
+        }, { request, response, next, value in
+            response.headers["Var-2"] = "random"
+            next()
+        })
+
+        router.parameter("user") { request, response, next, value in
+            response.headers["User"] = value
+            next()
+        }
 
         // the same router definition is used for all these test cases
         router.all("/zxcv/:p1") { request, _, next in
@@ -532,6 +607,8 @@ class TestResponse : XCTestCase {
             catch {}
         }
 
+
+
         router.get("/single_link") { request, response, next in
             do {
                 try response.link("https://developer.ibm.com/swift", rel: "root").status(.OK).end()
@@ -563,6 +640,6 @@ class TestResponse : XCTestCase {
             next()
         }
 
-	return router
+	       return router
     }
 }
