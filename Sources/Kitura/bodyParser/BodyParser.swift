@@ -229,7 +229,7 @@ public class BodyParser: RouterMiddleware {
                         //TODO: Deal with this
                         currentPart.headers[.transferEncoding] = bodyLineAsString
                     }
-                    else {
+                    else if !bodyLineAsString.isEmpty {
                         // is data, add to data object
                         if partData.length > 0 {
                             // data is multiline, add linebreaks back in
@@ -265,6 +265,9 @@ public class BodyParser: RouterMiddleware {
             } else {
                 currentPosition += 1
             }
+        }
+        if lineStart != data.length {
+            dataLines.append(data.subdata(with: NSRange(location: lineStart, length: data.length - lineStart)))
         }
         return dataLines
     }
