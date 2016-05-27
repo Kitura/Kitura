@@ -111,7 +111,7 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-05-03-a ve
 
 3. Clone, build and install the libdispatch library.
 The complete instructions for building and installing this library are  [here](https://github.com/apple/swift-corelibs-libdispatch/blob/experimental/foundation/INSTALL), though, all you need to do is just this
- `git clone -b experimental/foundation https://github.com/apple/swift-corelibs-libdispatch.git && cd swift-corelibs-libdispatch && git submodule init && git submodule update && sh ./autogen.sh && ./configure --with-swift-toolchain=<path-to-swift>/usr --prefix=<path-to-swift>/usr && make && make install`
+ `git clone --recursive -b experimental/foundation https://github.com/apple/swift-corelibs-libdispatch.git && cd swift-corelibs-libdispatch && sh ./autogen.sh && ./configure --with-swift-toolchain=<path-to-swift>/usr --prefix=<path-to-swift>/usr && make && make install`
 
 4. Now you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
 
@@ -155,12 +155,10 @@ Let's develop our first Kitura Web Application written in Swift!
       ])
   ```
 
-4. Import the modules in your code (Sources/main.swift):
+4. Import Kitura module in your code (Sources/main.swift):
 
   ```swift
   import Kitura
-  import KituraNet
-  import KituraSys
   ```
 5. Add a router and a path:
 
@@ -169,35 +167,33 @@ Let's develop our first Kitura Web Application written in Swift!
 
   router.get("/") {
   request, response, next in
-      response.status(.OK).send("Hello, World!")
+      response.send("Hello, World!")
       next()
   }
   ```
 
-6. Create and start a HTTPServer:
+6. Add an HTTP Server to Kitura framework and start Kitura framework:
 
   ```swift
-  let server = HTTPServer.listen(port: 8090, delegate: router)
-  Server.run()
+  Kitura.addHTTPServer(onPort: 8090, with: router)
+  Kitura.run()
   ```
 
 7. Sources/main.swift file should now look like this:
 
   ```swift
   import Kitura
-  import KituraNet
-  import KituraSys
 
   let router = Router()
 
   router.get("/") {
   request, response, next in
-      response.status(.OK).send("Hello, World!")
+      response.send("Hello, World!")
       next()
   }
 
-  let server = HTTPServer.listen(port: 8090, delegate: router)
-  Server.run()
+  Kitura.addHTTPServer(onPort: 8090, with: router)
+  Kitura.run()
   ```
 
 8. Compile your application:

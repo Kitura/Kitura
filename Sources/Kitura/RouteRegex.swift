@@ -41,14 +41,19 @@ public class RouteRegex {
     ///
     /// - Returns:
     ///
-    internal func buildRegex(fromPattern pattern: String?, allowPartialMatch: Bool = false) -> (NSRegularExpression?, [String]?) {
+    internal func buildRegex(fromPattern: String?, allowPartialMatch: Bool = false) -> (NSRegularExpression?, [String]?) {
         
-        guard let pattern = pattern else {
+        guard let fromPattern = fromPattern else {
             return (nil, nil)
         }
+        var pattern = fromPattern
         var regexStr = "^"
         var keys: [String] = []
         var nonKeyIndex = 0
+        
+        if allowPartialMatch && pattern.hasSuffix("*") {
+            pattern = String(pattern.characters.dropLast())
+        }
         
         let paths = pattern.bridge().components(separatedBy: "/")
         
