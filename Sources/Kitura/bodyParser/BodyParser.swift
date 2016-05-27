@@ -70,14 +70,29 @@ public class BodyParser: RouterMiddleware {
         guard let contentType = contentType else {
             return nil
         }
-
-        if let parser = parserMap[contentType] {
+        
+        if let parser = getParsingFunction(contentType: contentType) {
             return parse(message, parser: parser)
-        } else if let parserMap = parserMap["text"]
-            where contentType.hasPrefix("text/") {
-            return parse(message, parser: parserMap)
         }
-
+        
+        return nil
+    }
+    
+    private class func getParsingFunction(contentType: String) -> ((NSMutableData) -> ParsedBody?)? {
+        if let parser = parserMap[contentType] {
+            return parser
+        } else if let parser = parserMap["text"]
+            where contentType.hasPrefix("text/") {
+            return parser
+        } else if contentType.hasPrefix("multipart/form-data") {
+            guard let boundryIndex = contentType.range(of: "boundary=") else {
+                return nil
+            }
+            let boundary = contentType.substring(from: boundryIndex.upperBound).replacingOccurrences(of: "\"", with: "")
+            return  {(bodyData: NSMutableData) -> ParsedBody? in
+                return parseMultipart(bodyData, boundary: boundary)
+            }
+        }
         return nil
     }
 
@@ -150,6 +165,108 @@ public class BodyParser: RouterMiddleware {
         }
         return nil
     }
+    
+    ///
+    /// Multipart form data parse function
+    ///
+    /// - Parameter bodyData: read data
+    ///
+    private class func parseMultipart(_ bodyData: NSMutableData, boundary: String) -> ParsedBody? {
+        guard let boundaryData = String("--" + boundary).data(using: NSUTF8StringEncoding), let endBoundaryData = String("--" + boundary + "--").data(using: NSUTF8StringEncoding), let newLineData = "\r\n".data(using: NSUTF8StringEncoding) else {
+            Log.error("Error converting strings to data for multipart parsing")
+            return nil
+        }
+        
+        enum ParseState {
+            case preamble, body
+        }
+        var state = ParseState.preamble
+        var parts: [Part] = []
+        var currentPart = Part()
+        var partData = NSMutableData()
+        let bodyLines = divideDataByNewLines(data: bodyData, newLineData: newLineData)
+        // main parse loop
+        for bodyLine in bodyLines {
+            switch(state) {
+            case .preamble where bodyLine.hasPrefix(boundaryData), .body where bodyLine.hasPrefix(boundaryData):
+                // boundary found
+                if partData.length > 0 {
+                    if let parser = getParsingFunction(contentType: currentPart.type), let parsedBody = parser(partData) {
+                        currentPart.body = parsedBody
+                    } else {
+                        currentPart.body = .raw(partData)
+                    }
+                    parts.append(currentPart)
+                }
+                currentPart = Part()
+                partData = NSMutableData()
+                if bodyLine.hasPrefix(endBoundaryData) {
+                    // end boundary found, end of parsing
+                    return .multipart(parts)
+                }
+                state = .body
+            case .preamble:
+                // discard preamble text
+                break
+            case .body:
+                // check if header
+                if let bodyLineAsString = String(data: bodyLine, encoding: NSUTF8StringEncoding) {
+                    if let labelRange = bodyLineAsString.range(of: "content-type:", options: [.anchoredSearch, .caseInsensitiveSearch], range: bodyLineAsString.startIndex..<bodyLineAsString.endIndex) {
+                        currentPart.type = bodyLineAsString.substring(from: bodyLineAsString.index(after: labelRange.upperBound))
+                        currentPart.headers[.type] = bodyLineAsString
+                    } else if let labelRange = bodyLineAsString.range(of: "content-disposition:", options: [.anchoredSearch, .caseInsensitiveSearch], range: bodyLineAsString.startIndex..<bodyLineAsString.endIndex) {
+                        if let nameRange = bodyLineAsString.range(of: "name=", options: .caseInsensitiveSearch, range: labelRange.upperBound..<bodyLineAsString.endIndex) {
+                            let valueStartIndex = bodyLineAsString.index(after: nameRange.upperBound)
+                            let valueEndIndex = bodyLineAsString.range(of: "\"", range: valueStartIndex..<bodyLineAsString.endIndex)
+                            currentPart.name = bodyLineAsString.substring(with: valueStartIndex..<(valueEndIndex?.lowerBound ?? bodyLineAsString.endIndex))
+                        }
+                        currentPart.headers[.disposition] = bodyLineAsString
+                    } else if bodyLineAsString.range(of: "content-transfer-encoding:", options: [.anchoredSearch, .caseInsensitiveSearch], range: bodyLineAsString.startIndex..<bodyLineAsString.endIndex) != nil {
+                        //TODO: Deal with this
+                        currentPart.headers[.transferEncoding] = bodyLineAsString
+                    }
+                    else if !bodyLineAsString.isEmpty {
+                        // is data, add to data object
+                        if partData.length > 0 {
+                            // data is multiline, add linebreaks back in
+                            partData.append(newLineData)
+                        }
+                        partData.append(bodyLine)
+                    }
+                } else {
+                    // is data, add to data object
+                    if partData.length > 0 {
+                        // data is multiline, add linebreaks back in
+                        partData.append(newLineData)
+                    }
+                    partData.append(bodyLine)
+                }
+            }
+            
+        }
+        return nil
+    }
+    
+    private class func divideDataByNewLines(data: NSData, newLineData: NSData) -> [NSData] {
+        var dataLines = [NSData]()
+        var lineStart = 0
+        var currentPosition = 0
+        while currentPosition < data.length - 1 {
+            let newLineCanidate = data.subdata(with: NSRange(location: currentPosition, length: 2))
+            if newLineCanidate.isEqual(to: newLineData) {
+                dataLines.append(data.subdata(with: NSRange(location: lineStart, length: currentPosition - lineStart)))
+                // skip new line characters
+                currentPosition += 2
+                lineStart = currentPosition
+            } else {
+                currentPosition += 1
+            }
+        }
+        if lineStart != data.length {
+            dataLines.append(data.subdata(with: NSRange(location: lineStart, length: data.length - lineStart)))
+        }
+        return dataLines
+    }
 
     ///
     /// Read the Body data
@@ -170,4 +287,13 @@ public class BodyParser: RouterMiddleware {
         return bodyData
     }
 
+}
+
+extension NSData {
+    func hasPrefix(_ data: NSData) -> Bool {
+        if data.length > self.length {
+            return false
+        }
+        return self.subdata(with: NSRange(location: 0, length: data.length)).isEqual(to: data)
+    }
 }

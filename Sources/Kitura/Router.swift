@@ -646,7 +646,7 @@ extension Router : HTTPServerDelegate {
         process(request: routeReq, response: routeResp) { [unowned self] () in
             do {
                 if  !routeResp.invokedEnd {
-                    if  routeResp.response.statusCode == .notFound {
+                    if  routeResp.statusCode == .unknown  && !routeResp.invokedSend {
                         self.sendDefaultResponse(request: routeReq, response: routeResp)
                     }
                     try routeResp.end()
@@ -755,8 +755,7 @@ extension Router : HTTPServerDelegate {
 
         do {
             try response.send(fileName: resourceFileName)
-            response.status(.OK)
-            try response.end()
+            try response.status(.OK).end()
         } catch {
             // Fail silently
         }

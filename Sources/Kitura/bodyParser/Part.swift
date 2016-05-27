@@ -14,13 +14,15 @@
  * limitations under the License.
  **/
 
-import PackageDescription
+import Foundation
 
-let package = Package(
-    name: "Kitura",
-        dependencies: [
-            .Package(url: "https://github.com/IBM-Swift/Kitura-net.git", majorVersion: 0, minor: 15),
-            .Package(url: "https://github.com/IBM-Swift/SwiftyJSON.git", majorVersion: 7),
-            .Package(url: "https://github.com/IBM-Swift/Kitura-TemplateEngine.git", majorVersion: 0, minor: 13)
-        ]
-)
+public struct Part {
+    public internal(set) var name = ""
+    public internal(set) var type = "text/plain"
+    public internal(set) var headers = [HeaderType: String]()
+    public internal(set) var body: ParsedBody = .raw(NSData())
+    
+    public enum HeaderType {
+        case disposition, type, transferEncoding
+    }
+}
