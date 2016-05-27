@@ -84,6 +84,8 @@ public class BodyParser: RouterMiddleware {
         if let parser = getParsingFunction(contentType: contentType) {
             return parse(message, parser: parser)
         }
+        
+        return nil
     }
     
     private class func getParsingFunction(contentType: String) -> ((NSMutableData) -> ParsedBody?)? {

@@ -2,4 +2,4 @@
 	path = Kitura-Build
 	url = https://github.com/IBM-Swift/Kitura-Build.git
 	ignore = all
-	branch = master
+	branch = develop
