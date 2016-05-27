@@ -81,12 +81,9 @@ public class BodyParser: RouterMiddleware {
         if let parameterStart = contentType.range(of: ";") {
             contentType = contentType.substring(to: parameterStart.lowerBound)
         }
-
-        if let parser = parserMap[contentType] {
+        if let parser = getParsingFunction(contentType: contentType) {
             return parse(message, parser: parser)
         }
-        
-        return nil
     }
     
     private class func getParsingFunction(contentType: String) -> ((NSMutableData) -> ParsedBody?)? {

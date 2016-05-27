@@ -151,7 +151,7 @@ Let's develop our first Kitura Web Application written in Swift!
   let package = Package(
       name: "myFirstProject",
       dependencies: [
-          .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 14)
+          .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 15)
       ])
   ```
 
@@ -216,8 +216,7 @@ Feel free to visit our [Wiki](https://github.com/IBM-Swift/Kitura/wiki) for our 
 
 ## Developing Kitura
 
-1. Clone this repository, `master` branch
-  `git clone -b master https://github.com/IBM-Swift/Kitura`
+1. Clone this repository, `git clone -b develop https://github.com/IBM-Swift/Kitura`
 2. Build and run tests
   `make test`
 
