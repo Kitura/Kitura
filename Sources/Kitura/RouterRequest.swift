@@ -142,7 +142,7 @@ public class RouterRequest: SocketReader {
     ///
     /// List of query parameters
     ///
-    public var queryParameters: [String:String] { return parsedURL.queryParams }
+    public var queryParameters: [String:String] { return parsedURL.queryParameters }
 
     ///
     /// User info

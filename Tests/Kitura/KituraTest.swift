@@ -38,7 +38,7 @@ extension KituraTest {
 
         for (index, asyncTask) in asyncTasks.enumerated() {
             let expectation = self.expectation(index)
-            requestQueue.queueAsync {
+            requestQueue.enqueueAsynchronously {
                 asyncTask(expectation: expectation)
             }
         }
@@ -50,7 +50,7 @@ extension KituraTest {
         }
     }
 
-    func performRequest(_ method: String, path: String, callback: ClientRequestCallback, headers: [String: String]? = nil, requestModifier: ((ClientRequest) -> Void)? = nil) {
+    func performRequest(_ method: String, path: String, callback: ClientRequest.Callback, headers: [String: String]? = nil, requestModifier: ((ClientRequest) -> Void)? = nil) {
         var allHeaders = [String: String]()
         if  let headers = headers  {
             for  (headerName, headerValue) in headers  {
