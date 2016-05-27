@@ -268,6 +268,44 @@ public class RouterResponse {
     }
 
     ///
+    /// Sends JSON with JSONP callback
+    ///
+    /// - Parameter json: the JSON object to send
+    /// - Parameter callbackParam: (optional, default "callback") the
+    /// name of the URL query parameter that contains the callback
+    /// function name
+    ///
+    /// - Returns: a RouterResponse instance
+    ///
+    public func jsonp(json: JSON, callbackParam: String = "callback") -> RouterResponse {
+        func sanitizeJSIdentifier(_ ident: String) -> String {
+            return ident.replacingOccurrences(of: "[^\\[\\]\\w$.]", with: "", options:
+                NSStringCompareOptions.regularExpressionSearch)
+        }
+        func jsonToJS(_ json: String) -> String {
+            return json.replacingOccurrences(of: "\u{2028}", with: "\\u2028")
+                       .replacingOccurrences(of: "\u{2029}", with: "\\u2029")
+        }
+
+        let jsonStr = json.description
+        if let unsanitizedCallback = request.queryParams[callbackParam] {
+            let jsCallbackName = sanitizeJSIdentifier(unsanitizedCallback)
+            type("json")
+            headers["X-Content-Type-Options"] = "nosniff"
+            send("/**/ " + jsCallbackName + "(" + jsonToJS(jsonStr) + ")")
+        } else {
+            // TODO: What should we do here? Typically the status
+            // code is set by the caller, so should we throw here and
+            // let them set the status code?
+            // Caller may not be expecting the status code to be set
+            // -- I see some calls like `response.send(...).status(.OK)`
+            // in the tests, which would clobber this status code. :(
+            send(status: .badRequest)
+        }
+        return self
+    }
+
+    ///
     /// Set the status code
     ///
     /// - Parameter status: the status code object
@@ -285,10 +323,10 @@ public class RouterResponse {
     ///
     /// - Parameter status: the status code object
     ///
-    /// - Throws: ???
+    /// - Throws: ??? <-- WHY?
     /// - Returns: a RouterResponse instance
     ///
-    public func send(status: HTTPStatusCode) throws -> RouterResponse {
+    public func send(status: HTTPStatusCode) /*throws*/ -> RouterResponse {
 
         self.status(status)
         if let statusCode = HTTP.statusCodes[status.rawValue] {
