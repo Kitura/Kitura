@@ -60,7 +60,7 @@ public class ContentType {
             return
         }
 
-        guard let contentTypesData = contentTypesString.bridge().data(using: NSUTF8StringEncoding) else {
+        guard let contentTypesData = contentTypesString.data(using: NSUTF8StringEncoding) else {
             Log.error("Error parsing \(contentTypesString)")
             return
         }
