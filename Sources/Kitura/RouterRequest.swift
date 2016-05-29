@@ -86,7 +86,7 @@ public class RouterRequest: SocketReader {
     ///
     /// The parsed url
     ///
-    let parsedUrl: URLParser
+    public private(set) var parsedUrl: URLParser
 
     ///
     /// The router as a String
