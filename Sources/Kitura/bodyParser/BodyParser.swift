@@ -71,10 +71,16 @@ public class BodyParser: RouterMiddleware {
     ///
     public class func parse(_ message: SocketReader, contentType: String?) -> ParsedBody? {
 
-        guard let contentType = contentType else {
+        guard var contentType = contentType else {
             return nil
         }
         
+        // Handle Content-Type with parameters.  For example, treat:
+        // "application/x-www-form-urlencoded; charset=UTF-8" as
+        // "application/x-www-form-urlencoded"
+        if let parameterStart = contentType.range(of: ";") {
+            contentType = contentType.substring(to: parameterStart.lowerBound)
+        }
         if let parser = getParsingFunction(contentType: contentType) {
             return parse(message, parser: parser)
         }
