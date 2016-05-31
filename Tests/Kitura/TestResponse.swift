@@ -32,6 +32,7 @@ class TestResponse : XCTestCase {
         return [
             ("testSimpleResponse", testSimpleResponse),
             ("testPostRequest", testPostRequest),
+            ("testPostRequestUrlEncoded", testPostRequestUrlEncoded),
             ("testMultipartFormParsing", testMultipartFormParsing),
             ("testParameter", testParameter),
             ("testRedirect", testRedirect),
@@ -91,6 +92,44 @@ class TestResponse : XCTestCase {
         }
     }
     
+    func testPostRequestUrlEncoded() {
+        performServerTest(router) { expectation in
+            self.performRequest("post", path: "/bodytest", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> [\"swift\": \"rocks\"] </body></html>\n\n")
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            }) {req in
+                req.headers["Content-Type"] = "application/x-www-form-urlencoded"
+                req.write(from: "swift=rocks")
+            }
+        }
+        // repeat the same test with a Content-Type parameter of charset=UTF-8
+        performServerTest(router) { expectation in
+            self.performRequest("post", path: "/bodytest", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> [\"swift\": \"rocks\"] </body></html>\n\n")
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            }) {req in
+                req.headers["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8"
+                req.write(from: "swift=rocks")
+            }
+        }
+    }
+
     func testMultipartFormParsing() {
         performServerTest(router) { expectation in
             self.performRequest("post", path: "/multibodytest", callback: {response in
