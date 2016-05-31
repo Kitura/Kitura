@@ -32,7 +32,7 @@ let cookieHost = "localhost"
 
 class TestCookies : XCTestCase {
 
-    static var allTests : [(String, TestCookies -> () throws -> Void)] {
+    static var allTests : [(String, (TestCookies) -> () throws -> Void)] {
         return [
             ("testCookieToServer", testCookieToServer),
             ("testCookieFromServer", testCookieFromServer)
@@ -126,8 +126,8 @@ class TestCookies : XCTestCase {
                             var properties = [String: AnyObject]()
                         #endif
 
-                        properties[NSHTTPCookieName]  =  nameValue[0]
-                        properties[NSHTTPCookieValue] =  nameValue[1]
+                        properties[NSHTTPCookieName]  =  nameValue[0].bridge()
+                        properties[NSHTTPCookieValue] =  nameValue[1].bridge()
 
                         for  part in parts[1..<parts.count] {
                             var pieces = part.components(separatedBy: "=")
@@ -136,9 +136,9 @@ class TestCookies : XCTestCase {
                                 case "secure", "httponly":
                                     properties[NSHTTPCookieSecure] = "Yes"
                                 case "path" where pieces.count == 2:
-                                    properties[NSHTTPCookiePath] = pieces[1]
+                                    properties[NSHTTPCookiePath] = pieces[1].bridge()
                                 case "domain" where pieces.count == 2:
-                                    properties[NSHTTPCookieDomain] = pieces[1]
+                                    properties[NSHTTPCookieDomain] = pieces[1].bridge()
                                 case "expires" where pieces.count == 2:
                                     resultExpire = pieces[1]
                                 default:
@@ -173,14 +173,14 @@ class TestCookies : XCTestCase {
         router.get("/1/sendcookie") {request, response, next in
             response.status(HTTPStatusCode.OK)
 
-            let cookie1 = NSHTTPCookie(properties: [NSHTTPCookieName: cookie1Name,
-                                                NSHTTPCookieValue: cookie1Value,
-                                                NSHTTPCookieDomain: cookieHost,
+            let cookie1 = NSHTTPCookie(properties: [NSHTTPCookieName: cookie1Name.bridge(),
+                                                NSHTTPCookieValue: cookie1Value.bridge(),
+                                                NSHTTPCookieDomain: cookieHost.bridge(),
                                                 NSHTTPCookiePath: "/"])
             response.cookies[cookie1!.name] = cookie1
-            let cookie2 = NSHTTPCookie(properties: [NSHTTPCookieName: cookie2Name,
-                                                NSHTTPCookieValue: cookie2Value,
-                                                NSHTTPCookieDomain: cookieHost,
+            let cookie2 = NSHTTPCookie(properties: [NSHTTPCookieName: cookie2Name.bridge(),
+                                                NSHTTPCookieValue: cookie2Value.bridge(),
+                                                NSHTTPCookieDomain: cookieHost.bridge(),
                                                 NSHTTPCookiePath: "/",
                                                 NSHTTPCookieExpires: cookie2ExpireExpected])
             response.cookies[cookie2!.name] = cookie2
@@ -191,9 +191,9 @@ class TestCookies : XCTestCase {
         router.get("/2/sendcookie") {request, response, next in
             response.status(HTTPStatusCode.OK)
 
-            let cookie = NSHTTPCookie(properties: [NSHTTPCookieName: cookie3Name,
-                                                NSHTTPCookieValue: cookie3Value,
-                                                NSHTTPCookieDomain: cookieHost,
+            let cookie = NSHTTPCookie(properties: [NSHTTPCookieName: cookie3Name.bridge(),
+                                                NSHTTPCookieValue: cookie3Value.bridge(),
+                                                NSHTTPCookieDomain: cookieHost.bridge(),
                                                 NSHTTPCookiePath: "/",
                                                 NSHTTPCookieSecure: "Yes"])
             response.cookies[cookie!.name] = cookie

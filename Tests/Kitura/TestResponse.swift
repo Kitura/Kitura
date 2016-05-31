@@ -28,7 +28,7 @@ import XCTest
 
 class TestResponse : XCTestCase {
 
-    static var allTests : [(String, TestResponse -> () throws -> Void)] {
+    static var allTests : [(String, (TestResponse) -> () throws -> Void)] {
         return [
             ("testSimpleResponse", testSimpleResponse),
             ("testPostRequest", testPostRequest),

@@ -28,7 +28,7 @@ import XCTest
 
 class TestSubrouter : XCTestCase {
 
-    static var allTests : [(String, TestSubrouter -> () throws -> Void)] {
+    static var allTests : [(String, (TestSubrouter) -> () throws -> Void)] {
         return [
             ("testSimpleSub", testSimpleSub),
             ("testExternSub", testExternSub),
