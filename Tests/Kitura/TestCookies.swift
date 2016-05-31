@@ -20,6 +20,7 @@ import XCTest
 @testable import Kitura
 @testable import KituraNet
 
+#if os(Linux)
 let cookie1Name = "KituraTest1"
 let cookie1Value = "Testing-Testing-1-2-3"
 let cookie2Name = "KituraTest2"
@@ -29,6 +30,17 @@ let cookie3Name = "KituraTest3"
 let cookie3Value = "A-testing-we-go"
 
 let cookieHost = "localhost"
+#else
+let cookie1Name = "KituraTest1" as NSString
+let cookie1Value = "Testing-Testing-1-2-3"  as NSString
+let cookie2Name = "KituraTest2"  as NSString
+let cookie2Value = "Testing-Testing" as NSString
+let cookie2ExpireExpected = NSDate(timeIntervalSinceNow: 600.0)
+let cookie3Name = "KituraTest3" as NSString
+let cookie3Value = "A-testing-we-go" as NSString
+
+let cookieHost = "localhost" as NSString
+#endif
 
 class TestCookies : XCTestCase {
 
@@ -125,9 +137,15 @@ class TestCookies : XCTestCase {
                         #else
                             var properties = [String: AnyObject]()
                         #endif
-
-                        properties[NSHTTPCookieName]  =  nameValue[0].bridge()
-                        properties[NSHTTPCookieValue] =  nameValue[1].bridge()
+#if os(Linux)
+                    let cookieName = nameValue[0]
+                    let cookieValue = nameValue[1]
+#else
+                    let cookieName = nameValue[0] as NSString
+                    let cookieValue = nameValue[1] as NSString
+#endif
+                        properties[NSHTTPCookieName]  =  cookieName
+                        properties[NSHTTPCookieValue] =  cookieValue
 
                         for  part in parts[1..<parts.count] {
                             var pieces = part.components(separatedBy: "=")
@@ -136,9 +154,19 @@ class TestCookies : XCTestCase {
                                 case "secure", "httponly":
                                     properties[NSHTTPCookieSecure] = "Yes"
                                 case "path" where pieces.count == 2:
-                                    properties[NSHTTPCookiePath] = pieces[1].bridge()
+#if os(Linux)
+                                    let path = pieces[1]
+#else
+                                    let path = pieces[1] as NSString
+#endif
+                                    properties[NSHTTPCookiePath] = path
                                 case "domain" where pieces.count == 2:
-                                    properties[NSHTTPCookieDomain] = pieces[1].bridge()
+#if os(Linux)
+                                    let domain = pieces[1]
+#else
+                                    let domain = pieces[1] as NSString
+#endif
+                                    properties[NSHTTPCookieDomain] = domain
                                 case "expires" where pieces.count == 2:
                                     resultExpire = pieces[1]
                                 default:
@@ -173,14 +201,14 @@ class TestCookies : XCTestCase {
         router.get("/1/sendcookie") {request, response, next in
             response.status(HTTPStatusCode.OK)
 
-            let cookie1 = NSHTTPCookie(properties: [NSHTTPCookieName: cookie1Name.bridge(),
-                                                NSHTTPCookieValue: cookie1Value.bridge(),
-                                                NSHTTPCookieDomain: cookieHost.bridge(),
+            let cookie1 = NSHTTPCookie(properties: [NSHTTPCookieName: cookie1Name,
+                                                NSHTTPCookieValue: cookie1Value,
+                                                NSHTTPCookieDomain: cookieHost,
                                                 NSHTTPCookiePath: "/"])
             response.cookies[cookie1!.name] = cookie1
-            let cookie2 = NSHTTPCookie(properties: [NSHTTPCookieName: cookie2Name.bridge(),
-                                                NSHTTPCookieValue: cookie2Value.bridge(),
-                                                NSHTTPCookieDomain: cookieHost.bridge(),
+            let cookie2 = NSHTTPCookie(properties: [NSHTTPCookieName: cookie2Name,
+                                                NSHTTPCookieValue: cookie2Value,
+                                                NSHTTPCookieDomain: cookieHost,
                                                 NSHTTPCookiePath: "/",
                                                 NSHTTPCookieExpires: cookie2ExpireExpected])
             response.cookies[cookie2!.name] = cookie2
@@ -191,9 +219,9 @@ class TestCookies : XCTestCase {
         router.get("/2/sendcookie") {request, response, next in
             response.status(HTTPStatusCode.OK)
 
-            let cookie = NSHTTPCookie(properties: [NSHTTPCookieName: cookie3Name.bridge(),
-                                                NSHTTPCookieValue: cookie3Value.bridge(),
-                                                NSHTTPCookieDomain: cookieHost.bridge(),
+            let cookie = NSHTTPCookie(properties: [NSHTTPCookieName: cookie3Name,
+                                                NSHTTPCookieValue: cookie3Value,
+                                                NSHTTPCookieDomain: cookieHost,
                                                 NSHTTPCookiePath: "/",
                                                 NSHTTPCookieSecure: "Yes"])
             response.cookies[cookie!.name] = cookie
