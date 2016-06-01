@@ -189,7 +189,7 @@ public class BodyParser: RouterMiddleware {
         }
         
         enum ParseState {
-            case preamble, body
+            case preamble, header, body
         }
         var state = ParseState.preamble
         var parts: [Part] = []
@@ -198,8 +198,8 @@ public class BodyParser: RouterMiddleware {
         let bodyLines = divideDataByNewLines(data: bodyData, newLineData: newLineData)
         // main parse loop
         for bodyLine in bodyLines {
-            switch(state) {
-            case .preamble where bodyLine.hasPrefix(boundaryData), .body where bodyLine.hasPrefix(boundaryData):
+            
+            if bodyLine.hasPrefix(boundaryData) {
                 // boundary found
                 if partData.length > 0 {
                     if let parser = getParsingFunction(contentType: currentPart.type), let parsedBody = parser(partData) {
@@ -215,12 +215,15 @@ public class BodyParser: RouterMiddleware {
                     // end boundary found, end of parsing
                     return .multipart(parts)
                 }
-                state = .body
+                state = .header
+            }
+
+            switch(state) {
             case .preamble:
                 // discard preamble text
                 break
-            case .body:
-                // check if header
+            case .header:
+                // check if this is a supported header
                 if let bodyLineAsString = String(data: bodyLine, encoding: NSUTF8StringEncoding) {
                     if let labelRange = bodyLineAsString.range(of: "content-type:", options: [.anchoredSearch, .caseInsensitiveSearch], range: bodyLineAsString.startIndex..<bodyLineAsString.endIndex) {
                         currentPart.type = bodyLineAsString.substring(from: bodyLineAsString.index(after: labelRange.upperBound))
@@ -236,22 +239,22 @@ public class BodyParser: RouterMiddleware {
                         //TODO: Deal with this
                         currentPart.headers[.transferEncoding] = bodyLineAsString
                     }
-                    else if !bodyLineAsString.isEmpty {
-                        // is data, add to data object
-                        if partData.length > 0 {
-                            // data is multiline, add linebreaks back in
-                            partData.append(newLineData)
-                        }
-                        partData.append(bodyLine)
+                    else if bodyLineAsString.isEmpty {
+                        // empty line signals the end of headers
+                        state = .body
                     }
+                    // skip custom headers
                 } else {
-                    // is data, add to data object
-                    if partData.length > 0 {
-                        // data is multiline, add linebreaks back in
-                        partData.append(newLineData)
-                    }
-                    partData.append(bodyLine)
+                    // skip to body
+                    state = .body
                 }
+            case .body:
+                // is data, add to data object
+                if partData.length > 0 {
+                    // data is multiline, add linebreaks back in
+                    partData.append(newLineData)
+                }
+                partData.append(bodyLine)
             }
             
         }
