@@ -51,6 +51,11 @@ public class RouterResponse {
     /// Whether the response has ended
     ///
     var invokedEnd = false
+    
+    ///
+    /// Whether data has been added to buffer
+    ///
+    var invokedSend = false
 
     //
     // Current pre-flush lifecycle handler
@@ -92,7 +97,7 @@ public class RouterResponse {
         self.router = router
         self.request = request
         headers = Headers(headers: response.headers)
-        status(.notFound)
+        statusCode = .unknown
     }
 
     ///
@@ -104,6 +109,11 @@ public class RouterResponse {
     public func end() throws -> RouterResponse {
 
         preFlush(request: request, response: self)
+        
+        // Sets status code if unset
+        if statusCode == .unknown {
+            statusCode = .OK
+        }
 
         if  let data = buffer.data {
             let contentLength = headers["Content-Length"]
@@ -184,7 +194,7 @@ public class RouterResponse {
     public func send(_ str: String) -> RouterResponse {
 
         if  let data = StringUtils.toUtf8String(str)  {
-            buffer.append(data: data)
+            send(data: data)
         }
         return self
 
@@ -200,6 +210,7 @@ public class RouterResponse {
     public func send(data: NSData) -> RouterResponse {
 
         buffer.append(data: data)
+        invokedSend = true
         return self
 
     }
@@ -222,7 +233,7 @@ public class RouterResponse {
             headers["Content-Type"] = contentType
         }
 
-        buffer.append(data: data)
+        send(data: data)
 
         return self
     }

@@ -15,9 +15,10 @@
  **/
 
 import SwiftyJSON
+import Foundation
 
 //// MARK: ParsedBody
 ///
-public enum ParsedBody {
-    case json(JSON), urlEncoded([String:String]), text(String)
+public indirect enum ParsedBody {
+    case json(JSON), urlEncoded([String:String]), text(String), raw(NSData), multipart([Part])
 }

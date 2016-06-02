@@ -32,6 +32,8 @@ class TestResponse : XCTestCase {
         return [
             ("testSimpleResponse", testSimpleResponse),
             ("testPostRequest", testPostRequest),
+            ("testPostRequestUrlEncoded", testPostRequestUrlEncoded),
+            ("testMultipartFormParsing", testMultipartFormParsing),
             ("testParameter", testParameter),
             ("testRedirect", testRedirect),
             ("testErrorHandler", testErrorHandler),
@@ -39,7 +41,8 @@ class TestResponse : XCTestCase {
             ("testRouteFunc", testRouteFunc),
             ("testAcceptTypes", testAcceptTypes),
             ("testFormat", testFormat),
-            ("testLink", testLink)
+            ("testLink", testLink),
+            ("testSubdomains", testSubdomains)
         ]
     }
 
@@ -85,6 +88,74 @@ class TestResponse : XCTestCase {
             }) {req in
                 req.write(from: "plover\n")
                 req.write(from: "xyzzy\n")
+            }
+        }
+    }
+    
+    func testPostRequestUrlEncoded() {
+        performServerTest(router) { expectation in
+            self.performRequest("post", path: "/bodytest", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> [\"swift\": \"rocks\"] </body></html>\n\n")
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            }) {req in
+                req.headers["Content-Type"] = "application/x-www-form-urlencoded"
+                req.write(from: "swift=rocks")
+            }
+        }
+        // repeat the same test with a Content-Type parameter of charset=UTF-8
+        performServerTest(router) { expectation in
+            self.performRequest("post", path: "/bodytest", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> [\"swift\": \"rocks\"] </body></html>\n\n")
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            }) {req in
+                req.headers["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8"
+                req.write(from: "swift=rocks")
+            }
+        }
+    }
+
+    func testMultipartFormParsing() {
+        performServerTest(router) { expectation in
+            self.performRequest("post", path: "/multibodytest", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!, "text text(\"text default\") file1 text(\"Content of a.txt.\") file2 text(\"<!DOCTYPE html><title>Content of a.html.</title>\") ")
+                }
+                catch {
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            }) {req in
+                req.headers["Content-Type"] = "multipart/form-data; boundary=---------------------------9051914041544843365972754266"
+                req.write(from: "-----------------------------9051914041544843365972754266\r\n" +
+                    "Content-Disposition: form-data; name=\"text\"\r\n\r\n" +
+                    "text default\r\n" +
+                    "-----------------------------9051914041544843365972754266\r\n" +
+                    "Content-Disposition: form-data; name=\"file1\"; filename=\"a.txt\"\r\n" +
+                    "Content-Type: text/plain\r\n\r\n" +
+                    "Content of a.txt.\r\n\r\n" +
+                    "-----------------------------9051914041544843365972754266\r\n" +
+                    "Content-Disposition: form-data; name=\"file2\"; filename=\"a.html\"\r\n" +
+                    "Content-Type: text/html\r\n\r\n" +
+                    "<!DOCTYPE html><title>Content of a.html.</title>\r\n\r\n" +
+                    "-----------------------------9051914041544843365972754266--")
             }
         }
     }
@@ -349,9 +420,69 @@ class TestResponse : XCTestCase {
         }
     }
 
+    func testSubdomains() {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/subdomains", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                let hostHeader = response!.headers["Host"]?.first
+                let domainHeader = response!.headers["Domain"]?.first
+                let subdomainsHeader = response!.headers["Subdomain"]?.first
+
+                XCTAssertEqual(hostHeader, "localhost", "Wrong http response host")
+                XCTAssertEqual(domainHeader, "localhost", "Wrong http response domain")
+                XCTAssertEqual(subdomainsHeader, "", "Wrong http response subdomains")
+                expectation.fulfill()
+            })
+        }
+
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/subdomains", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                let hostHeader = response!.headers["Host"]?.first
+                let domainHeader = response!.headers["Domain"]?.first
+                let subdomainsHeader = response!.headers["Subdomain"]?.first
+
+                XCTAssertEqual(hostHeader, "a.b.c.example.com", "Wrong http response host")
+                XCTAssertEqual(domainHeader, "example.com", "Wrong http response domain")
+                XCTAssertEqual(subdomainsHeader, "a, b, c", "Wrong http response subdomains")
+                expectation.fulfill()
+            }, headers: ["Host" : "a.b.c.example.com"])
+        }
+
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/subdomains", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                let hostHeader = response!.headers["Host"]?.first
+                let domainHeader = response!.headers["Domain"]?.first
+                let subdomainsHeader = response!.headers["Subdomain"]?.first
+
+                XCTAssertEqual(hostHeader, "a.b.c.d.example.co.uk", "Wrong http response host")
+                XCTAssertEqual(domainHeader, "example.co.uk", "Wrong http response domain")
+                XCTAssertEqual(subdomainsHeader, "a, b, c, d", "Wrong http response subdomains")
+                expectation.fulfill()
+            }, headers: ["Host" : "a.b.c.d.example.co.uk"])
+        }
+    }
+
 
     static func setupRouter() -> Router {
         let router = Router()
+
+        // subdomains test
+        router.get("subdomains") { request, response, next in
+            response.headers["Host"] = request.hostname
+            response.headers["Domain"] = request.domain
+
+            let subdomains = request.subdomains
+
+            response.headers["Subdomain"] = subdomains.joined(separator: ", ")
+
+            response.status(.OK)
+            next()
+        }
 
         // the same router definition is used for all these test cases
         router.all("/zxcv/:p1") { request, _, next in
@@ -362,12 +493,11 @@ class TestResponse : XCTestCase {
         router.get("/qwer") { _, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             do {
-                try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+                try response.end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
             }
             catch {}
             next()
         }
-
 
         router.get("/zxcv/:p1") { request, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
@@ -375,7 +505,7 @@ class TestResponse : XCTestCase {
             let q = request.queryParams["q"] ?? "(nil)"
             let u1 = request.userInfo["u1"] as? NSString ?? "(nil)"
             do {
-                try response.status(HTTPStatusCode.OK).send("<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=\(p1)<p><p>q=\(q)<p><p>u1=\(u1)</body></html>\n\n").end()
+                try response.send("<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=\(p1)<p><p>q=\(q)<p><p>u1=\(u1)</body></html>\n\n").end()
             }
             catch {}
             next()
@@ -399,18 +529,17 @@ class TestResponse : XCTestCase {
 
         router.route("/route")
         .get { _, response, next in
-            response.status(HTTPStatusCode.OK).send("get 1\n")
+            response.send("get 1\n")
             next()
         }
         .post {_, response, next in
-            response.status(HTTPStatusCode.OK).send("post received")
+            response.send("post received")
             next()
         }
         .get { _, response, next in
-            response.status(HTTPStatusCode.OK).send("get 2\n")
+            response.send("get 2\n")
             next()
         }
-
 
         router.all("/bodytest", middleware: BodyParser())
 
@@ -423,12 +552,12 @@ class TestResponse : XCTestCase {
             switch (requestBody) {
                 case .urlEncoded(let value):
                     do {
-                        try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> \(value) </body></html>\n\n")
+                        try response.end("<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> \(value) </body></html>\n\n")
                     }
                     catch {}
                 case .text(let value):
                     do {
-                        try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received text body: </b>\(value)</body></html>\n\n")
+                        try response.end("<!DOCTYPE html><html><body><b>Received text body: </b>\(value)</body></html>\n\n")
                     }
                     catch {}
                 default:
@@ -437,6 +566,34 @@ class TestResponse : XCTestCase {
             }
 
             next()
+        }
+        
+        router.all("/multibodytest", middleware: BodyParser())
+        
+        router.post("/multibodytest") { request, response, next in
+            guard let requestBody = request.body else {
+                next ()
+                return
+            }
+            switch (requestBody) {
+            case .multipart(let parts):
+                for part in parts {
+                    response.send("\(part.name) \(part.body) ")
+                }
+            default:
+                response.error = Error.failedToParseRequestBody(body: "\(request.body)")
+            }
+            next()
+        }
+        
+        router.post("/bodytest") { request, response, next in
+            response.headers["Content-Type"] = "text/html; charset=utf-8"
+            guard let requestBody = request.body else {
+                next ()
+                return
+            }
+            
+            print(requestBody)
         }
 
         func callbackText(request: RouterRequest, response: RouterResponse) {

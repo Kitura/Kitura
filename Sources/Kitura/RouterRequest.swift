@@ -32,12 +32,50 @@ public class RouterRequest: SocketReader {
     ///
     /// The hostname of the request
     ///
-    public private(set) lazy var hostname: String = {[unowned self] () in
+    public private(set) lazy var hostname: String = { [unowned self] () in
         guard let host = self.headers["host"] else {
             return self.parsedUrl.host ?? ""
         }
         let range = host.range(of: ":")
         return  range == nil ? host : host.substring(to: range!.lowerBound)
+    }()
+
+    ///
+    /// The domain name of request
+    ///
+    public private(set) lazy var domain: String = { [unowned self] in
+        let pattern = "([a-z0-9][a-z0-9\\-]{1,63}\\.[a-z\\.]{2,6})$"
+        do {
+            let regex = try NSRegularExpression(pattern: pattern, options: [.caseInsensitive])
+
+            let hostnameRange = NSMakeRange(0, self.hostname.utf8.count)
+
+            guard let match = regex.matches(in: self.hostname, options: [], range: hostnameRange).first else {
+                return self.hostname
+            }
+
+            let range = match.range
+
+            return self.hostname.bridge().substring(with: range)
+        } catch {
+            Log.error("Failed to create regular expressions for domain property")
+            return self.hostname
+        }
+    }()
+
+    ///
+    /// The subdomains string array of request
+    ///
+    public private(set) lazy var subdomains: [String] = { [unowned self] in
+        let subdomainsString = self.hostname
+            .replacingOccurrences(of: self.domain,
+                                  with: "",
+                                  options: [ .backwardsSearch ],
+                                  range: self.hostname.startIndex..<self.hostname.endIndex)
+
+        var subdomains = subdomainsString.components(separatedBy: ".")
+
+        return subdomains.filter { !$0.isEmpty }
     }()
 
     ///
@@ -48,7 +86,7 @@ public class RouterRequest: SocketReader {
     ///
     /// The parsed url
     ///
-    let parsedUrl: URLParser
+    public private(set) var parsedUrl: URLParser
 
     ///
     /// The router as a String
@@ -85,7 +123,7 @@ public class RouterRequest: SocketReader {
     //
     // Parsed Cookies, used to do a lazy parsing of the appropriate headers
     //
-    private lazy var _cookies: Cookies = {[unowned self] in
+    private lazy var _cookies: Cookies = { [unowned self] in
         return Cookies(headers: self.serverRequest.headers)
     }()
 
@@ -226,7 +264,7 @@ public class RouterRequest: SocketReader {
                         criteriaMatches[type] = (priority: 3, qValue: parsedHeaderValue.qValue)
                     }
                 } else {
-                    
+
                     if let _ = mimeType.range(of: parsedHeaderValue.type, options: .regularExpressionSearch) { // partial match, e.g. text/html == text/*
                         if criteriaMatches[type]?.priority > 2 || criteriaMatches[type] == nil {
                             criteriaMatches[type] = (priority: 2, qValue: parsedHeaderValue.qValue)
