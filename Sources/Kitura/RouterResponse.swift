@@ -275,32 +275,42 @@ public class RouterResponse {
     /// name of the URL query parameter that contains the callback
     /// function name
     ///
+    /// - Throws: `JSONPError.invalidCallbackName` if the the callback
+    /// query parameter of the request URL is missing or its value is
+    /// empty or contains invalid characters (the set of valid characters
+    /// is the alphanumeric characters and `[]$._`).
     /// - Returns: a RouterResponse instance
     ///
-    public func jsonp(json: JSON, callbackParam: String = "callback") -> RouterResponse {
+    public func send(jsonp: JSON, callbackParam: String = "callback") throws -> RouterResponse {
         func sanitizeJSIdentifier(_ ident: String) -> String {
             return ident.replacingOccurrences(of: "[^\\[\\]\\w$.]", with: "", options:
                 NSStringCompareOptions.regularExpressionSearch)
         }
+        func validJsonpCallbackName(_ name: String?) -> String? {
+            if let name = name {
+                if name.characters.count > 0 && name == sanitizeJSIdentifier(name) {
+                    return name
+                }
+            }
+            return nil
+        }
         func jsonToJS(_ json: String) -> String {
+            // Translate JSON characters that are invalid in javascript
             return json.replacingOccurrences(of: "\u{2028}", with: "\\u2028")
                        .replacingOccurrences(of: "\u{2029}", with: "\\u2029")
         }
 
-        let jsonStr = json.description
-        if let unsanitizedCallback = request.queryParams[callbackParam] {
-            let jsCallbackName = sanitizeJSIdentifier(unsanitizedCallback)
+        let jsonStr = jsonp.description
+        let taintedJSCallbackName = request.queryParams[callbackParam]
+        if let jsCallbackName = validJsonpCallbackName(taintedJSCallbackName) {
             type("json")
+            // Set header "X-Content-Type-Options: nosniff" and prefix body with
+            // "/**/ " as security mitigation for Flash vulnerability
+            // CVE-2014-4671, CVE-2014-5333 "Abusing JSONP with Rosetta Flash"
             headers["X-Content-Type-Options"] = "nosniff"
             send("/**/ " + jsCallbackName + "(" + jsonToJS(jsonStr) + ")")
         } else {
-            // TODO: What should we do here? Typically the status
-            // code is set by the caller, so should we throw here and
-            // let them set the status code?
-            // Caller may not be expecting the status code to be set
-            // -- I see some calls like `response.send(...).status(.OK)`
-            // in the tests, which would clobber this status code. :(
-            send(status: .badRequest)
+            throw JSONPError.invalidCallbackName(name: taintedJSCallbackName)
         }
         return self
     }
@@ -323,10 +333,10 @@ public class RouterResponse {
     ///
     /// - Parameter status: the status code object
     ///
-    /// - Throws: ??? <-- WHY?
+    /// - Throws: ???
     /// - Returns: a RouterResponse instance
     ///
-    public func send(status: HTTPStatusCode) /*throws*/ -> RouterResponse {
+    public func send(status: HTTPStatusCode) throws -> RouterResponse {
 
         self.status(status)
         if let statusCode = HTTP.statusCodes[status.rawValue] {

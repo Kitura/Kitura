@@ -491,14 +491,7 @@ class TestResponse : XCTestCase {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/jsonp?callback=test+fn", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
-                do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!,"/**/ testfn({\n  \"some\": \"json\"\n})")
-                }
-                catch{
-                    XCTFail("No response body")
-                }
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(response!.statusCode)")
                 expectation.fulfill()
             })
         }
@@ -744,7 +737,11 @@ class TestResponse : XCTestCase {
         router.get("/jsonp") { request, response, next in
             let json = JSON([ "some": "json" ])
             do {
-                try response.status(.OK).jsonp(json: json).end();
+                try response.status(.OK).send(jsonp: json).end();
+            } catch JSONPError.invalidCallbackName {
+                do {
+                    try response.send(status: .badRequest).end();
+                } catch {}
             } catch {}
         }
 
