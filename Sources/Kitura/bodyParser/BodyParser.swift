@@ -99,7 +99,11 @@ public class BodyParser: RouterMiddleware {
             guard let boundryIndex = contentType.range(of: "boundary=") else {
                 return nil
             }
-            let boundary = contentType.substring(from: boundryIndex.upperBound).replacingOccurrences(of: "\"", with: "")
+            var boundary = contentType.substring(from: boundryIndex.upperBound).replacingOccurrences(of: "\"", with: "")
+            // remove any trailing parameters - as per RFC 2046 section 5.1.1., a semicolon cannot be part of a boundary
+            if let parameterStart = boundary.range(of: ";") {
+                boundary = boundary.substring(to: parameterStart.lowerBound)
+            }
             return  {(bodyData: NSMutableData) -> ParsedBody? in
                 return parseMultipart(bodyData, boundary: boundary)
             }
@@ -198,7 +202,6 @@ public class BodyParser: RouterMiddleware {
         let bodyLines = divideDataByNewLines(data: bodyData, newLineData: newLineData)
         // main parse loop
         for bodyLine in bodyLines {
-            
             if bodyLine.hasPrefix(boundaryData) {
                 // boundary found
                 if partData.length > 0 {
@@ -216,8 +219,9 @@ public class BodyParser: RouterMiddleware {
                     return .multipart(parts)
                 }
                 state = .header
+                continue
             }
-
+            // process each of the 3 parse states
             switch(state) {
             case .preamble:
                 // discard preamble text
