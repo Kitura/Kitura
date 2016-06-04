@@ -21,7 +21,7 @@ import XCTest
 
 class TestRouteRegex : XCTestCase {
     
-    static var allTests : [(String, TestRouteRegex -> () throws -> Void)] {
+    static var allTests : [(String, (TestRouteRegex) -> () throws -> Void)] {
         return [
                    ("testBuildRegexFromPattern", testBuildRegexFromPattern)
         ]

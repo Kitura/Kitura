@@ -319,11 +319,18 @@ private class Cookies {
             for  cookieNameValue  in  cookieNameValues  {
                 let cookieNameValueParts = cookieNameValue.components(separatedBy: "=")
                 if   cookieNameValueParts.count == 2  {
+#if os(Linux)
+                    let cookieName = cookieNameValueParts[0]
+                    let cookieValue = cookieNameValueParts[1]
+#else
+                    let cookieName = cookieNameValueParts[0] as NSString
+                    let cookieValue = cookieNameValueParts[1] as NSString
+#endif
                     let theCookie = NSHTTPCookie(properties:
                         [NSHTTPCookieDomain: ".",
                          NSHTTPCookiePath: "/",
-                         NSHTTPCookieName: cookieNameValueParts[0] ,
-                         NSHTTPCookieValue: cookieNameValueParts[1]])
+                         NSHTTPCookieName: cookieName ,
+                         NSHTTPCookieValue: cookieValue])
                     cookies[cookieNameValueParts[0]] = theCookie
                 }
             }
