@@ -40,6 +40,12 @@ public class BodyParser: RouterMiddleware {
     private static let parserMap: [String: ((NSMutableData) -> ParsedBody?)] = ["application/json": BodyParser.parseJson,
                                                                                 "application/x-www-form-urlencoded": BodyParser.parseURLencoded,
                                                                                 "text": BodyParser.parseText]
+    
+    ///
+    /// Initializes a BodyParser instance
+    /// Needed since default initalizer is internal
+    ///
+    public init() {}
 
     ///
     /// Handle the request
