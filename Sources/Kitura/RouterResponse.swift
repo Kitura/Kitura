@@ -228,7 +228,7 @@ public class RouterResponse {
     public func send(fileName: String) throws -> RouterResponse {
         let data = try NSData(contentsOfFile: fileName, options: [])
 
-        let contentType =  ContentType.sharedInstance.contentTypeForFile(fileName)
+        let contentType =  ContentType.sharedInstance.getContentType(forFileName: fileName)
         if  let contentType = contentType {
             headers["Content-Type"] = contentType
         }
@@ -343,7 +343,7 @@ public class RouterResponse {
         guard let router = router else {
             throw InternalError.nilVariable(variable: "router")
         }
-        let renderedResource = try router.render(resource, context: context)
+        let renderedResource = try router.render(template: resource, context: context)
         return send(renderedResource)
     }
 
@@ -353,7 +353,7 @@ public class RouterResponse {
     /// - Parameter type: the type to set to
     ///
     public func type(_ type: String, charset: String? = nil) {
-        if  let contentType = ContentType.sharedInstance.contentTypeForExtension(type) {
+        if  let contentType = ContentType.sharedInstance.getContentType(forExtension: type) {
             var contentCharset = ""
             if let charset = charset {
                 contentCharset = "; charset=\(charset)"
@@ -368,7 +368,7 @@ public class RouterResponse {
     ///
     /// - Parameter filePath: the file to set the filename to
     ///
-    public func attachment(_ filePath: String? = nil) {
+    public func prepareAttachment(for filePath: String? = nil) {
         guard let filePath = filePath else {
             headers["Content-Disposition"] = "attachment"
             return
@@ -380,7 +380,7 @@ public class RouterResponse {
         }
         headers["Content-Disposition"] = "attachment; fileName = \"\(fileName)\""
 
-        let contentType =  ContentType.sharedInstance.contentTypeForFile(fileName)
+        let contentType =  ContentType.sharedInstance.getContentType(forFileName: fileName)
         if  let contentType = contentType {
             headers["Content-Type"] = contentType
         }
@@ -391,9 +391,9 @@ public class RouterResponse {
     ///
     /// - Parameter filePath: the file to download
     ///
-    public func download(_ filePath: String) throws {
-        try send(fileName: filePath)
-        attachment(filePath)
+    public func send(download: String) throws {
+        try send(fileName: download)
+        prepareAttachment(for: download)
     }
 
     ///
@@ -444,7 +444,7 @@ public class RouterResponse {
     ///
     /// - Returns: a RouterResponse instance
     ///
-    public func link(_ link: String, rel: String? = nil, anchor: String? = nil,
+    public func addLink(_ link: String, rel: String? = nil, anchor: String? = nil,
       rev: String? = nil, hreflang: String? = nil, media: String? = nil,
       title: String? = nil, type: String? = nil) -> RouterResponse {
         var headerValue = "<\(link)>"

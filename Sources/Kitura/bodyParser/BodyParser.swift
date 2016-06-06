@@ -29,7 +29,7 @@ import Foundation
 public class BodyParser: RouterMiddleware {
 
     ///
-    /// Default buffer size (in bytes)
+    /// Static buffer size (in bytes)
     ///
     private static let bufferSize = 2000
 
@@ -37,13 +37,9 @@ public class BodyParser: RouterMiddleware {
     ///
     /// BodyParser archiver
     ///
-    private static let parserMap: [String: ((NSMutableData) -> ParsedBody?)] = ["application/json": BodyParser.json,
-                                                                                "application/x-www-form-urlencoded": BodyParser.urlencoded,
-                                                                                "text": BodyParser.text]
-    ///
-    /// Initializes a BodyParser instance
-    ///
-    public init() {}
+    private static let parserMap: [String: ((NSMutableData) -> ParsedBody?)] = ["application/json": BodyParser.parseJson,
+                                                                                "application/x-www-form-urlencoded": BodyParser.parseURLencoded,
+                                                                                "text": BodyParser.parseText]
 
     ///
     /// Handle the request
@@ -128,7 +124,7 @@ public class BodyParser: RouterMiddleware {
     ///
     /// - Parameter bodyData: read data
     ///
-    private class func json(bodyData: NSMutableData)-> ParsedBody? {
+    private class func parseJson(_ bodyData: NSMutableData)-> ParsedBody? {
         let json = JSON(data: bodyData)
         if json != JSON.null {
             return .json(json)
@@ -141,7 +137,7 @@ public class BodyParser: RouterMiddleware {
     ///
     /// - Parameter bodyData: read data
     ///
-    private class func urlencoded(_ bodyData: NSMutableData)-> ParsedBody? {
+    private class func parseURLencoded(_ bodyData: NSMutableData)-> ParsedBody? {
         var parsedBody = [String:String]()
         var success = true
         if let bodyAsString: String = String(data: bodyData, encoding: NSUTF8StringEncoding) {
@@ -169,7 +165,7 @@ public class BodyParser: RouterMiddleware {
     ///
     /// - Parameter bodyData: read data
     ///
-    private class func text(_ bodyData: NSMutableData)-> ParsedBody? {
+    private class func parseText(_ bodyData: NSMutableData)-> ParsedBody? {
         // There was no support for the application/json MIME type
         if let bodyAsString: String = String(data: bodyData, encoding: NSUTF8StringEncoding) {
             return .text(bodyAsString)

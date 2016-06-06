@@ -31,7 +31,7 @@ public class StaticFileServer: RouterMiddleware {
     //
     // Serve "index.html" files in response to a request on a directory.  Defaults to true.
     //
-    private var serveIndexForDir = true
+    private var serveIndexForDirectory = true
 
     //
     // Uses the file system's last modified value.  Defaults to true.
@@ -91,7 +91,7 @@ public class StaticFileServer: RouterMiddleware {
                 case .possibleExtensions(let value):
                     possibleExtensions = value
                 case .serveIndexForDir(let value):
-                    serveIndexForDir = value
+                    serveIndexForDirectory = value
                 case .addLastModifiedHeader(let value):
                     addLastModifiedHeader = value
                 case .maxAgeCacheControlHeader(let value):
@@ -120,7 +120,7 @@ public class StaticFileServer: RouterMiddleware {
         }
         
         var filePath = path
-        if let requestPath = request.parsedUrl.path {
+        if let requestPath = request.parsedURL.path {
             var matchedPath = request.matchedPath
             if matchedPath.hasSuffix("*") {
                 matchedPath = String(matchedPath.characters.dropLast())
@@ -135,7 +135,7 @@ public class StaticFileServer: RouterMiddleware {
             }
             
             if filePath.hasSuffix("/") {
-                if serveIndexForDir {
+                if serveIndexForDirectory {
                     filePath += "index.html"
                 } else {
                     next()

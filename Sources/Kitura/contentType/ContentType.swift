@@ -60,7 +60,7 @@ public class ContentType {
             return
         }
 
-        guard let contentTypesData = contentTypesString.bridge().data(using: NSUTF8StringEncoding) else {
+        guard let contentTypesData = contentTypesString.data(using: NSUTF8StringEncoding) else {
             Log.error("Error parsing \(contentTypesString)")
             return
         }
@@ -94,7 +94,7 @@ public class ContentType {
     ///
     /// - Returns: an Optional String for the content type
     ///
-    public func contentTypeForExtension (_ ext: String) -> String? {
+    public func getContentType(forExtension ext: String) -> String? {
         return extToContentType[ext]
     }
 
@@ -105,7 +105,7 @@ public class ContentType {
     ///
     /// - Returns: an Optional String for the content type
     ///
-    public func contentTypeForFile (_ fileName: String) -> String? {
+    public func getContentType(forFileName fileName: String) -> String? {
         let lastPathElemRange: Range<String.Index>
         let extRange: Range<String.Index>
 
@@ -122,7 +122,7 @@ public class ContentType {
             extRange = lastPathElemRange
         }
 
-        return contentTypeForExtension(fileName.substring(with: extRange))
+        return getContentType(forExtension: fileName.substring(with: extRange))
     }
 
     ///
@@ -133,7 +133,7 @@ public class ContentType {
     ///
     /// - Returns: whether the types matched
     ///
-    public func isType (_ messageContentType: String, typeDescriptor: String) -> Bool {
+    public func isContentType(_ messageContentType: String, ofType typeDescriptor: String) -> Bool {
 
         let type = typeDescriptor.lowercased()
         let typeAndSubtype = messageContentType.components(separatedBy: ";")[0].lowercased()
@@ -170,7 +170,7 @@ public class ContentType {
     ///
     /// - Returns: the normalized String
     ///
-    private func normalize (type: String) -> String {
+    private func normalize(type: String) -> String {
 
         switch type {
         case "urlencoded":

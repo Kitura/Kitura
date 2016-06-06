@@ -27,7 +27,7 @@ public class Router {
     ///
     /// Contains the list of routing elements
     ///
-    private var routeElems: [RouterElement] = []
+    private var elements: [RouterElement] = []
 
     ///
     /// Map from file extensions to Template Engines
@@ -518,19 +518,6 @@ public class Router {
         return routingHelper(.connect, pattern: path, middleware: middleware)
     }
 
-    // MARK: Use
-    @available(*, deprecated, message:"Use Router.all instead")
-    public func use(middleware: RouterMiddleware...) -> Router {
-        routeElems.append(RouterElement(method: .all, pattern: nil, middleware: middleware))
-        return self
-    }
-
-    @available(*, deprecated, message:"Use Router.all instead")
-    public func use(path: String, middleware: RouterMiddleware...) -> Router {
-        routeElems.append(RouterElement(method: .all, pattern: path, middleware: middleware))
-        return self
-    }
-
     // MARK: error
     public func error(_ handler: RouterHandler...) -> Router {
         return routingHelper(.error, pattern: nil, handler: handler)
@@ -549,17 +536,17 @@ public class Router {
     }
 
     private func routingHelper(_ method: RouterMethod, pattern: String?, handler: [RouterHandler]) -> Router {
-        routeElems.append(RouterElement(method: method, pattern: pattern, handler: handler))
+        elements.append(RouterElement(method: method, pattern: pattern, handler: handler))
         return self
     }
 
     private func routingHelper(_ method: RouterMethod, pattern: String?, middleware: [RouterMiddleware]) -> Router {
-        routeElems.append(RouterElement(method: method, pattern: pattern, middleware: middleware))
+        elements.append(RouterElement(method: method, pattern: pattern, middleware: middleware))
         return self
     }
 
     // MARK: Template Engine
-    public func setDefaultTemplateEngine(templateEngine: TemplateEngine?) {
+    public func setDefault(templateEngine: TemplateEngine?) {
         if let templateEngine = templateEngine {
             defaultEngineFileExtension = templateEngine.fileExtension
             add(templateEngine: templateEngine)
@@ -572,18 +559,18 @@ public class Router {
         templateEngines[templateEngine.fileExtension] = templateEngine
     }
 
-    internal func render(_ resource: String, context: [String: Any]) throws -> String {
-        let resourceExtension = resource.bridge().pathExtension
+    internal func render(template: String, context: [String: Any]) throws -> String {
+        let resourceExtension = template.bridge().pathExtension
         let fileExtension: String
         let resourceWithExtension: String
 
         if resourceExtension.isEmpty {
             fileExtension = defaultEngineFileExtension ?? ""
             //TODO use stringByAppendingPathExtension once issue https://bugs.swift.org/browse/SR-999 is resolved
-            resourceWithExtension = resource + "." + fileExtension
+            resourceWithExtension = template + "." + fileExtension
         } else {
             fileExtension = resourceExtension
-            resourceWithExtension = resource
+            resourceWithExtension = template
         }
 
         if fileExtension.isEmpty {
@@ -617,7 +604,7 @@ extension Router : RouterMiddleware {
     /// - Parameter response: the router response
     ///
     public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
-        guard let urlPath = request.parsedUrl.path else {
+        guard let urlPath = request.parsedURL.path else {
             Log.error("Failed to handle request")
             return
         }
@@ -627,14 +614,14 @@ extension Router : RouterMiddleware {
             Log.error("Failed to find matches in url")
             return
         }
-        request.parsedUrl.path?.removeSubrange(prefixRange)
+        request.parsedURL.path?.removeSubrange(prefixRange)
 
-        if request.parsedUrl.path == "" {
-            request.parsedUrl.path = "/"
+        if request.parsedURL.path == "" {
+            request.parsedURL.path = "/"
         }
 
         process(request: request, response: response) {
-            request.parsedUrl.path = urlPath
+            request.parsedURL.path = urlPath
             next()
         }
     }
@@ -660,7 +647,7 @@ extension Router : HTTPServerDelegate {
             do {
                 if  !routeResp.invokedEnd {
                     if  routeResp.statusCode == .unknown  && !routeResp.invokedSend {
-                        self.sendDefaultResponse(routeReq, routeResp: routeResp)
+                        self.sendDefaultResponse(request: routeReq, response: routeResp)
                     }
                     try routeResp.end()
                 }
@@ -679,7 +666,7 @@ extension Router : HTTPServerDelegate {
     ///
     private func process(request: RouterRequest, response: RouterResponse, callback: () -> Void) {
 
-        guard let urlPath = request.parsedUrl.path else {
+        guard let urlPath = request.parsedURL.path else {
             Log.error("Failed to process request")
             return
         }
@@ -687,9 +674,9 @@ extension Router : HTTPServerDelegate {
         let lengthIndex = kituraResourcePrefix.endIndex
         if  urlPath.characters.count > kituraResourcePrefix.characters.count && urlPath.substring(to: lengthIndex) == kituraResourcePrefix {
             let resource = urlPath.substring(from: lengthIndex)
-            sendResourceIfExisting(response, resource: resource)
+            sendIfFound(resource: resource, usingResponse: response)
         } else {
-            let looper = RouterElementWalker(routeElems: self.routeElems, request: request, response: response, callback: callback)
+            let looper = RouterElementWalker(elements: self.elements, request: request, response: response, callback: callback)
             looper.next()
         }
     }
@@ -697,37 +684,37 @@ extension Router : HTTPServerDelegate {
     ///
     /// Send default index.html file and it's resources if appropriate, otherwise send default 404 message
     ///
-    private func sendDefaultResponse(_ routeReq: RouterRequest, routeResp: RouterResponse) {
-        if routeReq.parsedUrl.path == "/" {
-            sendResourceIfExisting(routeResp, resource: "index.html")
+    private func sendDefaultResponse(request: RouterRequest, response: RouterResponse) {
+        if request.parsedURL.path == "/" {
+            sendIfFound(resource: "index.html", usingResponse: response)
         } else {
             do {
-                let errorMessage = "Cannot \(String(routeReq.method).uppercased()) \(routeReq.parsedUrl.path ?? "")."
-                try routeResp.status(.notFound).send(errorMessage).end()
+                let errorMessage = "Cannot \(String(request.method).uppercased()) \(request.parsedURL.path ?? "")."
+                try response.status(.notFound).send(errorMessage).end()
             } catch {
                 Log.error("Error sending default not found message: \(error)")
             }
         }
     }
 
-    private func getResourceFilePath(_ resource: String) -> String? {
+    private func getFilePath(for resource: String) -> String? {
 #if os(Linux)
         let fileManager = NSFileManager.defaultManager()
 #else
         let fileManager = NSFileManager.default()
 #endif
-        let potentialResource = constructResourcePathFromSourceLocation(resource)
+        let potentialResource = getResourcePathBasedOnSourceLocation(for: resource)
 
         let fileExists = fileManager.fileExists(atPath: potentialResource)
         if fileExists {
             return potentialResource
         }
         else {
-            return constructResourcePathFromCurrentDirectory(resource, fileManager: fileManager)
+            return getResourcePathBasedOnCurrentDirectory(for: resource, withFileManager: fileManager)
         }
     }
 
-    private func constructResourcePathFromSourceLocation(_ resource: String) -> String {
+    private func getResourcePathBasedOnSourceLocation(for resource: String) -> String {
         let fileName = NSString(string: #file)
         let resourceFilePrefixRange: NSRange
         let lastSlash = fileName.range(of: "/", options: NSStringCompareOptions.backwardsSearch)
@@ -739,7 +726,7 @@ extension Router : HTTPServerDelegate {
         return fileName.substring(with: resourceFilePrefixRange) + "resources/" + resource
     }
 
-    private func constructResourcePathFromCurrentDirectory(_ resource: String, fileManager: NSFileManager) -> String? {
+    private func getResourcePathBasedOnCurrentDirectory(for resource: String, withFileManager fileManager: NSFileManager) -> String? {
         do {
             let packagePath = fileManager.currentDirectoryPath + "/Packages"
             let packages = try fileManager.contentsOfDirectory(atPath: packagePath)
@@ -761,14 +748,14 @@ extension Router : HTTPServerDelegate {
     ///
     /// Get the directory we were compiled from
     ///
-    private func sendResourceIfExisting(_ routeResp: RouterResponse, resource: String)  {
-        guard let resourceFileName = getResourceFilePath(resource) else {
+    private func sendIfFound(resource: String, usingResponse response: RouterResponse)  {
+        guard let resourceFileName = getFilePath(for: resource) else {
             return
         }
 
         do {
-            try routeResp.send(fileName: resourceFileName)
-            try routeResp.status(.OK).end()
+            try response.send(fileName: resourceFileName)
+            try response.status(.OK).end()
         } catch {
             // Fail silently
         }
