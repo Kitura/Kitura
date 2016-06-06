@@ -106,7 +106,7 @@ public class RouterResponse {
     /// - Throws: ???
     /// - Returns: a RouterResponse instance
     ///
-    public func end() throws -> RouterResponse {
+    public func end() throws {
 
         preFlush(request: request, response: self)
         
@@ -128,7 +128,6 @@ public class RouterResponse {
         }
         invokedEnd = true
         try response.end()
-        return self
     }
 
     //
@@ -160,11 +159,10 @@ public class RouterResponse {
     /// - Throws: ???
     /// - Returns: a RouterResponse instance
     ///
-    public func end(_ str: String) throws -> RouterResponse {
+    public func end(_ str: String) throws {
 
         send(str)
         try end()
-        return self
 
     }
 
@@ -176,11 +174,10 @@ public class RouterResponse {
     /// - Throws: ???
     /// - Returns: a RouterResponse instance
     ///
-    public func end(_ data: NSData) throws -> RouterResponse {
+    public func end(_ data: NSData) throws {
 
         send(data: data)
         try end()
-        return self
 
     }
 

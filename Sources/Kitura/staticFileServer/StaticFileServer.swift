@@ -209,7 +209,7 @@ public class StaticFileServer: RouterMiddleware {
             } catch {
                 // Nothing
             }
-            response.status(.OK)
+            response.statusCode = .OK
         }
     }
 
