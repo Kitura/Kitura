@@ -21,7 +21,7 @@ import XCTest
 
 class TestContentType : XCTestCase {
 
-    static var allTests : [(String, TestContentType -> () throws -> Void)] {
+    static var allTests : [(String, (TestContentType) -> () throws -> Void)] {
         return [
             ("test_initialize", test_initialize),
         ]

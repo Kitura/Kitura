@@ -79,7 +79,14 @@ public class BodyParser: RouterMiddleware {
     }
     
     private class func getParsingFunction(contentType: String) -> ((NSMutableData) -> ParsedBody?)? {
-        if let parser = parserMap[contentType] {
+        // Handle Content-Type with parameters.  For example, treat:
+        // "application/x-www-form-urlencoded; charset=UTF-8" as
+        // "application/x-www-form-urlencoded"
+        var contentTypeWithoutParameters = contentType
+        if let parameterStart = contentTypeWithoutParameters.range(of: ";") {
+            contentTypeWithoutParameters = contentType.substring(to: parameterStart.lowerBound)
+        }
+        if let parser = parserMap[contentTypeWithoutParameters] {
             return parser
         } else if let parser = parserMap["text"]
             where contentType.hasPrefix("text/") {
