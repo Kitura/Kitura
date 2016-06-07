@@ -106,25 +106,36 @@ public class RouteRegex {
                 return (regexStr, keys, nonKeyIndex)
             }
 
-            var matched = false
-            var prefix = ""
-            var matchExp = "[^/]+?"
-            var plusQuestStar = ""
+            let (matched, prefix, matchExp, plusQuestStar) =
+                matchRangesInPath(path, keyRegex: keyRegex, nonKeyRegex: nonKeyRegex,
+                                  nonKeyIndex: &nonKeyIndex, keys: &keys)
 
-            if  path == "*" {
-                // Handle a path element of * specially
-                matchExp = ".*"
-                matched = true
-            } else {
-                let range = NSMakeRange(0, path.characters.count)
+            regexStr = getRegexStr(regexStr, matched: matched, plusQuestStar: plusQuestStar,
+                                   prefix: prefix, path: path, matchExp: matchExp)
+            return (regexStr, keys, nonKeyIndex)
+    }
 
-                if let keyMatch = keyRegex.firstMatch(in: path, options: [], range: range) {
-                    // We found a path element with a named/key capture
-                    let prefixRange = keyMatch.range(at: 1)
-                    if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1 {
-                        prefix = path.bridge().substring(with: prefixRange)
-                    }
-                    let matchExpRange = keyMatch.range(at: 3)
+    func matchRangesInPath(_ path: String, keyRegex: NSRegularExpression, nonKeyRegex: NSRegularExpression, nonKeyIndex: inout Int, keys: inout [String]) ->
+        (match: Bool, prefix: String, matchExp: String, plusQuestStar: String) {
+        var matched = false
+        var prefix = ""
+        var matchExp = "[^/]+?"
+        var plusQuestStar = ""
+
+        if  path == "*" {
+            // Handle a path element of * specially
+            matchExp = ".*"
+            matched = true
+        } else {
+            let range = NSMakeRange(0, path.characters.count)
+
+            if let keyMatch = keyRegex.firstMatch(in: path, options: [], range: range) {
+                // We found a path element with a named/key capture
+                let prefixRange = keyMatch.range(at: 1)
+                if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1 {
+                    prefix = path.bridge().substring(with: prefixRange)
+                }
+                let matchExpRange = keyMatch.range(at: 3)
                     if  matchExpRange.location != NSNotFound  &&  matchExpRange.location != -1 {
                         matchExp = path.bridge().substring(with: matchExpRange)
                     }
@@ -153,10 +164,7 @@ public class RouteRegex {
                     matched = true
                 }
             }
-
-            regexStr = getRegexStr(regexStr, matched: matched, plusQuestStar: plusQuestStar,
-                                   prefix: prefix, path: path, matchExp: matchExp)
-            return (regexStr, keys, nonKeyIndex)
+        return (matched, prefix, matchExp, plusQuestStar)
     }
 
     func getRegexStr(_ regexStr: String, matched: Bool, plusQuestStar: String, prefix: String,
