@@ -103,9 +103,15 @@ public class RouteRegex {
             let (matched, prefix, matchExp, plusQuestStar) =
                 matchRangesInPath(path, nonKeyIndex: &nonKeyIndex, keys: &keys)
 
-            let toAppend = getStringToAppendToRegex(matched: matched, plusQuestStar: plusQuestStar,
-                                                    prefix: prefix, path: path, matchExp: matchExp)
+            let toAppend: String
+            if  matched  { // A path element with no capture
+                toAppend = getStringToAppendToRegex(plusQuestStar: plusQuestStar,
+                                                    prefix: prefix, matchExp: matchExp)
+            } else {
+                toAppend = "/\(path)"  // A path element with no capture
+            }
             regexStr.append(toAppend)
+
             return (regexStr, keys, nonKeyIndex)
     }
 
@@ -161,12 +167,8 @@ public class RouteRegex {
         return (matched, prefix, matchExp, plusQuestStar)
     }
 
-    func getStringToAppendToRegex(matched: Bool, plusQuestStar: String, prefix: String,
-                            path: String, matchExp: String) -> String {
-        if  !matched  { // A path element with no capture
-            return "/\(path)"
-        }
-
+    func getStringToAppendToRegex(plusQuestStar: String, prefix: String,
+                                  matchExp: String) -> String {
         // We have some kind of capture for this path element
         // Build the runtime regex depending on whether or not there is "repetition"
         switch(plusQuestStar) {
