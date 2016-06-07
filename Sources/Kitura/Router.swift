@@ -68,6 +68,7 @@ public class Router {
         return routingHelper(.all, pattern: path, handler: handler)
     }
 
+    @discardableResult
     public func all(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
         return routingHelper(.all, pattern: path, middleware: middleware)
     }
