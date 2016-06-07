@@ -46,6 +46,16 @@ public class RouteRegex {
         guard let fromPattern = fromPattern else {
             return (nil, nil)
         }
+
+        guard let keyRegex = namedCaptureRegex else {
+            Log.error("RouteRegex has invalid state: missing keyRegex")
+            return (nil, nil)
+        }
+        guard let nonKeyRegex = unnamedCaptureRegex else {
+            Log.error("RouteRegex element has invalid state: missing nonKeyRegex")
+            return (nil, nil)
+        }
+
         var pattern = fromPattern
         var regexStr = "^"
         var keys = [String]()
@@ -63,12 +73,9 @@ public class RouteRegex {
         }
         
         for path in paths {
-            var status = false
-            (regexStr, keys, nonKeyIndex, status) =
-                handlePath(path, regexStr: regexStr, keys: keys, nonKeyIndex: nonKeyIndex)
-            if !status {
-                return (nil, nil)
-            }
+            (regexStr, keys, nonKeyIndex) =
+                handlePath(path, regexStr: regexStr, keys: keys, nonKeyIndex: nonKeyIndex,
+                           keyRegex: keyRegex, nonKeyRegex: nonKeyRegex)
         }
 
         regexStr.append("(?:/(?=$))?")
@@ -86,8 +93,9 @@ public class RouteRegex {
         return (regex, keys)
     }
 
-    func handlePath(_ path: String, regexStr: String, keys: [String], nonKeyIndex: Int) ->
-        (regexStr: String, keys: [String], nonKeyIndex: Int, status: Bool) {
+    func handlePath(_ path: String, regexStr: String, keys: [String], nonKeyIndex: Int,
+                    keyRegex: NSRegularExpression, nonKeyRegex: NSRegularExpression) ->
+                    (regexStr: String, keys: [String], nonKeyIndex: Int) {
 
             var nonKeyIndex = nonKeyIndex
             var keys = keys
@@ -95,7 +103,7 @@ public class RouteRegex {
 
             // If there was a leading slash, there will be an empty component in the split
             if  path.isEmpty {
-                return (regexStr, keys, nonKeyIndex, true)
+                return (regexStr, keys, nonKeyIndex)
             }
 
             var matched = false
@@ -109,14 +117,7 @@ public class RouteRegex {
                 matched = true
             } else {
                 let range = NSMakeRange(0, path.characters.count)
-                guard let keyRegex = namedCaptureRegex else {
-                    Log.error("RouteRegex has invalid state: missing keyRegex")
-                    return (regexStr, keys, nonKeyIndex, false)
-                }
-                guard let nonKeyRegex = unnamedCaptureRegex else {
-                    Log.error("RouteRegex element has invalid state: missing nonKeyRegex")
-                    return (regexStr, keys, nonKeyIndex, false)
-                }
+
                 if let keyMatch = keyRegex.firstMatch(in: path, options: [], range: range) {
                     // We found a path element with a named/key capture
                     let prefixRange = keyMatch.range(at: 1)
@@ -179,6 +180,6 @@ public class RouteRegex {
                 regexStr.append("/\(path)")
             }
 
-            return (regexStr, keys, nonKeyIndex, true)
+            return (regexStr, keys, nonKeyIndex)
     }
 }
