@@ -124,46 +124,46 @@ public class RouteRegex {
 
         if  path == "*" {
             // Handle a path element of * specially
-            matchExp = ".*"
-            matched = true
-        } else {
-            let range = NSMakeRange(0, path.characters.count)
+            return (true, prefix, ".*", plusQuestStar)
+        }
 
-            if let keyMatch = keyRegex.firstMatch(in: path, options: [], range: range) {
-                // We found a path element with a named/key capture
-                let prefixRange = keyMatch.range(at: 1)
-                if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1 {
-                    prefix = path.bridge().substring(with: prefixRange)
-                }
-                let matchExpRange = keyMatch.range(at: 3)
-                    if  matchExpRange.location != NSNotFound  &&  matchExpRange.location != -1 {
-                        matchExp = path.bridge().substring(with: matchExpRange)
-                    }
-                    let pqsRange = keyMatch.range(at: 4)
-                    if  pqsRange.location != NSNotFound  &&  pqsRange.location != -1 {
-                        plusQuestStar = path.bridge().substring(with: pqsRange)
-                    }
-                    keys.append(path.bridge().substring(with: keyMatch.range(at: 2)))
-                    matched = true
-                } else if let nonKeyMatch = nonKeyRegex.firstMatch(in: path, options: [], range: range) {
-                    // We found a path element with an unnamed capture
-                    let prefixRange = nonKeyMatch.range(at: 1)
-                    if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1 {
-                        prefix = path.bridge().substring(with: prefixRange)
-                    }
-                    let matchExpRange = nonKeyMatch.range(at: 2)
-                    if  matchExpRange.location != NSNotFound  &&  matchExpRange.location != -1 {
-                        matchExp = path.bridge().substring(with: matchExpRange)
-                    }
-                    let pqsRange = nonKeyMatch.range(at: 3)
-                    if  pqsRange.location != NSNotFound  &&  pqsRange.location != -1 {
-                        plusQuestStar = path.bridge().substring(with: pqsRange)
-                    }
-                    keys.append(String(nonKeyIndex))
-                    nonKeyIndex+=1
-                    matched = true
-                }
+        let range = NSMakeRange(0, path.characters.count)
+
+        if let keyMatch = keyRegex.firstMatch(in: path, options: [], range: range) {
+            // We found a path element with a named/key capture
+            let prefixRange = keyMatch.range(at: 1)
+            if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1 {
+                prefix = path.bridge().substring(with: prefixRange)
             }
+            let matchExpRange = keyMatch.range(at: 3)
+            if  matchExpRange.location != NSNotFound  &&  matchExpRange.location != -1 {
+                matchExp = path.bridge().substring(with: matchExpRange)
+            }
+            let pqsRange = keyMatch.range(at: 4)
+            if  pqsRange.location != NSNotFound  &&  pqsRange.location != -1 {
+                plusQuestStar = path.bridge().substring(with: pqsRange)
+            }
+            keys.append(path.bridge().substring(with: keyMatch.range(at: 2)))
+            matched = true
+        } else if let nonKeyMatch = nonKeyRegex.firstMatch(in: path, options: [], range: range) {
+            // We found a path element with an unnamed capture
+            let prefixRange = nonKeyMatch.range(at: 1)
+            if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1 {
+                prefix = path.bridge().substring(with: prefixRange)
+            }
+            let matchExpRange = nonKeyMatch.range(at: 2)
+            if  matchExpRange.location != NSNotFound  &&  matchExpRange.location != -1 {
+                matchExp = path.bridge().substring(with: matchExpRange)
+            }
+            let pqsRange = nonKeyMatch.range(at: 3)
+            if  pqsRange.location != NSNotFound  &&  pqsRange.location != -1 {
+                plusQuestStar = path.bridge().substring(with: pqsRange)
+            }
+            keys.append(String(nonKeyIndex))
+            nonKeyIndex+=1
+            matched = true
+        }
+
         return (matched, prefix, matchExp, plusQuestStar)
     }
 
