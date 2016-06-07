@@ -154,32 +154,39 @@ public class RouteRegex {
                 }
             }
 
-            if  matched  {
-                // We have some kind of capture for this path element
-                // Build the runtime regex depending on whether or not there is "repetition"
-                switch(plusQuestStar) {
-                case "+":
-                    regexStr.append("/\(prefix)(\(matchExp)(?:/\(matchExp))*)")
-                case "?":
-                    if  prefix.isEmpty {
-                        regexStr.append("(?:/(\(matchExp)))?")
-                    } else {
-                        regexStr.append("/\(prefix)(?:(\(matchExp)))?")
-                    }
-                case "*":
-                    if  prefix.isEmpty {
-                        regexStr.append("(?:/(\(matchExp)(?:/\(matchExp))*))?")
-                    } else {
-                        regexStr.append("/\(prefix)(?:(\(matchExp)(?:/\(matchExp))*))?")
-                    }
-                default:
-                    regexStr.append("/\(prefix)(?:(\(matchExp)))")
-                }
-            } else {
-                // A path element with no capture
-                regexStr.append("/\(path)")
-            }
-
+            regexStr = getRegexStr(regexStr, matched: matched, plusQuestStar: plusQuestStar,
+                                   prefix: prefix, path: path, matchExp: matchExp)
             return (regexStr, keys, nonKeyIndex)
+    }
+
+    public func getRegexStr(_ regexStr: String, matched: Bool, plusQuestStar: String, prefix: String,
+                            path: String, matchExp: String) -> String {
+        var regexStr = regexStr
+        if  matched  {
+            // We have some kind of capture for this path element
+            // Build the runtime regex depending on whether or not there is "repetition"
+            switch(plusQuestStar) {
+            case "+":
+                regexStr.append("/\(prefix)(\(matchExp)(?:/\(matchExp))*)")
+            case "?":
+                if  prefix.isEmpty {
+                    regexStr.append("(?:/(\(matchExp)))?")
+                } else {
+                    regexStr.append("/\(prefix)(?:(\(matchExp)))?")
+                }
+            case "*":
+                if  prefix.isEmpty {
+                    regexStr.append("(?:/(\(matchExp)(?:/\(matchExp))*))?")
+                } else {
+                    regexStr.append("/\(prefix)(?:(\(matchExp)(?:/\(matchExp))*))?")
+                }
+            default:
+                regexStr.append("/\(prefix)(?:(\(matchExp)))")
+            }
+        } else {
+            // A path element with no capture
+            regexStr.append("/\(path)")
+        }
+        return regexStr
     }
 }
