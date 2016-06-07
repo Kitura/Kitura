@@ -27,6 +27,7 @@ public class Kitura {
     // add an HTTPServer on a port with a delegate. The server is only registered with the framework,
     // it does not start listening on the port until Kitura.run() is called
     //
+    @discardableResult
     public class func addHTTPServer(onPort port: Int, with delegate: HTTPServerDelegate) -> HTTPServer {
         let server = HTTP.createServer()
         server.delegate = delegate
