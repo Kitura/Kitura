@@ -101,8 +101,7 @@ public class RouteRegex {
             }
 
             let (matched, prefix, matchExp, plusQuestStar) =
-                matchRangesInPath(path, keyRegex: keyRegex, nonKeyRegex: nonKeyRegex,
-                                  nonKeyIndex: &nonKeyIndex, keys: &keys)
+                matchRangesInPath(path, nonKeyIndex: &nonKeyIndex, keys: &keys)
 
             let toAppend = getStringToAppendToRegex(matched: matched, plusQuestStar: plusQuestStar,
                                                     prefix: prefix, path: path, matchExp: matchExp)
@@ -110,7 +109,7 @@ public class RouteRegex {
             return (regexStr, keys, nonKeyIndex)
     }
 
-    func matchRangesInPath(_ path: String, keyRegex: NSRegularExpression, nonKeyRegex: NSRegularExpression, nonKeyIndex: inout Int, keys: inout [String]) ->
+    func matchRangesInPath(_ path: String, nonKeyIndex: inout Int, keys: inout [String]) ->
         (match: Bool, prefix: String, matchExp: String, plusQuestStar: String) {
         var matched = false
         var prefix = ""
