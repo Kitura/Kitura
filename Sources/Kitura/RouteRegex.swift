@@ -177,15 +177,13 @@ public class RouteRegex {
         case "?":
             if  prefix.isEmpty {
                 return "(?:/(\(matchExp)))?"
-            } else {
-                return "/\(prefix)(?:(\(matchExp)))?"
             }
+            return "/\(prefix)(?:(\(matchExp)))?"
         case "*":
             if  prefix.isEmpty {
                 return "(?:/(\(matchExp)(?:/\(matchExp))*))?"
-            } else {
-                return "/\(prefix)(?:(\(matchExp)(?:/\(matchExp))*))?"
             }
+            return "/\(prefix)(?:(\(matchExp)(?:/\(matchExp))*))?"
         default:
             return "/\(prefix)(?:(\(matchExp)))"
         }
