@@ -48,7 +48,7 @@ public class RouteRegex {
         }
         var pattern = fromPattern
         var regexStr = "^"
-        var keys: [String] = []
+        var keys = [String]()
         var nonKeyIndex = 0
         
         if allowPartialMatch && pattern.hasSuffix("*") {
@@ -63,16 +63,46 @@ public class RouteRegex {
         }
         
         for path in paths {
+            var status = false
+            (regexStr, keys, nonKeyIndex, status) =
+                handlePath(path, regexStr: regexStr, keys: keys, nonKeyIndex: nonKeyIndex)
+            if !status {
+                return (nil, nil)
+            }
+        }
+
+        regexStr.append("(?:/(?=$))?")
+        if !allowPartialMatch {
+            regexStr.append("$")
+        }
+
+        var regex: NSRegularExpression? = nil
+        do {
+            regex = try NSRegularExpression(pattern: regexStr, options: [])
+        } catch {
+            Log.error("Failed to compile the regular expression for the route \(pattern)")
+        }
+
+        return (regex, keys)
+    }
+
+    func handlePath(_ path: String, regexStr: String, keys: [String], nonKeyIndex: Int) ->
+        (regexStr: String, keys: [String], nonKeyIndex: Int, status: Bool) {
+
+            var nonKeyIndex = nonKeyIndex
+            var keys = keys
+            var regexStr = regexStr
+
             // If there was a leading slash, there will be an empty component in the split
             if  path.isEmpty {
-                continue
+                return (regexStr, keys, nonKeyIndex, true)
             }
-            
+
             var matched = false
             var prefix = ""
             var matchExp = "[^/]+?"
             var plusQuestStar = ""
-            
+
             if  path == "*" {
                 // Handle a path element of * specially
                 matchExp = ".*"
@@ -81,11 +111,11 @@ public class RouteRegex {
                 let range = NSMakeRange(0, path.characters.count)
                 guard let keyRegex = namedCaptureRegex else {
                     Log.error("RouteRegex has invalid state: missing keyRegex")
-                    return(nil,nil)
+                    return (regexStr, keys, nonKeyIndex, false)
                 }
                 guard let nonKeyRegex = unnamedCaptureRegex else {
                     Log.error("RouteRegex element has invalid state: missing nonKeyRegex")
-                    return(nil,nil)
+                    return (regexStr, keys, nonKeyIndex, false)
                 }
                 if let keyMatch = keyRegex.firstMatch(in: path, options: [], range: range) {
                     // We found a path element with a named/key capture
@@ -103,7 +133,7 @@ public class RouteRegex {
                     }
                     keys.append(path.bridge().substring(with: keyMatch.range(at: 2)))
                     matched = true
-                } else if  let nonKeyMatch = nonKeyRegex.firstMatch(in: path, options: [], range: range) {
+                } else if let nonKeyMatch = nonKeyRegex.firstMatch(in: path, options: [], range: range) {
                     // We found a path element with an unnamed capture
                     let prefixRange = nonKeyMatch.range(at: 1)
                     if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1 {
@@ -122,7 +152,7 @@ public class RouteRegex {
                     matched = true
                 }
             }
-            
+
             if  matched  {
                 // We have some kind of capture for this path element
                 // Build the runtime regex depending on whether or not there is "repetition"
@@ -148,19 +178,7 @@ public class RouteRegex {
                 // A path element with no capture
                 regexStr.append("/\(path)")
             }
-        }
-        regexStr.append("(?:/(?=$))?")
-        if !allowPartialMatch {
-            regexStr.append("$")
-        }
-        
-        var regex: NSRegularExpression? = nil
-        do {
-            regex = try NSRegularExpression(pattern: regexStr, options: [])
-        } catch {
-            Log.error("Failed to compile the regular expression for the route \(pattern)")
-        }
-        
-        return (regex, keys)
+
+            return (regexStr, keys, nonKeyIndex, true)
     }
 }
