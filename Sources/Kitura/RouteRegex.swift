@@ -47,7 +47,6 @@ public class RouteRegex {
     /// - Returns:
     ///
     internal func buildRegex(fromPattern: String?, allowPartialMatch: Bool = false) -> (NSRegularExpression?, [String]?) {
-        
         guard let fromPattern = fromPattern else {
             return (nil, nil)
         }
@@ -89,30 +88,29 @@ public class RouteRegex {
     }
 
     func handlePath(_ path: String, regexStr: String, keys: [String], nonKeyIndex: Int) ->
-                    (regexStr: String, keys: [String], nonKeyIndex: Int) {
+        (regexStr: String, keys: [String], nonKeyIndex: Int) {
+        var nonKeyIndex = nonKeyIndex
+        var keys = keys
+        var regexStr = regexStr
 
-            var nonKeyIndex = nonKeyIndex
-            var keys = keys
-            var regexStr = regexStr
-
-            // If there was a leading slash, there will be an empty component in the split
-            if  path.isEmpty {
-                return (regexStr, keys, nonKeyIndex)
-            }
-
-            let (matched, prefix, matchExp, plusQuestStar) =
-                matchRangesInPath(path, nonKeyIndex: &nonKeyIndex, keys: &keys)
-
-            let toAppend: String
-            if  matched  { // A path element with no capture
-                toAppend = getStringToAppendToRegex(plusQuestStar: plusQuestStar,
-                                                    prefix: prefix, matchExp: matchExp)
-            } else {
-                toAppend = "/\(path)"  // A path element with no capture
-            }
-            regexStr.append(toAppend)
-
+        // If there was a leading slash, there will be an empty component in the split
+        if  path.isEmpty {
             return (regexStr, keys, nonKeyIndex)
+        }
+
+        let (matched, prefix, matchExp, plusQuestStar) =
+            matchRangesInPath(path, nonKeyIndex: &nonKeyIndex, keys: &keys)
+
+        let toAppend: String
+        if  matched  { // A path element with no capture
+            toAppend = getStringToAppendToRegex(plusQuestStar: plusQuestStar,
+                                                prefix: prefix, matchExp: matchExp)
+        } else {
+            toAppend = "/\(path)"  // A path element with no capture
+        }
+        regexStr.append(toAppend)
+
+        return (regexStr, keys, nonKeyIndex)
     }
 
     func matchRangesInPath(_ path: String, nonKeyIndex: inout Int, keys: inout [String]) ->
