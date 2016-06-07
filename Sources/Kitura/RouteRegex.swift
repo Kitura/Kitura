@@ -159,7 +159,7 @@ public class RouteRegex {
             return (regexStr, keys, nonKeyIndex)
     }
 
-    public func getRegexStr(_ regexStr: String, matched: Bool, plusQuestStar: String, prefix: String,
+    func getRegexStr(_ regexStr: String, matched: Bool, plusQuestStar: String, prefix: String,
                             path: String, matchExp: String) -> String {
         var regexStr = regexStr
 
