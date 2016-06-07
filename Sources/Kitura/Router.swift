@@ -603,7 +603,7 @@ extension Router : RouterMiddleware {
     /// - Parameter request: the router request
     /// - Parameter response: the router response
     ///
-    public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
+    public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) throws {
         guard let urlPath = request.parsedURL.path else {
             Log.error("Failed to handle request")
             return

@@ -51,10 +51,17 @@ class RouterMiddlewareWalker
         middlewareIndex += 1
 
         if middlewareIndex < middlewares.count && (response.error == nil || method == .error) {
-            middlewares[middlewareIndex].handle(request: request, response: response) {
-                [unowned self] in
+            do {
+                try middlewares[middlewareIndex].handle(request: request, response: response) {
+                    [unowned self] in
+                    self.next()
+                }
+            }
+            catch {
+                response.error = error
                 self.next()
             }
+            
         } else {
             request.parameters = [:]
             callback()
