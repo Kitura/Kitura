@@ -431,13 +431,7 @@ public class RouterResponse {
     /// Adds a link with specified parameters to Link HTTP header
     ///
     /// - Parameter link: link value
-    /// - Parameter rel:
-    /// - Parameter anchor:
-    /// - Parameter rev:
-    /// - Parameter hreflang:
-    /// - Parameter media:
-    /// - Parameter title:
-    /// - Parameter type:
+    /// - Parameter linkParameters: the link parameters (according to RFC 5988) with their values
     ///
     /// - Returns: a RouterResponse instance
     ///
