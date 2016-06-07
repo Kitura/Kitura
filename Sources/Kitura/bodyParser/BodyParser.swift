@@ -178,7 +178,11 @@ public class BodyParser: RouterMiddleware {
         }
         return nil
     }
-    
+
+    private enum ParseState {
+        case preamble, body
+    }
+
     ///
     /// Multipart form data parse function
     ///
@@ -189,10 +193,7 @@ public class BodyParser: RouterMiddleware {
             Log.error("Error converting strings to data for multipart parsing")
             return nil
         }
-        
-        enum ParseState {
-            case preamble, body
-        }
+
         var state = ParseState.preamble
         var parts: [Part] = []
         var currentPart = Part()
@@ -203,21 +204,12 @@ public class BodyParser: RouterMiddleware {
             switch(state) {
             case .preamble where bodyLine.hasPrefix(boundaryData), .body where bodyLine.hasPrefix(boundaryData):
                 // boundary found
-                if partData.length > 0 {
-                    if let parser = getParsingFunction(contentType: currentPart.type), let parsedBody = parser(partData) {
-                        currentPart.body = parsedBody
-                    } else {
-                        currentPart.body = .raw(partData)
-                    }
-                    parts.append(currentPart)
-                }
-                currentPart = Part()
-                partData = NSMutableData()
+                state = handleBoundary(partData: &partData, currentPart: &currentPart, parts: &parts)
+
                 if bodyLine.hasPrefix(endBoundaryData) {
                     // end boundary found, end of parsing
                     return .multipart(parts)
                 }
-                state = .body
             case .preamble:
                 // discard preamble text
                 break
@@ -259,7 +251,23 @@ public class BodyParser: RouterMiddleware {
         }
         return nil
     }
-    
+
+    private class func handleBoundary(partData: inout NSMutableData,
+                                      currentPart: inout Part, parts: inout [Part]) -> ParseState {
+        if partData.length > 0 {
+            if let parser = getParsingFunction(contentType: currentPart.type),
+                let parsedBody = parser(partData) {
+                currentPart.body = parsedBody
+            } else {
+                currentPart.body = .raw(partData)
+            }
+            parts.append(currentPart)
+        }
+        currentPart = Part()
+        partData = NSMutableData()
+        return .body
+    }
+
     private class func divideDataByNewLines(data: NSData, newLineData: NSData) -> [NSData] {
         var dataLines = [NSData]()
         var lineStart = 0
