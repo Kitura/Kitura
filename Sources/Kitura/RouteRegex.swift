@@ -22,15 +22,20 @@ import Foundation
 public class RouteRegex {
     public static let sharedInstance = RouteRegex()
     
-    private var namedCaptureRegex: NSRegularExpression?
-    private var unnamedCaptureRegex: NSRegularExpression?
-    
+    private let namedCaptureRegex: NSRegularExpression
+    private let unnamedCaptureRegex: NSRegularExpression
+    private let keyRegex: NSRegularExpression
+    private let nonKeyRegex: NSRegularExpression
+
     private init () {
         do {
             namedCaptureRegex = try NSRegularExpression(pattern: "(.*)?(?:\\:(\\w+)(?:\\(((?:\\\\.|[^()])+)\\))?(?:([+*?])?))", options: [])
             unnamedCaptureRegex = try NSRegularExpression(pattern: "(.*)?(?:(?:\\(((?:\\\\.|[^()])+)\\))(?:([+*?])?))", options: [])
+            keyRegex = namedCaptureRegex
+            nonKeyRegex = unnamedCaptureRegex
         } catch {
             Log.error("Failed to create regular expressions used to parse Route patterns")
+            exit(1)
         }
     }
     
@@ -44,15 +49,6 @@ public class RouteRegex {
     internal func buildRegex(fromPattern: String?, allowPartialMatch: Bool = false) -> (NSRegularExpression?, [String]?) {
         
         guard let fromPattern = fromPattern else {
-            return (nil, nil)
-        }
-
-        guard let keyRegex = namedCaptureRegex else {
-            Log.error("RouteRegex has invalid state: missing keyRegex")
-            return (nil, nil)
-        }
-        guard let nonKeyRegex = unnamedCaptureRegex else {
-            Log.error("RouteRegex element has invalid state: missing nonKeyRegex")
             return (nil, nil)
         }
 
@@ -74,8 +70,7 @@ public class RouteRegex {
         
         for path in paths {
             (regexStr, keys, nonKeyIndex) =
-                handlePath(path, regexStr: regexStr, keys: keys, nonKeyIndex: nonKeyIndex,
-                           keyRegex: keyRegex, nonKeyRegex: nonKeyRegex)
+                handlePath(path, regexStr: regexStr, keys: keys, nonKeyIndex: nonKeyIndex)
         }
 
         regexStr.append("(?:/(?=$))?")
@@ -93,8 +88,7 @@ public class RouteRegex {
         return (regex, keys)
     }
 
-    func handlePath(_ path: String, regexStr: String, keys: [String], nonKeyIndex: Int,
-                    keyRegex: NSRegularExpression, nonKeyRegex: NSRegularExpression) ->
+    func handlePath(_ path: String, regexStr: String, keys: [String], nonKeyIndex: Int) ->
                     (regexStr: String, keys: [String], nonKeyIndex: Int) {
 
             var nonKeyIndex = nonKeyIndex
