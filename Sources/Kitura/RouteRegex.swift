@@ -110,8 +110,9 @@ public class RouteRegex {
                 matchRangesInPath(path, keyRegex: keyRegex, nonKeyRegex: nonKeyRegex,
                                   nonKeyIndex: &nonKeyIndex, keys: &keys)
 
-            regexStr = getRegexStr(regexStr, matched: matched, plusQuestStar: plusQuestStar,
-                                   prefix: prefix, path: path, matchExp: matchExp)
+            let toAppend = getStringToAppendToRegex(matched: matched, plusQuestStar: plusQuestStar,
+                                                    prefix: prefix, path: path, matchExp: matchExp)
+            regexStr.append(toAppend)
             return (regexStr, keys, nonKeyIndex)
     }
 
@@ -167,35 +168,31 @@ public class RouteRegex {
         return (matched, prefix, matchExp, plusQuestStar)
     }
 
-    func getRegexStr(_ regexStr: String, matched: Bool, plusQuestStar: String, prefix: String,
+    func getStringToAppendToRegex(matched: Bool, plusQuestStar: String, prefix: String,
                             path: String, matchExp: String) -> String {
-        var regexStr = regexStr
-
         if  !matched  { // A path element with no capture
-            regexStr.append("/\(path)")
-            return regexStr
+            return "/\(path)"
         }
 
         // We have some kind of capture for this path element
         // Build the runtime regex depending on whether or not there is "repetition"
         switch(plusQuestStar) {
         case "+":
-            regexStr.append("/\(prefix)(\(matchExp)(?:/\(matchExp))*)")
+            return "/\(prefix)(\(matchExp)(?:/\(matchExp))*)"
         case "?":
             if  prefix.isEmpty {
-                regexStr.append("(?:/(\(matchExp)))?")
+                return "(?:/(\(matchExp)))?"
             } else {
-                regexStr.append("/\(prefix)(?:(\(matchExp)))?")
+                return "/\(prefix)(?:(\(matchExp)))?"
             }
         case "*":
             if  prefix.isEmpty {
-                regexStr.append("(?:/(\(matchExp)(?:/\(matchExp))*))?")
+                return "(?:/(\(matchExp)(?:/\(matchExp))*))?"
             } else {
-                regexStr.append("/\(prefix)(?:(\(matchExp)(?:/\(matchExp))*))?")
+                return "/\(prefix)(?:(\(matchExp)(?:/\(matchExp))*))?"
             }
         default:
-            regexStr.append("/\(prefix)(?:(\(matchExp)))")
+            return "/\(prefix)(?:(\(matchExp)))"
         }
-        return regexStr
     }
 }
