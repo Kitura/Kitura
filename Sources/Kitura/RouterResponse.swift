@@ -441,41 +441,14 @@ public class RouterResponse {
     ///
     /// - Returns: a RouterResponse instance
     ///
-    public func addLink(_ link: String, rel: String? = nil, anchor: String? = nil,
-      rev: String? = nil, hreflang: String? = nil, media: String? = nil,
-      title: String? = nil, type: String? = nil) -> RouterResponse {
+    public func addLink(_ link: String, linkParameters: [LinkParameter: String]) -> RouterResponse {
         var headerValue = "<\(link)>"
 
-        if let rel = rel {
-            headerValue += "; rel=\"\(rel)\""
-        }
-
-        if let anchor = anchor {
-            headerValue += "; anchor=\"\(anchor)\""
-        }
-
-        if let rev = rev {
-            headerValue += "; rev=\"\(rev)\""
-        }
-
-        if let hreflang = hreflang {
-            headerValue += "; hreflang=\"\(hreflang)\""
-        }
-
-        if let media = media {
-            headerValue += "; media=\"\(media)\""
-        }
-
-        if let title = title {
-            headerValue += "; title=\"\(title)\""
-        }
-
-        if let type = type {
-            headerValue += "; type=\(type)"
+        for (linkParamer, value) in linkParameters {
+            headerValue += "; \(linkParamer.rawValue)=\"\(value)\""
         }
 
         headers.append("Link", value: headerValue)
-
         return self
     }
 }

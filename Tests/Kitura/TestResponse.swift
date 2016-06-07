@@ -633,15 +633,18 @@ class TestResponse : XCTestCase {
 
         router.get("/single_link") { request, response, next in
             do {
-                try response.addLink("https://developer.ibm.com/swift", rel: "root").status(.OK).end()
+                try response.addLink("https://developer.ibm.com/swift",
+                                     linkParameters: [.rel: "root"]).status(.OK).end()
             } catch {}
         }
 
         router.get("/multiple_links") { request, response, next in
             do {
               try response
-              .addLink("https://developer.ibm.com/swift/products/ibm-bluemix/", rel: "prev")
-              .addLink("https://developer.ibm.com/swift/products/ibm-swift-sandbox/", rel: "next")
+                .addLink("https://developer.ibm.com/swift/products/ibm-bluemix/",
+                         linkParameters: [.rel: "prev"])
+                .addLink("https://developer.ibm.com/swift/products/ibm-swift-sandbox/",
+                         linkParameters: [.rel: "next"])
               .status(.OK).end()
             } catch {}
         }
