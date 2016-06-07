@@ -131,40 +131,32 @@ public class RouteRegex {
 
         if let keyMatch = keyRegex.firstMatch(in: path, options: [], range: range) {
             // We found a path element with a named/key capture
-            let prefixRange = keyMatch.range(at: 1)
-            if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1 {
-                prefix = path.bridge().substring(with: prefixRange)
-            }
-            let matchExpRange = keyMatch.range(at: 3)
-            if  matchExpRange.location != NSNotFound  &&  matchExpRange.location != -1 {
-                matchExp = path.bridge().substring(with: matchExpRange)
-            }
-            let pqsRange = keyMatch.range(at: 4)
-            if  pqsRange.location != NSNotFound  &&  pqsRange.location != -1 {
-                plusQuestStar = path.bridge().substring(with: pqsRange)
-            }
+            extract(fromPath: path, with: keyMatch, at: 1, to: &prefix)
+            extract(fromPath: path, with: keyMatch, at: 3, to: &matchExp)
+            extract(fromPath: path, with: keyMatch, at: 4, to: &plusQuestStar)
+
             keys.append(path.bridge().substring(with: keyMatch.range(at: 2)))
             matched = true
         } else if let nonKeyMatch = nonKeyRegex.firstMatch(in: path, options: [], range: range) {
             // We found a path element with an unnamed capture
-            let prefixRange = nonKeyMatch.range(at: 1)
-            if  prefixRange.location != NSNotFound  &&  prefixRange.location != -1 {
-                prefix = path.bridge().substring(with: prefixRange)
-            }
-            let matchExpRange = nonKeyMatch.range(at: 2)
-            if  matchExpRange.location != NSNotFound  &&  matchExpRange.location != -1 {
-                matchExp = path.bridge().substring(with: matchExpRange)
-            }
-            let pqsRange = nonKeyMatch.range(at: 3)
-            if  pqsRange.location != NSNotFound  &&  pqsRange.location != -1 {
-                plusQuestStar = path.bridge().substring(with: pqsRange)
-            }
+            extract(fromPath: path, with: nonKeyMatch, at: 1, to: &prefix)
+            extract(fromPath: path, with: nonKeyMatch, at: 2, to: &matchExp)
+            extract(fromPath: path, with: nonKeyMatch, at: 3, to: &plusQuestStar)
+
             keys.append(String(nonKeyIndex))
             nonKeyIndex+=1
             matched = true
         }
 
         return (matched, prefix, matchExp, plusQuestStar)
+    }
+
+    func extract(fromPath path: String, with match: NSTextCheckingResult, at index: Int,
+                 to string: inout String) {
+        let range = match.range(at: index)
+        if  range.location != NSNotFound  &&  range.location != -1 {
+            string = path.bridge().substring(with: range)
+        }
     }
 
     func getStringToAppendToRegex(plusQuestStar: String, prefix: String,
