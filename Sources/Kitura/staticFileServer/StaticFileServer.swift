@@ -167,14 +167,21 @@ public class StaticFileServer: RouterMiddleware {
         if fileManager.fileExists(atPath: filePath, isDirectory: &isDirectory) {
             serveExistingFile(filePath, requestPath: requestPath,
                               isDirectory: isDirectory.boolValue, response: response)
-        } else {
-            for ext in possibleExtensions {
-                let newFilePath = filePath + "." + ext
-                if fileManager.fileExists(atPath: newFilePath, isDirectory: &isDirectory) {
-                    if !isDirectory.boolValue {
-                        serveNonDirectoryFile(newFilePath, response: response)
-                        break
-                    }
+            return
+        }
+
+        tryToServeWithExtensions(filePath, response: response)
+    }
+
+    private func tryToServeWithExtensions(_ filePath: String, response: RouterResponse) {
+        let filePathWithPossibleExtensions = possibleExtensions.map { filePath + "." + $0 }
+        for filePathWithExtension in filePathWithPossibleExtensions {
+            let fileManager = NSFileManager()
+            var isDirectory = ObjCBool(false)
+            if fileManager.fileExists(atPath: filePathWithExtension, isDirectory: &isDirectory) {
+                if !isDirectory.boolValue {
+                    serveNonDirectoryFile(filePathWithExtension, response: response)
+                    break
                 }
             }
         }
