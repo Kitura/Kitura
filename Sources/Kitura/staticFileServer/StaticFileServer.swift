@@ -165,24 +165,15 @@ public class StaticFileServer: RouterMiddleware {
         var isDirectory = ObjCBool(false)
 
         if fileManager.fileExists(atPath: filePath, isDirectory: &isDirectory) {
-            if isDirectory.boolValue {
-                if redirect {
-                    do {
-                        try response.redirect(requestPath + "/")
-                    } catch {
-                        response.error = Error.failedToRedirectRequest(path: requestPath + "/", chainedError: error)
-                    }
-                }
-            } else {
-                serveFile(filePath, fileManager: fileManager, response: response)
-            }
+            serveExistingFile(filePath, requestPath: requestPath,
+                              isDirectory: isDirectory.boolValue, response: response)
         } else {
             if let extensions = possibleExtensions {
                 for ext in extensions {
                     let newFilePath = filePath + "." + ext
                     if fileManager.fileExists(atPath: newFilePath, isDirectory: &isDirectory) {
                         if !isDirectory.boolValue {
-                            serveFile(newFilePath, fileManager: fileManager, response: response)
+                            serveNonDirectoryFile(newFilePath, response: response)
                             break
                         }
                     }
@@ -191,7 +182,24 @@ public class StaticFileServer: RouterMiddleware {
         }
     }
 
-    private func serveFile(_ filePath: String, fileManager: NSFileManager, response: RouterResponse) {
+    private func serveExistingFile(_ filePath: String, requestPath: String, isDirectory: Bool,
+                                   response: RouterResponse) {
+        if isDirectory {
+            if redirect {
+                do {
+                    try response.redirect(requestPath + "/")
+                } catch {
+                    response.error = Error.failedToRedirectRequest(path: requestPath + "/", chainedError: error)
+                }
+            }
+        } else {
+            serveNonDirectoryFile(filePath, response: response)
+        }
+    }
+
+    private func serveNonDirectoryFile(_ filePath: String, response: RouterResponse) {
+        let fileManager = NSFileManager()
+
         // Check that no-one is using ..'s in the path to poke around the filesystem
         let tempAbsoluteBasePath = NSURL(fileURLWithPath: path).absoluteString
         let tempAbsoluteFilePath = NSURL(fileURLWithPath: filePath).absoluteString
