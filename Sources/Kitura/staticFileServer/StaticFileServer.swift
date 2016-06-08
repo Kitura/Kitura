@@ -119,12 +119,23 @@ public class StaticFileServer: RouterMiddleware {
             return next()
         }
 
-        var filePath = path
-        guard let requestPath = request.parsedURL.path else {
-            next()
-            return
+        guard let filePath = getFilePath(from: request) else {
+            return next()
         }
 
+        guard let requestPath = request.parsedURL.path else {
+            return next()
+        }
+
+        serveFile(filePath, requestPath: requestPath, response: response)
+        next()
+    }
+
+    private func getFilePath(from request: RouterRequest) -> String? {
+        var filePath = path
+        guard let requestPath = request.parsedURL.path else {
+            return nil
+        }
         var matchedPath = request.matchedPath
         if matchedPath.hasSuffix("*") {
             matchedPath = String(matchedPath.characters.dropLast())
@@ -142,11 +153,14 @@ public class StaticFileServer: RouterMiddleware {
             if serveIndexForDirectory {
                 filePath += "index.html"
             } else {
-                next()
-                return
+                return nil
             }
         }
 
+        return filePath
+    }
+
+    private func serveFile(_ filePath: String, requestPath: String, response: RouterResponse) {
         let fileManager = NSFileManager()
         var isDirectory = ObjCBool(false)
 
@@ -175,8 +189,6 @@ public class StaticFileServer: RouterMiddleware {
                 }
             }
         }
-
-        next()
     }
 
     private func serveFile(_ filePath: String, fileManager: NSFileManager, response: RouterResponse) {
