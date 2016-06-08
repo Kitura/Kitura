@@ -67,13 +67,13 @@ public class StaticFileServer: RouterMiddleware {
     }
 
     public convenience init () {
-        self.init(path: "./public", options: nil)
+        self.init(path: "./public")
     }
 
     ///
     /// Initializes a StaticFileServer instance
     ///
-    public init (path: String, options: [Options]?) {
+    public init (path: String, options: [Options] = [Options]()) {
         if path.hasSuffix("/") {
             self.path = String(path.characters.dropLast())
         } else {
@@ -85,24 +85,23 @@ public class StaticFileServer: RouterMiddleware {
 #else
         self.path = self.path.bridge().expandingTildeInPath
 #endif
-        if let options = options {
-            for option in options {
-                switch option {
-                case .possibleExtensions(let value):
-                    possibleExtensions = value
-                case .serveIndexForDir(let value):
-                    serveIndexForDirectory = value
-                case .addLastModifiedHeader(let value):
-                    addLastModifiedHeader = value
-                case .maxAgeCacheControlHeader(let value):
-                    maxAgeCacheControlHeader = value
-                case .redirect(let value):
-                    redirect = value
-                case .customResponseHeadersSetter(let value):
-                    customResponseHeadersSetter = value
-                case .generateETag (let value):
-                    generateETag = value
-                }
+
+        for option in options {
+            switch option {
+            case .possibleExtensions(let value):
+                possibleExtensions = value
+            case .serveIndexForDir(let value):
+                serveIndexForDirectory = value
+            case .addLastModifiedHeader(let value):
+                addLastModifiedHeader = value
+            case .maxAgeCacheControlHeader(let value):
+                maxAgeCacheControlHeader = value
+            case .redirect(let value):
+                redirect = value
+            case .customResponseHeadersSetter(let value):
+                customResponseHeadersSetter = value
+            case .generateETag (let value):
+                generateETag = value
             }
         }
     }
