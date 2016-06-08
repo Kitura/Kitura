@@ -180,7 +180,7 @@ public class BodyParser: RouterMiddleware {
     }
 
     private enum ParseState {
-        case preamble, body
+        case preamble, body, finished
     }
 
     ///
@@ -189,8 +189,8 @@ public class BodyParser: RouterMiddleware {
     /// - Parameter bodyData: read data
     ///
     private class func parseMultipart(_ bodyData: NSMutableData, boundary: String) -> ParsedBody? {
-        guard let boundaryData = String("--" + boundary).data(using: NSUTF8StringEncoding), let endBoundaryData = String("--" + boundary + "--").data(using: NSUTF8StringEncoding), let newLineData = "\r\n".data(using: NSUTF8StringEncoding) else {
-            Log.error("Error converting strings to data for multipart parsing")
+        guard let newLineData = "\r\n".data(using: NSUTF8StringEncoding) else {
+            Log.error("Error converting string to new line data for multipart parsing")
             return nil
         }
 
@@ -199,25 +199,47 @@ public class BodyParser: RouterMiddleware {
         var currentPart = Part()
         var partData = NSMutableData()
         let bodyLines = divideDataByNewLines(data: bodyData, newLineData: newLineData)
+
         // main parse loop
         for bodyLine in bodyLines {
-            switch(state) {
-            case .preamble where bodyLine.hasPrefix(boundaryData), .body where bodyLine.hasPrefix(boundaryData):
-                // boundary found
-                state = handleBoundary(partData: &partData, currentPart: &currentPart, parts: &parts)
-
-                if bodyLine.hasPrefix(endBoundaryData) {
-                    // end boundary found, end of parsing
-                    return .multipart(parts)
-                }
-            case .preamble:
-                // discard preamble text
-                break
-            case .body:
-                handleBody(bodyLine: bodyLine, partData: &partData, currentPart: &currentPart)
+            state = handleBodyLine(bodyLine, state: state, boundary: boundary, partData: &partData,
+                                   currentPart: &currentPart, parts: &parts)
+            if state == .finished {
+                return .multipart(parts)
             }
         }
         return nil
+    }
+
+    private class func handleBodyLine(_ bodyLine: NSData, state: ParseState, boundary: String,
+                                      partData: inout NSMutableData, currentPart: inout Part,
+                                      parts: inout [Part]) -> ParseState {
+        guard let boundaryData = String("--" + boundary).data(using: NSUTF8StringEncoding),
+            let endBoundaryData = String("--" + boundary + "--").data(using: NSUTF8StringEncoding)
+            else {
+            Log.error("Error converting strings to data for multipart parsing")
+            return .finished
+        }
+
+        var state = state
+        switch(state) {
+        case .preamble where bodyLine.hasPrefix(boundaryData), .body where bodyLine.hasPrefix(boundaryData):
+            // boundary found
+            state = handleBoundary(partData: &partData, currentPart: &currentPart, parts: &parts)
+
+            if bodyLine.hasPrefix(endBoundaryData) {
+                // end boundary found, end of parsing
+                return .finished
+            }
+        case .preamble:
+            // discard preamble text
+            break
+        case .finished:
+            break
+        case .body:
+            handleBody(bodyLine: bodyLine, partData: &partData, currentPart: &currentPart)
+        }
+        return state
     }
 
     private class func handleBody(bodyLine: NSData, partData: inout NSMutableData,
