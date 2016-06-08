@@ -227,8 +227,8 @@ public class BodyParser: RouterMiddleware {
             return
         }
 
-        // check if header
-        guard let bodyLineAsString = String(data: bodyLine, encoding: NSUTF8StringEncoding) else {
+        // process bodyLine as String
+        guard let line = String(data: bodyLine, encoding: NSUTF8StringEncoding) else {
             // is data, add to data object
             if partData.length > 0 {
                 // data is multiline, add linebreaks back in
@@ -238,21 +238,22 @@ public class BodyParser: RouterMiddleware {
             return
         }
 
-        if let labelRange = bodyLineAsString.range(of: "content-type:", options: [.anchoredSearch, .caseInsensitiveSearch], range: bodyLineAsString.startIndex..<bodyLineAsString.endIndex) {
-            currentPart.type = bodyLineAsString.substring(from: bodyLineAsString.index(after: labelRange.upperBound))
-            currentPart.headers[.type] = bodyLineAsString
-        } else if let labelRange = bodyLineAsString.range(of: "content-disposition:", options: [.anchoredSearch, .caseInsensitiveSearch], range: bodyLineAsString.startIndex..<bodyLineAsString.endIndex) {
-            if let nameRange = bodyLineAsString.range(of: "name=", options: .caseInsensitiveSearch, range: labelRange.upperBound..<bodyLineAsString.endIndex) {
-                let valueStartIndex = bodyLineAsString.index(after: nameRange.upperBound)
-                let valueEndIndex = bodyLineAsString.range(of: "\"", range: valueStartIndex..<bodyLineAsString.endIndex)
-                currentPart.name = bodyLineAsString.substring(with: valueStartIndex..<(valueEndIndex?.lowerBound ?? bodyLineAsString.endIndex))
+        // check if header
+        if let labelRange = line.range(of: "content-type:", options: [.anchoredSearch, .caseInsensitiveSearch], range: line.startIndex..<line.endIndex) {
+            currentPart.type = line.substring(from: line.index(after: labelRange.upperBound))
+            currentPart.headers[.type] = line
+        } else if let labelRange = line.range(of: "content-disposition:", options: [.anchoredSearch, .caseInsensitiveSearch], range: line.startIndex..<line.endIndex) {
+            if let nameRange = line.range(of: "name=", options: .caseInsensitiveSearch, range: labelRange.upperBound..<line.endIndex) {
+                let valueStartIndex = line.index(after: nameRange.upperBound)
+                let valueEndIndex = line.range(of: "\"", range: valueStartIndex..<line.endIndex)
+                currentPart.name = line.substring(with: valueStartIndex..<(valueEndIndex?.lowerBound ?? line.endIndex))
             }
-            currentPart.headers[.disposition] = bodyLineAsString
-        } else if bodyLineAsString.range(of: "content-transfer-encoding:", options: [.anchoredSearch, .caseInsensitiveSearch], range: bodyLineAsString.startIndex..<bodyLineAsString.endIndex) != nil {
+            currentPart.headers[.disposition] = line
+        } else if line.range(of: "content-transfer-encoding:", options: [.anchoredSearch, .caseInsensitiveSearch], range: line.startIndex..<line.endIndex) != nil {
             //TODO: Deal with this
-            currentPart.headers[.transferEncoding] = bodyLineAsString
+            currentPart.headers[.transferEncoding] = line
         }
-        else if !bodyLineAsString.isEmpty {
+        else if !line.isEmpty {
             // is data, add to data object
             if partData.length > 0 {
                 // data is multiline, add linebreaks back in
@@ -261,7 +262,6 @@ public class BodyParser: RouterMiddleware {
             partData.append(bodyLine)
         }
     }
-
 
     private class func handleBoundary(partData: inout NSMutableData,
                                       currentPart: inout Part, parts: inout [Part]) -> ParseState {
