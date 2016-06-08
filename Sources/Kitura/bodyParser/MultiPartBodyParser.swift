@@ -114,16 +114,16 @@ class MultiPartBodyParser: BodyParserProtocol {
         }
         return (false, part)
     }
-    
+
     // returns true if it was header line
     private func handleHeaderLine(_ line: String, part: inout Part) -> Bool {
-        if let labelRange = line.range(of: "content-type:", options: [.anchoredSearch, .caseInsensitiveSearch], range: line.startIndex..<line.endIndex) {
+        if let labelRange = getLabelRange(of: "content-type:", in: line) {
             part.type = line.substring(from: line.index(after: labelRange.upperBound))
             part.headers[.type] = line
             return true
         }
 
-        if let labelRange = line.range(of: "content-disposition:", options: [.anchoredSearch, .caseInsensitiveSearch], range: line.startIndex..<line.endIndex) {
+        if let labelRange = getLabelRange(of: "content-disposition:", in: line) {
             if let nameRange = line.range(of: "name=", options: .caseInsensitiveSearch, range: labelRange.upperBound..<line.endIndex) {
                 let valueStartIndex = line.index(after: nameRange.upperBound)
                 let valueEndIndex = line.range(of: "\"", range: valueStartIndex..<line.endIndex)
@@ -140,6 +140,13 @@ class MultiPartBodyParser: BodyParserProtocol {
         }
 
         return false
+    }
+
+    private func getLabelRange(of searchedString: String, in containingString: String) ->
+        Range<String.Index>? {
+        return containingString.range(of: searchedString,
+                                      options: [.anchoredSearch, .caseInsensitiveSearch],
+                                      range: containingString.startIndex..<containingString.endIndex)
     }
 
     private func divideDataByNewLines(data: NSData, newLineData: NSData) -> [NSData] {
