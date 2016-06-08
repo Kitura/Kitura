@@ -118,60 +118,64 @@ public class StaticFileServer: RouterMiddleware {
         guard request.serverRequest.method == "GET" || request.serverRequest.method == "HEAD" else {
             return next()
         }
-        
+
         var filePath = path
-        if let requestPath = request.parsedURL.path {
-            var matchedPath = request.matchedPath
-            if matchedPath.hasSuffix("*") {
-                matchedPath = String(matchedPath.characters.dropLast())
+        guard let requestPath = request.parsedURL.path else {
+            next()
+            return
+        }
+
+        var matchedPath = request.matchedPath
+        if matchedPath.hasSuffix("*") {
+            matchedPath = String(matchedPath.characters.dropLast())
+        }
+        if !matchedPath.hasSuffix("/") {
+            matchedPath += "/"
+        }
+
+        if requestPath.hasPrefix(matchedPath) {
+            let url = String(requestPath.characters.dropFirst(matchedPath.characters.count))
+            filePath += "/" + url
+        }
+
+        if filePath.hasSuffix("/") {
+            if serveIndexForDirectory {
+                filePath += "index.html"
+            } else {
+                next()
+                return
             }
-            if !matchedPath.hasSuffix("/") {
-                matchedPath += "/"
-            }
-            
-            if requestPath.hasPrefix(matchedPath) {
-                let url = String(requestPath.characters.dropFirst(matchedPath.characters.count))
-                filePath += "/" + url
-            }
-            
-            if filePath.hasSuffix("/") {
-                if serveIndexForDirectory {
-                    filePath += "index.html"
-                } else {
-                    next()
-                    return
-                }
-            }
-            
-            let fileManager = NSFileManager()
-            var isDirectory = ObjCBool(false)
-            
-            if fileManager.fileExists(atPath: filePath, isDirectory: &isDirectory) {
-                if isDirectory.boolValue {
-                    if redirect {
-                        do {
-                            try response.redirect(requestPath + "/")
-                        } catch {
-                            response.error = Error.failedToRedirectRequest(path: requestPath + "/", chainedError: error)
-                        }
+        }
+
+        let fileManager = NSFileManager()
+        var isDirectory = ObjCBool(false)
+
+        if fileManager.fileExists(atPath: filePath, isDirectory: &isDirectory) {
+            if isDirectory.boolValue {
+                if redirect {
+                    do {
+                        try response.redirect(requestPath + "/")
+                    } catch {
+                        response.error = Error.failedToRedirectRequest(path: requestPath + "/", chainedError: error)
                     }
-                } else {
-                    serveFile(filePath, fileManager: fileManager, response: response)
                 }
             } else {
-                if let extensions = possibleExtensions {
-                    for ext in extensions {
-                        let newFilePath = filePath + "." + ext
-                        if fileManager.fileExists(atPath: newFilePath, isDirectory: &isDirectory) {
-                            if !isDirectory.boolValue {
-                                serveFile(newFilePath, fileManager: fileManager, response: response)
-                                break
-                            }
+                serveFile(filePath, fileManager: fileManager, response: response)
+            }
+        } else {
+            if let extensions = possibleExtensions {
+                for ext in extensions {
+                    let newFilePath = filePath + "." + ext
+                    if fileManager.fileExists(atPath: newFilePath, isDirectory: &isDirectory) {
+                        if !isDirectory.boolValue {
+                            serveFile(newFilePath, fileManager: fileManager, response: response)
+                            break
                         }
                     }
                 }
             }
         }
+
         next()
     }
 
@@ -185,7 +189,7 @@ public class StaticFileServer: RouterMiddleware {
         if  absoluteFilePath.hasPrefix(absoluteBasePath) {
             do {
                 let attributes = try fileManager.attributesOfItem(atPath: filePath)
-                
+
                 response.headers["Cache-Control"] = "max-age=\(maxAgeCacheControlHeader)"
                 if addLastModifiedHeader {
                     if let date = attributes[NSFileModificationDate] as? NSDate {
