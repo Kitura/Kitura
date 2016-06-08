@@ -37,10 +37,19 @@ public class BodyParser: RouterMiddleware {
     ///
     /// BodyParser archiver
     ///
-    private static let parserMap: [String: ((NSMutableData) -> ParsedBody?)] = ["application/json": BodyParser.parseJson,
-                                                                                "application/x-www-form-urlencoded": BodyParser.parseURLencoded,
-                                                                                "text": BodyParser.parseText]
-    
+    private static let parserMap: [String: ((NSData) -> ParsedBody?)] =
+        ["application/json": BodyParser.parseJSON,
+         "application/x-www-form-urlencoded": BodyParser.parseURLencoded,
+         "text": BodyParser.parseText]
+
+    private class var newLineData: NSData {
+        guard let newLineData = "\r\n".data(using: NSUTF8StringEncoding) else {
+            Log.error("Error converting string to new line data for multipart parsing")
+            exit(1)
+        }
+        return newLineData
+    }
+
     ///
     /// Initializes a BodyParser instance
     /// Needed since default initalizer is internal
@@ -84,7 +93,7 @@ public class BodyParser: RouterMiddleware {
         return nil
     }
     
-    private class func getParsingFunction(contentType: String) -> ((NSMutableData) -> ParsedBody?)? {
+    private class func getParsingFunction(contentType: String) -> ((NSData) -> ParsedBody?)? {
         // Handle Content-Type with parameters.  For example, treat:
         // "application/x-www-form-urlencoded; charset=UTF-8" as
         // "application/x-www-form-urlencoded"
@@ -102,7 +111,7 @@ public class BodyParser: RouterMiddleware {
                 return nil
             }
             let boundary = contentType.substring(from: boundryIndex.upperBound).replacingOccurrences(of: "\"", with: "")
-            return  {(bodyData: NSMutableData) -> ParsedBody? in
+            return  {(bodyData: NSData) -> ParsedBody? in
                 return parseMultipart(bodyData, boundary: boundary)
             }
         }
@@ -113,9 +122,9 @@ public class BodyParser: RouterMiddleware {
     /// Read incoming message for Parse
     ///
     /// - Parameter message: message coming from the socket
-    /// - Parameter parser: ((NSMutableData) -> ParsedBody?) store at parserMap
+    /// - Parameter parser: ((NSData) -> ParsedBody?) store at parserMap
     ///
-    private class func parse(_ message: SocketReader, parser: ((NSMutableData) -> ParsedBody?)) -> ParsedBody? {
+    private class func parse(_ message: SocketReader, parser: ((NSData) -> ParsedBody?)) -> ParsedBody? {
         do {
             let bodyData = try readBodyData(with: message)
             return parser(bodyData)
@@ -130,7 +139,7 @@ public class BodyParser: RouterMiddleware {
     ///
     /// - Parameter bodyData: read data
     ///
-    private class func parseJson(_ bodyData: NSMutableData)-> ParsedBody? {
+    private class func parseJSON(_ bodyData: NSData)-> ParsedBody? {
         let json = JSON(data: bodyData)
         if json != JSON.null {
             return .json(json)
@@ -143,7 +152,7 @@ public class BodyParser: RouterMiddleware {
     ///
     /// - Parameter bodyData: read data
     ///
-    private class func parseURLencoded(_ bodyData: NSMutableData)-> ParsedBody? {
+    private class func parseURLencoded(_ bodyData: NSData)-> ParsedBody? {
         var parsedBody = [String:String]()
         var success = true
         if let bodyAsString: String = String(data: bodyData, encoding: NSUTF8StringEncoding) {
@@ -171,7 +180,7 @@ public class BodyParser: RouterMiddleware {
     ///
     /// - Parameter bodyData: read data
     ///
-    private class func parseText(_ bodyData: NSMutableData)-> ParsedBody? {
+    private class func parseText(_ bodyData: NSData)-> ParsedBody? {
         // There was no support for the application/json MIME type
         if let bodyAsString: String = String(data: bodyData, encoding: NSUTF8StringEncoding) {
             return .text(bodyAsString)
