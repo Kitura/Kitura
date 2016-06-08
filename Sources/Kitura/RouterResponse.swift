@@ -66,6 +66,8 @@ public class RouterResponse {
     /// Set of cookies to return with the response
     ///
     public var cookies = [String: NSHTTPCookie]()
+    
+    public var onResponseEnd: (() -> Void)?
 
     ///
     /// Optional error value
@@ -107,6 +109,10 @@ public class RouterResponse {
     /// - Returns: a RouterResponse instance
     ///
     public func end() throws {
+        
+        if let onResponseEnd = onResponseEnd {
+            onResponseEnd()
+        }
 
         preFlush(request: request, response: self)
         
