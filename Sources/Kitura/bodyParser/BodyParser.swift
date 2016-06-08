@@ -214,43 +214,53 @@ public class BodyParser: RouterMiddleware {
                 // discard preamble text
                 break
             case .body:
-                // check if header
-                if let bodyLineAsString = String(data: bodyLine, encoding: NSUTF8StringEncoding) {
-                    if let labelRange = bodyLineAsString.range(of: "content-type:", options: [.anchoredSearch, .caseInsensitiveSearch], range: bodyLineAsString.startIndex..<bodyLineAsString.endIndex) {
-                        currentPart.type = bodyLineAsString.substring(from: bodyLineAsString.index(after: labelRange.upperBound))
-                        currentPart.headers[.type] = bodyLineAsString
-                    } else if let labelRange = bodyLineAsString.range(of: "content-disposition:", options: [.anchoredSearch, .caseInsensitiveSearch], range: bodyLineAsString.startIndex..<bodyLineAsString.endIndex) {
-                        if let nameRange = bodyLineAsString.range(of: "name=", options: .caseInsensitiveSearch, range: labelRange.upperBound..<bodyLineAsString.endIndex) {
-                            let valueStartIndex = bodyLineAsString.index(after: nameRange.upperBound)
-                            let valueEndIndex = bodyLineAsString.range(of: "\"", range: valueStartIndex..<bodyLineAsString.endIndex)
-                            currentPart.name = bodyLineAsString.substring(with: valueStartIndex..<(valueEndIndex?.lowerBound ?? bodyLineAsString.endIndex))
-                        }
-                        currentPart.headers[.disposition] = bodyLineAsString
-                    } else if bodyLineAsString.range(of: "content-transfer-encoding:", options: [.anchoredSearch, .caseInsensitiveSearch], range: bodyLineAsString.startIndex..<bodyLineAsString.endIndex) != nil {
-                        //TODO: Deal with this
-                        currentPart.headers[.transferEncoding] = bodyLineAsString
-                    }
-                    else if !bodyLineAsString.isEmpty {
-                        // is data, add to data object
-                        if partData.length > 0 {
-                            // data is multiline, add linebreaks back in
-                            partData.append(newLineData)
-                        }
-                        partData.append(bodyLine)
-                    }
-                } else {
-                    // is data, add to data object
-                    if partData.length > 0 {
-                        // data is multiline, add linebreaks back in
-                        partData.append(newLineData)
-                    }
-                    partData.append(bodyLine)
-                }
+                handleBodyLine(bodyLine, partData: &partData, currentPart: &currentPart)
             }
-            
         }
         return nil
     }
+
+    private class func handleBodyLine(_ bodyLine: NSData, partData: inout NSMutableData,
+                                      currentPart: inout Part) {
+        guard let newLineData = "\r\n".data(using: NSUTF8StringEncoding) else {
+            Log.error("Error converting a string to newLineData for multipart parsing")
+            return
+        }
+
+        // check if header
+        if let bodyLineAsString = String(data: bodyLine, encoding: NSUTF8StringEncoding) {
+            if let labelRange = bodyLineAsString.range(of: "content-type:", options: [.anchoredSearch, .caseInsensitiveSearch], range: bodyLineAsString.startIndex..<bodyLineAsString.endIndex) {
+                currentPart.type = bodyLineAsString.substring(from: bodyLineAsString.index(after: labelRange.upperBound))
+                currentPart.headers[.type] = bodyLineAsString
+            } else if let labelRange = bodyLineAsString.range(of: "content-disposition:", options: [.anchoredSearch, .caseInsensitiveSearch], range: bodyLineAsString.startIndex..<bodyLineAsString.endIndex) {
+                if let nameRange = bodyLineAsString.range(of: "name=", options: .caseInsensitiveSearch, range: labelRange.upperBound..<bodyLineAsString.endIndex) {
+                    let valueStartIndex = bodyLineAsString.index(after: nameRange.upperBound)
+                    let valueEndIndex = bodyLineAsString.range(of: "\"", range: valueStartIndex..<bodyLineAsString.endIndex)
+                    currentPart.name = bodyLineAsString.substring(with: valueStartIndex..<(valueEndIndex?.lowerBound ?? bodyLineAsString.endIndex))
+                }
+                currentPart.headers[.disposition] = bodyLineAsString
+            } else if bodyLineAsString.range(of: "content-transfer-encoding:", options: [.anchoredSearch, .caseInsensitiveSearch], range: bodyLineAsString.startIndex..<bodyLineAsString.endIndex) != nil {
+                //TODO: Deal with this
+                currentPart.headers[.transferEncoding] = bodyLineAsString
+            }
+            else if !bodyLineAsString.isEmpty {
+                // is data, add to data object
+                if partData.length > 0 {
+                    // data is multiline, add linebreaks back in
+                    partData.append(newLineData)
+                }
+                partData.append(bodyLine)
+            }
+        } else {
+            // is data, add to data object
+            if partData.length > 0 {
+                // data is multiline, add linebreaks back in
+                partData.append(newLineData)
+            }
+            partData.append(bodyLine)
+        }
+    }
+
 
     private class func handleBoundary(partData: inout NSMutableData,
                                       currentPart: inout Part, parts: inout [Part]) -> ParseState {
