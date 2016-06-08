@@ -214,14 +214,14 @@ public class BodyParser: RouterMiddleware {
                 // discard preamble text
                 break
             case .body:
-                handleBodyLine(bodyLine, partData: &partData, currentPart: &currentPart)
+                handleBody(bodyLine: bodyLine, partData: &partData, currentPart: &currentPart)
             }
         }
         return nil
     }
 
-    private class func handleBodyLine(_ bodyLine: NSData, partData: inout NSMutableData,
-                                      currentPart: inout Part) {
+    private class func handleBody(bodyLine: NSData, partData: inout NSMutableData,
+                                  currentPart: inout Part) {
         guard let newLineData = "\r\n".data(using: NSUTF8StringEncoding) else {
             Log.error("Error converting a string to newLineData for multipart parsing")
             return
