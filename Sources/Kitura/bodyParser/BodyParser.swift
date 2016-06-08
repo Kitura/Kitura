@@ -188,104 +188,99 @@ public class BodyParser: RouterMiddleware {
         return nil
     }
 
-    private enum ParseState {
-        case preamble, body, finished
-    }
-
     ///
     /// Multipart form data parse function
     ///
     /// - Parameter bodyData: read data
     ///
-    private class func parseMultipart(_ bodyData: NSMutableData, boundary: String) -> ParsedBody? {
-        guard let newLineData = "\r\n".data(using: NSUTF8StringEncoding) else {
-            Log.error("Error converting string to new line data for multipart parsing")
-            return nil
-        }
-
-        var state = ParseState.preamble
+    private class func parseMultipart(_ bodyData: NSData, boundary: String) -> ParsedBody? {
         var parts: [Part] = []
-        var currentPart = Part()
-        var partData = NSMutableData()
         let bodyLines = divideDataByNewLines(data: bodyData, newLineData: newLineData)
 
-        // main parse loop
-        for bodyLine in bodyLines {
-            state = handleBodyLine(bodyLine, state: state, boundary: boundary, partData: &partData,
-                                   currentPart: &currentPart, parts: &parts)
-            if state == .finished {
-                return .multipart(parts)
+        var bodyLineIterator = bodyLines.makeIterator()
+        skipPreamble(bodyLineIterator: &bodyLineIterator, boundary: boundary)
+
+        var endBoundaryEncountered = false
+        var lastPartSeen: Part?
+        repeat {
+            (endBoundaryEncountered, lastPartSeen) =
+                getNextPart(bodyLineIterator: &bodyLineIterator, boundary: boundary)
+            if let part = lastPartSeen {
+                parts.append(part)
             }
         }
-        return nil
+        while !endBoundaryEncountered && lastPartSeen != nil
+
+        return endBoundaryEncountered ? .multipart(parts) : nil
     }
 
-    private class func handleBodyLine(_ bodyLine: NSData, state: ParseState, boundary: String,
-                                      partData: inout NSMutableData, currentPart: inout Part,
-                                      parts: inout [Part]) -> ParseState {
+    private class func skipPreamble(bodyLineIterator: inout IndexingIterator<Array<NSData>>,
+                                    boundary: String) {
+        guard let boundaryData = String("--" + boundary).data(using: NSUTF8StringEncoding) else {
+                Log.error("Error converting strings to data for multipart parsing")
+                return
+        }
+
+        while let bodyLine = bodyLineIterator.next() {
+            if bodyLine.hasPrefix(boundaryData) {
+                break
+            }
+        }
+    }
+
+    private class func getNextPart(bodyLineIterator: inout IndexingIterator<Array<NSData>>,
+                                   boundary: String) -> (Bool, Part?){
         guard let boundaryData = String("--" + boundary).data(using: NSUTF8StringEncoding),
             let endBoundaryData = String("--" + boundary + "--").data(using: NSUTF8StringEncoding)
             else {
-            Log.error("Error converting strings to data for multipart parsing")
-            return .finished
+                Log.error("Error converting strings to data for multipart parsing")
+                return (false, nil)
         }
 
-        var state = state
-        switch(state) {
-        case .preamble where bodyLine.hasPrefix(boundaryData), .body where bodyLine.hasPrefix(boundaryData):
-            // boundary found
-            state = handleBoundary(partData: &partData, currentPart: &currentPart, parts: &parts)
+        var part = Part()
+        let partData = NSMutableData()
 
-            if bodyLine.hasPrefix(endBoundaryData) {
-                // end boundary found, end of parsing
-                return .finished
+        while let bodyLine = bodyLineIterator.next() {
+            if bodyLine.hasPrefix(boundaryData) {
+                handleBoundary(partData: partData, part: &part)
+
+                if bodyLine.hasPrefix(endBoundaryData) {
+                    return (true, part)
+                }
+                return (false, part)
             }
-        case .preamble:
-            // discard preamble text
-            break
-        case .finished:
-            break
-        case .body:
-            handleBody(bodyLine: bodyLine, partData: &partData, currentPart: &currentPart)
-        }
-        return state
-    }
 
-    private class func handleBody(bodyLine: NSData, partData: inout NSMutableData,
-                                  currentPart: inout Part) {
-        guard let newLineData = "\r\n".data(using: NSUTF8StringEncoding) else {
-            Log.error("Error converting a string to newLineData for multipart parsing")
-            return
-        }
-
-        // process bodyLine as String
-        guard let line = String(data: bodyLine, encoding: NSUTF8StringEncoding) else {
-            // is data, add to data object
-            if partData.length > 0 {
-                // data is multiline, add linebreaks back in
-                partData.append(newLineData)
+            // process bodyLine as String
+            guard let line = String(data: bodyLine, encoding: NSUTF8StringEncoding) else {
+                // is data, add to data object
+                if partData.length > 0 {
+                    // data is multiline, add linebreaks back in
+                    partData.append(newLineData)
+                }
+                partData.append(bodyLine)
+                continue
             }
-            partData.append(bodyLine)
-            return
-        }
 
-        let wasHeaderLine = handleHeaderLine(line, currentPart: &currentPart)
+            let wasHeaderLine = handleHeaderLine(line, part: &part)
 
-        if !wasHeaderLine && !line.isEmpty {
-            // is data, add to data object
-            if partData.length > 0 {
-                // data is multiline, add linebreaks back in
-                partData.append(newLineData)
+            if !wasHeaderLine && !line.isEmpty {
+                // is data, add to data object
+                if partData.length > 0 {
+                    // data is multiline, add linebreaks back in
+                    partData.append(newLineData)
+                }
+                partData.append(bodyLine)
             }
-            partData.append(bodyLine)
         }
+
+        return (false, nil)
     }
 
     // returns true if it was header line
-    private class func handleHeaderLine(_ line: String, currentPart: inout Part) -> Bool {
+    private class func handleHeaderLine(_ line: String, part: inout Part) -> Bool {
         if let labelRange = line.range(of: "content-type:", options: [.anchoredSearch, .caseInsensitiveSearch], range: line.startIndex..<line.endIndex) {
-            currentPart.type = line.substring(from: line.index(after: labelRange.upperBound))
-            currentPart.headers[.type] = line
+            part.type = line.substring(from: line.index(after: labelRange.upperBound))
+            part.headers[.type] = line
             return true
         }
 
@@ -293,35 +288,30 @@ public class BodyParser: RouterMiddleware {
             if let nameRange = line.range(of: "name=", options: .caseInsensitiveSearch, range: labelRange.upperBound..<line.endIndex) {
                 let valueStartIndex = line.index(after: nameRange.upperBound)
                 let valueEndIndex = line.range(of: "\"", range: valueStartIndex..<line.endIndex)
-                currentPart.name = line.substring(with: valueStartIndex..<(valueEndIndex?.lowerBound ?? line.endIndex))
+                part.name = line.substring(with: valueStartIndex..<(valueEndIndex?.lowerBound ?? line.endIndex))
             }
-            currentPart.headers[.disposition] = line
+            part.headers[.disposition] = line
             return true
         }
 
         if line.range(of: "content-transfer-encoding:", options: [.anchoredSearch, .caseInsensitiveSearch], range: line.startIndex..<line.endIndex) != nil {
             //TODO: Deal with this
-            currentPart.headers[.transferEncoding] = line
+            part.headers[.transferEncoding] = line
             return true
         }
 
         return false
     }
 
-    private class func handleBoundary(partData: inout NSMutableData, currentPart: inout Part,
-                                      parts: inout [Part]) -> ParseState {
+    private class func handleBoundary(partData: NSData, part: inout Part) {
         if partData.length > 0 {
-            if let parser = getParsingFunction(contentType: currentPart.type),
+            if let parser = getParsingFunction(contentType: part.type),
                 let parsedBody = parser(partData) {
-                currentPart.body = parsedBody
+                part.body = parsedBody
             } else {
-                currentPart.body = .raw(partData)
+                part.body = .raw(partData)
             }
-            parts.append(currentPart)
         }
-        currentPart = Part()
-        partData = NSMutableData()
-        return .body
     }
 
     private class func divideDataByNewLines(data: NSData, newLineData: NSData) -> [NSData] {
