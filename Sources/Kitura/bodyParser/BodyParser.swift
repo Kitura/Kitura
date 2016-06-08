@@ -277,8 +277,8 @@ public class BodyParser: RouterMiddleware {
         return false
     }
 
-    private class func handleBoundary(partData: inout NSMutableData,
-                                      currentPart: inout Part, parts: inout [Part]) -> ParseState {
+    private class func handleBoundary(partData: inout NSMutableData, currentPart: inout Part,
+                                      parts: inout [Part]) -> ParseState {
         if partData.length > 0 {
             if let parser = getParsingFunction(contentType: currentPart.type),
                 let parsedBody = parser(partData) {
