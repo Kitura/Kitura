@@ -147,7 +147,7 @@ public class RouterRequest: SocketReader {
     ///
     /// User info
     ///
-    public var userInfo: [String: AnyObject] = [:]
+    public var userInfo: [String: Any] = [:]
 
     ///
     /// Body of the message
