@@ -71,12 +71,7 @@ class MultiPartBodyParser: BodyParserProtocol {
 
         while let bodyLine = bodyLineIterator.next() {
             if bodyLine.hasPrefix(boundaryData) {
-                handleBoundary(partData: partData, part: &part)
-
-                if bodyLine.hasPrefix(endBoundaryData) {
-                    return (true, part)
-                }
-                return (false, part)
+                return handleBoundary(line: bodyLine, partData: partData, part: &part)
             }
 
             // process bodyLine as String
@@ -105,6 +100,21 @@ class MultiPartBodyParser: BodyParserProtocol {
         return (false, nil)
     }
 
+    private func handleBoundary(line: NSData, partData: NSData, part: inout Part) -> (Bool, Part?) {
+        if partData.length > 0 {
+            if let parser = BodyParser.getParser(contentType: part.type),
+                let parsedBody = parser.parse(partData) {
+                part.body = parsedBody
+            } else {
+                part.body = .raw(partData)
+            }
+        }
+        if line.hasPrefix(endBoundaryData) {
+            return (true, part)
+        }
+        return (false, part)
+    }
+    
     // returns true if it was header line
     private func handleHeaderLine(_ line: String, part: inout Part) -> Bool {
         if let labelRange = line.range(of: "content-type:", options: [.anchoredSearch, .caseInsensitiveSearch], range: line.startIndex..<line.endIndex) {
@@ -130,17 +140,6 @@ class MultiPartBodyParser: BodyParserProtocol {
         }
 
         return false
-    }
-
-    private func handleBoundary(partData: NSData, part: inout Part) {
-        if partData.length > 0 {
-            if let parser = BodyParser.getParser(contentType: part.type),
-                let parsedBody = parser.parse(partData) {
-                part.body = parsedBody
-            } else {
-                part.body = .raw(partData)
-            }
-        }
     }
 
     private func divideDataByNewLines(data: NSData, newLineData: NSData) -> [NSData] {
