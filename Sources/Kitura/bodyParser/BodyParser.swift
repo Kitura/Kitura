@@ -228,30 +228,31 @@ public class BodyParser: RouterMiddleware {
         }
 
         // check if header
-        if let bodyLineAsString = String(data: bodyLine, encoding: NSUTF8StringEncoding) {
-            if let labelRange = bodyLineAsString.range(of: "content-type:", options: [.anchoredSearch, .caseInsensitiveSearch], range: bodyLineAsString.startIndex..<bodyLineAsString.endIndex) {
-                currentPart.type = bodyLineAsString.substring(from: bodyLineAsString.index(after: labelRange.upperBound))
-                currentPart.headers[.type] = bodyLineAsString
-            } else if let labelRange = bodyLineAsString.range(of: "content-disposition:", options: [.anchoredSearch, .caseInsensitiveSearch], range: bodyLineAsString.startIndex..<bodyLineAsString.endIndex) {
-                if let nameRange = bodyLineAsString.range(of: "name=", options: .caseInsensitiveSearch, range: labelRange.upperBound..<bodyLineAsString.endIndex) {
-                    let valueStartIndex = bodyLineAsString.index(after: nameRange.upperBound)
-                    let valueEndIndex = bodyLineAsString.range(of: "\"", range: valueStartIndex..<bodyLineAsString.endIndex)
-                    currentPart.name = bodyLineAsString.substring(with: valueStartIndex..<(valueEndIndex?.lowerBound ?? bodyLineAsString.endIndex))
-                }
-                currentPart.headers[.disposition] = bodyLineAsString
-            } else if bodyLineAsString.range(of: "content-transfer-encoding:", options: [.anchoredSearch, .caseInsensitiveSearch], range: bodyLineAsString.startIndex..<bodyLineAsString.endIndex) != nil {
-                //TODO: Deal with this
-                currentPart.headers[.transferEncoding] = bodyLineAsString
+        guard let bodyLineAsString = String(data: bodyLine, encoding: NSUTF8StringEncoding) else {
+            // is data, add to data object
+            if partData.length > 0 {
+                // data is multiline, add linebreaks back in
+                partData.append(newLineData)
             }
-            else if !bodyLineAsString.isEmpty {
-                // is data, add to data object
-                if partData.length > 0 {
-                    // data is multiline, add linebreaks back in
-                    partData.append(newLineData)
-                }
-                partData.append(bodyLine)
+            partData.append(bodyLine)
+            return
+        }
+
+        if let labelRange = bodyLineAsString.range(of: "content-type:", options: [.anchoredSearch, .caseInsensitiveSearch], range: bodyLineAsString.startIndex..<bodyLineAsString.endIndex) {
+            currentPart.type = bodyLineAsString.substring(from: bodyLineAsString.index(after: labelRange.upperBound))
+            currentPart.headers[.type] = bodyLineAsString
+        } else if let labelRange = bodyLineAsString.range(of: "content-disposition:", options: [.anchoredSearch, .caseInsensitiveSearch], range: bodyLineAsString.startIndex..<bodyLineAsString.endIndex) {
+            if let nameRange = bodyLineAsString.range(of: "name=", options: .caseInsensitiveSearch, range: labelRange.upperBound..<bodyLineAsString.endIndex) {
+                let valueStartIndex = bodyLineAsString.index(after: nameRange.upperBound)
+                let valueEndIndex = bodyLineAsString.range(of: "\"", range: valueStartIndex..<bodyLineAsString.endIndex)
+                currentPart.name = bodyLineAsString.substring(with: valueStartIndex..<(valueEndIndex?.lowerBound ?? bodyLineAsString.endIndex))
             }
-        } else {
+            currentPart.headers[.disposition] = bodyLineAsString
+        } else if bodyLineAsString.range(of: "content-transfer-encoding:", options: [.anchoredSearch, .caseInsensitiveSearch], range: bodyLineAsString.startIndex..<bodyLineAsString.endIndex) != nil {
+            //TODO: Deal with this
+            currentPart.headers[.transferEncoding] = bodyLineAsString
+        }
+        else if !bodyLineAsString.isEmpty {
             // is data, add to data object
             if partData.length > 0 {
                 // data is multiline, add linebreaks back in
