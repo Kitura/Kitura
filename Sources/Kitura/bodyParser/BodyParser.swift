@@ -238,22 +238,9 @@ public class BodyParser: RouterMiddleware {
             return
         }
 
-        // check if header
-        if let labelRange = line.range(of: "content-type:", options: [.anchoredSearch, .caseInsensitiveSearch], range: line.startIndex..<line.endIndex) {
-            currentPart.type = line.substring(from: line.index(after: labelRange.upperBound))
-            currentPart.headers[.type] = line
-        } else if let labelRange = line.range(of: "content-disposition:", options: [.anchoredSearch, .caseInsensitiveSearch], range: line.startIndex..<line.endIndex) {
-            if let nameRange = line.range(of: "name=", options: .caseInsensitiveSearch, range: labelRange.upperBound..<line.endIndex) {
-                let valueStartIndex = line.index(after: nameRange.upperBound)
-                let valueEndIndex = line.range(of: "\"", range: valueStartIndex..<line.endIndex)
-                currentPart.name = line.substring(with: valueStartIndex..<(valueEndIndex?.lowerBound ?? line.endIndex))
-            }
-            currentPart.headers[.disposition] = line
-        } else if line.range(of: "content-transfer-encoding:", options: [.anchoredSearch, .caseInsensitiveSearch], range: line.startIndex..<line.endIndex) != nil {
-            //TODO: Deal with this
-            currentPart.headers[.transferEncoding] = line
-        }
-        else if !line.isEmpty {
+        let wasHeaderLine = handleHeaderLine(line, currentPart: &currentPart)
+
+        if !wasHeaderLine && !line.isEmpty {
             // is data, add to data object
             if partData.length > 0 {
                 // data is multiline, add linebreaks back in
@@ -261,6 +248,33 @@ public class BodyParser: RouterMiddleware {
             }
             partData.append(bodyLine)
         }
+    }
+
+    // returns true if it was header line
+    private class func handleHeaderLine(_ line: String, currentPart: inout Part) -> Bool {
+        if let labelRange = line.range(of: "content-type:", options: [.anchoredSearch, .caseInsensitiveSearch], range: line.startIndex..<line.endIndex) {
+            currentPart.type = line.substring(from: line.index(after: labelRange.upperBound))
+            currentPart.headers[.type] = line
+            return true
+        }
+
+        if let labelRange = line.range(of: "content-disposition:", options: [.anchoredSearch, .caseInsensitiveSearch], range: line.startIndex..<line.endIndex) {
+            if let nameRange = line.range(of: "name=", options: .caseInsensitiveSearch, range: labelRange.upperBound..<line.endIndex) {
+                let valueStartIndex = line.index(after: nameRange.upperBound)
+                let valueEndIndex = line.range(of: "\"", range: valueStartIndex..<line.endIndex)
+                currentPart.name = line.substring(with: valueStartIndex..<(valueEndIndex?.lowerBound ?? line.endIndex))
+            }
+            currentPart.headers[.disposition] = line
+            return true
+        }
+
+        if line.range(of: "content-transfer-encoding:", options: [.anchoredSearch, .caseInsensitiveSearch], range: line.startIndex..<line.endIndex) != nil {
+            //TODO: Deal with this
+            currentPart.headers[.transferEncoding] = line
+            return true
+        }
+
+        return false
     }
 
     private class func handleBoundary(partData: inout NSMutableData,
