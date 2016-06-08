@@ -26,7 +26,7 @@ public class StaticFileServer: RouterMiddleware {
     //
     // If a file is not found, the given extensions will be added to the file name and searched for. The first that exists will be served. Example: ['html', 'htm'].
     //
-    private var possibleExtensions: [String]?
+    private var possibleExtensions = [String]()
 
     //
     // Serve "index.html" files in response to a request on a directory.  Defaults to true.
@@ -168,14 +168,12 @@ public class StaticFileServer: RouterMiddleware {
             serveExistingFile(filePath, requestPath: requestPath,
                               isDirectory: isDirectory.boolValue, response: response)
         } else {
-            if let extensions = possibleExtensions {
-                for ext in extensions {
-                    let newFilePath = filePath + "." + ext
-                    if fileManager.fileExists(atPath: newFilePath, isDirectory: &isDirectory) {
-                        if !isDirectory.boolValue {
-                            serveNonDirectoryFile(newFilePath, response: response)
-                            break
-                        }
+            for ext in possibleExtensions {
+                let newFilePath = filePath + "." + ext
+                if fileManager.fileExists(atPath: newFilePath, isDirectory: &isDirectory) {
+                    if !isDirectory.boolValue {
+                        serveNonDirectoryFile(newFilePath, response: response)
+                        break
                     }
                 }
             }
