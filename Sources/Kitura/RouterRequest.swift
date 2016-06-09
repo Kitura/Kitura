@@ -263,7 +263,7 @@ public class RouterRequest: SocketReader {
         return nil
     }
 
-    public func getCriteriaMatches(headerValues: [String], types: [String]) -> [String : (priority: Int, qValue: Double)] {
+    private func getCriteriaMatches(headerValues: [String], types: [String]) -> [String : (priority: Int, qValue: Double)] {
         var criteriaMatches = [String : (priority: Int, qValue: Double)]()
 
         for rawHeaderValue in headerValues {
