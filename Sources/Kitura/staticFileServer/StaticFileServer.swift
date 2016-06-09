@@ -22,43 +22,48 @@ import Foundation
 // MARK: StaticFileServer
 
 public class StaticFileServer: RouterMiddleware {
+    private class Configuration {
+        //
+        // If a file is not found, the given extensions will be added to the file name and searched for. The first that exists will be served. Example: ['html', 'htm'].
+        //
+        private var possibleExtensions = [String]()
+
+        //
+        // Serve "index.html" files in response to a request on a directory.  Defaults to true.
+        //
+        private var serveIndexForDirectory = true
+
+        //
+        // Uses the file system's last modified value.  Defaults to true.
+        //
+        private var addLastModifiedHeader = true
+
+        //
+        // Value of max-age in Cache-Control header.  Defaults to 0.
+        //
+        private var maxAgeCacheControlHeader = 0
+
+        //
+        // Redirect to trailing "/" when the pathname is a dir. Defaults to true.
+        //
+        private var redirect = true
+
+        //
+        // Generate ETag. Defaults to true.
+        //
+        private var generateETag = true
+    }
 
     //
-    // If a file is not found, the given extensions will be added to the file name and searched for. The first that exists will be served. Example: ['html', 'htm'].
+    // configuration
     //
-    private var possibleExtensions = [String]()
+    private let configuration = Configuration()
 
-    //
-    // Serve "index.html" files in response to a request on a directory.  Defaults to true.
-    //
-    private var serveIndexForDirectory = true
-
-    //
-    // Uses the file system's last modified value.  Defaults to true.
-    //
-    private var addLastModifiedHeader = true
-
-    //
-    // Value of max-age in Cache-Control header.  Defaults to 0.
-    //
-    private var maxAgeCacheControlHeader = 0
-
-    //
-    // Redirect to trailing "/" when the pathname is a dir. Defaults to true.
-    //
-    private var redirect = true
 
     //
     // A setter for custom response headers.
     //
     private var customResponseHeadersSetter: ResponseHeadersSetter?
-
-    //
-    // Generate ETag. Defaults to true.
-    //
-    private var generateETag = true
-
-
 
     private var path: String
 
@@ -89,19 +94,19 @@ public class StaticFileServer: RouterMiddleware {
         for option in options {
             switch option {
             case .possibleExtensions(let value):
-                possibleExtensions = value
+                configuration.possibleExtensions = value
             case .serveIndexForDir(let value):
-                serveIndexForDirectory = value
+                configuration.serveIndexForDirectory = value
             case .addLastModifiedHeader(let value):
-                addLastModifiedHeader = value
+                configuration.addLastModifiedHeader = value
             case .maxAgeCacheControlHeader(let value):
-                maxAgeCacheControlHeader = value
+                configuration.maxAgeCacheControlHeader = value
             case .redirect(let value):
-                redirect = value
+                configuration.redirect = value
             case .customResponseHeadersSetter(let value):
                 customResponseHeadersSetter = value
             case .generateETag (let value):
-                generateETag = value
+                configuration.generateETag = value
             }
         }
     }
@@ -149,7 +154,7 @@ public class StaticFileServer: RouterMiddleware {
         }
 
         if filePath.hasSuffix("/") {
-            if serveIndexForDirectory {
+            if configuration.serveIndexForDirectory {
                 filePath += "index.html"
             } else {
                 return nil
@@ -173,7 +178,7 @@ public class StaticFileServer: RouterMiddleware {
     }
 
     private func tryToServeWithExtensions(_ filePath: String, response: RouterResponse) {
-        let filePathWithPossibleExtensions = possibleExtensions.map { filePath + "." + $0 }
+        let filePathWithPossibleExtensions = configuration.possibleExtensions.map { filePath + "." + $0 }
         for filePathWithExtension in filePathWithPossibleExtensions {
             let fileManager = NSFileManager()
             var isDirectory = ObjCBool(false)
@@ -189,7 +194,7 @@ public class StaticFileServer: RouterMiddleware {
     private func serveExistingFile(_ filePath: String, requestPath: String, isDirectory: Bool,
                                    response: RouterResponse) {
         if isDirectory {
-            if redirect {
+            if configuration.redirect {
                 do {
                     try response.redirect(requestPath + "/")
                 } catch {
@@ -214,13 +219,13 @@ public class StaticFileServer: RouterMiddleware {
             do {
                 let attributes = try fileManager.attributesOfItem(atPath: filePath)
 
-                response.headers["Cache-Control"] = "max-age=\(maxAgeCacheControlHeader)"
-                if addLastModifiedHeader {
+                response.headers["Cache-Control"] = "max-age=\(configuration.maxAgeCacheControlHeader)"
+                if configuration.addLastModifiedHeader {
                     if let date = attributes[NSFileModificationDate] as? NSDate {
                         response.headers["Last-Modified"] = SPIUtils.httpDate(date)
                     }
                 }
-                if generateETag {
+                if configuration.generateETag {
                     if let date = attributes[NSFileModificationDate] as? NSDate,
                         let size = attributes[NSFileSize] as? Int {
                             let sizeHex = String(size, radix: 16, uppercase: false)
