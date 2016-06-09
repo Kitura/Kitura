@@ -2,3 +2,4 @@
 .vagrant
 Packages
 *.pkg
+Sources/Kitura/RouterHTTPVerbs_generated.swift

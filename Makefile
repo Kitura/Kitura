@@ -21,3 +21,8 @@ Kitura-Build/build/Makefile:
 	@echo --- Fetching Kitura-Build submodule
 	git submodule init
 	git submodule update --remote --merge
+
+custombuild: Sources/Kitura/RouterHTTPVerbs_generated.swift
+
+Sources/Kitura/RouterHTTPVerbs_generated.swift: Configuration/RouterHTTPVerbs.txt
+	@bash Scripts/generate_router_verbs.sh $< $@
