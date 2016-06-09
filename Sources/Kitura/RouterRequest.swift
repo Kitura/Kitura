@@ -246,12 +246,28 @@ public class RouterRequest: SocketReader {
         }
 
         let headerValues = acceptHeaderValue.characters.split(separator: ",").map(String.init)
+        let criteriaMatches = getCriteriaMatches(headerValues: headerValues, types: types)
+
+        // sort by priority and by qValue to determine best type to return
+        let sortedMatches = Array(criteriaMatches).sorted {
+            if $0.1.priority != $1.1.priority {
+                return $0.1.priority < $1.1.priority
+            } else {
+                return $0.1.qValue > $1.1.qValue
+            }
+        }
+
+        if let bestMatch = sortedMatches.first {
+            return bestMatch.0
+        }
+        return nil
+    }
+
+    public func getCriteriaMatches(headerValues: [String], types: [String]) -> [String : (priority: Int, qValue: Double)] {
         var criteriaMatches = [String : (priority: Int, qValue: Double)]()
 
         for rawHeaderValue in headerValues {
             for type in types {
-
-
                 let parsedHeaderValue = parse(mediaType: rawHeaderValue)
                 let mimeType = getMimeType(forExtension: type)
 
@@ -273,19 +289,7 @@ public class RouterRequest: SocketReader {
                 }
             }
         }
-        // sort by priority and by qValue to determine best type to return
-        let sortedMatches = Array(criteriaMatches).sorted {
-            if $0.1.priority != $1.1.priority {
-                return $0.1.priority < $1.1.priority
-            } else {
-                return $0.1.qValue > $1.1.qValue
-            }
-        }
-
-        if let bestMatch = sortedMatches.first {
-            return bestMatch.0
-        }
-        return nil
+        return criteriaMatches
     }
 
     public func accepts(_ types: String...) -> String? {
