@@ -268,31 +268,37 @@ public class RouterRequest: SocketReader {
 
         for rawHeaderValue in headerValues {
             for type in types {
-                let parsedHeaderValue = parse(mediaType: rawHeaderValue)
-                let mimeType = getMimeType(forExtension: type)
-
-                if parsedHeaderValue.type == mimeType { // exact match, e.g. text/html == text/html
-                    criteriaMatches[type] = (priority: 1, qValue: parsedHeaderValue.qValue)
-                    continue
-                }
-
-                if parsedHeaderValue.type == "*/*" {
-                    if criteriaMatches[type] == nil { // else do nothing
-                        criteriaMatches[type] = (priority: 3, qValue: parsedHeaderValue.qValue)
-                    }
-                    continue
-                }
-
-                let rangeOfType = mimeType.range(of: parsedHeaderValue.type,
-                                                 options: .regularExpressionSearch)
-                // partial match, e.g. text/html == text/*
-                if rangeOfType != nil &&
-                    (criteriaMatches[type]?.priority > 2 || criteriaMatches[type] == nil) {
-                    criteriaMatches[type] = (priority: 2, qValue: parsedHeaderValue.qValue)
-                }
+                handleMatch(rawHeaderValue: rawHeaderValue, type: type,
+                            criteriaMatches: &criteriaMatches)
             }
         }
         return criteriaMatches
+    }
+
+    private func handleMatch(rawHeaderValue: String, type: String,
+                             criteriaMatches: inout [String : (priority: Int, qValue: Double)]) {
+        let parsedHeaderValue = parse(mediaType: rawHeaderValue)
+        let mimeType = getMimeType(forExtension: type)
+
+        if parsedHeaderValue.type == mimeType { // exact match, e.g. text/html == text/html
+            criteriaMatches[type] = (priority: 1, qValue: parsedHeaderValue.qValue)
+            return
+        }
+
+        if parsedHeaderValue.type == "*/*" {
+            if criteriaMatches[type] == nil { // else do nothing
+                criteriaMatches[type] = (priority: 3, qValue: parsedHeaderValue.qValue)
+            }
+            return
+        }
+
+        let rangeOfType = mimeType.range(of: parsedHeaderValue.type,
+                                         options: .regularExpressionSearch)
+        // partial match, e.g. text/html == text/*
+        if rangeOfType != nil &&
+            (criteriaMatches[type]?.priority > 2 || criteriaMatches[type] == nil) {
+            criteriaMatches[type] = (priority: 2, qValue: parsedHeaderValue.qValue)
+        }
     }
 
     public func accepts(_ types: String...) -> String? {
