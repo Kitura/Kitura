@@ -280,14 +280,18 @@ public class RouterRequest: SocketReader {
         let parsedHeaderValue = parse(mediaType: rawHeaderValue)
         let mimeType = getMimeType(forExtension: type)
 
+        let setMatchWithPriority = { (priority: Int) in
+            criteriaMatches[type] = (priority: priority, qValue: parsedHeaderValue.qValue)
+        }
+
         if parsedHeaderValue.type == mimeType { // exact match, e.g. text/html == text/html
-            criteriaMatches[type] = (priority: 1, qValue: parsedHeaderValue.qValue)
+            setMatchWithPriority(1)
             return
         }
 
         if parsedHeaderValue.type == "*/*" {
             if criteriaMatches[type] == nil { // else do nothing
-                criteriaMatches[type] = (priority: 3, qValue: parsedHeaderValue.qValue)
+                setMatchWithPriority(3)
             }
             return
         }
@@ -300,10 +304,10 @@ public class RouterRequest: SocketReader {
         // partial match, e.g. text/html == text/*
         if let match = criteriaMatches[type] {
             if match.priority > 2 {
-                criteriaMatches[type] = (priority: 2, qValue: parsedHeaderValue.qValue)
+                setMatchWithPriority(2)
             }
         } else  {
-            criteriaMatches[type] = (priority: 2, qValue: parsedHeaderValue.qValue)
+            setMatchWithPriority(2)
         }
     }
 
