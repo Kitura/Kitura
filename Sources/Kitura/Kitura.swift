@@ -39,6 +39,7 @@ public class Kitura {
     // Start Kitura framework - make all the registered servers to start listening on their port
     // The function never returns - should be the last call in main.swift
     //
+    @noreturn
     public class func run() {
         Log.verbose("Staring Kitura framework...")
         for (server, port) in httpServersAndPorts {
