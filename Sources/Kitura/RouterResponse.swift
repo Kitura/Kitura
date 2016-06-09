@@ -58,9 +58,9 @@ public class RouterResponse {
     var invokedSend = false
 
     //
-    // Current pre-flush lifecycle handler
+    // Lifecycle hook called on end()
     //
-    private var preFlush: PreFlushLifecycleHandler = {request, response in }
+    private var onEndInvoked: LifecycleHandler = {}
 
     ///
     /// Set of cookies to return with the response
@@ -108,7 +108,7 @@ public class RouterResponse {
     ///
     public func end() throws {
 
-        preFlush(request: request, response: self)
+        onEndInvoked()
         
         // Sets status code if unset
         if statusCode == .unknown {
@@ -397,10 +397,10 @@ public class RouterResponse {
     /// Sets the pre-flush lifecycle handler and returns the previous one
     ///
     /// - Parameter newPreFlush: The new pre-flush lifecycle handler
-    public func setPreFlushHandler(_ newPreFlush: PreFlushLifecycleHandler) -> PreFlushLifecycleHandler {
-        let oldPreFlush = preFlush
-        preFlush = newPreFlush
-        return oldPreFlush
+    public func setOnEndInvoked(_ newOnEndInvoked: LifecycleHandler) -> LifecycleHandler {
+        let oldOnEndInvoked = onEndInvoked
+        onEndInvoked = newOnEndInvoked
+        return oldOnEndInvoked
     }
 
 
@@ -449,4 +449,4 @@ public class RouterResponse {
 
 ///
 /// Type alias for "Before flush" (i.e. before headers and body are written) lifecycle handler
-public typealias PreFlushLifecycleHandler = (request: RouterRequest, response: RouterResponse) -> Void
+public typealias LifecycleHandler = () -> Void
