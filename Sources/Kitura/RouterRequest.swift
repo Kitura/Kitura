@@ -292,11 +292,17 @@ public class RouterRequest: SocketReader {
             return
         }
 
-        let rangeOfType = mimeType.range(of: parsedHeaderValue.type,
-                                         options: .regularExpressionSearch)
+        if nil == mimeType.range(of: parsedHeaderValue.type,
+                                 options: .regularExpressionSearch) {
+            return
+        }
+
         // partial match, e.g. text/html == text/*
-        if rangeOfType != nil &&
-            (criteriaMatches[type]?.priority > 2 || criteriaMatches[type] == nil) {
+        if let match = criteriaMatches[type] {
+            if match.priority > 2 {
+                criteriaMatches[type] = (priority: 2, qValue: parsedHeaderValue.qValue)
+            }
+        } else  {
             criteriaMatches[type] = (priority: 2, qValue: parsedHeaderValue.qValue)
         }
     }
