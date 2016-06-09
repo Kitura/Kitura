@@ -173,10 +173,12 @@ public class Router {
     }
 
     // MARK: Options
+    @discardableResult
     public func options(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.options, pattern: path, handler: handler)
     }
 
+    @discardableResult
     public func options(_ path: String?=nil, handler: [RouterHandler]) -> Router {
         return routingHelper(.options, pattern: path, handler: handler)
     }
@@ -479,10 +481,12 @@ public class Router {
     }
 
     // MARK: Patch
+    @discardableResult
     public func patch(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.patch, pattern: path, handler: handler)
     }
 
+    @discardableResult
     public func patch(_ path: String?=nil, handler: [RouterHandler]) -> Router {
         return routingHelper(.patch, pattern: path, handler: handler)
     }

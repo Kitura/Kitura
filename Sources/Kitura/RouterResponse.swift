@@ -249,6 +249,7 @@ public class RouterResponse {
     ///
     /// - Returns: a RouterResponse instance
     ///
+    @discardableResult
     public func send(json: JSON) -> RouterResponse {
 
         let jsonStr = json.description
