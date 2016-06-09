@@ -272,20 +272,23 @@ public class RouterRequest: SocketReader {
                 let mimeType = getMimeType(forExtension: type)
 
                 if parsedHeaderValue.type == mimeType { // exact match, e.g. text/html == text/html
-
                     criteriaMatches[type] = (priority: 1, qValue: parsedHeaderValue.qValue)
-                } else if parsedHeaderValue.type == "*/*" {
+                    continue
+                }
 
+                if parsedHeaderValue.type == "*/*" {
                     if criteriaMatches[type] == nil { // else do nothing
                         criteriaMatches[type] = (priority: 3, qValue: parsedHeaderValue.qValue)
                     }
-                } else {
+                    continue
+                }
 
-                    if let _ = mimeType.range(of: parsedHeaderValue.type, options: .regularExpressionSearch) { // partial match, e.g. text/html == text/*
-                        if criteriaMatches[type]?.priority > 2 || criteriaMatches[type] == nil {
-                            criteriaMatches[type] = (priority: 2, qValue: parsedHeaderValue.qValue)
-                        }
-                    }
+                let rangeOfType = mimeType.range(of: parsedHeaderValue.type,
+                                                 options: .regularExpressionSearch)
+                // partial match, e.g. text/html == text/*
+                if rangeOfType != nil &&
+                    (criteriaMatches[type]?.priority > 2 || criteriaMatches[type] == nil) {
+                    criteriaMatches[type] = (priority: 2, qValue: parsedHeaderValue.qValue)
                 }
             }
         }
