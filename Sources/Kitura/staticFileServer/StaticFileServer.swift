@@ -221,10 +221,8 @@ public class StaticFileServer: RouterMiddleware {
         let fileManager = NSFileManager()
 
         // Check that no-one is using ..'s in the path to poke around the filesystem
-        let tempAbsoluteBasePath = NSURL(fileURLWithPath: path).absoluteString
-        let tempAbsoluteFilePath = NSURL(fileURLWithPath: filePath).absoluteString
-        let absoluteBasePath = tempAbsoluteBasePath
-        let absoluteFilePath = tempAbsoluteFilePath
+        let absoluteBasePath = NSURL(fileURLWithPath: path).absoluteString
+        let absoluteFilePath = NSURL(fileURLWithPath: filePath).absoluteString
 
         if  !absoluteFilePath.hasPrefix(absoluteBasePath) {
             return
