@@ -226,35 +226,36 @@ public class StaticFileServer: RouterMiddleware {
         let absoluteBasePath = tempAbsoluteBasePath
         let absoluteFilePath = tempAbsoluteFilePath
 
-        if  absoluteFilePath.hasPrefix(absoluteBasePath) {
-            do {
-                let attributes = try fileManager.attributesOfItem(atPath: filePath)
-
-                response.headers["Cache-Control"] = "max-age=\(configuration.maxAgeCacheControlHeader)"
-                if configuration.addLastModifiedHeader {
-                    if let date = attributes[NSFileModificationDate] as? NSDate {
-                        response.headers["Last-Modified"] = SPIUtils.httpDate(date)
-                    }
-                }
-                if configuration.generateETag {
-                    if let date = attributes[NSFileModificationDate] as? NSDate,
-                        let size = attributes[NSFileSize] as? Int {
-                            let sizeHex = String(size, radix: 16, uppercase: false)
-                            let timeHex = String(Int(date.timeIntervalSince1970), radix: 16, uppercase: false)
-                            let etag = "W/\"\(sizeHex)-\(timeHex)\""
-                        response.headers["Etag"] = etag
-                    }
-                }
-                if let customResponseHeadersSetter = customResponseHeadersSetter {
-                    customResponseHeadersSetter.setCustomResponseHeaders(response: response, filePath: filePath, fileAttributes: attributes)
-                }
-
-                try response.send(fileName: filePath)
-            } catch {
-                // Nothing
-            }
-            response.statusCode = .OK
+        if  !absoluteFilePath.hasPrefix(absoluteBasePath) {
+            return
         }
+        do {
+            let attributes = try fileManager.attributesOfItem(atPath: filePath)
+
+            response.headers["Cache-Control"] = "max-age=\(configuration.maxAgeCacheControlHeader)"
+            if configuration.addLastModifiedHeader {
+                if let date = attributes[NSFileModificationDate] as? NSDate {
+                    response.headers["Last-Modified"] = SPIUtils.httpDate(date)
+                }
+            }
+            if configuration.generateETag {
+                if let date = attributes[NSFileModificationDate] as? NSDate,
+                    let size = attributes[NSFileSize] as? Int {
+                        let sizeHex = String(size, radix: 16, uppercase: false)
+                        let timeHex = String(Int(date.timeIntervalSince1970), radix: 16, uppercase: false)
+                        let etag = "W/\"\(sizeHex)-\(timeHex)\""
+                    response.headers["Etag"] = etag
+                }
+            }
+            if let customResponseHeadersSetter = customResponseHeadersSetter {
+                customResponseHeadersSetter.setCustomResponseHeaders(response: response, filePath: filePath, fileAttributes: attributes)
+            }
+
+            try response.send(fileName: filePath)
+        } catch {
+            // Nothing
+        }
+        response.statusCode = .OK
     }
 
     public enum Options {
