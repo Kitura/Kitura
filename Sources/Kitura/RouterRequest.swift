@@ -192,49 +192,6 @@ public class RouterRequest: SocketReader {
     }
 
     ///
-    /// Finds the full mime type for a given extension
-    ///
-    /// - Parameter forExtension: mime type extension String
-    ///
-    /// - Returns the full mime type
-    ///
-    private func getMimeType(forExtension ext: String) -> String {
-
-        if let mimeType = ContentType.sharedInstance.getContentType(forExtension: ext) {
-            return mimeType
-        }
-        return ext
-    }
-
-    typealias MimeTypeWithQValue = (type: String, qValue: Double)
-
-    ///
-    /// Parse mime type string into a digestable tuple format
-    ///
-    /// - Parameter type: raw mime type String
-    ///
-    /// - Returns a tuple with the mime type and q parameter value if present, qValue defaults to 1
-    ///
-    private func parse(mediaType type: String) -> MimeTypeWithQValue {
-        var finishedPair = ("", 1.0)
-        let trimmed = type.trimmingCharacters(in: NSCharacterSet.whitespaces())
-        let components = trimmed.characters.split(separator: ";").map(String.init)
-
-        if let mediaType = components.first {
-            finishedPair.0 = mediaType
-        }
-        if let qPreference = components.last {
-            let qualityComponents = qPreference.characters.split(separator: "=").map(String.init)
-            if let q = qualityComponents.first, value = qualityComponents.last where q == "q",
-                let pairValue = Double(value) {
-                finishedPair.1 = pairValue
-            }
-        }
-
-        return finishedPair
-    }
-
-    ///
     /// Checks if passed in content types are acceptable based on the request's Accept header field
     ///
     /// - Parameter types: array of content/mime type strings
@@ -242,77 +199,12 @@ public class RouterRequest: SocketReader {
     /// - Returns most acceptable type or nil if there are none
     ///
     public func accepts(_ types: [String]) -> String? {
-
         guard let acceptHeaderValue = headers["accept"] else {
             return nil
         }
 
         let headerValues = acceptHeaderValue.characters.split(separator: ",").map(String.init)
-        let criteriaMatches = getCriteriaMatches(headerValues: headerValues, types: types)
-
-        // sort by priority and by qValue to determine best type to return
-        let sortedMatches = Array(criteriaMatches).sorted {
-            if $0.1.priority != $1.1.priority {
-                return $0.1.priority < $1.1.priority
-            } else {
-                return $0.1.qValue > $1.1.qValue
-            }
-        }
-
-        if let bestMatch = sortedMatches.first {
-            return bestMatch.0
-        }
-        return nil
-    }
-
-    private typealias CriteriaMatches = [String : (priority: Int, qValue: Double)]
-
-    private func getCriteriaMatches(headerValues: [String], types: [String]) -> CriteriaMatches {
-        var criteriaMatches = [String : (priority: Int, qValue: Double)]()
-
-        for rawHeaderValue in headerValues {
-            for type in types {
-                handleMatch(rawHeaderValue: rawHeaderValue, type: type,
-                            criteriaMatches: &criteriaMatches)
-            }
-        }
-        return criteriaMatches
-    }
-
-    private func handleMatch(rawHeaderValue: String, type: String,
-                             criteriaMatches: inout CriteriaMatches) {
-        let parsedHeaderValue = parse(mediaType: rawHeaderValue)
-        let mimeType = getMimeType(forExtension: type)
-
-        let setMatchWithPriority = { (priority: Int) in
-            criteriaMatches[type] = (priority: priority, qValue: parsedHeaderValue.qValue)
-        }
-
-        if parsedHeaderValue.type == mimeType { // exact match, e.g. text/html == text/html
-            setMatchWithPriority(1)
-            return
-        }
-
-        if parsedHeaderValue.type == "*/*" {
-            if criteriaMatches[type] == nil { // else do nothing
-                setMatchWithPriority(3)
-            }
-            return
-        }
-
-        if nil == mimeType.range(of: parsedHeaderValue.type,
-                                 options: .regularExpressionSearch) {
-            return
-        }
-
-        // partial match, e.g. text/html == text/*
-        if let match = criteriaMatches[type] {
-            if match.priority > 2 {
-                setMatchWithPriority(2)
-            }
-        } else  {
-            setMatchWithPriority(2)
-        }
+        return MimeTypeAcceptor.accepts(headerValues: headerValues, types: types)
     }
 
     public func accepts(_ types: String...) -> String? {
