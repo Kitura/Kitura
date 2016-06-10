@@ -263,7 +263,9 @@ public class RouterRequest: SocketReader {
         return nil
     }
 
-    private func getCriteriaMatches(headerValues: [String], types: [String]) -> [String : (priority: Int, qValue: Double)] {
+    private typealias CriteriaMatches = [String : (priority: Int, qValue: Double)]
+
+    private func getCriteriaMatches(headerValues: [String], types: [String]) -> CriteriaMatches {
         var criteriaMatches = [String : (priority: Int, qValue: Double)]()
 
         for rawHeaderValue in headerValues {
@@ -276,7 +278,7 @@ public class RouterRequest: SocketReader {
     }
 
     private func handleMatch(rawHeaderValue: String, type: String,
-                             criteriaMatches: inout [String : (priority: Int, qValue: Double)]) {
+                             criteriaMatches: inout CriteriaMatches) {
         let parsedHeaderValue = parse(mediaType: rawHeaderValue)
         let mimeType = getMimeType(forExtension: type)
 
