@@ -65,11 +65,9 @@ public class ContentType {
             return
         }
 
-#if os(Linux)
-        let jsonParseOptions = NSJSONReadingOptions.MutableContainers
-#else
+
         let jsonParseOptions = NSJSONReadingOptions.mutableContainers
-#endif
+
 
         // MARK: Linux Foundation will return an Any instead of an AnyObject
         // Need to test if this breaks the Linux build.

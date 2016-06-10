@@ -24,14 +24,17 @@ import KituraTemplateEngine
 
 extension Router {
     // MARK: All
+    @discardableResult
     public func all(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.all, pattern: path, handler: handler)
     }
 
+    @discardableResult
     public func all(_ path: String?=nil, handler: [RouterHandler]) -> Router {
         return routingHelper(.all, pattern: path, handler: handler)
     }
 
+    @discardableResult
     public func all(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
         return routingHelper(.all, pattern: path, middleware: middleware)
     }
@@ -41,10 +44,12 @@ extension Router {
     }
 
     // MARK: Get
+    @discardableResult
     public func get(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.get, pattern: path, handler: handler)
     }
 
+    @discardableResult
     public func get(_ path: String?=nil, handler: [RouterHandler]) -> Router {
         return routingHelper(.get, pattern: path, handler: handler)
     }
@@ -75,10 +80,12 @@ extension Router {
     }
 
     // MARK: Post
+    @discardableResult
     public func post(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.post, pattern: path, handler: handler)
     }
 
+    @discardableResult
     public func post(_ path: String?=nil, handler: [RouterHandler]) -> Router {
         return routingHelper(.post, pattern: path, handler: handler)
     }
@@ -92,10 +99,12 @@ extension Router {
     }
 
     // MARK: Put
+    @discardableResult
     public func put(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.put, pattern: path, handler: handler)
     }
 
+    @discardableResult
     public func put(_ path: String?=nil, handler: [RouterHandler]) -> Router {
         return routingHelper(.put, pattern: path, handler: handler)
     }
@@ -109,10 +118,12 @@ extension Router {
     }
 
     // MARK: Delete
+    @discardableResult
     public func delete(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.delete, pattern: path, handler: handler)
     }
 
+    @discardableResult
     public func delete(_ path: String?=nil, handler: [RouterHandler]) -> Router {
         return routingHelper(.delete, pattern: path, handler: handler)
     }
@@ -126,10 +137,12 @@ extension Router {
     }
 
     // MARK: Options
+    @discardableResult
     public func options(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.options, pattern: path, handler: handler)
     }
 
+    @discardableResult
     public func options(_ path: String?=nil, handler: [RouterHandler]) -> Router {
         return routingHelper(.options, pattern: path, handler: handler)
     }
@@ -432,10 +445,12 @@ extension Router {
     }
 
     // MARK: Patch
+    @discardableResult
     public func patch(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.patch, pattern: path, handler: handler)
     }
 
+    @discardableResult
     public func patch(_ path: String?=nil, handler: [RouterHandler]) -> Router {
         return routingHelper(.patch, pattern: path, handler: handler)
     }
@@ -483,10 +498,12 @@ extension Router {
     }
 
     // MARK: error
+    @discardableResult
     public func error(_ handler: RouterHandler...) -> Router {
         return routingHelper(.error, pattern: nil, handler: handler)
     }
 
+    @discardableResult
     public func error(_ handler: [RouterHandler]) -> Router {
         return routingHelper(.error, pattern: nil, handler: handler)
     }

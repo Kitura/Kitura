@@ -106,6 +106,7 @@ public class RouterResponse {
     /// - Throws: ???
     /// - Returns: a RouterResponse instance
     ///
+    @discardableResult
     public func end() throws {
 
         onEndInvoked()
@@ -188,6 +189,7 @@ public class RouterResponse {
     ///
     /// - Returns: a RouterResponse instance
     ///
+    @discardableResult
     public func send(_ str: String) -> RouterResponse {
 
         if  let data = StringUtils.toUtf8String(str)  {
@@ -204,6 +206,7 @@ public class RouterResponse {
     ///
     /// - Returns: a RouterResponse instance
     ///
+    @discardableResult
     public func send(data: NSData) -> RouterResponse {
 
         buffer.append(data: data)
@@ -222,6 +225,7 @@ public class RouterResponse {
     /// Note: Sets the Content-Type header based on the "extension" of the file
     ///       If the fileName is relative, it is relative to the current directory
     ///
+    @discardableResult
     public func send(fileName: String) throws -> RouterResponse {
         let data = try NSData(contentsOfFile: fileName, options: [])
 
@@ -242,6 +246,7 @@ public class RouterResponse {
     ///
     /// - Returns: a RouterResponse instance
     ///
+    @discardableResult
     public func send(json: JSON) -> RouterResponse {
 
         let jsonStr = json.description
@@ -257,6 +262,7 @@ public class RouterResponse {
     ///
     /// - Returns: a RouterResponse instance
     ///
+    @discardableResult
     public func status(_ status: HTTPStatusCode) -> RouterResponse {
         response.statusCode = status
         return self
@@ -287,6 +293,7 @@ public class RouterResponse {
     ///
     /// - Returns: a RouterResponse instance
     ///
+    @discardableResult
     public func redirect(_ path: String) throws -> RouterResponse {
         return try redirect(.movedTemporarily, path: path)
     }
