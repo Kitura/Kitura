@@ -218,14 +218,12 @@ public class StaticFileServer: RouterMiddleware {
     }
 
     private func serveNonDirectoryFile(_ filePath: String, response: RouterResponse) {
-        let fileManager = NSFileManager()
-
         if  !isValidFilePath(filePath) {
             return
         }
 
         do {
-            let attributes = try fileManager.attributesOfItem(atPath: filePath)
+            let attributes = try NSFileManager().attributesOfItem(atPath: filePath)
 
             response.headers["Cache-Control"] = "max-age=\(configuration.maxAgeCacheControlHeader)"
             addLastModifiedHeader(response: response, attributes: attributes)
