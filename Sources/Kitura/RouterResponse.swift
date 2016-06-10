@@ -35,7 +35,7 @@ public class RouterResponse {
     ///
     /// The router
     ///
-    weak var router: Router?
+    unowned let router: Router
 
     ///
     /// The associated request
@@ -337,9 +337,6 @@ public class RouterResponse {
     ///
     // influenced by http://expressjs.com/en/4x/api.html#app.render
     public func render(_ resource: String, context: [ String: Any]) throws -> RouterResponse {
-        guard let router = router else {
-            throw InternalError.nilVariable(variable: "router")
-        }
         let renderedResource = try router.render(template: resource, context: context)
         return send(renderedResource)
     }
