@@ -223,15 +223,15 @@ public class StaticFileServer: RouterMiddleware {
         }
 
         do {
-            let attributes = try NSFileManager().attributesOfItem(atPath: filePath)
+            let fileAttributes = try NSFileManager().attributesOfItem(atPath: filePath)
 
             response.headers["Cache-Control"] = "max-age=\(configuration.maxAgeCacheControlHeader)"
-            addLastModifiedHeader(response: response, attributes: attributes)
-            addETag(response: response, attributes: attributes)
+            addLastModifiedHeader(response: response, fileAttributes: fileAttributes)
+            addETag(response: response, fileAttributes: fileAttributes)
 
             customResponseHeadersSetter?.setCustomResponseHeaders(response: response,
                                                                   filePath: filePath,
-                                                                  fileAttributes: attributes)
+                                                                  fileAttributes: fileAttributes)
 
             try response.send(fileName: filePath)
         } catch {
@@ -240,18 +240,24 @@ public class StaticFileServer: RouterMiddleware {
         response.statusCode = .OK
     }
 
-    private func addLastModifiedHeader(response: RouterResponse, attributes: [String : AnyObject]) {
+    #if os(Linux)
+    private typealias FileAttributes = [String : Any]
+    #else
+    private typealias FileAttributes = [String : AnyObject]
+    #endif
+
+    private func addLastModifiedHeader(response: RouterResponse, fileAttributes: FileAttributes) {
         if configuration.addLastModifiedHeader {
-            if let date = attributes[NSFileModificationDate] as? NSDate {
+            if let date = fileAttributes[NSFileModificationDate] as? NSDate {
                 response.headers["Last-Modified"] = SPIUtils.httpDate(date)
             }
         }
     }
 
-    private func addETag(response: RouterResponse, attributes: [String : AnyObject]) {
+    private func addETag(response: RouterResponse, fileAttributes: FileAttributes) {
         if configuration.generateETag {
-            if let date = attributes[NSFileModificationDate] as? NSDate,
-                let size = attributes[NSFileSize] as? Int {
+            if let date = fileAttributes[NSFileModificationDate] as? NSDate,
+                let size = fileAttributes[NSFileSize] as? Int {
                 let sizeHex = String(size, radix: 16, uppercase: false)
                 let timeHex = String(Int(date.timeIntervalSince1970), radix: 16, uppercase: false)
                 let etag = "W/\"\(sizeHex)-\(timeHex)\""
