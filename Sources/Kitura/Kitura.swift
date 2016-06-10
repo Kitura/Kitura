@@ -15,9 +15,10 @@
  **/
 
 import KituraNet
-import KituraSys
 import LoggerAPI
+
 import Foundation
+import Dispatch
 
 
 // MARK Kitura
@@ -39,13 +40,14 @@ public class Kitura {
     // Start Kitura framework - make all the registered servers to start listening on their port
     // The function never returns - should be the last call in main.swift
     //
+    @noreturn
     public class func run() {
         Log.verbose("Staring Kitura framework...")
         for (server, port) in httpServersAndPorts {
             Log.verbose("Starting an HTTP Server on port \(port)...")
             server.listen(port: port, notOnMainQueue: false)
         }
-        Server.run()                  
+        dispatch_main()
     }
     
     typealias Port = Int

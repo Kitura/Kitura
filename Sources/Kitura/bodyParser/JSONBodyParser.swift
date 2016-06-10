@@ -14,17 +14,15 @@
  * limitations under the License.
  **/
 
-// MARK: RouterMiddleware protocol
+import SwiftyJSON
+import Foundation
 
-public protocol RouterMiddleware {
-
-    ///
-    /// The handle operation
-    ///
-    /// - Parameter request: the router request
-    /// - Parameter response: the router response
-    /// - Parameter next: the closure to the next operation
-    ///
-    func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) throws
-
+class JSONBodyParser: BodyParserProtocol {
+    func parse(_ data: NSData) -> ParsedBody? {
+        let json = JSON(data: data)
+        if json != JSON.null {
+            return .json(json)
+        }
+        return nil
+    }
 }

@@ -19,7 +19,7 @@
 class RouterElementWalker
 {
     /// The array of router elements to be processed
-    private let routeElems: [RouterElement]
+    private let elements: [RouterElement]
 
     /// The current router request
     private let request: RouterRequest
@@ -31,10 +31,10 @@ class RouterElementWalker
     private let callback: () -> Void
 
     /// Index of element currently being processed
-    private var elemIndex = -1
+    private var elementIndex = -1
 
-    init(routeElems: [RouterElement], request: RouterRequest, response: RouterResponse, callback: () -> Void) {
-        self.routeElems = routeElems
+    init(elements: [RouterElement], request: RouterRequest, response: RouterResponse, callback: () -> Void) {
+        self.elements = elements
         self.request = request
         self.response = response
         self.callback = callback
@@ -44,10 +44,10 @@ class RouterElementWalker
     /// Process the next router element
     ///
     func next() {
-        elemIndex += 1
+        elementIndex += 1
 
-        if elemIndex < self.routeElems.count {
-            routeElems[elemIndex].process(request: request, response: response) {
+        if elementIndex < self.elements.count {
+            elements[elementIndex].process(request: request, response: response) {
                 [unowned self] in
                 self.next()
             }

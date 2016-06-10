@@ -35,7 +35,7 @@ public class RouterResponse {
     ///
     /// The router
     ///
-    weak var router: Router?
+    unowned let router: Router
 
     ///
     /// The associated request
@@ -58,9 +58,9 @@ public class RouterResponse {
     var invokedSend = false
 
     //
-    // Current pre-flush lifecycle handler
+    // Lifecycle hook called on end()
     //
-    private var preFlush: PreFlushLifecycleHandler = {request, response in }
+    private var onEndInvoked: LifecycleHandler = {}
 
     ///
     /// Set of cookies to return with the response
@@ -107,9 +107,9 @@ public class RouterResponse {
     /// - Returns: a RouterResponse instance
     ///
     @discardableResult
-    public func end() throws -> RouterResponse {
+    public func end() throws {
 
-        preFlush(request: request, response: self)
+        onEndInvoked()
         
         // Sets status code if unset
         if statusCode == .unknown {
@@ -129,7 +129,6 @@ public class RouterResponse {
         }
         invokedEnd = true
         try response.end()
-        return self
     }
 
     //
@@ -161,11 +160,10 @@ public class RouterResponse {
     /// - Throws: ???
     /// - Returns: a RouterResponse instance
     ///
-    public func end(_ str: String) throws -> RouterResponse {
+    public func end(_ str: String) throws {
 
         send(str)
         try end()
-        return self
 
     }
 
@@ -177,11 +175,10 @@ public class RouterResponse {
     /// - Throws: ???
     /// - Returns: a RouterResponse instance
     ///
-    public func end(_ data: NSData) throws -> RouterResponse {
+    public func end(_ data: NSData) throws {
 
         send(data: data)
         try end()
-        return self
 
     }
 
@@ -232,7 +229,7 @@ public class RouterResponse {
     public func send(fileName: String) throws -> RouterResponse {
         let data = try NSData(contentsOfFile: fileName, options: [])
 
-        let contentType =  ContentType.sharedInstance.contentTypeForFile(fileName)
+        let contentType =  ContentType.sharedInstance.getContentType(forFileName: fileName)
         if  let contentType = contentType {
             headers["Content-Type"] = contentType
         }
@@ -347,10 +344,7 @@ public class RouterResponse {
     ///
     // influenced by http://expressjs.com/en/4x/api.html#app.render
     public func render(_ resource: String, context: [ String: Any]) throws -> RouterResponse {
-        guard let router = router else {
-            throw InternalError.nilVariable(variable: "router")
-        }
-        let renderedResource = try router.render(resource, context: context)
+        let renderedResource = try router.render(template: resource, context: context)
         return send(renderedResource)
     }
 
@@ -360,7 +354,7 @@ public class RouterResponse {
     /// - Parameter type: the type to set to
     ///
     public func type(_ type: String, charset: String? = nil) {
-        if  let contentType = ContentType.sharedInstance.contentTypeForExtension(type) {
+        if  let contentType = ContentType.sharedInstance.getContentType(forExtension: type) {
             var contentCharset = ""
             if let charset = charset {
                 contentCharset = "; charset=\(charset)"
@@ -375,7 +369,7 @@ public class RouterResponse {
     ///
     /// - Parameter filePath: the file to set the filename to
     ///
-    public func attachment(_ filePath: String? = nil) {
+    public func prepareAttachment(for filePath: String? = nil) {
         guard let filePath = filePath else {
             headers["Content-Disposition"] = "attachment"
             return
@@ -387,7 +381,7 @@ public class RouterResponse {
         }
         headers["Content-Disposition"] = "attachment; fileName = \"\(fileName)\""
 
-        let contentType =  ContentType.sharedInstance.contentTypeForFile(fileName)
+        let contentType =  ContentType.sharedInstance.getContentType(forFileName: fileName)
         if  let contentType = contentType {
             headers["Content-Type"] = contentType
         }
@@ -398,19 +392,19 @@ public class RouterResponse {
     ///
     /// - Parameter filePath: the file to download
     ///
-    public func download(_ filePath: String) throws {
-        try send(fileName: filePath)
-        attachment(filePath)
+    public func send(download: String) throws {
+        try send(fileName: download)
+        prepareAttachment(for: download)
     }
 
     ///
     /// Sets the pre-flush lifecycle handler and returns the previous one
     ///
     /// - Parameter newPreFlush: The new pre-flush lifecycle handler
-    public func setPreFlushHandler(_ newPreFlush: PreFlushLifecycleHandler) -> PreFlushLifecycleHandler {
-        let oldPreFlush = preFlush
-        preFlush = newPreFlush
-        return oldPreFlush
+    public func setOnEndInvoked(_ newOnEndInvoked: LifecycleHandler) -> LifecycleHandler {
+        let oldOnEndInvoked = onEndInvoked
+        onEndInvoked = newOnEndInvoked
+        return oldOnEndInvoked
     }
 
 
@@ -441,55 +435,22 @@ public class RouterResponse {
     /// Adds a link with specified parameters to Link HTTP header
     ///
     /// - Parameter link: link value
-    /// - Parameter rel:
-    /// - Parameter anchor:
-    /// - Parameter rev:
-    /// - Parameter hreflang:
-    /// - Parameter media:
-    /// - Parameter title:
-    /// - Parameter type:
+    /// - Parameter linkParameters: the link parameters (according to RFC 5988) with their values
     ///
     /// - Returns: a RouterResponse instance
     ///
-    public func link(_ link: String, rel: String? = nil, anchor: String? = nil,
-      rev: String? = nil, hreflang: String? = nil, media: String? = nil,
-      title: String? = nil, type: String? = nil) -> RouterResponse {
+    public func addLink(_ link: String, linkParameters: [LinkParameter: String]) -> RouterResponse {
         var headerValue = "<\(link)>"
 
-        if let rel = rel {
-            headerValue += "; rel=\"\(rel)\""
-        }
-
-        if let anchor = anchor {
-            headerValue += "; anchor=\"\(anchor)\""
-        }
-
-        if let rev = rev {
-            headerValue += "; rev=\"\(rev)\""
-        }
-
-        if let hreflang = hreflang {
-            headerValue += "; hreflang=\"\(hreflang)\""
-        }
-
-        if let media = media {
-            headerValue += "; media=\"\(media)\""
-        }
-
-        if let title = title {
-            headerValue += "; title=\"\(title)\""
-        }
-
-        if let type = type {
-            headerValue += "; type=\(type)"
+        for (linkParamer, value) in linkParameters {
+            headerValue += "; \(linkParamer.rawValue)=\"\(value)\""
         }
 
         headers.append("Link", value: headerValue)
-
         return self
     }
 }
 
 ///
 /// Type alias for "Before flush" (i.e. before headers and body are written) lifecycle handler
-public typealias PreFlushLifecycleHandler = (request: RouterRequest, response: RouterResponse) -> Void
+public typealias LifecycleHandler = () -> Void

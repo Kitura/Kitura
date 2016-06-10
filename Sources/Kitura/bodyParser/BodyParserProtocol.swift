@@ -14,17 +14,15 @@
  * limitations under the License.
  **/
 
-// MARK: RouterMiddleware protocol
+import SwiftyJSON
 
-public protocol RouterMiddleware {
+import KituraSys
+import KituraNet
+import Socket
+import LoggerAPI
 
-    ///
-    /// The handle operation
-    ///
-    /// - Parameter request: the router request
-    /// - Parameter response: the router response
-    /// - Parameter next: the closure to the next operation
-    ///
-    func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) throws
+import Foundation
 
+protocol BodyParserProtocol {
+    func parse(_: NSData) -> ParsedBody?
 }
