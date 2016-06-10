@@ -16,7 +16,7 @@
 
 
 import KituraNet
-
+import LoggerAPI
 import Foundation
 
 // MARK: StaticFileServer
@@ -253,7 +253,7 @@ public class StaticFileServer: RouterMiddleware {
 
             try response.send(fileName: filePath)
         } catch {
-            // Nothing
+            Log.error("serving file at path \(filePath) error: \(error)")
         }
         response.statusCode = .OK
     }
