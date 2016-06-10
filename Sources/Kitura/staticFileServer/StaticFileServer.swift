@@ -220,11 +220,7 @@ public class StaticFileServer: RouterMiddleware {
     private func serveNonDirectoryFile(_ filePath: String, response: RouterResponse) {
         let fileManager = NSFileManager()
 
-        // Check that no-one is using ..'s in the path to poke around the filesystem
-        let absoluteBasePath = NSURL(fileURLWithPath: path).absoluteString
-        let absoluteFilePath = NSURL(fileURLWithPath: filePath).absoluteString
-
-        if  !absoluteFilePath.hasPrefix(absoluteBasePath) {
+        if  !isValidFilePath(filePath) {
             return
         }
 
@@ -264,6 +260,14 @@ public class StaticFileServer: RouterMiddleware {
                 response.headers["Etag"] = etag
             }
         }
+    }
+
+    private func isValidFilePath(_ filePath: String) -> Bool {
+        // Check that no-one is using ..'s in the path to poke around the filesystem
+        let absoluteBasePath = NSURL(fileURLWithPath: path).absoluteString
+        let absoluteFilePath = NSURL(fileURLWithPath: filePath).absoluteString
+
+        return  absoluteFilePath.hasPrefix(absoluteBasePath)
     }
 
     public enum Options {
