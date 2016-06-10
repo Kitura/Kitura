@@ -206,6 +206,8 @@ public class RouterRequest: SocketReader {
         return ext
     }
 
+    typealias MimeTypeWithQValue = (type: String, qValue: Double)
+
     ///
     /// Parse mime type string into a digestable tuple format
     ///
@@ -213,7 +215,7 @@ public class RouterRequest: SocketReader {
     ///
     /// - Returns a tuple with the mime type and q parameter value if present, qValue defaults to 1
     ///
-    private func parse(mediaType type: String) -> (type: String, qValue: Double) {
+    private func parse(mediaType type: String) -> MimeTypeWithQValue {
         var finishedPair = ("", 1.0)
         let trimmed = type.trimmingCharacters(in: NSCharacterSet.whitespaces())
         let components = trimmed.characters.split(separator: ";").map(String.init)
