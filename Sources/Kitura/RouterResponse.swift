@@ -26,6 +26,17 @@ import LoggerAPI
 // MARK: RouterResponse
 
 public class RouterResponse {
+    struct State {
+        ///
+        /// Whether the response has ended
+        ///
+        var invokedEnd = false
+
+        ///
+        /// Whether data has been added to buffer
+        ///
+        var invokedSend = false
+    }
 
     ///
     /// The server response
@@ -48,14 +59,9 @@ public class RouterResponse {
     private let buffer = BufferList()
 
     ///
-    /// Whether the response has ended
+    /// State of the request
     ///
-    var invokedEnd = false
-    
-    ///
-    /// Whether data has been added to buffer
-    ///
-    var invokedSend = false
+    var state = State()
 
     //
     // Lifecycle hook called on end()
@@ -126,7 +132,7 @@ public class RouterResponse {
                 try response.write(from: data)
             }
         }
-        invokedEnd = true
+        state.invokedEnd = true
         try response.end()
     }
 
@@ -207,7 +213,7 @@ public class RouterResponse {
     public func send(data: NSData) -> RouterResponse {
 
         buffer.append(data: data)
-        invokedSend = true
+        state.invokedSend = true
         return self
 
     }
