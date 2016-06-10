@@ -22,50 +22,50 @@ import Foundation
 // MARK: StaticFileServer
 
 public class StaticFileServer: RouterMiddleware {
-    private class Configuration {
+    private struct Configuration {
         //
         // If a file is not found, the given extensions will be added to the file name and searched for. The first that exists will be served. Example: ['html', 'htm'].
         //
-        private var possibleExtensions = [String]()
+        private let possibleExtensions: [String]
 
         //
         // Serve "index.html" files in response to a request on a directory.  Defaults to true.
         //
-        private var serveIndexForDirectory = true
+        private let serveIndexForDirectory: Bool
 
         //
         // Uses the file system's last modified value.  Defaults to true.
         //
-        private var addLastModifiedHeader = true
+        private let addLastModifiedHeader: Bool
 
         //
         // Value of max-age in Cache-Control header.  Defaults to 0.
         //
-        private var maxAgeCacheControlHeader = 0
+        private let maxAgeCacheControlHeader: Int
 
         //
         // Redirect to trailing "/" when the pathname is a dir. Defaults to true.
         //
-        private var redirect = true
+        private let redirect: Bool
 
         //
         // Generate ETag. Defaults to true.
         //
-        private var generateETag = true
+        private var generateETag: Bool
     }
 
     //
     // configuration
     //
-    private let configuration = Configuration()
+    private let configuration: Configuration
 
 
     //
     // A setter for custom response headers.
     //
-    private var customResponseHeadersSetter: ResponseHeadersSetter?
+    private let customResponseHeadersSetter: ResponseHeadersSetter?
 
-    private var path: String
+    private let path: String
 
     public convenience init (options: [Options]) {
         self.init(path: "./public", options: options)
@@ -79,36 +79,47 @@ public class StaticFileServer: RouterMiddleware {
     /// Initializes a StaticFileServer instance
     ///
     public init (path: String, options: [Options] = [Options]()) {
+        var path = path
         if path.hasSuffix("/") {
-            self.path = String(path.characters.dropLast())
-        } else {
-            self.path = path
+            path = String(path.characters.dropLast())
         }
+
         // If we received a path with a tlde (~) in the front, expand it.
 #if os(Linux)
-        self.path = self.path.bridge().stringByExpandingTildeInPath
+        self.path = path.bridge().stringByExpandingTildeInPath
 #else
-        self.path = self.path.bridge().expandingTildeInPath
+        self.path = path.bridge().expandingTildeInPath
 #endif
+
+        var possibleExtensions = [String]()
+        var serveIndexForDirectory = true
+        var addLastModifiedHeader = true
+        var maxAgeCacheControlHeader = 0
+        var redirect = true
+        var generateETag = true
+        var customResponseHeadersSetter: ResponseHeadersSetter?
 
         for option in options {
             switch option {
             case .possibleExtensions(let value):
-                configuration.possibleExtensions = value
+                possibleExtensions = value
             case .serveIndexForDir(let value):
-                configuration.serveIndexForDirectory = value
+                serveIndexForDirectory = value
             case .addLastModifiedHeader(let value):
-                configuration.addLastModifiedHeader = value
+                addLastModifiedHeader = value
             case .maxAgeCacheControlHeader(let value):
-                configuration.maxAgeCacheControlHeader = value
+                maxAgeCacheControlHeader = value
             case .redirect(let value):
-                configuration.redirect = value
+                redirect = value
             case .customResponseHeadersSetter(let value):
                 customResponseHeadersSetter = value
             case .generateETag (let value):
-                configuration.generateETag = value
+                generateETag = value
             }
         }
+
+        self.customResponseHeadersSetter = customResponseHeadersSetter
+        configuration = Configuration(possibleExtensions: possibleExtensions, serveIndexForDirectory: serveIndexForDirectory, addLastModifiedHeader: addLastModifiedHeader, maxAgeCacheControlHeader: maxAgeCacheControlHeader, redirect: redirect, generateETag: generateETag)
     }
 
     ///
