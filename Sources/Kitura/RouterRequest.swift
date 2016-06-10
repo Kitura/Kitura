@@ -108,7 +108,7 @@ public class RouterRequest: SocketReader {
     ///
     /// The URL
     ///
-    public internal(set) var url: String
+    public let url: String
 
     ///
     /// List of HTTP headers with simple String values
