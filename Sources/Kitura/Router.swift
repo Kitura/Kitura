@@ -15,7 +15,6 @@
  **/
 
 import KituraNet
-import KituraSys
 import LoggerAPI
 import Foundation
 import KituraTemplateEngine

@@ -14,11 +14,6 @@
  * limitations under the License.
  **/
 
-
-import KituraNet
-import LoggerAPI
-import Foundation
-
 // MARK: StaticFileServer
 
 public class StaticFileServer: RouterMiddleware {

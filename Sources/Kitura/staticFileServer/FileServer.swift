@@ -15,7 +15,6 @@
  **/
 
 
-import KituraNet
 import LoggerAPI
 import Foundation
 
