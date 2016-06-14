@@ -67,6 +67,11 @@ public class RouterResponse {
     // Lifecycle hook called on end()
     //
     private var onEndInvoked: LifecycleHandler = {}
+    
+    //
+    // Current pre-write lifecycle handler
+    //
+    private var writtenDataFilter: WrittenDataFilter = {body in return body}
 
     ///
     /// Set of cookies to return with the response
@@ -122,14 +127,15 @@ public class RouterResponse {
         }
 
         if  let data = buffer.data {
+            let content = writtenDataFilter(body: data)
             let contentLength = headers["Content-Length"]
             if  contentLength == nil {
-                headers["Content-Length"] = String(buffer.count)
+                headers["Content-Length"] = String(content.length)
             }
             addCookies()
 
             if  request.method != .head {
-                try response.write(from: data)
+                try response.write(from: content)
             }
         }
         state.invokedEnd = true
@@ -406,6 +412,16 @@ public class RouterResponse {
         return oldOnEndInvoked
     }
 
+    
+    ///
+    /// Sets the written data filter and returns the previous one
+    ///
+    /// - Parameter newWrittenDataFilter: The new written data filter
+    public func setWrittenDataFilter(_ newWrittenDataFilter: WrittenDataFilter) -> WrittenDataFilter {
+        let oldWrittenDataFilter = writtenDataFilter
+        writtenDataFilter = newWrittenDataFilter
+        return oldWrittenDataFilter
+    }
 
     ///
     /// Performs content-negotiation on the Accept HTTP header on the request, when present. It uses
@@ -418,7 +434,7 @@ public class RouterResponse {
     ///
     public func format(callbacks: [String : ((RouterRequest, RouterResponse) -> Void)]) throws {
         let callbackTypes = Array(callbacks.keys)
-        if let acceptType = request.accepts(callbackTypes) {
+        if let acceptType = request.accepts(header: "Accept", types: callbackTypes) {
             headers["Content-Type"] = acceptType
             callbacks[acceptType]!(request, self)
         }
@@ -453,3 +469,8 @@ public class RouterResponse {
 ///
 /// Type alias for "Before flush" (i.e. before headers and body are written) lifecycle handler
 public typealias LifecycleHandler = () -> Void
+
+//
+/// Type alias for written data filter, i.e. pre-write lifecycle handler
+public typealias WrittenDataFilter = (body: NSData) -> NSData
+

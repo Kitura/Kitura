@@ -192,14 +192,16 @@ public class RouterRequest: SocketReader {
     }
 
     ///
-    /// Checks if passed in content types are acceptable based on the request's Accept header field
+    /// Checks if passed in types are acceptable based on the request's header field
+    /// specified in the first parameter
     ///
+    /// - Parameter header: name of request's header field to be checked
     /// - Parameter types: array of content/mime type strings
     ///
     /// - Returns most acceptable type or nil if there are none
     ///
-    public func accepts(_ types: [String]) -> String? {
-        guard let acceptHeaderValue = headers["accept"] else {
+    public func accepts(header: String, types: [String]) -> String? {
+        guard let acceptHeaderValue = headers[header] else {
             return nil
         }
 
@@ -207,12 +209,12 @@ public class RouterRequest: SocketReader {
         return MimeTypeAcceptor.accepts(headerValues: headerValues, types: types)
     }
 
-    public func accepts(_ types: String...) -> String? {
-        return accepts(types)
+    public func accepts(header: String, types: String...) -> String? {
+        return accepts(header:header, types: types)
     }
 
-    public func accepts(_ type: String) -> String? {
-        return accepts([type])
+    public func accepts(header: String, type: String) -> String? {
+        return accepts(header:header, types: [type])
     }
 
 }
