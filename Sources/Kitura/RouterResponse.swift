@@ -346,26 +346,15 @@ public class RouterResponse {
     }
 
     ///
-    /// Redirect to path
+    /// Redirect to path with status code
     ///
     /// - Parameter: the path for the redirect
+    /// - Parameter: the status code for the redirect
     ///
     /// - Returns: a RouterResponse instance
     ///
     @discardableResult
-    public func redirect(_ path: String) throws -> RouterResponse {
-        return try redirect(.movedTemporarily, path: path)
-    }
-
-    ///
-    /// Redirect to path with status code
-    ///
-    /// - Parameter: the status code for the redirect
-    /// - Parameter: the path for the redirect
-    ///
-    /// - Returns: a RouterResponse instance
-    ///
-    public func redirect(_ status: HTTPStatusCode, path: String) throws -> RouterResponse {
+    public func redirect(_ path: String, status: HTTPStatusCode = .movedTemporarily) throws -> RouterResponse {
         headers.setLocation(path)
         try self.status(status).end()
         return self
@@ -404,7 +393,6 @@ public class RouterResponse {
         onEndInvoked = newOnEndInvoked
         return oldOnEndInvoked
     }
-
 
     ///
     /// Sets the written data filter and returns the previous one
