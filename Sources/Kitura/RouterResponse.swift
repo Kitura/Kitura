@@ -165,36 +165,6 @@ public class RouterResponse {
     }
 
     ///
-    /// Ends the response and sends a string
-    ///
-    /// - Parameter str: the String before the response ends
-    ///
-    /// - Throws: ???
-    /// - Returns: a RouterResponse instance
-    ///
-    public func end(_ str: String) throws {
-
-        send(str)
-        try end()
-
-    }
-
-    ///
-    /// Ends the response and sends data
-    ///
-    /// - Parameter data: the data to send before the response ends
-    ///
-    /// - Throws: ???
-    /// - Returns: a RouterResponse instance
-    ///
-    public func end(_ data: NSData) throws {
-
-        send(data: data)
-        try end()
-
-    }
-
-    ///
     /// Sends a string
     ///
     /// - Parameter str: the string to send
