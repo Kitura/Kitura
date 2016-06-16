@@ -23,6 +23,6 @@
 
 public protocol ResponseHeadersSetter {
 
-    func setCustomResponseHeaders (response: RouterResponse, filePath: String, fileAttributes: CustomResponseHeaderAttributes)
+    func setCustomResponseHeaders(response: RouterResponse, filePath: String, fileAttributes: CustomResponseHeaderAttributes)
 
 }

@@ -14,17 +14,8 @@
  * limitations under the License.
  **/
 
-// MARK: RouterMiddleware protocol
+import Foundation
 
-public protocol RouterMiddleware {
-
-    ///
-    /// The handle operation
-    ///
-    /// - Parameter request: the router request
-    /// - Parameter response: the router response
-    /// - Parameter next: the closure to the next operation
-    ///
-    func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) throws
-
+protocol BodyParserProtocol {
+    func parse(_: NSData) -> ParsedBody?
 }

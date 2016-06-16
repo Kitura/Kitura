@@ -14,17 +14,14 @@
  * limitations under the License.
  **/
 
-// MARK: RouterMiddleware protocol
+import Foundation
 
-public protocol RouterMiddleware {
-
-    ///
-    /// The handle operation
-    ///
-    /// - Parameter request: the router request
-    /// - Parameter response: the router response
-    /// - Parameter next: the closure to the next operation
-    ///
-    func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) throws
-
+class TextBodyParser: BodyParserProtocol {
+    func parse(_ data: NSData) -> ParsedBody? {
+        // There was no support for the application/json MIME type
+        if let bodyAsString: String = String(data: data, encoding: NSUTF8StringEncoding) {
+            return .text(bodyAsString)
+        }
+        return nil
+    }
 }

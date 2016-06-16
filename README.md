@@ -196,20 +196,53 @@ Let's develop our first Kitura Web Application written in Swift!
   Kitura.run()
   ```
 
-8. Compile your application:
+8. Optionally add logging
+
+   In the code example above, no messages from Kitura will logged. You may want to add a logger to help diagnose problems that occur. This is
+   completely optional, Kitura will run perfectly without a logger.
+
+   To add a logger simply add the following lines, after the `import Kitura` statement in the Sources/main.swift file shown above:
+
+   ```swift
+   import HeliumLogger
+
+   HeliumLogger.use()
+   ```
+
+   The overall Sources/main.swift file would then be:
+
+   ```swift
+   import Kitura
+   import HeliumLogger
+
+   HeliumLogger.use()
+
+   let router = Router()
+
+   router.get("/") {
+   request, response, next in
+       response.send("Hello, World!")
+       next()
+   }
+
+   Kitura.addHTTPServer(onPort: 8090, with: router)
+   Kitura.run()
+   ```
+
+9. Compile your application:
 
   - Mac OS X: `swift build`
-  - Linux:  `swift build -Xcc -fblocks -Xlinker -rpath -Xlinker .build/debug`
+  - Linux:  `swift build -Xcc -fblocks`
 
   Or copy [Makefile and build scripts](https://github.com/IBM-Swift/Kitura-Build/blob/master/build) to your project directory and run `make build`. You may want to customize this Makefile and use it for building, testing and running your application. For example, you can clean your build directory, refetch all the dependencies, build, test and run your application by running `make clean refetch test run`.
 
-9. Now run your new web application:
+10. Now run your new web application:
 
   ```
   .build/debug/myFirstProject
   ```
 
-10. Open your browser at [http://localhost:8090](http://localhost:8090)
+11. Open your browser at [http://localhost:8090](http://localhost:8090)
 
 ## Kitura Wiki
 Feel free to visit our [Wiki](https://github.com/IBM-Swift/Kitura/wiki) for our roadmap and some tutorials.

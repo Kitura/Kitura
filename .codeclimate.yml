@@ -1,0 +1,34 @@
+---
+engines:
+  fixme:
+    enabled: true
+  tailor:
+    enabled: true
+    checks:
+      comment-whitespace:
+        enabled: false
+      trailing-whitespace:
+        enabled: false
+      upper-camel-case:
+        enabled: false
+      function-whitespace:
+        enabled: false
+      colon-whitespace:
+        enabled: false
+      comma-whitespace:
+        enabled: false
+      terminating-newline:
+        enabled: false
+      brace-style:
+        enabled: false
+      parentheses-whitespace:
+        enabled: false
+      leading-whitespace:
+        enabled: false
+ratings:
+  paths:
+  - "**.swift"
+exclude_paths:
+- tests/
+- Packages/
+- .build/

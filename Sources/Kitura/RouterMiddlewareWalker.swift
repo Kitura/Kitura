@@ -34,7 +34,7 @@ class RouterMiddlewareWalker
     private let callback: () -> Void
 
     /// Index of the current middleware being handled
-    private var middlewareCount = -1
+    private var middlewareIndex = -1
 
     init(middlewares: [RouterMiddleware], method: RouterMethod, request: RouterRequest, response: RouterResponse, callback: () -> Void) {
         self.middlewares = middlewares
@@ -48,15 +48,22 @@ class RouterMiddlewareWalker
     /// Handle the next middleware
     ///
     func next() {
-        middlewareCount += 1
+        middlewareIndex += 1
 
-        if middlewareCount < middlewares.count && (response.error == nil || method == .error) {
-            middlewares[middlewareCount].handle(request: request, response: response) {
-                [unowned self] in
+        if middlewareIndex < middlewares.count && (response.error == nil || method == .error) {
+            do {
+                try middlewares[middlewareIndex].handle(request: request, response: response) {
+                    [unowned self] in
+                    self.next()
+                }
+            }
+            catch {
+                response.error = error
                 self.next()
             }
+            
         } else {
-            request.params = [:]
+            request.parameters = [:]
             callback()
         }
     }

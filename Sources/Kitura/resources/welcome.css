@@ -61,7 +61,7 @@
 .contentSectionText {;
     color: #333333;
     font-family: HelveticaNeue-Light;
-    font-size: 16px
+    font-size: 16px;
     line-height: 22px;
     text-align: left;
     width: 257px;
@@ -160,7 +160,7 @@
     height: 18px;
     margin: 10px 0 0 17px;
     vertical-align: top;
-    width: 0px;
+    width: 0;
 }
 
 .titleText {

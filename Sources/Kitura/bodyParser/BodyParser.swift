@@ -14,10 +14,6 @@
  * limitations under the License.
  **/
 
-import SwiftyJSON
-
-import KituraSys
-import KituraNet
 import Socket
 import LoggerAPI
 
@@ -29,7 +25,7 @@ import Foundation
 public class BodyParser: RouterMiddleware {
 
     ///
-    /// Default buffer size (in bytes)
+    /// Static buffer size (in bytes)
     ///
     private static let bufferSize = 2000
 
@@ -37,11 +33,14 @@ public class BodyParser: RouterMiddleware {
     ///
     /// BodyParser archiver
     ///
-    private static let parserMap: [String: ((NSMutableData) -> ParsedBody?)] = ["application/json": BodyParser.json,
-                                                                                "application/x-www-form-urlencoded": BodyParser.urlencoded,
-                                                                                "text": BodyParser.text]
+    private static let parserMap: [String: BodyParserProtocol] =
+        ["application/json": JSONBodyParser(),
+         "application/x-www-form-urlencoded": URLEncodedBodyParser(),
+         "text": TextBodyParser()]
+
     ///
     /// Initializes a BodyParser instance
+    /// Needed since default initalizer is internal
     ///
     public init() {}
 
@@ -52,15 +51,14 @@ public class BodyParser: RouterMiddleware {
     /// - Parameter response: the router response
     /// - Parameter next: the closure for the next execution block
     ///
-    public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
-
-        guard request.headers["Content-Length"] != nil, let contentType = request.headers["Content-Type"] else {
+    public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) throws {
+        guard request.headers["Content-Length"] != nil,
+            let contentType = request.headers["Content-Type"] else {
             return next()
         }
 
         request.body = BodyParser.parse(request, contentType: contentType)
         next()
-
     }
 
     ///
@@ -70,19 +68,18 @@ public class BodyParser: RouterMiddleware {
     /// - Parameter contentType: the contentType as a string
     ///
     public class func parse(_ message: SocketReader, contentType: String?) -> ParsedBody? {
-
         guard let contentType = contentType else {
             return nil
         }
         
-        if let parser = getParsingFunction(contentType: contentType) {
+        if let parser = getParser(contentType: contentType) {
             return parse(message, parser: parser)
         }
         
         return nil
     }
     
-    private class func getParsingFunction(contentType: String) -> ((NSMutableData) -> ParsedBody?)? {
+    class func getParser(contentType: String) -> BodyParserProtocol? {
         // Handle Content-Type with parameters.  For example, treat:
         // "application/x-www-form-urlencoded; charset=UTF-8" as
         // "application/x-www-form-urlencoded"
@@ -115,12 +112,12 @@ public class BodyParser: RouterMiddleware {
     /// Read incoming message for Parse
     ///
     /// - Parameter message: message coming from the socket
-    /// - Parameter parser: ((NSMutableData) -> ParsedBody?) store at parserMap
+    /// - Parameter parser: ((NSData) -> ParsedBody?) store at parserMap
     ///
-    private class func parse(_ message: SocketReader, parser: ((NSMutableData) -> ParsedBody?)) -> ParsedBody? {
+    private class func parse(_ message: SocketReader, parser: BodyParserProtocol) -> ParsedBody? {
         do {
             let bodyData = try readBodyData(with: message)
-            return parser(bodyData)
+            return parser.parse(bodyData)
         } catch {
             Log.error("failed to read body data, error = \(error)")
         }

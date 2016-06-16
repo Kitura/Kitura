@@ -15,9 +15,10 @@
  **/
 
 import KituraNet
-import KituraSys
 import LoggerAPI
+
 import Foundation
+import Dispatch
 
 
 // MARK Kitura
@@ -44,7 +45,7 @@ public class Kitura {
             Log.verbose("Starting an HTTP Server on port \(port)...")
             server.listen(port: port, notOnMainQueue: false)
         }
-        Server.run()                  
+        dispatch_main()
     }
     
     typealias Port = Int
