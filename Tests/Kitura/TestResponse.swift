@@ -802,16 +802,6 @@ class TestResponse : XCTestCase {
             next()
         }
 
-        router.post("/bodytest") { request, response, next in
-            response.headers["Content-Type"] = "text/html; charset=utf-8"
-            guard let requestBody = request.body else {
-                next ()
-                return
-            }
-
-            print(requestBody)
-        }
-
         func callbackText(request: RouterRequest, response: RouterResponse) {
             do {
                 try response.status(HTTPStatusCode.OK).send("Hi from Kitura!").end()
@@ -849,19 +839,19 @@ class TestResponse : XCTestCase {
 
         router.get("/single_link") { request, response, next in
             do {
-                try response.addLink("https://developer.ibm.com/swift",
-                                     linkParameters: [.rel: "root"]).status(.OK).end()
+                response.headers.link("https://developer.ibm.com/swift",
+                                     linkParameters: [.rel: "root"])
+                try response.status(.OK).end()
             } catch {}
         }
 
         router.get("/multiple_links") { request, response, next in
             do {
-              try response
-                .addLink("https://developer.ibm.com/swift/products/ibm-bluemix/",
+                response.headers.link("https://developer.ibm.com/swift/products/ibm-bluemix/",
                          linkParameters: [.rel: "prev"])
-                .addLink("https://developer.ibm.com/swift/products/ibm-swift-sandbox/",
+                response.headers.link("https://developer.ibm.com/swift/products/ibm-swift-sandbox/",
                          linkParameters: [.rel: "next"])
-              .status(.OK).end()
+                try response.status(.OK).end()
             } catch {}
         }
 
