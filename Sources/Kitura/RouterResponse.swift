@@ -271,7 +271,7 @@ public class RouterResponse {
     /// Sends JSON with JSONP callback
     ///
     /// - Parameter json: the JSON object to send
-    /// - Parameter callbackParam: (optional, default "callback") the
+    /// - Parameter callbackParameter: (optional, default "callback") the
     /// name of the URL query parameter that contains the callback
     /// function name
     ///
@@ -281,7 +281,7 @@ public class RouterResponse {
     /// is the alphanumeric characters and `[]$._`).
     /// - Returns: a RouterResponse instance
     ///
-    public func send(jsonp: JSON, callbackParam: String = "callback") throws -> RouterResponse {
+    public func send(jsonp: JSON, callbackParameter: String = "callback") throws -> RouterResponse {
         func sanitizeJSIdentifier(_ ident: String) -> String {
             return ident.replacingOccurrences(of: "[^\\[\\]\\w$.]", with: "", options:
                 NSStringCompareOptions.regularExpressionSearch)
@@ -301,7 +301,7 @@ public class RouterResponse {
         }
 
         let jsonStr = jsonp.description
-        let taintedJSCallbackName = request.queryParams[callbackParam]
+        let taintedJSCallbackName = request.queryParameters[callbackParameter]
         if let jsCallbackName = validJsonpCallbackName(taintedJSCallbackName) {
             type("json")
             // Set header "X-Content-Type-Options: nosniff" and prefix body with
