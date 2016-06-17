@@ -19,7 +19,7 @@ Kitura is a web framework and web server that is created for web services writte
 * [Swift version](#swift-version)
 * [Installation (Docker development environment)](#installation-docker-development-environment)
 * [Installation (Vagrant development environment)](#installation-vagrant-development-environment)
-* [Installation (macOS)](#installation-os-x)
+* [Installation (macOS)](#installation-macos)
 * [Installation (Linux, Apt-based)](#installation-linux-apt-based)
 * [Developing Kitura applications](#developing-kitura-applications)
 * [Kitura Wiki](#kitura-wiki)
