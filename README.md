@@ -4,7 +4,7 @@
 
 [![Build Status - Master](https://travis-ci.org/IBM-Swift/Kitura.svg?branch=master)](https://travis-ci.org/IBM-Swift/Kitura)
 [![Build Status - Develop](https://travis-ci.org/IBM-Swift/Kitura.svg?branch=develop)](https://travis-ci.org/IBM-Swift/Kitura)
-![Mac OS X](https://img.shields.io/badge/os-Mac%20OS%20X-green.svg?style=flat)
+![macOS](https://img.shields.io/badge/os-Mac%20OS%20X-green.svg?style=flat)
 ![Linux](https://img.shields.io/badge/os-linux-green.svg?style=flat)
 ![Apache 2](https://img.shields.io/badge/license-Apache2-blue.svg?style=flat)
 [![Join the chat at https://gitter.im/IBM-Swift/Kitura](https://badges.gitter.im/IBM-Swift/Kitura.svg)](https://gitter.im/IBM-Swift/Kitura?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -19,7 +19,7 @@ Kitura is a web framework and web server that is created for web services writte
 * [Swift version](#swift-version)
 * [Installation (Docker development environment)](#installation-docker-development-environment)
 * [Installation (Vagrant development environment)](#installation-vagrant-development-environment)
-* [Installation (OS X)](#installation-os-x)
+* [Installation (macOS)](#installation-os-x)
 * [Installation (Linux, Apt-based)](#installation-linux-apt-based)
 * [Developing Kitura applications](#developing-kitura-applications)
 * [Kitura Wiki](#kitura-wiki)
@@ -81,7 +81,7 @@ The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-05-09-a ve
 
 6. Now you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
 
-## Installation (OS X)
+## Installation (macOS)
 
 1. Install [Homebrew](http://brew.sh/) (if you don't already have it installed):
 
@@ -231,7 +231,7 @@ Let's develop our first Kitura Web Application written in Swift!
 
 9. Compile your application:
 
-  - Mac OS X: `swift build`
+  - macOS: `swift build`
   - Linux:  `swift build -Xcc -fblocks`
 
   Or copy [Makefile and build scripts](https://github.com/IBM-Swift/Kitura-Build/blob/master/build) to your project directory and run `make build`. You may want to customize this Makefile and use it for building, testing and running your application. For example, you can clean your build directory, refetch all the dependencies, build, test and run your application by running `make clean refetch test run`.
