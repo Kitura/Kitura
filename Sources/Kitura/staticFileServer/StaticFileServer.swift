@@ -17,30 +17,33 @@
 // MARK: StaticFileServer
 
 public class StaticFileServer: RouterMiddleware {
-    public enum Options {
-        case possibleExtensions([String])
-        case serveIndexForDir(Bool)
-        case addLastModifiedHeader(Bool)
-        case maxAgeCacheControlHeader(Int)
-        case redirect(Bool)
-        case customResponseHeadersSetter(ResponseHeadersSetter)
-        case generateETag(Bool)
+    public struct Options {
+        let possibleExtensions: [String]
+        let serveIndexForDirectory: Bool
+        let addLastModifiedHeader: Bool
+        let maxAgeCacheControlHeader: Int
+        let redirect: Bool
+        let generateETag: Bool
+
+        init(possibleExtensions: [String] = [], serveIndexForDirectory: Bool = true,
+             addLastModifiedHeader: Bool = true, maxAgeCacheControlHeader: Int = 0,
+             redirect: Bool = true, generateETag: Bool = true) {
+            self.possibleExtensions = possibleExtensions
+            self.serveIndexForDirectory = serveIndexForDirectory
+            self.addLastModifiedHeader = addLastModifiedHeader
+            self.maxAgeCacheControlHeader = maxAgeCacheControlHeader
+            self.redirect = redirect
+            self.generateETag = generateETag
+        }
     }
 
     let fileServer: FileServer
 
-    public convenience init (options: [Options]) {
-        self.init(path: "./public", options: options)
-    }
-
-    public convenience init () {
-        self.init(path: "./public")
-    }
-
     ///
     /// Initializes a StaticFileServer instance
     ///
-    public init (path: String, options: [Options] = [Options]()) {
+    public init (path: String = "./public", options: Options = Options(),
+                 customResponseHeadersSetter: ResponseHeadersSetter? = nil) {
         var path = path
         if path.hasSuffix("/") {
             path = String(path.characters.dropLast())
@@ -53,42 +56,17 @@ public class StaticFileServer: RouterMiddleware {
         path = path.bridge().expandingTildeInPath
 #endif
 
-        var possibleExtensions = [String]()
-        var serveIndexForDirectory = true
-        var addLastModifiedHeader = true
-        var maxAgeCacheControlHeader = 0
-        var redirect = true
-        var generateETag = true
-        var customResponseHeadersSetter: ResponseHeadersSetter?
-
-        for option in options {
-            switch option {
-            case .possibleExtensions(let value):
-                possibleExtensions = value
-            case .serveIndexForDir(let value):
-                serveIndexForDirectory = value
-            case .addLastModifiedHeader(let value):
-                addLastModifiedHeader = value
-            case .maxAgeCacheControlHeader(let value):
-                maxAgeCacheControlHeader = value
-            case .redirect(let value):
-                redirect = value
-            case .customResponseHeadersSetter(let value):
-                customResponseHeadersSetter = value
-            case .generateETag (let value):
-                generateETag = value
-            }
-        }
-
         let cacheRelatedHeadersSetter =
-            CacheRelatedHeadersSetter(addLastModifiedHeader: addLastModifiedHeader,
-                                      maxAgeCacheControlHeader: maxAgeCacheControlHeader,
-                                      generateETag: generateETag)
+            CacheRelatedHeadersSetter(addLastModifiedHeader: options.addLastModifiedHeader,
+                                      maxAgeCacheControlHeader: options.maxAgeCacheControlHeader,
+                                      generateETag: options.generateETag)
 
-        let responseHeadersSetter = CompositeRelatedHeadersSetter(setters: cacheRelatedHeadersSetter, customResponseHeadersSetter)
+        let responseHeadersSetter = CompositeRelatedHeadersSetter(setters: cacheRelatedHeadersSetter,
+                                                                  customResponseHeadersSetter)
 
-        fileServer = FileServer(serveIndexForDirectory: serveIndexForDirectory, redirect: redirect,
-                                servingFilesPath: path, possibleExtensions: possibleExtensions,
+        fileServer = FileServer(serveIndexForDirectory: options.serveIndexForDirectory,
+                                redirect: options.redirect, servingFilesPath: path,
+                                possibleExtensions: options.possibleExtensions,
                                 responseHeadersSetter: responseHeadersSetter)
     }
 
