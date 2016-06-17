@@ -17,23 +17,29 @@
 // MARK: StaticFileServer
 
 public class StaticFileServer: RouterMiddleware {
-    public struct Options {
-        let possibleExtensions: [String]
-        let serveIndexForDirectory: Bool
+    public struct CacheOptions {
         let addLastModifiedHeader: Bool
         let maxAgeCacheControlHeader: Int
-        let redirect: Bool
         let generateETag: Bool
 
-        init(possibleExtensions: [String] = [], serveIndexForDirectory: Bool = true,
-             addLastModifiedHeader: Bool = true, maxAgeCacheControlHeader: Int = 0,
-             redirect: Bool = true, generateETag: Bool = true) {
-            self.possibleExtensions = possibleExtensions
-            self.serveIndexForDirectory = serveIndexForDirectory
+        init(addLastModifiedHeader: Bool = true, maxAgeCacheControlHeader: Int = 0,
+             generateETag: Bool = true) {
             self.addLastModifiedHeader = addLastModifiedHeader
             self.maxAgeCacheControlHeader = maxAgeCacheControlHeader
-            self.redirect = redirect
             self.generateETag = generateETag
+        }
+    }
+
+    public struct Options {
+        let possibleExtensions: [String]
+        let redirect: Bool
+        let serveIndexForDirectory: Bool
+
+        init(possibleExtensions: [String] = [], serveIndexForDirectory: Bool = true,
+             redirect: Bool = true) {
+            self.possibleExtensions = possibleExtensions
+            self.serveIndexForDirectory = serveIndexForDirectory
+            self.redirect = redirect
         }
     }
 
@@ -43,6 +49,7 @@ public class StaticFileServer: RouterMiddleware {
     /// Initializes a StaticFileServer instance
     ///
     public init (path: String = "./public", options: Options = Options(),
+                 cacheOptions: CacheOptions = CacheOptions(),
                  customResponseHeadersSetter: ResponseHeadersSetter? = nil) {
         var path = path
         if path.hasSuffix("/") {
@@ -57,16 +64,14 @@ public class StaticFileServer: RouterMiddleware {
 #endif
 
         let cacheRelatedHeadersSetter =
-            CacheRelatedHeadersSetter(addLastModifiedHeader: options.addLastModifiedHeader,
-                                      maxAgeCacheControlHeader: options.maxAgeCacheControlHeader,
-                                      generateETag: options.generateETag)
+            CacheRelatedHeadersSetter(addLastModifiedHeader: cacheOptions.addLastModifiedHeader,
+                                      maxAgeCacheControlHeader: cacheOptions.maxAgeCacheControlHeader,
+                                      generateETag: cacheOptions.generateETag)
 
         let responseHeadersSetter = CompositeRelatedHeadersSetter(setters: cacheRelatedHeadersSetter,
                                                                   customResponseHeadersSetter)
 
-        fileServer = FileServer(serveIndexForDirectory: options.serveIndexForDirectory,
-                                redirect: options.redirect, servingFilesPath: path,
-                                possibleExtensions: options.possibleExtensions,
+        fileServer = FileServer(servingFilesPath: path, options: options,
                                 responseHeadersSetter: responseHeadersSetter)
     }
 
