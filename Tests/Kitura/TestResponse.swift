@@ -188,6 +188,26 @@ class TestResponse : XCTestCase {
                     "-----------------------------9051914041544843365972754266--")
             }
         }
+        // One more test to ensure we handle Content-Type with a parameter after the bounadary
+        performServerTest(router) { expectation in
+            self.performRequest("post", path: "/multibodytest", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!, " text(\"text default\") ")
+                }
+                catch {
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            }) {req in
+                req.headers["Content-Type"] = "multipart/form-data; boundary=ZZZY70gRGgDPOiChzXcmW3psiU7HlnC; charset=US-ASCII"
+                req.write(from: "--ZZZY70gRGgDPOiChzXcmW3psiU7HlnC\r\n" +
+                    "\r\n" +
+                    "text default\r\n" +
+                    "--ZZZY70gRGgDPOiChzXcmW3psiU7HlnC--")
+            }
+        }
     }
 
     func testParameter() {
