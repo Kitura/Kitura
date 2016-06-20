@@ -16,7 +16,6 @@
 
 import Kitura
 import KituraNet
-import KituraSys
 
 import Foundation
 
@@ -31,7 +30,7 @@ import XCTest
 
 class TestErrors : XCTestCase {
 
-    static var allTests : [(String, TestErrors -> () throws -> Void)] {
+    static var allTests : [(String, (TestErrors) -> () throws -> Void)] {
         return [
             ("testInvalidMethod", testInvalidMethod),
             ("testInvalidEndpoint", testInvalidEndpoint),

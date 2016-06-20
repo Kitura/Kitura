@@ -14,13 +14,14 @@
  * limitations under the License.
  **/
 
-import PackageDescription
+import Foundation
 
-let package = Package(
-    name: "Kitura",
-        dependencies: [
-            .Package(url: "https://github.com/IBM-Swift/Kitura-net.git", majorVersion: 0, minor: 18),
-            .Package(url: "https://github.com/IBM-Swift/SwiftyJSON.git", majorVersion: 8),
-            .Package(url: "https://github.com/IBM-Swift/Kitura-TemplateEngine.git", majorVersion: 0, minor: 16)
-        ]
-)
+class TextBodyParser: BodyParserProtocol {
+    func parse(_ data: NSData) -> ParsedBody? {
+        // There was no support for the application/json MIME type
+        if let bodyAsString: String = String(data: data, encoding: NSUTF8StringEncoding) {
+            return .text(bodyAsString)
+        }
+        return nil
+    }
+}

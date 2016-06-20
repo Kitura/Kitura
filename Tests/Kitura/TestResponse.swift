@@ -14,8 +14,8 @@
  * limitations under the License.
  **/
 
-import Foundation
 import XCTest
+import Foundation
 
 @testable import Kitura
 @testable import KituraNet
@@ -28,7 +28,7 @@ import XCTest
 
 class TestResponse : XCTestCase {
 
-    static var allTests : [(String, TestResponse -> () throws -> Void)] {
+    static var allTests : [(String, (TestResponse) -> () throws -> Void)] {
         return [
             ("testSimpleResponse", testSimpleResponse),
             ("testPostRequest", testPostRequest),
@@ -289,20 +289,20 @@ class TestResponse : XCTestCase {
 
         router.get("/customPage") { request, response, next in
 
-            XCTAssertEqual(request.accepts("html"), "html", "Accepts did not return expected value")
-            XCTAssertEqual(request.accepts("text/html"), "text/html", "Accepts did not return expected value")
-            XCTAssertEqual(request.accepts(["json", "text"]), "json", "Accepts did not return expected value")
-            XCTAssertEqual(request.accepts("application/json"), "application/json", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(types: "html"), "html", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(types: "text/html"), "text/html", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(types: ["json", "text"]), "json", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(types: "application/json"), "application/json", "Accepts did not return expected value")
 
             // test for headers with * subtype
-            XCTAssertEqual(request.accepts("application/xml"), "application/xml", "Accepts did not return expected value")
-            XCTAssertEqual(request.accepts("xml", "json"), "json", "Accepts did not return expected value")
-            XCTAssertEqual(request.accepts("html", "xml", "png"), "html", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(types: "application/xml"), "application/xml", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(types: "xml", "json"), "json", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(types: "html", "xml", "png"), "html", "Accepts did not return expected value")
 
             // shouldn't match anything
-            XCTAssertNil(request.accepts("image/png"), "Request accepts this type when it shouldn't")
-            XCTAssertNil(request.accepts("png"), "Request accepts this type when it shouldn't")
-            XCTAssertNil(request.accepts("unreal"), "Invalid extension was accepted!")
+            XCTAssertNil(request.accepts(types: "image/png"), "Request accepts this type when it shouldn't")
+            XCTAssertNil(request.accepts(types: "png"), "Request accepts this type when it shouldn't")
+            XCTAssertNil(request.accepts(types: "unreal"), "Invalid extension was accepted!")
 
             do {
                 try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
@@ -313,11 +313,11 @@ class TestResponse : XCTestCase {
 
         router.get("/customPage2") { request, response, next in
 
-            XCTAssertEqual(request.accepts("image/png"), "image/png", "Request accepts this type when it shouldn't")
-            XCTAssertEqual(request.accepts("image/tiff"), "image/tiff", "Request accepts this type when it shouldn't")
-            XCTAssertEqual(request.accepts("json", "jpeg", "html"), "html", "Accepts did not return expected value")
-            XCTAssertEqual(request.accepts(["png", "html", "text/html"]), "html", "Accepts did not return expected value")
-            XCTAssertEqual(request.accepts(["xml", "html", "unreal"]), "html", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(types: "image/png"), "image/png", "Request accepts this type when it shouldn't")
+            XCTAssertEqual(request.accepts(types: "image/tiff"), "image/tiff", "Request accepts this type when it shouldn't")
+            XCTAssertEqual(request.accepts(types: "json", "jpeg", "html"), "html", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(types: ["png", "html", "text/html"]), "html", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(types: ["xml", "html", "unreal"]), "html", "Accepts did not return expected value")
 
             do {
                 try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
@@ -501,8 +501,8 @@ class TestResponse : XCTestCase {
 
         router.get("/zxcv/:p1") { request, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
-            let p1 = request.params["p1"] ?? "(nil)"
-            let q = request.queryParams["q"] ?? "(nil)"
+            let p1 = request.parameters["p1"] ?? "(nil)"
+            let q = request.queryParameters["q"] ?? "(nil)"
             let u1 = request.userInfo["u1"] as? NSString ?? "(nil)"
             do {
                 try response.send("<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=\(p1)<p><p>q=\(q)<p><p>u1=\(u1)</body></html>\n\n").end()
@@ -633,15 +633,18 @@ class TestResponse : XCTestCase {
 
         router.get("/single_link") { request, response, next in
             do {
-                try response.link("https://developer.ibm.com/swift", rel: "root").status(.OK).end()
+                try response.addLink("https://developer.ibm.com/swift",
+                                     linkParameters: [.rel: "root"]).status(.OK).end()
             } catch {}
         }
 
         router.get("/multiple_links") { request, response, next in
             do {
               try response
-              .link("https://developer.ibm.com/swift/products/ibm-bluemix/", rel: "prev")
-              .link("https://developer.ibm.com/swift/products/ibm-swift-sandbox/", rel: "next")
+                .addLink("https://developer.ibm.com/swift/products/ibm-bluemix/",
+                         linkParameters: [.rel: "prev"])
+                .addLink("https://developer.ibm.com/swift/products/ibm-swift-sandbox/",
+                         linkParameters: [.rel: "next"])
               .status(.OK).end()
             } catch {}
         }

@@ -14,7 +14,6 @@
  * limitations under the License.
  **/
 
-import Foundation
 import XCTest
 
 @testable import Kitura
@@ -28,7 +27,7 @@ import XCTest
 
 class TestSubrouter : XCTestCase {
 
-    static var allTests : [(String, TestSubrouter -> () throws -> Void)] {
+    static var allTests : [(String, (TestSubrouter) -> () throws -> Void)] {
         return [
             ("testSimpleSub", testSimpleSub),
             ("testExternSub", testExternSub),

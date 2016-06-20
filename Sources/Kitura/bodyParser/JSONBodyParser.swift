@@ -14,13 +14,15 @@
  * limitations under the License.
  **/
 
-import PackageDescription
+import SwiftyJSON
+import Foundation
 
-let package = Package(
-    name: "Kitura",
-        dependencies: [
-            .Package(url: "https://github.com/IBM-Swift/Kitura-net.git", majorVersion: 0, minor: 18),
-            .Package(url: "https://github.com/IBM-Swift/SwiftyJSON.git", majorVersion: 8),
-            .Package(url: "https://github.com/IBM-Swift/Kitura-TemplateEngine.git", majorVersion: 0, minor: 16)
-        ]
-)
+class JSONBodyParser: BodyParserProtocol {
+    func parse(_ data: NSData) -> ParsedBody? {
+        let json = JSON(data: data)
+        if json != JSON.null {
+            return .json(json)
+        }
+        return nil
+    }
+}

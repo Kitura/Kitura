@@ -14,7 +14,6 @@
  * limitations under the License.
  **/
 
-import Foundation
 import XCTest
 
 @testable import Kitura
@@ -22,7 +21,7 @@ import XCTest
 
 class TestMultiplicity : XCTestCase {
 
-    static var allTests : [(String, TestMultiplicity -> () throws -> Void)] {
+    static var allTests : [(String, (TestMultiplicity) -> () throws -> Void)] {
         return [
             ("testPlus", testPlus),
             ("testStar", testStar),

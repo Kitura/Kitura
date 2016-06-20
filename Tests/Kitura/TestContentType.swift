@@ -21,7 +21,7 @@ import XCTest
 
 class TestContentType : XCTestCase {
 
-    static var allTests : [(String, TestContentType -> () throws -> Void)] {
+    static var allTests : [(String, (TestContentType) -> () throws -> Void)] {
         return [
             ("test_initialize", test_initialize),
         ]
@@ -29,17 +29,17 @@ class TestContentType : XCTestCase {
 
     func test_initialize() {
 
-        let pngType = ContentType.sharedInstance.contentTypeForExtension("png")
+        let pngType = ContentType.sharedInstance.getContentType(forExtension: "png")
 
         XCTAssertEqual(pngType, "image/png")
         XCTAssertNotEqual(pngType, "application/javascript")
 
-        let htmlType = ContentType.sharedInstance.contentTypeForExtension("html")
+        let htmlType = ContentType.sharedInstance.getContentType(forExtension: "html")
 
         XCTAssertEqual(htmlType, "text/html")
         XCTAssertNotEqual(pngType, "application/javascript")
 
-        let jsType = ContentType.sharedInstance.contentTypeForExtension("js")
+        let jsType = ContentType.sharedInstance.getContentType(forExtension: "js")
 
         XCTAssertEqual(jsType, "application/javascript")
 
