@@ -434,7 +434,7 @@ public class RouterResponse {
     ///
     public func format(callbacks: [String : ((RouterRequest, RouterResponse) -> Void)]) throws {
         let callbackTypes = Array(callbacks.keys)
-        if let acceptType = request.accepts(header: "Accept", types: callbackTypes) {
+        if let acceptType = request.accepts(types: callbackTypes) {
             headers["Content-Type"] = acceptType
             callbacks[acceptType]!(request, self)
         }
