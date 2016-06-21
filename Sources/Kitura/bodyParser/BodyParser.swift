@@ -96,7 +96,11 @@ public class BodyParser: RouterMiddleware {
             guard let boundryIndex = contentType.range(of: "boundary=") else {
                 return nil
             }
-            let boundary = contentType.substring(from: boundryIndex.upperBound).replacingOccurrences(of: "\"", with: "")
+            var boundary = contentType.substring(from: boundryIndex.upperBound).replacingOccurrences(of: "\"", with: "")
+            // remove any trailing parameters - as per RFC 2046 section 5.1.1., a semicolon cannot be part of a boundary
+            if let parameterStart = boundary.range(of: ";") {
+                boundary = boundary.substring(to: parameterStart.lowerBound)
+            }
             return MultiPartBodyParser(boundary: boundary)
         }
         return nil
