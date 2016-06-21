@@ -16,7 +16,6 @@
 
 import Kitura
 import KituraNet
-import KituraSys
 
 import Foundation
 

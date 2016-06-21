@@ -14,7 +14,6 @@
  * limitations under the License.
  **/
 
-import SwiftyJSON
 import Foundation
 
 class TextBodyParser: BodyParserProtocol {

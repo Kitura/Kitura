@@ -14,58 +14,20 @@
  * limitations under the License.
  **/
 
-
-import KituraNet
-
-import Foundation
-
 // MARK: StaticFileServer
 
 public class StaticFileServer: RouterMiddleware {
-    private struct Configuration {
-        //
-        // If a file is not found, the given extensions will be added to the file name and searched for. The first that exists will be served. Example: ['html', 'htm'].
-        //
-        private let possibleExtensions: [String]
-
-        //
-        // Serve "index.html" files in response to a request on a directory.  Defaults to true.
-        //
-        private let serveIndexForDirectory: Bool
-
-        //
-        // Uses the file system's last modified value.  Defaults to true.
-        //
-        private let addLastModifiedHeader: Bool
-
-        //
-        // Value of max-age in Cache-Control header.  Defaults to 0.
-        //
-        private let maxAgeCacheControlHeader: Int
-
-        //
-        // Redirect to trailing "/" when the pathname is a dir. Defaults to true.
-        //
-        private let redirect: Bool
-
-        //
-        // Generate ETag. Defaults to true.
-        //
-        private var generateETag: Bool
+    public enum Options {
+        case possibleExtensions([String])
+        case serveIndexForDir(Bool)
+        case addLastModifiedHeader(Bool)
+        case maxAgeCacheControlHeader(Int)
+        case redirect(Bool)
+        case customResponseHeadersSetter(ResponseHeadersSetter)
+        case generateETag(Bool)
     }
 
-    //
-    // configuration
-    //
-    private let configuration: Configuration
-
-
-    //
-    // A setter for custom response headers.
-    //
-    private let customResponseHeadersSetter: ResponseHeadersSetter?
-
-    private let path: String
+    let fileServer: FileServer
 
     public convenience init (options: [Options]) {
         self.init(path: "./public", options: options)
@@ -86,9 +48,9 @@ public class StaticFileServer: RouterMiddleware {
 
         // If we received a path with a tlde (~) in the front, expand it.
 #if os(Linux)
-        self.path = path.bridge().stringByExpandingTildeInPath
+        path = path.bridge().stringByExpandingTildeInPath
 #else
-        self.path = path.bridge().expandingTildeInPath
+        path = path.bridge().expandingTildeInPath
 #endif
 
         var possibleExtensions = [String]()
@@ -118,8 +80,16 @@ public class StaticFileServer: RouterMiddleware {
             }
         }
 
-        self.customResponseHeadersSetter = customResponseHeadersSetter
-        configuration = Configuration(possibleExtensions: possibleExtensions, serveIndexForDirectory: serveIndexForDirectory, addLastModifiedHeader: addLastModifiedHeader, maxAgeCacheControlHeader: maxAgeCacheControlHeader, redirect: redirect, generateETag: generateETag)
+        let cacheRelatedHeadersSetter =
+            CacheRelatedHeadersSetter(addLastModifiedHeader: addLastModifiedHeader,
+                                      maxAgeCacheControlHeader: maxAgeCacheControlHeader,
+                                      generateETag: generateETag)
+
+        let responseHeadersSetter = CompositeRelatedHeadersSetter(setters: cacheRelatedHeadersSetter, customResponseHeadersSetter)
+
+        fileServer = FileServer(serveIndexForDirectory: serveIndexForDirectory, redirect: redirect,
+                                servingFilesPath: path, possibleExtensions: possibleExtensions,
+                                responseHeadersSetter: responseHeadersSetter)
     }
 
     ///
@@ -134,7 +104,7 @@ public class StaticFileServer: RouterMiddleware {
             return next()
         }
 
-        guard let filePath = getFilePath(from: request) else {
+        guard let filePath = fileServer.getFilePath(from: request) else {
             return next()
         }
 
@@ -142,129 +112,7 @@ public class StaticFileServer: RouterMiddleware {
             return next()
         }
 
-        serveFile(filePath, requestPath: requestPath, response: response)
+        fileServer.serveFile(filePath, requestPath: requestPath, response: response)
         next()
     }
-
-    private func getFilePath(from request: RouterRequest) -> String? {
-        var filePath = path
-        guard let requestPath = request.parsedURL.path else {
-            return nil
-        }
-        var matchedPath = request.matchedPath
-        if matchedPath.hasSuffix("*") {
-            matchedPath = String(matchedPath.characters.dropLast())
-        }
-        if !matchedPath.hasSuffix("/") {
-            matchedPath += "/"
-        }
-
-        if requestPath.hasPrefix(matchedPath) {
-            let url = String(requestPath.characters.dropFirst(matchedPath.characters.count))
-            filePath += "/" + url
-        }
-
-        if filePath.hasSuffix("/") {
-            if configuration.serveIndexForDirectory {
-                filePath += "index.html"
-            } else {
-                return nil
-            }
-        }
-
-        return filePath
-    }
-
-    private func serveFile(_ filePath: String, requestPath: String, response: RouterResponse) {
-        let fileManager = NSFileManager()
-        var isDirectory = ObjCBool(false)
-
-        if fileManager.fileExists(atPath: filePath, isDirectory: &isDirectory) {
-            serveExistingFile(filePath, requestPath: requestPath,
-                              isDirectory: isDirectory.boolValue, response: response)
-            return
-        }
-
-        tryToServeWithExtensions(filePath, response: response)
-    }
-
-    private func tryToServeWithExtensions(_ filePath: String, response: RouterResponse) {
-        let filePathWithPossibleExtensions = configuration.possibleExtensions.map { filePath + "." + $0 }
-        for filePathWithExtension in filePathWithPossibleExtensions {
-            let fileManager = NSFileManager()
-            var isDirectory = ObjCBool(false)
-            if fileManager.fileExists(atPath: filePathWithExtension, isDirectory: &isDirectory) {
-                if !isDirectory.boolValue {
-                    serveNonDirectoryFile(filePathWithExtension, response: response)
-                    break
-                }
-            }
-        }
-    }
-
-    private func serveExistingFile(_ filePath: String, requestPath: String, isDirectory: Bool,
-                                   response: RouterResponse) {
-        if isDirectory {
-            if configuration.redirect {
-                do {
-                    try response.redirect(requestPath + "/")
-                } catch {
-                    response.error = Error.failedToRedirectRequest(path: requestPath + "/", chainedError: error)
-                }
-            }
-        } else {
-            serveNonDirectoryFile(filePath, response: response)
-        }
-    }
-
-    private func serveNonDirectoryFile(_ filePath: String, response: RouterResponse) {
-        let fileManager = NSFileManager()
-
-        // Check that no-one is using ..'s in the path to poke around the filesystem
-        let tempAbsoluteBasePath = NSURL(fileURLWithPath: path).absoluteString
-        let tempAbsoluteFilePath = NSURL(fileURLWithPath: filePath).absoluteString
-        let absoluteBasePath = tempAbsoluteBasePath
-        let absoluteFilePath = tempAbsoluteFilePath
-
-        if  absoluteFilePath.hasPrefix(absoluteBasePath) {
-            do {
-                let attributes = try fileManager.attributesOfItem(atPath: filePath)
-
-                response.headers["Cache-Control"] = "max-age=\(configuration.maxAgeCacheControlHeader)"
-                if configuration.addLastModifiedHeader {
-                    if let date = attributes[NSFileModificationDate] as? NSDate {
-                        response.headers["Last-Modified"] = SPIUtils.httpDate(date)
-                    }
-                }
-                if configuration.generateETag {
-                    if let date = attributes[NSFileModificationDate] as? NSDate,
-                        let size = attributes[NSFileSize] as? Int {
-                            let sizeHex = String(size, radix: 16, uppercase: false)
-                            let timeHex = String(Int(date.timeIntervalSince1970), radix: 16, uppercase: false)
-                            let etag = "W/\"\(sizeHex)-\(timeHex)\""
-                        response.headers["Etag"] = etag
-                    }
-                }
-                if let customResponseHeadersSetter = customResponseHeadersSetter {
-                    customResponseHeadersSetter.setCustomResponseHeaders(response: response, filePath: filePath, fileAttributes: attributes)
-                }
-
-                try response.send(fileName: filePath)
-            } catch {
-                // Nothing
-            }
-            response.statusCode = .OK
-        }
-    }
-
-    public enum Options {
-        case possibleExtensions([String])
-        case serveIndexForDir(Bool)
-        case addLastModifiedHeader(Bool)
-        case maxAgeCacheControlHeader(Int)
-        case redirect(Bool)
-        case customResponseHeadersSetter(ResponseHeadersSetter)
-        case generateETag(Bool)
-    }
-
 }
