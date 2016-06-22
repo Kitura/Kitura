@@ -15,6 +15,6 @@
  **/
 
 public struct HTTPVersion {
-    let major: UInt16
-    let minor: UInt16
+    public let major: UInt16
+    public let minor: UInt16
 }
