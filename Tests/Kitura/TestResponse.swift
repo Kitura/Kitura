@@ -130,7 +130,31 @@ class TestResponse : XCTestCase {
         }
     }
 
+    func dataComponentsTest(_ searchString: String, separator: String) {
+        let stringFind = searchString.components(separatedBy: separator)
+        
+        // test NSData.components extension
+        let separatorData = separator.data(using: NSUTF8StringEncoding)!
+        let searchData = searchString.data(using: NSUTF8StringEncoding)!
+        let dataFind = searchData.components(separatedBy: separatorData)
+        
+        // ensure we get the same sized array back
+        XCTAssert(dataFind.count == stringFind.count)
+        // test string lenghts - this would start failing if we use Unicode charaters
+        for i in 0 ..< stringFind.count {
+            XCTAssert(stringFind[i].characters.count == dataFind[i].length)
+        }
+    }
+    
     func testMultipartFormParsing() {
+        
+        // ensure NSData.components works just like String.components
+        dataComponentsTest("AxAyAzA", separator: "A")
+        dataComponentsTest("HelloWorld", separator: "World")
+        dataComponentsTest("ababababababababababa", separator: "b")
+        dataComponentsTest("Invalid separator", separator: "")
+        dataComponentsTest("", separator: "Invalid search string")
+        
         performServerTest(router) { expectation in
             self.performRequest("post", path: "/multibodytest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
@@ -172,7 +196,8 @@ class TestResponse : XCTestCase {
                 expectation.fulfill()
             }) {req in
                 req.headers["Content-Type"] = "multipart/form-data; boundary=---------------------------9051914041544843365972754266"
-                req.write(from: "-----------------------------9051914041544843365972754266\r\n" +
+                req.write(from: "This is a preamble and should be ignored" +
+                    "\r\n-----------------------------9051914041544843365972754266\r\n" +
                     "\r\n" +
                     "text default\r\n" +
                     "-----------------------------9051914041544843365972754266\r\n" +
@@ -202,7 +227,8 @@ class TestResponse : XCTestCase {
                 expectation.fulfill()
             }) {req in
                 req.headers["Content-Type"] = "multipart/form-data; boundary=ZZZY70gRGgDPOiChzXcmW3psiU7HlnC; charset=US-ASCII"
-                req.write(from: "--ZZZY70gRGgDPOiChzXcmW3psiU7HlnC\r\n" +
+                req.write(from: "Preamble" +
+                    "\r\n--ZZZY70gRGgDPOiChzXcmW3psiU7HlnC\r\n" +
                     "\r\n" +
                     "text default\r\n" +
                     "--ZZZY70gRGgDPOiChzXcmW3psiU7HlnC--")
