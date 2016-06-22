@@ -72,10 +72,6 @@ extension RouterRequest {
         /// - Returns most acceptable type or nil if there are none
         ///
         static func accepts(headerValues: [String], types: [String]) -> String? {
-<<<<<<< HEAD
-            
-=======
->>>>>>> develop
             let criteriaMatches = getCriteriaMatches(headerValues: headerValues, types: types)
 
             // sort by priority and by qValue to determine best type to return
