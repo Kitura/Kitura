@@ -365,20 +365,20 @@ class TestResponse : XCTestCase {
 
         router.get("/customPage") { request, response, next in
 
-            XCTAssertEqual(request.accepts(header: "Accept", types: "html"), "html", "Accepts did not return expected value")
-            XCTAssertEqual(request.accepts(header: "Accept", types: "text/html"), "text/html", "Accepts did not return expected value")
-            XCTAssertEqual(request.accepts(header: "Accept", types: ["json", "text"]), "json", "Accepts did not return expected value")
-            XCTAssertEqual(request.accepts(header: "Accept", types: "application/json"), "application/json", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(types: "html"), "html", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(types: "text/html"), "text/html", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(types: ["json", "text"]), "json", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(types: "application/json"), "application/json", "Accepts did not return expected value")
 
             // test for headers with * subtype
-            XCTAssertEqual(request.accepts(header: "Accept", types: "application/xml"), "application/xml", "Accepts did not return expected value")
-            XCTAssertEqual(request.accepts(header: "Accept", types: "xml", "json"), "json", "Accepts did not return expected value")
-            XCTAssertEqual(request.accepts(header: "Accept", types: "html", "xml", "png"), "html", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(types: "application/xml"), "application/xml", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(types: "xml", "json"), "json", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(types: "html", "xml", "png"), "html", "Accepts did not return expected value")
 
             // shouldn't match anything
-            XCTAssertNil(request.accepts(header: "Accept", types: "image/png"), "Request accepts this type when it shouldn't")
-            XCTAssertNil(request.accepts(header: "Accept", types: "png"), "Request accepts this type when it shouldn't")
-            XCTAssertNil(request.accepts(header: "Accept", types: "unreal"), "Invalid extension was accepted!")
+            XCTAssertNil(request.accepts(types: "image/png"), "Request accepts this type when it shouldn't")
+            XCTAssertNil(request.accepts(types: "png"), "Request accepts this type when it shouldn't")
+            XCTAssertNil(request.accepts(types: "unreal"), "Invalid extension was accepted!")
 
             do {
                 try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
@@ -389,11 +389,11 @@ class TestResponse : XCTestCase {
 
         router.get("/customPage2") { request, response, next in
 
-            XCTAssertEqual(request.accepts(header: "Accept", types: "image/png"), "image/png", "Request accepts this type when it shouldn't")
-            XCTAssertEqual(request.accepts(header: "Accept", types: "image/tiff"), "image/tiff", "Request accepts this type when it shouldn't")
-            XCTAssertEqual(request.accepts(header: "Accept", types: "json", "jpeg", "html"), "html", "Accepts did not return expected value")
-            XCTAssertEqual(request.accepts(header: "Accept", types: ["png", "html", "text/html"]), "html", "Accepts did not return expected value")
-            XCTAssertEqual(request.accepts(header: "Accept", types: ["xml", "html", "unreal"]), "html", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(types: "image/png"), "image/png", "Request accepts this type when it shouldn't")
+            XCTAssertEqual(request.accepts(types: "image/tiff"), "image/tiff", "Request accepts this type when it shouldn't")
+            XCTAssertEqual(request.accepts(types: "json", "jpeg", "html"), "html", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(types: ["png", "html", "text/html"]), "html", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(types: ["xml", "html", "unreal"]), "html", "Accepts did not return expected value")
 
             do {
                 try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
