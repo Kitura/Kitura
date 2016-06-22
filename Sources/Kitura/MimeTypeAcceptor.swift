@@ -107,19 +107,19 @@ extension RouterRequest {
                                         criteriaMatches: inout CriteriaMatches) {
             let parsedHeaderValue = parse(mediaType: rawHeaderValue)
             let mimeType = getMimeType(forExtension: type)
-
-            let setMatchWithPriority = { (priority: Int) in
-                criteriaMatches[type] = (priority: priority, qValue: parsedHeaderValue.qValue)
+            
+            func setMatch(withPriority priority: Int, qValue: Double, in criteriaMatches: inout CriteriaMatches) {
+                criteriaMatches[type] = (priority: priority, qValue: qValue)
             }
 
             if parsedHeaderValue.type == mimeType { // exact match, e.g. text/html == text/html
-                setMatchWithPriority(1)
+                setMatch(withPriority: 1, qValue: parsedHeaderValue.qValue, in: &criteriaMatches)
                 return
             }
 
             if parsedHeaderValue.type == "*/*" {
                 if criteriaMatches[type] == nil { // else do nothing
-                    setMatchWithPriority(3)
+                    setMatch(withPriority: 3, qValue: parsedHeaderValue.qValue, in: &criteriaMatches)
                 }
                 return
             }
@@ -132,10 +132,10 @@ extension RouterRequest {
             // partial match, e.g. text/html == text/*
             if let match = criteriaMatches[type] {
                 if match.priority > 2 {
-                    setMatchWithPriority(2)
+                    setMatch(withPriority: 2, qValue: parsedHeaderValue.qValue, in: &criteriaMatches)
                 }
             } else  {
-                setMatchWithPriority(2)
+                setMatch(withPriority: 2, qValue: parsedHeaderValue.qValue, in: &criteriaMatches)
             }
         }
     }
