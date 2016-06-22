@@ -14,12 +14,6 @@
  * limitations under the License.
  **/
 
-import KituraNet
-import KituraSys
-import LoggerAPI
-import Foundation
-import KituraTemplateEngine
-
 // MARK Router
 
 extension Router {

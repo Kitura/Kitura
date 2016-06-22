@@ -14,8 +14,8 @@
  * limitations under the License.
  **/
 
-import Foundation
 import XCTest
+import Foundation
 
 @testable import Kitura
 @testable import KituraNet

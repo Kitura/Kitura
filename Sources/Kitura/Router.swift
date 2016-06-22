@@ -15,7 +15,6 @@
  **/
 
 import KituraNet
-import KituraSys
 import LoggerAPI
 import Foundation
 import KituraTemplateEngine
@@ -168,8 +167,8 @@ extension Router : HTTPServerDelegate {
         let routeResp = RouterResponse(response: response, router: self, request: routeReq)
         process(request: routeReq, response: routeResp) { [unowned self] () in
             do {
-                if  !routeResp.invokedEnd {
-                    if  routeResp.statusCode == .unknown  && !routeResp.invokedSend {
+                if  !routeResp.state.invokedEnd {
+                    if  routeResp.statusCode == .unknown  && !routeResp.state.invokedSend {
                         self.sendDefaultResponse(request: routeReq, response: routeResp)
                     }
                     try routeResp.end()
