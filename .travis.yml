@@ -10,7 +10,6 @@ branches:
   only:
     - master
     - develop
-    - 0606Migration
 
 notifications:
   slack:
