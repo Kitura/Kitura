@@ -16,12 +16,12 @@
 
 import Foundation
 
-enum JSONPError: ErrorProtocol {
+public enum JSONPError: ErrorProtocol {
     case invalidCallbackName(name: String?)
 }
 
 extension JSONPError: CustomStringConvertible {
-    var description: String {
+    public var description: String {
         switch self {
         case .invalidCallbackName(let name):
             return "Invalid callback name \(name)"
