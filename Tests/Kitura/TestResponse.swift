@@ -485,6 +485,7 @@ class TestResponse : XCTestCase {
                     let expected = "{\n  \"some\" : \"json\"\n}"
 #endif
                     XCTAssertEqual(body!,"/**/ testfn(\(expected))")
+                    XCTAssertEqual(response!.headers["Content-Type"]!.first!, "application/javascript")
                 }
                 catch{
                     XCTFail("No response body")
@@ -521,6 +522,7 @@ class TestResponse : XCTestCase {
                     let expected = "{\n  \"some\" : \"json\"\n}"
 #endif
                     XCTAssertEqual(body!,"/**/ testfn(\(expected))")
+                    XCTAssertEqual(response!.headers["Content-Type"]!.first!, "application/javascript")
                 }
                 catch{
                     XCTFail("No response body")
@@ -541,6 +543,7 @@ class TestResponse : XCTestCase {
                     let expected = "{\n  \"some\" : \"json with bad js chars \\u2028 \\u2029 \\u2028 \\u2029\"\n}"
 #endif
                     XCTAssertEqual(body!,"/**/ testfn(\(expected))")
+                    XCTAssertEqual(response!.headers["Content-Type"]!.first!, "application/javascript")
                 }
                 catch{
                     XCTFail("No response body")

@@ -303,7 +303,7 @@ public class RouterResponse {
         let jsonStr = jsonp.description
         let taintedJSCallbackName = request.queryParameters[callbackParameter]
         if let jsCallbackName = validJsonpCallbackName(taintedJSCallbackName) {
-            type("json")
+            type("js")
             // Set header "X-Content-Type-Options: nosniff" and prefix body with
             // "/**/ " as security mitigation for Flash vulnerability
             // CVE-2014-4671, CVE-2014-5333 "Abusing JSONP with Rosetta Flash"
