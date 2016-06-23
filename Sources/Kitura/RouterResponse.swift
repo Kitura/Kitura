@@ -271,9 +271,8 @@ public class RouterResponse {
     /// Sends JSON with JSONP callback
     ///
     /// - Parameter json: the JSON object to send
-    /// - Parameter callbackParameter: (optional, default "callback") the
-    /// name of the URL query parameter that contains the callback
-    /// function name
+    /// - Parameter callbackParameter: the name of the URL query
+    /// parameter whose value contains the JSONP callback function
     ///
     /// - Throws: `JSONPError.invalidCallbackName` if the the callback
     /// query parameter of the request URL is missing or its value is
