@@ -40,6 +40,7 @@ class MultiPartBodyParser: BodyParserProtocol {
 
     func parse(_ data: NSData) -> ParsedBody? {
         var parts: [Part] = []
+        // split the
         let componentParts = data.components(separatedBy: boundaryData)
         var skippedPreamble = false
         var endBoundaryEncountered = false
@@ -62,13 +63,13 @@ class MultiPartBodyParser: BodyParserProtocol {
         return endBoundaryEncountered ? .multipart(parts) : nil
     }
 
-    func getPart(_ componentPart: NSData) -> Part? {
-        let found = componentPart.range(of: endHeaderData, in: NSMakeRange(0, componentPart.length))
+    private func getPart(_ componentPart: NSData) -> Part? {
+        let found = componentPart.range(of: endHeaderData, in: NSRange(location: 0, length: componentPart.length))
         if found.location == NSNotFound {
             return nil
         }
         var part = Part()
-        let headers = componentPart.subdata(with: NSMakeRange(0, found.location))
+        let headers = componentPart.subdata(with: NSRange(location: 0, length: found.location))
         let headerLines = headers.components(separatedBy: newLineData)
         // process the headers
         for header in headerLines {
@@ -78,7 +79,12 @@ class MultiPartBodyParser: BodyParserProtocol {
             handleHeaderLine(header, part: &part)
         }
         // process the body
-        let partData = componentPart.subdata(with: NSMakeRange(found.location + endHeaderData.length, componentPart.length - (found.location + endHeaderData.length + newLineData.length)))
+        var length = componentPart.length - (found.location + endHeaderData.length)
+        // if the part ends with a \r\n, we delete it since it is part of the next boundary
+        if componentPart.hasSuffix(newLineData) {
+            length -= newLineData.length
+        }
+        let partData = componentPart.subdata(with: NSRange(location: found.location + endHeaderData.length, length: length))
         if partData.length > 0 {
             if let parser = BodyParser.getParser(contentType: part.type),
                 let parsedBody = parser.parse(partData) {
@@ -128,6 +134,13 @@ class MultiPartBodyParser: BodyParserProtocol {
 
 extension NSData {
     
+    func hasSuffix(_ data: NSData) -> Bool {
+        if data.length > self.length {
+            return false
+        }
+        return self.subdata(with: NSRange(location: self.length - data.length, length: data.length)).isEqual(to: data)
+    }
+
     // mimic String.components(separatedBy separator: String) -> [String]
     func components(separatedBy separator: NSData) -> [NSData] {
         var parts: [NSData] = []

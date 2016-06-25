@@ -140,9 +140,10 @@ class TestResponse : XCTestCase {
         
         // ensure we get the same sized array back
         XCTAssert(dataFind.count == stringFind.count)
-        // test string lenghts - this would start failing if we use Unicode charaters
+        // test to ensure the strings are equal
         for i in 0 ..< stringFind.count {
-            XCTAssert(stringFind[i].characters.count == dataFind[i].length)
+            let dataString = String(data: dataFind[i], encoding: NSUTF8StringEncoding)
+            XCTAssertEqual(stringFind[i], dataString)
         }
     }
     
@@ -234,6 +235,25 @@ class TestResponse : XCTestCase {
                     "--ZZZY70gRGgDPOiChzXcmW3psiU7HlnC--")
             }
         }
+        
+        // Negative test case - valid boundary but an invalid body
+        performServerTest(router) { expectation in
+            self.performRequest("post", path: "/multibodytest", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!, "Cannot POST /multibodytest.")
+                }
+                catch {
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            }) {req in
+                req.headers["Content-Type"] = "multipart/form-data; boundary=ABDCEFG"
+                req.write(from: "This does not contain any valid boundary")
+            }
+        }
+
     }
 
     func testParameter() {
