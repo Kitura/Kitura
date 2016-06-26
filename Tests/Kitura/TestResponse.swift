@@ -134,8 +134,16 @@ class TestResponse : XCTestCase {
         let stringFind = searchString.components(separatedBy: separator)
         
         // test NSData.components extension
-        let separatorData = separator.data(using: NSUTF8StringEncoding)!
-        let searchData = searchString.data(using: NSUTF8StringEncoding)!
+        var separatorData = NSData()
+        if let data = separator.data(using: NSUTF8StringEncoding) {
+            // required for Linux as String.data(using:) returns null if seperator == ""
+            separatorData = data
+        }
+        var searchData = NSData()
+        if let data = searchString.data(using: NSUTF8StringEncoding) {
+            // required for Linux as String.data(using:) returns null if searchString == ""
+            searchData = data
+        }
         let dataFind = searchData.components(separatedBy: separatorData)
         
         // ensure we get the same sized array back
