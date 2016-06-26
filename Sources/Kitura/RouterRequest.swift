@@ -77,6 +77,11 @@ public class RouterRequest: SocketReader {
 
         return subdomains.filter { !$0.isEmpty }
     }()
+    
+    ///
+    /// The HTTP version of the request
+    ///
+    public let httpVersion: HTTPVersion
 
     ///
     /// The method of the request
@@ -163,6 +168,7 @@ public class RouterRequest: SocketReader {
     ///
     init(request: ServerRequest) {
         serverRequest = request
+        httpVersion = HTTPVersion(major: serverRequest.httpVersionMajor ?? 1, minor: serverRequest.httpVersionMinor ?? 1)
         method = RouterMethod(fromRawValue: serverRequest.method)
         parsedURL = URLParser(url: serverRequest.url, isConnect: false)
         url = String(serverRequest.urlString)

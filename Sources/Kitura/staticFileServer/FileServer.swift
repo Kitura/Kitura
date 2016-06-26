@@ -121,6 +121,7 @@ extension StaticFileServer {
             }
         }
 
+        @discardableResult
         private func serveIfNonDirectoryFile(atPath path: String, response: RouterResponse) -> Bool {
             var isDirectory = ObjCBool(false)
             if NSFileManager().fileExists(atPath: path, isDirectory: &isDirectory) {
