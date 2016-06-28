@@ -40,7 +40,7 @@ class MultiPartBodyParser: BodyParserProtocol {
 
     func parse(_ data: NSData) -> ParsedBody? {
         var parts: [Part] = []
-        // split the
+        // split the body into component parts separated by the boundary
         let componentParts = data.components(separatedBy: boundaryData)
         var skippedPreamble = false
         var endBoundaryEncountered = false
@@ -51,11 +51,11 @@ class MultiPartBodyParser: BodyParserProtocol {
                 continue
             }
             // end when we see a component starting with endBoundaryData
-            let endBoundary = componentPart.range(of: endBoundaryData, in: NSRange(location: 0, length: min(componentPart.length, endBoundaryData.length)))
-            if endBoundary.location == 0 {
+            if componentPart.hasPrefix(endBoundaryData) {
                 endBoundaryEncountered = true
                 break
             }
+            
             if let part = getPart(componentPart) {
                 parts.append(part)
             }
