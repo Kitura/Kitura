@@ -47,8 +47,8 @@ class RouterElementWalker
         elementIndex += 1
 
         if elementIndex < self.elements.count {
+            // Purposfully capture self here
             elements[elementIndex].process(request: request, response: response) {
-                [unowned self] in
                 self.next()
             }
         } else {
