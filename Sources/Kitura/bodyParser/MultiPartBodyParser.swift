@@ -69,31 +69,25 @@ class MultiPartBodyParser: BodyParserProtocol {
         let partData = NSMutableData()
 
         while let bodyLine = bodyLineIterator.next() {
+            // process bodyLine as String for headers
+            guard let line = String(data: bodyLine, encoding: NSUTF8StringEncoding) else {
+                break
+            }
+            if handleHeaderLine(line, part: &part) == false {
+                break
+            }
+        }
+        // now process the body
+        while let bodyLine = bodyLineIterator.next() {
             if bodyLine.hasPrefix(boundaryData) {
                 return handleBoundary(line: bodyLine, partData: partData, part: &part)
             }
-
-            // process bodyLine as String
-            guard let line = String(data: bodyLine, encoding: NSUTF8StringEncoding) else {
-                // is data, add to data object
-                if partData.length > 0 {
-                    // data is multiline, add linebreaks back in
-                    partData.append(newLineData)
-                }
-                partData.append(bodyLine)
-                continue
+            // is data, add to data object
+            if partData.length > 0 {
+                // data is multiline, add linebreaks back in
+                partData.append(newLineData)
             }
-
-            let wasHeaderLine = handleHeaderLine(line, part: &part)
-
-            if !wasHeaderLine && !line.isEmpty {
-                // is data, add to data object
-                if partData.length > 0 {
-                    // data is multiline, add linebreaks back in
-                    partData.append(newLineData)
-                }
-                partData.append(bodyLine)
-            }
+            partData.append(bodyLine)
         }
 
         return (false, nil)
@@ -138,6 +132,11 @@ class MultiPartBodyParser: BodyParserProtocol {
             return true
         }
 
+        if line.isEmpty == false {
+            // custom headers could be handed here
+            return true
+        }
+        // any empty line denotes the end of headers
         return false
     }
 

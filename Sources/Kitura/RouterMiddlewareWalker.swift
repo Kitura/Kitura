@@ -52,8 +52,8 @@ class RouterMiddlewareWalker
 
         if middlewareIndex < middlewares.count && (response.error == nil || method == .error) {
             do {
+                // Purposfully capture self here
                 try middlewares[middlewareIndex].handle(request: request, response: response) {
-                    [unowned self] in
                     self.next()
                 }
             }

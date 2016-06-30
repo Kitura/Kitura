@@ -150,12 +150,62 @@ class TestResponse : XCTestCase {
                     "-----------------------------9051914041544843365972754266\r\n" +
                     "Content-Disposition: form-data; name=\"file1\"; filename=\"a.txt\"\r\n" +
                     "Content-Type: text/plain\r\n\r\n" +
-                    "Content of a.txt.\r\n\r\n" +
+                    "Content of a.txt.\r\n" +
                     "-----------------------------9051914041544843365972754266\r\n" +
                     "Content-Disposition: form-data; name=\"file2\"; filename=\"a.html\"\r\n" +
                     "Content-Type: text/html\r\n\r\n" +
-                    "<!DOCTYPE html><title>Content of a.html.</title>\r\n\r\n" +
+                    "<!DOCTYPE html><title>Content of a.html.</title>\r\n" +
                     "-----------------------------9051914041544843365972754266--")
+            }
+        }
+        // repeat the test with blank headers (allowed as per section 5.1 of RFC 2046) and custom headers that should be skiped
+        performServerTest(router) { expectation in
+            self.performRequest("post", path: "/multibodytest", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!, " text(\"text default\") file1 text(\"Content of a.txt.\") file2 text(\"<!DOCTYPE html><title>Content of a.html.</title>\") ")
+                }
+                catch {
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            }) {req in
+                req.headers["Content-Type"] = "multipart/form-data; boundary=---------------------------9051914041544843365972754266"
+                req.write(from: "-----------------------------9051914041544843365972754266\r\n" +
+                    "\r\n" +
+                    "text default\r\n" +
+                    "-----------------------------9051914041544843365972754266\r\n" +
+                    "Content-Disposition: form-data; name=\"file1\"; filename=\"a.txt\"\r\n" +
+                    "Content-Type: text/plain\r\n" +
+                    "X-Arbitrary-Header: we should ignore this\r\n\r\n" +
+                    "Content of a.txt.\r\n" +
+                    "-----------------------------9051914041544843365972754266\r\n" +
+                    "Content-Disposition: form-data; name=\"file2\"; filename=\"a.html\"\r\n" +
+                    "Content-Type: text/html\r\n" +
+                    "X-Arbitrary-Header2: we should ignore this too\r\n\r\n" +
+                    "<!DOCTYPE html><title>Content of a.html.</title>\r\n" +
+                    "-----------------------------9051914041544843365972754266--")
+            }
+        }
+        // One more test to ensure we handle Content-Type with a parameter after the bounadary
+        performServerTest(router) { expectation in
+            self.performRequest("post", path: "/multibodytest", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!, " text(\"text default\") ")
+                }
+                catch {
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            }) {req in
+                req.headers["Content-Type"] = "multipart/form-data; boundary=ZZZY70gRGgDPOiChzXcmW3psiU7HlnC; charset=US-ASCII"
+                req.write(from: "--ZZZY70gRGgDPOiChzXcmW3psiU7HlnC\r\n" +
+                    "\r\n" +
+                    "text default\r\n" +
+                    "--ZZZY70gRGgDPOiChzXcmW3psiU7HlnC--")
             }
         }
     }

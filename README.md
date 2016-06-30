@@ -35,7 +35,7 @@ Kitura is a web framework and web server that is created for web services writte
 - Pluggable middleware
 
 ## Swift version
-The latest version of Kitura works with the DEVELOPMENT-SNAPSHOT-2016-05-09-a version of the Swift binaries. You can download this version of the Swift binaries by following this [link](https://swift.org/download/). Compatibility with other Swift versions is not guaranteed.
+This branch of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-06-06-a`** version of Swift 3 trunk (master). You can download this version at [swift.org](https://swift.org/download/). *Kitura is unlikely to compile with any other version of Swift.*
 
 ## Installation (Docker development environment)
 
@@ -128,7 +128,7 @@ Let's develop our first Kitura Web Application written in Swift!
 
   ```bash
   cd myFirstProject
-  swift build --init
+  swift package init
   ```
 
   Now your directory structure under myFirstProject should look like this:
@@ -151,7 +151,7 @@ Let's develop our first Kitura Web Application written in Swift!
   let package = Package(
       name: "myFirstProject",
       dependencies: [
-          .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 18)
+          .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 20)
       ])
   ```
 
@@ -200,6 +200,17 @@ Let's develop our first Kitura Web Application written in Swift!
 
    In the code example above, no messages from Kitura will logged. You may want to add a logger to help diagnose problems that occur. This is
    completely optional, Kitura will run perfectly without a logger.
+   
+   You also need to add HeliumLogger to your `Package.swift` file. It should look like this:
+   ```Swift
+   import PackageDescription
+   let package = Package(
+    name: "myFirstProject",
+    dependencies: [
+        .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 20),
+        .Package(url: "https://github.com/IBM-Swift/HeliumLogger", majorVersion: 0, minor: 9),
+    ])
+   ```
 
    To add a logger simply add the following lines, after the `import Kitura` statement in the Sources/main.swift file shown above:
 
