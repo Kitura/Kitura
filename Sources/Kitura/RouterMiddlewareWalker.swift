@@ -52,10 +52,12 @@ class RouterMiddlewareWalker
 
         if middlewareIndex < middlewares.count && (response.error == nil || method == .error) {
             do {
-                // Purposfully capture self here
-                try middlewares[middlewareIndex].handle(request: request, response: response) {
+                let closure = middlewareIndex == middlewares.count-1 ? callback : {
+                    // Purposfully capture self here
                     self.next()
                 }
+                
+                try middlewares[middlewareIndex].handle(request: request, response: response, next: closure)
             }
             catch {
                 response.error = error
