@@ -44,9 +44,9 @@ This branch of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-06-06-a`** versi
 
   `docker pull ibmcom/kitura-ubuntu:latest`
 
-3. Create a Docker container using the `kitura-ubuntu` image you just downloaded:
+3. Create a Docker container using the `kitura-ubuntu` image you just downloaded and forward port 8090 on host to the container:
 
-  `docker run -i -t ibmcom/kitura-ubuntu:latest /bin/bash`
+  `docker run -i -p 8090:8090 -t ibmcom/kitura-ubuntu:latest /bin/bash`
 
 4. From within the Docker container, execute the `clone_build_test_kitura.sh` script to build Kitura and execute the test cases:
 
