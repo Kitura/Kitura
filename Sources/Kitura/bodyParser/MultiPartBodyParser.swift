@@ -40,16 +40,11 @@ class MultiPartBodyParser: BodyParserProtocol {
 
     func parse(_ data: NSData) -> ParsedBody? {
         var parts: [Part] = []
-        // split the body into component parts separated by the boundary
-        let componentParts = data.components(separatedBy: boundaryData)
-        var skippedPreamble = false
+        // split the body into component parts separated by the boundary, drop the preamble part
+        let componentParts = data.components(separatedBy: boundaryData).dropFirst()
+        
         var endBoundaryEncountered = false
         for componentPart in componentParts {
-            // skip the first component part - it's the preamble
-            if skippedPreamble == false {
-                skippedPreamble = true
-                continue
-            }
             // end when we see a component starting with endBoundaryData
             if componentPart.hasPrefix(endBoundaryData) {
                 endBoundaryEncountered = true
