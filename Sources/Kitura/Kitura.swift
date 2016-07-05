@@ -46,7 +46,7 @@ public class Kitura {
             Log.verbose("Starting an HTTP Server on port \(port)...")
             server.listen(port: port, notOnMainQueue: false)
         }
-        dispatch_main()
+        HTTPServer.waitForListeners()
     }
     
     typealias Port = Int
