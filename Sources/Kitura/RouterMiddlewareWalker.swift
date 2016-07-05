@@ -63,7 +63,6 @@ class RouterMiddlewareWalker
             }
             
         } else {
-            request.parameters = [:]
             callback()
         }
     }

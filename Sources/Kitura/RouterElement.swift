@@ -136,16 +136,15 @@ class RouterElement {
     ///
     private func setParameters(forRequest request: RouterRequest, fromUrlPath urlPath: String, match: NSTextCheckingResult) {
 
+        var parameters = [String:String]()
         if  let keys = keys {
-            var parameters: [String:String] = [:]
             for index in 0..<keys.count {
                 let matchRange = match.range(at: index+1)
                 if  matchRange.location != NSNotFound  &&  matchRange.location != -1  {
                     parameters[keys[index]] = urlPath.bridge().substring(with: matchRange)
                 }
             }
-            request.parameters = parameters
         }
-
+        request.parameters = parameters
     }
 }
