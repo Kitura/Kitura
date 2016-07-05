@@ -166,7 +166,7 @@ Let's develop our first Kitura Web Application written in Swift!
   let router = Router()
 
   router.get("/") {
-  request, response, next in
+      request, response, next in
       response.send("Hello, World!")
       next()
   }
@@ -187,7 +187,7 @@ Let's develop our first Kitura Web Application written in Swift!
   let router = Router()
 
   router.get("/") {
-  request, response, next in
+      request, response, next in
       response.send("Hello, World!")
       next()
   }
@@ -231,7 +231,7 @@ Let's develop our first Kitura Web Application written in Swift!
    let router = Router()
 
    router.get("/") {
-   request, response, next in
+       request, response, next in
        response.send("Hello, World!")
        next()
    }
