@@ -4,7 +4,7 @@
 
 [![Build Status - Master](https://travis-ci.org/IBM-Swift/Kitura.svg?branch=master)](https://travis-ci.org/IBM-Swift/Kitura)
 [![Build Status - Develop](https://travis-ci.org/IBM-Swift/Kitura.svg?branch=develop)](https://travis-ci.org/IBM-Swift/Kitura)
-![macOS](https://img.shields.io/badge/os-Mac%20OS%20X-green.svg?style=flat)
+![macOS](https://img.shields.io/badge/os-macOS-green.svg?style=flat)
 ![Linux](https://img.shields.io/badge/os-linux-green.svg?style=flat)
 ![Apache 2](https://img.shields.io/badge/license-Apache2-blue.svg?style=flat)
 [![Join the chat at https://gitter.im/IBM-Swift/Kitura](https://badges.gitter.im/IBM-Swift/Kitura.svg)](https://gitter.im/IBM-Swift/Kitura?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
