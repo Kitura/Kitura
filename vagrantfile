@@ -11,7 +11,7 @@ SWIFT_HOME = "/home/vagrant/#{SWIFT_DIRECTORY}".freeze
 LIBDISPATCH_URL = '-b experimental/foundation https://github.com/apple/swift-corelibs-libdispatch'.freeze
 
 KITURA_URL = 'https://github.com/IBM-Swift/Kitura.git'.freeze
-KITURA_BRANCH = 'develop'.freeze
+KITURA_BRANCH = 'master'.freeze
 
 Vagrant.configure(2) do |config|
   config.vm.box = BOX_URL
