@@ -29,7 +29,7 @@ public class Kitura {
     // it does not start listening on the port until Kitura.run() is called
     //
     @discardableResult
-    public class func addHTTPServer(onPort port: Int, with delegate: HTTPServerDelegate) -> HTTPServer {
+    public class func addHTTPServer(onPort port: Int, with delegate: ServerDelegate) -> HTTPServer {
         let server = HTTP.createServer()
         server.delegate = delegate
         httpServersAndPorts.append(server: server, port: port)
