@@ -76,8 +76,12 @@ public class RouterResponse {
     ///
     /// Set of cookies to return with the response
     ///
+    #if os(Linux)
     public var cookies = [String: NSHTTPCookie]()
-
+    #else
+    public var cookies = [String: HTTPCookie]()
+    #endif
+    
     ///
     /// Optional error value
     ///

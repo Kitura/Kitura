@@ -223,7 +223,7 @@ extension Router : HTTPServerDelegate {
 #if os(Linux)
         let fileManager = NSFileManager.defaultManager()
 #else
-        let fileManager = NSFileManager.default()
+        let fileManager = FileManager.default()
 #endif
         let potentialResource = getResourcePathBasedOnSourceLocation(for: resource)
 
@@ -239,7 +239,11 @@ extension Router : HTTPServerDelegate {
     private func getResourcePathBasedOnSourceLocation(for resource: String) -> String {
         let fileName = NSString(string: #file)
         let resourceFilePrefixRange: NSRange
-        let lastSlash = fileName.range(of: "/", options: NSStringCompareOptions.backwardsSearch)
+        #if os(Linux)
+            let lastSlash = fileName.range(of: "/", options: NSStringCompareOptions.backwardsSearch)
+        #else
+            let lastSlash = fileName.range(of: "/", options: String.CompareOptions.backwards)
+        #endif
         if  lastSlash.location != NSNotFound  {
             resourceFilePrefixRange = NSMakeRange(0, lastSlash.location+1)
         } else {
@@ -248,7 +252,13 @@ extension Router : HTTPServerDelegate {
         return fileName.substring(with: resourceFilePrefixRange) + "resources/" + resource
     }
 
-    private func getResourcePathBasedOnCurrentDirectory(for resource: String, withFileManager fileManager: NSFileManager) -> String? {
+    #if os(Linux)
+    typealias FleManagerType = NSFileManager
+    #else
+    typealias FleManagerType = FileManager
+    #endif
+    
+    private func getResourcePathBasedOnCurrentDirectory(for resource: String, withFileManager fileManager: FleManagerType) -> String? {
         do {
             let packagePath = fileManager.currentDirectoryPath + "/Packages"
             let packages = try fileManager.contentsOfDirectory(atPath: packagePath)

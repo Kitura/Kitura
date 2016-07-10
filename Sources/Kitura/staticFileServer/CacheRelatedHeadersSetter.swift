@@ -47,19 +47,31 @@ extension StaticFileServer {
         }
 
         private func addLastModified(response: RouterResponse,
-                                           fileAttributes: CustomResponseHeaderAttributes) {
+                                     fileAttributes: CustomResponseHeaderAttributes) {
             if addLastModifiedHeader {
-                if let date = fileAttributes[NSFileModificationDate] as? NSDate {
+                #if os(Linux)
+                    let date = fileAttributes[NSFileModificationDate] as? NSDate
+                #else
+                    let date = fileAttributes[FileAttributeKey.modificationDate.rawValue] as? NSDate
+                #endif
+                if let date = date {
                     response.headers["Last-Modified"] = SPIUtils.httpDate(date)
                 }
             }
         }
-
+        
         private func addETag(response: RouterResponse,
                              fileAttributes: CustomResponseHeaderAttributes) {
             if generateETag {
-                if let date = fileAttributes[NSFileModificationDate] as? NSDate,
-                    let size = fileAttributes[NSFileSize] as? Int {
+                #if os(Linux)
+                    let date = fileAttributes[NSFileModificationDate] as? NSDate
+                    let size = fileAttributes[NSFileSize] as? Int
+                #else
+                    let date = fileAttributes[FileAttributeKey.modificationDate.rawValue] as? NSDate
+                    let size = fileAttributes[FileAttributeKey.size.rawValue] as? Int
+                #endif
+
+                if let date = date, let size = size {
                     let sizeHex = String(size, radix: 16, uppercase: false)
                     let timeHex = String(Int(date.timeIntervalSince1970), radix: 16, uppercase: false)
                     let etag = "W/\"\(sizeHex)-\(timeHex)\""

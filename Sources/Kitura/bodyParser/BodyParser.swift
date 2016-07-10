@@ -143,6 +143,7 @@ public class BodyParser: RouterMiddleware {
 
 }
 
+#if os(Linux)
 extension NSData {
     func hasPrefix(_ data: NSData) -> Bool {
         if data.length > self.length {
@@ -151,3 +152,14 @@ extension NSData {
         return self.subdata(with: NSRange(location: 0, length: data.length)).isEqual(to: data)
     }
 }
+#else
+extension Data {
+    func hasPrefix(_ data: Data) -> Bool {
+        if data.count > self.count {
+            return false
+        }
+        return self.subdata(in: 0 ..< data.count) == data
+    }
+}
+#endif
+
