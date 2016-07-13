@@ -34,12 +34,14 @@ public class StaticFileServer: RouterMiddleware {
         let possibleExtensions: [String]
         let redirect: Bool
         let serveIndexForDirectory: Bool
+        let cacheOptions: CacheOptions
 
         init(possibleExtensions: [String] = [], serveIndexForDirectory: Bool = true,
-             redirect: Bool = true) {
+             redirect: Bool = true, cacheOptions: CacheOptions = CacheOptions()) {
             self.possibleExtensions = possibleExtensions
             self.serveIndexForDirectory = serveIndexForDirectory
             self.redirect = redirect
+            self.cacheOptions = cacheOptions
         }
     }
 
@@ -49,7 +51,6 @@ public class StaticFileServer: RouterMiddleware {
     /// Initializes a StaticFileServer instance
     ///
     public init (path: String = "./public", options: Options = Options(),
-                 cacheOptions: CacheOptions = CacheOptions(),
                  customResponseHeadersSetter: ResponseHeadersSetter? = nil) {
         var path = path
         if path.hasSuffix("/") {
@@ -62,7 +63,7 @@ public class StaticFileServer: RouterMiddleware {
 #else
         path = path.bridge().expandingTildeInPath
 #endif
-
+        let cacheOptions = options.cacheOptions
         let cacheRelatedHeadersSetter =
             CacheRelatedHeadersSetter(addLastModifiedHeader: cacheOptions.addLastModifiedHeader,
                                       maxAgeCacheControlHeader: cacheOptions.maxAgeCacheControlHeader,
