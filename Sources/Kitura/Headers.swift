@@ -84,7 +84,7 @@ extension Headers {
     ///
     /// - Returns: a RouterResponse instance
     ///
-    public mutating func location(_ path: String) {
+    public mutating func setLocation(_ path: String) {
         var p = path
         if  p == "back" {
             if let referrer = self["referrer"] {
@@ -101,7 +101,7 @@ extension Headers {
     ///
     /// - Parameter type: the type to set to
     ///
-    public mutating func type(_ type: String, charset: String? = nil) {
+    public mutating func setType(_ type: String, charset: String? = nil) {
         if  let contentType = ContentType.sharedInstance.getContentType(forExtension: type) {
             var contentCharset = ""
             if let charset = charset {
@@ -117,7 +117,7 @@ extension Headers {
     ///
     /// - Parameter filePath: the file to set the filename to
     ///
-    public mutating func attachment(for filePath: String? = nil) {
+    public mutating func addAttachment(for filePath: String? = nil) {
         guard let filePath = filePath else {
             self["Content-Disposition"] = "attachment"
             return
@@ -143,7 +143,7 @@ extension Headers {
     ///
     /// - Returns: a RouterResponse instance
     ///
-    public mutating func link(_ link: String, linkParameters: [LinkParameter: String]) {
+    public mutating func addLink(_ link: String, linkParameters: [LinkParameter: String]) {
         var headerValue = "<\(link)>"
 
         for (linkParamer, value) in linkParameters {

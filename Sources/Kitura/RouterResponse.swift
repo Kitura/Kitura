@@ -262,7 +262,7 @@ public class RouterResponse {
     public func send(json: JSON) -> RouterResponse {
 
         let jsonStr = json.description
-        headers.type("json")
+        headers.setType("json")
         send(jsonStr)
         return self
     }
@@ -302,7 +302,7 @@ public class RouterResponse {
         let jsonStr = jsonp.description
         let taintedJSCallbackName = request.queryParameters[callbackParameter]
         if let jsCallbackName = validJsonpCallbackName(taintedJSCallbackName) {
-            headers.type("js")
+            headers.setType("js")
             // Set header "X-Content-Type-Options: nosniff" and prefix body with
             // "/**/ " as security mitigation for Flash vulnerability
             // CVE-2014-4671, CVE-2014-5333 "Abusing JSONP with Rosetta Flash"
@@ -366,7 +366,7 @@ public class RouterResponse {
     /// - Returns: a RouterResponse instance
     ///
     public func redirect(_ status: HTTPStatusCode, path: String) throws -> RouterResponse {
-        headers.location(path)
+        headers.setLocation(path)
         try self.status(status).end()
         return self
 
@@ -392,7 +392,7 @@ public class RouterResponse {
     ///
     public func send(download: String) throws {
         try send(fileName: download)
-        headers.attachment(for: download)
+        headers.addAttachment(for: download)
     }
 
     ///

@@ -839,7 +839,7 @@ class TestResponse : XCTestCase {
 
         router.get("/single_link") { request, response, next in
             do {
-                response.headers.link("https://developer.ibm.com/swift",
+                response.headers.addLink("https://developer.ibm.com/swift",
                                      linkParameters: [.rel: "root"])
                 try response.status(.OK).end()
             } catch {}
@@ -847,9 +847,9 @@ class TestResponse : XCTestCase {
 
         router.get("/multiple_links") { request, response, next in
             do {
-                response.headers.link("https://developer.ibm.com/swift/products/ibm-bluemix/",
+                response.headers.addLink("https://developer.ibm.com/swift/products/ibm-bluemix/",
                          linkParameters: [.rel: "prev"])
-                response.headers.link("https://developer.ibm.com/swift/products/ibm-swift-sandbox/",
+                response.headers.addLink("https://developer.ibm.com/swift/products/ibm-swift-sandbox/",
                          linkParameters: [.rel: "next"])
                 try response.status(.OK).end()
             } catch {}
