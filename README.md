@@ -3,8 +3,7 @@
 **A Swift Web Framework and HTTP Server**
 
 [![Build Status - Master](https://travis-ci.org/IBM-Swift/Kitura.svg?branch=master)](https://travis-ci.org/IBM-Swift/Kitura)
-[![Build Status - Develop](https://travis-ci.org/IBM-Swift/Kitura.svg?branch=develop)](https://travis-ci.org/IBM-Swift/Kitura)
-![macOS](https://img.shields.io/badge/os-Mac%20OS%20X-green.svg?style=flat)
+![macOS](https://img.shields.io/badge/os-macOS-green.svg?style=flat)
 ![Linux](https://img.shields.io/badge/os-linux-green.svg?style=flat)
 ![Apache 2](https://img.shields.io/badge/license-Apache2-blue.svg?style=flat)
 [![Join the chat at https://gitter.im/IBM-Swift/Kitura](https://badges.gitter.im/IBM-Swift/Kitura.svg)](https://gitter.im/IBM-Swift/Kitura?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -45,9 +44,9 @@ This branch of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-06-06-a`** versi
 
   `docker pull ibmcom/kitura-ubuntu:latest`
 
-3. Create a Docker container using the `kitura-ubuntu` image you just downloaded:
+3. Create a Docker container using the `kitura-ubuntu` image you just downloaded and forward port 8090 on host to the container:
 
-  `docker run -i -t ibmcom/kitura-ubuntu:latest /bin/bash`
+  `docker run -i -p 8090:8090 -t ibmcom/kitura-ubuntu:latest /bin/bash`
 
 4. From within the Docker container, execute the `clone_build_test_kitura.sh` script to build Kitura and execute the test cases:
 
@@ -166,7 +165,7 @@ Let's develop our first Kitura Web Application written in Swift!
   let router = Router()
 
   router.get("/") {
-  request, response, next in
+      request, response, next in
       response.send("Hello, World!")
       next()
   }
@@ -187,7 +186,7 @@ Let's develop our first Kitura Web Application written in Swift!
   let router = Router()
 
   router.get("/") {
-  request, response, next in
+      request, response, next in
       response.send("Hello, World!")
       next()
   }
@@ -231,7 +230,7 @@ Let's develop our first Kitura Web Application written in Swift!
    let router = Router()
 
    router.get("/") {
-   request, response, next in
+       request, response, next in
        response.send("Hello, World!")
        next()
    }

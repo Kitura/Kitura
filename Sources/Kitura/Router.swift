@@ -153,7 +153,7 @@ extension Router : RouterMiddleware {
 ///
 /// HTTPServerDelegate extensions
 ///
-extension Router : HTTPServerDelegate {
+extension Router : ServerDelegate {
 
     ///
     /// Handle the request
