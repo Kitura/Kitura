@@ -695,6 +695,7 @@ class TestResponse : XCTestCase {
         router.all("/bodytest", middleware: BodyParser())
         router.post("/bodytest", handler: bodyTestHandler)
 
+        //intentially BodyParser is added twice, to check how two body parsers work together
         router.all("/doublebodytest", middleware: BodyParser())
         router.all("/doublebodytest", middleware: BodyParser())
         router.post("/doublebodytest", handler: bodyTestHandler)
