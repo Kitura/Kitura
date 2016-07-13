@@ -268,6 +268,53 @@ public class RouterResponse {
     }
 
     ///
+    /// Sends JSON with JSONP callback
+    ///
+    /// - Parameter json: the JSON object to send
+    /// - Parameter callbackParameter: the name of the URL query
+    /// parameter whose value contains the JSONP callback function
+    ///
+    /// - Throws: `JSONPError.invalidCallbackName` if the the callback
+    /// query parameter of the request URL is missing or its value is
+    /// empty or contains invalid characters (the set of valid characters
+    /// is the alphanumeric characters and `[]$._`).
+    /// - Returns: a RouterResponse instance
+    ///
+    public func send(jsonp: JSON, callbackParameter: String = "callback") throws -> RouterResponse {
+        func sanitizeJSIdentifier(_ ident: String) -> String {
+            return ident.replacingOccurrences(of: "[^\\[\\]\\w$.]", with: "", options:
+                NSStringCompareOptions.regularExpressionSearch)
+        }
+        func validJsonpCallbackName(_ name: String?) -> String? {
+            if let name = name {
+                if name.characters.count > 0 && name == sanitizeJSIdentifier(name) {
+                    return name
+                }
+            }
+            return nil
+        }
+        func jsonToJS(_ json: String) -> String {
+            // Translate JSON characters that are invalid in javascript
+            return json.replacingOccurrences(of: "\u{2028}", with: "\\u2028")
+                       .replacingOccurrences(of: "\u{2029}", with: "\\u2029")
+        }
+
+        let jsonStr = jsonp.description
+        let taintedJSCallbackName = request.queryParameters[callbackParameter]
+        if let jsCallbackName = validJsonpCallbackName(taintedJSCallbackName) {
+            type("js")
+            // Set header "X-Content-Type-Options: nosniff" and prefix body with
+            // "/**/ " as security mitigation for Flash vulnerability
+            // CVE-2014-4671, CVE-2014-5333 "Abusing JSONP with Rosetta Flash"
+            headers["X-Content-Type-Options"] = "nosniff"
+            send("/**/ " + jsCallbackName + "(" + jsonToJS(jsonStr) + ")")
+        } else {
+            throw JSONPError.invalidCallbackName(name: taintedJSCallbackName)
+        }
+        return self
+    }
+
+    ///
     /// Set the status code
     ///
     /// - Parameter status: the status code object
