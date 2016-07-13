@@ -16,6 +16,7 @@
 
 import XCTest
 import Foundation
+import SwiftyJSON
 
 @testable import Kitura
 @testable import KituraNet
@@ -42,7 +43,8 @@ class TestResponse : XCTestCase {
             ("testAcceptTypes", testAcceptTypes),
             ("testFormat", testFormat),
             ("testLink", testLink),
-            ("testSubdomains", testSubdomains)
+            ("testSubdomains", testSubdomains),
+            ("testJsonp", testJsonp)
         ]
     }
 
@@ -524,6 +526,87 @@ class TestResponse : XCTestCase {
         }
     }
 
+    func testJsonp() {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/jsonp?callback=testfn", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                do {
+                    let body = try response!.readString()
+#if os(Linux)
+                    let expected = "{\n  \"some\": \"json\"\n}"
+#else
+                    let expected = "{\n  \"some\" : \"json\"\n}"
+#endif
+                    XCTAssertEqual(body!,"/**/ testfn(\(expected))")
+                    XCTAssertEqual(response!.headers["Content-Type"]!.first!, "application/javascript")
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            })
+        }
+
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/jsonp?callback=test+fn", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(response!.statusCode)")
+                expectation.fulfill()
+            })
+        }
+
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/jsonp", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(response!.statusCode)")
+                expectation.fulfill()
+            })
+        }
+
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/jsonp_cb?cb=testfn", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                do {
+                    let body = try response!.readString()
+#if os(Linux)
+                    let expected = "{\n  \"some\": \"json\"\n}"
+#else
+                    let expected = "{\n  \"some\" : \"json\"\n}"
+#endif
+                    XCTAssertEqual(body!,"/**/ testfn(\(expected))")
+                    XCTAssertEqual(response!.headers["Content-Type"]!.first!, "application/javascript")
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            })
+        }
+
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/jsonp_encoded?callback=testfn", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                do {
+                    let body = try response!.readString()
+#if os(Linux)
+                    let expected = "{\n  \"some\": \"json with bad js chars \\u2028 \\u2029 \\u2028 \\u2029\"\n}"
+#else
+                    let expected = "{\n  \"some\" : \"json with bad js chars \\u2028 \\u2029 \\u2028 \\u2029\"\n}"
+#endif
+                    XCTAssertEqual(body!,"/**/ testfn(\(expected))")
+                    XCTAssertEqual(response!.headers["Content-Type"]!.first!, "application/javascript")
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            })
+        }
+    }
+
     func testSubdomains() {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/subdomains", callback: { response in
@@ -750,6 +833,46 @@ class TestResponse : XCTestCase {
                 .addLink("https://developer.ibm.com/swift/products/ibm-swift-sandbox/",
                          linkParameters: [.rel: "next"])
               .status(.OK).end()
+            } catch {}
+        }
+
+        router.get("/jsonp") { request, response, next in
+            let json = JSON([ "some": "json" ])
+            do {
+                do {
+                    try response.send(jsonp: json).end()
+                } catch JSONPError.invalidCallbackName {
+                    try response.status(.badRequest).end()
+                }
+            } catch {}
+        }
+
+        router.get("/jsonp_cb") { request, response, next in
+            let json = JSON([ "some": "json" ])
+            do {
+                do {
+                    try response.send(jsonp: json, callbackParameter: "cb").end()
+                } catch JSONPError.invalidCallbackName {
+                    try response.status(.badRequest).end()
+                }
+            } catch {}
+        }
+
+        router.get("/jsonp_encoded") { request, response, next in
+            // Specify the bad characters in two different ways, just to be sure
+            let unicode2028 = " "
+            let unicode2029 = " "
+#if os(Linux)
+            let json = JSON([ "some": JSON("json with bad js chars \(unicode2028) \(unicode2029) \u{2028} \u{2029}") ])
+#else
+            let json = JSON([ "some": JSON("json with bad js chars \(unicode2028) \(unicode2029) \u{2028} \u{2029}" as NSString) ])
+#endif
+            do {
+                do {
+                    try response.send(jsonp: json).end()
+                } catch JSONPError.invalidCallbackName {
+                    try response.status(.badRequest).end()
+                }
             } catch {}
         }
 
