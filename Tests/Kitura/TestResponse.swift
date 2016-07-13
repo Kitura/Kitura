@@ -33,6 +33,7 @@ class TestResponse : XCTestCase {
         return [
             ("testSimpleResponse", testSimpleResponse),
             ("testPostRequest", testPostRequest),
+            ("testPostRequestWithDoubleBodyParser", testPostRequestWithDoubleBodyParser),
             ("testPostRequestUrlEncoded", testPostRequestUrlEncoded),
             ("testMultipartFormParsing", testMultipartFormParsing),
             ("testParameter", testParameter),
@@ -93,7 +94,28 @@ class TestResponse : XCTestCase {
             }
         }
     }
-    
+
+    func testPostRequestWithDoubleBodyParser() {
+        performServerTest(router) { expectation in
+            self.performRequest("post", path: "/doublebodytest", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                //XCTAssertEqual(response!.method, "POST", "The request wasn't recognized as a post")
+                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received text body: </b>plover\nxyzzy\n</body></html>\n\n")
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            }) {req in
+                req.write(from: "plover\n")
+                req.write(from: "xyzzy\n")
+            }
+        }
+    }
+
     func testPostRequestUrlEncoded() {
         performServerTest(router) { expectation in
             self.performRequest("post", path: "/bodytest", callback: {response in
@@ -134,7 +156,7 @@ class TestResponse : XCTestCase {
 
     func dataComponentsTest(_ searchString: String, separator: String) {
         let stringFind = searchString.components(separatedBy: separator)
-        
+
         // test NSData.components extension
         var separatorData = NSData()
         if let data = separator.data(using: NSUTF8StringEncoding) {
@@ -147,7 +169,7 @@ class TestResponse : XCTestCase {
             searchData = data
         }
         let dataFind = searchData.components(separatedBy: separatorData)
-        
+
         // ensure we get the same sized array back
         XCTAssert(dataFind.count == stringFind.count)
         // test to ensure the strings are equal
@@ -156,16 +178,16 @@ class TestResponse : XCTestCase {
             XCTAssertEqual(stringFind[i], dataString)
         }
     }
-    
+
     func testMultipartFormParsing() {
-        
+
         // ensure NSData.components works just like String.components
         dataComponentsTest("AxAyAzA", separator: "A")
         dataComponentsTest("HelloWorld", separator: "World")
         dataComponentsTest("ababababababababababa", separator: "b")
         dataComponentsTest("Invalid separator", separator: "")
         dataComponentsTest("", separator: "Invalid search string")
-        
+
         performServerTest(router) { expectation in
             self.performRequest("post", path: "/multibodytest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
@@ -245,7 +267,7 @@ class TestResponse : XCTestCase {
                     "--ZZZY70gRGgDPOiChzXcmW3psiU7HlnC--")
             }
         }
-        
+
         // Negative test case - valid boundary but an invalid body
         performServerTest(router) { expectation in
             self.performRequest("post", path: "/multibodytest", callback: {response in
@@ -728,9 +750,7 @@ class TestResponse : XCTestCase {
             next()
         }
 
-        router.all("/bodytest", middleware: BodyParser())
-
-        router.post("/bodytest") { request, response, next in
+        let bodyTestHandler: RouterHandler =  { request, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             guard let requestBody = request.body else {
                 next ()
@@ -754,9 +774,18 @@ class TestResponse : XCTestCase {
 
             next()
         }
-        
+
+        router.all("/bodytest", middleware: BodyParser())
+        router.post("/bodytest", handler: bodyTestHandler)
+
+        //intentially BodyParser is added twice, to check how two body parsers work together
+        router.all("/doublebodytest", middleware: BodyParser())
+        router.all("/doublebodytest", middleware: BodyParser())
+        router.post("/doublebodytest", handler: bodyTestHandler)
+
+
         router.all("/multibodytest", middleware: BodyParser())
-        
+
         router.post("/multibodytest") { request, response, next in
             guard let requestBody = request.body else {
                 next ()
@@ -772,14 +801,14 @@ class TestResponse : XCTestCase {
             }
             next()
         }
-        
+
         router.post("/bodytest") { request, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             guard let requestBody = request.body else {
                 next ()
                 return
             }
-            
+
             print(requestBody)
         }
 
