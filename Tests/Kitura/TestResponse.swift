@@ -893,8 +893,8 @@ class TestResponse : XCTestCase {
 
         router.get("/jsonp_encoded") { request, response, next in
             // Specify the bad characters in two different ways, just to be sure
-            let unicode2028 = ""
-            let unicode2029 = ""
+            let unicode2028 = "\u{2028}"
+            let unicode2029 = "\u{2029}"
 #if os(Linux)
             let json = JSON([ "some": JSON("json with bad js chars \(unicode2028) \(unicode2029) \u{2028} \u{2029}") ])
 #else
