@@ -17,30 +17,41 @@
 // MARK: StaticFileServer
 
 public class StaticFileServer: RouterMiddleware {
-    public enum Options {
-        case possibleExtensions([String])
-        case serveIndexForDir(Bool)
-        case addLastModifiedHeader(Bool)
-        case maxAgeCacheControlHeader(Int)
-        case redirect(Bool)
-        case customResponseHeadersSetter(ResponseHeadersSetter)
-        case generateETag(Bool)
+    public struct CacheOptions {
+        let addLastModifiedHeader: Bool
+        let maxAgeCacheControlHeader: Int
+        let generateETag: Bool
+
+        init(addLastModifiedHeader: Bool = true, maxAgeCacheControlHeader: Int = 0,
+             generateETag: Bool = true) {
+            self.addLastModifiedHeader = addLastModifiedHeader
+            self.maxAgeCacheControlHeader = maxAgeCacheControlHeader
+            self.generateETag = generateETag
+        }
+    }
+
+    public struct Options {
+        let possibleExtensions: [String]
+        let redirect: Bool
+        let serveIndexForDirectory: Bool
+        let cacheOptions: CacheOptions
+
+        init(possibleExtensions: [String] = [], serveIndexForDirectory: Bool = true,
+             redirect: Bool = true, cacheOptions: CacheOptions = CacheOptions()) {
+            self.possibleExtensions = possibleExtensions
+            self.serveIndexForDirectory = serveIndexForDirectory
+            self.redirect = redirect
+            self.cacheOptions = cacheOptions
+        }
     }
 
     let fileServer: FileServer
 
-    public convenience init (options: [Options]) {
-        self.init(path: "./public", options: options)
-    }
-
-    public convenience init () {
-        self.init(path: "./public")
-    }
-
     ///
     /// Initializes a StaticFileServer instance
     ///
-    public init (path: String, options: [Options] = [Options]()) {
+    public init (path: String = "./public", options: Options = Options(),
+                 customResponseHeadersSetter: ResponseHeadersSetter? = nil) {
         var path = path
         if path.hasSuffix("/") {
             path = String(path.characters.dropLast())
@@ -52,43 +63,16 @@ public class StaticFileServer: RouterMiddleware {
 #else
         path = path.bridge().expandingTildeInPath
 #endif
-
-        var possibleExtensions = [String]()
-        var serveIndexForDirectory = true
-        var addLastModifiedHeader = true
-        var maxAgeCacheControlHeader = 0
-        var redirect = true
-        var generateETag = true
-        var customResponseHeadersSetter: ResponseHeadersSetter?
-
-        for option in options {
-            switch option {
-            case .possibleExtensions(let value):
-                possibleExtensions = value
-            case .serveIndexForDir(let value):
-                serveIndexForDirectory = value
-            case .addLastModifiedHeader(let value):
-                addLastModifiedHeader = value
-            case .maxAgeCacheControlHeader(let value):
-                maxAgeCacheControlHeader = value
-            case .redirect(let value):
-                redirect = value
-            case .customResponseHeadersSetter(let value):
-                customResponseHeadersSetter = value
-            case .generateETag (let value):
-                generateETag = value
-            }
-        }
-
+        let cacheOptions = options.cacheOptions
         let cacheRelatedHeadersSetter =
-            CacheRelatedHeadersSetter(addLastModifiedHeader: addLastModifiedHeader,
-                                      maxAgeCacheControlHeader: maxAgeCacheControlHeader,
-                                      generateETag: generateETag)
+            CacheRelatedHeadersSetter(addLastModifiedHeader: cacheOptions.addLastModifiedHeader,
+                                      maxAgeCacheControlHeader: cacheOptions.maxAgeCacheControlHeader,
+                                      generateETag: cacheOptions.generateETag)
 
-        let responseHeadersSetter = CompositeRelatedHeadersSetter(setters: cacheRelatedHeadersSetter, customResponseHeadersSetter)
+        let responseHeadersSetter = CompositeRelatedHeadersSetter(setters: cacheRelatedHeadersSetter,
+                                                                  customResponseHeadersSetter)
 
-        fileServer = FileServer(serveIndexForDirectory: serveIndexForDirectory, redirect: redirect,
-                                servingFilesPath: path, possibleExtensions: possibleExtensions,
+        fileServer = FileServer(servingFilesPath: path, options: options,
                                 responseHeadersSetter: responseHeadersSetter)
     }
 

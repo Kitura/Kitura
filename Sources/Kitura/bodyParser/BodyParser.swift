@@ -52,6 +52,10 @@ public class BodyParser: RouterMiddleware {
     /// - Parameter next: the closure for the next execution block
     ///
     public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) throws {
+        guard request.body == nil else {
+            return next() // the body was already parsed
+        }
+
         guard request.headers["Content-Length"] != nil,
             let contentType = request.headers["Content-Type"] else {
             return next()
@@ -71,14 +75,14 @@ public class BodyParser: RouterMiddleware {
         guard let contentType = contentType else {
             return nil
         }
-        
+
         if let parser = getParser(contentType: contentType) {
             return parse(message, parser: parser)
         }
-        
+
         return nil
     }
-    
+
     class func getParser(contentType: String) -> BodyParserProtocol? {
         // Handle Content-Type with parameters.  For example, treat:
         // "application/x-www-form-urlencoded; charset=UTF-8" as

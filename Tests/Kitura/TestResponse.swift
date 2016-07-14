@@ -33,6 +33,7 @@ class TestResponse : XCTestCase {
         return [
             ("testSimpleResponse", testSimpleResponse),
             ("testPostRequest", testPostRequest),
+            ("testPostRequestWithDoubleBodyParser", testPostRequestWithDoubleBodyParser),
             ("testPostRequestUrlEncoded", testPostRequestUrlEncoded),
             ("testMultipartFormParsing", testMultipartFormParsing),
             ("testParameter", testParameter),
@@ -93,7 +94,28 @@ class TestResponse : XCTestCase {
             }
         }
     }
-    
+
+    func testPostRequestWithDoubleBodyParser() {
+        performServerTest(router) { expectation in
+            self.performRequest("post", path: "/doublebodytest", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                //XCTAssertEqual(response!.method, "POST", "The request wasn't recognized as a post")
+                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received text body: </b>plover\nxyzzy\n</body></html>\n\n")
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            }) {req in
+                req.write(from: "plover\n")
+                req.write(from: "xyzzy\n")
+            }
+        }
+    }
+
     func testPostRequestUrlEncoded() {
         performServerTest(router) { expectation in
             self.performRequest("post", path: "/bodytest", callback: {response in
@@ -134,7 +156,7 @@ class TestResponse : XCTestCase {
 
     func dataComponentsTest(_ searchString: String, separator: String) {
         let stringFind = searchString.components(separatedBy: separator)
-        
+
         // test NSData.components extension
         var separatorData = NSData()
         if let data = separator.data(using: NSUTF8StringEncoding) {
@@ -147,7 +169,7 @@ class TestResponse : XCTestCase {
             searchData = data
         }
         let dataFind = searchData.components(separatedBy: separatorData)
-        
+
         // ensure we get the same sized array back
         XCTAssert(dataFind.count == stringFind.count)
         // test to ensure the strings are equal
@@ -156,16 +178,16 @@ class TestResponse : XCTestCase {
             XCTAssertEqual(stringFind[i], dataString)
         }
     }
-    
+
     func testMultipartFormParsing() {
-        
+
         // ensure NSData.components works just like String.components
         dataComponentsTest("AxAyAzA", separator: "A")
         dataComponentsTest("HelloWorld", separator: "World")
         dataComponentsTest("ababababababababababa", separator: "b")
         dataComponentsTest("Invalid separator", separator: "")
         dataComponentsTest("", separator: "Invalid search string")
-        
+
         performServerTest(router) { expectation in
             self.performRequest("post", path: "/multibodytest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
@@ -245,7 +267,7 @@ class TestResponse : XCTestCase {
                     "--ZZZY70gRGgDPOiChzXcmW3psiU7HlnC--")
             }
         }
-        
+
         // Negative test case - valid boundary but an invalid body
         performServerTest(router) { expectation in
             self.performRequest("post", path: "/multibodytest", callback: {response in
@@ -376,7 +398,7 @@ class TestResponse : XCTestCase {
             XCTAssertEqual(response.headers["Content-Type"]!, "text/plain, image/png, text/html")
 
             do {
-                try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+                try response.status(HTTPStatusCode.OK).send("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n").end()
             }
             catch {}
             next()
@@ -411,7 +433,7 @@ class TestResponse : XCTestCase {
             XCTAssertNil(request.accepts(types: "unreal"), "Invalid extension was accepted!")
 
             do {
-                try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+                try response.status(HTTPStatusCode.OK).send("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n").end()
             }
             catch {}
             next()
@@ -426,7 +448,7 @@ class TestResponse : XCTestCase {
             XCTAssertEqual(request.accepts(types: ["xml", "html", "unreal"]), "html", "Accepts did not return expected value")
 
             do {
-                try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+                try response.status(HTTPStatusCode.OK).send("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n").end()
             }
             catch {}
             next()
@@ -680,7 +702,7 @@ class TestResponse : XCTestCase {
         router.get("/qwer") { _, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             do {
-                try response.end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+                try response.send("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n").end()
             }
             catch {}
             next()
@@ -728,9 +750,7 @@ class TestResponse : XCTestCase {
             next()
         }
 
-        router.all("/bodytest", middleware: BodyParser())
-
-        router.post("/bodytest") { request, response, next in
+        let bodyTestHandler: RouterHandler =  { request, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             guard let requestBody = request.body else {
                 next ()
@@ -739,12 +759,12 @@ class TestResponse : XCTestCase {
             switch (requestBody) {
                 case .urlEncoded(let value):
                     do {
-                        try response.end("<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> \(value) </body></html>\n\n")
+                        try response.send("<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> \(value) </body></html>\n\n").end()
                     }
                     catch {}
                 case .text(let value):
                     do {
-                        try response.end("<!DOCTYPE html><html><body><b>Received text body: </b>\(value)</body></html>\n\n")
+                        try response.send("<!DOCTYPE html><html><body><b>Received text body: </b>\(value)</body></html>\n\n").end()
                     }
                     catch {}
                 default:
@@ -754,9 +774,18 @@ class TestResponse : XCTestCase {
 
             next()
         }
-        
+
+        router.all("/bodytest", middleware: BodyParser())
+        router.post("/bodytest", handler: bodyTestHandler)
+
+        //intentially BodyParser is added twice, to check how two body parsers work together
+        router.all("/doublebodytest", middleware: BodyParser())
+        router.all("/doublebodytest", middleware: BodyParser())
+        router.post("/doublebodytest", handler: bodyTestHandler)
+
+
         router.all("/multibodytest", middleware: BodyParser())
-        
+
         router.post("/multibodytest") { request, response, next in
             guard let requestBody = request.body else {
                 next ()
@@ -771,16 +800,6 @@ class TestResponse : XCTestCase {
                 response.error = Error.failedToParseRequestBody(body: "\(request.body)")
             }
             next()
-        }
-        
-        router.post("/bodytest") { request, response, next in
-            response.headers["Content-Type"] = "text/html; charset=utf-8"
-            guard let requestBody = request.body else {
-                next ()
-                return
-            }
-            
-            print(requestBody)
         }
 
         func callbackText(request: RouterRequest, response: RouterResponse) {
@@ -820,19 +839,19 @@ class TestResponse : XCTestCase {
 
         router.get("/single_link") { request, response, next in
             do {
-                try response.addLink("https://developer.ibm.com/swift",
-                                     linkParameters: [.rel: "root"]).status(.OK).end()
+                response.headers.addLink("https://developer.ibm.com/swift",
+                                     linkParameters: [.rel: "root"])
+                try response.status(.OK).end()
             } catch {}
         }
 
         router.get("/multiple_links") { request, response, next in
             do {
-              try response
-                .addLink("https://developer.ibm.com/swift/products/ibm-bluemix/",
+                response.headers.addLink("https://developer.ibm.com/swift/products/ibm-bluemix/",
                          linkParameters: [.rel: "prev"])
-                .addLink("https://developer.ibm.com/swift/products/ibm-swift-sandbox/",
+                response.headers.addLink("https://developer.ibm.com/swift/products/ibm-swift-sandbox/",
                          linkParameters: [.rel: "next"])
-              .status(.OK).end()
+                try response.status(.OK).end()
             } catch {}
         }
 
