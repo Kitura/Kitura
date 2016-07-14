@@ -398,7 +398,7 @@ class TestResponse : XCTestCase {
             XCTAssertEqual(response.headers["Content-Type"]!, "text/plain, image/png, text/html")
 
             do {
-                try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+                try response.status(HTTPStatusCode.OK).send("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n").end()
             }
             catch {}
             next()
@@ -433,7 +433,7 @@ class TestResponse : XCTestCase {
             XCTAssertNil(request.accepts(types: "unreal"), "Invalid extension was accepted!")
 
             do {
-                try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+                try response.status(HTTPStatusCode.OK).send("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n").end()
             }
             catch {}
             next()
@@ -448,7 +448,7 @@ class TestResponse : XCTestCase {
             XCTAssertEqual(request.accepts(types: ["xml", "html", "unreal"]), "html", "Accepts did not return expected value")
 
             do {
-                try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+                try response.status(HTTPStatusCode.OK).send("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n").end()
             }
             catch {}
             next()
@@ -702,7 +702,7 @@ class TestResponse : XCTestCase {
         router.get("/qwer") { _, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             do {
-                try response.end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+                try response.send("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n").end()
             }
             catch {}
             next()
@@ -759,12 +759,12 @@ class TestResponse : XCTestCase {
             switch (requestBody) {
                 case .urlEncoded(let value):
                     do {
-                        try response.end("<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> \(value) </body></html>\n\n")
+                        try response.send("<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> \(value) </body></html>\n\n").end()
                     }
                     catch {}
                 case .text(let value):
                     do {
-                        try response.end("<!DOCTYPE html><html><body><b>Received text body: </b>\(value)</body></html>\n\n")
+                        try response.send("<!DOCTYPE html><html><body><b>Received text body: </b>\(value)</body></html>\n\n").end()
                     }
                     catch {}
                 default:
@@ -800,16 +800,6 @@ class TestResponse : XCTestCase {
                 response.error = Error.failedToParseRequestBody(body: "\(request.body)")
             }
             next()
-        }
-
-        router.post("/bodytest") { request, response, next in
-            response.headers["Content-Type"] = "text/html; charset=utf-8"
-            guard let requestBody = request.body else {
-                next ()
-                return
-            }
-
-            print(requestBody)
         }
 
         func callbackText(request: RouterRequest, response: RouterResponse) {
@@ -849,19 +839,19 @@ class TestResponse : XCTestCase {
 
         router.get("/single_link") { request, response, next in
             do {
-                try response.addLink("https://developer.ibm.com/swift",
-                                     linkParameters: [.rel: "root"]).status(.OK).end()
+                response.headers.addLink("https://developer.ibm.com/swift",
+                                     linkParameters: [.rel: "root"])
+                try response.status(.OK).end()
             } catch {}
         }
 
         router.get("/multiple_links") { request, response, next in
             do {
-              try response
-                .addLink("https://developer.ibm.com/swift/products/ibm-bluemix/",
+                response.headers.addLink("https://developer.ibm.com/swift/products/ibm-bluemix/",
                          linkParameters: [.rel: "prev"])
-                .addLink("https://developer.ibm.com/swift/products/ibm-swift-sandbox/",
+                response.headers.addLink("https://developer.ibm.com/swift/products/ibm-swift-sandbox/",
                          linkParameters: [.rel: "next"])
-              .status(.OK).end()
+                try response.status(.OK).end()
             } catch {}
         }
 

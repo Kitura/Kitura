@@ -67,7 +67,7 @@ public class RouterResponse {
     // Lifecycle hook called on end()
     //
     private var onEndInvoked: LifecycleHandler = {}
-    
+
     //
     // Current pre-write lifecycle handler
     //
@@ -82,7 +82,7 @@ public class RouterResponse {
     /// Optional error value
     ///
     public var error: ErrorProtocol?
-    
+
     public var headers: Headers
 
     public var statusCode: HTTPStatusCode {
@@ -121,7 +121,7 @@ public class RouterResponse {
     public func end() throws {
 
         onEndInvoked()
-        
+
         // Sets status code if unset
         if statusCode == .unknown {
             statusCode = .OK
@@ -162,36 +162,6 @@ public class RouterResponse {
             cookieStrings.append(cookieString)
         }
         response.headers.append("Set-Cookie", value: cookieStrings)
-    }
-
-    ///
-    /// Ends the response and sends a string
-    ///
-    /// - Parameter str: the String before the response ends
-    ///
-    /// - Throws: ???
-    /// - Returns: a RouterResponse instance
-    ///
-    public func end(_ str: String) throws {
-
-        send(str)
-        try end()
-
-    }
-
-    ///
-    /// Ends the response and sends data
-    ///
-    /// - Parameter data: the data to send before the response ends
-    ///
-    /// - Throws: ???
-    /// - Returns: a RouterResponse instance
-    ///
-    public func end(_ data: NSData) throws {
-
-        send(data: data)
-        try end()
-
     }
 
     ///
@@ -262,7 +232,7 @@ public class RouterResponse {
     public func send(json: JSON) -> RouterResponse {
 
         let jsonStr = json.description
-        type("json")
+        headers.setType("json")
         send(jsonStr)
         return self
     }
@@ -302,7 +272,7 @@ public class RouterResponse {
         let jsonStr = jsonp.description
         let taintedJSCallbackName = request.queryParameters[callbackParameter]
         if let jsCallbackName = validJsonpCallbackName(taintedJSCallbackName) {
-            type("js")
+            headers.setType("js")
             // Set header "X-Content-Type-Options: nosniff" and prefix body with
             // "/**/ " as security mitigation for Flash vulnerability
             // CVE-2014-4671, CVE-2014-5333 "Abusing JSONP with Rosetta Flash"
@@ -346,50 +316,17 @@ public class RouterResponse {
     }
 
     ///
-    /// Redirect to path
+    /// Redirect to path with status code
     ///
     /// - Parameter: the path for the redirect
+    /// - Parameter: the status code for the redirect
     ///
     /// - Returns: a RouterResponse instance
     ///
     @discardableResult
-    public func redirect(_ path: String) throws -> RouterResponse {
-        return try redirect(.movedTemporarily, path: path)
-    }
-
-    ///
-    /// Redirect to path with status code
-    ///
-    /// - Parameter: the status code for the redirect
-    /// - Parameter: the path for the redirect
-    ///
-    /// - Returns: a RouterResponse instance
-    ///
-    public func redirect(_ status: HTTPStatusCode, path: String) throws -> RouterResponse {
-
-        try self.status(status).location(path).end()
-        return self
-
-    }
-
-    ///
-    /// Sets the location path
-    ///
-    /// - Parameter path: the path
-    ///
-    /// - Returns: a RouterResponse instance
-    ///
-    public func location(_ path: String) -> RouterResponse {
-
-        var p = path
-        if  p == "back" {
-            if let referrer = headers["referrer"] {
-                p = referrer
-            } else {
-                p = "/"
-            }
-        }
-        headers["Location"] = p
+    public func redirect(_ path: String, status: HTTPStatusCode = .movedTemporarily) throws -> RouterResponse {
+        headers.setLocation(path)
+        try self.status(status).end()
         return self
 
     }
@@ -408,52 +345,13 @@ public class RouterResponse {
     }
 
     ///
-    /// Sets the Content-Type HTTP header
-    ///
-    /// - Parameter type: the type to set to
-    ///
-    public func type(_ type: String, charset: String? = nil) {
-        if  let contentType = ContentType.sharedInstance.getContentType(forExtension: type) {
-            var contentCharset = ""
-            if let charset = charset {
-                contentCharset = "; charset=\(charset)"
-            }
-            headers["Content-Type"] = contentType + contentCharset
-        }
-    }
-
-    ///
-    /// Sets the Content-Disposition to "attachment" and optionally
-    /// sets filename parameter in Content-Disposition and Content-Type
-    ///
-    /// - Parameter filePath: the file to set the filename to
-    ///
-    public func prepareAttachment(for filePath: String? = nil) {
-        guard let filePath = filePath else {
-            headers["Content-Disposition"] = "attachment"
-            return
-        }
-
-        let filePaths = filePath.characters.split {$0 == "/"}.map(String.init)
-        guard let fileName = filePaths.last else {
-            return
-        }
-        headers["Content-Disposition"] = "attachment; fileName = \"\(fileName)\""
-
-        let contentType =  ContentType.sharedInstance.getContentType(forFileName: fileName)
-        if  let contentType = contentType {
-            headers["Content-Type"] = contentType
-        }
-    }
-
-    ///
     /// Sets headers and attaches file for downloading
     ///
     /// - Parameter filePath: the file to download
     ///
     public func send(download: String) throws {
         try send(fileName: download)
-        prepareAttachment(for: download)
+        headers.addAttachment(for: download)
     }
 
     ///
@@ -466,7 +364,6 @@ public class RouterResponse {
         return oldOnEndInvoked
     }
 
-    
     ///
     /// Sets the written data filter and returns the previous one
     ///
@@ -499,25 +396,6 @@ public class RouterResponse {
             try status(.notAcceptable).end()
         }
     }
-
-    ///
-    /// Adds a link with specified parameters to Link HTTP header
-    ///
-    /// - Parameter link: link value
-    /// - Parameter linkParameters: the link parameters (according to RFC 5988) with their values
-    ///
-    /// - Returns: a RouterResponse instance
-    ///
-    public func addLink(_ link: String, linkParameters: [LinkParameter: String]) -> RouterResponse {
-        var headerValue = "<\(link)>"
-
-        for (linkParamer, value) in linkParameters {
-            headerValue += "; \(linkParamer.rawValue)=\"\(value)\""
-        }
-
-        headers.append("Link", value: headerValue)
-        return self
-    }
 }
 
 ///
@@ -527,4 +405,3 @@ public typealias LifecycleHandler = () -> Void
 //
 /// Type alias for written data filter, i.e. pre-write lifecycle handler
 public typealias WrittenDataFilter = (body: NSData) -> NSData
-
