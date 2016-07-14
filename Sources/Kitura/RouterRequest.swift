@@ -242,15 +242,16 @@ public class RouterRequest: SocketReader {
 }
 
 private class Cookies {
+    #if os(Linux)
+    typealias HTTPCookieType = NSHTTPCookie
+    #else
+    typealias HTTPCookieType = HTTPCookie
+    #endif
     //
     // Storage of parsed Cookie headers
     //
-    #if os(Linux)
-        private var cookies = [String: NSHTTPCookie]()
-    #else
-        private var cookies = [String: HTTPCookie]()
-    #endif
-
+    private var cookies = [String: HTTPCookieType]()
+    
     //
     // Static for Cookie header key value
     //
@@ -262,30 +263,33 @@ private class Cookies {
             return
         }
         for cookie in rawCookies {
-            let cookieNameValues = cookie.components(separatedBy: "; ")
-            for  cookieNameValue  in  cookieNameValues  {
-                let cookieNameValueParts = cookieNameValue.components(separatedBy: "=")
-                if   cookieNameValueParts.count == 2  {
-                    #if os(Linux)
-                        let cookieName = cookieNameValueParts[0]
-                        let cookieValue = cookieNameValueParts[1]
-                        let theCookie = NSHTTPCookie(properties:
-                            [NSHTTPCookieDomain: ".",
-                             NSHTTPCookiePath: "/",
-                             NSHTTPCookieName: cookieName ,
-                             NSHTTPCookieValue: cookieValue])
-                    #else
-                        let cookieName = cookieNameValueParts[0] as NSString
-                        let cookieValue = cookieNameValueParts[1] as NSString
-                        
-                        let theCookie = HTTPCookie(properties:
-                            [HTTPCookiePropertyKey.domain: ".",
-                             HTTPCookiePropertyKey.path: "/",
-                             HTTPCookiePropertyKey.name: cookieName ,
-                             HTTPCookiePropertyKey.value: cookieValue])
-                    #endif
-                    cookies[cookieNameValueParts[0]] = theCookie
-                }
+            initCookie(cookie, cookies: &cookies)
+        }
+    }
+    
+    private func initCookie(_ cookie: String, cookies: inout [String: HTTPCookieType]) {
+        let cookieNameValues = cookie.components(separatedBy: "; ")
+        for  cookieNameValue in cookieNameValues  {
+            let cookieNameValueParts = cookieNameValue.components(separatedBy: "=")
+            if   cookieNameValueParts.count == 2  {
+                #if os(Linux)
+                    let cookieName = cookieNameValueParts[0]
+                    let cookieValue = cookieNameValueParts[1]
+                    let theCookie = NSHTTPCookie(properties:
+                        [NSHTTPCookieDomain: ".",
+                         NSHTTPCookiePath: "/",
+                         NSHTTPCookieName: cookieName ,
+                         NSHTTPCookieValue: cookieValue])
+                #else
+                    let cookieName = cookieNameValueParts[0] as NSString
+                    let cookieValue = cookieNameValueParts[1] as NSString
+                    let theCookie = HTTPCookie(properties:
+                        [HTTPCookiePropertyKey.domain: ".",
+                         HTTPCookiePropertyKey.path: "/",
+                         HTTPCookiePropertyKey.name: cookieName ,
+                         HTTPCookiePropertyKey.value: cookieValue])
+                #endif
+                cookies[cookieNameValueParts[0]] = theCookie
             }
         }
     }

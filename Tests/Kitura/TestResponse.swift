@@ -16,6 +16,7 @@
 
 import XCTest
 import Foundation
+import SwiftyJSON
 
 @testable import Kitura
 @testable import KituraNet
@@ -32,6 +33,7 @@ class TestResponse : XCTestCase {
         return [
             ("testSimpleResponse", testSimpleResponse),
             ("testPostRequest", testPostRequest),
+            ("testPostRequestWithDoubleBodyParser", testPostRequestWithDoubleBodyParser),
             ("testPostRequestUrlEncoded", testPostRequestUrlEncoded),
             ("testMultipartFormParsing", testMultipartFormParsing),
             ("testParameter", testParameter),
@@ -42,7 +44,8 @@ class TestResponse : XCTestCase {
             ("testAcceptTypes", testAcceptTypes),
             ("testFormat", testFormat),
             ("testLink", testLink),
-            ("testSubdomains", testSubdomains)
+            ("testSubdomains", testSubdomains),
+            ("testJsonp", testJsonp)
         ]
     }
 
@@ -91,7 +94,28 @@ class TestResponse : XCTestCase {
             }
         }
     }
-    
+
+    func testPostRequestWithDoubleBodyParser() {
+        performServerTest(router) { expectation in
+            self.performRequest("post", path: "/doublebodytest", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                //XCTAssertEqual(response!.method, "POST", "The request wasn't recognized as a post")
+                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received text body: </b>plover\nxyzzy\n</body></html>\n\n")
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            }) {req in
+                req.write(from: "plover\n")
+                req.write(from: "xyzzy\n")
+            }
+        }
+    }
+
     func testPostRequestUrlEncoded() {
         performServerTest(router) { expectation in
             self.performRequest("post", path: "/bodytest", callback: {response in
@@ -132,7 +156,7 @@ class TestResponse : XCTestCase {
 
     func dataComponentsTest(_ searchString: String, separator: String) {
         let stringFind = searchString.components(separatedBy: separator)
-        
+
         // test NSData.components extension
         #if os(Linux)
             var separatorData = NSData()
@@ -156,7 +180,6 @@ class TestResponse : XCTestCase {
             }
        #endif
        let dataFind = searchData.components(separatedBy: separatorData)
-        
         // ensure we get the same sized array back
         XCTAssert(dataFind.count == stringFind.count)
         // test to ensure the strings are equal
@@ -169,16 +192,16 @@ class TestResponse : XCTestCase {
             XCTAssertEqual(stringFind[i], dataString)
         }
     }
-    
+
     func testMultipartFormParsing() {
-        
+
         // ensure NSData.components works just like String.components
         dataComponentsTest("AxAyAzA", separator: "A")
         dataComponentsTest("HelloWorld", separator: "World")
         dataComponentsTest("ababababababababababa", separator: "b")
         dataComponentsTest("Invalid separator", separator: "")
         dataComponentsTest("", separator: "Invalid search string")
-        
+
         performServerTest(router) { expectation in
             self.performRequest("post", path: "/multibodytest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
@@ -258,7 +281,7 @@ class TestResponse : XCTestCase {
                     "--ZZZY70gRGgDPOiChzXcmW3psiU7HlnC--")
             }
         }
-        
+
         // Negative test case - valid boundary but an invalid body
         performServerTest(router) { expectation in
             self.performRequest("post", path: "/multibodytest", callback: {response in
@@ -389,7 +412,7 @@ class TestResponse : XCTestCase {
             XCTAssertEqual(response.headers["Content-Type"]!, "text/plain, image/png, text/html")
 
             do {
-                try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+                try response.status(HTTPStatusCode.OK).send("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n").end()
             }
             catch {}
             next()
@@ -424,7 +447,7 @@ class TestResponse : XCTestCase {
             XCTAssertNil(request.accepts(types: "unreal"), "Invalid extension was accepted!")
 
             do {
-                try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+                try response.status(HTTPStatusCode.OK).send("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n").end()
             }
             catch {}
             next()
@@ -439,7 +462,7 @@ class TestResponse : XCTestCase {
             XCTAssertEqual(request.accepts(types: ["xml", "html", "unreal"]), "html", "Accepts did not return expected value")
 
             do {
-                try response.status(HTTPStatusCode.OK).end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+                try response.status(HTTPStatusCode.OK).send("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n").end()
             }
             catch {}
             next()
@@ -539,6 +562,87 @@ class TestResponse : XCTestCase {
         }
     }
 
+    func testJsonp() {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/jsonp?callback=testfn", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                do {
+                    let body = try response!.readString()
+#if os(Linux)
+                    let expected = "{\n  \"some\": \"json\"\n}"
+#else
+                    let expected = "{\n  \"some\" : \"json\"\n}"
+#endif
+                    XCTAssertEqual(body!,"/**/ testfn(\(expected))")
+                    XCTAssertEqual(response!.headers["Content-Type"]!.first!, "application/javascript")
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            })
+        }
+
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/jsonp?callback=test+fn", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(response!.statusCode)")
+                expectation.fulfill()
+            })
+        }
+
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/jsonp", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(response!.statusCode)")
+                expectation.fulfill()
+            })
+        }
+
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/jsonp_cb?cb=testfn", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                do {
+                    let body = try response!.readString()
+#if os(Linux)
+                    let expected = "{\n  \"some\": \"json\"\n}"
+#else
+                    let expected = "{\n  \"some\" : \"json\"\n}"
+#endif
+                    XCTAssertEqual(body!,"/**/ testfn(\(expected))")
+                    XCTAssertEqual(response!.headers["Content-Type"]!.first!, "application/javascript")
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            })
+        }
+
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/jsonp_encoded?callback=testfn", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                do {
+                    let body = try response!.readString()
+                    #if os(Linux)
+                        let expected = "{\n  \"some\": \"json with bad js chars \\u2028 \\u2029 \\u2028 \\u2029\"\n}"
+                    #else
+                        let expected = "{\n  \"some\" : \"json with bad js chars \\u2028 \\u2029 \\u2028 \\u2029\"\n}"
+                    #endif
+                    XCTAssertEqual(body!,"/**/ testfn(\(expected))")
+                    XCTAssertEqual(response!.headers["Content-Type"]!.first!, "application/javascript")
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            })
+        }
+    }
+
     func testSubdomains() {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/subdomains", callback: { response in
@@ -612,7 +716,7 @@ class TestResponse : XCTestCase {
         router.get("/qwer") { _, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             do {
-                try response.end("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+                try response.send("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n").end()
             }
             catch {}
             next()
@@ -660,9 +764,7 @@ class TestResponse : XCTestCase {
             next()
         }
 
-        router.all("/bodytest", middleware: BodyParser())
-
-        router.post("/bodytest") { request, response, next in
+        let bodyTestHandler: RouterHandler =  { request, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             guard let requestBody = request.body else {
                 next ()
@@ -671,12 +773,12 @@ class TestResponse : XCTestCase {
             switch (requestBody) {
                 case .urlEncoded(let value):
                     do {
-                        try response.end("<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> \(value) </body></html>\n\n")
+                        try response.send("<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> \(value) </body></html>\n\n").end()
                     }
                     catch {}
                 case .text(let value):
                     do {
-                        try response.end("<!DOCTYPE html><html><body><b>Received text body: </b>\(value)</body></html>\n\n")
+                        try response.send("<!DOCTYPE html><html><body><b>Received text body: </b>\(value)</body></html>\n\n").end()
                     }
                     catch {}
                 default:
@@ -686,9 +788,18 @@ class TestResponse : XCTestCase {
 
             next()
         }
-        
+
+        router.all("/bodytest", middleware: BodyParser())
+        router.post("/bodytest", handler: bodyTestHandler)
+
+        //intentially BodyParser is added twice, to check how two body parsers work together
+        router.all("/doublebodytest", middleware: BodyParser())
+        router.all("/doublebodytest", middleware: BodyParser())
+        router.post("/doublebodytest", handler: bodyTestHandler)
+
+
         router.all("/multibodytest", middleware: BodyParser())
-        
+
         router.post("/multibodytest") { request, response, next in
             guard let requestBody = request.body else {
                 next ()
@@ -703,16 +814,6 @@ class TestResponse : XCTestCase {
                 response.error = Error.failedToParseRequestBody(body: "\(request.body)")
             }
             next()
-        }
-        
-        router.post("/bodytest") { request, response, next in
-            response.headers["Content-Type"] = "text/html; charset=utf-8"
-            guard let requestBody = request.body else {
-                next ()
-                return
-            }
-            
-            print(requestBody)
         }
 
         func callbackText(request: RouterRequest, response: RouterResponse) {
@@ -752,19 +853,59 @@ class TestResponse : XCTestCase {
 
         router.get("/single_link") { request, response, next in
             do {
-                try response.addLink("https://developer.ibm.com/swift",
-                                     linkParameters: [.rel: "root"]).status(.OK).end()
+                response.headers.addLink("https://developer.ibm.com/swift",
+                                     linkParameters: [.rel: "root"])
+                try response.status(.OK).end()
             } catch {}
         }
 
         router.get("/multiple_links") { request, response, next in
             do {
-              try response
-                .addLink("https://developer.ibm.com/swift/products/ibm-bluemix/",
+                response.headers.addLink("https://developer.ibm.com/swift/products/ibm-bluemix/",
                          linkParameters: [.rel: "prev"])
-                .addLink("https://developer.ibm.com/swift/products/ibm-swift-sandbox/",
+                response.headers.addLink("https://developer.ibm.com/swift/products/ibm-swift-sandbox/",
                          linkParameters: [.rel: "next"])
-              .status(.OK).end()
+                try response.status(.OK).end()
+            } catch {}
+        }
+
+        router.get("/jsonp") { request, response, next in
+            let json = JSON([ "some": "json" ])
+            do {
+                do {
+                    try response.send(jsonp: json).end()
+                } catch JSONPError.invalidCallbackName {
+                    try response.status(.badRequest).end()
+                }
+            } catch {}
+        }
+
+        router.get("/jsonp_cb") { request, response, next in
+            let json = JSON([ "some": "json" ])
+            do {
+                do {
+                    try response.send(jsonp: json, callbackParameter: "cb").end()
+                } catch JSONPError.invalidCallbackName {
+                    try response.status(.badRequest).end()
+                }
+            } catch {}
+        }
+
+        router.get("/jsonp_encoded") { request, response, next in
+            // Specify the bad characters in two different ways, just to be sure
+            let unicode2028 = ""
+            let unicode2029 = ""
+#if os(Linux)
+            let json = JSON([ "some": JSON("json with bad js chars \(unicode2028) \(unicode2029) \u{2028} \u{2029}") ])
+#else
+            let json = JSON([ "some": JSON("json with bad js chars \(unicode2028) \(unicode2029) \u{2028} \u{2029}" as NSString) ])
+#endif
+            do {
+                do {
+                    try response.send(jsonp: json).end()
+                } catch JSONPError.invalidCallbackName {
+                    try response.status(.badRequest).end()
+                }
             } catch {}
         }
 

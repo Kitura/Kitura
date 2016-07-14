@@ -53,12 +53,11 @@ extension StaticFileServer {
         //
         private let responseHeadersSetter: ResponseHeadersSetter?
 
-        init(serveIndexForDirectory: Bool, redirect: Bool,
-             servingFilesPath: String, possibleExtensions: [String] = [String](),
-             responseHeadersSetter: ResponseHeadersSetter? = nil) {
-            self.possibleExtensions = possibleExtensions
-            self.serveIndexForDirectory = serveIndexForDirectory
-            self.redirect = redirect
+        init(servingFilesPath: String, options: StaticFileServer.Options,
+             responseHeadersSetter: ResponseHeadersSetter?) {
+            self.possibleExtensions = options.possibleExtensions
+            self.serveIndexForDirectory = options.serveIndexForDirectory
+            self.redirect = options.redirect
             self.servingFilesPath = servingFilesPath
             self.responseHeadersSetter = responseHeadersSetter
         }

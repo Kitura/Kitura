@@ -48,6 +48,9 @@ public class Router {
     ///
     private let kituraResourcePrefix = "/@@Kitura-router@@/"
 
+    /// helper for serving file resources
+    private let fileResourceServer = FileResourceServer()
+
     ///
     /// Initializes a Router
     ///
@@ -196,7 +199,7 @@ extension Router : ServerDelegate {
         let lengthIndex = kituraResourcePrefix.endIndex
         if  urlPath.characters.count > kituraResourcePrefix.characters.count && urlPath.substring(to: lengthIndex) == kituraResourcePrefix {
             let resource = urlPath.substring(from: lengthIndex)
-            sendIfFound(resource: resource, usingResponse: response)
+            fileResourceServer.sendIfFound(resource: resource, usingResponse: response)
         } else {
             let looper = RouterElementWalker(elements: self.elements, request: request, response: response, callback: callback)
             looper.next()
@@ -208,7 +211,7 @@ extension Router : ServerDelegate {
     ///
     private func sendDefaultResponse(request: RouterRequest, response: RouterResponse) {
         if request.parsedURL.path == "/" {
-            sendIfFound(resource: "index.html", usingResponse: response)
+            fileResourceServer.sendIfFound(resource: "index.html", usingResponse: response)
         } else {
             do {
                 let errorMessage = "Cannot \(String(request.method).uppercased()) \(request.parsedURL.path ?? "")."
@@ -216,80 +219,6 @@ extension Router : ServerDelegate {
             } catch {
                 Log.error("Error sending default not found message: \(error)")
             }
-        }
-    }
-
-    private func getFilePath(for resource: String) -> String? {
-#if os(Linux)
-        let fileManager = NSFileManager.defaultManager()
-#else
-        let fileManager = FileManager.default()
-#endif
-        let potentialResource = getResourcePathBasedOnSourceLocation(for: resource)
-
-        let fileExists = fileManager.fileExists(atPath: potentialResource)
-        if fileExists {
-            return potentialResource
-        }
-        else {
-            return getResourcePathBasedOnCurrentDirectory(for: resource, withFileManager: fileManager)
-        }
-    }
-
-    private func getResourcePathBasedOnSourceLocation(for resource: String) -> String {
-        let fileName = NSString(string: #file)
-        let resourceFilePrefixRange: NSRange
-        #if os(Linux)
-            let lastSlash = fileName.range(of: "/", options: NSStringCompareOptions.backwardsSearch)
-        #else
-            let lastSlash = fileName.range(of: "/", options: String.CompareOptions.backwards)
-        #endif
-        if  lastSlash.location != NSNotFound  {
-            resourceFilePrefixRange = NSMakeRange(0, lastSlash.location+1)
-        } else {
-            resourceFilePrefixRange = NSMakeRange(0, fileName.length)
-        }
-        return fileName.substring(with: resourceFilePrefixRange) + "resources/" + resource
-    }
-
-    #if os(Linux)
-    typealias FleManagerType = NSFileManager
-    #else
-    typealias FleManagerType = FileManager
-    #endif
-    
-    private func getResourcePathBasedOnCurrentDirectory(for resource: String, withFileManager fileManager: FleManagerType) -> String? {
-        do {
-            let packagePath = fileManager.currentDirectoryPath + "/Packages"
-            let packages = try fileManager.contentsOfDirectory(atPath: packagePath)
-            for package in packages {
-                let potentalResource = "\(packagePath)/\(package)/Sources/Kitura/resources/\(resource)"
-                let resourceExists = fileManager.fileExists(atPath: potentalResource)
-                if resourceExists {
-                    return potentalResource
-                }
-            }
-        }
-        catch {
-            return nil
-        }
-        return nil
-    }
-
-
-    ///
-    /// Get the directory we were compiled from
-    ///
-    private func sendIfFound(resource: String, usingResponse response: RouterResponse)  {
-        guard let resourceFileName = getFilePath(for: resource) else {
-            return
-        }
-
-        do {
-            try response.send(fileName: resourceFileName)
-            try response.status(.OK).end()
-        } catch {
-            // Fail silently
         }
     }
 }
