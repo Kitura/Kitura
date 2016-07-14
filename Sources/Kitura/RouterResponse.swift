@@ -38,6 +38,18 @@ public class RouterResponse {
         var invokedSend = false
     }
 
+    struct Lifecycle {
+        //
+        // Lifecycle hook called on end()
+        //
+        var onEndInvoked: LifecycleHandler = {}
+
+        //
+        // Current pre-write lifecycle handler
+        //
+        var writtenDataFilter: WrittenDataFilter =  { body in return body}
+    }
+
     ///
     /// The server response
     ///
@@ -63,15 +75,7 @@ public class RouterResponse {
     ///
     var state = State()
 
-    //
-    // Lifecycle hook called on end()
-    //
-    private var onEndInvoked: LifecycleHandler = {}
-
-    //
-    // Current pre-write lifecycle handler
-    //
-    private var writtenDataFilter: WrittenDataFilter = {body in return body}
+    private var lifecycle = Lifecycle()
 
     ///
     /// Set of cookies to return with the response
@@ -120,7 +124,7 @@ public class RouterResponse {
     @discardableResult
     public func end() throws {
 
-        onEndInvoked()
+        lifecycle.onEndInvoked()
 
         // Sets status code if unset
         if statusCode == .unknown {
@@ -128,7 +132,7 @@ public class RouterResponse {
         }
 
         if  let data = buffer.data {
-            let content = writtenDataFilter(body: data)
+            let content = lifecycle.writtenDataFilter(body: data)
             let contentLength = headers["Content-Length"]
             if  contentLength == nil {
                 headers["Content-Length"] = String(content.length)
@@ -359,8 +363,8 @@ public class RouterResponse {
     ///
     /// - Parameter newPreFlush: The new pre-flush lifecycle handler
     public func setOnEndInvoked(_ newOnEndInvoked: LifecycleHandler) -> LifecycleHandler {
-        let oldOnEndInvoked = onEndInvoked
-        onEndInvoked = newOnEndInvoked
+        let oldOnEndInvoked = lifecycle.onEndInvoked
+        lifecycle.onEndInvoked = newOnEndInvoked
         return oldOnEndInvoked
     }
 
@@ -369,8 +373,8 @@ public class RouterResponse {
     ///
     /// - Parameter newWrittenDataFilter: The new written data filter
     public func setWrittenDataFilter(_ newWrittenDataFilter: WrittenDataFilter) -> WrittenDataFilter {
-        let oldWrittenDataFilter = writtenDataFilter
-        writtenDataFilter = newWrittenDataFilter
+        let oldWrittenDataFilter = lifecycle.writtenDataFilter
+        lifecycle.writtenDataFilter = newWrittenDataFilter
         return oldWrittenDataFilter
     }
 
