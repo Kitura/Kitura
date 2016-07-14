@@ -53,7 +53,7 @@ class RouterMiddlewareWalker
         if middlewareIndex < middlewares.count && (response.error == nil || method == .error) {
             do {
                 let closure = middlewareIndex == middlewares.count-1 ? callback : {
-                    // Purposfully capture self here
+                    // Purposefully capture self here
                     self.next()
                 }
                 
