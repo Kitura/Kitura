@@ -46,7 +46,11 @@ public class RouterRequest: SocketReader {
     public private(set) lazy var domain: String = { [unowned self] in
         let pattern = "([a-z0-9][a-z0-9\\-]{1,63}\\.[a-z\\.]{2,6})$"
         do {
-            let regex = try NSRegularExpression(pattern: pattern, options: [.caseInsensitive])
+            #if os(Linux)
+                let regex = try NSRegularExpression(pattern: pattern, options: [.caseInsensitive])
+            #else
+                let regex = try RegularExpression(pattern: pattern, options: [.caseInsensitive])
+            #endif
 
             let hostnameRange = NSMakeRange(0, self.hostname.utf8.count)
 
@@ -67,10 +71,15 @@ public class RouterRequest: SocketReader {
     /// The subdomains string array of request
     ///
     public private(set) lazy var subdomains: [String] = { [unowned self] in
+        #if os(Linux)
+            let backwards = NSStringCompareOptions.backwardsSearch
+        #else
+            let backwards = String.CompareOptions.backwards
+        #endif
         let subdomainsString = self.hostname
             .replacingOccurrences(of: self.domain,
                                   with: "",
-                                  options: [ .backwardsSearch ],
+                                  options: [ backwards ],
                                   range: self.hostname.startIndex..<self.hostname.endIndex)
 
         var subdomains = subdomainsString.components(separatedBy: ".")
@@ -135,9 +144,16 @@ public class RouterRequest: SocketReader {
     ///
     /// Set of parsed cookies
     ///
+    #if os(Linux)
     public var cookies: [String: NSHTTPCookie] {
         return _cookies.cookies
     }
+    #else
+    public var cookies: [String: HTTPCookie] {
+        return _cookies.cookies
+    }
+    #endif
+
 
     ///
     /// List of URL parameters
@@ -226,11 +242,16 @@ public class RouterRequest: SocketReader {
 }
 
 private class Cookies {
+    #if os(Linux)
+    typealias HTTPCookieType = NSHTTPCookie
+    #else
+    typealias HTTPCookieType = HTTPCookie
+    #endif
     //
     // Storage of parsed Cookie headers
     //
-    private var cookies = [String: NSHTTPCookie]()
-
+    private var cookies = [String: HTTPCookieType]()
+    
     //
     // Static for Cookie header key value
     //
@@ -245,8 +266,8 @@ private class Cookies {
             initCookie(cookie, cookies: &cookies)
         }
     }
-
-    private func initCookie(_ cookie: String, cookies: inout [String: NSHTTPCookie]) {
+    
+    private func initCookie(_ cookie: String, cookies: inout [String: HTTPCookieType]) {
         let cookieNameValues = cookie.components(separatedBy: "; ")
         for  cookieNameValue in cookieNameValues  {
             let cookieNameValueParts = cookieNameValue.components(separatedBy: "=")
@@ -254,15 +275,20 @@ private class Cookies {
                 #if os(Linux)
                     let cookieName = cookieNameValueParts[0]
                     let cookieValue = cookieNameValueParts[1]
+                    let theCookie = NSHTTPCookie(properties:
+                        [NSHTTPCookieDomain: ".",
+                         NSHTTPCookiePath: "/",
+                         NSHTTPCookieName: cookieName ,
+                         NSHTTPCookieValue: cookieValue])
                 #else
                     let cookieName = cookieNameValueParts[0] as NSString
                     let cookieValue = cookieNameValueParts[1] as NSString
+                    let theCookie = HTTPCookie(properties:
+                        [HTTPCookiePropertyKey.domain: ".",
+                         HTTPCookiePropertyKey.path: "/",
+                         HTTPCookiePropertyKey.name: cookieName ,
+                         HTTPCookiePropertyKey.value: cookieValue])
                 #endif
-                let theCookie = NSHTTPCookie(properties:
-                    [NSHTTPCookieDomain: ".",
-                     NSHTTPCookiePath: "/",
-                     NSHTTPCookieName: cookieName ,
-                     NSHTTPCookieValue: cookieValue])
                 cookies[cookieNameValueParts[0]] = theCookie
             }
         }

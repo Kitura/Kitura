@@ -19,9 +19,16 @@ import Foundation
 class TextBodyParser: BodyParserProtocol {
     func parse(_ data: NSData) -> ParsedBody? {
         // There was no support for the application/json MIME type
-        if let bodyAsString: String = String(data: data, encoding: NSUTF8StringEncoding) {
-            return .text(bodyAsString)
-        }
+        #if os(Linux)
+            if let bodyAsString: String = String(data: data, encoding: NSUTF8StringEncoding) {
+                return .text(bodyAsString)
+            }
+        #else
+            if let bodyAsString: String = String(data: data as Data, encoding: String.Encoding.utf8) {
+                return .text(bodyAsString)
+            }
+        #endif
+
         return nil
     }
 }

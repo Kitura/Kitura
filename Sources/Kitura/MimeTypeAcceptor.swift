@@ -123,9 +123,13 @@ extension RouterRequest {
                 }
                 return
             }
-
+            #if os(Linux)
+                let regularExpressionSearch = NSStringCompareOptions.regularExpressionSearch
+            #else
+                let regularExpressionSearch = String.CompareOptions.regularExpression
+            #endif
             if nil == mimeType.range(of: parsedHeaderValue.type,
-                                     options: .regularExpressionSearch) {
+                                     options: regularExpressionSearch) {
                 return
             }
 

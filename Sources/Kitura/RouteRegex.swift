@@ -19,18 +19,24 @@ import LoggerAPI
 
 import Foundation
 
+#if os(Linux)
+    typealias RegularExpressionType = NSRegularExpression
+#else
+    typealias RegularExpressionType = RegularExpression
+#endif
+
 public class RouteRegex {
     public static let sharedInstance = RouteRegex()
     
-    private let namedCaptureRegex: NSRegularExpression
-    private let unnamedCaptureRegex: NSRegularExpression
-    private let keyRegex: NSRegularExpression
-    private let nonKeyRegex: NSRegularExpression
+    private let namedCaptureRegex: RegularExpressionType
+    private let unnamedCaptureRegex: RegularExpressionType
+    private let keyRegex: RegularExpressionType
+    private let nonKeyRegex: RegularExpressionType
 
     private init () {
         do {
-            namedCaptureRegex = try NSRegularExpression(pattern: "(.*)?(?:\\:(\\w+)(?:\\(((?:\\\\.|[^()])+)\\))?(?:([+*?])?))", options: [])
-            unnamedCaptureRegex = try NSRegularExpression(pattern: "(.*)?(?:(?:\\(((?:\\\\.|[^()])+)\\))(?:([+*?])?))", options: [])
+            namedCaptureRegex = try RegularExpressionType(pattern: "(.*)?(?:\\:(\\w+)(?:\\(((?:\\\\.|[^()])+)\\))?(?:([+*?])?))", options: [])
+            unnamedCaptureRegex = try RegularExpressionType(pattern: "(.*)?(?:(?:\\(((?:\\\\.|[^()])+)\\))(?:([+*?])?))", options: [])
             keyRegex = namedCaptureRegex
             nonKeyRegex = unnamedCaptureRegex
         } catch {
@@ -46,7 +52,7 @@ public class RouteRegex {
     ///
     /// - Returns:
     ///
-    internal func buildRegex(fromPattern: String?, allowPartialMatch: Bool = false) -> (NSRegularExpression?, [String]?) {
+    internal func buildRegex(fromPattern: String?, allowPartialMatch: Bool = false) -> (RegularExpressionType?, [String]?) {
         guard let fromPattern = fromPattern else {
             return (nil, nil)
         }
@@ -77,9 +83,9 @@ public class RouteRegex {
             regexStr.append("$")
         }
 
-        var regex: NSRegularExpression? = nil
+        var regex: RegularExpressionType? = nil
         do {
-            regex = try NSRegularExpression(pattern: regexStr, options: [])
+            regex = try RegularExpressionType(pattern: regexStr, options: [])
         } catch {
             Log.error("Failed to compile the regular expression for the route \(pattern)")
         }
@@ -149,7 +155,13 @@ public class RouteRegex {
         return (matched, prefix, matchExp, plusQuestStar)
     }
 
-    func extract(fromPath path: String, with match: NSTextCheckingResult, at index: Int,
+    #if os(Linux)
+    typealias TextCheckingResultType = NSTextCheckingResult
+    #else
+    typealias TextCheckingResultType = TextCheckingResult
+    #endif
+    
+    func extract(fromPath path: String, with match: TextCheckingResultType, at index: Int,
                  to string: inout String) {
         let range = match.range(at: index)
         if  range.location != NSNotFound  &&  range.location != -1 {
