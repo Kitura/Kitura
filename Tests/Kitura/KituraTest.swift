@@ -21,9 +21,15 @@ import XCTest
 
 import Foundation
 
+#if os(Linux)
+    typealias TimeIntervalType = NSTimeInterval
+#else
+    typealias TimeIntervalType = TimeInterval
+#endif
+
 protocol KituraTest {
     func expectation(_ index: Int) -> XCTestExpectation
-    func waitExpectation(timeout t: NSTimeInterval, handler: XCWaitCompletionHandler?)
+    func waitExpectation(timeout t: TimeIntervalType, handler: XCWaitCompletionHandler?)
 }
 
 extension KituraTest {
@@ -77,7 +83,7 @@ extension XCTestCase: KituraTest {
         return self.expectation(withDescription: expectationDescription)
     }
 
-    func waitExpectation(timeout t: NSTimeInterval, handler: XCWaitCompletionHandler?) {
+    func waitExpectation(timeout t: TimeIntervalType, handler: XCWaitCompletionHandler?) {
         self.waitForExpectations(withTimeout: t, handler: handler)
     }
 }

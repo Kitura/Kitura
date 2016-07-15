@@ -18,6 +18,12 @@
 import LoggerAPI
 import Foundation
 
+#if os(Linux)
+    typealias FileManagerType = NSFileManager
+#else
+    typealias FileManagerType = FileManager
+#endif
+
 extension StaticFileServer {
     // MARK: FileServer
     class FileServer {
@@ -86,7 +92,7 @@ extension StaticFileServer {
         }
 
         func serveFile(_ filePath: String, requestPath: String, response: RouterResponse) {
-            let fileManager = NSFileManager()
+            let fileManager = FileManagerType()
             var isDirectory = ObjCBool(false)
 
             if fileManager.fileExists(atPath: filePath, isDirectory: &isDirectory) {
@@ -123,7 +129,7 @@ extension StaticFileServer {
         @discardableResult
         private func serveIfNonDirectoryFile(atPath path: String, response: RouterResponse) -> Bool {
             var isDirectory = ObjCBool(false)
-            if NSFileManager().fileExists(atPath: path, isDirectory: &isDirectory) {
+            if FileManagerType().fileExists(atPath: path, isDirectory: &isDirectory) {
                 if !isDirectory.boolValue {
                     serveNonDirectoryFile(path, response: response)
                     return true
@@ -138,7 +144,7 @@ extension StaticFileServer {
             }
 
             do {
-                let fileAttributes = try NSFileManager().attributesOfItem(atPath: filePath)
+                let fileAttributes : CustomResponseHeaderAttributes = try FileManagerType().attributesOfItem(atPath: filePath)
                 responseHeadersSetter?.setCustomResponseHeaders(response: response,
                                                                 filePath: filePath,
                                                                 fileAttributes: fileAttributes)
@@ -154,8 +160,11 @@ extension StaticFileServer {
             // Check that no-one is using ..'s in the path to poke around the filesystem
             let absoluteBasePath = NSURL(fileURLWithPath: servingFilesPath).absoluteString
             let absoluteFilePath = NSURL(fileURLWithPath: filePath).absoluteString
-
-            return  absoluteFilePath.hasPrefix(absoluteBasePath)
+            #if os(Linux)
+                return  absoluteFilePath.hasPrefix(absoluteBasePath)
+            #else
+                return  absoluteFilePath!.hasPrefix(absoluteBasePath!)
+            #endif
         }
     }
 }

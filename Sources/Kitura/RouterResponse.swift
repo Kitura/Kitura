@@ -80,8 +80,12 @@ public class RouterResponse {
     ///
     /// Set of cookies to return with the response
     ///
+    #if os(Linux)
     public var cookies = [String: NSHTTPCookie]()
-
+    #else
+    public var cookies = [String: HTTPCookie]()
+    #endif
+    
     ///
     /// Optional error value
     ///
@@ -256,9 +260,14 @@ public class RouterResponse {
     ///
     public func send(jsonp: JSON, callbackParameter: String = "callback") throws -> RouterResponse {
         func sanitizeJSIdentifier(_ ident: String) -> String {
-            return ident.replacingOccurrences(of: "[^\\[\\]\\w$.]", with: "", options:
-                NSStringCompareOptions.regularExpressionSearch)
-        }
+            #if os(Linux)
+                return ident.replacingOccurrences(of: "[^\\[\\]\\w$.]", with: "", options:
+                    NSStringCompareOptions.regularExpressionSearch)
+            #else
+                return ident.replacingOccurrences(of: "[^\\[\\]\\w$.]", with: "", options:
+                    NSString.CompareOptions.regularExpression)
+            #endif
+       }
         func validJsonpCallbackName(_ name: String?) -> String? {
             if let name = name {
                 if name.characters.count > 0 && name == sanitizeJSIdentifier(name) {

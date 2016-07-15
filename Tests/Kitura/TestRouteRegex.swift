@@ -28,7 +28,11 @@ class TestRouteRegex : XCTestCase {
     }
     
     func testBuildRegexFromPattern() {
-        var regex:NSRegularExpression?
+        #if os(Linux)
+            var regex:NSRegularExpression?
+        #else
+            var regex:RegularExpression?
+        #endif
         var strings:[String]?
 
         //Partial match false adds '$' end of string special character

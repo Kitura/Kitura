@@ -37,7 +37,11 @@ class RouterElement {
     ///
     /// The regular expression
     ///
-    private var regex: NSRegularExpression?
+    #if os(Linux)
+        private var regex: NSRegularExpression?
+    #else
+        private var regex: RegularExpression?
+    #endif
 
     ///
     /// The list of keys
@@ -128,13 +132,19 @@ class RouterElement {
         looper.next()
     }
 
+    #if os(Linux)
+    typealias TextChekingResultType = NSTextCheckingResult
+    #else
+    typealias TextChekingResultType = TextCheckingResult
+    #endif
+
     ///
     /// Update the request parameters
     ///
     /// - Parameter match: the regular expression result
     /// - Parameter request:
     ///
-    private func setParameters(forRequest request: RouterRequest, fromUrlPath urlPath: String, match: NSTextCheckingResult) {
+    private func setParameters(forRequest request: RouterRequest, fromUrlPath urlPath: String, match: TextChekingResultType) {
 
         if  let keys = keys {
             var parameters: [String:String] = [:]

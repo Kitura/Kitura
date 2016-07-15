@@ -158,23 +158,37 @@ class TestResponse : XCTestCase {
         let stringFind = searchString.components(separatedBy: separator)
 
         // test NSData.components extension
-        var separatorData = NSData()
-        if let data = separator.data(using: NSUTF8StringEncoding) {
-            // required for Linux as String.data(using:) returns null if seperator == ""
-            separatorData = data
-        }
-        var searchData = NSData()
-        if let data = searchString.data(using: NSUTF8StringEncoding) {
-            // required for Linux as String.data(using:) returns null if searchString == ""
-            searchData = data
-        }
-        let dataFind = searchData.components(separatedBy: separatorData)
-
+        #if os(Linux)
+            var separatorData = NSData()
+            if let data = separator.data(using: NSUTF8StringEncoding) {
+                // required for Linux as String.data(using:) returns null if seperator == ""
+                separatorData = data
+            }
+            var searchData = NSData()
+            if let data = searchString.data(using: NSUTF8StringEncoding) {
+                // required for Linux as String.data(using:) returns null if searchString == ""
+                searchData = data
+            }
+        #else
+            var separatorData = Data()
+            if let data = separator.data(using: String.Encoding.utf8) {
+                separatorData = data
+            }
+            var searchData = Data()
+            if let data = searchString.data(using: String.Encoding.utf8) {
+                searchData = data
+            }
+       #endif
+       let dataFind = searchData.components(separatedBy: separatorData)
         // ensure we get the same sized array back
         XCTAssert(dataFind.count == stringFind.count)
         // test to ensure the strings are equal
         for i in 0 ..< stringFind.count {
-            let dataString = String(data: dataFind[i], encoding: NSUTF8StringEncoding)
+            #if os(Linux)
+                let dataString = String(data: dataFind[i], encoding: NSUTF8StringEncoding)
+            #else
+                let dataString = String(data: dataFind[i], encoding: String.Encoding.utf8)
+            #endif
             XCTAssertEqual(stringFind[i], dataString)
         }
     }
@@ -613,11 +627,11 @@ class TestResponse : XCTestCase {
                 XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 do {
                     let body = try response!.readString()
-#if os(Linux)
-                    let expected = "{\n  \"some\": \"json with bad js chars \\u2028 \\u2029 \\u2028 \\u2029\"\n}"
-#else
-                    let expected = "{\n  \"some\" : \"json with bad js chars \\u2028 \\u2029 \\u2028 \\u2029\"\n}"
-#endif
+                    #if os(Linux)
+                        let expected = "{\n  \"some\": \"json with bad js chars \\u2028 \\u2029 \\u2028 \\u2029\"\n}"
+                    #else
+                        let expected = "{\n  \"some\" : \"json with bad js chars \\u2028 \\u2029 \\u2028 \\u2029\"\n}"
+                    #endif
                     XCTAssertEqual(body!,"/**/ testfn(\(expected))")
                     XCTAssertEqual(response!.headers["Content-Type"]!.first!, "application/javascript")
                 }
@@ -879,8 +893,8 @@ class TestResponse : XCTestCase {
 
         router.get("/jsonp_encoded") { request, response, next in
             // Specify the bad characters in two different ways, just to be sure
-            let unicode2028 = " "
-            let unicode2029 = " "
+            let unicode2028 = "\u{2028}"
+            let unicode2029 = "\u{2029}"
 #if os(Linux)
             let json = JSON([ "some": JSON("json with bad js chars \(unicode2028) \(unicode2029) \u{2028} \u{2029}") ])
 #else

@@ -20,7 +20,13 @@ class URLEncodedBodyParser: BodyParserProtocol {
     func parse(_ data: NSData) -> ParsedBody? {
         var parsedBody = [String:String]()
         var success = true
-        if let bodyAsString: String = String(data: data, encoding: NSUTF8StringEncoding) {
+        #if os(Linux)
+            let bodyAsString = String(data: data, encoding: NSUTF8StringEncoding)
+        #else
+            let bodyAsString = String(data: data as Data, encoding: String.Encoding.utf8)
+        #endif
+
+        if let bodyAsString = bodyAsString {
             let bodyAsArray = bodyAsString.components(separatedBy: "&")
 
             for element in bodyAsArray {
