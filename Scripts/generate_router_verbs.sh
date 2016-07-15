@@ -46,18 +46,22 @@ VERB_LOW_CASE=`echo $VERB | cut -c1 | tr '[:upper:]' '[:lower:]'``echo $VERB | c
 cat <<EOF >> ${OUTPUT_FILE}
     // MARK: $VERB
 
+    @discardableResult
     public func $VERB_LOW_CASE(_ path: String?=nil, handler: RouterHandler...) -> Router {
 	return routingHelper(.$VERB_LOW_CASE, pattern: path, handler: handler)
     }
 
+    @discardableResult
     public func $VERB_LOW_CASE(_ path: String?=nil, handler: [RouterHandler]) -> Router {
 	return routingHelper(.$VERB_LOW_CASE, pattern: path, handler: handler)
     }
 
+    @discardableResult
     public func $VERB_LOW_CASE(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
 	return routingHelper(.$VERB_LOW_CASE, pattern: path, middleware: middleware)
     }
 
+    @discardableResult
     public func $VERB_LOW_CASE(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
 	return routingHelper(.$VERB_LOW_CASE, pattern: path, middleware: middleware)
     }
