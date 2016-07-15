@@ -128,7 +128,7 @@ public class ContentType {
             lastPathElemRange = fileName.characters.startIndex..<fileName.characters.endIndex
         }
 
-        if let lastDot = fileName.range(of: ".", range: lastPathElemRange) {
+        if let lastDot = fileName.range(of: ".", options: backwards, range: lastPathElemRange) {
             extRange = fileName.index(after: lastDot.lowerBound)..<fileName.characters.endIndex
         } else {
             // No "extension", use the entire last path element as the "extension"
