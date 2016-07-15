@@ -22,7 +22,7 @@ Kitura-Build/build/Makefile:
 	git submodule init
 	git submodule update --remote --merge
 
-custombuild: Sources/Kitura/RouterHTTPVerbs_generated.swift
+generateRouterVerbs: Sources/Kitura/RouterHTTPVerbs_generated.swift
 
 Sources/Kitura/RouterHTTPVerbs_generated.swift: Configuration/RouterHTTPVerbs.txt
 	@bash Scripts/generate_router_verbs.sh $< $@
