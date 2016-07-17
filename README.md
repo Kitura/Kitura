@@ -254,6 +254,37 @@ Let's develop our first Kitura Web Application written in Swift!
 
 11. Open your browser at [http://localhost:8090](http://localhost:8090)
 
+## FastCGI Support
+
+Kitura includes an Apache/mod_proxy_fastcgi and Nginx compatible FastCGI server. To enable FastCGI support, simply add a FastCGI server to Kitura framework:
+
+```swift
+  Kitura.addFastCGIServer(onPort: 9000, with: router)
+```
+
+Based on the example outlined above, your Sources/main.swift would now look like this:
+
+   ```swift
+   import Kitura
+   import HeliumLogger
+
+   HeliumLogger.use()
+
+   let router = Router()
+
+   router.get("/") {
+       request, response, next in
+       response.send("Hello, World!")
+       next()
+   }
+
+   Kitura.addHTTPServer(onPort: 8090, with: router)
+   Kitura.addFastCGIServer(onPort: 9000, with: router)
+   Kitura.run()
+   ```
+
+You can then configure your web server to forward requests to Kitura via FastCGI on the specified port (in this example, 9000. 
+
 ## Kitura Wiki
 Feel free to visit our [Wiki](https://github.com/IBM-Swift/Kitura/wiki) for our roadmap and some tutorials.
 
