@@ -283,7 +283,7 @@ Based on the example outlined above, your Sources/main.swift would now look like
    Kitura.run()
    ```
 
-You can then configure your web server to forward requests to Kitura via FastCGI on the specified port (in this example, 9000. 
+You can then configure your web server to forward requests to Kitura via FastCGI on the specified port (in this example, port 9000).
 
 ## Kitura Wiki
 Feel free to visit our [Wiki](https://github.com/IBM-Swift/Kitura/wiki) for our roadmap and some tutorials.
