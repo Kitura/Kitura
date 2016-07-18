@@ -53,13 +53,13 @@ This branch of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-06-20-a`** versi
 
  `$ brew install curl`
 
-3. Download and install [Xcode 8 beta 2](https://developer.apple.com/download/).
+3. Download and install [Xcode 8 beta 3](https://developer.apple.com/download/).
 
 4. Download and install the [supported Swift compiler](#swift-version).
 
  During installation if you are using the package installer make sure to select "all users" for the installation path in order for the correct toolchain version to be available for use with the terminal.
 
- After installation, make sure you update your PATH environment variable as described in the installation instructions (e.g. export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH)
+ After installation, make sure you update your PATH environment variable as described in the installation instructions (e.g. `export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH`)
 
 4. Select the Xcode beta as your active developer directory.
 
