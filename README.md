@@ -47,11 +47,11 @@ This branch of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-06-20-a`** versi
 
 1. Install [Homebrew](http://brew.sh/) (if you don't already have it installed):
 
- `ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
+ `$ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
 
 2. Install the necessary dependencies:
 
- `brew install curl`
+ `$ brew install curl`
 
 3. Download and install [Xcode 8 beta 2](https://developer.apple.com/download/).
 
@@ -63,7 +63,7 @@ This branch of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-06-20-a`** versi
 
 4. Select the Xcode beta as your active developer directory.
 
- `sudo xcode-select -s /Applications/Xcode-beta.app/Contents/Developer/`
+ `$ sudo xcode-select -s /Applications/Xcode-beta.app/Contents/Developer/`
 
 Now you are ready to develop your first Kitura app. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Getting Started](#getting-started).
 
@@ -73,7 +73,7 @@ Kitura is tested on Ubuntu 14.04 LTS and Ubuntu 15.10.
 
 1. Install the following system linux libraries:
 
- `sudo apt-get install autoconf libtool libkqueue-dev libkqueue0 libcurl4-openssl-dev libbsd-dev libblocksruntime-dev`
+ `$ sudo apt-get install autoconf libtool libkqueue-dev libkqueue0 libcurl4-openssl-dev libbsd-dev libblocksruntime-dev`
 
 2. Install the [supported Swift compiler](#swift-version) for Linux.
 
@@ -81,7 +81,7 @@ Kitura is tested on Ubuntu 14.04 LTS and Ubuntu 15.10.
 
 3. Clone, build and install the libdispatch library.
 The complete instructions for building and installing this library are  [here](https://github.com/apple/swift-corelibs-libdispatch/blob/experimental/foundation/INSTALL), though, all you need to do is just this
- `git clone --recursive -b experimental/foundation https://github.com/apple/swift-corelibs-libdispatch.git && cd swift-corelibs-libdispatch && sh ./autogen.sh && ./configure --with-swift-toolchain=<path-to-swift>/usr --prefix=<path-to-swift>/usr && make && make install`
+ `$ git clone --recursive -b experimental/foundation https://github.com/apple/swift-corelibs-libdispatch.git && cd swift-corelibs-libdispatch && sh ./autogen.sh && ./configure --with-swift-toolchain=<path-to-swift>/usr --prefix=<path-to-swift>/usr && make && make install`
 
 Now you are ready to develop your first Kitura app. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Getting Started](#getting-started).
 
@@ -91,15 +91,15 @@ Now you are ready to develop your first Kitura app. Check [Kitura Sample](https:
 
 2. From the Docker session, pull down the [kitura-ubuntu](https://hub.docker.com/r/ibmcom/kitura-ubuntu/) image from Docker Hub:
 
-  `docker pull ibmcom/kitura-ubuntu:latest`
+  `$ docker pull ibmcom/kitura-ubuntu:latest`
 
 3. Create a Docker container using the `kitura-ubuntu` image you just downloaded and forward port 8090 on host to the container:
 
-  `docker run -i -p 8090:8090 -t ibmcom/kitura-ubuntu:latest /bin/bash`
+  `$ docker run -i -p 8090:8090 -t ibmcom/kitura-ubuntu:latest /bin/bash`
 
 4. From within the Docker container, execute the `clone_build_test_kitura.sh` script to build Kitura and execute the test cases:
 
-  `/root/clone_build_test_kitura.sh`
+  `$ /root/clone_build_test_kitura.sh`
 
   The last output line from executing the `clone_build_test_kitura.sh` script should be similar to:
 
@@ -107,7 +107,7 @@ Now you are ready to develop your first Kitura app. Check [Kitura Sample](https:
 
 5. You can now run the KituraSample executable inside the Docker container:
 
-  `/root/start_kitura_sample.sh`
+  `$ /root/start_kitura_sample.sh`
 
   You should see a message that says "Listening on port 8090".
 
@@ -119,11 +119,11 @@ Now you are ready to develop your first Kitura app. Check [Kitura Sample](https:
 
 3. From the root of the Kitura folder containing the `vagrantfile`, create and configure a guest machine:
 
- `vagrant up`
+ `$ vagrant up`
 
 4. SSH into the Vagrant machine:
 
- `vagrant ssh`
+ `$ vagrant ssh`
 
 5. As needed for development, edit the `vagrantfile` to setup [Synced Folders](https://www.vagrantup.com/docs/synced-folders/basic_usage.html) to share files between your host and guest machine.
 
@@ -135,13 +135,11 @@ Let's develop your first Kitura web application!
 
 1. First, create a new project directory.
 
-  ```bash
-  $ mkdir myFirstProject
-  ```
+  `$ mkdir myFirstProject`
 
 2. Next, create a new Swift project using the Swift Package Manager.
 
-  ```bash
+  ```
   $ cd myFirstProject
   $ swift package init
   ```
