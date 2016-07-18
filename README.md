@@ -213,7 +213,7 @@ Let's develop your first Kitura web application!
   Kitura.run()
   ```
 
-8. Optionally, add logging
+8. Optionally, add logging.
 
    In the code example above, no messages from Kitura will logged. You may want to add a logger to help diagnose problems that occur.
    
