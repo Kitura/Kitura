@@ -628,9 +628,9 @@ class TestResponse : XCTestCase {
                 do {
                     let body = try response!.readString()
                     #if os(Linux)
-                        let expected = "{\n  \"some\": \"json with bad js chars \\u2028 \\u2029 \\u2028 \\u2029\"\n}"
+                        let expected = "{\n  \"some\": \"json with bad js chars \\u2028 \\u2029\"\n}"
                     #else
-                        let expected = "{\n  \"some\" : \"json with bad js chars \\u2028 \\u2029 \\u2028 \\u2029\"\n}"
+                        let expected = "{\n  \"some\" : \"json with bad js chars \\u2028 \\u2029\"\n}"
                     #endif
                     XCTAssertEqual(body!,"/**/ testfn(\(expected))")
                     XCTAssertEqual(response!.headers["Content-Type"]!.first!, "application/javascript")
