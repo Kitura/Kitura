@@ -97,7 +97,7 @@ Now you are ready to develop your first Kitura app. Check [Kitura Sample](https:
 
   `$ docker run -i -p 8090:8090 -t ibmcom/kitura-ubuntu:latest /bin/bash`
 
-4. From within the Docker container, execute the `clone_build_kitura.sh` script to build [Kitura-Starter-Bluemix](https://github.com/IBM-Swift/Kitura-Starter-Bluemix) sample project:
+4. From within the Docker container, execute the `clone_build_kitura.sh` script to build the [Kitura-Starter-Bluemix](https://github.com/IBM-Swift/Kitura-Starter-Bluemix) sample project:
 
   `# /root/clone_build_kitura.sh`
 
