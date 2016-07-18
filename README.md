@@ -16,10 +16,11 @@ Kitura is a web framework and web server that is created for web services writte
 * [Summary](#summary)
 * [Features](#features)
 * [Swift version](#swift-version)
-* [Installation (Docker development environment)](#installation-docker-development-environment)
-* [Installation (Vagrant development environment)](#installation-vagrant-development-environment)
-* [Installation (macOS)](#installation-macos)
-* [Installation (Linux, Apt-based)](#installation-linux-apt-based)
+* [Installation](#installation)
+  * [macOS](#macos)
+  * [Ubuntu Linux](#ubuntu-linux)
+  * [Docker](#docker)
+  * [Vagrant](#vagrant)
 * [Developing Kitura applications](#developing-kitura-applications)
 * [Kitura Wiki](#kitura-wiki)
 * [Developing Kitura](#developing-kitura)
@@ -36,7 +37,56 @@ Kitura is a web framework and web server that is created for web services writte
 ## Swift version
 This branch of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-06-20-a`** version of Swift 3 trunk (master). You can download this version at [swift.org](https://swift.org/download/). *Kitura is unlikely to compile with any other version of Swift.*
 
-## Installation (Docker development environment)
+## Installation
+
+* [macOS](#macos)
+* [Ubuntu Linux](#ubuntu-linux)
+* [Docker](#docker)
+* [Vagrant](#vagrant)
+
+### macOS
+
+1. Install [Homebrew](http://brew.sh/) (if you don't already have it installed):
+
+ `ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
+
+2. Install the necessary dependencies:
+
+ `brew install curl`
+
+3. Download and install [Xcode 8 beta 2](https://developer.apple.com/download/).
+
+4. Download and install the [supported Swift compiler](#swift-version).
+
+ During installation if you are using the package installer make sure to select "all users" for the installation path in order for the correct toolchain version to be available for use with the terminal.
+
+ After installation, make sure you update your PATH environment variable as described in the installation instructions (e.g. export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH)
+
+4. Select the Xcode beta as your active developer directory.
+
+ `sudo xcode-select -s /Applications/Xcode-beta.app/Contents/Developer/`
+
+Now you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
+
+### Ubuntu Linux
+
+Kitura is tested on Ubuntu 14.04 LTS and Ubuntu 15.10.
+
+1. Install the following system linux libraries:
+
+ `sudo apt-get install autoconf libtool libkqueue-dev libkqueue0 libcurl4-openssl-dev libbsd-dev libblocksruntime-dev`
+
+2. Install the [supported Swift compiler](#swift-version) for Linux.
+
+ Follow the instructions provided on that page. After installing it (i.e. uncompressing the tar file), make sure you update your PATH environment variable so that it includes the extracted tools: `export PATH=/<path to uncompress tar contents>/usr/bin:$PATH`. To update the PATH env variable, you can update your [.bashrc file](http://www.joshstaiger.org/archives/2005/07/bash_profile_vs.html).
+
+3. Clone, build and install the libdispatch library.
+The complete instructions for building and installing this library are  [here](https://github.com/apple/swift-corelibs-libdispatch/blob/experimental/foundation/INSTALL), though, all you need to do is just this
+ `git clone --recursive -b experimental/foundation https://github.com/apple/swift-corelibs-libdispatch.git && cd swift-corelibs-libdispatch && sh ./autogen.sh && ./configure --with-swift-toolchain=<path-to-swift>/usr --prefix=<path-to-swift>/usr && make && make install`
+
+Now you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
+
+### Docker
 
 1. Install [Docker](https://docs.docker.com/engine/installation/) on your development system and start a Docker session/terminal.
 
@@ -62,7 +112,7 @@ This branch of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-06-20-a`** versi
 
   You should see a message that says "Listening on port 8090".
 
-## Installation (Vagrant development environment)
+### Vagrant
 
 1. Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
 
@@ -77,46 +127,6 @@ This branch of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-06-20-a`** versi
  `vagrant ssh`
 
 5. As needed for development, edit the `vagrantfile` to setup [Synced Folders](https://www.vagrantup.com/docs/synced-folders/basic_usage.html) to share files between your host and guest machine.
-
-Now you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
-
-## Installation (macOS)
-
-1. Install [Homebrew](http://brew.sh/) (if you don't already have it installed):
-
- `ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
-
-2. Install the necessary dependencies:
-
- `brew install curl`
-
-3. Download and install [Xcode 8 beta 2](https://developer.apple.com/download/).
-
-4. Download and install the [supported Swift compiler](#swift-version).
-
- During installation if you are using the package installer make sure to select "all users" for the installation path in order for the correct toolchain version to be available for use with the terminal.
-
- After installation, make sure you update your PATH environment variable as described in the installation instructions (e.g. export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH)
-
-4. Select the Xcode beta as your active developer directory.
-
- `sudo xcode-select -s /Applications/Xcode-beta.app/Contents/Developer/`
-
-Now you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
-
-## Installation (Linux, Apt-based)
-
-1. Install the following system linux libraries:
-
- `sudo apt-get install autoconf libtool libkqueue-dev libkqueue0 libcurl4-openssl-dev libbsd-dev libblocksruntime-dev`
-
-2. Install the [supported Swift compiler](#swift-version) for Linux.
-
- Follow the instructions provided on that page. After installing it (i.e. uncompressing the tar file), make sure you update your PATH environment variable so that it includes the extracted tools: `export PATH=/<path to uncompress tar contents>/usr/bin:$PATH`. To update the PATH env variable, you can update your [.bashrc file](http://www.joshstaiger.org/archives/2005/07/bash_profile_vs.html).
-
-3. Clone, build and install the libdispatch library.
-The complete instructions for building and installing this library are  [here](https://github.com/apple/swift-corelibs-libdispatch/blob/experimental/foundation/INSTALL), though, all you need to do is just this
- `git clone --recursive -b experimental/foundation https://github.com/apple/swift-corelibs-libdispatch.git && cd swift-corelibs-libdispatch && sh ./autogen.sh && ./configure --with-swift-toolchain=<path-to-swift>/usr --prefix=<path-to-swift>/usr && make && make install`
 
 Now you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
 
