@@ -99,7 +99,7 @@ Now you are ready to develop your first Kitura app. Check [Kitura Sample](https:
 
 4. From within the Docker container, execute the `clone_build_test_kitura.sh` script to build Kitura and execute the test cases:
 
-  `$ /root/clone_build_test_kitura.sh`
+  `# /root/clone_build_test_kitura.sh`
 
   The last output line from executing the `clone_build_test_kitura.sh` script should be similar to:
 
@@ -107,7 +107,7 @@ Now you are ready to develop your first Kitura app. Check [Kitura Sample](https:
 
 5. You can now run the KituraSample executable inside the Docker container:
 
-  `$ /root/start_kitura_sample.sh`
+  `# /root/start_kitura_sample.sh`
 
   You should see a message that says "Listening on port 8090".
 
