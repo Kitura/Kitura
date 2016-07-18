@@ -135,7 +135,9 @@ Let's develop your first Kitura web application!
 
 1. First, create a new project directory.
 
-  `$ mkdir myFirstProject`
+  ```
+  $ mkdir myFirstProject
+  ```
 
 2. Next, create a new Swift project using the Swift Package Manager.
 
