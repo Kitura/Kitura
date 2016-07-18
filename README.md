@@ -282,4 +282,4 @@ You can find info on contributing to Kitura in our [contributing guidelines](.gi
 
 ## License
 
-This library is licensed under Apache 2.0. Full license text is available in [LICENSE](LICENSE.txt).
+Kitura is licensed under the [Apache License, Version 2.0](LICENSE.txt).
