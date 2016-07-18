@@ -256,7 +256,7 @@ Let's develop our first Kitura Web Application written in Swift!
 
 ## FastCGI Support
 
-Kitura includes an Apache/mod_proxy_fastcgi and Nginx compatible FastCGI server. To enable FastCGI support, simply add a FastCGI server to Kitura framework:
+Kitura includes an Apache/mod_proxy_fcgi and Nginx compatible FastCGI server. To enable FastCGI support, simply add a FastCGI server to Kitura framework:
 
 ```swift
   Kitura.addFastCGIServer(onPort: 9000, with: router)
