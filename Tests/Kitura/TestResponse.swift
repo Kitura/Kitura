@@ -458,7 +458,7 @@ class TestResponse : XCTestCase {
             XCTAssertEqual(request.accepts(types: "image/png"), "image/png", "Request accepts this type when it shouldn't")
             XCTAssertEqual(request.accepts(types: "image/tiff"), "image/tiff", "Request accepts this type when it shouldn't")
             XCTAssertEqual(request.accepts(types: "json", "jpeg", "html"), "html", "Accepts did not return expected value")
-            XCTAssertEqual(request.accepts(types: ["png", "html", "text/html"]), "html", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(types: ["png", "html"]), "html", "Accepts did not return expected value")
             XCTAssertEqual(request.accepts(types: ["xml", "html", "unreal"]), "html", "Accepts did not return expected value")
 
             do {
