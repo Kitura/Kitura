@@ -289,7 +289,7 @@ All improvements to Kitura are very welcome! Here's how to get started with deve
    LINKER_FLAGS = -Xlinker -L/usr/local/lib
    ```
 
-You can find info on contributing to Kitura in our [contributing guidelines](.github/CONTRIBUTING.md).
+You can find more info on contributing to Kitura in our [contributing guidelines](.github/CONTRIBUTING.md).
 
 ## License
 
