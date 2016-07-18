@@ -271,7 +271,7 @@ Let's develop your first Kitura web application!
 
 ## Contributing to Kitura
 
-Here's how to get started with developing Kitura itself.
+All improvements to Kitura are very welcome! Here's how to get started with developing Kitura itself.
 
 1. Clone this repository.
 
