@@ -78,7 +78,7 @@ This branch of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-06-20-a`** versi
 
 5. As needed for development, edit the `vagrantfile` to setup [Synced Folders](https://www.vagrantup.com/docs/synced-folders/basic_usage.html) to share files between your host and guest machine.
 
-6. Now you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
+Now you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
 
 ## Installation (macOS)
 
@@ -90,13 +90,19 @@ This branch of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-06-20-a`** versi
 
  `brew install curl`
 
-3. Download and install the [supported Swift compiler](#swift-version).
+3. Download and install [Xcode 8 beta 2](https://developer.apple.com/download/).
+
+4. Download and install the [supported Swift compiler](#swift-version).
 
  During installation if you are using the package installer make sure to select "all users" for the installation path in order for the correct toolchain version to be available for use with the terminal.
 
  After installation, make sure you update your PATH environment variable as described in the installation instructions (e.g. export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH)
 
-4. Now you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
+4. Select the Xcode beta as your active developer directory.
+
+ `sudo xcode-select -s /Applications/Xcode-beta.app/Contents/Developer/`
+
+Now you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
 
 ## Installation (Linux, Apt-based)
 
@@ -112,7 +118,7 @@ This branch of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-06-20-a`** versi
 The complete instructions for building and installing this library are  [here](https://github.com/apple/swift-corelibs-libdispatch/blob/experimental/foundation/INSTALL), though, all you need to do is just this
  `git clone --recursive -b experimental/foundation https://github.com/apple/swift-corelibs-libdispatch.git && cd swift-corelibs-libdispatch && sh ./autogen.sh && ./configure --with-swift-toolchain=<path-to-swift>/usr --prefix=<path-to-swift>/usr && make && make install`
 
-4. Now you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
+Now you are ready to develop your first Kitura App. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Developing Kitura applications](#developing-kitura-applications).
 
 ## Developing Kitura applications
 Let's develop our first Kitura Web Application written in Swift!
