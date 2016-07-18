@@ -87,9 +87,9 @@ Now you are ready to develop your first Kitura app. Check [Kitura Sample](https:
 
 ### Docker
 
-1. Install [Docker](https://docs.docker.com/engine/installation/) on your development system and start a Docker session/terminal.
+1. Install [Docker for Mac](https://docs.docker.com/engine/installation/mac/) on your development system and start a Docker session/terminal.
 
-2. From the Docker session, pull down the [kitura-ubuntu](https://hub.docker.com/r/ibmcom/kitura-ubuntu/) image from Docker Hub:
+2. Pull down the [kitura-ubuntu](https://hub.docker.com/r/ibmcom/kitura-ubuntu/) image from Docker Hub:
 
   `$ docker pull ibmcom/kitura-ubuntu:latest`
 
@@ -97,15 +97,18 @@ Now you are ready to develop your first Kitura app. Check [Kitura Sample](https:
 
   `$ docker run -i -p 8090:8090 -t ibmcom/kitura-ubuntu:latest /bin/bash`
 
-4. From within the Docker container, execute the `clone_build_test_kitura.sh` script to build Kitura and execute the test cases:
+4. From within the Docker container, execute the `clone_build_kitura.sh` script to build [Kitura-Starter-Bluemix](https://github.com/IBM-Swift/Kitura-Starter-Bluemix) sample project:
 
-  `# /root/clone_build_test_kitura.sh`
+  `# /root/clone_build_kitura.sh`
 
-  The last output line from executing the `clone_build_test_kitura.sh` script should be similar to:
+  The last two output lines from executing the `clone_build_kitura.sh` script should be similar to:
 
-  `>> Finished execution of tests for Kitura (see above for results).`
+  ```
+  Linking .build/debug/Kitura-Starter-Bluemix
+  >> Build for Kitura-Starter-Bluemix completed (see above for results).
+  ```
 
-5. You can now run the KituraSample executable inside the Docker container:
+5. You can now run the Kitura-Starter-Bluemix executable inside the Docker container:
 
   `# /root/start_kitura_sample.sh`
 
@@ -215,7 +218,7 @@ Let's develop your first Kitura web application!
 8. Optionally, add logging.
 
    In the code example above, no messages from Kitura will logged. You may want to add a logger to help diagnose problems that occur.
-   
+
    Add a HeliumLogger dependency to `Package.swift`.
 
    ```swift
@@ -276,7 +279,7 @@ All improvements to Kitura are very welcome! Here's how to get started with deve
 1. Clone this repository.
 
   `$ git clone https://github.com/IBM-Swift/Kitura`
-  
+
 2. Build and run tests.
 
   `$ make test`
