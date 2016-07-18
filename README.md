@@ -87,7 +87,7 @@ Now you are ready to develop your first Kitura app. Check [Kitura Sample](https:
 
 ### Docker
 
-1. Install [Docker for Mac](https://docs.docker.com/engine/installation/mac/) on your development system and start a Docker session/terminal.
+1. Install [Docker for Mac](https://docs.docker.com/engine/installation/mac/) on your development system.
 
 2. Pull down the [kitura-ubuntu](https://hub.docker.com/r/ibmcom/kitura-ubuntu/) image from Docker Hub:
 
@@ -112,7 +112,7 @@ Now you are ready to develop your first Kitura app. Check [Kitura Sample](https:
 
   `# /root/start_kitura_sample.sh`
 
-  You should see a message that says "Listening on port 8090".
+  You should see an output message that contains the string `Listening on port 8090`.
 
 ### Vagrant
 
