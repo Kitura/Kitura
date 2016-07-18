@@ -22,8 +22,7 @@ Kitura is a web framework and web server that is created for web services writte
   * [Docker](#docker)
   * [Vagrant](#vagrant)
 * [Getting Started](#getting-started)
-* [Kitura Wiki](#kitura-wiki)
-* [Developing Kitura](#developing-kitura)
+* [Contributing to Kitura](#contributing-to-kitura)
 * [License](#license)
 
 ## Features:
@@ -189,7 +188,7 @@ Let's develop your first Kitura web application!
   }
   ```
 
-6. Add an HTTP Server to Kitura framework and start Kitura framework.
+6. Add an HTTP server and start the Kitura framework.
 
   ```swift
   Kitura.addHTTPServer(onPort: 8090, with: router)
@@ -266,21 +265,21 @@ Let's develop your first Kitura web application!
 
 10. Now run your new web application:
 
-  ```
-  .build/debug/myFirstProject
-  ```
+  `$ .build/debug/myFirstProject`
 
 11. Open your browser at [http://localhost:8090](http://localhost:8090)
 
-## Kitura Wiki
-Feel free to visit our [Wiki](https://github.com/IBM-Swift/Kitura/wiki) for our roadmap and some tutorials.
+## Contributing to Kitura
 
-## Developing Kitura
+Here's how to get started with developing Kitura itself.
 
-1. Clone this repository, `master` branch
-  `git clone -b master https://github.com/IBM-Swift/Kitura`
-2. Build and run tests
-  `make test`
+1. Clone this repository.
+
+  `$ git clone https://github.com/IBM-Swift/Kitura`
+  
+2. Build and run tests.
+
+  `$ make test`
 
  ### Notes
  * Homebrew by default installs libraries to `/usr/local`, if yours is different, change the path to find the curl library, in `Kitura-Build/build/Makefile`:
