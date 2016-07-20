@@ -35,6 +35,18 @@ public class Kitura {
         httpServersAndPorts.append(server: server, port: port)
         return server
     }
+    
+    //
+    // add a FastCGIServer on a port with a delegate. The server is only registered with the framework,
+    // it does not start listening on the port until Kitura.run() is called
+    //
+    @discardableResult
+    public class func addFastCGIServer(onPort port: Int, with delegate: ServerDelegate) -> FastCGIServer {
+        let server = FastCGI.createServer()
+        server.delegate = delegate
+        fastCGIServersAndPorts.append(server: server, port: port)
+        return server
+    }
 
     //
     // Start Kitura framework - make all the registered servers to start listening on their port
@@ -46,10 +58,15 @@ public class Kitura {
             Log.verbose("Starting an HTTP Server on port \(port)...")
             server.listen(port: port, notOnMainQueue: false)
         }
-        HTTPServer.waitForListeners()
+        for (server, port) in fastCGIServersAndPorts {
+            Log.verbose("Starting a FastCGI Server on port \(port)...")
+            server.listen(port: port)
+        }
+        ListenerGroup.waitForListeners()
     }
     
     typealias Port = Int
     private static var httpServersAndPorts = [(server: HTTPServer, port: Port)]()
+    private static var fastCGIServersAndPorts = [(server: FastCGIServer, port: Port)]()
 
 }
