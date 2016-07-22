@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright IBM Corporation 2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- **/
+ */
 
 import Foundation
 
 class TextBodyParser: BodyParserProtocol {
+
     func parse(_ data: NSData) -> ParsedBody? {
         // There was no support for the application/json MIME type
         #if os(Linux)

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright IBM Corporation 2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,12 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- **/
+ */
 
 // MARK: RouterMiddlewareWalker
 
-class RouterMiddlewareWalker
-{
+class RouterMiddlewareWalker {
+
     /// The array of middlewares to handle
     private let middlewares: [RouterMiddleware]
 
@@ -44,9 +44,7 @@ class RouterMiddlewareWalker
         self.callback = callback
     }
 
-    ///
     /// Handle the next middleware
-    ///
     func next() {
         middlewareIndex += 1
 

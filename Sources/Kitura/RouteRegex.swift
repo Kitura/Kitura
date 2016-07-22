@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright IBM Corporation 2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- **/
+ */
 
 import KituraSys
 import LoggerAPI
@@ -33,7 +33,7 @@ public class RouteRegex {
     private let keyRegex: RegularExpressionType
     private let nonKeyRegex: RegularExpressionType
 
-    private init () {
+    private init() {
         do {
             namedCaptureRegex = try RegularExpressionType(pattern: "(.*)?(?:\\:(\\w+)(?:\\(((?:\\\\.|[^()])+)\\))?(?:([+*?])?))", options: [])
             unnamedCaptureRegex = try RegularExpressionType(pattern: "(.*)?(?:(?:\\(((?:\\\\.|[^()])+)\\))(?:([+*?])?))", options: [])
@@ -45,13 +45,11 @@ public class RouteRegex {
         }
     }
     
-    ///
     /// Builds a regular expression from a String pattern
     ///
     /// - Parameter pattern: Optional string
-    ///
-    /// - Returns:
-    ///
+    /// - Parameter allowPartialMatch: True if a partial match is allowed. Defaults to false.
+    /// - Returns: A tuple of the compiled `RegularExpressionType?` and array of keys
     internal func buildRegex(fromPattern: String?, allowPartialMatch: Bool = false) -> (RegularExpressionType?, [String]?) {
         guard let fromPattern = fromPattern else {
             return (nil, nil)

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright IBM Corporation 2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,20 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- **/
+ */
 
 import Foundation
 
 extension RouterRequest {
+
     class MimeTypeAcceptor {
 
+        /// Finds the full mime type for a given extension.
         ///
-        /// Finds the full mime type for a given extension
-        ///
-        /// - Parameter forExtension: mime type extension String
-        ///
-        /// - Returns the full mime type
-        ///
+        /// - Parameter forExtension: mime type extension String.
+        /// - Returns: the full mime type.
         private static func getMimeType(forExtension ext: String) -> String {
             if let mimeType = ContentType.sharedInstance.getContentType(forExtension: ext) {
                 return mimeType
@@ -35,13 +33,10 @@ extension RouterRequest {
 
         typealias MimeTypeWithQValue = (type: String, qValue: Double)
 
+        /// Parse MIME type string into a digestable tuple format.
         ///
-        /// Parse mime type string into a digestable tuple format
-        ///
-        /// - Parameter type: raw mime type String
-        ///
-        /// - Returns a tuple with the mime type and q parameter value if present, qValue defaults to 1
-        ///
+        /// - Parameter mediaType: Raw MIME type String.
+        /// - Returns: A tuple with the MIME type and q parameter value if present, qValue defaults to 1.
         private static func parse(mediaType type: String) -> MimeTypeWithQValue {
             var finishedPair = ("", 1.0)
             let trimmed = type.trimmingCharacters(in: NSCharacterSet.whitespaces())
@@ -50,6 +45,7 @@ extension RouterRequest {
             if let mediaType = components.first {
                 finishedPair.0 = mediaType
             }
+
             if let qPreference = components.last {
                 let qualityComponents = qPreference.characters.split(separator: "=").map(String.init)
                 if let q = qualityComponents.first, value = qualityComponents.last where q == "q",
@@ -61,16 +57,12 @@ extension RouterRequest {
             return finishedPair
         }
 
-        ///
         /// Checks if passed in content types are acceptable based on the request's Accept header
         /// field values
         ///
-        /// - Parameter headerValues: array of Accept header values
-        ///
-        /// - Parameter types: array of content/mime type strings
-        ///
-        /// - Returns most acceptable type or nil if there are none
-        ///
+        /// - Parameter headerValues: Array of Accept header values.
+        /// - Parameter types: Array of content/mime type strings.
+        /// - Returns: Most acceptable type or nil if there are none
         static func accepts(headerValues: [String], types: [String]) -> String? {
             let criteriaMatches = getCriteriaMatches(headerValues: headerValues, types: types)
 

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright IBM Corporation 2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- **/
-
+ */
 
 import LoggerAPI
 import Foundation
@@ -25,32 +24,24 @@ import Foundation
 #endif
 
 extension StaticFileServer {
+
     // MARK: FileServer
     class FileServer {
-        //
-        // Serve "index.html" files in response to a request on a directory.
-        //
+
+        /// Serve "index.html" files in response to a request on a directory.
         private let serveIndexForDirectory: Bool
 
-        //
-        // Redirect to trailing "/" when the pathname is a dir.
-        //
+        /// Redirect to trailing "/" when the pathname is a dir.
         private let redirect: Bool
 
-        //
-        // the path from where the files are served
-        //
+        /// the path from where the files are served
         private let servingFilesPath: String
 
-        //
-        // If a file is not found, the given extensions will be added to the file name and searched for.
-        // The first that exists will be served.
-        //
+        /// If a file is not found, the given extensions will be added to the file name and searched for.
+        /// The first that exists will be served.
         private let possibleExtensions: [String]
 
-        //
-        // A setter for response headers.
-        //
+        /// A setter for response headers.
         private let responseHeadersSetter: ResponseHeadersSetter?
 
         init(servingFilesPath: String, options: StaticFileServer.Options,

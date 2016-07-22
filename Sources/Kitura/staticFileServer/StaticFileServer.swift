@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright IBM Corporation 2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- **/
+ */
 
 // MARK: StaticFileServer
 
 public class StaticFileServer: RouterMiddleware {
+
     public struct CacheOptions {
         let addLastModifiedHeader: Bool
         let maxAgeCacheControlHeader: Int
@@ -47,17 +48,15 @@ public class StaticFileServer: RouterMiddleware {
 
     let fileServer: FileServer
 
-    ///
     /// Initializes a StaticFileServer instance
-    ///
-    public init (path: String = "./public", options: Options = Options(),
+    public init(path: String = "./public", options: Options = Options(),
                  customResponseHeadersSetter: ResponseHeadersSetter? = nil) {
         var path = path
         if path.hasSuffix("/") {
             path = String(path.characters.dropLast())
         }
 
-        // If we received a path with a tlde (~) in the front, expand it.
+        // If we received a path with a tilde (~) in the front, expand it.
 #if os(Linux)
         path = path.bridge().stringByExpandingTildeInPath
 #else
@@ -76,14 +75,12 @@ public class StaticFileServer: RouterMiddleware {
                                 responseHeadersSetter: responseHeadersSetter)
     }
 
-    ///
     /// Handle the request
     ///
     /// - Parameter request: the router request
     /// - Parameter response: the router response
     /// - Parameter next: the closure for the next execution block
-    ///
-    public func handle (request: RouterRequest, response: RouterResponse, next: () -> Void) {
+    public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
         guard request.serverRequest.method == "GET" || request.serverRequest.method == "HEAD" else {
             return next()
         }
