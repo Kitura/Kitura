@@ -218,18 +218,19 @@ Let's develop your first Kitura web application!
 
 8. Optionally, add logging.
 
-   In the code example above, no messages from Kitura will logged. You may want to add a logger to help diagnose problems that occur.
+   In the code example above, no messages from Kitura will logged. You may want to add a logger to help diagnose any problems that occur.
 
    Add a HeliumLogger dependency to `Package.swift`.
 
    ```swift
    import PackageDescription
+   
    let package = Package(
-    name: "myFirstProject",
-    dependencies: [
-        .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 22),
-        .Package(url: "https://github.com/IBM-Swift/HeliumLogger", majorVersion: 0, minor: 12),
-    ])
+       name: "myFirstProject",
+       dependencies: [
+           .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 22),
+           .Package(url: "https://github.com/IBM-Swift/HeliumLogger", majorVersion: 0, minor: 12),
+       ])
    ```
 
    Enable HeliumLogger in `Sources/main.swift`.
