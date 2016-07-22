@@ -23,7 +23,7 @@ Kitura is a web framework and web server that is created for web services writte
   * [Vagrant](#vagrant)
 * [Getting Started](#getting-started)
 * [Contributing to Kitura](#contributing-to-kitura)
-* [License](#license)
+* [Community](#community)
 
 ## Features:
 
@@ -296,6 +296,6 @@ All improvements to Kitura are very welcome! Here's how to get started with deve
 
 You can find more info on contributing to Kitura in our [contributing guidelines](.github/CONTRIBUTING.md).
 
-## License
+## Community
 
-Kitura is licensed under the [Apache License, Version 2.0](LICENSE.txt).
+We love to talk server-side Swift, and Kitura. Join our [chat channel on Gitter](https://gitter.im/IBM-Swift/Kitura) to meet the team!
