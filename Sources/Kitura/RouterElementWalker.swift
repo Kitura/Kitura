@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright IBM Corporation 2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,12 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- **/
+ */
 
 // MARK: RouterElementWalker
 
-class RouterElementWalker
-{
+class RouterElementWalker {
+
     /// The array of router elements to be processed
     private let elements: [RouterElement]
 
@@ -40,15 +40,13 @@ class RouterElementWalker
         self.callback = callback
     }
 
-    ///
     /// Process the next router element
-    ///
     func next() {
         elementIndex += 1
 
         if elementIndex < self.elements.count {
-            // Purposfully capture self here
             elements[elementIndex].process(request: request, response: response) {
+                // Purposefully capture self here
                 self.next()
             }
         } else {

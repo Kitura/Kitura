@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright IBM Corporation 2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- **/
+ */
 
-///
 /// Values for Router methods (Get, Post, Put, Delete, etc)
-///
 public enum RouterMethod: String {
     case all = "ALL"
     case get = "GET"
@@ -48,7 +46,7 @@ public enum RouterMethod: String {
     case error = "ERROR"
     case unknown = "UNKNOWN"
 
-    init(fromRawValue: String){
+    init(fromRawValue: String) {
         self = RouterMethod(rawValue: fromRawValue) ?? .unknown
     }    
 }

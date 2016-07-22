@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright IBM Corporation 2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- **/
+ */
 
 import KituraNet
 import Socket
@@ -24,14 +24,10 @@ import Foundation
 
 public class RouterRequest: SocketReader {
 
-    ///
     /// The server request
-    ///
     let serverRequest: ServerRequest
 
-    ///
     /// The hostname of the request
-    ///
     public private(set) lazy var hostname: String = { [unowned self] () in
         guard let host = self.headers["host"] else {
             return self.parsedURL.host ?? ""
@@ -40,9 +36,7 @@ public class RouterRequest: SocketReader {
         return  range == nil ? host : host.substring(to: range!.lowerBound)
     }()
 
-    ///
-    /// The domain name of request
-    ///
+    /// The domain name of the request
     public private(set) lazy var domain: String = { [unowned self] in
         let pattern = "([a-z0-9][a-z0-9\\-]{1,63}\\.[a-z\\.]{2,6})$"
         do {
@@ -67,9 +61,7 @@ public class RouterRequest: SocketReader {
         }
     }()
 
-    ///
     /// The subdomains string array of request
-    ///
     public private(set) lazy var subdomains: [String] = { [unowned self] in
         #if os(Linux)
             let backwards = NSStringCompareOptions.backwardsSearch
@@ -87,63 +79,41 @@ public class RouterRequest: SocketReader {
         return subdomains.filter { !$0.isEmpty }
     }()
     
-    ///
     /// The HTTP version of the request
-    ///
     public let httpVersion: HTTPVersion
 
-    ///
     /// The method of the request
-    ///
     public let method: RouterMethod
 
-    ///
     /// The parsed URL
-    ///
     public let parsedURL: URLParser
 
-    ///
     /// The router as a String
-    ///
     public internal(set) var route: String?
 
-    ///
     /// The currently matched section of the url
-    ///
     public internal(set) var matchedPath = ""
 
-    ///
     /// The original URL as a string
-    ///
     public var originalURL: String {
         return serverRequest.urlString
     }
 
-    ///
     /// The URL
-    ///
     public let url: String
 
-    ///
     /// List of HTTP headers with simple String values
-    ///
     public let headers: Headers
 
-    ///
     /// IP address string of server
-    ///
     public var remoteAddress: String { return serverRequest.remoteAddress }
 
-    //
-    // Parsed Cookies, used to do a lazy parsing of the appropriate headers
-    //
+    /// Parsed Cookies, used to do a lazy parsing of the appropriate headers
     private lazy var _cookies: Cookies = { [unowned self] in
         return Cookies(headers: self.serverRequest.headers)
     }()
 
-    ///
     /// Set of parsed cookies
-    ///
     #if os(Linux)
     public var cookies: [String: NSHTTPCookie] {
         return _cookies.cookies
@@ -154,34 +124,22 @@ public class RouterRequest: SocketReader {
     }
     #endif
 
-
-    ///
     /// List of URL parameters
-    ///
     public internal(set) var parameters: [String:String] = [:]
 
-    ///
     /// List of query parameters
-    ///
     public var queryParameters: [String:String] { return parsedURL.queryParameters }
 
-    ///
     /// User info
-    ///
     public var userInfo: [String: Any] = [:]
 
-    ///
     /// Body of the message
-    ///
     public internal(set) var body: ParsedBody?
 
-    ///
     /// Initializes a RouterRequest instance
     ///
     /// - Parameter request: the server request
-    ///
     /// - Returns: a RouterRequest instance
-    ///
     init(request: ServerRequest) {
         serverRequest = request
         httpVersion = HTTPVersion(major: serverRequest.httpVersionMajor ?? 1, minor: serverRequest.httpVersionMinor ?? 1)
@@ -191,37 +149,30 @@ public class RouterRequest: SocketReader {
         headers = Headers(headers: serverRequest.headers)
     }
 
-    ///
     /// Read data
     ///
     /// - Parameter data: the data
     ///
-    /// - Throws: ???
+    /// - Throws:
     /// - Returns: the number of bytes read
-    ///
     public func read(into data: NSMutableData) throws -> Int {
         return try serverRequest.read(into: data)
     }
 
-    ///
     /// Read string
     ///
     /// - Throws: ???
     /// - Returns: the String
-    ///
     public func readString() throws -> String? {
         return try serverRequest.readString()
     }
 
-    ///
     /// Checks if passed in types are acceptable based on the request's header field
     /// specified in the first parameter
     ///
     /// - Parameter types: array of content/mime type strings
     /// - Parameter header: name of request's header field to be checked
-    ///
     /// - Returns most acceptable type or nil if there are none
-    ///
     public func accepts(header: String = "Accept", types: [String]) -> String? {
         guard let acceptHeaderValue = headers[header] else {
             return nil
@@ -247,18 +198,14 @@ private class Cookies {
     #else
     typealias HTTPCookieType = HTTPCookie
     #endif
-    //
-    // Storage of parsed Cookie headers
-    //
+
+    /// Storage of parsed Cookie headers
     private var cookies = [String: HTTPCookieType]()
     
-    //
-    // Static for Cookie header key value
-    //
+    /// Static for Cookie header key value
     private let cookieHeader = "cookie"
 
     private init(headers: HeadersContainer) {
-
         guard let rawCookies = headers[cookieHeader] else {
             return
         }

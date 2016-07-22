@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright IBM Corporation 2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,26 +12,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- **/
+ */
 
 import KituraNet
 import Foundation
 
 extension StaticFileServer {
+
     class CacheRelatedHeadersSetter : ResponseHeadersSetter {
-        //
-        // Uses the file system's last modified value.
-        //
+
+        /// Uses the file system's last modified value.
         private let addLastModifiedHeader: Bool
 
-        //
-        // Value of max-age in Cache-Control header.
-        //
+        /// Value of max-age in Cache-Control header.
         private let maxAgeCacheControlHeader: Int
 
-        //
-        // Generate ETag..
-        //
+        /// Generate ETag..
         private var generateETag: Bool
 
         init(addLastModifiedHeader: Bool, maxAgeCacheControlHeader: Int, generateETag: Bool) {

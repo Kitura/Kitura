@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright IBM Corporation 2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- **/
+ */
 
 // MARK Router
 
 extension Router {
+
     // MARK: All
     @discardableResult
     public func all(_ path: String?=nil, handler: RouterHandler...) -> Router {
