@@ -51,7 +51,7 @@ and [Swift API Design Guidelines](https://swift.org/documentation/api-design-gui
 
 ## Correctness
 
-Consider warnings to be errors. This rule informs many stylistic decisions such as not to use the `++` or `--` operators, C-style for loops, or strings as selectors.
+Consider warnings to be errors. This rule informs many stylistic decisions, C-style for loops, or strings as selectors.
 
 ## Naming
 
