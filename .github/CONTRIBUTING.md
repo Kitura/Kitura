@@ -28,7 +28,7 @@ change your rights to use your own Contributions for any other purpose.
 
 Please ensure you follow [the Kitura coding standards](https://github.com/IBM-Swift/Kitura/blob/master/Documentation/CodeConventions.md)
 
-Some basic rules include:
+Please note:
 
  - all files must have the Apache license in the header.
  - all PRs must have passing builds for all operating systems.
