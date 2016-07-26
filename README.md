@@ -56,7 +56,7 @@ This branch of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-06-20-a`** versi
 
 3. Download and install [Xcode 8 beta 3](https://developer.apple.com/download/).
 
-4. Download and install the [supported Swift compiler](#swift-version).
+4. Download and install the [required Swift version](#swift-version) from `swift.org`.
 
  During installation if you are using the package installer make sure to select "all users" for the installation path in order for the correct toolchain version to be available for use with the terminal.
 
@@ -76,7 +76,7 @@ Kitura is tested on Ubuntu 14.04 LTS and Ubuntu 15.10.
 
  `$ sudo apt-get install autoconf libtool libkqueue-dev libkqueue0 libcurl4-openssl-dev libbsd-dev libblocksruntime-dev`
 
-2. Install the [supported Swift compiler](#swift-version) for Linux.
+2. Install the [required Swift version](#swift-version) from `swift.org`.
 
  Follow the instructions provided on that page. After installing it (i.e. uncompressing the tar file), make sure you update your PATH environment variable so that it includes the extracted tools: `export PATH=/<path to uncompress tar contents>/usr/bin:$PATH`. To update the PATH env variable, you can update your [.bashrc file](http://www.joshstaiger.org/archives/2005/07/bash_profile_vs.html).
 
