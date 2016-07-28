@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright IBM Corporation 2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- **/
+ */
 
 import Socket
 import LoggerAPI
@@ -21,36 +21,26 @@ import Foundation
 
 // MARK: BodyParser
 
-
 public class BodyParser: RouterMiddleware {
 
-    ///
     /// Static buffer size (in bytes)
-    ///
     private static let bufferSize = 2000
 
-
-    ///
     /// BodyParser archiver
-    ///
     private static let parserMap: [String: BodyParserProtocol] =
         ["application/json": JSONBodyParser(),
          "application/x-www-form-urlencoded": URLEncodedBodyParser(),
          "text": TextBodyParser()]
 
-    ///
     /// Initializes a BodyParser instance
     /// Needed since default initalizer is internal
-    ///
     public init() {}
 
-    ///
     /// Handle the request
     ///
     /// - Parameter request: the router request
     /// - Parameter response: the router response
     /// - Parameter next: the closure for the next execution block
-    ///
     public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) throws {
         guard request.body == nil else {
             return next() // the body was already parsed
@@ -65,12 +55,11 @@ public class BodyParser: RouterMiddleware {
         next()
     }
 
-    ///
     /// Parse the incoming message
     ///
     /// - Parameter message: message coming from the socket
     /// - Parameter contentType: the contentType as a string
-    ///
+    /// - Returns: the parsed body
     public class func parse(_ message: SocketReader, contentType: String?) -> ParsedBody? {
         guard let contentType = contentType else {
             return nil
@@ -110,12 +99,11 @@ public class BodyParser: RouterMiddleware {
         return nil
     }
 
-    ///
     /// Read incoming message for Parse
     ///
     /// - Parameter message: message coming from the socket
     /// - Parameter parser: ((NSData) -> ParsedBody?) store at parserMap
-    ///
+    /// - Returns: the parsed body
     private class func parse(_ message: SocketReader, parser: BodyParserProtocol) -> ParsedBody? {
         do {
             let bodyData = try readBodyData(with: message)
@@ -126,16 +114,12 @@ public class BodyParser: RouterMiddleware {
         return nil
     }
 
-    ///
     /// Read the Body data
     ///
-    /// - Parameter reader: the socket reader
-    ///
+    /// - Parameter with: the socket reader
     /// - Throws: ???
     /// - Returns: data for the body
-    ///
     public class func readBodyData(with reader: SocketReader) throws -> NSMutableData {
-
         let bodyData = NSMutableData()
 
         var length = try reader.read(into: bodyData)
@@ -144,7 +128,6 @@ public class BodyParser: RouterMiddleware {
         }
         return bodyData
     }
-
 }
 
 #if os(Linux)

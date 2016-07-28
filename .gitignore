@@ -2,3 +2,4 @@
 .vagrant
 Packages
 *.pkg
+Kitura.xcodeproj

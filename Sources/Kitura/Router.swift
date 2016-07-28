@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright IBM Corporation 2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- **/
+ */
 
 import KituraNet
 import LoggerAPI
@@ -23,39 +23,27 @@ import KituraTemplateEngine
 
 public class Router {
 
-    ///
     /// Contains the list of routing elements
-    ///
     private var elements: [RouterElement] = []
 
-    ///
     /// Map from file extensions to Template Engines
-    ///
     private var templateEngines = [String: TemplateEngine]()
 
-    ///
     /// Default template engine extension
-    ///
     private var defaultEngineFileExtension: String?
 
-    ///
     /// Views directory path
-    ///
     public var viewsPath = "./Views/"
 
-    ///
     /// Prefix for special page resources
-    ///
     private let kituraResourcePrefix = "/@@Kitura-router@@/"
 
-    /// helper for serving file resources
+    /// Helper for serving file resources
     private let fileResourceServer = FileResourceServer()
 
-    ///
     /// Initializes a Router
     ///
     /// - Returns: a Router instance
-    ///
     public init() {
         Log.verbose("Router initialized")
     }
@@ -117,17 +105,14 @@ public class Router {
     }
 }
 
-///
 /// RouterMiddleware extensions
-///
 extension Router : RouterMiddleware {
 
-    ///
     /// Handle the request as a middleware. Used for subrouting.
     ///
     /// - Parameter request: the router request
     /// - Parameter response: the router response
-    ///
+    /// - Parameter next: the next handler to call
     public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) throws {
         guard let urlPath = request.parsedURL.path else {
             Log.error("Failed to handle request")
@@ -152,22 +137,17 @@ extension Router : RouterMiddleware {
     }
 }
 
-
-///
 /// HTTPServerDelegate extensions
-///
 extension Router : ServerDelegate {
 
-    ///
     /// Handle the request
     ///
     /// - Parameter request: the server request
     /// - Parameter response: the server response
-    ///
     public func handle(request: ServerRequest, response: ServerResponse) {
-
         let routeReq = RouterRequest(request: request)
         let routeResp = RouterResponse(response: response, router: self, request: routeReq)
+
         process(request: routeReq, response: routeResp) { [unowned self] () in
             do {
                 if  !routeResp.state.invokedEnd {
@@ -183,14 +163,12 @@ extension Router : ServerDelegate {
         }
     }
 
-    ///
     /// Processes the request
     ///
     /// - Parameter request: the server request
     /// - Parameter response: the server response
-    ///
+    /// - Parameter callback:
     private func process(request: RouterRequest, response: RouterResponse, callback: () -> Void) {
-
         guard let urlPath = request.parsedURL.path else {
             Log.error("Failed to process request")
             return
@@ -206,9 +184,7 @@ extension Router : ServerDelegate {
         }
     }
 
-    ///
-    /// Send default index.html file and it's resources if appropriate, otherwise send default 404 message
-    ///
+    /// Send default index.html file and its resources if appropriate, otherwise send default 404 message
     private func sendDefaultResponse(request: RouterRequest, response: RouterResponse) {
         if request.parsedURL.path == "/" {
             fileResourceServer.sendIfFound(resource: "index.html", usingResponse: response)

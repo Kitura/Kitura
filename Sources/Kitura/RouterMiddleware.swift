@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright IBM Corporation 2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- **/
+ */
 
 // MARK: RouterMiddleware protocol
 
 public protocol RouterMiddleware {
 
-    ///
     /// The handle operation
     ///
     /// - Parameter request: the router request
     /// - Parameter response: the router response
     /// - Parameter next: the closure to the next operation
-    ///
     func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) throws
-
 }

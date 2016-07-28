@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright IBM Corporation 2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- **/
-
+ */
 
 import KituraSys
 import LoggerAPI
@@ -24,46 +23,34 @@ import Foundation
 
 class RouterElement {
 
-    ///
     /// The routing method (get, post, put, delete)
-    ///
     let method: RouterMethod
 
-    ///
     /// The regular expression pattern
-    ///
     private let pattern: String?
 
-    ///
     /// The regular expression
-    ///
     #if os(Linux)
         private var regex: NSRegularExpression?
     #else
         private var regex: RegularExpression?
     #endif
 
-    ///
     /// The list of keys
-    ///
     private var keys: [String]?
 
-    ///
-    /// The middleware to use
-    ///
+    /// The middlewares to use
     private let middlewares: [RouterMiddleware]
 
+    /// Initialize a RouterElement
     ///
-    /// initializes a RouterElement
-    ///
-    /// - Parameter method: the RouterMethod
-    /// - Parameter pattern: the String pattern to use
-    /// - Parameter middleware: the RouterMiddleware used to handle
-    ///
-    /// - Returns: a RouterElement instance
+    /// - Parameter method: The `RouterMethod`
+    /// - Parameter pattern: The String pattern to use
+    /// - Parameter middleware: The `RouterMiddleware`s used to handle
+    /// - Parameter allowPartialMatch: Are partial matches allowed. Defaults to true.
+    /// - Returns: A `RouterElement` instance
     ///
     init(method: RouterMethod, pattern: String?, middleware: [RouterMiddleware], allowPartialMatch: Bool = true) {
-
         self.method = method
         self.pattern = pattern
         self.regex = nil
@@ -73,21 +60,16 @@ class RouterElement {
         (regex, keys) = RouteRegex.sharedInstance.buildRegex(fromPattern: pattern, allowPartialMatch: allowPartialMatch)
     }
 
-    ///
     /// Convenience initializer
-    ///
     convenience init(method: RouterMethod, pattern: String?, handler: [RouterHandler]) {
-
         self.init(method: method, pattern: pattern, middleware: handler.map {RouterMiddlewareGenerator(handler: $0)}, allowPartialMatch: false)
     }
 
-    ///
     /// Process
     ///
     /// - Parameter request: the request
     /// - Parameter response: the response
     /// - Parameter next: the callback
-    ///
     func process(request: RouterRequest, response: RouterResponse, next: () -> Void) {
         guard let urlPath = request.parsedURL.path else {
             Log.error("Failed to process request (path is nil)")
@@ -120,13 +102,11 @@ class RouterElement {
         processHelper(request: request, response: response, next: next)
     }
 
-    ///
     /// Process the helper
     ///
     /// - Parameter request: the request
     /// - Parameter response: the router response
     /// - Parameter next: the closure for the next execution block
-    ///
     private func processHelper(request: RouterRequest, response: RouterResponse, next: () -> Void) {
         let looper = RouterMiddlewareWalker(middlewares: middlewares, method: method, request: request, response: response, callback: next)
         looper.next()
@@ -138,24 +118,20 @@ class RouterElement {
     typealias TextChekingResultType = TextCheckingResult
     #endif
 
-    ///
     /// Update the request parameters
     ///
     /// - Parameter match: the regular expression result
     /// - Parameter request:
-    ///
     private func setParameters(forRequest request: RouterRequest, fromUrlPath urlPath: String, match: TextChekingResultType) {
-
-        if  let keys = keys {
-            var parameters: [String:String] = [:]
+        var parameters = [String:String]()
+        if let keys = keys {
             for index in 0..<keys.count {
                 let matchRange = match.range(at: index+1)
                 if  matchRange.location != NSNotFound  &&  matchRange.location != -1  {
                     parameters[keys[index]] = urlPath.bridge().substring(with: matchRange)
                 }
             }
-            request.parameters = parameters
         }
-
+        request.parameters = parameters
     }
 }

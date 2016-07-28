@@ -24,6 +24,7 @@ class TestContentType : XCTestCase {
     static var allTests : [(String, (TestContentType) -> () throws -> Void)] {
         return [
             ("test_initialize", test_initialize),
+            ("test_filename", test_filename),
         ]
     }
 
@@ -45,6 +46,29 @@ class TestContentType : XCTestCase {
 
 
         //XCTAssertEqual(contentType, contentType)
+    }
+
+    func test_filename() {
+
+        let contentType = ContentType.sharedInstance
+    
+        var result = contentType.getContentType(forFileName: "foo.png")
+        XCTAssertEqual(result, "image/png")
+
+        result = contentType.getContentType(forFileName: "a/foo.png")
+        XCTAssertEqual(result, "image/png")
+
+        result = contentType.getContentType(forFileName: "a/b/c/foo.png")
+        XCTAssertEqual(result, "image/png")
+
+        result = contentType.getContentType(forFileName: "test.html")
+        XCTAssertEqual(result, "text/html")
+
+        result = contentType.getContentType(forFileName: "a/b/c/test.html")
+        XCTAssertEqual(result, "text/html")
+
+        result = contentType.getContentType(forFileName: "test.with.periods.html")
+        XCTAssertEqual(result, "text/html")
     }
 
 }

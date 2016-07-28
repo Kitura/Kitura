@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright IBM Corporation 2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,38 +12,43 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- **/
+ */
 
 import Foundation
 import KituraNet
 
+/// Headers
 public struct Headers {
     
-    ///
     /// The header storage
-    ///
     internal var headers: HeadersContainer
     
+    /// Initialize a `Headers`
+    ///
+    /// - Parameter headers: the container for the headers
     init(headers: HeadersContainer) {
         self.headers = headers
     }
     
-    ///
     /// Append values to the header
     ///
     /// - Parameter key: the key
     /// - Parameter value: the value
-    ///
     public mutating func append(_ key: String, value: String) {
-        
         headers.append(key, value: value)
     }
 }
 
+/// Conformance to `Collection`
 extension Headers: Collection {
     
-    public var startIndex: HeadersIndex {return headers.startIndex }
-    public var endIndex: HeadersIndex { return headers.endIndex }
+    public var startIndex: HeadersIndex {
+        return headers.startIndex
+    }
+
+    public var endIndex: HeadersIndex {
+        return headers.endIndex
+    }
     
     public typealias HeadersIndex = DictionaryIndex<String, [String]>
     
@@ -55,13 +60,11 @@ extension Headers: Collection {
         set(newValue) {
             if let newValue = newValue {
                 headers[key] = [newValue]
-            }
-            else {
+            } else {
                 headers[key] = nil
             }
         }
     }
-    
     
     public subscript(position: HeadersIndex) -> (String, String?) {
         get {
@@ -77,13 +80,10 @@ extension Headers: Collection {
 
 /// Various helper methods
 extension Headers {
-    ///
+
     /// Sets the location path
     ///
     /// - Parameter path: the path
-    ///
-    /// - Returns: a RouterResponse instance
-    ///
     public mutating func setLocation(_ path: String) {
         var p = path
         if  p == "back" {
@@ -96,11 +96,10 @@ extension Headers {
         self["Location"] = p
     }
 
-    ///
     /// Sets the Content-Type HTTP header
     ///
     /// - Parameter type: the type to set to
-    ///
+    /// - Parameter charset: the charset to specify
     public mutating func setType(_ type: String, charset: String? = nil) {
         if  let contentType = ContentType.sharedInstance.getContentType(forExtension: type) {
             var contentCharset = ""
@@ -111,12 +110,10 @@ extension Headers {
         }
     }
 
-    ///
     /// Sets the Content-Disposition to "attachment" and optionally
     /// sets filename parameter in Content-Disposition and Content-Type
     ///
-    /// - Parameter filePath: the file to set the filename to
-    ///
+    /// - Parameter for: the file to set the filename to
     public mutating func addAttachment(for filePath: String? = nil) {
         guard let filePath = filePath else {
             self["Content-Disposition"] = "attachment"
@@ -135,14 +132,10 @@ extension Headers {
         }
     }
 
-    ///
     /// Adds a link with specified parameters to Link HTTP header
     ///
     /// - Parameter link: link value
     /// - Parameter linkParameters: the link parameters (according to RFC 5988) with their values
-    ///
-    /// - Returns: a RouterResponse instance
-    ///
     public mutating func addLink(_ link: String, linkParameters: [LinkParameter: String]) {
         var headerValue = "<\(link)>"
 

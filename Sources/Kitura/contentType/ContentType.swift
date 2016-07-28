@@ -1,5 +1,4 @@
-
-/**
+/*
  * Copyright IBM Corporation 2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- **/
+ */
 
 import Foundation
 import LoggerAPI
@@ -22,30 +21,21 @@ import LoggerAPI
 
 public class ContentType {
 
-    ///
     /// Whether to use the local mime-type definitions or the ones in the file
-    ///
     #if os(Linux)
         private let mimeTypeEmbedded: Bool = true
     #else
         private let mimeTypeEmbedded: Bool = false
     #endif
 
-    ///
     /// A dictionary of extensions to MIME type descriptions
-    ///
     private var extToContentType = [String:String]()
 
-    ///
     /// Shared singleton instance
-    ///
     public static let sharedInstance = ContentType()
 
-    ///
     /// The following function loads the MIME types from an external file
-    ///
     private init () {
-
         // MARK: Remove this when Linux reading of JSON files works.
         if mimeTypeEmbedded {
 
@@ -95,24 +85,18 @@ public class ContentType {
         }
     }
 
-    ///
     /// Get the content type for the given file extension
     ///
-    /// - Parameter ext: the file extension
-    ///
+    /// - Parameter forExtension: the file extension
     /// - Returns: an Optional String for the content type
-    ///
     public func getContentType(forExtension ext: String) -> String? {
         return extToContentType[ext]
     }
 
-    ///
     /// Get the content type for the given file based on its extension
     ///
-    /// - Parameter fileName: the file
-    ///
+    /// - Parameter forFileName: the file
     /// - Returns: an Optional String for the content type
-    ///
     public func getContentType(forFileName fileName: String) -> String? {
         let lastPathElemRange: Range<String.Index>
         let extRange: Range<String.Index>
@@ -128,7 +112,7 @@ public class ContentType {
             lastPathElemRange = fileName.characters.startIndex..<fileName.characters.endIndex
         }
 
-        if let lastDot = fileName.range(of: ".", range: lastPathElemRange) {
+        if let lastDot = fileName.range(of: ".", options: backwards, range: lastPathElemRange) {
             extRange = fileName.index(after: lastDot.lowerBound)..<fileName.characters.endIndex
         } else {
             // No "extension", use the entire last path element as the "extension"
@@ -138,14 +122,11 @@ public class ContentType {
         return getContentType(forExtension: fileName.substring(with: extRange))
     }
 
-    ///
     /// Check if the message content type matches the type descriptor
     ///
     /// - Parameter messageContentType: the content type
-    /// - Parameter typeDescriptor: the description of the type
-    ///
-    /// - Returns: whether the types matched
-    ///
+    /// - Parameter ofType: the description of the type
+    /// - Returns: true if the types matched
     public func isContentType(_ messageContentType: String, ofType typeDescriptor: String) -> Bool {
 
         let type = typeDescriptor.lowercased()
@@ -176,13 +157,10 @@ public class ContentType {
         return false
     }
 
-    ///
     /// Normalized the type
     ///
     /// - Parameter type: the content type
-    ///
     /// - Returns: the normalized String
-    ///
     private func normalize(type: String) -> String {
 
         switch type {
@@ -202,10 +180,8 @@ public class ContentType {
         }
     }
 
-    ///
     /// The raw types
     /// *Note*: This will be removed once JSON parsing and the types.json file can be read.
-    ///
     private var rawTypes = [
         "text/plain": ["txt", "text", "conf", "def", "list", "log", "in", "ini"],
         "text/html": ["html", "htm"],

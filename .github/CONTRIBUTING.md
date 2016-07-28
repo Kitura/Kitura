@@ -26,8 +26,9 @@ change your rights to use your own Contributions for any other purpose.
 
 ### Coding standards
 
-Please ensure you follow the coding standards used throughout the existing
-code base. Some basic rules include:
+Please ensure you follow [the Kitura coding standards](https://github.com/IBM-Swift/Kitura/blob/master/Documentation/CodeConventions.md)
+
+Please note:
 
  - all files must have the Apache license in the header.
  - all PRs must have passing builds for all operating systems.

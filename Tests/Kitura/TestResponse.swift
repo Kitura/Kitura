@@ -458,7 +458,7 @@ class TestResponse : XCTestCase {
             XCTAssertEqual(request.accepts(types: "image/png"), "image/png", "Request accepts this type when it shouldn't")
             XCTAssertEqual(request.accepts(types: "image/tiff"), "image/tiff", "Request accepts this type when it shouldn't")
             XCTAssertEqual(request.accepts(types: "json", "jpeg", "html"), "html", "Accepts did not return expected value")
-            XCTAssertEqual(request.accepts(types: ["png", "html", "text/html"]), "html", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(types: ["png", "html"]), "html", "Accepts did not return expected value")
             XCTAssertEqual(request.accepts(types: ["xml", "html", "unreal"]), "html", "Accepts did not return expected value")
 
             do {
@@ -628,9 +628,9 @@ class TestResponse : XCTestCase {
                 do {
                     let body = try response!.readString()
                     #if os(Linux)
-                        let expected = "{\n  \"some\": \"json with bad js chars \\u2028 \\u2029 \\u2028 \\u2029\"\n}"
+                        let expected = "{\n  \"some\": \"json with bad js chars \\u2028 \\u2029\"\n}"
                     #else
-                        let expected = "{\n  \"some\" : \"json with bad js chars \\u2028 \\u2029 \\u2028 \\u2029\"\n}"
+                        let expected = "{\n  \"some\" : \"json with bad js chars \\u2028 \\u2029\"\n}"
                     #endif
                     XCTAssertEqual(body!,"/**/ testfn(\(expected))")
                     XCTAssertEqual(response!.headers["Content-Type"]!.first!, "application/javascript")
@@ -892,13 +892,10 @@ class TestResponse : XCTestCase {
         }
 
         router.get("/jsonp_encoded") { request, response, next in
-            // Specify the bad characters in two different ways, just to be sure
-            let unicode2028 = "\u{2028}"
-            let unicode2029 = "\u{2029}"
 #if os(Linux)
-            let json = JSON([ "some": JSON("json with bad js chars \(unicode2028) \(unicode2029) \u{2028} \u{2029}") ])
+            let json = JSON([ "some": JSON("json with bad js chars \u{2028} \u{2029}") ])
 #else
-            let json = JSON([ "some": JSON("json with bad js chars \(unicode2028) \(unicode2029) \u{2028} \u{2029}" as NSString) ])
+            let json = JSON([ "some": JSON("json with bad js chars \u{2028} \u{2029}" as NSString) ])
 #endif
             do {
                 do {
