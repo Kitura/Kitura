@@ -48,22 +48,22 @@ cat <<EOF >> ${OUTPUT_FILE}
 
     @discardableResult
     public func $VERB_LOW_CASE(_ path: String?=nil, handler: RouterHandler...) -> Router {
-	return routingHelper(.$VERB_LOW_CASE, pattern: path, handler: handler)
+        return routingHelper(.$VERB_LOW_CASE, pattern: path, handler: handler)
     }
 
     @discardableResult
     public func $VERB_LOW_CASE(_ path: String?=nil, handler: [RouterHandler]) -> Router {
-	return routingHelper(.$VERB_LOW_CASE, pattern: path, handler: handler)
+        return routingHelper(.$VERB_LOW_CASE, pattern: path, handler: handler)
     }
 
     @discardableResult
     public func $VERB_LOW_CASE(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-	return routingHelper(.$VERB_LOW_CASE, pattern: path, middleware: middleware)
+        return routingHelper(.$VERB_LOW_CASE, pattern: path, middleware: middleware)
     }
 
     @discardableResult
     public func $VERB_LOW_CASE(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-	return routingHelper(.$VERB_LOW_CASE, pattern: path, middleware: middleware)
+        return routingHelper(.$VERB_LOW_CASE, pattern: path, middleware: middleware)
     }
 EOF
 done
