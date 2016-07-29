@@ -81,8 +81,13 @@ Kitura is tested on Ubuntu 14.04 LTS and Ubuntu 15.10.
  Follow the instructions provided on that page. After installing it (i.e. uncompressing the tar file), make sure you update your PATH environment variable so that it includes the extracted tools: `export PATH=/<path to uncompress tar contents>/usr/bin:$PATH`. To update the PATH env variable, you can update your [.bashrc file](http://www.joshstaiger.org/archives/2005/07/bash_profile_vs.html).
 
 3. Clone, build and install the libdispatch library.
-The complete instructions for building and installing this library are  [here](https://github.com/apple/swift-corelibs-libdispatch/blob/experimental/foundation/INSTALL), though, all you need to do is just this
- `$ git clone --recursive -b experimental/foundation https://github.com/apple/swift-corelibs-libdispatch.git && cd swift-corelibs-libdispatch && sh ./autogen.sh && ./configure --with-swift-toolchain=<path-to-swift>/usr --prefix=<path-to-swift>/usr && make && make install`
+
+ The complete instructions for building and installing this library are shown [here](https://github.com/apple/swift-corelibs-libdispatch/blob/experimental/foundation/INSTALL). For convenience, the command to compile is:
+
+ ```
+ $ export SWIFT_HOME=<path-to-swift-toolchain e.g. /home/user/swift-toolchains/swift-DEVELOPMENT-SNAPSHOT-2016-06-20-a-ubuntu15.10>
+ $ git clone --recursive -b experimental/foundation https://github.com/apple/swift-corelibs-libdispatch.git && cd swift-corelibs-libdispatch && sh ./autogen.sh && ./configure --with-swift-toolchain=$SWIFT_HOME/usr --prefix=$SWIFT_HOME/usr && make && make install
+ ```
 
 Now you are ready to develop your first Kitura app. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Getting Started](#getting-started).
 
