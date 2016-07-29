@@ -147,7 +147,7 @@ Let's develop your first Kitura web application!
 
   ```
   $ cd myFirstProject
-  $ swift package init
+  $ swift package init --type executable
   ```
 
   Now your directory structure under myFirstProject should look like this:
