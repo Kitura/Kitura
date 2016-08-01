@@ -37,6 +37,10 @@ class TestErrors : XCTestCase {
             ("testInvalidHeader", testInvalidHeader)
         ]
     }
+    
+    override func setUp() {
+        doSetUp()
+    }
 
     override func tearDown() {
         doTearDown()

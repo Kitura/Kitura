@@ -34,8 +34,12 @@ protocol KituraTest {
 
 extension KituraTest {
 
-   func doTearDown() {
-  //       sleep(10)
+    func doSetUp() {
+        PrintLogger.use()
+    }
+    
+    func doTearDown() {
+        // sleep(10)
     }
 
     func performServerTest(_ router: ServerDelegate, asyncTasks: (expectation: XCTestExpectation) -> Void...) {

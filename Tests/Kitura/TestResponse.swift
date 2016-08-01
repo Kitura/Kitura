@@ -48,6 +48,10 @@ class TestResponse : XCTestCase {
             ("testJsonp", testJsonp)
         ]
     }
+    
+    override func setUp() {
+        doSetUp()
+    }
 
     override func tearDown() {
         doTearDown()
