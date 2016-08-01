@@ -50,6 +50,10 @@ class TestCookies : XCTestCase {
             ("testCookieFromServer", testCookieFromServer)
         ]
     }
+    
+    override func setUp() {
+        doSetUp()
+    }
 
     override func tearDown() {
         doTearDown()
