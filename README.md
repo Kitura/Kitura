@@ -84,14 +84,9 @@ Kitura is tested on Ubuntu 14.04 LTS and Ubuntu 15.10.
 
  The complete instructions for building and installing this library are shown [here](https://github.com/apple/swift-corelibs-libdispatch/blob/experimental/foundation/INSTALL). For convenience, the command to compile is:
 
- ```
- $ export SWIFT_HOME=<path-to-swift-toolchain 
- $ git clone --recursive -b experimental/foundation https://github.com/apple/swift-corelibs-libdispatch.git \
-  && cd swift-corelibs-libdispatch \
-  && sh ./autogen.sh \
-  && ./configure --with-swift-toolchain=$SWIFT_HOME/usr --prefix=$SWIFT_HOME/usr \
-  && make && make install
- ```
+ `$ export SWIFT_HOME=<path-to-swift-toolchain>`
+ 
+ `$ git clone --recursive -b experimental/foundation https://github.com/apple/swift-corelibs-libdispatch.git && cd swift-corelibs-libdispatch && sh ./autogen.sh && ./configure --with-swift-toolchain=$SWIFT_HOME/usr --prefix=$SWIFT_HOME/usr && make && make install`
 
 Now you are ready to develop your first Kitura app. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Getting Started](#getting-started).
 
