@@ -63,7 +63,7 @@ public class Kitura {
     ///
     /// - Note: This function never returns - it should be the last call in your main.swift
     public class func run() {
-        Log.verbose("Staring Kitura framework...")
+        Log.verbose("Starting Kitura framework...")
         for (server, port) in httpServersAndPorts {
             Log.verbose("Starting an HTTP Server on port \(port)...")
             server.listen(port: port, notOnMainQueue: false)
