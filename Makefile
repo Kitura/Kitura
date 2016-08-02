@@ -19,8 +19,7 @@ export KITURA_CI_BUILD_SCRIPTS_DIR=Kitura-Build/build
 
 Kitura-Build/build/Makefile:
 	@echo --- Fetching Kitura-Build submodule
-	git submodule init
-	git submodule update --remote --merge
+	git submodule update --init --remote --merge --recursive
 
 generateRouterVerbs: Sources/Kitura/RouterHTTPVerbs_generated.swift
 
