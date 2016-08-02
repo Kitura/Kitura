@@ -60,7 +60,7 @@ This branch of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-06-20-a`** versi
 
  During installation if you are using the package installer make sure to select "all users" for the installation path in order for the correct toolchain version to be available for use with the terminal.
 
- After installation, make sure you update your PATH environment variable as described in the installation instructions (e.g. `export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH`)
+ After installation, make sure you update your `PATH` environment variable as described in the `swift.org` installation instructions (e.g. `export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH`)
 
 4. Select the Xcode beta as your active developer directory.
 
