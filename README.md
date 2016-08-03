@@ -54,7 +54,7 @@ This branch of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-06-20-a`** versi
 
  `$ brew install curl`
 
-3. Download and install [Xcode 8 beta 3](https://developer.apple.com/download/).
+3. Download and install [Xcode 8 beta 4](https://developer.apple.com/download/).
 
 4. Download and install the [required Swift version](#swift-version) from `swift.org`.
 
