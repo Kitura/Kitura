@@ -26,9 +26,7 @@ matrix:
       sudo: required
 
 before_install:
-  - git submodule init
-  - git submodule update
-  - cd Kitura-Build && git checkout master && cd $TRAVIS_BUILD_DIR
+  - git submodule update --init --remote --merge --recursive
 
 script:
   - ./Kitura-Build/script_travis.sh $TRAVIS_OS_NAME $TRAVIS_BRANCH $TRAVIS_BUILD_DIR Kitura
