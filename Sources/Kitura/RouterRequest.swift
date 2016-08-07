@@ -22,7 +22,7 @@ import Foundation
 
 // MARK: RouterRequest
 
-public class RouterRequest: SocketReader {
+public class RouterRequest {
 
     /// The server request
     let serverRequest: ServerRequest
@@ -41,9 +41,9 @@ public class RouterRequest: SocketReader {
         let pattern = "([a-z0-9][a-z0-9\\-]{1,63}\\.[a-z\\.]{2,6})$"
         do {
             #if os(Linux)
-                let regex = try NSRegularExpression(pattern: pattern, options: [.caseInsensitive])
-            #else
                 let regex = try RegularExpression(pattern: pattern, options: [.caseInsensitive])
+            #else
+                let regex = try NSRegularExpression(pattern: pattern, options: [.caseInsensitive])
             #endif
 
             let hostnameRange = NSMakeRange(0, self.hostname.utf8.count)
@@ -63,11 +63,7 @@ public class RouterRequest: SocketReader {
 
     /// The subdomains string array of request
     public private(set) lazy var subdomains: [String] = { [unowned self] in
-        #if os(Linux)
-            let backwards = NSStringCompareOptions.backwardsSearch
-        #else
-            let backwards = String.CompareOptions.backwards
-        #endif
+        let backwards = String.CompareOptions.backwards
         let subdomainsString = self.hostname
             .replacingOccurrences(of: self.domain,
                                   with: "",
@@ -114,15 +110,9 @@ public class RouterRequest: SocketReader {
     }()
 
     /// Set of parsed cookies
-    #if os(Linux)
-    public var cookies: [String: NSHTTPCookie] {
-        return _cookies.cookies
-    }
-    #else
     public var cookies: [String: HTTPCookie] {
         return _cookies.cookies
     }
-    #endif
 
     /// List of URL parameters
     public internal(set) var parameters: [String:String] = [:]
@@ -155,8 +145,8 @@ public class RouterRequest: SocketReader {
     ///
     /// - Throws:
     /// - Returns: the number of bytes read
-    public func read(into data: NSMutableData) throws -> Int {
-        return try serverRequest.read(into: data)
+    public func read(into data: inout Data) throws -> Int {
+        return try serverRequest.read(into: &data)
     }
 
     /// Read string
@@ -193,14 +183,9 @@ public class RouterRequest: SocketReader {
 }
 
 private class Cookies {
-    #if os(Linux)
-    typealias HTTPCookieType = NSHTTPCookie
-    #else
-    typealias HTTPCookieType = HTTPCookie
-    #endif
 
     /// Storage of parsed Cookie headers
-    private var cookies = [String: HTTPCookieType]()
+    private var cookies = [String: HTTPCookie]()
     
     /// Static for Cookie header key value
     private let cookieHeader = "cookie"
@@ -214,7 +199,7 @@ private class Cookies {
         }
     }
     
-    private func initCookie(_ cookie: String, cookies: inout [String: HTTPCookieType]) {
+    private func initCookie(_ cookie: String, cookies: inout [String: HTTPCookie]) {
         let cookieNameValues = cookie.components(separatedBy: "; ")
         for  cookieNameValue in cookieNameValues  {
             let cookieNameValueParts = cookieNameValue.components(separatedBy: "=")
@@ -222,7 +207,7 @@ private class Cookies {
                 #if os(Linux)
                     let cookieName = cookieNameValueParts[0]
                     let cookieValue = cookieNameValueParts[1]
-                    let theCookie = NSHTTPCookie(properties:
+                    let theCookie = HTTPCookie(properties:
                         [NSHTTPCookieDomain: ".",
                          NSHTTPCookiePath: "/",
                          NSHTTPCookieName: cookieName ,

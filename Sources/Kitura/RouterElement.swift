@@ -31,11 +31,11 @@ class RouterElement {
 
     /// The regular expression
     #if os(Linux)
-        private var regex: NSRegularExpression?
-    #else
         private var regex: RegularExpression?
+    #else
+        private var regex: NSRegularExpression?
     #endif
-
+    
     /// The list of keys
     private var keys: [String]?
 
@@ -113,9 +113,9 @@ class RouterElement {
     }
 
     #if os(Linux)
-    typealias TextChekingResultType = NSTextCheckingResult
+        typealias TextChekingResultType = TextCheckingResult
     #else
-    typealias TextChekingResultType = TextCheckingResult
+        typealias TextChekingResultType = NSTextCheckingResult
     #endif
 
     /// Update the request parameters
@@ -126,7 +126,7 @@ class RouterElement {
         var parameters = [String:String]()
         if let keys = keys {
             for index in 0..<keys.count {
-                let matchRange = match.range(at: index+1)
+                let matchRange = match.rangeAt(index+1)
                 if  matchRange.location != NSNotFound  &&  matchRange.location != -1  {
                     parameters[keys[index]] = urlPath.bridge().substring(with: matchRange)
                 }

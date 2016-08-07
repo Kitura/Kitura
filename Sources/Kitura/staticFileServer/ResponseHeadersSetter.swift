@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
+import Foundation
 
 #if os(Linux)
     public typealias CustomResponseHeaderAttributes = [String : Any]
 #else
-    public typealias CustomResponseHeaderAttributes = [String : AnyObject]
+    public typealias CustomResponseHeaderAttributes = [FileAttributeKey : AnyObject]
 #endif
 
 public protocol ResponseHeadersSetter {

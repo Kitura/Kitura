@@ -17,12 +17,6 @@
 import LoggerAPI
 import Foundation
 
-#if os(Linux)
-    typealias FileManagerType = NSFileManager
-#else
-    typealias FileManagerType = FileManager
-#endif
-
 extension StaticFileServer {
 
     // MARK: FileServer
@@ -83,7 +77,7 @@ extension StaticFileServer {
         }
 
         func serveFile(_ filePath: String, requestPath: String, response: RouterResponse) {
-            let fileManager = FileManagerType()
+            let fileManager = FileManager()
             var isDirectory = ObjCBool(false)
 
             if fileManager.fileExists(atPath: filePath, isDirectory: &isDirectory) {
@@ -120,7 +114,7 @@ extension StaticFileServer {
         @discardableResult
         private func serveIfNonDirectoryFile(atPath path: String, response: RouterResponse) -> Bool {
             var isDirectory = ObjCBool(false)
-            if FileManagerType().fileExists(atPath: path, isDirectory: &isDirectory) {
+            if FileManager().fileExists(atPath: path, isDirectory: &isDirectory) {
                 if !isDirectory.boolValue {
                     serveNonDirectoryFile(path, response: response)
                     return true
@@ -135,7 +129,7 @@ extension StaticFileServer {
             }
 
             do {
-                let fileAttributes : CustomResponseHeaderAttributes = try FileManagerType().attributesOfItem(atPath: filePath)
+                let fileAttributes : CustomResponseHeaderAttributes = try FileManager().attributesOfItem(atPath: filePath)
                 responseHeadersSetter?.setCustomResponseHeaders(response: response,
                                                                 filePath: filePath,
                                                                 fileAttributes: fileAttributes)

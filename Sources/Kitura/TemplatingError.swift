@@ -16,7 +16,7 @@
 
 import Foundation
 
-enum TemplatingError: ErrorProtocol {
+enum TemplatingError: Swift.Error {
     case noDefaultTemplateEngineAndNoExtensionSpecified
     case noTemplateEngineForExtension(extension: String)
 }
