@@ -18,7 +18,7 @@ import SwiftyJSON
 import Foundation
 
 class JSONBodyParser: BodyParserProtocol {
-    func parse(_ data: NSData) -> ParsedBody? {
+    func parse(_ data: Data) -> ParsedBody? {
         let json = JSON(data: data)
         if json != JSON.null {
             return .json(json)

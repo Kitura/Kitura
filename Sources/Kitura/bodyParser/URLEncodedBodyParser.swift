@@ -17,14 +17,10 @@
 import Foundation
 
 class URLEncodedBodyParser: BodyParserProtocol {
-    func parse(_ data: NSData) -> ParsedBody? {
+    func parse(_ data: Data) -> ParsedBody? {
         var parsedBody = [String:String]()
         var success = true
-        #if os(Linux)
-            let bodyAsString = String(data: data, encoding: NSUTF8StringEncoding)
-        #else
-            let bodyAsString = String(data: data as Data, encoding: String.Encoding.utf8)
-        #endif
+        let bodyAsString = String(data: data as Data, encoding: .utf8)
 
         if let bodyAsString = bodyAsString {
             let bodyAsArray = bodyAsString.components(separatedBy: "&")

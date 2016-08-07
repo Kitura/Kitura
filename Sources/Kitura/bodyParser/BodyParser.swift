@@ -60,7 +60,7 @@ public class BodyParser: RouterMiddleware {
     /// - Parameter message: message coming from the socket
     /// - Parameter contentType: the contentType as a string
     /// - Returns: the parsed body
-    public class func parse(_ message: SocketReader, contentType: String?) -> ParsedBody? {
+    public class func parse(_ message: RouterRequest, contentType: String?) -> ParsedBody? {
         guard let contentType = contentType else {
             return nil
         }
@@ -82,8 +82,7 @@ public class BodyParser: RouterMiddleware {
         }
         if let parser = parserMap[contentTypeWithoutParameters] {
             return parser
-        } else if let parser = parserMap["text"]
-            where contentType.hasPrefix("text/") {
+        } else if let parser = parserMap["text"], contentType.hasPrefix("text/") {
             return parser
         } else if contentType.hasPrefix("multipart/form-data") {
             guard let boundryIndex = contentType.range(of: "boundary=") else {
@@ -104,7 +103,7 @@ public class BodyParser: RouterMiddleware {
     /// - Parameter message: message coming from the socket
     /// - Parameter parser: ((NSData) -> ParsedBody?) store at parserMap
     /// - Returns: the parsed body
-    private class func parse(_ message: SocketReader, parser: BodyParserProtocol) -> ParsedBody? {
+    private class func parse(_ message: RouterRequest, parser: BodyParserProtocol) -> ParsedBody? {
         do {
             let bodyData = try readBodyData(with: message)
             return parser.parse(bodyData)
@@ -119,27 +118,17 @@ public class BodyParser: RouterMiddleware {
     /// - Parameter with: the socket reader
     /// - Throws: ???
     /// - Returns: data for the body
-    public class func readBodyData(with reader: SocketReader) throws -> NSMutableData {
-        let bodyData = NSMutableData()
+    public class func readBodyData(with reader: RouterRequest) throws -> Data {
+        var bodyData = Data()
 
-        var length = try reader.read(into: bodyData)
+        var length = try reader.read(into: &bodyData)
         while length != 0 {
-            length = try reader.read(into: bodyData)
+            length = try reader.read(into: &bodyData)
         }
         return bodyData
     }
 }
 
-#if os(Linux)
-extension NSData {
-    func hasPrefix(_ data: NSData) -> Bool {
-        if data.length > self.length {
-            return false
-        }
-        return self.subdata(with: NSRange(location: 0, length: data.length)).isEqual(to: data)
-    }
-}
-#else
 extension Data {
     func hasPrefix(_ data: Data) -> Bool {
         if data.count > self.count {
@@ -148,5 +137,3 @@ extension Data {
         return self.subdata(in: 0 ..< data.count) == data
     }
 }
-#endif
-
