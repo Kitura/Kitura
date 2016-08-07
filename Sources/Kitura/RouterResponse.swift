@@ -208,13 +208,8 @@ public class RouterResponse {
     /// - Returns: this RouterResponse
     public func send(jsonp: JSON, callbackParameter: String = "callback") throws -> RouterResponse {
         func sanitizeJSIdentifier(_ ident: String) -> String {
-            #if os(Linux)
-                return ident.replacingOccurrences(of: "[^\\[\\]\\w$.]", with: "", options:
-                    NSStringCompareOptions.regularExpressionSearch)
-            #else
-                return ident.replacingOccurrences(of: "[^\\[\\]\\w$.]", with: "", options:
+            return ident.replacingOccurrences(of: "[^\\[\\]\\w$.]", with: "", options:
                     NSString.CompareOptions.regularExpression)
-            #endif
         }
         func validJsonpCallbackName(_ name: String?) -> String? {
             if let name = name {
