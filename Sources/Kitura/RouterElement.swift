@@ -126,7 +126,11 @@ class RouterElement {
         var parameters = [String:String]()
         if let keys = keys {
             for index in 0..<keys.count {
-                let matchRange = match.rangeAt(index+1)
+                #if os(Linux)
+                    let matchRange = match.range(at: index+1)
+                #else
+                    let matchRange = match.rangeAt(index+1)
+                #endif
                 if  matchRange.location != NSNotFound  &&  matchRange.location != -1  {
                     parameters[keys[index]] = urlPath.bridge().substring(with: matchRange)
                 }
