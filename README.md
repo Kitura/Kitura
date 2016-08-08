@@ -270,7 +270,7 @@ Let's develop your first Kitura web application!
   - macOS: `$ swift build`
   - Linux: `$ swift build -Xcc -fblocks`
 
-  Or copy our [Makefile and build scripts](https://github.com/IBM-Swift/Kitura-Build/blob/master/build) to your project directory and run `make build`. You may want to customize this Makefile and use it for building, testing and running your application. For example, you can clean your build directory, refetch all the dependencies, build, test and run your application by running `make clean refetch test run`.
+  Or copy our [Makefile and build scripts](https://github.com/IBM-Swift/Package-Builder/blob/master/build) to your project directory and run `make build`. You may want to customize this Makefile and use it for building, testing and running your application. For example, you can clean your build directory, refetch all the dependencies, build, test and run your application by running `make clean refetch test run`.
 
 10. Now run your new web application:
 
@@ -291,7 +291,7 @@ All improvements to Kitura are very welcome! Here's how to get started with deve
   `$ make test`
 
  ### Notes
- * Homebrew by default installs libraries to `/usr/local`, if yours is different, change the path to find the curl library, in `Kitura-Build/build/Makefile`:
+ * Homebrew by default installs libraries to `/usr/local`, if yours is different, change the path to find the curl library, in `Package-Builder/build/Makefile`:
 
    ```Makefile
    SWIFTC_FLAGS = -Xswiftc -I/usr/local/include

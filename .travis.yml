@@ -29,4 +29,4 @@ before_install:
   - git submodule update --init --remote --merge --recursive
 
 script:
-  - ./Kitura-Build/script_travis.sh $TRAVIS_OS_NAME $TRAVIS_BRANCH $TRAVIS_BUILD_DIR Kitura
+  - ./Package-Builder/script_travis.sh $TRAVIS_OS_NAME $TRAVIS_BRANCH $TRAVIS_BUILD_DIR Kitura
