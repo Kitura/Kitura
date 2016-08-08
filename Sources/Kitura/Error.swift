@@ -18,9 +18,9 @@ import Foundation
 
 // possibly known error, e.g. user tries to access an invalid url path
 // it makes sense to send the error as HTTP response
-enum Error: ErrorProtocol {
+enum Error: Swift.Error {
     case failedToParseRequestBody(body: String)
-    case failedToRedirectRequest(path: String, chainedError: ErrorProtocol)
+    case failedToRedirectRequest(path: String, chainedError: Swift.Error)
 }
 
 extension Error: CustomStringConvertible {

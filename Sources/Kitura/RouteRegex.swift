@@ -20,9 +20,9 @@ import LoggerAPI
 import Foundation
 
 #if os(Linux)
-    typealias RegularExpressionType = NSRegularExpression
-#else
     typealias RegularExpressionType = RegularExpression
+#else
+    typealias RegularExpressionType = NSRegularExpression
 #endif
 
 public class RouteRegex {
@@ -137,7 +137,12 @@ public class RouteRegex {
             extract(fromPath: path, with: keyMatch, at: 3, to: &matchExp)
             extract(fromPath: path, with: keyMatch, at: 4, to: &plusQuestStar)
 
-            keys.append(path.bridge().substring(with: keyMatch.range(at: 2)))
+            #if os(Linux)
+                let keyMatchRange = keyMatch.range(at: 2)
+            #else
+                let keyMatchRange = keyMatch.rangeAt(2)
+            #endif
+            keys.append(path.bridge().substring(with: keyMatchRange))
             matched = true
         } else if let nonKeyMatch = nonKeyRegex.firstMatch(in: path, options: [], range: range) {
             // We found a path element with an unnamed capture
@@ -154,14 +159,18 @@ public class RouteRegex {
     }
 
     #if os(Linux)
-    typealias TextCheckingResultType = NSTextCheckingResult
-    #else
     typealias TextCheckingResultType = TextCheckingResult
+    #else
+    typealias TextCheckingResultType = NSTextCheckingResult
     #endif
     
     func extract(fromPath path: String, with match: TextCheckingResultType, at index: Int,
                  to string: inout String) {
-        let range = match.range(at: index)
+        #if os(Linux)
+            let range = match.range(at: index)
+        #else
+            let range = match.rangeAt(index)
+        #endif
         if  range.location != NSNotFound  &&  range.location != -1 {
             string = path.bridge().substring(with: range)
         }

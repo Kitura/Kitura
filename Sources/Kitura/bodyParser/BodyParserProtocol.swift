@@ -17,5 +17,5 @@
 import Foundation
 
 protocol BodyParserProtocol {
-    func parse(_: NSData) -> ParsedBody?
+    func parse(_: Data) -> ParsedBody?
 }

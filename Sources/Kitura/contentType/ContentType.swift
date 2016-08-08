@@ -50,25 +50,15 @@ public class ContentType {
             return
         }
 
-        #if os(Linux)
-            let contentTypesData = contentTypesString.data(using: NSUTF8StringEncoding)
-        #else
-            let contentTypesData = contentTypesString.data(using: String.Encoding.utf8)
-        #endif
+        let contentTypesData = contentTypesString.data(using: .utf8)
         guard contentTypesData != nil else {
             Log.error("Error parsing \(contentTypesString)")
             return
         }
 
-        #if os(Linux)
-            let jsonParseOptions = NSJSONReadingOptions.mutableContainers
-            let parsedObject = try? NSJSONSerialization.jsonObject(with: contentTypesData!,
+        let jsonParseOptions = JSONSerialization.ReadingOptions.mutableContainers
+        let parsedObject = try? JSONSerialization.jsonObject(with: contentTypesData!,
                                                                    options: jsonParseOptions)
-        #else
-            let jsonParseOptions = JSONSerialization.ReadingOptions.mutableContainers
-            let parsedObject = try? JSONSerialization.jsonObject(with: contentTypesData!,
-                                                                   options: jsonParseOptions)
-        #endif
 
         // MARK: Linux Foundation will return an Any instead of an AnyObject
         // Need to test if this breaks the Linux build.
@@ -101,11 +91,7 @@ public class ContentType {
         let lastPathElemRange: Range<String.Index>
         let extRange: Range<String.Index>
 
-        #if os(Linux)
-            let backwards = NSStringCompareOptions.backwardsSearch
-        #else
-            let backwards = String.CompareOptions.backwards
-        #endif
+        let backwards = String.CompareOptions.backwards
         if let lastSlash = fileName.range(of: "/", options: backwards) {
             lastPathElemRange = fileName.index(after: lastSlash.lowerBound)..<fileName.characters.endIndex
         } else {

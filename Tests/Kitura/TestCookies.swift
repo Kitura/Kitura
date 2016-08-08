@@ -25,7 +25,7 @@ let cookie1Name = "KituraTest1"
 let cookie1Value = "Testing-Testing-1-2-3"
 let cookie2Name = "KituraTest2"
 let cookie2Value = "Testing-Testing"
-let cookie2ExpireExpected = NSDate(timeIntervalSinceNow: 600.0)
+let cookie2ExpireExpected = Date(timeIntervalSinceNow: 600.0)
 let cookie3Name = "KituraTest3"
 let cookie3Value = "A-testing-we-go"
 
@@ -35,7 +35,7 @@ let cookie1Name = "KituraTest1" as NSString
 let cookie1Value = "Testing-Testing-1-2-3"  as NSString
 let cookie2Name = "KituraTest2"  as NSString
 let cookie2Value = "Testing-Testing" as NSString
-let cookie2ExpireExpected = NSDate(timeIntervalSinceNow: 600.0)
+let cookie2ExpireExpected = Date(timeIntervalSinceNow: 600.0)
 let cookie3Name = "KituraTest3" as NSString
 let cookie3Value = "A-testing-we-go" as NSString
 
@@ -66,14 +66,10 @@ class TestCookies : XCTestCase {
             self.performRequest("get", path: "/1/cookiedump", callback: {response in
                 XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "cookiedump route did not match single path request")
                 do {
-                    let data = NSMutableData()
-                    let count = try response!.readAllData(into: data)
+                    var data = Data()
+                    let count = try response!.readAllData(into: &data)
                     XCTAssertEqual(count, 4, "Plover's value should have been four bytes")
-                    #if os(Linux)
-                        let ploverValue = NSString(data: data, encoding: NSUTF8StringEncoding)
-                    #else
-                        let ploverValue = String(data: data as Data, encoding: String.Encoding.utf8)
-                    #endif
+                    let ploverValue = String(data: data as Data, encoding: .utf8)
                     if  let ploverValue = ploverValue {
                         XCTAssertEqual(ploverValue, "qwer")
                     }
@@ -129,14 +125,8 @@ class TestCookies : XCTestCase {
         })
     }
 
-    #if os(Linux)
-    typealias HTTPCookieType = NSHTTPCookie
-    #else
-    typealias HTTPCookieType = HTTPCookie
-    #endif
-
-    func cookieFrom(response: ClientResponse, named: String) -> (HTTPCookieType?, String?) {
-        var resultCookie: HTTPCookieType? = nil
+    func cookieFrom(response: ClientResponse, named: String) -> (HTTPCookie?, String?) {
+        var resultCookie: HTTPCookie? = nil
         var resultExpire: String?
         for (headerKey, headerValues) in response.headers  {
             let lowercaseHeaderKey = headerKey.lowercased()
@@ -198,7 +188,7 @@ class TestCookies : XCTestCase {
                         #else
                             XCTAssertNotNil(properties[HTTPCookiePropertyKey.domain], "Malformed Set-Cookie header \(headerValue)")
                         #endif
-                        resultCookie = HTTPCookieType(properties: properties)
+                        resultCookie = HTTPCookie(properties: properties)
                         break
                     }
                 }
@@ -225,15 +215,15 @@ class TestCookies : XCTestCase {
             response.status(HTTPStatusCode.OK)
 
             #if os(Linux)
-                let cookie1 = NSHTTPCookie(properties: [NSHTTPCookieName: cookie1Name,
-                                                        NSHTTPCookieValue: cookie1Value,
-                                                        NSHTTPCookieDomain: cookieHost,
-                                                        NSHTTPCookiePath: "/"])
-                let cookie2 = NSHTTPCookie(properties: [NSHTTPCookieName: cookie2Name,
-                                                        NSHTTPCookieValue: cookie2Value,
-                                                        NSHTTPCookieDomain: cookieHost,
-                                                        NSHTTPCookiePath: "/",
-                                                        NSHTTPCookieExpires: cookie2ExpireExpected])
+                let cookie1 = HTTPCookie(properties: [NSHTTPCookieName: cookie1Name,
+                                                      NSHTTPCookieValue: cookie1Value,
+                                                      NSHTTPCookieDomain: cookieHost,
+                                                      NSHTTPCookiePath: "/"])
+                let cookie2 = HTTPCookie(properties: [NSHTTPCookieName: cookie2Name,
+                                                      NSHTTPCookieValue: cookie2Value,
+                                                      NSHTTPCookieDomain: cookieHost,
+                                                      NSHTTPCookiePath: "/",
+                                                      NSHTTPCookieExpires: cookie2ExpireExpected])
             #else
                 let cookie1 = HTTPCookie(properties: [HTTPCookiePropertyKey.name: cookie1Name,
                                                         HTTPCookiePropertyKey.value: cookie1Value,
@@ -255,11 +245,11 @@ class TestCookies : XCTestCase {
             response.status(HTTPStatusCode.OK)
 
             #if os(Linux)
-                let cookie = NSHTTPCookie(properties: [NSHTTPCookieName: cookie3Name,
-                                                       NSHTTPCookieValue: cookie3Value,
-                                                       NSHTTPCookieDomain: cookieHost,
-                                                       NSHTTPCookiePath: "/",
-                                                       NSHTTPCookieSecure: "Yes"])
+                let cookie = HTTPCookie(properties: [NSHTTPCookieName: cookie3Name,
+                                                     NSHTTPCookieValue: cookie3Value,
+                                                     NSHTTPCookieDomain: cookieHost,
+                                                     NSHTTPCookiePath: "/",
+                                                     NSHTTPCookieSecure: "Yes"])
             #else
                 let cookie = HTTPCookie(properties: [HTTPCookiePropertyKey.name: cookie3Name,
                                                        HTTPCookiePropertyKey.value: cookie3Value,

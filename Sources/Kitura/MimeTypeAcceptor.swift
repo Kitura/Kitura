@@ -39,7 +39,7 @@ extension RouterRequest {
         /// - Returns: A tuple with the MIME type and q parameter value if present, qValue defaults to 1.
         private static func parse(mediaType type: String) -> MimeTypeWithQValue {
             var finishedPair = ("", 1.0)
-            let trimmed = type.trimmingCharacters(in: NSCharacterSet.whitespaces())
+            let trimmed = type.trimmingCharacters(in: CharacterSet.whitespaces)
             let components = trimmed.characters.split(separator: ";").map(String.init)
 
             if let mediaType = components.first {
@@ -48,7 +48,7 @@ extension RouterRequest {
 
             if let qPreference = components.last {
                 let qualityComponents = qPreference.characters.split(separator: "=").map(String.init)
-                if let q = qualityComponents.first, value = qualityComponents.last where q == "q",
+                if let q = qualityComponents.first, let value = qualityComponents.last, q == "q",
                     let pairValue = Double(value) {
                     finishedPair.1 = pairValue
                 }
@@ -115,11 +115,7 @@ extension RouterRequest {
                 }
                 return
             }
-            #if os(Linux)
-                let regularExpressionSearch = NSStringCompareOptions.regularExpressionSearch
-            #else
-                let regularExpressionSearch = String.CompareOptions.regularExpression
-            #endif
+            let regularExpressionSearch = String.CompareOptions.regularExpression
             if nil == mimeType.range(of: parsedHeaderValue.type,
                                      options: regularExpressionSearch) {
                 return

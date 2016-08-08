@@ -35,7 +35,7 @@ Kitura is a web framework and web server that is created for web services writte
 - Pluggable middleware
 
 ## Swift version
-This branch of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-06-20-a`** version of Swift 3 trunk (master). You can download this version at [swift.org](https://swift.org/download/). *Kitura is unlikely to compile with any other version of Swift.*
+This branch of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-07-25-a`** version of Swift 3 trunk (master). You can download this version at [swift.org](https://swift.org/download/). *Kitura is unlikely to compile with any other version of Swift.*
 
 ## Installation
 
