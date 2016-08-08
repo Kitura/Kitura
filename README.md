@@ -74,7 +74,7 @@ Kitura is tested on Ubuntu 14.04 LTS and Ubuntu 15.10.
 
 1. Install the following system linux libraries:
 
- `$ sudo apt-get install autoconf libtool libkqueue-dev libkqueue0 libcurl4-openssl-dev libbsd-dev libblocksruntime-dev`
+ `$ sudo apt-get install autoconf libtool libcurl4-openssl-dev libbsd-dev libblocksruntime-dev`
 
 2. Install the [required Swift version](#swift-version) from `swift.org`.
 
