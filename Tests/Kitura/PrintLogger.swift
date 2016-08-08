@@ -23,6 +23,10 @@ public class PrintLogger: Logger {
                     functionName: String, lineNum: Int, fileName: String ) {
         print("\(type): \(functionName) \(fileName) line \(lineNum) - \(msg)")
     }
+
+    public func isLogging(_ level: LoggerAPI.LoggerMessageType) -> Bool {
+        return true
+    }
     
     public static func use() {
         Log.logger = PrintLogger()
