@@ -66,7 +66,7 @@ Version `0.24` of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-06-20-a`** ve
 
  `$ sudo xcode-select -s /Applications/Xcode-beta.app/Contents/Developer/`
 
-Now you are ready to develop your first Kitura app. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Getting Started](#getting-started).
+Now you are ready to develop your first Kitura app. Check [Kitura-Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Getting Started](#getting-started).
 
 ### Ubuntu Linux
 
@@ -88,7 +88,7 @@ Kitura is tested on Ubuntu 14.04 LTS and Ubuntu 15.10.
  
  `$ git clone --recursive -b experimental/foundation https://github.com/apple/swift-corelibs-libdispatch.git && cd swift-corelibs-libdispatch && sh ./autogen.sh && ./configure --with-swift-toolchain=$SWIFT_HOME/usr --prefix=$SWIFT_HOME/usr && make && make install`
 
-Now you are ready to develop your first Kitura app. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Getting Started](#getting-started).
+Now you are ready to develop your first Kitura app. Check [Kitura-Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Getting Started](#getting-started).
 
 ### Docker
 
@@ -135,7 +135,7 @@ Now you are ready to develop your first Kitura app. Check [Kitura Sample](https:
 
 5. As needed for development, edit the `vagrantfile` to setup [Synced Folders](https://www.vagrantup.com/docs/synced-folders/basic_usage.html) to share files between your host and guest machine.
 
-Now you are ready to develop your first Kitura app. Check [Kitura Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Getting Started](#getting-started).
+Now you are ready to develop your first Kitura app. Check [Kitura-Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Getting Started](#getting-started).
 
 ## Getting Started
 
