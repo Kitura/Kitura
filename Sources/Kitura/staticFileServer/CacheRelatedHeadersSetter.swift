@@ -45,11 +45,7 @@ extension StaticFileServer {
         private func addLastModified(response: RouterResponse,
                                      fileAttributes: CustomResponseHeaderAttributes) {
             if addLastModifiedHeader {
-                #if os(Linux)
-                    let date = fileAttributes[NSFileModificationDate] as? NSDate
-                #else
-                    let date = fileAttributes[FileAttributeKey.modificationDate.rawValue] as? NSDate
-                #endif
+                let date = lastModifiedDate(fileAttributes: fileAttributes)
                 if let date = date {
                     response.headers["Last-Modified"] = SPIUtils.httpDate(date)
                 }
@@ -59,12 +55,11 @@ extension StaticFileServer {
         private func addETag(response: RouterResponse,
                              fileAttributes: CustomResponseHeaderAttributes) {
             if generateETag {
+                let date = lastModifiedDate(fileAttributes: fileAttributes)
                 #if os(Linux)
-                    let date = fileAttributes[NSFileModificationDate] as? NSDate
                     let size = fileAttributes[NSFileSize] as? Int
                 #else
-                    let date = fileAttributes[FileAttributeKey.modificationDate.rawValue] as? NSDate
-                    let size = fileAttributes[FileAttributeKey.size.rawValue] as? Int
+                    let size = fileAttributes[FileAttributeKey.size] as? Int
                 #endif
 
                 if let date = date, let size = size {
@@ -74,6 +69,14 @@ extension StaticFileServer {
                     response.headers["Etag"] = etag
                 }
             }
+        }
+        
+        private func lastModifiedDate(fileAttributes: CustomResponseHeaderAttributes) -> Date? {
+            #if os(Linux)
+                return fileAttributes[NSFileModificationDate] as? Date
+            #else
+                return fileAttributes[FileAttributeKey.modificationDate] as? Date
+            #endif
         }
     }
 }

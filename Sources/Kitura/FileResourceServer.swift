@@ -35,9 +35,9 @@ class FileResourceServer {
 
     private func getFilePath(for resource: String) -> String? {
         #if os(Linux)
-            let fileManager = NSFileManager.defaultManager()
-        #else
             let fileManager = FileManager.default()
+        #else
+            let fileManager = FileManager.default
         #endif
         let potentialResource = getResourcePathBasedOnSourceLocation(for: resource)
 
@@ -53,11 +53,7 @@ class FileResourceServer {
     private func getResourcePathBasedOnSourceLocation(for resource: String) -> String {
         let fileName = NSString(string: #file)
         let resourceFilePrefixRange: NSRange
-        #if os(Linux)
-            let lastSlash = fileName.range(of: "/", options: NSStringCompareOptions.backwardsSearch)
-        #else
-            let lastSlash = fileName.range(of: "/", options: .backwards)
-        #endif
+        let lastSlash = fileName.range(of: "/", options: .backwards)
         if  lastSlash.location != NSNotFound  {
             resourceFilePrefixRange = NSMakeRange(0, lastSlash.location+1)
         } else {
@@ -66,12 +62,7 @@ class FileResourceServer {
         return fileName.substring(with: resourceFilePrefixRange) + "resources/" + resource
     }
 
-    #if os(Linux)
-    typealias FileManagerType = NSFileManager
-    #else
-    typealias FileManagerType = FileManager
-    #endif
-    private func getResourcePathBasedOnCurrentDirectory(for resource: String, withFileManager fileManager: FileManagerType) -> String? {
+    private func getResourcePathBasedOnCurrentDirectory(for resource: String, withFileManager fileManager: FileManager) -> String? {
         do {
             let packagePath = fileManager.currentDirectoryPath + "/Packages"
             let packages = try fileManager.contentsOfDirectory(atPath: packagePath)

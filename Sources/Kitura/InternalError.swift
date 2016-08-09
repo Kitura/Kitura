@@ -20,7 +20,7 @@ import Foundation
 // no need to send an HTTP response with the error details to the client
 // just log it
 // for example - uninitialized variable
-enum InternalError: ErrorProtocol {
+enum InternalError: Swift.Error {
     case nilVariable(variable: String)
 }
 

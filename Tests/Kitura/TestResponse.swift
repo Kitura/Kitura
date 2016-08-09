@@ -48,6 +48,10 @@ class TestResponse : XCTestCase {
             ("testJsonp", testJsonp)
         ]
     }
+    
+    override func setUp() {
+        doSetUp()
+    }
 
     override func tearDown() {
         doTearDown()
@@ -157,38 +161,21 @@ class TestResponse : XCTestCase {
     func dataComponentsTest(_ searchString: String, separator: String) {
         let stringFind = searchString.components(separatedBy: separator)
 
-        // test NSData.components extension
-        #if os(Linux)
-            var separatorData = NSData()
-            if let data = separator.data(using: NSUTF8StringEncoding) {
-                // required for Linux as String.data(using:) returns null if seperator == ""
-                separatorData = data
-            }
-            var searchData = NSData()
-            if let data = searchString.data(using: NSUTF8StringEncoding) {
-                // required for Linux as String.data(using:) returns null if searchString == ""
-                searchData = data
-            }
-        #else
-            var separatorData = Data()
-            if let data = separator.data(using: String.Encoding.utf8) {
-                separatorData = data
-            }
-            var searchData = Data()
-            if let data = searchString.data(using: String.Encoding.utf8) {
-                searchData = data
-            }
-       #endif
-       let dataFind = searchData.components(separatedBy: separatorData)
+        // test Data.components extension
+        var separatorData = Data()
+        if let data = separator.data(using: .utf8) {
+            separatorData = data
+        }
+        var searchData = Data()
+        if let data = searchString.data(using: .utf8) {
+            searchData = data
+        }
+        let dataFind = searchData.components(separatedBy: separatorData)
         // ensure we get the same sized array back
         XCTAssert(dataFind.count == stringFind.count)
         // test to ensure the strings are equal
         for i in 0 ..< stringFind.count {
-            #if os(Linux)
-                let dataString = String(data: dataFind[i], encoding: NSUTF8StringEncoding)
-            #else
-                let dataString = String(data: dataFind[i], encoding: String.Encoding.utf8)
-            #endif
+            let dataString = String(data: dataFind[i], encoding: .utf8)
             XCTAssertEqual(stringFind[i], dataString)
         }
     }

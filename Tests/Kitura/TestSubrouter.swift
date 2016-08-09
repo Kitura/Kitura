@@ -35,6 +35,10 @@ class TestSubrouter : XCTestCase {
             ("testMultipleMiddleware", testMultipleMiddleware)
         ]
     }
+    
+    override func setUp() {
+        doSetUp()
+    }
 
     override func tearDown() {
         doTearDown()

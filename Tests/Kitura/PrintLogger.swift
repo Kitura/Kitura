@@ -14,14 +14,22 @@
  * limitations under the License.
  **/
 
-import PackageDescription
+import Foundation
 
-let package = Package(
-    name: "Kitura",
-    dependencies: [
-        .Package(url: "https://github.com/IBM-Swift/Kitura-net.git", majorVersion: 0, minor: 25),
-        .Package(url: "https://github.com/IBM-Swift/SwiftyJSON.git", majorVersion: 11),
-        .Package(url: "https://github.com/IBM-Swift/Kitura-TemplateEngine.git", majorVersion: 0, minor: 16)
-    ],
-    exclude: ["Configuration", "Scripts"]
-)
+import LoggerAPI
+
+public class PrintLogger: Logger {
+    public func log(_ type: LoggerMessageType, msg: String,
+                    functionName: String, lineNum: Int, fileName: String ) {
+        print("\(type): \(functionName) \(fileName) line \(lineNum) - \(msg)")
+    }
+
+    public func isLogging(_ level: LoggerAPI.LoggerMessageType) -> Bool {
+        return true
+    }
+    
+    public static func use() {
+        Log.logger = PrintLogger()
+        setbuf(stdout, nil)
+    }
+}

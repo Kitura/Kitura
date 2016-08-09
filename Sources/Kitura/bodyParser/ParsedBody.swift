@@ -18,5 +18,5 @@ import SwiftyJSON
 import Foundation
 
 public indirect enum ParsedBody {
-    case json(JSON), urlEncoded([String:String]), text(String), raw(NSData), multipart([Part])
+    case json(JSON), urlEncoded([String:String]), text(String), raw(Data), multipart([Part])
 }

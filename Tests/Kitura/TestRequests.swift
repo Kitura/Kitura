@@ -28,6 +28,10 @@ class TestRequest : XCTestCase {
         ]
     }
     
+    override func setUp() {
+        doSetUp()
+    }
+    
     override func tearDown() {
         doTearDown()
     }
