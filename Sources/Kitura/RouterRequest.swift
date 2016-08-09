@@ -36,6 +36,16 @@ public class RouterRequest: SocketReader {
         return  range == nil ? host : host.substring(to: range!.lowerBound)
     }()
 
+    ///The port of the request
+    public private(set) lazy var port: Int = { [unowned self] () in
+        guard let host = self.headers["host"] else {
+            return Int(self.parsedURL.port!) ?? -1
+        }
+        let defaultPort: Int = 80
+        let range = host.range(of: ":")
+        return  range == nil ? defaultPort : Int(host.substring(from: range!.upperBound))!
+    }()
+
     /// The domain name of the request
     public private(set) lazy var domain: String = { [unowned self] in
         let pattern = "([a-z0-9][a-z0-9\\-]{1,63}\\.[a-z\\.]{2,6})$"
