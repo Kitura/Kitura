@@ -16,7 +16,7 @@
 
 import Foundation
 
-public enum JSONPError: ErrorProtocol {
+public enum JSONPError: Swift.Error {
     case invalidCallbackName(name: String?)
 }
 

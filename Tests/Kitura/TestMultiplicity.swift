@@ -29,6 +29,10 @@ class TestMultiplicity : XCTestCase {
             ("testCombined", testCombined)
         ]
     }
+    
+    override func setUp() {
+        doSetUp()
+    }
 
     override func tearDown() {
         doTearDown()

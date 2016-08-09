@@ -29,9 +29,9 @@ class TestRouteRegex : XCTestCase {
     
     func testBuildRegexFromPattern() {
         #if os(Linux)
-            var regex:NSRegularExpression?
-        #else
             var regex:RegularExpression?
+        #else
+            var regex:NSRegularExpression?
         #endif
         var strings:[String]?
 

@@ -17,12 +17,6 @@
 import LoggerAPI
 import Foundation
 
-#if os(Linux)
-    typealias FileManagerType = NSFileManager
-#else
-    typealias FileManagerType = FileManager
-#endif
-
 extension StaticFileServer {
 
     // MARK: FileServer
@@ -83,12 +77,17 @@ extension StaticFileServer {
         }
 
         func serveFile(_ filePath: String, requestPath: String, response: RouterResponse) {
-            let fileManager = FileManagerType()
+            let fileManager = FileManager()
             var isDirectory = ObjCBool(false)
 
             if fileManager.fileExists(atPath: filePath, isDirectory: &isDirectory) {
+                #if os(Linux)
+                    let isDirectoryBool = isDirectory
+                #else
+                    let isDirectoryBool = isDirectory.boolValue
+                #endif
                 serveExistingFile(filePath, requestPath: requestPath,
-                                  isDirectory: isDirectory.boolValue, response: response)
+                                  isDirectory: isDirectoryBool, response: response)
                 return
             }
 
@@ -120,8 +119,13 @@ extension StaticFileServer {
         @discardableResult
         private func serveIfNonDirectoryFile(atPath path: String, response: RouterResponse) -> Bool {
             var isDirectory = ObjCBool(false)
-            if FileManagerType().fileExists(atPath: path, isDirectory: &isDirectory) {
-                if !isDirectory.boolValue {
+            if FileManager().fileExists(atPath: path, isDirectory: &isDirectory) {
+                #if os(Linux)
+                    let isDirectoryBool = isDirectory
+                #else
+                    let isDirectoryBool = isDirectory.boolValue
+                #endif
+                if !isDirectoryBool {
                     serveNonDirectoryFile(path, response: response)
                     return true
                 }
@@ -135,7 +139,7 @@ extension StaticFileServer {
             }
 
             do {
-                let fileAttributes : CustomResponseHeaderAttributes = try FileManagerType().attributesOfItem(atPath: filePath)
+                let fileAttributes : CustomResponseHeaderAttributes = try FileManager().attributesOfItem(atPath: filePath)
                 responseHeadersSetter?.setCustomResponseHeaders(response: response,
                                                                 filePath: filePath,
                                                                 fileAttributes: fileAttributes)
