@@ -35,7 +35,7 @@ class RouterElement {
     #else
         private var regex: NSRegularExpression?
     #endif
-    
+
     /// The list of keys
     private var keys: [String]?
 
