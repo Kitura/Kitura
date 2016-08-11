@@ -35,7 +35,7 @@ Kitura is a web framework and web server that is created for web services writte
 - Pluggable middleware
 
 ## Swift version
-Version `0.24` of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-06-20-a`** version of Swift 3 trunk (master). You can download this version at [swift.org](https://swift.org/download/). *Kitura is unlikely to compile with any other version of Swift.*
+Version `0.26` of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-07-25-a`** version of Swift 3 trunk (master). You can download this version at [swift.org](https://swift.org/download/). *Kitura is unlikely to compile with any other version of Swift.*
 
 ## Installation
 
@@ -174,7 +174,7 @@ Let's develop your first Kitura web application!
   let package = Package(
       name: "myFirstProject",
       dependencies: [
-          .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 24)
+          .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 26)
       ])
   ```
 
@@ -232,7 +232,7 @@ Let's develop your first Kitura web application!
    let package = Package(
        name: "myFirstProject",
        dependencies: [
-           .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 24),
+           .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 26),
            .Package(url: "https://github.com/IBM-Swift/HeliumLogger", majorVersion: 0, minor: 13),
        ])
    ```
