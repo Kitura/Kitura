@@ -92,7 +92,7 @@ Now you are ready to develop your first Kitura app. Check [Kitura-Sample](https:
 
 ### Docker
 
-1. Install [Docker](https://docs.docker.com/engine/getstarted/step_one/) on your development system.
+1. Install [Docker](https://www.docker.com/products/docker) on your development system.
 
 2. Pull down the [kitura-ubuntu](https://hub.docker.com/r/ibmcom/kitura-ubuntu/) image from Docker Hub:
 
