@@ -16,6 +16,7 @@
 
 // MARK: RouterMiddlewareGenerator
 
+///
 public class RouterMiddlewareGenerator: RouterMiddleware {
 
     /// The closure invoked to handle requests

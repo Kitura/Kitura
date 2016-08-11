@@ -22,6 +22,7 @@ import Foundation
 
 // MARK: RouterRequest
 
+///
 public class RouterRequest {
 
     /// The server request

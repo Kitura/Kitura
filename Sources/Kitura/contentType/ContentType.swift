@@ -19,6 +19,7 @@ import LoggerAPI
 
 // MARK: ContentType
 
+///
 public class ContentType {
 
     /// Whether to use the local mime-type definitions or the ones in the file

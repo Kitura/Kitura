@@ -16,6 +16,7 @@
 
 // MARK: StaticFileServer
 
+///
 public class StaticFileServer: RouterMiddleware {
 
     public struct CacheOptions {
