@@ -78,7 +78,7 @@ Kitura is tested on Ubuntu 14.04 LTS and Ubuntu 15.10.
 
 2. Install the [required Swift version](#swift-version) from `swift.org`.
 
- Follow the instructions provided on that page. After installing it (i.e. uncompressing the tar file), make sure you update your PATH environment variable so that it includes the extracted tools: `export PATH=/<path to uncompress tar contents>/usr/bin:$PATH`. To update the PATH env variable, you can update your [.bashrc file](http://www.joshstaiger.org/archives/2005/07/bash_profile_vs.html).
+ After installing it (i.e. extracting the `.tar.gz` file), make sure you update your `PATH` environment variable so that it includes the extracted tools: `export PATH=/<path to uncompress tar contents>/usr/bin:$PATH`.
 
 3. Clone, build and install the libdispatch library.
 
