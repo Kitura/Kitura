@@ -25,7 +25,7 @@ Kitura is a web framework and web server that is created for web services writte
 * [Contributing to Kitura](#contributing-to-kitura)
 * [Community](#community)
 
-## Features:
+## Features
 
 - URL routing (GET, POST, PUT, DELETE)
 - URL parameters
