@@ -30,13 +30,13 @@ extension Router {
     }
 
     @discardableResult
-    public func all(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.all, pattern: path, middleware: middleware)
+    public func all(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.all, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func all(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.all, pattern: path, middleware: middleware)
+    public func all(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.all, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: Get
 
@@ -51,13 +51,13 @@ extension Router {
     }
 
     @discardableResult
-    public func get(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.get, pattern: path, middleware: middleware)
+    public func get(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.get, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func get(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.get, pattern: path, middleware: middleware)
+    public func get(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.get, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: Head
 
@@ -72,13 +72,13 @@ extension Router {
     }
 
     @discardableResult
-    public func head(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.head, pattern: path, middleware: middleware)
+    public func head(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.head, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func head(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.head, pattern: path, middleware: middleware)
+    public func head(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.head, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: Post
 
@@ -93,13 +93,13 @@ extension Router {
     }
 
     @discardableResult
-    public func post(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.post, pattern: path, middleware: middleware)
+    public func post(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.post, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func post(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.post, pattern: path, middleware: middleware)
+    public func post(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.post, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: Put
 
@@ -114,13 +114,13 @@ extension Router {
     }
 
     @discardableResult
-    public func put(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.put, pattern: path, middleware: middleware)
+    public func put(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.put, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func put(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.put, pattern: path, middleware: middleware)
+    public func put(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.put, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: Delete
 
@@ -135,13 +135,13 @@ extension Router {
     }
 
     @discardableResult
-    public func delete(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.delete, pattern: path, middleware: middleware)
+    public func delete(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.delete, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func delete(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.delete, pattern: path, middleware: middleware)
+    public func delete(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.delete, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: Options
 
@@ -156,13 +156,13 @@ extension Router {
     }
 
     @discardableResult
-    public func options(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.options, pattern: path, middleware: middleware)
+    public func options(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.options, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func options(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.options, pattern: path, middleware: middleware)
+    public func options(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.options, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: Trace
 
@@ -177,13 +177,13 @@ extension Router {
     }
 
     @discardableResult
-    public func trace(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.trace, pattern: path, middleware: middleware)
+    public func trace(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.trace, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func trace(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.trace, pattern: path, middleware: middleware)
+    public func trace(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.trace, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: Copy
 
@@ -198,13 +198,13 @@ extension Router {
     }
 
     @discardableResult
-    public func copy(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.copy, pattern: path, middleware: middleware)
+    public func copy(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.copy, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func copy(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.copy, pattern: path, middleware: middleware)
+    public func copy(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.copy, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: Lock
 
@@ -219,13 +219,13 @@ extension Router {
     }
 
     @discardableResult
-    public func lock(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.lock, pattern: path, middleware: middleware)
+    public func lock(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.lock, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func lock(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.lock, pattern: path, middleware: middleware)
+    public func lock(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.lock, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: MkCol
 
@@ -240,13 +240,13 @@ extension Router {
     }
 
     @discardableResult
-    public func mkCol(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.mkCol, pattern: path, middleware: middleware)
+    public func mkCol(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.mkCol, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func mkCol(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.mkCol, pattern: path, middleware: middleware)
+    public func mkCol(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.mkCol, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: Move
 
@@ -261,13 +261,13 @@ extension Router {
     }
 
     @discardableResult
-    public func move(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.move, pattern: path, middleware: middleware)
+    public func move(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.move, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func move(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.move, pattern: path, middleware: middleware)
+    public func move(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.move, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: Purge
 
@@ -282,13 +282,13 @@ extension Router {
     }
 
     @discardableResult
-    public func purge(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.purge, pattern: path, middleware: middleware)
+    public func purge(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.purge, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func purge(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.purge, pattern: path, middleware: middleware)
+    public func purge(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.purge, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: PropFind
 
@@ -303,13 +303,13 @@ extension Router {
     }
 
     @discardableResult
-    public func propFind(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.propFind, pattern: path, middleware: middleware)
+    public func propFind(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.propFind, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func propFind(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.propFind, pattern: path, middleware: middleware)
+    public func propFind(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.propFind, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: PropPatch
 
@@ -324,13 +324,13 @@ extension Router {
     }
 
     @discardableResult
-    public func propPatch(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.propPatch, pattern: path, middleware: middleware)
+    public func propPatch(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.propPatch, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func propPatch(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.propPatch, pattern: path, middleware: middleware)
+    public func propPatch(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.propPatch, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: Unlock
 
@@ -345,13 +345,13 @@ extension Router {
     }
 
     @discardableResult
-    public func unlock(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.unlock, pattern: path, middleware: middleware)
+    public func unlock(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.unlock, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func unlock(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.unlock, pattern: path, middleware: middleware)
+    public func unlock(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.unlock, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: Report
 
@@ -366,13 +366,13 @@ extension Router {
     }
 
     @discardableResult
-    public func report(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.report, pattern: path, middleware: middleware)
+    public func report(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.report, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func report(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.report, pattern: path, middleware: middleware)
+    public func report(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.report, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: MkActivity
 
@@ -387,13 +387,13 @@ extension Router {
     }
 
     @discardableResult
-    public func mkActivity(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.mkActivity, pattern: path, middleware: middleware)
+    public func mkActivity(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.mkActivity, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func mkActivity(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.mkActivity, pattern: path, middleware: middleware)
+    public func mkActivity(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.mkActivity, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: Checkout
 
@@ -408,13 +408,13 @@ extension Router {
     }
 
     @discardableResult
-    public func checkout(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.checkout, pattern: path, middleware: middleware)
+    public func checkout(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.checkout, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func checkout(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.checkout, pattern: path, middleware: middleware)
+    public func checkout(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.checkout, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: Merge
 
@@ -429,13 +429,13 @@ extension Router {
     }
 
     @discardableResult
-    public func merge(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.merge, pattern: path, middleware: middleware)
+    public func merge(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.merge, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func merge(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.merge, pattern: path, middleware: middleware)
+    public func merge(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.merge, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: MSearch
 
@@ -450,13 +450,13 @@ extension Router {
     }
 
     @discardableResult
-    public func mSearch(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.mSearch, pattern: path, middleware: middleware)
+    public func mSearch(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.mSearch, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func mSearch(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.mSearch, pattern: path, middleware: middleware)
+    public func mSearch(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.mSearch, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: Notify
 
@@ -471,13 +471,13 @@ extension Router {
     }
 
     @discardableResult
-    public func notify(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.notify, pattern: path, middleware: middleware)
+    public func notify(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.notify, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func notify(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.notify, pattern: path, middleware: middleware)
+    public func notify(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.notify, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: Subscribe
 
@@ -492,13 +492,13 @@ extension Router {
     }
 
     @discardableResult
-    public func subscribe(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.subscribe, pattern: path, middleware: middleware)
+    public func subscribe(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.subscribe, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func subscribe(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.subscribe, pattern: path, middleware: middleware)
+    public func subscribe(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.subscribe, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: Unsubscribe
 
@@ -513,13 +513,13 @@ extension Router {
     }
 
     @discardableResult
-    public func unsubscribe(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.unsubscribe, pattern: path, middleware: middleware)
+    public func unsubscribe(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.unsubscribe, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func unsubscribe(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.unsubscribe, pattern: path, middleware: middleware)
+    public func unsubscribe(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.unsubscribe, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: Patch
 
@@ -534,13 +534,13 @@ extension Router {
     }
 
     @discardableResult
-    public func patch(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.patch, pattern: path, middleware: middleware)
+    public func patch(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.patch, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func patch(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.patch, pattern: path, middleware: middleware)
+    public func patch(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.patch, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: Search
 
@@ -555,13 +555,13 @@ extension Router {
     }
 
     @discardableResult
-    public func search(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.search, pattern: path, middleware: middleware)
+    public func search(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.search, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func search(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.search, pattern: path, middleware: middleware)
+    public func search(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.search, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
     // MARK: Connect
 
@@ -576,12 +576,12 @@ extension Router {
     }
 
     @discardableResult
-    public func connect(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.connect, pattern: path, middleware: middleware)
+    public func connect(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.connect, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func connect(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.connect, pattern: path, middleware: middleware)
+    public func connect(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.connect, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 }

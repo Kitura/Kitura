@@ -53,8 +53,11 @@ public class Router {
         return self
     }
 
-    func routingHelper(_ method: RouterMethod, pattern: String?, middleware: [RouterMiddleware]) -> Router {
-        elements.append(RouterElement(method: method, pattern: pattern, middleware: middleware))
+    func routingHelper(_ method: RouterMethod, pattern: String?, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        elements.append(RouterElement(method: method,
+            pattern: pattern,
+            middleware: middleware,
+            allowPartialMatch: allowPartialMatch))
         return self
     }
 

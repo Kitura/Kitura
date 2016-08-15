@@ -80,7 +80,7 @@ class TestRequests : XCTestCase {
 
         let router = Router()
 
-        router.get("/user/:id", middleware: CustomMiddleware())
+        router.get("/user/:id", allowPartialMatch: false, middleware: CustomMiddleware())
         router.get("/user/:id") { request, response, next in
             let id = request.parameters["id"]
             XCTAssertNotNil(id, "URL parameter 'id' in middleware handler was nil")
