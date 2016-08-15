@@ -23,6 +23,7 @@ import LoggerAPI
 
 // MARK: RouterResponse
 
+///
 public class RouterResponse {
 
     struct State {

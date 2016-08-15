@@ -1,5 +1,3 @@
-[submodule "Kitura-Build"]
-	path = Kitura-Build
-	url = https://github.com/IBM-Swift/Kitura-Build.git
-	ignore = all
-	branch = master
+[submodule "Package-Builder"]
+	path = Package-Builder
+	url = https://github.com/IBM-Swift/Package-Builder.git

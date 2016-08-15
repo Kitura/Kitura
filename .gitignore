@@ -1,4 +1,6 @@
 .build
+build
+docs
 .vagrant
 Packages
 *.pkg

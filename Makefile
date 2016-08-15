@@ -13,12 +13,12 @@
 # limitations under the License.
 
 # Makefile
-export KITURA_CI_BUILD_SCRIPTS_DIR=Kitura-Build/build
+export KITURA_CI_BUILD_SCRIPTS_DIR=Package-Builder/build
 
--include Kitura-Build/build/Makefile
+-include Package-Builder/build/Makefile
 
-Kitura-Build/build/Makefile:
-	@echo --- Fetching Kitura-Build submodule
+Package-Builder/build/Makefile:
+	@echo --- Fetching Package-Builder submodule
 	git submodule update --init --remote --merge --recursive
 
 generateRouterVerbs: Sources/Kitura/RouterHTTPVerbs_generated.swift

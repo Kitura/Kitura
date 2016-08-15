@@ -25,6 +25,7 @@ import Foundation
     typealias RegularExpressionType = NSRegularExpression
 #endif
 
+///
 public class RouteRegex {
     public static let sharedInstance = RouteRegex()
     
