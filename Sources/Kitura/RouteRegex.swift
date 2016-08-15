@@ -28,7 +28,7 @@ import Foundation
 ///
 public class RouteRegex {
     public static let sharedInstance = RouteRegex()
-    
+
     private let namedCaptureRegex: RegularExpressionType
     private let unnamedCaptureRegex: RegularExpressionType
     private let keyRegex: RegularExpressionType
@@ -45,7 +45,7 @@ public class RouteRegex {
             exit(1)
         }
     }
-    
+
     /// Builds a regular expression from a String pattern
     ///
     /// - Parameter pattern: Optional string
@@ -60,18 +60,18 @@ public class RouteRegex {
         var regexStr = "^"
         var keys = [String]()
         var nonKeyIndex = 0
-        
+
         if allowPartialMatch && pattern.hasSuffix("*") {
             pattern = String(pattern.characters.dropLast())
         }
-        
+
         let paths = pattern.bridge().components(separatedBy: "/")
-        
+
         // Special case where only back slashes are specified
         if paths.filter({$0 != ""}).isEmpty {
             regexStr.append("/")
         }
-        
+
         for path in paths {
             (regexStr, keys, nonKeyIndex) =
                 handlePath(path, regexStr: regexStr, keys: keys, nonKeyIndex: nonKeyIndex)
@@ -164,7 +164,7 @@ public class RouteRegex {
     #else
     typealias TextCheckingResultType = NSTextCheckingResult
     #endif
-    
+
     func extract(fromPath path: String, with match: TextCheckingResultType, at index: Int,
                  to string: inout String) {
         #if os(Linux)

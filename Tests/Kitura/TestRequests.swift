@@ -20,28 +20,30 @@ import Foundation
 @testable import Kitura
 @testable import KituraNet
 
-class TestRequest : XCTestCase {
-    
-    static var allTests : [(String, (TestRequest) -> () throws -> Void)] {
+class TestRequests : XCTestCase {
+
+    static var allTests : [(String, (TestRequests) -> () throws -> Void)] {
         return [
-                   ("testURLParameters", testURLParameters)
+                   ("testURLParameters", testURLParameters),
+                   ("testCustomMiddlewareURLParameter", testCustomMiddlewareURLParameter),
+                   ("testCustomMiddlewareURLParameterWithQueryParam", testCustomMiddlewareURLParameterWithQueryParam)
         ]
     }
-    
+
     override func setUp() {
         doSetUp()
     }
-    
+
     override func tearDown() {
         doTearDown()
     }
-    
-    let router = TestRequest.setupRouter()
-    
+
+    let router = TestRequests.setupRouter()
+
     func testURLParameters() {
         // Set up router for this test
         let router = Router()
-        
+
         router.get("/zxcv/:p1") { request, _, next in
             let parameter = request.parameters["p1"]
             XCTAssertNotNil(parameter, "URL parameter p1 was nil")
@@ -56,18 +58,56 @@ class TestRequest : XCTestCase {
             response.status(.OK).send("OK")
             next()
         }
-        
+
         performServerTest(router) { expectation in
-            self.performRequest("get", path: "/zxcv/ploni", callback: {response in
+            self.performRequest("get", path: "/zxcv/ploni", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 expectation.fulfill()
             })
         }
     }
-    
+
+    private func runMiddlewareTest(path: String) {
+        class CustomMiddleware: RouterMiddleware {
+            func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
+                let id = request.parameters["id"]
+                XCTAssertNotNil(id, "URL parameter 'id' in custom middleware was nil")
+                XCTAssertEqual("my_custom_id", id, "URL parameter 'id' in custom middleware was wrong")
+                response.status(.OK)
+                next()
+            }
+        }
+
+        let router = Router()
+
+        router.get("/user/:id", allowPartialMatch: false, middleware: CustomMiddleware())
+        router.get("/user/:id") { request, response, next in
+            let id = request.parameters["id"]
+            XCTAssertNotNil(id, "URL parameter 'id' in middleware handler was nil")
+            XCTAssertEqual("my_custom_id", id, "URL parameter 'id' in middleware handler was wrong")
+            response.status(.OK)
+            next()
+        }
+
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: path, callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                expectation.fulfill()
+            })
+        }
+    }
+
+    func testCustomMiddlewareURLParameter() {
+        runMiddlewareTest(path: "/user/my_custom_id")
+    }
+
+    func testCustomMiddlewareURLParameterWithQueryParam() {
+        runMiddlewareTest(path: "/user/my_custom_id?some_param=value")
+    }
+
     static func setupRouter() -> Router {
         let router = Router()
-        
+
         router.get("/zxcv/:p1") { request, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             let p1 = request.parameters["p1"] ?? "(nil)"
@@ -79,10 +119,9 @@ class TestRequest : XCTestCase {
             catch {}
             next()
         }
-        
-        
-        
+
+
+
         return router
     }
 }
-
