@@ -21,6 +21,7 @@ import Foundation
 
 // MARK: BodyParser
 
+///
 public class BodyParser: RouterMiddleware {
 
     /// Static buffer size (in bytes)

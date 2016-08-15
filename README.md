@@ -25,17 +25,17 @@ Kitura is a web framework and web server that is created for web services writte
 * [Contributing to Kitura](#contributing-to-kitura)
 * [Community](#community)
 
-## Features:
+## Features
 
 - URL routing (GET, POST, PUT, DELETE)
 - URL parameters
 - Static file serving
-- [FastCGI Support](Documentation/FastCGI.md)
+- [FastCGI support](Documentation/FastCGI.md)
 - JSON parsing
 - Pluggable middleware
 
 ## Swift version
-Version `0.24` of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-06-20-a`** version of Swift 3 trunk (master). You can download this version at [swift.org](https://swift.org/download/). *Kitura is unlikely to compile with any other version of Swift.*
+Version `0.26` of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-07-25-a`** version of Swift 3 trunk (master). You can download this version at [swift.org](https://swift.org/download/). *Kitura is unlikely to compile with any other version of Swift.*
 
 ## Installation
 
@@ -54,7 +54,7 @@ Version `0.24` of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-06-20-a`** ve
 
  `$ brew install curl`
 
-3. Download and install [Xcode 8 beta 4](https://developer.apple.com/download/).
+3. Download and install [Xcode 8 beta 5](https://developer.apple.com/download/).
 
 4. Download and install the [required Swift version](#swift-version) from `swift.org`.
 
@@ -78,7 +78,7 @@ Kitura is tested on Ubuntu 14.04 LTS and Ubuntu 15.10.
 
 2. Install the [required Swift version](#swift-version) from `swift.org`.
 
- Follow the instructions provided on that page. After installing it (i.e. uncompressing the tar file), make sure you update your PATH environment variable so that it includes the extracted tools: `export PATH=/<path to uncompress tar contents>/usr/bin:$PATH`. To update the PATH env variable, you can update your [.bashrc file](http://www.joshstaiger.org/archives/2005/07/bash_profile_vs.html).
+ After installing it (i.e. extracting the `.tar.gz` file), make sure you update your `PATH` environment variable so that it includes the extracted tools: `export PATH=/<path to uncompress tar contents>/usr/bin:$PATH`.
 
 3. Clone, build and install the libdispatch library.
 
@@ -92,7 +92,7 @@ Now you are ready to develop your first Kitura app. Check [Kitura-Sample](https:
 
 ### Docker
 
-1. Install [Docker](https://docs.docker.com/engine/getstarted/step_one/) on your development system.
+1. Install [Docker](https://www.docker.com/products/docker) on your development system.
 
 2. Pull down the [kitura-ubuntu](https://hub.docker.com/r/ibmcom/kitura-ubuntu/) image from Docker Hub:
 
@@ -174,7 +174,7 @@ Let's develop your first Kitura web application!
   let package = Package(
       name: "myFirstProject",
       dependencies: [
-          .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 24)
+          .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 26)
       ])
   ```
 
@@ -232,7 +232,7 @@ Let's develop your first Kitura web application!
    let package = Package(
        name: "myFirstProject",
        dependencies: [
-           .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 24),
+           .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 26),
            .Package(url: "https://github.com/IBM-Swift/HeliumLogger", majorVersion: 0, minor: 13),
        ])
    ```
@@ -270,7 +270,7 @@ Let's develop your first Kitura web application!
   - macOS: `$ swift build`
   - Linux: `$ swift build -Xcc -fblocks`
 
-  Or copy our [Makefile and build scripts](https://github.com/IBM-Swift/Kitura-Build/blob/master/build) to your project directory and run `make build`. You may want to customize this Makefile and use it for building, testing and running your application. For example, you can clean your build directory, refetch all the dependencies, build, test and run your application by running `make clean refetch test run`.
+  Or copy our [Makefile and build scripts](https://github.com/IBM-Swift/Package-Builder/blob/master/build) to your project directory and run `make build`. You may want to customize this Makefile and use it for building, testing and running your application. For example, you can clean your build directory, refetch all the dependencies, build, test and run your application by running `make clean refetch test run`.
 
 10. Now run your new web application:
 
@@ -291,7 +291,7 @@ All improvements to Kitura are very welcome! Here's how to get started with deve
   `$ make test`
 
  ### Notes
- * Homebrew by default installs libraries to `/usr/local`, if yours is different, change the path to find the curl library, in `Kitura-Build/build/Makefile`:
+ * Homebrew by default installs libraries to `/usr/local`, if yours is different, change the path to find the curl library, in `Package-Builder/build/Makefile`:
 
    ```Makefile
    SWIFTC_FLAGS = -Xswiftc -I/usr/local/include

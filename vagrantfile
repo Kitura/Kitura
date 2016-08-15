@@ -3,8 +3,8 @@
 
 BOX_URL =  'https://cloud-images.ubuntu.com/vagrant/wily/current/wily-server-cloudimg-amd64-vagrant-disk1.box'.freeze
 
-SWIFT_PATH = 'https://swift.org/builds/development/ubuntu1510/swift-DEVELOPMENT-SNAPSHOT-2016-06-20-a'.freeze
-SWIFT_DIRECTORY = 'swift-DEVELOPMENT-SNAPSHOT-2016-06-20-a-ubuntu15.10'.freeze
+SWIFT_PATH = 'https://swift.org/builds/development/ubuntu1510/swift-DEVELOPMENT-SNAPSHOT-2016-07-25-a'.freeze
+SWIFT_DIRECTORY = 'swift-DEVELOPMENT-SNAPSHOT-2016-07-25-a-ubuntu15.10'.freeze
 SWIFT_FILE = "#{SWIFT_DIRECTORY}.tar.gz".freeze
 SWIFT_HOME = "/home/vagrant/#{SWIFT_DIRECTORY}".freeze
 
