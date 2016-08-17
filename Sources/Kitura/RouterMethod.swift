@@ -50,3 +50,9 @@ public enum RouterMethod: String {
         self = RouterMethod(rawValue: fromRawValue) ?? .unknown
     }    
 }
+
+extension RouterMethod: CustomStringConvertible {
+    public var description: String {
+        return self.rawValue
+    }
+}
