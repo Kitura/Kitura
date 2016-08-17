@@ -5,3 +5,4 @@ docs
 Packages
 *.pkg
 Kitura.xcodeproj
+*.DS_Store
