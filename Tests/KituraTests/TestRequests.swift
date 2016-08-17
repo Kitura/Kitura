@@ -69,7 +69,7 @@ class TestRequests : XCTestCase {
 
     private func runMiddlewareTest(path: String) {
         class CustomMiddleware: RouterMiddleware {
-            func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
+            func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
                 let id = request.parameters["id"]
                 XCTAssertNotNil(id, "URL parameter 'id' in custom middleware was nil")
                 XCTAssertEqual("my_custom_id", id, "URL parameter 'id' in custom middleware was wrong")

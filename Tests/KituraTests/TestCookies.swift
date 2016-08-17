@@ -159,7 +159,7 @@ class TestCookies : XCTestCase {
                                 #if os(Linux)
                                     properties[NSHTTPCookieSecure] = "Yes"
                                 #else
-                                    properties[HTTPCookiePropertyKey.secure] = "Yes"
+                                    properties[HTTPCookiePropertyKey.secure] = "Yes" as NSString
                                #endif
                             case "path" where pieces.count == 2:
                                 #if os(Linux)
