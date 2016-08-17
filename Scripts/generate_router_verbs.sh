@@ -57,13 +57,13 @@ cat <<EOF >> ${OUTPUT_FILE}
     }
 
     @discardableResult
-    public func $VERB_LOW_CASE(_ path: String?=nil, middleware: RouterMiddleware...) -> Router {
-        return routingHelper(.$VERB_LOW_CASE, pattern: path, middleware: middleware)
+    public func $VERB_LOW_CASE(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: RouterMiddleware...) -> Router {
+        return routingHelper(.$VERB_LOW_CASE, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 
     @discardableResult
-    public func $VERB_LOW_CASE(_ path: String?=nil, middleware: [RouterMiddleware]) -> Router {
-        return routingHelper(.$VERB_LOW_CASE, pattern: path, middleware: middleware)
+    public func $VERB_LOW_CASE(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+        return routingHelper(.$VERB_LOW_CASE, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
 EOF
 done
