@@ -15,4 +15,4 @@
  */
 
 /// RouterHandler is a closure
-public typealias RouterHandler = (request: RouterRequest, response: RouterResponse, next: () -> Void) throws -> Void
+public typealias RouterHandler = (RouterRequest, RouterResponse, () -> Void) throws -> Void

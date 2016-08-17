@@ -42,7 +42,7 @@ public class BodyParser: RouterMiddleware {
     /// - Parameter request: the router request
     /// - Parameter response: the router response
     /// - Parameter next: the closure for the next execution block
-    public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) throws {
+    public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws {
         guard request.body == nil else {
             return next() // the body was already parsed
         }

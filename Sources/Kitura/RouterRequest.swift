@@ -186,12 +186,12 @@ public class RouterRequest {
 private class Cookies {
 
     /// Storage of parsed Cookie headers
-    private var cookies = [String: HTTPCookie]()
+    fileprivate var cookies = [String: HTTPCookie]()
     
     /// Static for Cookie header key value
     private let cookieHeader = "cookie"
 
-    private init(headers: HeadersContainer) {
+    fileprivate init(headers: HeadersContainer) {
         guard let rawCookies = headers[cookieHeader] else {
             return
         }

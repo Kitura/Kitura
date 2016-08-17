@@ -36,7 +36,7 @@ class RouterMiddlewareWalker {
     /// Index of the current middleware being handled
     private var middlewareIndex = -1
 
-    init(middlewares: [RouterMiddleware], method: RouterMethod, request: RouterRequest, response: RouterResponse, callback: () -> Void) {
+    init(middlewares: [RouterMiddleware], method: RouterMethod, request: RouterRequest, response: RouterResponse, callback: @escaping () -> Void) {
         self.middlewares = middlewares
         self.method = method
         self.request = request

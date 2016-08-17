@@ -25,7 +25,7 @@ import KituraTemplateEngine
 public class Router {
 
     /// Contains the list of routing elements
-    private var elements: [RouterElement] = []
+    fileprivate var elements: [RouterElement] = []
 
     /// Map from file extensions to Template Engines
     private var templateEngines = [String: TemplateEngine]()
@@ -37,10 +37,10 @@ public class Router {
     public var viewsPath = "./Views/"
 
     /// Prefix for special page resources
-    private let kituraResourcePrefix = "/@@Kitura-router@@/"
+    fileprivate let kituraResourcePrefix = "/@@Kitura-router@@/"
 
     /// Helper for serving file resources
-    private let fileResourceServer = FileResourceServer()
+    fileprivate let fileResourceServer = FileResourceServer()
 
     /// Initializes a Router
     ///
@@ -117,7 +117,7 @@ extension Router : RouterMiddleware {
     /// - Parameter request: the router request
     /// - Parameter response: the router response
     /// - Parameter next: the next handler to call
-    public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) throws {
+    public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws {
         guard let urlPath = request.parsedURL.path else {
             Log.error("Failed to handle request")
             return
@@ -172,7 +172,7 @@ extension Router : ServerDelegate {
     /// - Parameter request: the server request
     /// - Parameter response: the server response
     /// - Parameter callback:
-    private func process(request: RouterRequest, response: RouterResponse, callback: () -> Void) {
+    fileprivate func process(request: RouterRequest, response: RouterResponse, callback: @escaping () -> Void) {
         guard let urlPath = request.parsedURL.path else {
             Log.error("Failed to process request")
             return
@@ -194,7 +194,7 @@ extension Router : ServerDelegate {
             fileResourceServer.sendIfFound(resource: "index.html", usingResponse: response)
         } else {
             do {
-                let errorMessage = "Cannot \(String(request.method).uppercased()) \(request.parsedURL.path ?? "")."
+                let errorMessage = "Cannot \(request.method) \(request.parsedURL.path ?? "")."
                 try response.status(.notFound).send(errorMessage).end()
             } catch {
                 Log.error("Error sending default not found message: \(error)")

@@ -107,7 +107,7 @@ public class RouterResponse {
             statusCode = .OK
         }
 
-        let content = lifecycle.writtenDataFilter(body: buffer.data)
+        let content = lifecycle.writtenDataFilter(buffer.data)
         let contentLength = headers["Content-Length"]
         if  contentLength == nil {
             headers["Content-Length"] = String(content.count)
@@ -342,4 +342,4 @@ public class RouterResponse {
 public typealias LifecycleHandler = () -> Void
 
 /// Type alias for written data filter, i.e. pre-write lifecycle handler
-public typealias WrittenDataFilter = (body: Data) -> Data
+public typealias WrittenDataFilter = (Data) -> Data

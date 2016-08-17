@@ -70,7 +70,7 @@ class RouterElement {
     /// - Parameter request: the request
     /// - Parameter response: the response
     /// - Parameter next: the callback
-    func process(request: RouterRequest, response: RouterResponse, next: () -> Void) {
+    func process(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
         guard let urlPath = request.parsedURL.path else {
             Log.error("Failed to process request (path is nil)")
             return
@@ -107,7 +107,7 @@ class RouterElement {
     /// - Parameter request: the request
     /// - Parameter response: the router response
     /// - Parameter next: the closure for the next execution block
-    private func processHelper(request: RouterRequest, response: RouterResponse, next: () -> Void) {
+    private func processHelper(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
         let looper = RouterMiddlewareWalker(middlewares: middlewares, method: method, request: request, response: response, callback: next)
         looper.next()
     }
