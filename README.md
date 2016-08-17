@@ -54,7 +54,7 @@ Version `0.26` of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-07-25-a`** ve
 
  `$ brew install curl`
 
-3. Download and install [Xcode 8 beta 5](https://developer.apple.com/download/).
+3. Download and install [Xcode 8 beta 6](https://developer.apple.com/download/).
 
 4. Download and install the [required Swift version](#swift-version) from `swift.org`.
 
