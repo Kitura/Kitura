@@ -19,7 +19,7 @@ import Foundation
 #if os(Linux)
     public typealias CustomResponseHeaderAttributes = [String : Any]
 #else
-    public typealias CustomResponseHeaderAttributes = [FileAttributeKey : AnyObject]
+    public typealias CustomResponseHeaderAttributes = [FileAttributeKey : Any]
 #endif
 
 public protocol ResponseHeadersSetter {
