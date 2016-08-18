@@ -20,14 +20,14 @@
 public class RouterMiddlewareGenerator: RouterMiddleware {
 
     /// The closure invoked to handle requests
-    private let innerHandler: (RouterRequest, RouterResponse, () -> Void) throws -> Void
+    private let innerHandler: RouterHandler
 
     /// Initialize a RouterMiddlewareGenerator
     ///
     /// - Parameter handler: the closure to be called to handle requests
     /// - Returns: a RouterMiddlewareGenerator instance
     ///
-    init(handler: @escaping (RouterRequest, RouterResponse, () -> Void) throws -> Void) {
+    init(handler: RouterHandler) {
         innerHandler = handler
     }
 
