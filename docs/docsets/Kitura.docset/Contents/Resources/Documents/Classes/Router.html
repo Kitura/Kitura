@@ -1,0 +1,3832 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Router Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+
+    <a name="//apple_ref/swift/Class/Router" class="dashAnchor"></a>
+
+    <a title="Router Class Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+          Kitura Docs
+        </a>
+         (31% documented)
+      </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/IBM-Swift/Kitura/">
+            <img class="header-icon" src="../img/gh.png"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html">Kitura Reference</a>
+      <img class="carat" src="../img/carat.png" />
+      Router Class Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/BodyParser.html">BodyParser</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ContentType.html">ContentType</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/Kitura.html">Kitura</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/RouteRegex.html">RouteRegex</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/Router.html">Router</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/RouterMiddlewareGenerator.html">RouterMiddlewareGenerator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/RouterRequest.html">RouterRequest</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/RouterResponse.html">RouterResponse</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/StaticFileServer.html">StaticFileServer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/StaticFileServer.html#/s:VC6Kitura16StaticFileServer12CacheOptions">– CacheOptions</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/StaticFileServer.html#/s:VC6Kitura16StaticFileServer7Options">– Options</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Enums.html">Enums</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/JSONPError.html">JSONPError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/LinkParameter.html">LinkParameter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/ParsedBody.html">ParsedBody</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/RouterMethod.html">RouterMethod</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ResponseHeadersSetter.html">ResponseHeadersSetter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/RouterMiddleware.html">RouterMiddleware</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Structs.html">Structs</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/HTTPVersion.html">HTTPVersion</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Headers.html">Headers</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Part.html">Part</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Part/HeaderType.html">– HeaderType</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Typealiases.html">Typealiases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura16LifecycleHandler">LifecycleHandler</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura17WrittenDataFilter">WrittenDataFilter</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content">
+            <h1>Router</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                </div>
+              </div>
+            
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC6Kitura6Router9viewsPathSS"></a>
+                    <a name="//apple_ref/swift/Property/viewsPath" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC6Kitura6Router9viewsPathSS">viewsPath</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Views directory path</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">viewsPath</span> <span class="o">=</span> <span class="s">"./Views/"</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6RoutercFT_S0_"></a>
+                    <a name="//apple_ref/swift/Method/init()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6RoutercFT_S0_">init()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Initializes a Router</p>
+
+<div class="aside aside-returns">
+    <p class="aside-title">Returns</p>
+    a Router instance
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>a Router instance</p>
+
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Template%20Engine"></a>
+                <a name="//apple_ref/swift/Section/Template Engine" class="dashAnchor"></a>
+                <a href="#/Template%20Engine">
+                  <h3 class="section-name">Template Engine</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router10setDefaultFT14templateEngineGSqP20KituraTemplateEngine14TemplateEngine___T_"></a>
+                    <a name="//apple_ref/swift/Method/setDefault(templateEngine:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router10setDefaultFT14templateEngineGSqP20KituraTemplateEngine14TemplateEngine___T_">setDefault(templateEngine:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router3addFT14templateEngineP20KituraTemplateEngine14TemplateEngine__T_"></a>
+                    <a name="//apple_ref/swift/Method/add(templateEngine:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router3addFT14templateEngineP20KituraTemplateEngine14TemplateEngine__T_">add(templateEngine:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5routeFSSS0_"></a>
+                    <a name="//apple_ref/swift/Method/route(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5routeFSSS0_">route(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router6handleFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T_"></a>
+                    <a name="//apple_ref/swift/Method/handle(request:response:next:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router6handleFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T_">handle(request:response:next:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Handle the request as a middleware. Used for subrouting.</p>
+
+<div class="aside aside-parameter">
+    <p class="aside-title">Parameter</p>
+    Parameter request: the router request
+
+</div>
+
+<div class="aside aside-parameter">
+    <p class="aside-title">Parameter</p>
+    Parameter response: the router response
+
+</div>
+
+<div class="aside aside-parameter">
+    <p class="aside-title">Parameter</p>
+    Parameter next: the next handler to call
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">handle</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterRequest.html">RouterRequest</a></span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterResponse.html">RouterResponse</a></span><span class="p">,</span> <span class="nv">next</span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>request</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>the router request</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>response</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>the router response</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>next</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>the next handler to call</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router6handleFT7requestP9KituraNet13ServerRequest_8responsePS1_14ServerResponse__T_"></a>
+                    <a name="//apple_ref/swift/Method/handle(request:response:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router6handleFT7requestP9KituraNet13ServerRequest_8responsePS1_14ServerResponse__T_">handle(request:response:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Handle the request</p>
+
+<div class="aside aside-parameter">
+    <p class="aside-title">Parameter</p>
+    Parameter request: the server request
+
+</div>
+
+<div class="aside aside-parameter">
+    <p class="aside-title">Parameter</p>
+    Parameter response: the server response
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">handle</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">ServerRequest</span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt">ServerResponse</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>request</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>the server request</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>response</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>the server response</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/error"></a>
+                <a name="//apple_ref/swift/Section/error" class="dashAnchor"></a>
+                <a href="#/error">
+                  <h3 class="section-name">error</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5errorFtGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/error(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5errorFtGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">error(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5errorFGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T__S0_"></a>
+                    <a name="//apple_ref/swift/Method/error(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5errorFGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T__S0_">error(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5errorFtGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/error(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5errorFtGSaPS_16RouterMiddleware___S0_">error(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5errorFGSaPS_16RouterMiddleware__S0_"></a>
+                    <a name="//apple_ref/swift/Method/error(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5errorFGSaPS_16RouterMiddleware__S0_">error(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/All"></a>
+                <a name="//apple_ref/swift/Section/All" class="dashAnchor"></a>
+                <a href="#/All">
+                  <h3 class="section-name">All</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router3allFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/all(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router3allFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">all(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router3allFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/all(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router3allFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">all(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router3allFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/all(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router3allFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">all(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router3allFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/all(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router3allFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">all(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Get"></a>
+                <a name="//apple_ref/swift/Section/Get" class="dashAnchor"></a>
+                <a href="#/Get">
+                  <h3 class="section-name">Get</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router3getFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/get(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router3getFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">get(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router3getFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/get(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router3getFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">get(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router3getFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/get(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router3getFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">get(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router3getFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/get(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router3getFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">get(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Head"></a>
+                <a name="//apple_ref/swift/Section/Head" class="dashAnchor"></a>
+                <a href="#/Head">
+                  <h3 class="section-name">Head</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router4headFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/head(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router4headFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">head(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router4headFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/head(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router4headFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">head(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router4headFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/head(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router4headFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">head(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router4headFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/head(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router4headFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">head(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Post"></a>
+                <a name="//apple_ref/swift/Section/Post" class="dashAnchor"></a>
+                <a href="#/Post">
+                  <h3 class="section-name">Post</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router4postFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/post(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router4postFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">post(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router4postFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/post(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router4postFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">post(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router4postFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/post(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router4postFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">post(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router4postFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/post(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router4postFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">post(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Put"></a>
+                <a name="//apple_ref/swift/Section/Put" class="dashAnchor"></a>
+                <a href="#/Put">
+                  <h3 class="section-name">Put</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router3putFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/put(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router3putFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">put(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router3putFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/put(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router3putFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">put(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router3putFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/put(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router3putFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">put(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router3putFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/put(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router3putFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">put(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Delete"></a>
+                <a name="//apple_ref/swift/Section/Delete" class="dashAnchor"></a>
+                <a href="#/Delete">
+                  <h3 class="section-name">Delete</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router6deleteFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/delete(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router6deleteFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">delete(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router6deleteFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/delete(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router6deleteFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">delete(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router6deleteFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/delete(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router6deleteFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">delete(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router6deleteFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/delete(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router6deleteFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">delete(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Options"></a>
+                <a name="//apple_ref/swift/Section/Options" class="dashAnchor"></a>
+                <a href="#/Options">
+                  <h3 class="section-name">Options</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router7optionsFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/options(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router7optionsFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">options(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router7optionsFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/options(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router7optionsFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">options(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router7optionsFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/options(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router7optionsFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">options(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router7optionsFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/options(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router7optionsFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">options(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Trace"></a>
+                <a name="//apple_ref/swift/Section/Trace" class="dashAnchor"></a>
+                <a href="#/Trace">
+                  <h3 class="section-name">Trace</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5traceFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/trace(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5traceFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">trace(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5traceFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/trace(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5traceFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">trace(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5traceFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/trace(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5traceFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">trace(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5traceFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/trace(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5traceFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">trace(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Copy"></a>
+                <a name="//apple_ref/swift/Section/Copy" class="dashAnchor"></a>
+                <a href="#/Copy">
+                  <h3 class="section-name">Copy</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router4copyFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/copy(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router4copyFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">copy(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router4copyFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/copy(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router4copyFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">copy(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router4copyFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/copy(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router4copyFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">copy(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router4copyFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/copy(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router4copyFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">copy(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Lock"></a>
+                <a name="//apple_ref/swift/Section/Lock" class="dashAnchor"></a>
+                <a href="#/Lock">
+                  <h3 class="section-name">Lock</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router4lockFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/lock(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router4lockFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">lock(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router4lockFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/lock(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router4lockFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">lock(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router4lockFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/lock(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router4lockFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">lock(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router4lockFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/lock(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router4lockFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">lock(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/MkCol"></a>
+                <a name="//apple_ref/swift/Section/MkCol" class="dashAnchor"></a>
+                <a href="#/MkCol">
+                  <h3 class="section-name">MkCol</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5mkColFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/mkCol(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5mkColFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">mkCol(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5mkColFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/mkCol(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5mkColFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">mkCol(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5mkColFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/mkCol(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5mkColFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">mkCol(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5mkColFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/mkCol(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5mkColFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">mkCol(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Move"></a>
+                <a name="//apple_ref/swift/Section/Move" class="dashAnchor"></a>
+                <a href="#/Move">
+                  <h3 class="section-name">Move</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router4moveFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/move(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router4moveFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">move(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router4moveFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/move(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router4moveFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">move(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router4moveFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/move(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router4moveFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">move(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router4moveFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/move(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router4moveFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">move(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Purge"></a>
+                <a name="//apple_ref/swift/Section/Purge" class="dashAnchor"></a>
+                <a href="#/Purge">
+                  <h3 class="section-name">Purge</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5purgeFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/purge(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5purgeFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">purge(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5purgeFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/purge(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5purgeFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">purge(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5purgeFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/purge(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5purgeFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">purge(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5purgeFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/purge(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5purgeFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">purge(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/PropFind"></a>
+                <a name="//apple_ref/swift/Section/PropFind" class="dashAnchor"></a>
+                <a href="#/PropFind">
+                  <h3 class="section-name">PropFind</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router8propFindFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/propFind(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router8propFindFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">propFind(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router8propFindFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/propFind(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router8propFindFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">propFind(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router8propFindFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/propFind(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router8propFindFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">propFind(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router8propFindFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/propFind(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router8propFindFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">propFind(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/PropPatch"></a>
+                <a name="//apple_ref/swift/Section/PropPatch" class="dashAnchor"></a>
+                <a href="#/PropPatch">
+                  <h3 class="section-name">PropPatch</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router9propPatchFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/propPatch(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router9propPatchFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">propPatch(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router9propPatchFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/propPatch(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router9propPatchFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">propPatch(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router9propPatchFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/propPatch(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router9propPatchFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">propPatch(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router9propPatchFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/propPatch(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router9propPatchFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">propPatch(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Unlock"></a>
+                <a name="//apple_ref/swift/Section/Unlock" class="dashAnchor"></a>
+                <a href="#/Unlock">
+                  <h3 class="section-name">Unlock</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router6unlockFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/unlock(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router6unlockFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">unlock(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router6unlockFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/unlock(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router6unlockFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">unlock(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router6unlockFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/unlock(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router6unlockFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">unlock(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router6unlockFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/unlock(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router6unlockFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">unlock(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Report"></a>
+                <a name="//apple_ref/swift/Section/Report" class="dashAnchor"></a>
+                <a href="#/Report">
+                  <h3 class="section-name">Report</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router6reportFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/report(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router6reportFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">report(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router6reportFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/report(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router6reportFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">report(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router6reportFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/report(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router6reportFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">report(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router6reportFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/report(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router6reportFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">report(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/MkActivity"></a>
+                <a name="//apple_ref/swift/Section/MkActivity" class="dashAnchor"></a>
+                <a href="#/MkActivity">
+                  <h3 class="section-name">MkActivity</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router10mkActivityFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/mkActivity(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router10mkActivityFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">mkActivity(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router10mkActivityFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/mkActivity(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router10mkActivityFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">mkActivity(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router10mkActivityFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/mkActivity(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router10mkActivityFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">mkActivity(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router10mkActivityFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/mkActivity(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router10mkActivityFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">mkActivity(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Checkout"></a>
+                <a name="//apple_ref/swift/Section/Checkout" class="dashAnchor"></a>
+                <a href="#/Checkout">
+                  <h3 class="section-name">Checkout</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router8checkoutFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/checkout(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router8checkoutFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">checkout(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router8checkoutFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/checkout(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router8checkoutFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">checkout(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router8checkoutFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/checkout(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router8checkoutFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">checkout(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router8checkoutFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/checkout(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router8checkoutFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">checkout(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Merge"></a>
+                <a name="//apple_ref/swift/Section/Merge" class="dashAnchor"></a>
+                <a href="#/Merge">
+                  <h3 class="section-name">Merge</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5mergeFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/merge(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5mergeFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">merge(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5mergeFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/merge(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5mergeFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">merge(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5mergeFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/merge(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5mergeFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">merge(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5mergeFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/merge(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5mergeFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">merge(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/MSearch"></a>
+                <a name="//apple_ref/swift/Section/MSearch" class="dashAnchor"></a>
+                <a href="#/MSearch">
+                  <h3 class="section-name">MSearch</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router7mSearchFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/mSearch(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router7mSearchFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">mSearch(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router7mSearchFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/mSearch(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router7mSearchFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">mSearch(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router7mSearchFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/mSearch(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router7mSearchFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">mSearch(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router7mSearchFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/mSearch(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router7mSearchFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">mSearch(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Notify"></a>
+                <a name="//apple_ref/swift/Section/Notify" class="dashAnchor"></a>
+                <a href="#/Notify">
+                  <h3 class="section-name">Notify</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router6notifyFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/notify(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router6notifyFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">notify(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router6notifyFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/notify(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router6notifyFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">notify(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router6notifyFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/notify(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router6notifyFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">notify(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router6notifyFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/notify(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router6notifyFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">notify(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Subscribe"></a>
+                <a name="//apple_ref/swift/Section/Subscribe" class="dashAnchor"></a>
+                <a href="#/Subscribe">
+                  <h3 class="section-name">Subscribe</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router9subscribeFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/subscribe(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router9subscribeFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">subscribe(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router9subscribeFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/subscribe(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router9subscribeFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">subscribe(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router9subscribeFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/subscribe(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router9subscribeFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">subscribe(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router9subscribeFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/subscribe(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router9subscribeFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">subscribe(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Unsubscribe"></a>
+                <a name="//apple_ref/swift/Section/Unsubscribe" class="dashAnchor"></a>
+                <a href="#/Unsubscribe">
+                  <h3 class="section-name">Unsubscribe</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router11unsubscribeFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/unsubscribe(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router11unsubscribeFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">unsubscribe(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router11unsubscribeFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/unsubscribe(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router11unsubscribeFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">unsubscribe(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router11unsubscribeFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/unsubscribe(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router11unsubscribeFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">unsubscribe(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router11unsubscribeFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/unsubscribe(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router11unsubscribeFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">unsubscribe(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Patch"></a>
+                <a name="//apple_ref/swift/Section/Patch" class="dashAnchor"></a>
+                <a href="#/Patch">
+                  <h3 class="section-name">Patch</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5patchFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/patch(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5patchFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">patch(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5patchFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/patch(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5patchFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">patch(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5patchFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/patch(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5patchFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">patch(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router5patchFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/patch(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router5patchFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">patch(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Search"></a>
+                <a name="//apple_ref/swift/Section/Search" class="dashAnchor"></a>
+                <a href="#/Search">
+                  <h3 class="section-name">Search</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router6searchFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/search(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router6searchFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">search(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router6searchFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/search(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router6searchFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">search(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router6searchFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/search(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router6searchFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">search(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router6searchFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/search(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router6searchFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">search(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Connect"></a>
+                <a name="//apple_ref/swift/Section/Connect" class="dashAnchor"></a>
+                <a href="#/Connect">
+                  <h3 class="section-name">Connect</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router7connectFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/connect(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router7connectFtGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">connect(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router7connectFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_"></a>
+                    <a name="//apple_ref/swift/Method/connect(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router7connectFTGSqSS_7handlerGSaFzT7requestCS_13RouterRequest8responseCS_14RouterResponse4nextFT_T__T___S0_">connect(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router7connectFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/connect(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router7connectFtGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">connect(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura6Router7connectFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_"></a>
+                    <a name="//apple_ref/swift/Method/connect(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura6Router7connectFTGSqSS_17allowPartialMatchSb10middlewareGSaPS_16RouterMiddleware___S0_">connect(_:allowPartialMatch:middleware:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-08-23)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
+  </body>
+</div>
+</html>
