@@ -15,8 +15,8 @@
  **/
 
 import XCTest
+import Kitura
 
-@testable import Kitura
 @testable import KituraNet
 @testable import KituraSys
 
