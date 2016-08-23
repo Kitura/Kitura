@@ -67,7 +67,7 @@ public class Kitura {
         Log.verbose("Starting Kitura framework...")
         for (server, port) in httpServersAndPorts {
             Log.verbose("Starting an HTTP Server on port \(port)...")
-            server.listen(port: port, notOnMainQueue: false)
+            server.listen(port: port)
         }
         for (server, port) in fastCGIServersAndPorts {
             Log.verbose("Starting a FastCGI Server on port \(port)...")
@@ -75,7 +75,38 @@ public class Kitura {
         }
         ListenerGroup.waitForListeners()
     }
-    
+
+    /// Start all registered servers and return
+    ///
+    /// Make all registered servers start listening on their port.
+    public class func start() {
+        for (server, port) in httpServersAndPorts {
+            Log.verbose("Starting an HTTP Server on port \(port)...")
+            server.listen(port: port)
+        }
+        for (server, port) in fastCGIServersAndPorts {
+            Log.verbose("Starting a FastCGI Server on port \(port)...")
+            server.listen(port: port)
+        }
+    }
+
+    /// Stop all registered servers
+    ///
+    /// Make all registered servers stop listening on their port.
+    public class func stop() {
+        for (server, port) in httpServersAndPorts {
+            Log.verbose("Stopping HTTP Server on port \(port)...")
+            server.stop()
+        }
+        httpServersAndPorts.removeAll()
+
+        for (server, port) in fastCGIServersAndPorts {
+            Log.verbose("Stopping FastCGI Server on port \(port)...")
+            server.stop()
+        }
+        fastCGIServersAndPorts.removeAll()
+    }
+
     typealias Port = Int
     private static var httpServersAndPorts = [(server: HTTPServer, port: Port)]()
     private static var fastCGIServersAndPorts = [(server: FastCGIServer, port: Port)]()
