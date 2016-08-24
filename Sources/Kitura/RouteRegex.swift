@@ -107,7 +107,7 @@ public class RouteRegex {
             matchRangesInPath(path, nonKeyIndex: &nonKeyIndex, keys: &keys)
 
         let toAppend: String
-        if  matched  { // A path element with no capture
+        if  matched { // A path element with no capture
             toAppend = getStringToAppendToRegex(plusQuestStar: plusQuestStar,
                                                 prefix: prefix, matchExp: matchExp)
         } else {

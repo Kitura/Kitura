@@ -56,8 +56,7 @@ class RouterMiddlewareWalker {
                 }
                 
                 try middlewares[middlewareIndex].handle(request: request, response: response, next: closure)
-            }
-            catch {
+            } catch {
                 response.error = error
                 self.next()
             }

@@ -111,7 +111,7 @@ class MultiPartBodyParser: BodyParserProtocol {
             return
         }
 
-        let options : String.CompareOptions  = [.anchored, .caseInsensitive]
+        let options: String.CompareOptions  = [.anchored, .caseInsensitive]
         if line.range(of: "content-transfer-encoding:", options: options, range: line.startIndex..<line.endIndex) != nil {
             //TODO: Deal with this
             part.headers[.transferEncoding] = line
@@ -123,7 +123,7 @@ class MultiPartBodyParser: BodyParserProtocol {
 
     private func getLabelRange(of searchedString: String, in containingString: String) ->
         Range<String.Index>? {
-        let options : String.CompareOptions = [.anchored, .caseInsensitive]
+        let options: String.CompareOptions = [.anchored, .caseInsensitive]
             
         return containingString.range(of: searchedString,
                                       options: options,
@@ -144,7 +144,7 @@ extension Data {
     func components(separatedBy separator: Data) -> [Data] {
         var parts: [Data] = []
         
-        var search : Range = 0 ..< self.count
+        var search: Range = 0 ..< self.count
         while true {
             // search for the next occurence of the separator
             guard let found = self.range(of: separator, in: search) else {
