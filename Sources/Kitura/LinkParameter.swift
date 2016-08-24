@@ -23,5 +23,3 @@ public enum LinkParameter: String {
     case title
     case type
 }
-
-

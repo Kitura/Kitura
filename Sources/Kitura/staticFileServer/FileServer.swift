@@ -139,7 +139,7 @@ extension StaticFileServer {
             }
 
             do {
-                let fileAttributes : CustomResponseHeaderAttributes = try FileManager().attributesOfItem(atPath: filePath)
+                let fileAttributes: CustomResponseHeaderAttributes = try FileManager().attributesOfItem(atPath: filePath)
                 responseHeadersSetter?.setCustomResponseHeaders(response: response,
                                                                 filePath: filePath,
                                                                 fileAttributes: fileAttributes)

@@ -20,7 +20,7 @@ import LoggerAPI
 class FileResourceServer {
 
     /// if file found - send it in response
-    func sendIfFound(resource: String, usingResponse response: RouterResponse)  {
+    func sendIfFound(resource: String, usingResponse response: RouterResponse) {
         guard let resourceFileName = getFilePath(for: resource) else {
             return
         }
@@ -44,8 +44,7 @@ class FileResourceServer {
         let fileExists = fileManager.fileExists(atPath: potentialResource)
         if fileExists {
             return potentialResource
-        }
-        else {
+        } else {
             return getResourcePathBasedOnCurrentDirectory(for: resource, withFileManager: fileManager)
         }
     }
@@ -54,7 +53,7 @@ class FileResourceServer {
         let fileName = NSString(string: #file)
         let resourceFilePrefixRange: NSRange
         let lastSlash = fileName.range(of: "/", options: .backwards)
-        if  lastSlash.location != NSNotFound  {
+        if  lastSlash.location != NSNotFound {
             resourceFilePrefixRange = NSMakeRange(0, lastSlash.location+1)
         } else {
             resourceFilePrefixRange = NSMakeRange(0, fileName.length)
@@ -73,8 +72,7 @@ class FileResourceServer {
                     return potentalResource
                 }
             }
-        }
-        catch {
+        } catch {
             return nil
         }
         return nil

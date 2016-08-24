@@ -19,9 +19,9 @@ import XCTest
 
 @testable import Kitura
 
-class TestRouteRegex : XCTestCase {
+class TestRouteRegex: XCTestCase {
     
-    static var allTests : [(String, (TestRouteRegex) -> () throws -> Void)] {
+    static var allTests: [(String, (TestRouteRegex) -> () throws -> Void)] {
         return [
                    ("testBuildRegexFromPattern", testBuildRegexFromPattern)
         ]
@@ -29,25 +29,25 @@ class TestRouteRegex : XCTestCase {
     
     func testBuildRegexFromPattern() {
         #if os(Linux)
-            var regex:RegularExpression?
+            var regex: RegularExpression?
         #else
-            var regex:NSRegularExpression?
+            var regex: NSRegularExpression?
         #endif
-        var strings:[String]?
+        var strings: [String]?
 
         //Partial match false adds '$' end of string special character
-        (regex,strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "test", allowPartialMatch: false)
-        XCTAssertEqual(regex!.pattern,"^/test(?:/(?=$))?$")
+        (regex, strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "test", allowPartialMatch: false)
+        XCTAssertEqual(regex!.pattern, "^/test(?:/(?=$))?$")
         XCTAssertTrue(strings!.isEmpty)
 
         //Partial match true does not include '$' end of string special character
-        (regex,strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "test", allowPartialMatch: true)
-        XCTAssertEqual(regex!.pattern,"^/test(?:/(?=$))?")
+        (regex, strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "test", allowPartialMatch: true)
+        XCTAssertEqual(regex!.pattern, "^/test(?:/(?=$))?")
         XCTAssertTrue(strings!.isEmpty)
 
         //Invalid regular expression
     #if os(OSX)
-        (regex,strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "\\", allowPartialMatch: false)
+        (regex, strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "\\", allowPartialMatch: false)
         XCTAssertNil(regex)
         XCTAssertTrue(strings!.isEmpty)
     #endif

@@ -42,9 +42,9 @@ let cookie3Value = "A-testing-we-go" as NSString
 let cookieHost = "localhost" as NSString
 #endif
 
-class TestCookies : XCTestCase {
+class TestCookies: XCTestCase {
 
-    static var allTests : [(String, (TestCookies) -> () throws -> Void)] {
+    static var allTests: [(String, (TestCookies) -> () throws -> Void)] {
         return [
             ("testCookieToServer", testCookieToServer),
             ("testCookieFromServer", testCookieFromServer)
@@ -72,12 +72,10 @@ class TestCookies : XCTestCase {
                     let ploverValue = String(data: data as Data, encoding: .utf8)
                     if  let ploverValue = ploverValue {
                         XCTAssertEqual(ploverValue, "qwer")
-                    }
-                    else {
+                    } else {
                         XCTFail("Plover's value wasn't an UTF8 string")
                     }
-                }
-                catch {
+                } catch {
                     XCTFail("Failed reading the body of the response")
                 }
                 expectation.fulfill()
@@ -108,8 +106,7 @@ class TestCookies : XCTestCase {
                 XCTAssertEqual(cookie2Expire!, SPIUtils.httpDate(cookie2ExpireExpected))
                 expectation.fulfill()
             })
-        },
-        { expectation in
+        }, { expectation in
             self.performRequest("get", path: "/2/sendcookie", callback: { response in
                 XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "/2/sendcookie route did not match single path request")
 
@@ -128,15 +125,15 @@ class TestCookies : XCTestCase {
     func cookieFrom(response: ClientResponse, named: String) -> (HTTPCookie?, String?) {
         var resultCookie: HTTPCookie? = nil
         var resultExpire: String?
-        for (headerKey, headerValues) in response.headers  {
+        for (headerKey, headerValues) in response.headers {
             let lowercaseHeaderKey = headerKey.lowercased()
-            if  lowercaseHeaderKey  ==  "set-cookie"  {
+            if  lowercaseHeaderKey  ==  "set-cookie" {
                 for headerValue in headerValues {
                     let parts = headerValue.components(separatedBy: "; ")
                     let nameValue = parts[0].components(separatedBy: "=")
                     XCTAssertEqual(nameValue.count, 2, "Malformed Set-Cookie header \(headerValue)")
 
-                    if  nameValue[0] == named  {
+                    if  nameValue[0] == named {
                         #if os(Linux)
                             var properties = [String: Any]()
                             let cookieName = nameValue[0]
@@ -204,7 +201,7 @@ class TestCookies : XCTestCase {
 
         router.get("/1/cookiedump") {request, response, next in
             response.status(HTTPStatusCode.OK)
-            if  let ploverCookie = request.cookies["Plover"]  {
+            if  let ploverCookie = request.cookies["Plover"] {
                 response.send(ploverCookie.value)
             }
 
