@@ -27,7 +27,7 @@ public class RouterMiddlewareGenerator: RouterMiddleware {
     /// - Parameter handler: the closure to be called to handle requests
     /// - Returns: a RouterMiddlewareGenerator instance
     ///
-    init(handler: RouterHandler) {
+    init(handler: @escaping RouterHandler) {
         innerHandler = handler
     }
 

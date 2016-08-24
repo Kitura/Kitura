@@ -300,7 +300,7 @@ public class RouterResponse {
     ///
     /// - Parameter newOnEndInvoked: The new pre-flush lifecycle handler
     /// - Returns: The old pre-flush lifecycle handler
-    public func setOnEndInvoked(_ newOnEndInvoked: LifecycleHandler) -> LifecycleHandler {
+    public func setOnEndInvoked(_ newOnEndInvoked: @escaping LifecycleHandler) -> LifecycleHandler {
         let oldOnEndInvoked = lifecycle.onEndInvoked
         lifecycle.onEndInvoked = newOnEndInvoked
         return oldOnEndInvoked
@@ -310,7 +310,7 @@ public class RouterResponse {
     ///
     /// - Parameter newWrittenDataFilter: The new written data filter
     /// - Returns: The old written data filter
-    public func setWrittenDataFilter(_ newWrittenDataFilter: WrittenDataFilter) -> WrittenDataFilter {
+    public func setWrittenDataFilter(_ newWrittenDataFilter: @escaping WrittenDataFilter) -> WrittenDataFilter {
         let oldWrittenDataFilter = lifecycle.writtenDataFilter
         lifecycle.writtenDataFilter = newWrittenDataFilter
         return oldWrittenDataFilter
