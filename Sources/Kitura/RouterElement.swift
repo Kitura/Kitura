@@ -71,7 +71,7 @@ class RouterElement {
     /// - Parameter response: the response
     /// - Parameter next: the callback
     func process(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
-        guard let urlPath = request.parsedURL.path else {
+        guard let path = request.parsedURL.path else {
             Log.error("Failed to process request (path is nil)")
             return
         }
@@ -89,16 +89,18 @@ class RouterElement {
             processHelper(request: request, response: response, next: next)
             return
         }
+        
+        let nsPath = NSString(string: path)
 
-        guard let match = regex.firstMatch(in: urlPath, options: [], range: NSMakeRange(0, urlPath.characters.count)) else {
+        guard let match = regex.firstMatch(in: path, options: [], range: NSMakeRange(0, path.characters.count)) else {
             next()
             return
         }
 
-        request.matchedPath = urlPath.bridge().substring(with: match.range)
+        request.matchedPath = nsPath.substring(with: match.range)
 
         request.route = pattern
-        setParameters(forRequest: request, fromUrlPath: urlPath, match: match)
+        setParameters(forRequest: request, fromUrlPath: nsPath, match: match)
         processHelper(request: request, response: response, next: next)
     }
 
@@ -122,7 +124,7 @@ class RouterElement {
     ///
     /// - Parameter match: the regular expression result
     /// - Parameter request:
-    private func setParameters(forRequest request: RouterRequest, fromUrlPath urlPath: String, match: TextChekingResultType) {
+    private func setParameters(forRequest request: RouterRequest, fromUrlPath urlPath: NSString, match: TextChekingResultType) {
         var parameters = [String:String]()
         if let keys = keys {
             for index in 0..<keys.count {
@@ -132,7 +134,7 @@ class RouterElement {
                     let matchRange = match.rangeAt(index+1)
                 #endif
                 if  matchRange.location != NSNotFound  &&  matchRange.location != -1  {
-                    parameters[keys[index]] = urlPath.bridge().substring(with: matchRange)
+                    parameters[keys[index]] = urlPath.substring(with: matchRange)
                 }
             }
         }

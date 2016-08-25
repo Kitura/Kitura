@@ -77,7 +77,10 @@ public class Router {
     }
 
     internal func render(template: String, context: [String: Any]) throws -> String {
-        let resourceExtension = template.bridge().pathExtension
+        guard let resourceExtension = URL(string: template)?.pathExtension else {
+            throw TemplatingError.noTemplateEngineForExtension(extension: "")
+        }
+        
         let fileExtension: String
         let resourceWithExtension: String
 
