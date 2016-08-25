@@ -216,8 +216,13 @@ private class Cookies {
         for  cookieNameValue in cookieNameValues  {
             let cookieNameValueParts = cookieNameValue.components(separatedBy: "=")
             if   cookieNameValueParts.count == 2  {
-                let cookieName = cookieNameValueParts[0] as NSString
-                let cookieValue = cookieNameValueParts[1] as NSString
+                #if os(Linux)
+                    let cookieName = cookieNameValueParts[0]
+                    let cookieValue = cookieNameValueParts[1]
+                #else
+                    let cookieName = cookieNameValueParts[0] as NSString
+                    let cookieValue = cookieNameValueParts[1] as NSString
+                #endif
                 let theCookie = HTTPCookie(properties:
                                                 [HTTPCookiePropertyKey.domain: ".",
                                                  HTTPCookiePropertyKey.path: "/",
