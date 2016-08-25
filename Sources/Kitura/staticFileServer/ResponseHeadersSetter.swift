@@ -16,14 +16,8 @@
 
 import Foundation
 
-#if os(Linux)
-    public typealias CustomResponseHeaderAttributes = [String : Any]
-#else
-    public typealias CustomResponseHeaderAttributes = [FileAttributeKey : Any]
-#endif
-
 public protocol ResponseHeadersSetter {
 
-    func setCustomResponseHeaders(response: RouterResponse, filePath: String, fileAttributes: CustomResponseHeaderAttributes)
+    func setCustomResponseHeaders(response: RouterResponse, filePath: String, fileAttributes: [FileAttributeKey : Any])
 
 }
