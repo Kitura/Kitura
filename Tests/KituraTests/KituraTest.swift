@@ -15,6 +15,7 @@
  **/
 
 import XCTest
+import Kitura
 
 @testable import KituraNet
 
@@ -38,7 +39,8 @@ extension KituraTest {
 
     func performServerTest(_ router: ServerDelegate,
                            asyncTasks: @escaping (XCTestExpectation) -> Void...) {
-        let server = setupServer(port: 8090, delegate: router)
+        Kitura.addHTTPServer(onPort: 8090, with: router)
+        Kitura.start()
         let requestQueue = DispatchQueue(label: "Request queue")
 
         for (index, asyncTask) in asyncTasks.enumerated() {
@@ -50,7 +52,7 @@ extension KituraTest {
 
         waitExpectation(timeout: 10) { error in
                 // blocks test until request completes
-                server.stop()
+                Kitura.stop()
                 XCTAssertNil(error);
         }
     }
@@ -70,11 +72,6 @@ extension KituraTest {
             requestModifier(req)
         }
         req.end()
-    }
-
-    private func setupServer(port: Int, delegate: ServerDelegate) -> HTTPServer {
-        return HTTPServer.listen(port: port, delegate: delegate,
-                           notOnMainQueue:true)
     }
 }
 
