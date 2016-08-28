@@ -19,7 +19,7 @@
 extension Router {
     // MARK: error
     @discardableResult
-    public func error(_ handler: RouterHandler...) -> Router {
+    public func error(_ handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.error, pattern: nil, handler: handler)
     }
 

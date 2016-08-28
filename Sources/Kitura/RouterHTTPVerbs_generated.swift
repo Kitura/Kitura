@@ -20,7 +20,7 @@ extension Router {
     // MARK: All
 
     @discardableResult
-    public func all(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func all(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.all, pattern: path, handler: handler)
     }
 
@@ -41,7 +41,7 @@ extension Router {
     // MARK: Get
 
     @discardableResult
-    public func get(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func get(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.get, pattern: path, handler: handler)
     }
 
@@ -62,7 +62,7 @@ extension Router {
     // MARK: Head
 
     @discardableResult
-    public func head(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func head(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.head, pattern: path, handler: handler)
     }
 
@@ -83,7 +83,7 @@ extension Router {
     // MARK: Post
 
     @discardableResult
-    public func post(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func post(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.post, pattern: path, handler: handler)
     }
 
@@ -104,7 +104,7 @@ extension Router {
     // MARK: Put
 
     @discardableResult
-    public func put(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func put(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.put, pattern: path, handler: handler)
     }
 
@@ -125,7 +125,7 @@ extension Router {
     // MARK: Delete
 
     @discardableResult
-    public func delete(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func delete(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.delete, pattern: path, handler: handler)
     }
 
@@ -146,7 +146,7 @@ extension Router {
     // MARK: Options
 
     @discardableResult
-    public func options(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func options(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.options, pattern: path, handler: handler)
     }
 
@@ -167,7 +167,7 @@ extension Router {
     // MARK: Trace
 
     @discardableResult
-    public func trace(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func trace(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.trace, pattern: path, handler: handler)
     }
 
@@ -188,7 +188,7 @@ extension Router {
     // MARK: Copy
 
     @discardableResult
-    public func copy(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func copy(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.copy, pattern: path, handler: handler)
     }
 
@@ -209,7 +209,7 @@ extension Router {
     // MARK: Lock
 
     @discardableResult
-    public func lock(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func lock(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.lock, pattern: path, handler: handler)
     }
 
@@ -230,7 +230,7 @@ extension Router {
     // MARK: MkCol
 
     @discardableResult
-    public func mkCol(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func mkCol(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.mkCol, pattern: path, handler: handler)
     }
 
@@ -251,7 +251,7 @@ extension Router {
     // MARK: Move
 
     @discardableResult
-    public func move(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func move(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.move, pattern: path, handler: handler)
     }
 
@@ -272,7 +272,7 @@ extension Router {
     // MARK: Purge
 
     @discardableResult
-    public func purge(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func purge(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.purge, pattern: path, handler: handler)
     }
 
@@ -293,7 +293,7 @@ extension Router {
     // MARK: PropFind
 
     @discardableResult
-    public func propFind(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func propFind(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.propFind, pattern: path, handler: handler)
     }
 
@@ -314,7 +314,7 @@ extension Router {
     // MARK: PropPatch
 
     @discardableResult
-    public func propPatch(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func propPatch(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.propPatch, pattern: path, handler: handler)
     }
 
@@ -335,7 +335,7 @@ extension Router {
     // MARK: Unlock
 
     @discardableResult
-    public func unlock(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func unlock(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.unlock, pattern: path, handler: handler)
     }
 
@@ -356,7 +356,7 @@ extension Router {
     // MARK: Report
 
     @discardableResult
-    public func report(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func report(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.report, pattern: path, handler: handler)
     }
 
@@ -377,7 +377,7 @@ extension Router {
     // MARK: MkActivity
 
     @discardableResult
-    public func mkActivity(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func mkActivity(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.mkActivity, pattern: path, handler: handler)
     }
 
@@ -398,7 +398,7 @@ extension Router {
     // MARK: Checkout
 
     @discardableResult
-    public func checkout(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func checkout(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.checkout, pattern: path, handler: handler)
     }
 
@@ -419,7 +419,7 @@ extension Router {
     // MARK: Merge
 
     @discardableResult
-    public func merge(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func merge(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.merge, pattern: path, handler: handler)
     }
 
@@ -440,7 +440,7 @@ extension Router {
     // MARK: MSearch
 
     @discardableResult
-    public func mSearch(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func mSearch(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.mSearch, pattern: path, handler: handler)
     }
 
@@ -461,7 +461,7 @@ extension Router {
     // MARK: Notify
 
     @discardableResult
-    public func notify(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func notify(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.notify, pattern: path, handler: handler)
     }
 
@@ -482,7 +482,7 @@ extension Router {
     // MARK: Subscribe
 
     @discardableResult
-    public func subscribe(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func subscribe(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.subscribe, pattern: path, handler: handler)
     }
 
@@ -503,7 +503,7 @@ extension Router {
     // MARK: Unsubscribe
 
     @discardableResult
-    public func unsubscribe(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func unsubscribe(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.unsubscribe, pattern: path, handler: handler)
     }
 
@@ -524,7 +524,7 @@ extension Router {
     // MARK: Patch
 
     @discardableResult
-    public func patch(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func patch(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.patch, pattern: path, handler: handler)
     }
 
@@ -545,7 +545,7 @@ extension Router {
     // MARK: Search
 
     @discardableResult
-    public func search(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func search(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.search, pattern: path, handler: handler)
     }
 
@@ -566,7 +566,7 @@ extension Router {
     // MARK: Connect
 
     @discardableResult
-    public func connect(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func connect(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.connect, pattern: path, handler: handler)
     }
 

@@ -696,7 +696,7 @@ class TestResponse : XCTestCase {
 
         // the same router definition is used for all these test cases
         router.all("/zxcv/:p1") { request, _, next in
-            request.userInfo["u1"] = "Ploni Almoni".bridge()
+            request.userInfo["u1"] = "Ploni Almoni"
             next()
         }
 
@@ -713,7 +713,7 @@ class TestResponse : XCTestCase {
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             let p1 = request.parameters["p1"] ?? "(nil)"
             let q = request.queryParameters["q"] ?? "(nil)"
-            let u1 = request.userInfo["u1"] as? NSString ?? "(nil)"
+            let u1 = request.userInfo["u1"] as? String ?? "(nil)"
             do {
                 try response.send("<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=\(p1)<p><p>q=\(q)<p><p>u1=\(u1)</body></html>\n\n").end()
             }

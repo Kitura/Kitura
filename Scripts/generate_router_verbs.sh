@@ -47,7 +47,7 @@ cat <<EOF >> ${OUTPUT_FILE}
     // MARK: $VERB
 
     @discardableResult
-    public func $VERB_LOW_CASE(_ path: String?=nil, handler: RouterHandler...) -> Router {
+    public func $VERB_LOW_CASE(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.$VERB_LOW_CASE, pattern: path, handler: handler)
     }
 

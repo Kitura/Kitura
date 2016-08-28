@@ -37,15 +37,15 @@ extension StaticFileServer {
         }
 
         func setCustomResponseHeaders(response: RouterResponse, filePath _: String,
-                                      fileAttributes: CustomResponseHeaderAttributes) {
+                                      fileAttributes: [FileAttributeKey : Any]) {
             addLastModified(response: response, fileAttributes: fileAttributes)
             addETag(response: response, fileAttributes: fileAttributes)
         }
 
         private func addLastModified(response: RouterResponse,
-                                     fileAttributes: CustomResponseHeaderAttributes) {
+                                     fileAttributes: [FileAttributeKey : Any]) {
             if addLastModifiedHeader {
-                let date = lastModifiedDate(fileAttributes: fileAttributes)
+                let date = fileAttributes[FileAttributeKey.modificationDate] as? Date
                 if let date = date {
                     response.headers["Last-Modified"] = SPIUtils.httpDate(date)
                 }
@@ -53,15 +53,11 @@ extension StaticFileServer {
         }
         
         private func addETag(response: RouterResponse,
-                             fileAttributes: CustomResponseHeaderAttributes) {
+                             fileAttributes: [FileAttributeKey : Any]) {
             if generateETag {
-                let date = lastModifiedDate(fileAttributes: fileAttributes)
-                #if os(Linux)
-                    let size = fileAttributes[NSFileSize] as? Int
-                #else
-                    let size = fileAttributes[FileAttributeKey.size] as? Int
-                #endif
-
+                let date = fileAttributes[FileAttributeKey.modificationDate] as? Date
+                let size = fileAttributes[FileAttributeKey.size] as? Int
+                
                 if let date = date, let size = size {
                     let sizeHex = String(size, radix: 16, uppercase: false)
                     let timeHex = String(Int(date.timeIntervalSince1970), radix: 16, uppercase: false)
@@ -69,14 +65,6 @@ extension StaticFileServer {
                     response.headers["Etag"] = etag
                 }
             }
-        }
-        
-        private func lastModifiedDate(fileAttributes: CustomResponseHeaderAttributes) -> Date? {
-            #if os(Linux)
-                return fileAttributes[NSFileModificationDate] as? Date
-            #else
-                return fileAttributes[FileAttributeKey.modificationDate] as? Date
-            #endif
         }
     }
 }

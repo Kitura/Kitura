@@ -20,14 +20,14 @@
 public class RouterMiddlewareGenerator: RouterMiddleware {
 
     /// The closure invoked to handle requests
-    private let innerHandler: (RouterRequest, RouterResponse, () -> Void) throws -> Void
+    private let innerHandler: RouterHandler
 
     /// Initialize a RouterMiddlewareGenerator
     ///
     /// - Parameter handler: the closure to be called to handle requests
     /// - Returns: a RouterMiddlewareGenerator instance
     ///
-    init(handler: (request: RouterRequest, response: RouterResponse, next: () -> Void) throws -> Void) {
+    init(handler: @escaping RouterHandler) {
         innerHandler = handler
     }
 
@@ -36,7 +36,7 @@ public class RouterMiddlewareGenerator: RouterMiddleware {
     /// - Parameter request: the router request
     /// - Parameter response: the router response
     /// - Parameter next: the closure to the next operation
-    public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) throws {
+    public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws {
         try innerHandler(request, response, next)
     }
 }

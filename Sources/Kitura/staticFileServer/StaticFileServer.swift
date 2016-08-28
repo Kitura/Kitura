@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import Foundation
+
 // MARK: StaticFileServer
 
 ///
@@ -58,11 +60,8 @@ public class StaticFileServer: RouterMiddleware {
         }
 
         // If we received a path with a tilde (~) in the front, expand it.
-#if os(Linux)
-        path = path.bridge().stringByExpandingTildeInPath
-#else
-        path = path.bridge().expandingTildeInPath
-#endif
+        path = NSString(string: path).expandingTildeInPath
+
         let cacheOptions = options.cacheOptions
         let cacheRelatedHeadersSetter =
             CacheRelatedHeadersSetter(addLastModifiedHeader: cacheOptions.addLastModifiedHeader,
@@ -81,7 +80,7 @@ public class StaticFileServer: RouterMiddleware {
     /// - Parameter request: the router request
     /// - Parameter response: the router response
     /// - Parameter next: the closure for the next execution block
-    public func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) {
+    public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
         guard request.serverRequest.method == "GET" || request.serverRequest.method == "HEAD" else {
             return next()
         }

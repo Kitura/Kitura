@@ -107,7 +107,7 @@ public class RouterResponse {
             statusCode = .OK
         }
 
-        let content = lifecycle.writtenDataFilter(body: buffer.data)
+        let content = lifecycle.writtenDataFilter(buffer.data)
         let contentLength = headers["Content-Length"]
         if  contentLength == nil {
             headers["Content-Length"] = String(content.count)
@@ -300,7 +300,7 @@ public class RouterResponse {
     ///
     /// - Parameter newOnEndInvoked: The new pre-flush lifecycle handler
     /// - Returns: The old pre-flush lifecycle handler
-    public func setOnEndInvoked(_ newOnEndInvoked: LifecycleHandler) -> LifecycleHandler {
+    public func setOnEndInvoked(_ newOnEndInvoked: @escaping LifecycleHandler) -> LifecycleHandler {
         let oldOnEndInvoked = lifecycle.onEndInvoked
         lifecycle.onEndInvoked = newOnEndInvoked
         return oldOnEndInvoked
@@ -310,7 +310,7 @@ public class RouterResponse {
     ///
     /// - Parameter newWrittenDataFilter: The new written data filter
     /// - Returns: The old written data filter
-    public func setWrittenDataFilter(_ newWrittenDataFilter: WrittenDataFilter) -> WrittenDataFilter {
+    public func setWrittenDataFilter(_ newWrittenDataFilter: @escaping WrittenDataFilter) -> WrittenDataFilter {
         let oldWrittenDataFilter = lifecycle.writtenDataFilter
         lifecycle.writtenDataFilter = newWrittenDataFilter
         return oldWrittenDataFilter
@@ -342,4 +342,4 @@ public class RouterResponse {
 public typealias LifecycleHandler = () -> Void
 
 /// Type alias for written data filter, i.e. pre-write lifecycle handler
-public typealias WrittenDataFilter = (body: Data) -> Data
+public typealias WrittenDataFilter = (Data) -> Data

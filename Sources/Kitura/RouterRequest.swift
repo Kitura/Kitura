@@ -66,7 +66,7 @@ public class RouterRequest {
 
             let range = match.range
 
-            return self.hostname.bridge().substring(with: range)
+            return NSString(string: self.hostname).substring(with: range)
         } catch {
             Log.error("Failed to create regular expressions for domain property")
             return self.hostname
@@ -197,12 +197,12 @@ public class RouterRequest {
 private class Cookies {
 
     /// Storage of parsed Cookie headers
-    private var cookies = [String: HTTPCookie]()
+    fileprivate var cookies = [String: HTTPCookie]()
     
     /// Static for Cookie header key value
     private let cookieHeader = "cookie"
 
-    private init(headers: HeadersContainer) {
+    fileprivate init(headers: HeadersContainer) {
         guard let rawCookies = headers[cookieHeader] else {
             return
         }
@@ -219,20 +219,16 @@ private class Cookies {
                 #if os(Linux)
                     let cookieName = cookieNameValueParts[0]
                     let cookieValue = cookieNameValueParts[1]
-                    let theCookie = HTTPCookie(properties:
-                        [NSHTTPCookieDomain: ".",
-                         NSHTTPCookiePath: "/",
-                         NSHTTPCookieName: cookieName ,
-                         NSHTTPCookieValue: cookieValue])
                 #else
                     let cookieName = cookieNameValueParts[0] as NSString
                     let cookieValue = cookieNameValueParts[1] as NSString
-                    let theCookie = HTTPCookie(properties:
-                        [HTTPCookiePropertyKey.domain: ".",
-                         HTTPCookiePropertyKey.path: "/",
-                         HTTPCookiePropertyKey.name: cookieName ,
-                         HTTPCookiePropertyKey.value: cookieValue])
                 #endif
+                let theCookie = HTTPCookie(properties:
+                                                [HTTPCookiePropertyKey.domain: ".",
+                                                 HTTPCookiePropertyKey.path: "/",
+                                                 HTTPCookiePropertyKey.name: cookieName ,
+                                                 HTTPCookiePropertyKey.value: cookieValue])
+
                 cookies[cookieNameValueParts[0]] = theCookie
             }
         }

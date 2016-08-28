@@ -33,7 +33,7 @@ class RouterElementWalker {
     /// Index of element currently being processed
     private var elementIndex = -1
 
-    init(elements: [RouterElement], request: RouterRequest, response: RouterResponse, callback: () -> Void) {
+    init(elements: [RouterElement], request: RouterRequest, response: RouterResponse,  callback: @escaping () -> Void) {
         self.elements = elements
         self.request = request
         self.response = response

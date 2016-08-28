@@ -138,18 +138,16 @@ class TestCookies : XCTestCase {
 
                     if  nameValue[0] == named  {
                         #if os(Linux)
-                            var properties = [String: Any]()
+                            var properties = [HTTPCookiePropertyKey: Any]()
                             let cookieName = nameValue[0]
                             let cookieValue = nameValue[1]
-                            properties[NSHTTPCookieName]  =  cookieName
-                            properties[NSHTTPCookieValue] =  cookieValue
                         #else
                             var properties = [HTTPCookiePropertyKey : AnyObject]()
                             let cookieName = nameValue[0] as NSString
                             let cookieValue = nameValue[1] as NSString
-                            properties[HTTPCookiePropertyKey.name]  =  cookieName
-                            properties[HTTPCookiePropertyKey.value] =  cookieValue
                         #endif
+                        properties[HTTPCookiePropertyKey.name]  =  cookieName
+                        properties[HTTPCookiePropertyKey.value] =  cookieValue
 
                         for  part in parts[1..<parts.count] {
                             var pieces = part.components(separatedBy: "=")
@@ -157,37 +155,32 @@ class TestCookies : XCTestCase {
                             switch(piece) {
                             case "secure", "httponly":
                                 #if os(Linux)
-                                    properties[NSHTTPCookieSecure] = "Yes"
+                                    let secureValue = "Yes"
                                 #else
-                                    properties[HTTPCookiePropertyKey.secure] = "Yes"
-                               #endif
+                                    let secureValue = "Yes" as NSString
+                                #endif
+                                properties[HTTPCookiePropertyKey.secure] = secureValue
                             case "path" where pieces.count == 2:
                                 #if os(Linux)
                                     let path = pieces[1]
-                                    properties[NSHTTPCookiePath] = path
                                 #else
                                     let path = pieces[1] as NSString
-                                    properties[HTTPCookiePropertyKey.path] = path
                                 #endif
+                                properties[HTTPCookiePropertyKey.path] = path
                            case "domain" where pieces.count == 2:
                                 #if os(Linux)
                                     let domain = pieces[1]
-                                    properties[NSHTTPCookieDomain] = domain
                                 #else
                                     let domain = pieces[1] as NSString
-                                    properties[HTTPCookiePropertyKey.domain] = domain
                                 #endif
-                                case "expires" where pieces.count == 2:
-                                    resultExpire = pieces[1]
-                                default:
-                                    XCTFail("Malformed Set-Cookie header \(headerValue)")
+                                properties[HTTPCookiePropertyKey.domain] = domain
+                            case "expires" where pieces.count == 2:
+                                resultExpire = pieces[1]
+                            default:
+                                XCTFail("Malformed Set-Cookie header \(headerValue)")
                             }
                         }
-                        #if os(Linux)
-                            XCTAssertNotNil(properties[NSHTTPCookieDomain], "Malformed Set-Cookie header \(headerValue)")
-                        #else
-                            XCTAssertNotNil(properties[HTTPCookiePropertyKey.domain], "Malformed Set-Cookie header \(headerValue)")
-                        #endif
+                        XCTAssertNotNil(properties[HTTPCookiePropertyKey.domain], "Malformed Set-Cookie header \(headerValue)")
                         resultCookie = HTTPCookie(properties: properties)
                         break
                     }
@@ -214,27 +207,15 @@ class TestCookies : XCTestCase {
         router.get("/1/sendcookie") {request, response, next in
             response.status(HTTPStatusCode.OK)
 
-            #if os(Linux)
-                let cookie1 = HTTPCookie(properties: [NSHTTPCookieName: cookie1Name,
-                                                      NSHTTPCookieValue: cookie1Value,
-                                                      NSHTTPCookieDomain: cookieHost,
-                                                      NSHTTPCookiePath: "/"])
-                let cookie2 = HTTPCookie(properties: [NSHTTPCookieName: cookie2Name,
-                                                      NSHTTPCookieValue: cookie2Value,
-                                                      NSHTTPCookieDomain: cookieHost,
-                                                      NSHTTPCookiePath: "/",
-                                                      NSHTTPCookieExpires: cookie2ExpireExpected])
-            #else
-                let cookie1 = HTTPCookie(properties: [HTTPCookiePropertyKey.name: cookie1Name,
-                                                        HTTPCookiePropertyKey.value: cookie1Value,
-                                                        HTTPCookiePropertyKey.domain: cookieHost,
-                                                        HTTPCookiePropertyKey.path: "/"])
-                let cookie2 = HTTPCookie(properties: [HTTPCookiePropertyKey.name: cookie2Name,
-                                                        HTTPCookiePropertyKey.value: cookie2Value,
-                                                        HTTPCookiePropertyKey.domain: cookieHost,
-                                                        HTTPCookiePropertyKey.path: "/",
-                                                        HTTPCookiePropertyKey.expires: cookie2ExpireExpected])
-            #endif
+            let cookie1 = HTTPCookie(properties: [HTTPCookiePropertyKey.name: cookie1Name,
+                                                  HTTPCookiePropertyKey.value: cookie1Value,
+                                                  HTTPCookiePropertyKey.domain: cookieHost,
+                                                  HTTPCookiePropertyKey.path: "/"])
+            let cookie2 = HTTPCookie(properties: [HTTPCookiePropertyKey.name: cookie2Name,
+                                                  HTTPCookiePropertyKey.value: cookie2Value,
+                                                  HTTPCookiePropertyKey.domain: cookieHost,
+                                                  HTTPCookiePropertyKey.path: "/",
+                                                  HTTPCookiePropertyKey.expires: cookie2ExpireExpected])
             response.cookies[cookie1!.name] = cookie1
             response.cookies[cookie2!.name] = cookie2
 
@@ -244,19 +225,11 @@ class TestCookies : XCTestCase {
         router.get("/2/sendcookie") {request, response, next in
             response.status(HTTPStatusCode.OK)
 
-            #if os(Linux)
-                let cookie = HTTPCookie(properties: [NSHTTPCookieName: cookie3Name,
-                                                     NSHTTPCookieValue: cookie3Value,
-                                                     NSHTTPCookieDomain: cookieHost,
-                                                     NSHTTPCookiePath: "/",
-                                                     NSHTTPCookieSecure: "Yes"])
-            #else
-                let cookie = HTTPCookie(properties: [HTTPCookiePropertyKey.name: cookie3Name,
-                                                       HTTPCookiePropertyKey.value: cookie3Value,
-                                                       HTTPCookiePropertyKey.domain: cookieHost,
-                                                       HTTPCookiePropertyKey.path: "/",
-                                                       HTTPCookiePropertyKey.secure: "Yes"])
-            #endif
+            let cookie = HTTPCookie(properties: [HTTPCookiePropertyKey.name: cookie3Name,
+                                                 HTTPCookiePropertyKey.value: cookie3Value,
+                                                 HTTPCookiePropertyKey.domain: cookieHost,
+                                                 HTTPCookiePropertyKey.path: "/",
+                                                 HTTPCookiePropertyKey.secure: "Yes"])
             response.cookies[cookie!.name] = cookie
 
             next()

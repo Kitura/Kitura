@@ -23,5 +23,5 @@ public protocol RouterMiddleware {
     /// - Parameter request: the router request
     /// - Parameter response: the router response
     /// - Parameter next: the closure to the next operation
-    func handle(request: RouterRequest, response: RouterResponse, next: () -> Void) throws
+    func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws
 }

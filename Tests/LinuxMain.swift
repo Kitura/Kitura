@@ -16,15 +16,15 @@
 
 import XCTest
 
-@testable import KituraTestSuite
+@testable import KituraTests
 
 XCTMain([
-		testCase(TestContentType.allTests),
-		testCase(TestErrors.allTests),
-		testCase(TestRequests.allTests),
-		testCase(TestResponse.allTests),
-		testCase(TestMultiplicity.allTests),
-		testCase(TestCookies.allTests),
-	  testCase(TestSubrouter.allTests),
-	  testCase(TestRouteRegex.allTests)
+    testCase(TestContentType.allTests),
+    testCase(TestErrors.allTests),
+    testCase(TestRequests.allTests),
+    testCase(TestResponse.allTests),
+    testCase(TestMultiplicity.allTests),
+    testCase(TestCookies.allTests),
+    testCase(TestSubrouter.allTests),
+    testCase(TestRouteRegex.allTests)
 ])

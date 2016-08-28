@@ -34,11 +34,7 @@ class FileResourceServer {
     }
 
     private func getFilePath(for resource: String) -> String? {
-        #if os(Linux)
-            let fileManager = FileManager.default()
-        #else
-            let fileManager = FileManager.default
-        #endif
+        let fileManager = FileManager.default
         let potentialResource = getResourcePathBasedOnSourceLocation(for: resource)
 
         let fileExists = fileManager.fileExists(atPath: potentialResource)

@@ -65,7 +65,7 @@ public class RouteRegex {
             pattern = String(pattern.characters.dropLast())
         }
 
-        let paths = pattern.bridge().components(separatedBy: "/")
+        let paths = pattern.components(separatedBy: "/")
 
         // Special case where only back slashes are specified
         if paths.filter({$0 != ""}).isEmpty {
@@ -131,25 +131,27 @@ public class RouteRegex {
         }
 
         let range = NSMakeRange(0, path.characters.count)
+            let nsPath = NSString(string: path)           // Needed for substring
 
         if let keyMatch = keyRegex.firstMatch(in: path, options: [], range: range) {
             // We found a path element with a named/key capture
-            extract(fromPath: path, with: keyMatch, at: 1, to: &prefix)
-            extract(fromPath: path, with: keyMatch, at: 3, to: &matchExp)
-            extract(fromPath: path, with: keyMatch, at: 4, to: &plusQuestStar)
+            extract(fromPath: nsPath, with: keyMatch, at: 1, to: &prefix)
+            extract(fromPath: nsPath, with: keyMatch, at: 3, to: &matchExp)
+            extract(fromPath: nsPath, with: keyMatch, at: 4, to: &plusQuestStar)
 
             #if os(Linux)
                 let keyMatchRange = keyMatch.range(at: 2)
             #else
                 let keyMatchRange = keyMatch.rangeAt(2)
             #endif
-            keys.append(path.bridge().substring(with: keyMatchRange))
+            
+            keys.append(nsPath.substring(with: keyMatchRange))
             matched = true
         } else if let nonKeyMatch = nonKeyRegex.firstMatch(in: path, options: [], range: range) {
             // We found a path element with an unnamed capture
-            extract(fromPath: path, with: nonKeyMatch, at: 1, to: &prefix)
-            extract(fromPath: path, with: nonKeyMatch, at: 2, to: &matchExp)
-            extract(fromPath: path, with: nonKeyMatch, at: 3, to: &plusQuestStar)
+            extract(fromPath: nsPath, with: nonKeyMatch, at: 1, to: &prefix)
+            extract(fromPath: nsPath, with: nonKeyMatch, at: 2, to: &matchExp)
+            extract(fromPath: nsPath, with: nonKeyMatch, at: 3, to: &plusQuestStar)
 
             keys.append(String(nonKeyIndex))
             nonKeyIndex+=1
@@ -165,7 +167,7 @@ public class RouteRegex {
     typealias TextCheckingResultType = NSTextCheckingResult
     #endif
 
-    func extract(fromPath path: String, with match: TextCheckingResultType, at index: Int,
+    func extract(fromPath path: NSString, with match: TextCheckingResultType, at index: Int,
                  to string: inout String) {
         #if os(Linux)
             let range = match.range(at: index)
@@ -173,7 +175,7 @@ public class RouteRegex {
             let range = match.rangeAt(index)
         #endif
         if  range.location != NSNotFound  &&  range.location != -1 {
-            string = path.bridge().substring(with: range)
+            string = path.substring(with: range)
         }
     }
 

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import Foundation
+
 // Composite design pattern
 class CompositeRelatedHeadersSetter: ResponseHeadersSetter {
 
@@ -24,7 +26,7 @@ class CompositeRelatedHeadersSetter: ResponseHeadersSetter {
     }
 
     func setCustomResponseHeaders(response: RouterResponse, filePath: String,
-                                  fileAttributes: CustomResponseHeaderAttributes) {
+                                  fileAttributes: [FileAttributeKey : Any]) {
         responseHeadersSetters.forEach { $0.setCustomResponseHeaders(response: response,
                                                                      filePath: filePath,
                                                                      fileAttributes: fileAttributes)
