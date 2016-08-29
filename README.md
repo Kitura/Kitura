@@ -35,7 +35,7 @@ Kitura is a web framework and web server that is created for web services writte
 - Pluggable middleware
 
 ## Swift version
-Version `0.26` of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-07-25-a`** version of Swift 3 trunk (master). You can download this version at [swift.org](https://swift.org/download/). *Kitura is unlikely to compile with any other version of Swift.*
+Version `0.28` of Kitura requires the **`DEVELOPMENT-SNAPSHOT-2016-08-23-a`** version of Swift 3 trunk (master). You can download this version at [swift.org](https://swift.org/download/). *Kitura is unlikely to compile with any other version of Swift.*
 
 ## Installation
 
@@ -74,19 +74,11 @@ Kitura is tested on Ubuntu 14.04 LTS and Ubuntu 15.10.
 
 1. Install the following system linux libraries:
 
- `$ sudo apt-get install autoconf libtool libcurl4-openssl-dev libbsd-dev libblocksruntime-dev`
+ `$ sudo apt-get install libcurl4-openssl-dev uuid-dev`
 
 2. Install the [required Swift version](#swift-version) from `swift.org`.
 
  After installing it (i.e. extracting the `.tar.gz` file), make sure you update your `PATH` environment variable so that it includes the extracted tools: `export PATH=/<path to uncompress tar contents>/usr/bin:$PATH`.
-
-3. Clone, build and install the libdispatch library.
-
- The complete instructions for building and installing this library are shown [here](https://github.com/apple/swift-corelibs-libdispatch/blob/experimental/foundation/INSTALL). For convenience, the command to compile is:
-
- `$ export SWIFT_HOME=<path-to-swift-toolchain>`
- 
- `$ git clone --recursive -b experimental/foundation https://github.com/apple/swift-corelibs-libdispatch.git && cd swift-corelibs-libdispatch && sh ./autogen.sh && CFLAGS=-fuse-ld=gold ./configure --with-swift-toolchain=$SWIFT_HOME/usr --prefix=$SWIFT_HOME/usr && make && make install`
 
 Now you are ready to develop your first Kitura app. Check [Kitura-Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Getting Started](#getting-started).
 
@@ -174,7 +166,7 @@ Let's develop your first Kitura web application!
   let package = Package(
       name: "myFirstProject",
       dependencies: [
-          .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 26)
+          .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 28)
       ])
   ```
 
@@ -228,12 +220,12 @@ Let's develop your first Kitura web application!
 
    ```swift
    import PackageDescription
-   
+
    let package = Package(
        name: "myFirstProject",
        dependencies: [
-           .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 26),
-           .Package(url: "https://github.com/IBM-Swift/HeliumLogger.git", majorVersion: 0, minor: 14),
+           .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 0, minor: 28),
+           .Package(url: "https://github.com/IBM-Swift/HeliumLogger.git", majorVersion: 0, minor: 15)
        ])
    ```
 
@@ -267,8 +259,7 @@ Let's develop your first Kitura web application!
 
 9. Compile your application:
 
-  - macOS: `$ swift build`
-  - Linux: `$ swift build -Xcc -fblocks`
+  `$ swift build`
 
   Or copy our [Makefile and build scripts](https://github.com/IBM-Swift/Package-Builder/blob/master/build) to your project directory and run `make build`. You may want to customize this Makefile and use it for building, testing and running your application. For example, you can clean your build directory, refetch all the dependencies, build, test and run your application by running `make clean refetch test run`.
 
