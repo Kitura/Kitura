@@ -16,7 +16,8 @@
 
 import SwiftyJSON
 import Foundation
+import KituraNet
 
 public indirect enum ParsedBody {
-    case json(JSON), urlEncoded([String:String]), text(String), raw(Data), multipart([Part])
+    case json(JSON), urlEncoded(Query), text(String), raw(Data), multipart([Part])
 }

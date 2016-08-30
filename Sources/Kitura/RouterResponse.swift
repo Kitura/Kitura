@@ -65,7 +65,7 @@ public class RouterResponse {
 
     /// Set of cookies to return with the response
     public var cookies = [String: HTTPCookie]()
-    
+
     /// Optional error value
     public var error: Swift.Error?
 
@@ -227,7 +227,7 @@ public class RouterResponse {
         }
 
         let jsonStr = jsonp.description
-        let taintedJSCallbackName = request.queryParameters[callbackParameter]
+        let taintedJSCallbackName = request.queryParameters[callbackParameter].string
         if let jsCallbackName = validJsonpCallbackName(taintedJSCallbackName) {
             headers.setType("js")
             // Set header "X-Content-Type-Options: nosniff" and prefix body with

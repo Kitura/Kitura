@@ -15,25 +15,16 @@
  */
 
 import Foundation
+import KituraNet
 
 class URLEncodedBodyParser: BodyParserProtocol {
     func parse(_ data: Data) -> ParsedBody? {
-        var parsedBody = [String:String]()
-        var success = true
         let bodyAsString = String(data: data as Data, encoding: .utf8)
 
         if let bodyAsString = bodyAsString {
-            let bodyAsArray = bodyAsString.components(separatedBy: "&")
+            let parsedBody = Query(fromText: bodyAsString)
 
-            for element in bodyAsArray {
-                let elementPair = element.components(separatedBy: "=")
-                if elementPair.count == 2 {
-                    parsedBody[elementPair[0]] = elementPair[1]
-                } else {
-                    success = false
-                }
-            }
-            if success && parsedBody.count > 0 {
+            if parsedBody.dictionary?.count ?? 0 > 0 {
                 return .urlEncoded(parsedBody)
             }
         }

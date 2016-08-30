@@ -86,7 +86,7 @@ public class RouterRequest {
 
         return subdomains.filter { !$0.isEmpty }
     }()
-    
+
     /// The HTTP version of the request
     public let httpVersion: HTTPVersion
 
@@ -130,7 +130,7 @@ public class RouterRequest {
     public internal(set) var parameters: [String:String] = [:]
 
     /// List of query parameters
-    public var queryParameters: [String:String] { return parsedURL.queryParameters }
+    public var queryParameters: Query { return parsedURL.queryParameters }
 
     /// User info
     public var userInfo: [String: Any] = [:]
@@ -198,7 +198,7 @@ private class Cookies {
 
     /// Storage of parsed Cookie headers
     fileprivate var cookies = [String: HTTPCookie]()
-    
+
     /// Static for Cookie header key value
     private let cookieHeader = "cookie"
 
@@ -210,7 +210,7 @@ private class Cookies {
             initCookie(cookie, cookies: &cookies)
         }
     }
-    
+
     private func initCookie(_ cookie: String, cookies: inout [String: HTTPCookie]) {
         let cookieNameValues = cookie.components(separatedBy: "; ")
         for  cookieNameValue in cookieNameValues  {

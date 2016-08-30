@@ -48,7 +48,7 @@ class TestResponse : XCTestCase {
             ("testJsonp", testJsonp)
         ]
     }
-    
+
     override func setUp() {
         doSetUp()
     }
@@ -712,7 +712,7 @@ class TestResponse : XCTestCase {
         router.get("/zxcv/:p1") { request, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             let p1 = request.parameters["p1"] ?? "(nil)"
-            let q = request.queryParameters["q"] ?? "(nil)"
+            let q = request.queryParameters["q"].string ?? "(nil)"
             let u1 = request.userInfo["u1"] as? String ?? "(nil)"
             do {
                 try response.send("<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=\(p1)<p><p>q=\(q)<p><p>u1=\(u1)</body></html>\n\n").end()
