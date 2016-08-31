@@ -17,6 +17,25 @@
 import SwiftyJSON
 import Foundation
 
+// MARK ParsedBody
+
+/// The result of body parsing
+///
+/// - SeeAlso: `BodyParser.parse(_ mesage:, contentType:)->ParsedBody?`
 public indirect enum ParsedBody {
-    case json(JSON), urlEncoded([String:String]), text(String), raw(Data), multipart([Part])
+    
+    /// A JSON representation of the body
+    case json(JSON)
+    
+    /// A representation of the body as dictionary of URL encoded key-value pairs
+    case urlEncoded([String:String])
+    
+    /// A plane text representation of the body
+    case text(String)
+    
+    /// A raw data representation of the body
+    case raw(Data)
+    
+    /// An array of parts of multi-part respresentation of the body
+    case multipart([Part])
 }

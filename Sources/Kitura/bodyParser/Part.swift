@@ -16,13 +16,34 @@
 
 import Foundation
 
+// MARK Part
+
+/// A part of multi-part parsed body
 public struct Part {
+    
+    /// Name attribute
     public internal(set) var name = ""
+    
+    /// Content type of part body
     public internal(set) var type = "text/plain"
+    
+    /// Dictionary of headers: Content-Type, Content-Disposition, Content-Transfer-Encoding
     public internal(set) var headers = [HeaderType: String]()
+    
+    /// Body of the part
     public internal(set) var body: ParsedBody = .raw(Data())
     
+    
+    /// Possible header types that can be found in a part of multi-part data
     public enum HeaderType {
-        case disposition, type, transferEncoding
+
+        /// Content-Disposition
+        case disposition
+        
+        /// Content-Type
+        case type
+        
+        /// Content-Transfer-Encoding
+        case transferEncoding
     }
 }
