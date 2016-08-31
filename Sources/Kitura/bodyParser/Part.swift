@@ -18,32 +18,34 @@ import Foundation
 
 // MARK Part
 
-/// A part of multi-part parsed body
+/// A part of a parsed multi-part form body.
 public struct Part {
     
-    /// Name attribute
+    /// The name attribute of the part.
     public internal(set) var name = ""
     
-    /// Content type of part body
+    /// Content type of the data in the part.
     public internal(set) var type = "text/plain"
     
-    /// Dictionary of headers: Content-Type, Content-Disposition, Content-Transfer-Encoding
+    /// A dictionary of the headers: Content-Type, Content-Disposition, 
+    /// Content-Transfer-Encoding.
     public internal(set) var headers = [HeaderType: String]()
     
-    /// Body of the part
+    /// The contents of the part.
     public internal(set) var body: ParsedBody = .raw(Data())
     
     
-    /// Possible header types that can be found in a part of multi-part data
+    /// Possible header types that can be found in a part of multi-part form
+    /// body.
     public enum HeaderType {
 
-        /// Content-Disposition
+        /// A Content-Disposition header.
         case disposition
         
-        /// Content-Type
+        /// A Content-Type header.
         case type
         
-        /// Content-Transfer-Encoding
+        /// A Content-Transfer-Encoding header.
         case transferEncoding
     }
 }

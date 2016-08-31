@@ -19,23 +19,29 @@ import Foundation
 
 // MARK ParsedBody
 
-/// The result of body parsing
+/// The result of parsing the body of the request.
 ///
-/// - SeeAlso: `BodyParser.parse(_ mesage:, contentType:)->ParsedBody?`
+/// When a body of a request is parsed the results of the parsing are placed 
+/// in case of this enum based on Content-Type.
 public indirect enum ParsedBody {
     
-    /// A JSON representation of the body
+    /// If the content type was "application/json" this associated value will 
+    /// contain the body of a JSON object.
     case json(JSON)
     
-    /// A representation of the body as dictionary of URL encoded key-value pairs
+    /// If the content type was "application/x-www-form-urlencoded" this 
+    /// associated value will contain a representation of the body as a
+    /// dictionary of key-value pairs.
     case urlEncoded([String:String])
     
-    /// A plane text representation of the body
+    /// If the content type was "text" this associated value will contain a
+    /// representation of the body as a String.
     case text(String)
     
-    /// A raw data representation of the body
+    /// A raw representation of the body as a Data struct.
     case raw(Data)
     
-    /// An array of parts of multi-part respresentation of the body
+    /// If the content type was "multipart/form-data" this associated value will
+    /// contain an array of parts of multi-part respresentation of the body.
     case multipart([Part])
 }
