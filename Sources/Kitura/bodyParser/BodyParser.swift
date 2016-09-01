@@ -21,7 +21,7 @@ import Foundation
 
 // MARK: BodyParser
 
-///
+/// Router middleware for parsing the body of the request
 public class BodyParser: RouterMiddleware {
 
     /// Static buffer size (in bytes)
@@ -37,7 +37,7 @@ public class BodyParser: RouterMiddleware {
     /// Needed since default initalizer is internal
     public init() {}
 
-    /// Handle the request
+    /// Handle the request, i.e. parse the body of the request
     ///
     /// - Parameter request: the router request
     /// - Parameter response: the router response
@@ -56,10 +56,10 @@ public class BodyParser: RouterMiddleware {
         next()
     }
 
-    /// Parse the incoming message
+    /// Parse the body of the incoming message
     ///
     /// - Parameter message: message coming from the socket
-    /// - Parameter contentType: the contentType as a string
+    /// - Parameter contentType: the content type as a String
     /// - Returns: the parsed body
     public class func parse(_ message: RouterRequest, contentType: String?) -> ParsedBody? {
         guard let contentType = contentType else {
@@ -114,10 +114,10 @@ public class BodyParser: RouterMiddleware {
         return nil
     }
 
-    /// Read the Body data
+    /// Read the body data of the request
     ///
     /// - Parameter with: the socket reader
-    /// - Throws: ???
+    /// - Throws: Socket.error if an error occurred while reading from a socket
     /// - Returns: data for the body
     public class func readBodyData(with reader: RouterRequest) throws -> Data {
         var bodyData = Data()
