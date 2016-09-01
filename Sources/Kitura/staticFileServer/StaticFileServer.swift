@@ -26,7 +26,7 @@ public class StaticFileServer: RouterMiddleware {
         let maxAgeCacheControlHeader: Int
         let generateETag: Bool
 
-        init(addLastModifiedHeader: Bool = true, maxAgeCacheControlHeader: Int = 0,
+        public init(addLastModifiedHeader: Bool = true, maxAgeCacheControlHeader: Int = 0,
              generateETag: Bool = true) {
             self.addLastModifiedHeader = addLastModifiedHeader
             self.maxAgeCacheControlHeader = maxAgeCacheControlHeader
@@ -40,7 +40,7 @@ public class StaticFileServer: RouterMiddleware {
         let serveIndexForDirectory: Bool
         let cacheOptions: CacheOptions
 
-        init(possibleExtensions: [String] = [], serveIndexForDirectory: Bool = true,
+        public init(possibleExtensions: [String] = [], serveIndexForDirectory: Bool = true,
              redirect: Bool = true, cacheOptions: CacheOptions = CacheOptions()) {
             self.possibleExtensions = possibleExtensions
             self.serveIndexForDirectory = serveIndexForDirectory
