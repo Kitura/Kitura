@@ -376,7 +376,7 @@ class TestResponse : XCTestCase {
             XCTAssertEqual(response.headers["Content-Type"]!, "text/html")
 
             response.headers.append("Content-Type", value: "text/plain; charset=utf-8")
-            XCTAssertEqual(response.headers["Content-Type"]!, "text/html, text/plain; charset=utf-8")
+            XCTAssertEqual(response.headers["Content-Type"]!, "text/html")
 
             response.headers["Content-Type"] = nil
             XCTAssertNil(response.headers["Content-Type"])
@@ -385,18 +385,18 @@ class TestResponse : XCTestCase {
             XCTAssertEqual(response.headers["Content-Type"]!, "text/plain, image/png")
 
             response.headers.append("Content-Type", value: "text/html, image/jpeg")
-            XCTAssertEqual(response.headers["Content-Type"]!, "text/plain, image/png, text/html, image/jpeg")
+            XCTAssertEqual(response.headers["Content-Type"]!, "text/plain, image/png")
 
             response.headers.append("Content-Type", value: "charset=UTF-8")
-            XCTAssertEqual(response.headers["Content-Type"]!, "text/plain, image/png, text/html, image/jpeg, charset=UTF-8")
+            XCTAssertEqual(response.headers["Content-Type"]!, "text/plain, image/png")
 
             response.headers["Content-Type"] = nil
 
-            response.headers.append("Content-Type", value: "text/plain")
-            XCTAssertEqual(response.headers["Content-Type"]!, "text/plain")
+            response.headers.append("Content-Type", value: "text/html")
+            XCTAssertEqual(response.headers["Content-Type"]!, "text/html")
 
-            response.headers.append("Content-Type", value: "image/png, text/html")
-            XCTAssertEqual(response.headers["Content-Type"]!, "text/plain, image/png, text/html")
+            response.headers.append("Content-Type", value: "image/png, text/plain")
+            XCTAssertEqual(response.headers["Content-Type"]!, "text/html")
 
             do {
                 try response.status(HTTPStatusCode.OK).send("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n").end()
