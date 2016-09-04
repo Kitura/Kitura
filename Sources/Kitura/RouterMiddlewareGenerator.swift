@@ -24,11 +24,11 @@ public class RouterMiddlewareGenerator: RouterMiddleware {
 
     /// Initialize a RouterMiddlewareGenerator
     ///
-    /// - Parameter handler: the closure to be called to handle requests
+    /// - Parameter handler: The closure that is of the type `RouterHAndler` to be
+    ///                     called to handle requests
     ///
     /// - Returns: a RouterMiddlewareGenerator instance
-    ///
-    init(handler: @escaping RouterHandler) {
+    public init(handler: @escaping RouterHandler) {
         innerHandler = handler
     }
 
