@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+/// A dummy class to get the documentation for the RouterHandler below to be emitted.
+private class DummyRouterHAndlerClass {}
+
 /// The definition of the closure type that is used by the `Router` class
 /// when routing HTTP requests to closure.
 ///
