@@ -152,7 +152,7 @@ extension Router : RouterMiddleware {
     /// - Parameter response: The `RouterResponse` object used to send responses
     ///                      to the HTTP request.
     /// - Parameter next: The closure to invoke to cause the router to inspect the
-    ///                  path in th elist of paths.
+    ///                  path in the list of paths.
     public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws {
         guard let urlPath = request.parsedURL.path else {
             Log.error("Failed to handle request")
@@ -212,7 +212,7 @@ extension Router : ServerDelegate {
     /// - Parameter response: The `RouterResponse` object used to send responses
     ///                      to the HTTP request.
     /// - Parameter callback: The closure to invoke to cause the router to inspect the
-    ///                  path in th elist of paths.
+    ///                  path in the list of paths.
     fileprivate func process(request: RouterRequest, response: RouterResponse, callback: @escaping () -> Void) {
         guard let urlPath = request.parsedURL.path else {
             Log.error("Failed to process request")

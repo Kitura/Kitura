@@ -16,7 +16,7 @@
 
 // MARK: RouterMiddlewareGenerator
 
-///
+/// Create an on the fly `RouterMiddleware` from a `RouterHandler` closure.
 public class RouterMiddlewareGenerator: RouterMiddleware {
 
     /// The closure invoked to handle requests
@@ -25,17 +25,22 @@ public class RouterMiddlewareGenerator: RouterMiddleware {
     /// Initialize a RouterMiddlewareGenerator
     ///
     /// - Parameter handler: the closure to be called to handle requests
+    ///
     /// - Returns: a RouterMiddlewareGenerator instance
     ///
     init(handler: @escaping RouterHandler) {
         innerHandler = handler
     }
 
-    /// Implementation of RouterMiddleware protocol
+    /// Implementation of RouterMiddleware protocol. A simple wrapper around the closure
+    /// that will handle the request.
     ///
-    /// - Parameter request: the router request
-    /// - Parameter response: the router response
-    /// - Parameter next: the closure to the next operation
+    /// - Parameter request: The `RouterRequest` object that is used to work with
+    ///                     the incoming request.
+    /// - Parameter response: The `RouterResponse` object used to send responses
+    ///                      to the HTTP request.
+    /// - Parameter next: The closure to invoke to cause the router to inspect the
+    ///                  path in the list of paths.
     public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws {
         try innerHandler(request, response, next)
     }

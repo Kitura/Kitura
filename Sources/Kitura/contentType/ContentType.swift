@@ -19,7 +19,8 @@ import LoggerAPI
 
 // MARK: ContentType
 
-///
+/// A set of APIs to work with Content-Type headers, whether to generate the value
+/// or to determine if it's an acceptable value.
 public class ContentType {
 
     /// Whether to use the local mime-type definitions or the ones in the file
@@ -79,6 +80,7 @@ public class ContentType {
     /// Get the content type for the given file extension
     ///
     /// - Parameter forExtension: the file extension
+    ///
     /// - Returns: an Optional String for the content type
     public func getContentType(forExtension ext: String) -> String? {
         return extToContentType[ext]
@@ -87,6 +89,7 @@ public class ContentType {
     /// Get the content type for the given file based on its extension
     ///
     /// - Parameter forFileName: the file
+    ///
     /// - Returns: an Optional String for the content type
     public func getContentType(forFileName fileName: String) -> String? {
         let lastPathElemRange: Range<String.Index>
@@ -113,6 +116,7 @@ public class ContentType {
     ///
     /// - Parameter messageContentType: the content type
     /// - Parameter ofType: the description of the type
+    ///
     /// - Returns: true if the types matched
     public func isContentType(_ messageContentType: String, ofType typeDescriptor: String) -> Bool {
 
@@ -147,6 +151,7 @@ public class ContentType {
     /// Normalized the type
     ///
     /// - Parameter type: the content type
+    ///
     /// - Returns: the normalized String
     private func normalize(type: String) -> String {
 
