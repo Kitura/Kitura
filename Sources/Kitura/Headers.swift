@@ -17,7 +17,8 @@
 import Foundation
 import KituraNet
 
-/// Headers
+/// The struct containing the HTTP headers and implements the headers APIs for the
+/// `RouterRequest` and `RouterResponse` classes.
 public struct Headers {
     
     /// The header storage
@@ -25,33 +26,42 @@ public struct Headers {
     
     /// Initialize a `Headers`
     ///
-    /// - Parameter headers: the container for the headers
+    /// - Parameter headers: The container for the headers
     init(headers: HeadersContainer) {
         self.headers = headers
     }
     
     /// Append values to the header
     ///
-    /// - Parameter key: the key
-    /// - Parameter value: the value
+    /// - Parameter key: The key of the header to append a value to.
+    /// - Parameter value: The value to be appended to the specified header.
     public mutating func append(_ key: String, value: String) {
         headers.append(key, value: value)
     }
 }
 
-/// Conformance to `Collection`
+/// Conformance to the `Collection` protocol
 extension Headers: Collection {
     
+    /// The starting index of the `Headers` collection
     public var startIndex: HeadersIndex {
         return headers.startIndex
     }
 
+    /// The ending index of the `Headers` collection
     public var endIndex: HeadersIndex {
         return headers.endIndex
     }
     
+    /// The type of an Index of the `Headers` collection.
     public typealias HeadersIndex = DictionaryIndex<String, [String]>
     
+    
+    /// Get the value of a HTTP header
+    ///
+    /// - Parameter key: The HTTP header key who's value is to be gotten
+    ///
+    /// - Returns: The value of the specified HTTP header, or nil, if it doesn't exist.
     public subscript(key: String) -> String? {
         get {
             return headers[key]?.first
@@ -66,6 +76,12 @@ extension Headers: Collection {
         }
     }
     
+    /// Get a (key value) tuple from the `Headers` collection at the specified position.
+    ///
+    /// - Parameter position: The position in the `Headers` collection of the (key, value)
+    ///                      tuple to return.
+    ///
+    /// - Returns: A (key, value) tuple.
     public subscript(position: HeadersIndex) -> (String, String?) {
         get {
             let (key, value) = headers[position]
@@ -73,17 +89,22 @@ extension Headers: Collection {
         }
     }
     
+    /// Get the next Index in the `Headers` collection after the one specified.
+    ///
+    /// - Parameter after: The Index before the Index to be returned.
+    ///
+    /// - Returns: The Index in the `Headers` collection after the one specified.
     public func index(after i: HeadersIndex) -> HeadersIndex {
         return headers.index(after: i)
     }
 }
 
-/// Various helper methods
+/// Various convenience methods for setting various HTTP headers
 extension Headers {
 
-    /// Sets the location path
+    /// Sets the Location HTTP header
     ///
-    /// - Parameter path: the path
+    /// - Parameter path: the path to set into the header or the special reserved word "back".
     public mutating func setLocation(_ path: String) {
         var p = path
         if  p == "back" {
@@ -98,8 +119,8 @@ extension Headers {
 
     /// Sets the Content-Type HTTP header
     ///
-    /// - Parameter type: the type to set to
-    /// - Parameter charset: the charset to specify
+    /// - Parameter type: The type to set in the Content-Type header
+    /// - Parameter charset: The charset to specify in the Content-Type header.
     public mutating func setType(_ type: String, charset: String? = nil) {
         if  let contentType = ContentType.sharedInstance.getContentType(forExtension: type) {
             var contentCharset = ""
@@ -110,10 +131,11 @@ extension Headers {
         }
     }
 
-    /// Sets the Content-Disposition to "attachment" and optionally
-    /// sets filename parameter in Content-Disposition and Content-Type
+    /// Sets the HTTP header Content-Disposition to "attachment", optionally
+    /// adding the filename parameter. If a file is specified the HTTP header
+    /// Content-Type will be set based on the extension of the specified file.
     ///
-    /// - Parameter for: the file to set the filename to
+    /// - Parameter for: The file to set the filename to
     public mutating func addAttachment(for filePath: String? = nil) {
         guard let filePath = filePath else {
             self["Content-Disposition"] = "attachment"
@@ -135,7 +157,7 @@ extension Headers {
     /// Adds a link with specified parameters to Link HTTP header
     ///
     /// - Parameter link: link value
-    /// - Parameter linkParameters: the link parameters (according to RFC 5988) with their values
+    /// - Parameter linkParameters: The link parameters (according to RFC 5988) with their values
     public mutating func addLink(_ link: String, linkParameters: [LinkParameter: String]) {
         var headerValue = "<\(link)>"
 
