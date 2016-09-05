@@ -59,7 +59,7 @@ extension Headers: Collection {
     
     /// Get the value of a HTTP header
     ///
-    /// - Parameter key: The HTTP header key who's value is to be retrieved
+    /// - Parameter key: The HTTP header key whose value is to be retrieved
     ///
     /// - Returns: The value of the specified HTTP header, or nil, if it doesn't exist.
     public subscript(key: String) -> String? {
