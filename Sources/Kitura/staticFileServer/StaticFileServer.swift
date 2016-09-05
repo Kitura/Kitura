@@ -17,15 +17,24 @@
 import Foundation
 
 // MARK: StaticFileServer
-
-///
+.
+/// A router middleware that serves static files from a given path
 public class StaticFileServer: RouterMiddleware {
 
+    /// Cache configuration options for StaticFileServer.
     public struct CacheOptions {
         let addLastModifiedHeader: Bool
         let maxAgeCacheControlHeader: Int
         let generateETag: Bool
 
+        /// Initialize a CacheOptions instance.
+        ///
+        /// - Parameter addLastModifiedHeader: an indication whether to set
+        /// "Last-Modified" header in the response.
+        /// - Parameter maxAgeCacheControlHeader: a max-age in milliseconds for
+        /// "max-age" value in "Cache-Control" header in the response
+        /// - Parameter generateETag: an indication whether to set "Etag"
+        /// header in the response.
         public init(addLastModifiedHeader: Bool = true, maxAgeCacheControlHeader: Int = 0,
              generateETag: Bool = true) {
             self.addLastModifiedHeader = addLastModifiedHeader
@@ -34,12 +43,24 @@ public class StaticFileServer: RouterMiddleware {
         }
     }
 
+    /// Configuration options for StaticFileServer.
     public struct Options {
         let possibleExtensions: [String]
         let redirect: Bool
         let serveIndexForDirectory: Bool
         let cacheOptions: CacheOptions
 
+        /// Initialize an Options instance.
+        ///
+        /// - Parameter possibleExtensions: an array of file extensions to be added
+        /// to the file name in case the file was not found. The extensions are 
+        /// added in the order they appear in the array, and a new search is 
+        /// performed.
+        /// - Parameter serveIndexForDirectory: an indication whether to serve
+        /// "index.html" file the requested path is a directory.
+        /// - Parameter redirect: an indication whether to redirect to trailing
+        /// "/" when the requested path is a directory.
+        /// - Parameter cacheOptions: cache options for StaticFileServer.
         public init(possibleExtensions: [String] = [], serveIndexForDirectory: Bool = true,
              redirect: Bool = true, cacheOptions: CacheOptions = CacheOptions()) {
             self.possibleExtensions = possibleExtensions
@@ -51,7 +72,13 @@ public class StaticFileServer: RouterMiddleware {
 
     let fileServer: FileServer
 
-    /// Initializes a StaticFileServer instance
+    /// Initializes a StaticFileServer instance.
+    ///
+    /// - Parameter path: a root directory for file serving.
+    /// - Parameter options: configuration options for StaticFileServer.
+    /// - Parameter customResponseHeadersSetter: an object of a class that
+    /// implements `ResponseHeadersSetter` protocol providing a custom method to set
+    /// the headers of the response.
     public init(path: String = "./public", options: Options = Options(),
                  customResponseHeadersSetter: ResponseHeadersSetter? = nil) {
         var path = path
@@ -75,11 +102,11 @@ public class StaticFileServer: RouterMiddleware {
                                 responseHeadersSetter: responseHeadersSetter)
     }
 
-    /// Handle the request
+    /// Handle the request - serve static file.
     ///
-    /// - Parameter request: the router request
-    /// - Parameter response: the router response
-    /// - Parameter next: the closure for the next execution block
+    /// - Parameter request: the router request.
+    /// - Parameter response: the router response.
+    /// - Parameter next: the closure for the next execution block.
     public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
         guard request.serverRequest.method == "GET" || request.serverRequest.method == "HEAD" else {
             return next()

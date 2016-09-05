@@ -19,14 +19,17 @@ import LoggerAPI
 
 import Foundation
 
+// MARK RouteRegex
+
 #if os(Linux)
     typealias RegularExpressionType = RegularExpression
 #else
     typealias RegularExpressionType = NSRegularExpression
 #endif
 
-///
+/// A set of helper functions for router path matching using regular expression.
 public class RouteRegex {
+    /// A shared instance of RouteRegex.
     public static let sharedInstance = RouteRegex()
 
     private let namedCaptureRegex: RegularExpressionType
