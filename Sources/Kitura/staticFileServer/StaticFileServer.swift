@@ -17,7 +17,7 @@
 import Foundation
 
 // MARK: StaticFileServer
-.
+
 /// A router middleware that serves static files from a given path
 public class StaticFileServer: RouterMiddleware {
 
