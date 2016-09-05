@@ -23,7 +23,7 @@ import LoggerAPI
 
 // MARK: RouterResponse
 
-///
+/// Router response that the server sends as a reply to `RouterRequest`.
 public class RouterResponse {
 
     struct State {
@@ -63,14 +63,16 @@ public class RouterResponse {
 
     private var lifecycle = Lifecycle()
 
-    /// Set of cookies to return with the response
+    /// Set of cookies to return with the response.
     public var cookies = [String: HTTPCookie]()
     
-    /// Optional error value
+    /// Optional error value.
     public var error: Swift.Error?
 
+    /// HTTP headers of the response.
     public var headers: Headers
 
+    /// HTTP status code of the response.
     public var statusCode: HTTPStatusCode {
         get {
             return response.statusCode ?? .unknown
@@ -81,12 +83,13 @@ public class RouterResponse {
         }
     }
 
-    /// Initializes a RouterResponse instance
+    /// Initialize a `RouterResponse` instance
     ///
-    /// - Parameter response: the server response
-    /// - Parameter router: the router
-    /// - Parameter request: the router request
-    /// - Returns: a ServerResponse instance
+    /// - Parameter response: The `ServerResponse` object to work with
+    /// - Parameter router: The `Router` instance that this `RouterResponse` is
+    ///                    working with.
+    /// - Parameter request: The `RouterRequest` object that is paired with this
+    ///                     `RouterResponse` object.
     init(response: ServerResponse, router: Router, request: RouterRequest) {
         self.response = response
         self.router = router
@@ -95,9 +98,9 @@ public class RouterResponse {
         statusCode = .unknown
     }
 
-    /// Ends the response
+    /// End the response.
     ///
-    /// - Throws: ???
+    /// - Throws: Socket.Error if an error occurred while writing to a socket.
     @discardableResult
     public func end() throws {
         lifecycle.onEndInvoked()
@@ -140,10 +143,10 @@ public class RouterResponse {
         response.headers.append("Set-Cookie", value: cookieStrings)
     }
 
-    /// Sends a string
+    /// Send a string.
     ///
-    /// - Parameter str: the string to send
-    /// - Returns: this RouterResponse
+    /// - Parameter str: the string to send.
+    /// - Returns: this RouterResponse.
     @discardableResult
     public func send(_ str: String) -> RouterResponse {
         if let data = StringUtils.toUtf8String(str) {
@@ -152,10 +155,10 @@ public class RouterResponse {
         return self
     }
 
-    /// Sends data
+    /// Send data.
     ///
-    /// - Parameter data: the data to send
-    /// - Returns: this RouterResponse
+    /// - Parameter data: the data to send.
+    /// - Returns: this RouterResponse.
     @discardableResult
     public func send(data: Data) -> RouterResponse {
         buffer.append(data: data)
@@ -163,10 +166,11 @@ public class RouterResponse {
         return self
     }
 
-    /// Sends a file
+    /// Send a file.
     ///
     /// - Parameter fileName: the name of the file to send.
-    /// - Returns: this RouterResponse
+    /// - Throws: An error in the Cocoa domain, if the file cannot be read.
+    /// - Returns: this RouterResponse.
     ///
     /// - Note: Sets the Content-Type header based on the "extension" of the file.
     ///       If the fileName is relative, it is relative to the current directory.
@@ -174,7 +178,7 @@ public class RouterResponse {
     public func send(fileName: String) throws -> RouterResponse {
         let data = try Data(contentsOf: URL(fileURLWithPath: fileName))
 
-        let contentType =  ContentType.sharedInstance.getContentType(forFileName: fileName)
+        let contentType = ContentType.sharedInstance.getContentType(forFileName: fileName)
         if  let contentType = contentType {
             headers["Content-Type"] = contentType
         }
@@ -184,10 +188,10 @@ public class RouterResponse {
         return self
     }
 
-    /// Sends JSON
+    /// Send JSON.
     ///
-    /// - Parameter json: the JSON object to send
-    /// - Returns: this RouterResponse
+    /// - Parameter json: the JSON object to send.
+    /// - Returns: this RouterResponse.
     @discardableResult
     public func send(json: JSON) -> RouterResponse {
         let jsonStr = json.description
@@ -196,17 +200,17 @@ public class RouterResponse {
         return self
     }
 
-    /// Sends JSON with JSONP callback
+    /// Send JSON with JSONP callback.
     ///
-    /// - Parameter json: the JSON object to send
+    /// - Parameter json: the JSON object to send.
     /// - Parameter callbackParameter: the name of the URL query
-    /// parameter whose value contains the JSONP callback function
+    /// parameter whose value contains the JSONP callback function.
     ///
     /// - Throws: `JSONPError.invalidCallbackName` if the the callback
     /// query parameter of the request URL is missing or its value is
     /// empty or contains invalid characters (the set of valid characters
     /// is the alphanumeric characters and `[]$._`).
-    /// - Returns: this RouterResponse
+    /// - Returns: this RouterResponse.
     public func send(jsonp: JSON, callbackParameter: String = "callback") throws -> RouterResponse {
         func sanitizeJSIdentifier(_ ident: String) -> String {
             return ident.replacingOccurrences(of: "[^\\[\\]\\w$.]", with: "", options:
@@ -241,22 +245,21 @@ public class RouterResponse {
         return self
     }
 
-    /// Set the status code
+    /// Set the status code.
     ///
-    /// - Parameter status: the status code object
-    /// - Returns: this RouterResponse
+    /// - Parameter status: the HTTP status code object.
+    /// - Returns: this RouterResponse.
     @discardableResult
     public func status(_ status: HTTPStatusCode) -> RouterResponse {
         response.statusCode = status
         return self
     }
 
-    /// Sends the HTTP status code
+    /// Send the HTTP status code.
     ///
-    /// - Parameter status: the HTTP status code
-    /// - Throws: ???
-    /// - Returns: this RouterResponse
-    public func send(status: HTTPStatusCode) throws -> RouterResponse {
+    /// - Parameter status: the HTTP status code.
+    /// - Returns: this RouterResponse.
+    public func send(status: HTTPStatusCode) -> RouterResponse {
         self.status(status)
         if let statusCode = HTTP.statusCodes[status.rawValue] {
             send(statusCode)
@@ -264,11 +267,12 @@ public class RouterResponse {
         return self
     }
 
-    /// Redirect to path with status code
+    /// Redirect to path with status code.
     ///
-    /// - Parameter: the path for the redirect
-    /// - Parameter: the status code for the redirect
-    /// - Returns: this RouterResponse
+    /// - Parameter: the path for the redirect.
+    /// - Parameter: the status code for the redirect.
+    /// - Throws: Socket.Error if an error occurred while writing to a socket.
+    /// - Returns: this RouterResponse.
     @discardableResult
     public func redirect(_ path: String, status: HTTPStatusCode = .movedTemporarily) throws -> RouterResponse {
         headers.setLocation(path)
@@ -276,53 +280,57 @@ public class RouterResponse {
         return self
     }
 
-    /// Renders a resource using Router's template engine
+    /// Render a resource using Router's template engine.
     ///
-    /// - Parameter resource: the resource name without extension
-    /// - Parameter context:
-    /// - Returns: a RouterResponse instance
+    /// - Parameter resource: the resource name without extension.
+    /// - Parameter context: a dictionary of local variables of the resource.
+    /// - Throws: TemplatingError if no file extension was specified or there is no template engine defined for the extension.
+    /// - Returns: this RouterResponse.
     ///
     // influenced by http://expressjs.com/en/4x/api.html#app.render
-    public func render(_ resource: String, context: [ String: Any]) throws -> RouterResponse {
+    public func render(_ resource: String, context: [String:Any]) throws -> RouterResponse {
         let renderedResource = try router.render(template: resource, context: context)
         return send(renderedResource)
     }
 
-    /// Sets headers and attaches file for downloading
+    /// Set headers and attach file for downloading.
     ///
-    /// - Parameter download: the file to download
+    /// - Parameter download: the file to download.
+    /// - Throws: An error in the Cocoa domain, if the file cannot be read.
     public func send(download: String) throws {
         try send(fileName: download)
         headers.addAttachment(for: download)
     }
 
-    /// Sets the pre-flush lifecycle handler and returns the previous one
+    /// Set the pre-flush lifecycle handler and return the previous one.
     ///
-    /// - Parameter newOnEndInvoked: The new pre-flush lifecycle handler
-    /// - Returns: The old pre-flush lifecycle handler
+    /// - Parameter newOnEndInvoked: The new pre-flush lifecycle handler.
+    /// - Returns: The old pre-flush lifecycle handler.
     public func setOnEndInvoked(_ newOnEndInvoked: @escaping LifecycleHandler) -> LifecycleHandler {
         let oldOnEndInvoked = lifecycle.onEndInvoked
         lifecycle.onEndInvoked = newOnEndInvoked
         return oldOnEndInvoked
     }
 
-    /// Sets the written data filter and returns the previous one
+    /// Set the written data filter and return the previous one.
     ///
-    /// - Parameter newWrittenDataFilter: The new written data filter
-    /// - Returns: The old written data filter
+    /// - Parameter newWrittenDataFilter: The new written data filter.
+    /// - Returns: The old written data filter.
     public func setWrittenDataFilter(_ newWrittenDataFilter: @escaping WrittenDataFilter) -> WrittenDataFilter {
         let oldWrittenDataFilter = lifecycle.writtenDataFilter
         lifecycle.writtenDataFilter = newWrittenDataFilter
         return oldWrittenDataFilter
     }
 
-    /// Performs content-negotiation on the Accept HTTP header on the request, when present. It uses
-    /// request.accepts() to select a handler for the request, based on the acceptable types ordered by their
+    /// Perform content-negotiation on the Accept HTTP header on the request, when present. 
+    ///
+    /// Uses request.accepts() to select a handler for the request, based on the acceptable types ordered by their
     /// quality values. If the header is not specified, the default callback is invoked. When no match is found,
     /// the server invokes the default callback if exists, or responds with 406 “Not Acceptable”.
     /// The Content-Type response header is set when a callback is selected.
     ///
-    /// - Parameter callbacks: a dictionary that maps content types to handlers
+    /// - Parameter callbacks: a dictionary that maps content types to handlers.
+    /// - Throws: Socket.Error if an error occurred while writing to a socket.
     public func format(callbacks: [String : ((RouterRequest, RouterResponse) -> Void)]) throws {
         let callbackTypes = Array(callbacks.keys)
         if let acceptType = request.accepts(types: callbackTypes) {
@@ -338,8 +346,8 @@ public class RouterResponse {
     }
 }
 
-/// Type alias for "Before flush" (i.e. before headers and body are written) lifecycle handler
+/// Type alias for "Before flush" (i.e. before headers and body are written) lifecycle handler.
 public typealias LifecycleHandler = () -> Void
 
-/// Type alias for written data filter, i.e. pre-write lifecycle handler
+/// Type alias for written data filter, i.e. pre-write lifecycle handler.
 public typealias WrittenDataFilter = (Data) -> Data

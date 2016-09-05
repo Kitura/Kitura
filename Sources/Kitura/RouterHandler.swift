@@ -14,5 +14,16 @@
  * limitations under the License.
  */
 
-/// RouterHandler is a closure
+/// A dummy class to get the documentation for the RouterHandler below to be emitted.
+private class DummyRouterHAndlerClass {}
+
+/// The definition of the closure type that is used by the `Router` class
+/// when routing HTTP requests to closure.
+///
+/// - Parameter request: The `RouterRequest` object that is used to work with
+///                     the incoming request.
+/// - Parameter response: The `RouterResponse` object used to send responses
+///                      to the HTTP request.
+/// - Parameter next: The closure to invoke to cause the router to inspect the
+///                  path in the list of paths.
 public typealias RouterHandler = (RouterRequest, RouterResponse, @escaping () -> Void) throws -> Void

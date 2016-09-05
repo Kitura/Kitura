@@ -20,7 +20,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (31% documented)
+         (99% documented)
       </p>
     
         <p class="header-col header-col--secondary">
@@ -72,10 +72,10 @@
                 <a class="nav-group-task-link" href="../Classes/StaticFileServer.html">StaticFileServer</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/StaticFileServer.html#/s:VC6Kitura16StaticFileServer12CacheOptions">– CacheOptions</a>
+                <a class="nav-group-task-link" href="../Classes/StaticFileServer/CacheOptions.html">– CacheOptions</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/StaticFileServer.html#/s:VC6Kitura16StaticFileServer7Options">– Options</a>
+                <a class="nav-group-task-link" href="../Classes/StaticFileServer/Options.html">– Options</a>
               </li>
             </ul>
           </li>
@@ -131,6 +131,9 @@
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura16LifecycleHandler">LifecycleHandler</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura17WrittenDataFilter">WrittenDataFilter</a>
               </li>
             </ul>
@@ -148,7 +151,8 @@
 
                 </div>
               </div>
-            
+            <p>Router middleware for parsing the body of the request.</p>
+
           </div>
         </section>
 
@@ -169,8 +173,8 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Initializes a BodyParser instance
-Needed since default initalizer is internal</p>
+                        <p>Initializes a BodyParser instance.
+Needed since default initalizer is internal.</p>
 
                       </div>
                       <div class="declaration">
@@ -197,23 +201,23 @@ Needed since default initalizer is internal</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Handle the request</p>
+                        <p>Handle the request, i.e. parse the body of the request.</p>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    Parameter request: the router request
+    Parameter request: the router request.
 
 </div>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    Parameter response: the router response
+    Parameter response: the router response.
 
 </div>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    Parameter next: the closure for the next execution block
+    Parameter next: the closure for the next execution block.
 
 </div>
 
@@ -222,7 +226,7 @@ Needed since default initalizer is internal</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">handle</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterRequest.html">RouterRequest</a></span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterResponse.html">RouterResponse</a></span><span class="p">,</span> <span class="nv">next</span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">handle</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterRequest.html">RouterRequest</a></span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterResponse.html">RouterResponse</a></span><span class="p">,</span> <span class="nv">next</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span></code></pre>
 
                         </div>
                       </div>
@@ -238,7 +242,7 @@ Needed since default initalizer is internal</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the router request</p>
+                                  <p>the router request.</p>
 
                                 </div>
                               </td>
@@ -251,7 +255,7 @@ Needed since default initalizer is internal</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the router response</p>
+                                  <p>the router response.</p>
 
                                 </div>
                               </td>
@@ -264,7 +268,7 @@ Needed since default initalizer is internal</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the closure for the next execution block</p>
+                                  <p>the closure for the next execution block.</p>
 
                                 </div>
                               </td>
@@ -288,23 +292,23 @@ Needed since default initalizer is internal</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Parse the incoming message</p>
+                        <p>Parse the body of the incoming message.</p>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    Parameter message: message coming from the socket
+    Parameter message: message coming from the socket.
 
 </div>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    Parameter contentType: the contentType as a string
+    Parameter contentType: the content type as a String.
 
 </div>
 
 <div class="aside aside-returns">
     <p class="aside-title">Returns</p>
-    the parsed body
+    the parsed body.
 
 </div>
 
@@ -329,7 +333,7 @@ Needed since default initalizer is internal</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>message coming from the socket</p>
+                                  <p>message coming from the socket.</p>
 
                                 </div>
                               </td>
@@ -342,7 +346,7 @@ Needed since default initalizer is internal</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the contentType as a string</p>
+                                  <p>the content type as a String.</p>
 
                                 </div>
                               </td>
@@ -352,7 +356,7 @@ Needed since default initalizer is internal</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>the parsed body</p>
+                        <p>the parsed body.</p>
 
                       </div>
                     </section>
@@ -371,23 +375,23 @@ Needed since default initalizer is internal</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Read the Body data</p>
+                        <p>Read the body data of the request.</p>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    Parameter with: the socket reader
+    Parameter with: the socket reader.
 
 </div>
 
 <div class="aside aside-throws">
     <p class="aside-title">Throws</p>
-    ???
+    Socket.Error if an error occurred while reading from a socket.
 
 </div>
 
 <div class="aside aside-returns">
     <p class="aside-title">Returns</p>
-    data for the body
+    data for the body.
 
 </div>
 
@@ -412,7 +416,7 @@ Needed since default initalizer is internal</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the socket reader</p>
+                                  <p>the socket reader.</p>
 
                                 </div>
                               </td>
@@ -422,7 +426,7 @@ Needed since default initalizer is internal</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>data for the body</p>
+                        <p>data for the body.</p>
 
                       </div>
                     </section>
@@ -436,7 +440,7 @@ Needed since default initalizer is internal</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-08-23)</p>
+      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-09-05)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

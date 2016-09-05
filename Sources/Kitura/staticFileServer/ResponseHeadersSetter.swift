@@ -16,8 +16,17 @@
 
 import Foundation
 
+// MARK ResponseHeadersSetter
+
+/// A protocol for providing a custom method for setting
+/// the headers of the response of static file serving middleware.
 public protocol ResponseHeadersSetter {
 
+    /// Set the headers of the response
+    ///
+    /// - Parameter response: the router response
+    /// - Parameter filePath: the path of the file being served
+    /// - Parameter fileAttributes: an array of attributes of the file being served
     func setCustomResponseHeaders(response: RouterResponse, filePath: String, fileAttributes: [FileAttributeKey : Any])
 
 }
