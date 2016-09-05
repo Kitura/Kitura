@@ -223,9 +223,9 @@ private class Cookies {
     
     private func initCookie(_ cookie: String, cookies: inout [String: HTTPCookie]) {
         let cookieNameValues = cookie.components(separatedBy: "; ")
-        for  cookieNameValue in cookieNameValues  {
+        for  cookieNameValue in cookieNameValues {
             let cookieNameValueParts = cookieNameValue.components(separatedBy: "=")
-            if   cookieNameValueParts.count == 2  {
+            if   cookieNameValueParts.count == 2 {
                 #if os(Linux)
                     let cookieName = cookieNameValueParts[0]
                     let cookieValue = cookieNameValueParts[1]

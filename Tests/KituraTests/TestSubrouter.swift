@@ -25,9 +25,9 @@ import XCTest
     import Darwin
 #endif
 
-class TestSubrouter : XCTestCase {
+class TestSubrouter: XCTestCase {
 
-    static var allTests : [(String, (TestSubrouter) -> () throws -> Void)] {
+    static var allTests: [(String, (TestSubrouter) -> () throws -> Void)] {
         return [
             ("testSimpleSub", testSimpleSub),
             ("testExternSub", testExternSub),
@@ -55,9 +55,8 @@ class TestSubrouter : XCTestCase {
                 //XCTAssertEqual(response!.method, "GET", "The request wasn't recognized as a get")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!,"hello from the sub")
-                }
-                catch{
+                    XCTAssertEqual(body!, "hello from the sub")
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -67,9 +66,8 @@ class TestSubrouter : XCTestCase {
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!,"sub1")
-                }
-                catch{
+                    XCTAssertEqual(body!, "sub1")
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -88,9 +86,8 @@ class TestSubrouter : XCTestCase {
                 //XCTAssertEqual(response!.method, "GET", "The request wasn't recognized as a get")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!,"hello from the sub")
-                }
-                catch{
+                    XCTAssertEqual(body!, "hello from the sub")
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -100,9 +97,8 @@ class TestSubrouter : XCTestCase {
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!,"sub1")
-                }
-                catch{
+                    XCTAssertEqual(body!, "sub1")
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -119,9 +115,8 @@ class TestSubrouter : XCTestCase {
                 //XCTAssertEqual(response!.method, "GET", "The request wasn't recognized as a get")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!,"hello from the sub sub")
-                }
-                catch{
+                    XCTAssertEqual(body!, "hello from the sub sub")
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -131,9 +126,8 @@ class TestSubrouter : XCTestCase {
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!,"subsub1")
-                }
-                catch{
+                    XCTAssertEqual(body!, "subsub1")
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -150,9 +144,8 @@ class TestSubrouter : XCTestCase {
                 //XCTAssertEqual(response!.method, "GET", "The request wasn't recognized as a get")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!,"first middle\nsub1last middle\n")
-                }
-                catch{
+                    XCTAssertEqual(body!, "first middle\nsub1last middle\n")
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()

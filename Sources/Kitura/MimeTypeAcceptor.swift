@@ -126,7 +126,7 @@ extension RouterRequest {
                 if match.priority > 2 {
                     setMatch(withPriority: 2, qValue: parsedHeaderValue.qValue, in: &criteriaMatches)
                 }
-            } else  {
+            } else {
                 setMatch(withPriority: 2, qValue: parsedHeaderValue.qValue, in: &criteriaMatches)
             }
         }

@@ -42,5 +42,3 @@ public enum LinkParameter: String {
     /// A hint indicating what the media type of the result of dereferencing the link should be.
     case type
 }
-
-

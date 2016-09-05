@@ -27,9 +27,9 @@ import SwiftyJSON
     import Darwin
 #endif
 
-class TestResponse : XCTestCase {
+class TestResponse: XCTestCase {
 
-    static var allTests : [(String, (TestResponse) -> () throws -> Void)] {
+    static var allTests: [(String, (TestResponse) -> () throws -> Void)] {
         return [
             ("testSimpleResponse", testSimpleResponse),
             ("testPostRequest", testPostRequest),
@@ -68,9 +68,8 @@ class TestResponse : XCTestCase {
                 //XCTAssertEqual(response!.method, "GET", "The request wasn't recognized as a get")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
-                }
-                catch{
+                    XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -86,9 +85,8 @@ class TestResponse : XCTestCase {
                 XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received text body: </b>plover\nxyzzy\n</body></html>\n\n")
-                }
-                catch{
+                    XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Received text body: </b>plover\nxyzzy\n</body></html>\n\n")
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -107,9 +105,8 @@ class TestResponse : XCTestCase {
                 XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received text body: </b>plover\nxyzzy\n</body></html>\n\n")
-                }
-                catch{
+                    XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Received text body: </b>plover\nxyzzy\n</body></html>\n\n")
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -127,9 +124,8 @@ class TestResponse : XCTestCase {
                 XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> [\"swift\": \"rocks\"] </body></html>\n\n")
-                }
-                catch{
+                    XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> [\"swift\": \"rocks\"] </body></html>\n\n")
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -145,9 +141,8 @@ class TestResponse : XCTestCase {
                 XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> [\"swift\": \"rocks\"] </body></html>\n\n")
-                }
-                catch{
+                    XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> [\"swift\": \"rocks\"] </body></html>\n\n")
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -195,8 +190,7 @@ class TestResponse : XCTestCase {
                 do {
                     let body = try response!.readString()
                     XCTAssertEqual(body!, "text text(\"text default\") file1 text(\"Content of a.txt.\") file2 text(\"<!DOCTYPE html><title>Content of a.html.</title>\") ")
-                }
-                catch {
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -223,8 +217,7 @@ class TestResponse : XCTestCase {
                 do {
                     let body = try response!.readString()
                     XCTAssertEqual(body!, " text(\"text default\") file1 text(\"Content of a.txt.\") file2 text(\"<!DOCTYPE html><title>Content of a.html.</title>\") ")
-                }
-                catch {
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -254,8 +247,7 @@ class TestResponse : XCTestCase {
                 do {
                     let body = try response!.readString()
                     XCTAssertEqual(body!, " text(\"text default\") ")
-                }
-                catch {
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -276,8 +268,7 @@ class TestResponse : XCTestCase {
                 do {
                     let body = try response!.readString()
                     XCTAssertEqual(body!, "Cannot POST /multibodytest.")
-                }
-                catch {
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -295,9 +286,8 @@ class TestResponse : XCTestCase {
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=test<p><p>q=test2<p><p>u1=Ploni Almoni</body></html>\n\n")
-                }
-                catch{
+                    XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=test<p><p>q=test2<p><p>u1=Ploni Almoni</body></html>\n\n")
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -311,9 +301,8 @@ class TestResponse : XCTestCase {
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response!.readString()
-                    XCTAssertNotNil(body!.range(of: "ibm"),"response does not contain IBM")
-                }
-                catch{
+                    XCTAssertNotNil(body!.range(of: "ibm"), "response does not contain IBM")
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -328,9 +317,8 @@ class TestResponse : XCTestCase {
                 do {
                     let body = try response!.readString()
                     let errorDescription = "foo is nil"
-                    XCTAssertEqual(body!,"Caught the error: \(errorDescription)")
-                }
-                catch{
+                    XCTAssertEqual(body!, "Caught the error: \(errorDescription)")
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -345,9 +333,8 @@ class TestResponse : XCTestCase {
                 XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!,"get 1\nget 2\n")
-                }
-                catch{
+                    XCTAssertEqual(body!, "get 1\nget 2\n")
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -358,9 +345,8 @@ class TestResponse : XCTestCase {
                 XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!,"post received")
-                }
-                catch{
+                    XCTAssertEqual(body!, "post received")
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -400,8 +386,7 @@ class TestResponse : XCTestCase {
 
             do {
                 try response.status(HTTPStatusCode.OK).send("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n").end()
-            }
-            catch {}
+            } catch {}
             next()
         }
 
@@ -435,8 +420,7 @@ class TestResponse : XCTestCase {
 
             do {
                 try response.status(HTTPStatusCode.OK).send("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n").end()
-            }
-            catch {}
+            } catch {}
             next()
         }
 
@@ -450,8 +434,7 @@ class TestResponse : XCTestCase {
 
             do {
                 try response.status(HTTPStatusCode.OK).send("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n").end()
-            }
-            catch {}
+            } catch {}
             next()
         }
 
@@ -480,9 +463,8 @@ class TestResponse : XCTestCase {
                 XCTAssertEqual(response!.headers["Content-Type"]!.first!, "text/html")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body>Hi from Kitura!</body></html>\n\n")
-                }
-                catch{
+                    XCTAssertEqual(body!, "<!DOCTYPE html><html><body>Hi from Kitura!</body></html>\n\n")
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -496,9 +478,8 @@ class TestResponse : XCTestCase {
                 XCTAssertEqual(response!.headers["Content-Type"]!.first!, "text/plain")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!,"Hi from Kitura!")
-                }
-                catch{
+                    XCTAssertEqual(body!, "Hi from Kitura!")
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -511,9 +492,8 @@ class TestResponse : XCTestCase {
                 XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!,"default")
-                }
-                catch{
+                    XCTAssertEqual(body!, "default")
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -561,10 +541,9 @@ class TestResponse : XCTestCase {
 #else
                     let expected = "{\n  \"some\" : \"json\"\n}"
 #endif
-                    XCTAssertEqual(body!,"/**/ testfn(\(expected))")
+                    XCTAssertEqual(body!, "/**/ testfn(\(expected))")
                     XCTAssertEqual(response!.headers["Content-Type"]!.first!, "application/javascript")
-                }
-                catch{
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -598,10 +577,9 @@ class TestResponse : XCTestCase {
 #else
                     let expected = "{\n  \"some\" : \"json\"\n}"
 #endif
-                    XCTAssertEqual(body!,"/**/ testfn(\(expected))")
+                    XCTAssertEqual(body!, "/**/ testfn(\(expected))")
                     XCTAssertEqual(response!.headers["Content-Type"]!.first!, "application/javascript")
-                }
-                catch{
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -619,10 +597,9 @@ class TestResponse : XCTestCase {
                     #else
                         let expected = "{\n  \"some\" : \"json with bad js chars \\u2028 \\u2029\"\n}"
                     #endif
-                    XCTAssertEqual(body!,"/**/ testfn(\(expected))")
+                    XCTAssertEqual(body!, "/**/ testfn(\(expected))")
                     XCTAssertEqual(response!.headers["Content-Type"]!.first!, "application/javascript")
-                }
-                catch{
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -704,8 +681,7 @@ class TestResponse : XCTestCase {
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             do {
                 try response.send("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n").end()
-            }
-            catch {}
+            } catch {}
             next()
         }
 
@@ -716,16 +692,14 @@ class TestResponse : XCTestCase {
             let u1 = request.userInfo["u1"] as? String ?? "(nil)"
             do {
                 try response.send("<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=\(p1)<p><p>q=\(q)<p><p>u1=\(u1)</body></html>\n\n").end()
-            }
-            catch {}
+            } catch {}
             next()
         }
 
         router.get("/redir") { _, response, next in
             do {
                 try response.redirect("http://www.ibm.com")
-            }
-            catch {}
+            } catch {}
 
             next()
         }
@@ -751,7 +725,7 @@ class TestResponse : XCTestCase {
             next()
         }
 
-        let bodyTestHandler: RouterHandler =  { request, response, next in
+        let bodyTestHandler: RouterHandler = { request, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             guard let requestBody = request.body else {
                 next ()
@@ -761,13 +735,11 @@ class TestResponse : XCTestCase {
                 case .urlEncoded(let value):
                     do {
                         try response.send("<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> \(value) </body></html>\n\n").end()
-                    }
-                    catch {}
+                    } catch {}
                 case .text(let value):
                     do {
                         try response.send("<!DOCTYPE html><html><body><b>Received text body: </b>\(value)</body></html>\n\n").end()
-                    }
-                    catch {}
+                    } catch {}
                 default:
                     response.error = Error.failedToParseRequestBody(body: "\(request.body)")
 
@@ -806,16 +778,14 @@ class TestResponse : XCTestCase {
         func callbackText(request: RouterRequest, response: RouterResponse) {
             do {
                 try response.status(HTTPStatusCode.OK).send("Hi from Kitura!").end()
-            }
-            catch {}
+            } catch {}
 
         }
 
         func callbackHtml(request: RouterRequest, response: RouterResponse) {
             do {
                 try response.status(HTTPStatusCode.OK).send("<!DOCTYPE html><html><body>Hi from Kitura!</body></html>\n\n").end()
-            }
-            catch {}
+            } catch {}
 
         }
 
@@ -823,8 +793,7 @@ class TestResponse : XCTestCase {
             do {
                 response.headers["Content-Type"] = "text/plain; charset=utf-8"
                 try response.status(HTTPStatusCode.OK).send("default").end()
-            }
-            catch {}
+            } catch {}
 
         }
 
@@ -834,8 +803,7 @@ class TestResponse : XCTestCase {
                                                    "text/plain" : callbackText,
                                                    "text/html" : callbackHtml,
                                                    "default" : callbackDefault])
-            }
-            catch {}
+            } catch {}
         }
 
         router.get("/single_link") { request, response, next in
@@ -899,13 +867,11 @@ class TestResponse : XCTestCase {
                 let errorDescription: String
                 if let error = response.error {
                     errorDescription = "\(error)"
-                }
-                else {
+                } else {
                     errorDescription = ""
                 }
                 try response.send("Caught the error: \(errorDescription)").end()
-            }
-            catch {}
+            } catch {}
             next()
         }
 
