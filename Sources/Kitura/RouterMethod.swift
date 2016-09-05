@@ -15,9 +15,9 @@
  */
 
 /// An enum to describe the HTTP method (Get, Post, Put, Delete, etc) of an HTTP
-/// request. In general they match the actual HTTP methods by th esame name. There
-/// are two special ones, used by `Router` when building up the set of mapiings
-/// betwem paths and handlers or middle ware. They are:
+/// request. In general they match the actual HTTP methods by the same name. There
+/// are two special ones, used by `Router` when building up the set of mappings
+/// between paths and handlers or middleware. They are:
 public enum RouterMethod: String {
     /// Signifies that the particular path mapping is not dependent on the HTTP method
     case all = "ALL"
@@ -107,9 +107,9 @@ public enum RouterMethod: String {
     /// values.
     case unknown = "UNKNOWN"
 
-    /// Convert a string to a `RouterMEthod` instance.
+    /// Convert a string to a `RouterMethod` instance.
     ///
-    /// Parameter fromRawValue: The string form of an HTTP method to convert to an `HTTPMethod` enum.
+    /// Parameter fromRawValue: The string form of an HTTP method to convert to an `RouterMethod` enum.
     init(fromRawValue: String) {
         self = RouterMethod(rawValue: fromRawValue) ?? .unknown
     }    

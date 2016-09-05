@@ -22,7 +22,7 @@ import Foundation
 /// The result of parsing the body of the request.
 ///
 /// When a body of a request is parsed the results of the parsing are placed 
-/// in case of this enum based on Content-Type.
+/// in the associated value of the enum case based on Content-Type
 public indirect enum ParsedBody {
     
     /// If the content type was "application/json" this associated value will 

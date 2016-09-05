@@ -24,7 +24,7 @@ public protocol RouterMiddleware {
 
     /// Handle an incoming HTTP request.
     ///
-    /// - Parameter request: The `RouterRequest` object used to get inormation
+    /// - Parameter request: The `RouterRequest` object used to get information
     ///                     about the HTTP request.
     /// - Parameter response: The `RouterResponse` object used to respond to the
     ///                       HTTP request

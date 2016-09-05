@@ -58,7 +58,7 @@ cat <<EOF >> ${OUTPUT_FILE}
     /// invoked when $DOC_TEXT_1 request$DOC_TEXT_2 comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of \`RouterHandler\`s that will be
     ///                     invoked when $DOC_TEXT_1 request$DOC_TEXT_2 comes to the server.
@@ -71,7 +71,7 @@ cat <<EOF >> ${OUTPUT_FILE}
     /// invoked when $DOC_TEXT_1 request$DOC_TEXT_2 comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of \`RouterHandler\`s that will be
     ///                     invoked when $DOC_TEXT_1 request$DOC_TEXT_2 comes to the server.
@@ -84,7 +84,7 @@ cat <<EOF >> ${OUTPUT_FILE}
     /// invoked when $DOC_TEXT_1 request$DOC_TEXT_2 comes to the server. If a path pattern is
     /// specified, the \`RouterMiddleware\` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the \`RouterMiddleware\` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -99,7 +99,7 @@ cat <<EOF >> ${OUTPUT_FILE}
     /// invoked when $DOC_TEXT_1 request$DOC_TEXT_2 comes to the server. If a path pattern is
     /// specified, the \`RouterMiddleware\` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the \`RouterMiddleware\` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.

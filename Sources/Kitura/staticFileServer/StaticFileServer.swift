@@ -18,7 +18,7 @@ import Foundation
 
 // MARK: StaticFileServer
 
-/// A router middleware that serves static files from a given path
+/// A router middleware that serves static files from a given path.
 public class StaticFileServer: RouterMiddleware {
 
     /// Cache configuration options for StaticFileServer.
@@ -72,7 +72,7 @@ public class StaticFileServer: RouterMiddleware {
 
     let fileServer: FileServer
 
-    /// Initializes a StaticFileServer instance.
+    /// Initializes a `StaticFileServer` instance.
     ///
     /// - Parameter path: a root directory for file serving.
     /// - Parameter options: configuration options for StaticFileServer.

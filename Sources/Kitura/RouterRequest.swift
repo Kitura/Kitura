@@ -138,10 +138,9 @@ public class RouterRequest {
     /// Body of the message.
     public internal(set) var body: ParsedBody?
 
-    /// Initializes a RouterRequest instance
+    /// Initializes a `RouterRequest` instance
     ///
     /// - Parameter request: the server request
-    /// - Returns: a RouterRequest instance
     init(request: ServerRequest) {
         serverRequest = request
         httpVersion = HTTPVersion(major: serverRequest.httpVersionMajor ?? 1, minor: serverRequest.httpVersionMinor ?? 1)

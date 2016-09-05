@@ -94,7 +94,7 @@ public class Kitura {
     ///
     /// Make all registered servers stop listening on their port.
     ///
-    /// - note: All of the registered servers are unregistered afr they are stopped.
+    /// - note: All of the registered servers are unregistered after they are stopped.
     public class func stop() {
         for (server, port) in httpServersAndPorts {
             Log.verbose("Stopping HTTP Server on port \(port)...")

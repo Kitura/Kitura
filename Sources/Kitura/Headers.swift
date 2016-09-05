@@ -24,7 +24,7 @@ public struct Headers {
     /// The header storage
     internal var headers: HeadersContainer
     
-    /// Initialize a `Headers`
+    /// Initialize a `Headers` instance
     ///
     /// - Parameter headers: The container for the headers
     init(headers: HeadersContainer) {
@@ -59,7 +59,7 @@ extension Headers: Collection {
     
     /// Get the value of a HTTP header
     ///
-    /// - Parameter key: The HTTP header key who's value is to be gotten
+    /// - Parameter key: The HTTP header key who's value is to be retrieved
     ///
     /// - Returns: The value of the specified HTTP header, or nil, if it doesn't exist.
     public subscript(key: String) -> String? {
@@ -91,7 +91,7 @@ extension Headers: Collection {
     
     /// Get the next Index in the `Headers` collection after the one specified.
     ///
-    /// - Parameter after: The Index before the Index to be returned.
+    /// - Parameter after: The Index who's successor is to be returned.
     ///
     /// - Returns: The Index in the `Headers` collection after the one specified.
     public func index(after i: HeadersIndex) -> HeadersIndex {

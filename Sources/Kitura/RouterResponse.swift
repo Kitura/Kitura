@@ -83,12 +83,13 @@ public class RouterResponse {
         }
     }
 
-    /// Initialize a RouterResponse instance
+    /// Initialize a `RouterResponse` instance
     ///
-    /// - Parameter response: the server response
-    /// - Parameter router: the router
-    /// - Parameter request: the router request
-    /// - Returns: a ServerResponse instance
+    /// - Parameter response: The `ServerResponse` object to work with
+    /// - Parameter router: The `Router` instance that this `RouterResponse` is
+    ///                    working with.
+    /// - Parameter request: The `RouterRequest` object that is paired with this
+    ///                     `RouterResponse` object.
     init(response: ServerResponse, router: Router, request: RouterRequest) {
         self.response = response
         self.router = router
@@ -345,7 +346,7 @@ public class RouterResponse {
     }
 }
 
-/// Type alias for "Before flush" (i.e. before headers and body are written) lifecycle handler..
+/// Type alias for "Before flush" (i.e. before headers and body are written) lifecycle handler.
 public typealias LifecycleHandler = () -> Void
 
 /// Type alias for written data filter, i.e. pre-write lifecycle handler.

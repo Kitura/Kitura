@@ -22,12 +22,10 @@ public class RouterMiddlewareGenerator: RouterMiddleware {
     /// The closure invoked to handle requests
     private let innerHandler: RouterHandler
 
-    /// Initialize a RouterMiddlewareGenerator
+    /// Initialize a `RouterMiddlewareGenerator` instance
     ///
-    /// - Parameter handler: The closure that is of the type `RouterHAndler` to be
+    /// - Parameter handler: The closure that is of the type `RouterHandler` to be
     ///                     called to handle requests
-    ///
-    /// - Returns: a RouterMiddlewareGenerator instance
     public init(handler: @escaping RouterHandler) {
         innerHandler = handler
     }

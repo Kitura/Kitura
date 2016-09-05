@@ -23,7 +23,7 @@ extension Router {
     /// invoked when any request comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when any request comes to the server.
@@ -36,7 +36,7 @@ extension Router {
     /// invoked when any request comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when any request comes to the server.
@@ -49,7 +49,7 @@ extension Router {
     /// invoked when any request comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -64,7 +64,7 @@ extension Router {
     /// invoked when any request comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -80,7 +80,7 @@ extension Router {
     /// invoked when HTTP GET requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP GET requests comes to the server.
@@ -93,7 +93,7 @@ extension Router {
     /// invoked when HTTP GET requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP GET requests comes to the server.
@@ -106,7 +106,7 @@ extension Router {
     /// invoked when HTTP GET requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -121,7 +121,7 @@ extension Router {
     /// invoked when HTTP GET requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -137,7 +137,7 @@ extension Router {
     /// invoked when HTTP HEAD requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP HEAD requests comes to the server.
@@ -150,7 +150,7 @@ extension Router {
     /// invoked when HTTP HEAD requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP HEAD requests comes to the server.
@@ -163,7 +163,7 @@ extension Router {
     /// invoked when HTTP HEAD requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -178,7 +178,7 @@ extension Router {
     /// invoked when HTTP HEAD requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -194,7 +194,7 @@ extension Router {
     /// invoked when HTTP POST requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP POST requests comes to the server.
@@ -207,7 +207,7 @@ extension Router {
     /// invoked when HTTP POST requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP POST requests comes to the server.
@@ -220,7 +220,7 @@ extension Router {
     /// invoked when HTTP POST requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -235,7 +235,7 @@ extension Router {
     /// invoked when HTTP POST requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -251,7 +251,7 @@ extension Router {
     /// invoked when HTTP PUT requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP PUT requests comes to the server.
@@ -264,7 +264,7 @@ extension Router {
     /// invoked when HTTP PUT requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP PUT requests comes to the server.
@@ -277,7 +277,7 @@ extension Router {
     /// invoked when HTTP PUT requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -292,7 +292,7 @@ extension Router {
     /// invoked when HTTP PUT requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -308,7 +308,7 @@ extension Router {
     /// invoked when HTTP DELETE requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP DELETE requests comes to the server.
@@ -321,7 +321,7 @@ extension Router {
     /// invoked when HTTP DELETE requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP DELETE requests comes to the server.
@@ -334,7 +334,7 @@ extension Router {
     /// invoked when HTTP DELETE requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -349,7 +349,7 @@ extension Router {
     /// invoked when HTTP DELETE requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -365,7 +365,7 @@ extension Router {
     /// invoked when HTTP OPTIONS requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP OPTIONS requests comes to the server.
@@ -378,7 +378,7 @@ extension Router {
     /// invoked when HTTP OPTIONS requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP OPTIONS requests comes to the server.
@@ -391,7 +391,7 @@ extension Router {
     /// invoked when HTTP OPTIONS requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -406,7 +406,7 @@ extension Router {
     /// invoked when HTTP OPTIONS requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -422,7 +422,7 @@ extension Router {
     /// invoked when HTTP TRACE requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP TRACE requests comes to the server.
@@ -435,7 +435,7 @@ extension Router {
     /// invoked when HTTP TRACE requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP TRACE requests comes to the server.
@@ -448,7 +448,7 @@ extension Router {
     /// invoked when HTTP TRACE requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -463,7 +463,7 @@ extension Router {
     /// invoked when HTTP TRACE requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -479,7 +479,7 @@ extension Router {
     /// invoked when HTTP COPY requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP COPY requests comes to the server.
@@ -492,7 +492,7 @@ extension Router {
     /// invoked when HTTP COPY requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP COPY requests comes to the server.
@@ -505,7 +505,7 @@ extension Router {
     /// invoked when HTTP COPY requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -520,7 +520,7 @@ extension Router {
     /// invoked when HTTP COPY requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -536,7 +536,7 @@ extension Router {
     /// invoked when HTTP LOCK requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP LOCK requests comes to the server.
@@ -549,7 +549,7 @@ extension Router {
     /// invoked when HTTP LOCK requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP LOCK requests comes to the server.
@@ -562,7 +562,7 @@ extension Router {
     /// invoked when HTTP LOCK requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -577,7 +577,7 @@ extension Router {
     /// invoked when HTTP LOCK requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -593,7 +593,7 @@ extension Router {
     /// invoked when HTTP MKCOL requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP MKCOL requests comes to the server.
@@ -606,7 +606,7 @@ extension Router {
     /// invoked when HTTP MKCOL requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP MKCOL requests comes to the server.
@@ -619,7 +619,7 @@ extension Router {
     /// invoked when HTTP MKCOL requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -634,7 +634,7 @@ extension Router {
     /// invoked when HTTP MKCOL requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -650,7 +650,7 @@ extension Router {
     /// invoked when HTTP MOVE requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP MOVE requests comes to the server.
@@ -663,7 +663,7 @@ extension Router {
     /// invoked when HTTP MOVE requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP MOVE requests comes to the server.
@@ -676,7 +676,7 @@ extension Router {
     /// invoked when HTTP MOVE requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -691,7 +691,7 @@ extension Router {
     /// invoked when HTTP MOVE requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -707,7 +707,7 @@ extension Router {
     /// invoked when HTTP PURGE requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP PURGE requests comes to the server.
@@ -720,7 +720,7 @@ extension Router {
     /// invoked when HTTP PURGE requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP PURGE requests comes to the server.
@@ -733,7 +733,7 @@ extension Router {
     /// invoked when HTTP PURGE requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -748,7 +748,7 @@ extension Router {
     /// invoked when HTTP PURGE requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -764,7 +764,7 @@ extension Router {
     /// invoked when HTTP PROPFIND requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP PROPFIND requests comes to the server.
@@ -777,7 +777,7 @@ extension Router {
     /// invoked when HTTP PROPFIND requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP PROPFIND requests comes to the server.
@@ -790,7 +790,7 @@ extension Router {
     /// invoked when HTTP PROPFIND requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -805,7 +805,7 @@ extension Router {
     /// invoked when HTTP PROPFIND requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -821,7 +821,7 @@ extension Router {
     /// invoked when HTTP PROPPATCH requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP PROPPATCH requests comes to the server.
@@ -834,7 +834,7 @@ extension Router {
     /// invoked when HTTP PROPPATCH requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP PROPPATCH requests comes to the server.
@@ -847,7 +847,7 @@ extension Router {
     /// invoked when HTTP PROPPATCH requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -862,7 +862,7 @@ extension Router {
     /// invoked when HTTP PROPPATCH requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -878,7 +878,7 @@ extension Router {
     /// invoked when HTTP UNLOCK requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP UNLOCK requests comes to the server.
@@ -891,7 +891,7 @@ extension Router {
     /// invoked when HTTP UNLOCK requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP UNLOCK requests comes to the server.
@@ -904,7 +904,7 @@ extension Router {
     /// invoked when HTTP UNLOCK requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -919,7 +919,7 @@ extension Router {
     /// invoked when HTTP UNLOCK requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -935,7 +935,7 @@ extension Router {
     /// invoked when HTTP REPORT requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP REPORT requests comes to the server.
@@ -948,7 +948,7 @@ extension Router {
     /// invoked when HTTP REPORT requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP REPORT requests comes to the server.
@@ -961,7 +961,7 @@ extension Router {
     /// invoked when HTTP REPORT requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -976,7 +976,7 @@ extension Router {
     /// invoked when HTTP REPORT requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -992,7 +992,7 @@ extension Router {
     /// invoked when HTTP MKACTIVITY requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP MKACTIVITY requests comes to the server.
@@ -1005,7 +1005,7 @@ extension Router {
     /// invoked when HTTP MKACTIVITY requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP MKACTIVITY requests comes to the server.
@@ -1018,7 +1018,7 @@ extension Router {
     /// invoked when HTTP MKACTIVITY requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -1033,7 +1033,7 @@ extension Router {
     /// invoked when HTTP MKACTIVITY requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -1049,7 +1049,7 @@ extension Router {
     /// invoked when HTTP CHECKOUT requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP CHECKOUT requests comes to the server.
@@ -1062,7 +1062,7 @@ extension Router {
     /// invoked when HTTP CHECKOUT requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP CHECKOUT requests comes to the server.
@@ -1075,7 +1075,7 @@ extension Router {
     /// invoked when HTTP CHECKOUT requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -1090,7 +1090,7 @@ extension Router {
     /// invoked when HTTP CHECKOUT requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -1106,7 +1106,7 @@ extension Router {
     /// invoked when HTTP MERGE requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP MERGE requests comes to the server.
@@ -1119,7 +1119,7 @@ extension Router {
     /// invoked when HTTP MERGE requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP MERGE requests comes to the server.
@@ -1132,7 +1132,7 @@ extension Router {
     /// invoked when HTTP MERGE requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -1147,7 +1147,7 @@ extension Router {
     /// invoked when HTTP MERGE requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -1163,7 +1163,7 @@ extension Router {
     /// invoked when HTTP MSEARCH requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP MSEARCH requests comes to the server.
@@ -1176,7 +1176,7 @@ extension Router {
     /// invoked when HTTP MSEARCH requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP MSEARCH requests comes to the server.
@@ -1189,7 +1189,7 @@ extension Router {
     /// invoked when HTTP MSEARCH requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -1204,7 +1204,7 @@ extension Router {
     /// invoked when HTTP MSEARCH requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -1220,7 +1220,7 @@ extension Router {
     /// invoked when HTTP NOTIFY requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP NOTIFY requests comes to the server.
@@ -1233,7 +1233,7 @@ extension Router {
     /// invoked when HTTP NOTIFY requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP NOTIFY requests comes to the server.
@@ -1246,7 +1246,7 @@ extension Router {
     /// invoked when HTTP NOTIFY requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -1261,7 +1261,7 @@ extension Router {
     /// invoked when HTTP NOTIFY requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -1277,7 +1277,7 @@ extension Router {
     /// invoked when HTTP SUBSCRIBE requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP SUBSCRIBE requests comes to the server.
@@ -1290,7 +1290,7 @@ extension Router {
     /// invoked when HTTP SUBSCRIBE requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP SUBSCRIBE requests comes to the server.
@@ -1303,7 +1303,7 @@ extension Router {
     /// invoked when HTTP SUBSCRIBE requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -1318,7 +1318,7 @@ extension Router {
     /// invoked when HTTP SUBSCRIBE requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -1334,7 +1334,7 @@ extension Router {
     /// invoked when HTTP UNSUBSCRIBE requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP UNSUBSCRIBE requests comes to the server.
@@ -1347,7 +1347,7 @@ extension Router {
     /// invoked when HTTP UNSUBSCRIBE requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP UNSUBSCRIBE requests comes to the server.
@@ -1360,7 +1360,7 @@ extension Router {
     /// invoked when HTTP UNSUBSCRIBE requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -1375,7 +1375,7 @@ extension Router {
     /// invoked when HTTP UNSUBSCRIBE requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -1391,7 +1391,7 @@ extension Router {
     /// invoked when HTTP PATCH requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP PATCH requests comes to the server.
@@ -1404,7 +1404,7 @@ extension Router {
     /// invoked when HTTP PATCH requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP PATCH requests comes to the server.
@@ -1417,7 +1417,7 @@ extension Router {
     /// invoked when HTTP PATCH requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -1432,7 +1432,7 @@ extension Router {
     /// invoked when HTTP PATCH requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -1448,7 +1448,7 @@ extension Router {
     /// invoked when HTTP SEARCH requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP SEARCH requests comes to the server.
@@ -1461,7 +1461,7 @@ extension Router {
     /// invoked when HTTP SEARCH requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP SEARCH requests comes to the server.
@@ -1474,7 +1474,7 @@ extension Router {
     /// invoked when HTTP SEARCH requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -1489,7 +1489,7 @@ extension Router {
     /// invoked when HTTP SEARCH requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -1505,7 +1505,7 @@ extension Router {
     /// invoked when HTTP CONNECT requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP CONNECT requests comes to the server.
@@ -1518,7 +1518,7 @@ extension Router {
     /// invoked when HTTP CONNECT requests comes to the server. If a path pattern is
     /// specified, the handlers will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the handlers to be invoked.
     /// - Parameter handler: The array of `RouterHandler`s that will be
     ///                     invoked when HTTP CONNECT requests comes to the server.
@@ -1531,7 +1531,7 @@ extension Router {
     /// invoked when HTTP CONNECT requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
@@ -1546,7 +1546,7 @@ extension Router {
     /// invoked when HTTP CONNECT requests comes to the server. If a path pattern is
     /// specified, the `RouterMiddleware` will only be invoked if the pattern is matched.
     ///
-    /// - Parameter path: An optional String specifying the patern that needs to be
+    /// - Parameter path: An optional String specifying the pattern that needs to be
     ///                  matched, in order for the `RouterMiddleware` to be invoked.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     ///                               the path by the pattern is sufficient.
