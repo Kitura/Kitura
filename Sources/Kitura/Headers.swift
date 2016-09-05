@@ -91,7 +91,7 @@ extension Headers: Collection {
     
     /// Get the next Index in the `Headers` collection after the one specified.
     ///
-    /// - Parameter after: The Index who's successor is to be returned.
+    /// - Parameter after: The Index whose successor is to be returned.
     ///
     /// - Returns: The Index in the `Headers` collection after the one specified.
     public func index(after i: HeadersIndex) -> HeadersIndex {
