@@ -20,7 +20,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (31% documented)
+         (99% documented)
       </p>
     
         <p class="header-col header-col--secondary">
@@ -72,10 +72,10 @@
                 <a class="nav-group-task-link" href="../Classes/StaticFileServer.html">StaticFileServer</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/StaticFileServer.html#/s:VC6Kitura16StaticFileServer12CacheOptions">– CacheOptions</a>
+                <a class="nav-group-task-link" href="../Classes/StaticFileServer/CacheOptions.html">– CacheOptions</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/StaticFileServer.html#/s:VC6Kitura16StaticFileServer7Options">– Options</a>
+                <a class="nav-group-task-link" href="../Classes/StaticFileServer/Options.html">– Options</a>
               </li>
             </ul>
           </li>
@@ -131,6 +131,9 @@
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura16LifecycleHandler">LifecycleHandler</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura17WrittenDataFilter">WrittenDataFilter</a>
               </li>
             </ul>
@@ -148,7 +151,8 @@
 
                 </div>
               </div>
-            
+            <p>Router response that the server sends as a reply to <code><a href="../Classes/RouterRequest.html">RouterRequest</a></code>.</p>
+
           </div>
         </section>
 
@@ -169,7 +173,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Set of cookies to return with the response</p>
+                        <p>Set of cookies to return with the response.</p>
 
                       </div>
                       <div class="declaration">
@@ -196,7 +200,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Optional error value</p>
+                        <p>Optional error value.</p>
 
                       </div>
                       <div class="declaration">
@@ -223,14 +227,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>HTTP headers of the response.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">RouterResponse</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">headers</span><span class="p">:</span> <span class="kt"><a href="../Structs/Headers.html">Headers</a></span></code></pre>
 
                         </div>
                       </div>
@@ -240,9 +244,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC6Kitura14RouterResponse10statusCodeO9KituraNet14HTTPStatusCode"></a>
+                    <a name="/s:vC6Kitura14RouterResponse10statusCodeERR"></a>
                     <a name="//apple_ref/swift/Property/statusCode" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC6Kitura14RouterResponse10statusCodeO9KituraNet14HTTPStatusCode">statusCode</a>
+                    <a class="token" href="#/s:vC6Kitura14RouterResponse10statusCodeERR">statusCode</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -250,14 +254,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>HTTP status code of the response.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">RouterResponse</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">statusCode</span><span class="p">:</span> <span class="kt">HTTPStatusCode</span></code></pre>
 
                         </div>
                       </div>
@@ -277,11 +281,11 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Ends the response</p>
+                        <p>End the response.</p>
 
 <div class="aside aside-throws">
     <p class="aside-title">Throws</p>
-    ???
+    Socket.Error if an error occurred while writing to a socket.
 
 </div>
 
@@ -310,17 +314,17 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Sends a string</p>
+                        <p>Send a string.</p>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    Parameter str: the string to send
+    Parameter str: the string to send.
 
 </div>
 
 <div class="aside aside-returns">
     <p class="aside-title">Returns</p>
-    this RouterResponse
+    this RouterResponse.
 
 </div>
 
@@ -345,7 +349,7 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>the string to send</p>
+                                  <p>the string to send.</p>
 
                                 </div>
                               </td>
@@ -355,7 +359,7 @@
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>this RouterResponse</p>
+                        <p>this RouterResponse.</p>
 
                       </div>
                     </section>
@@ -374,17 +378,17 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Sends data</p>
+                        <p>Send data.</p>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    Parameter data: the data to send
+    Parameter data: the data to send.
 
 </div>
 
 <div class="aside aside-returns">
     <p class="aside-title">Returns</p>
-    this RouterResponse
+    this RouterResponse.
 
 </div>
 
@@ -409,7 +413,7 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>the data to send</p>
+                                  <p>the data to send.</p>
 
                                 </div>
                               </td>
@@ -419,7 +423,7 @@
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>this RouterResponse</p>
+                        <p>this RouterResponse.</p>
 
                       </div>
                     </section>
@@ -438,7 +442,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Sends a file</p>
+                        <p>Send a file.</p>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
@@ -446,9 +450,15 @@
 
 </div>
 
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    An error in the Cocoa domain, if the file cannot be read.
+
+</div>
+
 <div class="aside aside-returns">
     <p class="aside-title">Returns</p>
-    <p>this RouterResponse</p>
+    <p>this RouterResponse.</p>
 
 </div>
 
@@ -490,7 +500,7 @@
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>this RouterResponse</p>
+                        <p>this RouterResponse.</p>
 
                       </div>
                     </section>
@@ -499,9 +509,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FC6Kitura14RouterResponse4sendFT4jsonV10SwiftyJSON4JSON_S0_"></a>
+                    <a name="/s:FC6Kitura14RouterResponse4sendERR"></a>
                     <a name="//apple_ref/swift/Method/send(json:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FC6Kitura14RouterResponse4sendFT4jsonV10SwiftyJSON4JSON_S0_">send(json:)</a>
+                    <a class="token" href="#/s:FC6Kitura14RouterResponse4sendERR">send(json:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -509,17 +519,17 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Sends JSON</p>
+                        <p>Send JSON.</p>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    Parameter json: the JSON object to send
+    Parameter json: the JSON object to send.
 
 </div>
 
 <div class="aside aside-returns">
     <p class="aside-title">Returns</p>
-    this RouterResponse
+    this RouterResponse.
 
 </div>
 
@@ -544,7 +554,7 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>the JSON object to send</p>
+                                  <p>the JSON object to send.</p>
 
                                 </div>
                               </td>
@@ -554,7 +564,7 @@
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>this RouterResponse</p>
+                        <p>this RouterResponse.</p>
 
                       </div>
                     </section>
@@ -563,9 +573,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FC6Kitura14RouterResponse4sendFzT5jsonpV10SwiftyJSON4JSON17callbackParameterSS_S0_"></a>
+                    <a name="/s:FC6Kitura14RouterResponse4sendERR"></a>
                     <a name="//apple_ref/swift/Method/send(jsonp:callbackParameter:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FC6Kitura14RouterResponse4sendFzT5jsonpV10SwiftyJSON4JSON17callbackParameterSS_S0_">send(jsonp:callbackParameter:)</a>
+                    <a class="token" href="#/s:FC6Kitura14RouterResponse4sendERR">send(jsonp:callbackParameter:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -573,18 +583,18 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Sends JSON with JSONP callback</p>
+                        <p>Send JSON with JSONP callback.</p>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    Parameter json: the JSON object to send
+    Parameter json: the JSON object to send.
 
 </div>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
     <p>Parameter callbackthe name of the URL query
-parameter whose value contains the JSONP callback function</p>
+parameter whose value contains the JSONP callback function.</p>
 
 </div>
 
@@ -599,7 +609,7 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
 
 <div class="aside aside-returns">
     <p class="aside-title">Returns</p>
-    <p>this RouterResponse</p>
+    <p>this RouterResponse.</p>
 
 </div>
 
@@ -624,7 +634,7 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the JSON object to send</p>
+                                  <p>the JSON object to send.</p>
 
                                 </div>
                               </td>
@@ -637,7 +647,7 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the name of the URL query parameter whose value contains the JSONP callback function</p>
+                                  <p>the name of the URL query parameter whose value contains the JSONP callback function.</p>
 
                                 </div>
                               </td>
@@ -647,7 +657,7 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>this RouterResponse</p>
+                        <p>this RouterResponse.</p>
 
                       </div>
                     </section>
@@ -656,9 +666,9 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FC6Kitura14RouterResponse6statusFO9KituraNet14HTTPStatusCodeS0_"></a>
+                    <a name="/s:FC6Kitura14RouterResponse6statusERR"></a>
                     <a name="//apple_ref/swift/Method/status(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FC6Kitura14RouterResponse6statusFO9KituraNet14HTTPStatusCodeS0_">status(_:)</a>
+                    <a class="token" href="#/s:FC6Kitura14RouterResponse6statusERR">status(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -666,17 +676,17 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Set the status code</p>
+                        <p>Set the status code.</p>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    Parameter status: the status code object
+    Parameter status: the HTTP status code object.
 
 </div>
 
 <div class="aside aside-returns">
     <p class="aside-title">Returns</p>
-    this RouterResponse
+    this RouterResponse.
 
 </div>
 
@@ -701,7 +711,7 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the status code object</p>
+                                  <p>the HTTP status code object.</p>
 
                                 </div>
                               </td>
@@ -711,7 +721,7 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>this RouterResponse</p>
+                        <p>this RouterResponse.</p>
 
                       </div>
                     </section>
@@ -720,9 +730,9 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FC6Kitura14RouterResponse4sendFzT6statusO9KituraNet14HTTPStatusCode_S0_"></a>
+                    <a name="/s:FC6Kitura14RouterResponse4sendERR"></a>
                     <a name="//apple_ref/swift/Method/send(status:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FC6Kitura14RouterResponse4sendFzT6statusO9KituraNet14HTTPStatusCode_S0_">send(status:)</a>
+                    <a class="token" href="#/s:FC6Kitura14RouterResponse4sendERR">send(status:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -730,23 +740,17 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Sends the HTTP status code</p>
+                        <p>Send the HTTP status code.</p>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    Parameter status: the HTTP status code
-
-</div>
-
-<div class="aside aside-throws">
-    <p class="aside-title">Throws</p>
-    ???
+    Parameter status: the HTTP status code.
 
 </div>
 
 <div class="aside aside-returns">
     <p class="aside-title">Returns</p>
-    this RouterResponse
+    this RouterResponse.
 
 </div>
 
@@ -755,7 +759,7 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">status</span><span class="p">:</span> <span class="kt">HTTPStatusCode</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">status</span><span class="p">:</span> <span class="kt">HTTPStatusCode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
 
                         </div>
                       </div>
@@ -771,7 +775,7 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the HTTP status code</p>
+                                  <p>the HTTP status code.</p>
 
                                 </div>
                               </td>
@@ -781,7 +785,7 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>this RouterResponse</p>
+                        <p>this RouterResponse.</p>
 
                       </div>
                     </section>
@@ -790,9 +794,9 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FC6Kitura14RouterResponse8redirectFzTSS6statusO9KituraNet14HTTPStatusCode_S0_"></a>
+                    <a name="/s:FC6Kitura14RouterResponse8redirectERR"></a>
                     <a name="//apple_ref/swift/Method/redirect(_:status:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FC6Kitura14RouterResponse8redirectFzTSS6statusO9KituraNet14HTTPStatusCode_S0_">redirect(_:status:)</a>
+                    <a class="token" href="#/s:FC6Kitura14RouterResponse8redirectERR">redirect(_:status:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -800,23 +804,29 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Redirect to path with status code</p>
+                        <p>Redirect to path with status code.</p>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    the path for the redirect
+    the path for the redirect.
 
 </div>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    the status code for the redirect
+    the status code for the redirect.
+
+</div>
+
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    Socket.Error if an error occurred while writing to a socket.
 
 </div>
 
 <div class="aside aside-returns">
     <p class="aside-title">Returns</p>
-    this RouterResponse
+    this RouterResponse.
 
 </div>
 
@@ -831,7 +841,7 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>this RouterResponse</p>
+                        <p>this RouterResponse.</p>
 
                       </div>
                     </section>
@@ -877,11 +887,17 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Sets headers and attaches file for downloading</p>
+                        <p>Set headers and attach file for downloading.</p>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    Parameter download: the file to download
+    Parameter download: the file to download.
+
+</div>
+
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    An error in the Cocoa domain, if the file cannot be read.
 
 </div>
 
@@ -906,7 +922,7 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the file to download</p>
+                                  <p>the file to download.</p>
 
                                 </div>
                               </td>
@@ -930,17 +946,17 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Sets the pre-flush lifecycle handler and returns the previous one</p>
+                        <p>Set the pre-flush lifecycle handler and return the previous one.</p>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    Parameter newOnEndInvoked: The new pre-flush lifecycle handler
+    Parameter newOnEndInvoked: The new pre-flush lifecycle handler.
 
 </div>
 
 <div class="aside aside-returns">
     <p class="aside-title">Returns</p>
-    The old pre-flush lifecycle handler
+    The old pre-flush lifecycle handler.
 
 </div>
 
@@ -949,7 +965,7 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setOnEndInvoked</span><span class="p">(</span><span class="n">_</span> <span class="nv">newOnEndInvoked</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura16LifecycleHandler">LifecycleHandler</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura16LifecycleHandler">LifecycleHandler</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setOnEndInvoked</span><span class="p">(</span><span class="n">_</span> <span class="nv">newOnEndInvoked</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura16LifecycleHandler">LifecycleHandler</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura16LifecycleHandler">LifecycleHandler</a></span></code></pre>
 
                         </div>
                       </div>
@@ -965,7 +981,7 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>The new pre-flush lifecycle handler</p>
+                                  <p>The new pre-flush lifecycle handler.</p>
 
                                 </div>
                               </td>
@@ -975,7 +991,7 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>The old pre-flush lifecycle handler</p>
+                        <p>The old pre-flush lifecycle handler.</p>
 
                       </div>
                     </section>
@@ -984,9 +1000,9 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FC6Kitura14RouterResponse20setWrittenDataFilterFFT4bodyV10Foundation4Data_S2_FT4bodyS2__S2_"></a>
+                    <a name="/s:FC6Kitura14RouterResponse20setWrittenDataFilterFFV10Foundation4DataS2_FS2_S2_"></a>
                     <a name="//apple_ref/swift/Method/setWrittenDataFilter(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FC6Kitura14RouterResponse20setWrittenDataFilterFFT4bodyV10Foundation4Data_S2_FT4bodyS2__S2_">setWrittenDataFilter(_:)</a>
+                    <a class="token" href="#/s:FC6Kitura14RouterResponse20setWrittenDataFilterFFV10Foundation4DataS2_FS2_S2_">setWrittenDataFilter(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -994,17 +1010,17 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Sets the written data filter and returns the previous one</p>
+                        <p>Set the written data filter and return the previous one.</p>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    Parameter newWrittenDataFilter: The new written data filter
+    Parameter newWrittenDataFilter: The new written data filter.
 
 </div>
 
 <div class="aside aside-returns">
     <p class="aside-title">Returns</p>
-    The old written data filter
+    The old written data filter.
 
 </div>
 
@@ -1013,7 +1029,7 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setWrittenDataFilter</span><span class="p">(</span><span class="n">_</span> <span class="nv">newWrittenDataFilter</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura17WrittenDataFilter">WrittenDataFilter</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura17WrittenDataFilter">WrittenDataFilter</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setWrittenDataFilter</span><span class="p">(</span><span class="n">_</span> <span class="nv">newWrittenDataFilter</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura17WrittenDataFilter">WrittenDataFilter</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura17WrittenDataFilter">WrittenDataFilter</a></span></code></pre>
 
                         </div>
                       </div>
@@ -1029,7 +1045,7 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>The new written data filter</p>
+                                  <p>The new written data filter.</p>
 
                                 </div>
                               </td>
@@ -1039,7 +1055,7 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>The old written data filter</p>
+                        <p>The old written data filter.</p>
 
                       </div>
                     </section>
@@ -1058,15 +1074,22 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Performs content-negotiation on the Accept HTTP header on the request, when present. It uses
-request.accepts() to select a handler for the request, based on the acceptable types ordered by their
+                        <p>Perform content-negotiation on the Accept HTTP header on the request, when present. </p>
+
+<p>Uses request.accepts() to select a handler for the request, based on the acceptable types ordered by their
 quality values. If the header is not specified, the default callback is invoked. When no match is found,
 the server invokes the default callback if exists, or responds with 406 “Not Acceptable”.
 The Content-Type response header is set when a callback is selected.</p>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    Parameter callbacks: a dictionary that maps content types to handlers
+    Parameter callbacks: a dictionary that maps content types to handlers.
+
+</div>
+
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    Socket.Error if an error occurred while writing to a socket.
 
 </div>
 
@@ -1091,7 +1114,7 @@ The Content-Type response header is set when a callback is selected.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>a dictionary that maps content types to handlers</p>
+                                  <p>a dictionary that maps content types to handlers.</p>
 
                                 </div>
                               </td>
@@ -1110,7 +1133,7 @@ The Content-Type response header is set when a callback is selected.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-08-23)</p>
+      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-09-05)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
