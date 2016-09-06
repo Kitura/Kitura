@@ -19,7 +19,7 @@ import Foundation
 
 extension StaticFileServer {
 
-    class CacheRelatedHeadersSetter : ResponseHeadersSetter {
+    class CacheRelatedHeadersSetter: ResponseHeadersSetter {
 
         /// Uses the file system's last modified value.
         private let addLastModifiedHeader: Bool

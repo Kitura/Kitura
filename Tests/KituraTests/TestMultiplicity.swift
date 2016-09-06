@@ -19,9 +19,9 @@ import XCTest
 @testable import Kitura
 @testable import KituraNet
 
-class TestMultiplicity : XCTestCase {
+class TestMultiplicity: XCTestCase {
 
-    static var allTests : [(String, (TestMultiplicity) -> () throws -> Void)] {
+    static var allTests: [(String, (TestMultiplicity) -> () throws -> Void)] {
         return [
             ("testPlus", testPlus),
             ("testStar", testStar),
@@ -122,8 +122,7 @@ class TestMultiplicity : XCTestCase {
         router.get("/1/(plus)+") {_, response, next in
             do {
                 try response.status(HTTPStatusCode.OK).end()
-            }
-            catch {}
+            } catch {}
 
             next()
         }
@@ -131,16 +130,14 @@ class TestMultiplicity : XCTestCase {
         router.get("/2/(star)*") {_, response, next in
             do {
                 try response.status(HTTPStatusCode.OK).end()
-            }
-            catch {}
+            } catch {}
             next()
         }
 
         router.get("/3/(question)?") {_, response, next in
             do {
                 try response.status(HTTPStatusCode.OK).end()
-            }
-            catch {}
+            } catch {}
 
             next()
         }
@@ -148,8 +145,7 @@ class TestMultiplicity : XCTestCase {
         router.get ("/4/(question)?/(plus+)+/(star)*") {_, response, next in
             do {
                 try response.status(HTTPStatusCode.OK).end()
-            }
-            catch {}
+            } catch {}
 
             next()
         }
