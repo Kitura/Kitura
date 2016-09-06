@@ -16,12 +16,23 @@
 
 // MARK: RouterMiddleware protocol
 
+/// Defines the protocol which all Kitura compliant middleware must implement.
+///
+/// Middleware are class or struct based request handlers. They are often generic
+/// in nature and not tied to a specific request.
 public protocol RouterMiddleware {
 
-    /// The handle operation
+    /// Handle an incoming HTTP request.
     ///
-    /// - Parameter request: the router request
-    /// - Parameter response: the router response
-    /// - Parameter next: the closure to the next operation
+    /// - Parameter request: The `RouterRequest` object used to get information
+    ///                     about the HTTP request.
+    /// - Parameter response: The `RouterResponse` object used to respond to the
+    ///                       HTTP request
+    /// - Parameter next: The closure to invoke to enable the Router to check for
+    ///                  other handlers or middleware to work with this request.
+    ///
+    /// - Throws: Any `ErrorType`. If an error is thrown, processing of the request
+    ///          is stopped, the error handlers, if any are defined, will be invoked,
+    ///          and the user will get a response with a status code of 500.
     func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws
 }

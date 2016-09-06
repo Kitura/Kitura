@@ -20,7 +20,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (31% documented)
+         (99% documented)
       </p>
     
         <p class="header-col header-col--secondary">
@@ -72,10 +72,10 @@
                 <a class="nav-group-task-link" href="../Classes/StaticFileServer.html">StaticFileServer</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/StaticFileServer.html#/s:VC6Kitura16StaticFileServer12CacheOptions">– CacheOptions</a>
+                <a class="nav-group-task-link" href="../Classes/StaticFileServer/CacheOptions.html">– CacheOptions</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/StaticFileServer.html#/s:VC6Kitura16StaticFileServer7Options">– Options</a>
+                <a class="nav-group-task-link" href="../Classes/StaticFileServer/Options.html">– Options</a>
               </li>
             </ul>
           </li>
@@ -131,6 +131,9 @@
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura16LifecycleHandler">LifecycleHandler</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura17WrittenDataFilter">WrittenDataFilter</a>
               </li>
             </ul>
@@ -148,7 +151,8 @@
 
                 </div>
               </div>
-            
+            <p>Create an on the fly <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> from a <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code> closure.</p>
+
           </div>
         </section>
 
@@ -156,6 +160,60 @@
           <div class="section-content">
             <div class="task-group">
               <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Kitura25RouterMiddlewareGeneratorcFT7handlerFzTCS_13RouterRequestCS_14RouterResponseFT_T__T__S0_"></a>
+                    <a name="//apple_ref/swift/Method/init(handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura25RouterMiddlewareGeneratorcFT7handlerFzTCS_13RouterRequestCS_14RouterResponseFT_T__T__S0_">init(handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Initialize a <code>RouterMiddlewareGenerator</code> instance</p>
+
+<div class="aside aside-parameter">
+    <p class="aside-title">Parameter</p>
+    Parameter handler: The closure that is of the type <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code> to be
+                called to handle requests
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The closure that is of the type <code>RouterHandler</code> to be called to handle requests</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
                 <li class="item">
                   <div>
                     <code>
@@ -169,23 +227,27 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Implementation of RouterMiddleware protocol</p>
+                        <p>Implementation of RouterMiddleware protocol. A simple wrapper around the closure
+that will handle the request.</p>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    Parameter request: the router request
+    Parameter request: The <code><a href="../Classes/RouterRequest.html">RouterRequest</a></code> object that is used to work with
+                the incoming request.
 
 </div>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    Parameter response: the router response
+    Parameter response: The <code><a href="../Classes/RouterResponse.html">RouterResponse</a></code> object used to send responses
+                 to the HTTP request.
 
 </div>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    Parameter next: the closure to the next operation
+    Parameter next: The closure to invoke to cause the router to inspect the
+             path in the list of paths.
 
 </div>
 
@@ -194,7 +256,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">handle</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterRequest.html">RouterRequest</a></span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterResponse.html">RouterResponse</a></span><span class="p">,</span> <span class="nv">next</span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">handle</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterRequest.html">RouterRequest</a></span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterResponse.html">RouterResponse</a></span><span class="p">,</span> <span class="nv">next</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span></code></pre>
 
                         </div>
                       </div>
@@ -210,7 +272,7 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>the router request</p>
+                                  <p>The <code>RouterRequest</code> object that is used to work with the incoming request.</p>
 
                                 </div>
                               </td>
@@ -223,7 +285,7 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>the router response</p>
+                                  <p>The <code>RouterResponse</code> object used to send responses to the HTTP request.</p>
 
                                 </div>
                               </td>
@@ -236,7 +298,7 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>the closure to the next operation</p>
+                                  <p>The closure to invoke to cause the router to inspect the path in the list of paths.</p>
 
                                 </div>
                               </td>
@@ -255,7 +317,7 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-08-23)</p>
+      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-09-05)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

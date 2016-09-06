@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>HeaderType Enum Reference</title>
+    <title>Options Struct Reference</title>
     <link rel="stylesheet" type="text/css" href="../../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../../css/highlight.css" />
     <meta charset="utf-8">
@@ -11,9 +11,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Enum/HeaderType" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Struct/Options" class="dashAnchor"></a>
 
-    <a title="HeaderType Enum Reference"></a>
+    <a title="Options Struct Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -35,7 +35,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../../index.html">Kitura Reference</a>
       <img class="carat" src="../../img/carat.png" />
-      HeaderType Enum Reference
+      Options Struct Reference
     </p>
 
     <div class="content-wrapper">
@@ -144,15 +144,14 @@
 
         <section class="section">
           <div class="section-content">
-            <h1>HeaderType</h1>
+            <h1>Options</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">HeaderType</span></code></pre>
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Options</span></code></pre>
 
                 </div>
               </div>
-            <p>Possible header types that can be found in a part of multi-part form
-body.</p>
+            <p>Configuration options for StaticFileServer.</p>
 
           </div>
         </section>
@@ -164,9 +163,9 @@ body.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FOV6Kitura4Part10HeaderType11dispositionFMS1_S1_"></a>
-                    <a name="//apple_ref/swift/Element/disposition" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FOV6Kitura4Part10HeaderType11dispositionFMS1_S1_">disposition</a>
+                    <a name="/s:FVC6Kitura16StaticFileServer7OptionscFT18possibleExtensionsGSaSS_22serveIndexForDirectorySb8redirectSb12cacheOptionsVS0_12CacheOptions_S1_"></a>
+                    <a name="//apple_ref/swift/Method/init(possibleExtensions:serveIndexForDirectory:redirect:cacheOptions:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FVC6Kitura16StaticFileServer7OptionscFT18possibleExtensionsGSaSS_22serveIndexForDirectorySb8redirectSb12cacheOptionsVS0_12CacheOptions_S1_">init(possibleExtensions:serveIndexForDirectory:redirect:cacheOptions:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -174,78 +173,105 @@ body.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A Content-Disposition header.</p>
+                        <p>Initialize an Options instance.</p>
+
+<div class="aside aside-parameter">
+    <p class="aside-title">Parameter</p>
+    Parameter possibleExtensions: an array of file extensions to be added
+to the file name in case the file was not found. The extensions are 
+added in the order they appear in the array, and a new search is 
+performed.
+
+</div>
+
+<div class="aside aside-parameter">
+    <p class="aside-title">Parameter</p>
+    Parameter serveIndexForDirectory: an indication whether to serve
+<q>index.html</q> file the requested path is a directory.
+
+</div>
+
+<div class="aside aside-parameter">
+    <p class="aside-title">Parameter</p>
+    Parameter redirect: an indication whether to redirect to trailing
+<q>/</q> when the requested path is a directory.
+
+</div>
+
+<div class="aside aside-parameter">
+    <p class="aside-title">Parameter</p>
+    Parameter cacheOptions: cache options for StaticFileServer.
+
+</div>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="n">disposition</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">possibleExtensions</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span> <span class="nv">serveIndexForDirectory</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+             <span class="nv">redirect</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="nv">cacheOptions</span><span class="p">:</span> <span class="kt"><a href="../../Classes/StaticFileServer/CacheOptions.html">CacheOptions</a></span> <span class="o">=</span> <span class="kt"><a href="../../Classes/StaticFileServer/CacheOptions.html">CacheOptions</a></span><span class="p">())</span></code></pre>
 
                         </div>
                       </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:FOV6Kitura4Part10HeaderType4typeFMS1_S1_"></a>
-                    <a name="//apple_ref/swift/Element/type" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FOV6Kitura4Part10HeaderType4typeFMS1_S1_">type</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>A Content-Type header.</p>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>possibleExtensions</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>an array of file extensions to be added to the file name in case the file was not found. The extensions are added in the order they appear in the array, and a new search is performed.</p>
 
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="n">type</span></code></pre>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>serveIndexForDirectory</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>an indication whether to serve “index.html” file the requested path is a directory.</p>
 
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:FOV6Kitura4Part10HeaderType16transferEncodingFMS1_S1_"></a>
-                    <a name="//apple_ref/swift/Element/transferEncoding" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FOV6Kitura4Part10HeaderType16transferEncodingFMS1_S1_">transferEncoding</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>A Content-Transfer-Encoding header.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>redirect</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>an indication whether to redirect to trailing “/” when the requested path is a directory.</p>
 
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="n">transferEncoding</span></code></pre>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>cacheOptions</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>cache options for StaticFileServer.</p>
 
-                        </div>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
                     </section>
                   </div>

@@ -17,6 +17,31 @@
 import SwiftyJSON
 import Foundation
 
+// MARK ParsedBody
+
+/// The result of parsing the body of the request.
+///
+/// When a body of a request is parsed the results of the parsing are placed 
+/// in the associated value of the enum case based on Content-Type
 public indirect enum ParsedBody {
-    case json(JSON), urlEncoded([String:String]), text(String), raw(Data), multipart([Part])
+    
+    /// If the content type was "application/json" this associated value will 
+    /// contain the body of a JSON object.
+    case json(JSON)
+    
+    /// If the content type was "application/x-www-form-urlencoded" this 
+    /// associated value will contain a representation of the body as a
+    /// dictionary of key-value pairs.
+    case urlEncoded([String:String])
+    
+    /// If the content type was "text" this associated value will contain a
+    /// representation of the body as a String.
+    case text(String)
+    
+    /// A raw representation of the body as a Data struct.
+    case raw(Data)
+    
+    /// If the content type was "multipart/form-data" this associated value will
+    /// contain an array of parts of multi-part respresentation of the body.
+    case multipart([Part])
 }

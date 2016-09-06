@@ -16,13 +16,36 @@
 
 import Foundation
 
+// MARK Part
+
+/// A part of a parsed multi-part form body.
 public struct Part {
+    
+    /// The name attribute of the part.
     public internal(set) var name = ""
+    
+    /// Content type of the data in the part.
     public internal(set) var type = "text/plain"
+    
+    /// A dictionary of the headers: Content-Type, Content-Disposition, 
+    /// Content-Transfer-Encoding.
     public internal(set) var headers = [HeaderType: String]()
+    
+    /// The contents of the part.
     public internal(set) var body: ParsedBody = .raw(Data())
     
+    
+    /// Possible header types that can be found in a part of multi-part form
+    /// body.
     public enum HeaderType {
-        case disposition, type, transferEncoding
+
+        /// A Content-Disposition header.
+        case disposition
+        
+        /// A Content-Type header.
+        case type
+        
+        /// A Content-Transfer-Encoding header.
+        case transferEncoding
     }
 }

@@ -18,21 +18,42 @@
 
 extension Router {
     // MARK: error
+    
+    /// Setup error handling that will cause a set of one or more closures
+    /// of the type `RouterHandler` to be invoked when an error occurs.
+    ///
+    /// - Parameter handler: A comma delimited set of `RouterHandler` that will be
+    ///                     invoked if an error ocurrs.
     @discardableResult
     public func error(_ handler: @escaping RouterHandler...) -> Router {
         return routingHelper(.error, pattern: nil, handler: handler)
     }
 
+    /// Setup error handling that will cause an array of one or more closures
+    /// of the type `RouterHandler` to be invoked when an error occurs.
+    ///
+    /// - Parameter handler: An array of `RouterHandler` that will be
+    ///                     invoked if an error ocurrs.
     @discardableResult
     public func error(_ handler: [RouterHandler]) -> Router {
         return routingHelper(.error, pattern: nil, handler: handler)
     }
 
+    /// Setup error handling that will cause a set of one or more `RouterMiddleware`
+    /// to be invoked when an error occurs.
+    ///
+    /// - Parameter middleware: A comma delimited set of `RouterMiddleware` that will be
+    ///                        invoked if an error ocurrs.
     @discardableResult
     public func error(_ middleware: RouterMiddleware...) -> Router {
         return routingHelper(.error, pattern: nil, middleware: middleware)
     }
 
+    /// Setup error handling that will cause an array of one or more `RouterMiddleware`
+    /// to be invoked when an error occurs.
+    ///
+    /// - Parameter middleware: An array of `RouterMiddleware` that will be
+    ///                        invoked if an error ocurrs.
     @discardableResult
     public func error(_ middleware: [RouterMiddleware]) -> Router {
         return routingHelper(.error, pattern: nil, middleware: middleware)

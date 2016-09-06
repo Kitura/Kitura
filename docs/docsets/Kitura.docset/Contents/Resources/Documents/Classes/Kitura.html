@@ -20,7 +20,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (31% documented)
+         (99% documented)
       </p>
     
         <p class="header-col header-col--secondary">
@@ -72,10 +72,10 @@
                 <a class="nav-group-task-link" href="../Classes/StaticFileServer.html">StaticFileServer</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/StaticFileServer.html#/s:VC6Kitura16StaticFileServer12CacheOptions">– CacheOptions</a>
+                <a class="nav-group-task-link" href="../Classes/StaticFileServer/CacheOptions.html">– CacheOptions</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/StaticFileServer.html#/s:VC6Kitura16StaticFileServer7Options">– Options</a>
+                <a class="nav-group-task-link" href="../Classes/StaticFileServer/Options.html">– Options</a>
               </li>
             </ul>
           </li>
@@ -131,6 +131,9 @@
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura16LifecycleHandler">LifecycleHandler</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura17WrittenDataFilter">WrittenDataFilter</a>
               </li>
             </ul>
@@ -148,7 +151,8 @@
 
                 </div>
               </div>
-            
+            <p>A set of helper functions to make it easier to create, start, and stop Kitura based servers.</p>
+
           </div>
         </section>
 
@@ -159,9 +163,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:ZFC6Kitura6Kitura13addHTTPServerFT6onPortSi4withP9KituraNet14ServerDelegate__CS1_10HTTPServer"></a>
+                    <a name="/s:ZFC6Kitura6Kitura13addHTTPServerERR"></a>
                     <a name="//apple_ref/swift/Method/addHTTPServer(onPort:with:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:ZFC6Kitura6Kitura13addHTTPServerFT6onPortSi4withP9KituraNet14ServerDelegate__CS1_10HTTPServer">addHTTPServer(onPort:with:)</a>
+                    <a class="token" href="#/s:ZFC6Kitura6Kitura13addHTTPServerERR">addHTTPServer(onPort:with:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -172,7 +176,7 @@
                         <p>Add an HTTPServer on a port with a delegate.</p>
 
 <p>The server is only registered with the framework, it does not start listening
-on the port until Kitura.run() is called.</p>
+on the port until Kitura.run() or Kitura.start() is called.</p>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
@@ -245,9 +249,9 @@ on the port until Kitura.run() is called.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:ZFC6Kitura6Kitura16addFastCGIServerFT6onPortSi4withP9KituraNet14ServerDelegate__CS1_13FastCGIServer"></a>
+                    <a name="/s:ZFC6Kitura6Kitura16addFastCGIServerERR"></a>
                     <a name="//apple_ref/swift/Method/addFastCGIServer(onPort:with:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:ZFC6Kitura6Kitura16addFastCGIServerFT6onPortSi4withP9KituraNet14ServerDelegate__CS1_13FastCGIServer">addFastCGIServer(onPort:with:)</a>
+                    <a class="token" href="#/s:ZFC6Kitura6Kitura16addFastCGIServerERR">addFastCGIServer(onPort:with:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -258,7 +262,7 @@ on the port until Kitura.run() is called.</p>
                         <p>Add a FastCGIServer on a port with a delegate.</p>
 
 <p>The server is only registered with the framework, it does not start listening
-on the port until Kitura.run() is called.</p>
+on the port until Kitura.run() or Kitura.start() is called.</p>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
@@ -272,7 +276,11 @@ on the port until Kitura.run() is called.</p>
 
 </div>
 
-<p><li>Return: The created <code>FastCGIServer</code>.</li></p>
+<div class="aside aside-returns">
+    <p class="aside-title">Returns</p>
+    The created <code>FastCGIServer</code>.
+
+</div>
 
                       </div>
                       <div class="declaration">
@@ -316,6 +324,11 @@ on the port until Kitura.run() is called.</p>
                           </tbody>
                         </table>
                       </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The created <code>FastCGIServer</code>.</p>
+
+                      </div>
                     </section>
                   </div>
                 </li>
@@ -354,6 +367,70 @@ on the port until Kitura.run() is called.</p>
                     </section>
                   </div>
                 </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:ZFC6Kitura6Kitura5startFT_T_"></a>
+                    <a name="//apple_ref/swift/Method/start()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZFC6Kitura6Kitura5startFT_T_">start()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Start all registered servers and return</p>
+
+<p>Make all registered servers start listening on their port.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kd">func</span> <span class="nf">start</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:ZFC6Kitura6Kitura4stopFT_T_"></a>
+                    <a name="//apple_ref/swift/Method/stop()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZFC6Kitura6Kitura4stopFT_T_">stop()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Stop all registered servers</p>
+
+<p>Make all registered servers stop listening on their port.</p>
+
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    All of the registered servers are unregistered after they are stopped.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kd">func</span> <span class="nf">stop</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
               </ul>
             </div>
           </div>
@@ -362,7 +439,7 @@ on the port until Kitura.run() is called.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-08-23)</p>
+      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-09-05)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
