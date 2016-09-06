@@ -27,7 +27,7 @@ extension StaticFileServer {
         /// Value of max-age in Cache-Control header.
         private let maxAgeCacheControlHeader: Int
 
-        /// Generate ETag..
+        /// Generate ETag.
         private var generateETag: Bool
 
         init(addLastModifiedHeader: Bool, maxAgeCacheControlHeader: Int, generateETag: Bool) {
@@ -40,6 +40,7 @@ extension StaticFileServer {
                                       fileAttributes: [FileAttributeKey : Any]) {
             addLastModified(response: response, fileAttributes: fileAttributes)
             addETag(response: response, fileAttributes: fileAttributes)
+            setMaxAge(response: response)
         }
 
         private func addLastModified(response: RouterResponse,
@@ -65,6 +66,10 @@ extension StaticFileServer {
                     response.headers["Etag"] = etag
                 }
             }
+        }
+        
+        private func setMaxAge(response: RouterResponse) {
+            response.headers["Cache-Control"] = "max-age=\(maxAgeCacheControlHeader)"
         }
     }
 }

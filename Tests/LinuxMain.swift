@@ -1,4 +1,4 @@
-/**
+a/**
  * Copyright IBM Corporation 2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,5 +26,6 @@ XCTMain([
     testCase(TestMultiplicity.allTests),
     testCase(TestCookies.allTests),
     testCase(TestSubrouter.allTests),
-    testCase(TestRouteRegex.allTests)
+    testCase(TestRouteRegex.allTests),
+    testCase(TestStaticFileServer.allTests)
 ])
