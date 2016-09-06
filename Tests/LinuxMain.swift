@@ -26,5 +26,6 @@ XCTMain([
     testCase(TestMultiplicity.allTests),
     testCase(TestCookies.allTests),
     testCase(TestSubrouter.allTests),
-    testCase(TestRouteRegex.allTests)
+    testCase(TestRouteRegex.allTests),
+    testCase(TestStaticFileServer.allTests)
 ])
