@@ -57,10 +57,10 @@ extension StaticFileServer {
                              fileAttributes: [FileAttributeKey : Any]) {
             if generateETag {
                 let date = fileAttributes[FileAttributeKey.modificationDate] as? Date
-                let size = fileAttributes[FileAttributeKey.size] as? Int
+                let size = fileAttributes[FileAttributeKey.size] as? NSNumber
                 
                 if let date = date, let size = size {
-                    let sizeHex = String(size, radix: 16, uppercase: false)
+                    let sizeHex = String(Int(size), radix: 16, uppercase: false)
                     let timeHex = String(Int(date.timeIntervalSince1970), radix: 16, uppercase: false)
                     let etag = "W/\"\(sizeHex)-\(timeHex)\""
                     response.headers["Etag"] = etag
