@@ -30,3 +30,10 @@ before_install:
 
 script:
   - ./Package-Builder/build-package.sh $TRAVIS_BRANCH $TRAVIS_BUILD_DIR
+
+language: generic
+osx_image: xcode8
+script: ./xcodebuild.sh
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
