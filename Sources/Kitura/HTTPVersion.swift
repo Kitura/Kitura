@@ -14,7 +14,16 @@
  * limitations under the License.
  */
 
+// MARK HttpVersion
+
+/// The version of HTTP protocol.
+///
+/// HTTP uses a "major.minor" numbering scheme to indicate versions of the protocol.
 public struct HTTPVersion {
+    
+    /// The "major" part of the protocol version.
     public let major: UInt16
+    
+    /// The "minor" part of the protocol version.
     public let minor: UInt16
 }

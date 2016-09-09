@@ -20,9 +20,9 @@ import Foundation
 @testable import Kitura
 @testable import KituraNet
 
-class TestRequests : XCTestCase {
+class TestRequests: XCTestCase {
 
-    static var allTests : [(String, (TestRequests) -> () throws -> Void)] {
+    static var allTests: [(String, (TestRequests) -> () throws -> Void)] {
         return [
                    ("testURLParameters", testURLParameters),
                    ("testCustomMiddlewareURLParameter", testCustomMiddlewareURLParameter),
@@ -115,8 +115,7 @@ class TestRequests : XCTestCase {
             let u1 = request.userInfo["u1"] as? NSString ?? "(nil)"
             do {
                 try response.send("<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=\(p1)<p><p>q=\(q)<p><p>u1=\(u1)</body></html>\n\n").end()
-            }
-            catch {}
+            } catch {}
             next()
         }
 

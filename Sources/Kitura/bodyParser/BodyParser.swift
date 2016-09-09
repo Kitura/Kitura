@@ -21,7 +21,7 @@ import Foundation
 
 // MARK: BodyParser
 
-///
+/// Router middleware for parsing the body of the request.
 public class BodyParser: RouterMiddleware {
 
     /// Static buffer size (in bytes)
@@ -33,15 +33,15 @@ public class BodyParser: RouterMiddleware {
          "application/x-www-form-urlencoded": URLEncodedBodyParser(),
          "text": TextBodyParser()]
 
-    /// Initializes a BodyParser instance
-    /// Needed since default initalizer is internal
+    /// Initializes a BodyParser instance.
+    /// Needed since default initalizer is internal.
     public init() {}
 
-    /// Handle the request
+    /// Handle the request, i.e. parse the body of the request.
     ///
-    /// - Parameter request: the router request
-    /// - Parameter response: the router response
-    /// - Parameter next: the closure for the next execution block
+    /// - Parameter request: the router request.
+    /// - Parameter response: the router response.
+    /// - Parameter next: the closure for the next execution block.
     public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws {
         guard request.body == nil else {
             return next() // the body was already parsed
@@ -56,11 +56,11 @@ public class BodyParser: RouterMiddleware {
         next()
     }
 
-    /// Parse the incoming message
+    /// Parse the body of the incoming message.
     ///
-    /// - Parameter message: message coming from the socket
-    /// - Parameter contentType: the contentType as a string
-    /// - Returns: the parsed body
+    /// - Parameter message: message coming from the socket.
+    /// - Parameter contentType: the content type as a String.
+    /// - Returns: the parsed body.
     public class func parse(_ message: RouterRequest, contentType: String?) -> ParsedBody? {
         guard let contentType = contentType else {
             return nil
@@ -114,11 +114,11 @@ public class BodyParser: RouterMiddleware {
         return nil
     }
 
-    /// Read the Body data
+    /// Read the body data of the request.
     ///
-    /// - Parameter with: the socket reader
-    /// - Throws: ???
-    /// - Returns: data for the body
+    /// - Parameter with: the socket reader.
+    /// - Throws: Socket.Error if an error occurred while reading from a socket.
+    /// - Returns: data for the body.
     public class func readBodyData(with reader: RouterRequest) throws -> Data {
         var bodyData = Data()
 

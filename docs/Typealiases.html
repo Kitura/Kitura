@@ -19,7 +19,7 @@
         <a class="header-link" href="index.html">
           Kitura Docs
         </a>
-         (31% documented)
+         (99% documented)
       </p>
     
         <p class="header-col header-col--secondary">
@@ -71,10 +71,10 @@
                 <a class="nav-group-task-link" href="Classes/StaticFileServer.html">StaticFileServer</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Classes/StaticFileServer.html#/s:VC6Kitura16StaticFileServer12CacheOptions">– CacheOptions</a>
+                <a class="nav-group-task-link" href="Classes/StaticFileServer/CacheOptions.html">– CacheOptions</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Classes/StaticFileServer.html#/s:VC6Kitura16StaticFileServer7Options">– Options</a>
+                <a class="nav-group-task-link" href="Classes/StaticFileServer/Options.html">– Options</a>
               </li>
             </ul>
           </li>
@@ -130,6 +130,9 @@
                 <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura16LifecycleHandler">LifecycleHandler</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura17WrittenDataFilter">WrittenDataFilter</a>
               </li>
             </ul>
@@ -148,6 +151,105 @@
 
         <section class="section">
           <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura13RouterHandler"></a>
+                    <a name="//apple_ref/swift/Alias/RouterHandler" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura13RouterHandler">RouterHandler</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The definition of the closure type that is used by the <code><a href="Classes/Router.html">Router</a></code> class
+when routing HTTP requests to closure.</p>
+
+<div class="aside aside-parameter">
+    <p class="aside-title">Parameter</p>
+    Parameter request: The <code><a href="Classes/RouterRequest.html">RouterRequest</a></code> object that is used to work with
+                the incoming request.
+
+</div>
+
+<div class="aside aside-parameter">
+    <p class="aside-title">Parameter</p>
+    Parameter response: The <code><a href="Classes/RouterResponse.html">RouterResponse</a></code> object used to send responses
+                 to the HTTP request.
+
+</div>
+
+<div class="aside aside-parameter">
+    <p class="aside-title">Parameter</p>
+    Parameter next: The closure to invoke to cause the router to inspect the
+             path in the list of paths.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">RouterHandler</span> <span class="o">=</span> <span class="p">(</span><span class="kt"><a href="Classes/RouterRequest.html">RouterRequest</a></span><span class="p">,</span> <span class="kt"><a href="Classes/RouterResponse.html">RouterResponse</a></span><span class="p">,</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>request</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code>RouterRequest</code> object that is used to work with the incoming request.</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>response</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code>RouterResponse</code> object used to send responses to the HTTP request.</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>next</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The closure to invoke to cause the router to inspect the path in the list of paths.</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
             <div class="task-group">
               <div class="task-name-container">
                 <a name="/RouterResponse"></a>
@@ -170,7 +272,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Type alias for <q>Before flush</q> (i.e. before headers and body are written) lifecycle handler</p>
+                        <p>Type alias for <q>Before flush</q> (i.e. before headers and body are written) lifecycle handler.</p>
 
                       </div>
                       <div class="declaration">
@@ -197,14 +299,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Type alias for written data filter, i.e. pre-write lifecycle handler</p>
+                        <p>Type alias for written data filter, i.e. pre-write lifecycle handler.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">WrittenDataFilter</span> <span class="o">=</span> <span class="p">(</span><span class="nv">body</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Data</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">WrittenDataFilter</span> <span class="o">=</span> <span class="p">(</span><span class="kt">Data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Data</span></code></pre>
 
                         </div>
                       </div>
@@ -219,7 +321,7 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-08-23)</p>
+      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-09-05)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

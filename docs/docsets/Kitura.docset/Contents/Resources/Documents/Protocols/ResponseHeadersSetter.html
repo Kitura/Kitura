@@ -20,7 +20,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (31% documented)
+         (99% documented)
       </p>
     
         <p class="header-col header-col--secondary">
@@ -72,10 +72,10 @@
                 <a class="nav-group-task-link" href="../Classes/StaticFileServer.html">StaticFileServer</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/StaticFileServer.html#/s:VC6Kitura16StaticFileServer12CacheOptions">– CacheOptions</a>
+                <a class="nav-group-task-link" href="../Classes/StaticFileServer/CacheOptions.html">– CacheOptions</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/StaticFileServer.html#/s:VC6Kitura16StaticFileServer7Options">– Options</a>
+                <a class="nav-group-task-link" href="../Classes/StaticFileServer/Options.html">– Options</a>
               </li>
             </ul>
           </li>
@@ -131,6 +131,9 @@
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura16LifecycleHandler">LifecycleHandler</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura17WrittenDataFilter">WrittenDataFilter</a>
               </li>
             </ul>
@@ -142,7 +145,14 @@
         <section class="section">
           <div class="section-content">
             <h1>ResponseHeadersSetter</h1>
-            <p>Undocumented</p>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">ResponseHeadersSetter</span></code></pre>
+
+                </div>
+              </div>
+            <p>A protocol for providing a custom method for setting
+the headers of the response of static file serving middleware.</p>
 
           </div>
         </section>
@@ -154,9 +164,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FP6Kitura21ResponseHeadersSetter24setCustomResponseHeadersFT8responseCS_14RouterResponse8filePathSS14fileAttributesGVs10DictionaryVSC16FileAttributeKeyPs9AnyObject___T_"></a>
+                    <a name="/s:FP6Kitura21ResponseHeadersSetter24setCustomResponseHeadersFT8responseCS_14RouterResponse8filePathSS14fileAttributesGVs10DictionaryVSC16FileAttributeKeyP___T_"></a>
                     <a name="//apple_ref/swift/Method/setCustomResponseHeaders(response:filePath:fileAttributes:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FP6Kitura21ResponseHeadersSetter24setCustomResponseHeadersFT8responseCS_14RouterResponse8filePathSS14fileAttributesGVs10DictionaryVSC16FileAttributeKeyPs9AnyObject___T_">setCustomResponseHeaders(response:filePath:fileAttributes:)</a>
+                    <a class="token" href="#/s:FP6Kitura21ResponseHeadersSetter24setCustomResponseHeadersFT8responseCS_14RouterResponse8filePathSS14fileAttributesGVs10DictionaryVSC16FileAttributeKeyP___T_">setCustomResponseHeaders(response:filePath:fileAttributes:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -164,8 +174,80 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Set the headers of the response</p>
 
+<div class="aside aside-parameter">
+    <p class="aside-title">Parameter</p>
+    Parameter response: the router response
+
+</div>
+
+<div class="aside aside-parameter">
+    <p class="aside-title">Parameter</p>
+    Parameter filePath: the path of the file being served
+
+</div>
+
+<div class="aside aside-parameter">
+    <p class="aside-title">Parameter</p>
+    Parameter fileAttributes: an array of attributes of the file being served
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">setCustomResponseHeaders</span><span class="p">(</span><span class="nv">response</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterResponse.html">RouterResponse</a></span><span class="p">,</span> <span class="nv">filePath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">fileAttributes</span><span class="p">:</span> <span class="p">[</span><span class="kt">FileAttributeKey</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">])</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>response</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>the router response</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>filePath</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>the path of the file being served</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>fileAttributes</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>an array of attributes of the file being served</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
                     </section>
                   </div>
@@ -178,7 +260,7 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-08-23)</p>
+      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-09-05)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

@@ -20,7 +20,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (31% documented)
+         (99% documented)
       </p>
     
         <p class="header-col header-col--secondary">
@@ -72,10 +72,10 @@
                 <a class="nav-group-task-link" href="../Classes/StaticFileServer.html">StaticFileServer</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/StaticFileServer.html#/s:VC6Kitura16StaticFileServer12CacheOptions">– CacheOptions</a>
+                <a class="nav-group-task-link" href="../Classes/StaticFileServer/CacheOptions.html">– CacheOptions</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/StaticFileServer.html#/s:VC6Kitura16StaticFileServer7Options">– Options</a>
+                <a class="nav-group-task-link" href="../Classes/StaticFileServer/Options.html">– Options</a>
               </li>
             </ul>
           </li>
@@ -131,6 +131,9 @@
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura16LifecycleHandler">LifecycleHandler</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura17WrittenDataFilter">WrittenDataFilter</a>
               </li>
             </ul>
@@ -148,7 +151,9 @@
 
                 </div>
               </div>
-            
+            <p>A set of APIs to work with Content-Type headers, whether to generate the value
+or to determine if it&rsquo;s an acceptable value.</p>
+
           </div>
         </section>
 
@@ -169,7 +174,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Shared singleton instance</p>
+                        <p>Shared singleton instance.</p>
 
                       </div>
                       <div class="declaration">
@@ -196,17 +201,17 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Get the content type for the given file extension</p>
+                        <p>Get the content type for the given file extension.</p>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    Parameter forExtension: the file extension
+    Parameter forExtension: the file extension.
 
 </div>
 
 <div class="aside aside-returns">
     <p class="aside-title">Returns</p>
-    an Optional String for the content type
+    an Optional String for the content type.
 
 </div>
 
@@ -231,7 +236,7 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>the file extension</p>
+                                  <p>the file extension.</p>
 
                                 </div>
                               </td>
@@ -241,7 +246,7 @@
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>an Optional String for the content type</p>
+                        <p>an Optional String for the content type.</p>
 
                       </div>
                     </section>
@@ -260,17 +265,17 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Get the content type for the given file based on its extension</p>
+                        <p>Get the content type for the given file based on its extension.</p>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    Parameter forFileName: the file
+    Parameter forFileName: the file name.
 
 </div>
 
 <div class="aside aside-returns">
     <p class="aside-title">Returns</p>
-    an Optional String for the content type
+    an Optional String for the content type.
 
 </div>
 
@@ -295,7 +300,7 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>the file</p>
+                                  <p>the file name.</p>
 
                                 </div>
                               </td>
@@ -305,7 +310,7 @@
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>an Optional String for the content type</p>
+                        <p>an Optional String for the content type.</p>
 
                       </div>
                     </section>
@@ -324,23 +329,23 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Check if the message content type matches the type descriptor</p>
+                        <p>Check if the message content type matches the type descriptor.</p>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    Parameter messageContentType: the content type
+    Parameter messageContentType: the content type.
 
 </div>
 
 <div class="aside aside-parameter">
     <p class="aside-title">Parameter</p>
-    Parameter ofType: the description of the type
+    Parameter ofType: the description of the type.
 
 </div>
 
 <div class="aside aside-returns">
     <p class="aside-title">Returns</p>
-    true if the types matched
+    true if the types matched.
 
 </div>
 
@@ -365,7 +370,7 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>the content type</p>
+                                  <p>the content type.</p>
 
                                 </div>
                               </td>
@@ -378,7 +383,7 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>the description of the type</p>
+                                  <p>the description of the type.</p>
 
                                 </div>
                               </td>
@@ -388,7 +393,7 @@
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>true if the types matched</p>
+                        <p>true if the types matched.</p>
 
                       </div>
                     </section>
@@ -402,7 +407,7 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-08-23)</p>
+      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-09-05)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

@@ -19,7 +19,7 @@
         <a class="header-link" href="index.html">
           Kitura Docs
         </a>
-         (31% documented)
+         (99% documented)
       </p>
     
         <p class="header-col header-col--secondary">
@@ -71,10 +71,10 @@
                 <a class="nav-group-task-link" href="Classes/StaticFileServer.html">StaticFileServer</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Classes/StaticFileServer.html#/s:VC6Kitura16StaticFileServer12CacheOptions">– CacheOptions</a>
+                <a class="nav-group-task-link" href="Classes/StaticFileServer/CacheOptions.html">– CacheOptions</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Classes/StaticFileServer.html#/s:VC6Kitura16StaticFileServer7Options">– Options</a>
+                <a class="nav-group-task-link" href="Classes/StaticFileServer/Options.html">– Options</a>
               </li>
             </ul>
           </li>
@@ -130,6 +130,9 @@
                 <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura16LifecycleHandler">LifecycleHandler</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura17WrittenDataFilter">WrittenDataFilter</a>
               </li>
             </ul>
@@ -163,7 +166,8 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>A set of helper functions to make it easier to create, start, and stop Kitura based servers.</p>
+
                         <a href="Classes/Kitura.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
@@ -194,7 +198,17 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>The <code>Router</code> class provides the external intreface for the routing of requests to
+the appropriate code for handling. This includes:</p>
+
+<ul>
+<li>Routing requests to closures with the signature of <code><a href="Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code></li>
+<li>Routing requests to the handle function of classes that implement the
+<code><a href="Protocols/RouterMiddleware.html">RouterMiddleware</a></code> protocol.</li>
+<li>Routing the request to a template engine to generate the appropriate output.</li>
+<li>Serving the landing page when someone makes an HTTP request with a path of slash (/).</li>
+</ul>
+
                         <a href="Classes/Router.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
@@ -225,7 +239,8 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>A set of helper functions for router path matching using regular expression.</p>
+
                         <a href="Classes/RouteRegex.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
@@ -263,7 +278,8 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>Create an on the fly <code><a href="Protocols/RouterMiddleware.html">RouterMiddleware</a></code> from a <code><a href="Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code> closure.</p>
+
                         <a href="Classes/RouterMiddlewareGenerator.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
@@ -301,7 +317,8 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>Router request.</p>
+
                         <a href="Classes/RouterRequest.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
@@ -339,7 +356,8 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>Router response that the server sends as a reply to <code><a href="Classes/RouterRequest.html">RouterRequest</a></code>.</p>
+
                         <a href="Classes/RouterResponse.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
@@ -377,7 +395,8 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>Router middleware for parsing the body of the request.</p>
+
                         <a href="Classes/BodyParser.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
@@ -415,7 +434,9 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>A set of APIs to work with Content-Type headers, whether to generate the value
+or to determine if it&rsquo;s an acceptable value.</p>
+
                         <a href="Classes/ContentType.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
@@ -453,7 +474,8 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>A router middleware that serves static files from a given path.</p>
+
                         <a href="Classes/StaticFileServer.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
@@ -475,7 +497,7 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-08-23)</p>
+      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-09-05)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

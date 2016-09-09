@@ -19,7 +19,8 @@ import LoggerAPI
 
 // MARK: ContentType
 
-///
+/// A set of APIs to work with Content-Type headers, whether to generate the value
+/// or to determine if it's an acceptable value.
 public class ContentType {
 
     /// Whether to use the local mime-type definitions or the ones in the file
@@ -32,7 +33,7 @@ public class ContentType {
     /// A dictionary of extensions to MIME type descriptions
     private var extToContentType = [String:String]()
 
-    /// Shared singleton instance
+    /// Shared singleton instance.
     public static let sharedInstance = ContentType()
 
     /// The following function loads the MIME types from an external file
@@ -76,18 +77,18 @@ public class ContentType {
         }
     }
 
-    /// Get the content type for the given file extension
+    /// Get the content type for the given file extension.
     ///
-    /// - Parameter forExtension: the file extension
-    /// - Returns: an Optional String for the content type
+    /// - Parameter forExtension: the file extension.
+    /// - Returns: an Optional String for the content type.
     public func getContentType(forExtension ext: String) -> String? {
         return extToContentType[ext]
     }
 
-    /// Get the content type for the given file based on its extension
+    /// Get the content type for the given file based on its extension.
     ///
-    /// - Parameter forFileName: the file
-    /// - Returns: an Optional String for the content type
+    /// - Parameter forFileName: the file name.
+    /// - Returns: an Optional String for the content type.
     public func getContentType(forFileName fileName: String) -> String? {
         let lastPathElemRange: Range<String.Index>
         let extRange: Range<String.Index>
@@ -109,11 +110,11 @@ public class ContentType {
         return getContentType(forExtension: fileName.substring(with: extRange))
     }
 
-    /// Check if the message content type matches the type descriptor
+    /// Check if the message content type matches the type descriptor.
     ///
-    /// - Parameter messageContentType: the content type
-    /// - Parameter ofType: the description of the type
-    /// - Returns: true if the types matched
+    /// - Parameter messageContentType: the content type.
+    /// - Parameter ofType: the description of the type.
+    /// - Returns: true if the types matched.
     public func isContentType(_ messageContentType: String, ofType typeDescriptor: String) -> Bool {
 
         let type = typeDescriptor.lowercased()
@@ -144,9 +145,10 @@ public class ContentType {
         return false
     }
 
-    /// Normalized the type
+    /// Normalize the type
     ///
     /// - Parameter type: the content type
+    ///
     /// - Returns: the normalized String
     private func normalize(type: String) -> String {
 
