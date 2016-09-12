@@ -15,7 +15,6 @@
  */
 
 import KituraNet
-import KituraSys
 import SwiftyJSON
 
 import Foundation
@@ -149,7 +148,7 @@ public class RouterResponse {
     /// - Returns: this RouterResponse.
     @discardableResult
     public func send(_ str: String) -> RouterResponse {
-        if let data = StringUtils.toUtf8String(str) {
+        if let data = str.data(using: .utf8) {
             send(data: data)
         }
         return self
