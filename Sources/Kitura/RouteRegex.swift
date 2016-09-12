@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import KituraSys
 import LoggerAPI
 
 import Foundation
