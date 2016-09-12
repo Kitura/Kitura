@@ -5,9 +5,9 @@ SDK=macosx10.12
 
 OS=`uname`
 if [[ $OS == "Darwin" ]]; then
-    echo "Starting xcodebuild on ${OS} using SDK: ${SDK}"
+    echo "Starting xcodebuild on ${OS} (TRAVIS_OS_NAME: ${TRAVIS_OS_NAME}) using SDK: ${SDK}"
 else
-    echo "Skipping xcodebuild as not available on ${OS}"
+    echo "Skipping xcodebuild as not available on ${OS} (TRAVIS_OS_NAME: ${TRAVIS_OS_NAME})"
     exit 0
 fi
 
