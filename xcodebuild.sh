@@ -4,7 +4,9 @@ SCHEME=Kitura
 SDK=macosx10.12
 
 OS=`uname`
-if [[ $OS != "Darwin" ]]; then
+if [[ $OS == "Darwin" ]]; then
+    echo "Starting xcodebuild on ${OS} using SDK: ${SDK}"
+else
     echo "Skipping xcodebuild as not available on ${OS}"
     exit 0
 fi
@@ -24,3 +26,7 @@ else
   echo "xcpretty not installed. Running ${TEST_CMD}"
   eval "${TEST_CMD}"
 fi
+
+bash <(curl -s https://codecov.io/bash)
+
+echo "Finished xcodebuild on ${OS}"
