@@ -1,0 +1,9 @@
+codecov:
+  branch: master
+
+coverage:
+  notify:
+    slack:
+      default:
+        url: secret:Wkuy2qO70Y9V86VrhGcMc1AHs+blR5tt3egs58QZKgQy8uZaS6EAtyoHDTVcQLYjwOaU5VY1JBEVxt6zbZnSZ4n6rHHlozFxgScj9EagsLKsPP23RoktmtAgLmmzp0Hzt5M/Hlflx3Zr2nazh4EsKBVm3xxaFPe8BXSr3zjhQC4=
+        threshold: 1%
