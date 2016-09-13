@@ -54,7 +54,7 @@ extension Headers: Collection {
     }
     
     /// The type of an Index of the `Headers` collection.
-    public typealias HeadersIndex = DictionaryIndex<String, [String]>
+    public typealias HeadersIndex = HeadersContainer.Index
     
     
     /// Get the value of a HTTP header
