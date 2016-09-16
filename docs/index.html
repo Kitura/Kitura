@@ -152,7 +152,7 @@
 <img src="https://img.shields.io/badge/os-macOS-green.svg?style=flat" alt="macOS">
 <img src="https://img.shields.io/badge/os-linux-green.svg?style=flat" alt="Linux">
 <img src="https://img.shields.io/badge/license-Apache2-blue.svg?style=flat" alt="Apache 2">
-<a href="https://gitter.im/IBM-Swift/Kitura?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/IBM-Swift/Kitura.svg" alt="Join the chat at https://gitter.im/IBM-Swift/Kitura"></a></p>
+&nbsp;<a href="http://swift-at-ibm-slack.mybluemix.net/"><img src="http://swift-at-ibm-slack.mybluemix.net/badge.svg" alt="Slack Status"></a></p>
 <a href='#summary' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='summary'>Summary</h2>
 
 <p>Kitura is a web framework and web server that is created for web services written in Swift.</p>
@@ -186,7 +186,7 @@
 </ul>
 <a href='#swift-version' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='swift-version'>Swift version</h2>
 
-<p>Version <code>0.28</code> of Kitura requires the <strong><code>DEVELOPMENT-SNAPSHOT-2016-09-07-a</code></strong> version of Swift 3 trunk (master). You can download this version at <a href="https://swift.org/download/">swift.org</a>. <em>Kitura is unlikely to compile with any other version of Swift.</em></p>
+<p>Version <code>0.32</code> of Kitura requires <strong>Swift 3.0</strong>. <em>Kitura is unlikely to compile with any other version of Swift.</em></p>
 <a href='#installation' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='installation'>Installation</h2>
 
 <ul>
@@ -210,21 +210,14 @@
 <p><code>$ brew install curl</code></p>
 
 <ol>
-<li><p>Download and install <a href="https://developer.apple.com/download/">Xcode 8 beta 6</a>.</p></li>
-<li><p>Download and install the <a href="#swift-version">required Swift version</a> from <code>swift.org</code>.</p></li>
+<li>Download and install <a href="https://developer.apple.com/download/">Xcode 8</a>.</li>
 </ol>
-
-<p>During installation if you are using the package installer make sure to select <q>all users</q> for the installation path in order for the correct toolchain version to be available for use with the terminal.</p>
-
-<p>After installation, make sure you update your <code>PATH</code> environment variable as described in the <code>swift.org</code> installation instructions (e.g. <code>export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:$PATH</code>)</p>
-
-<ol>
-<li>Select the Xcode beta as your active developer directory.</li>
-</ol>
-
-<p><code>$ sudo xcode-select -s /Applications/Xcode-beta.app/Contents/Developer/</code></p>
 
 <p>Now you are ready to develop your first Kitura app. Check <a href="https://github.com/IBM-Swift/Kitura-Sample">Kitura-Sample</a> or see <a href="#getting-started">Getting Started</a>.</p>
+
+<blockquote>
+<p>Note: if you have been using the Xcode 8 betas, you may also need to run <code>sudo xcode-select -r</code> to reset your selected developer directory.</p>
+</blockquote>
 <a href='#ubuntu-linux' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h3 id='ubuntu-linux'>Ubuntu Linux</h3>
 
 <p>Kitura is tested on Ubuntu 14.04 LTS and Ubuntu 15.10.</p>
@@ -333,7 +326,7 @@
   <span class="k">let</span> <span class="nv">package</span> <span class="o">=</span> <span class="kt">Package</span><span class="p">(</span>
       <span class="nv">name</span><span class="p">:</span> <span class="s">"myFirstProject"</span><span class="p">,</span>
       <span class="nv">dependencies</span><span class="p">:</span> <span class="p">[</span>
-          <span class="o">.</span><span class="kt">Package</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/IBM-Swift/Kitura.git"</span><span class="p">,</span> <span class="nv">majorVersion</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">minor</span><span class="p">:</span> <span class="mi">28</span><span class="p">)</span>
+          <span class="o">.</span><span class="kt">Package</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/IBM-Swift/Kitura.git"</span><span class="p">,</span> <span class="nv">majorVersion</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">minor</span><span class="p">:</span> <span class="mi">32</span><span class="p">)</span>
       <span class="p">])</span>
 </code></pre>
 
@@ -391,8 +384,8 @@
    <span class="k">let</span> <span class="nv">package</span> <span class="o">=</span> <span class="kt">Package</span><span class="p">(</span>
        <span class="nv">name</span><span class="p">:</span> <span class="s">"myFirstProject"</span><span class="p">,</span>
        <span class="nv">dependencies</span><span class="p">:</span> <span class="p">[</span>
-           <span class="o">.</span><span class="kt">Package</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/IBM-Swift/Kitura.git"</span><span class="p">,</span> <span class="nv">majorVersion</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">minor</span><span class="p">:</span> <span class="mi">28</span><span class="p">),</span>
-           <span class="o">.</span><span class="kt">Package</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/IBM-Swift/HeliumLogger.git"</span><span class="p">,</span> <span class="nv">majorVersion</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">minor</span><span class="p">:</span> <span class="mi">15</span><span class="p">)</span>
+           <span class="o">.</span><span class="kt">Package</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/IBM-Swift/Kitura.git"</span><span class="p">,</span> <span class="nv">majorVersion</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">minor</span><span class="p">:</span> <span class="mi">32</span><span class="p">),</span>
+           <span class="o">.</span><span class="kt">Package</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/IBM-Swift/HeliumLogger.git"</span><span class="p">,</span> <span class="nv">majorVersion</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">minor</span><span class="p">:</span> <span class="mi">17</span><span class="p">)</span>
        <span class="p">])</span>
 </code></pre>
 
@@ -462,7 +455,7 @@
 <p>You can find more info on contributing to Kitura in our <a href=".github/CONTRIBUTING.md">contributing guidelines</a>.</p>
 <a href='#community' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='community'>Community</h2>
 
-<p>We love to talk server-side Swift, and Kitura. Join our <a href="https://gitter.im/IBM-Swift/Kitura">chat channel on Gitter</a> to meet the team!</p>
+<p>We love to talk server-side Swift, and Kitura. Join our <a href="http://swift-at-ibm-slack.mybluemix.net/">Slack</a> to meet the team!</p>
 
           </div>
         </section>
@@ -471,8 +464,8 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-09-05)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-09-16)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>
