@@ -137,13 +137,14 @@ cat <<EOF >> ${OUTPUT_FILE}
         let router = Router()
         performServerTest(router) { expectation in
             var verbsArray: [String] = []
+            let bodyParser = BodyParser()
 EOF
             for VERB in `sed '/^$/d' ${INPUT_FILE} | sed '/^#/d'`; do
                 VERB_LOW_CASE=`echo $VERB | cut -c1 | tr '[:upper:]' '[:lower:]'``echo $VERB | cut -c2-`
                 VERB_UPPER_CASE=`echo $VERB | tr '[:lower:]' '[:upper:]'`
 cat <<EOF >> ${OUTPUT_FILE}
             verbsArray.append("$VERB_UPPER_CASE")
-            router.$VERB_LOW_CASE("/bodytest", middleware: BodyParser())
+            router.$VERB_LOW_CASE("/bodytest", middleware: bodyParser)
 EOF
             done
 cat <<EOF >> ${OUTPUT_FILE}
@@ -169,13 +170,14 @@ cat <<EOF >> ${OUTPUT_FILE}
         let router = Router()
         performServerTest(router) { expectation in
             var verbsArray: [String] = []
+            let bodyParser = BodyParser()
 EOF
             for VERB in `sed '/^$/d' ${INPUT_FILE} | sed '/^#/d'`; do
                 VERB_LOW_CASE=`echo $VERB | cut -c1 | tr '[:upper:]' '[:lower:]'``echo $VERB | cut -c2-`
                 VERB_UPPER_CASE=`echo $VERB | tr '[:lower:]' '[:upper:]'`
 cat <<EOF >> ${OUTPUT_FILE}
             verbsArray.append("$VERB_UPPER_CASE")
-            router.$VERB_LOW_CASE("/bodytest", middleware: [BodyParser(), BodyParser()])
+            router.$VERB_LOW_CASE("/bodytest", middleware: [bodyParser, bodyParser])
 EOF
             done
 cat <<EOF >> ${OUTPUT_FILE}
