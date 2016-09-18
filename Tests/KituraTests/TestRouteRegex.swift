@@ -35,17 +35,47 @@ class TestRouteRegex: XCTestCase {
         #endif
         var strings: [String]?
 
-        //Partial match false adds '$' end of string special character
+        // Partial match false adds '$' end of string special character
         (regex, strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "test", allowPartialMatch: false)
         XCTAssertEqual(regex!.pattern, "^/test(?:/(?=$))?$")
         XCTAssertTrue(strings!.isEmpty)
 
-        //Partial match true does not include '$' end of string special character
+        // Partial match true does not include '$' end of string special character
         (regex, strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "test", allowPartialMatch: true)
         XCTAssertEqual(regex!.pattern, "^/test(?:/(?=$))?")
         XCTAssertTrue(strings!.isEmpty)
 
-        //Invalid regular expression
+        (regex, strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "test/:id", allowPartialMatch: true)
+        XCTAssertEqual(regex!.pattern, "^/test/(?:([^/]+?))(?:/(?=$))?")
+        XCTAssertFalse(strings!.isEmpty)
+        XCTAssertEqual(strings![0], "id")
+
+        (regex, strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "test/:id+", allowPartialMatch: false)
+        XCTAssertEqual(regex!.pattern, "^/test/([^/]+?(?:/[^/]+?)*)(?:/(?=$))?$")
+        XCTAssertFalse(strings!.isEmpty)
+        XCTAssertEqual(strings![0], "id")
+        
+        (regex, strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "test/:id*", allowPartialMatch: false)
+        XCTAssertEqual(regex!.pattern, "^/test(?:/([^/]+?(?:/[^/]+?)*))?(?:/(?=$))?$")
+        XCTAssertFalse(strings!.isEmpty)
+        XCTAssertEqual(strings![0], "id")
+        
+        (regex, strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "test/:id(\\d*)", allowPartialMatch: false)
+        XCTAssertEqual(regex!.pattern, "^/test/(?:(\\d*))(?:/(?=$))?$")
+        XCTAssertFalse(strings!.isEmpty)
+        XCTAssertEqual(strings![0], "id")
+        
+        (regex, strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "test/:id(Kitura\\d*)", allowPartialMatch: false)
+        XCTAssertEqual(regex!.pattern, "^/test/(?:(Kitura\\d*))(?:/(?=$))?$")
+        XCTAssertFalse(strings!.isEmpty)
+        XCTAssertEqual(strings![0], "id")
+
+        (regex, strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "test/(Kitura\\d*)", allowPartialMatch: false)
+        XCTAssertEqual(regex!.pattern, "^/test/(?:(Kitura\\d*))(?:/(?=$))?$")
+        XCTAssertFalse(strings!.isEmpty)
+        XCTAssertEqual(strings![0], "0")
+        
+        // Invalid regular expression
     #if os(OSX)
         (regex, strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "\\", allowPartialMatch: false)
         XCTAssertNil(regex)
