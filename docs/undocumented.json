@@ -1,12 +1,1 @@
-{
-  "warnings": [
-    {
-      "file": "/Users/ipartrid/Kitura/Sources/Kitura/RouterResponse.swift",
-      "line": 290,
-      "symbol": "RouterResponse.render(_:context:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    }
-  ],
-  "source_directory": "/Users/ipartrid/Kitura"
-}
+{"warnings":[{"file":"/Users/kallner/Projects/SwiftAtBackend/code/kitura-dev/Kitura-ProjectAutomation/VersionManagement/KituraPackagesToUpdate_09_18_16/Kitura/Sources/Kitura/RouterResponse.swift","line":290,"symbol":"render(_:context:)","symbol_kind":"source.lang.swift.decl.function.method.instance","warning":"undocumented"}],"source_directory":"/Users/kallner/Projects/SwiftAtBackend/code/kitura-dev/Kitura-ProjectAutomation/VersionManagement/KituraPackagesToUpdate_09_18_16/Kitura"}
