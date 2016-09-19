@@ -27,5 +27,6 @@ XCTMain([
     testCase(TestCookies.allTests),
     testCase(TestSubrouter.allTests),
     testCase(TestRouteRegex.allTests),
-    testCase(TestStaticFileServer.allTests)
+    testCase(TestStaticFileServer.allTests),
+    testCase(TestRouterHTTPVerbs_generated.allTests)
 ])
