@@ -21,7 +21,10 @@ Package-Builder/build/Makefile:
 	@echo --- Fetching Package-Builder submodule
 	git submodule update --init --remote --merge --recursive
 
-generateRouterVerbs: Sources/Kitura/RouterHTTPVerbs_generated.swift
+generateRouterVerbs: Sources/Kitura/RouterHTTPVerbs_generated.swift Tests/KituraTests/TestRouterHTTPVerbs_generated.swift
 
 Sources/Kitura/RouterHTTPVerbs_generated.swift: Configuration/RouterHTTPVerbs.txt
 	@bash Scripts/generate_router_verbs.sh $< $@
+
+Tests/KituraTests/TestRouterHTTPVerbs_generated.swift: Configuration/RouterHTTPVerbs.txt
+	@bash Scripts/generate_router_verb_tests.sh $< $@

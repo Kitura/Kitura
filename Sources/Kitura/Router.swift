@@ -32,7 +32,7 @@ import KituraTemplateEngine
 public class Router {
 
     /// Contains the list of routing elements
-    fileprivate var elements: [RouterElement] = []
+    var elements: [RouterElement] = []
 
     /// Map from file extensions to Template Engines
     private var templateEngines = [String: TemplateEngine]()
