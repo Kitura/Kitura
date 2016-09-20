@@ -102,7 +102,6 @@ public class Kitura {
             server.stop()
         }
         httpServersAndPorts.removeAll()
-
         for (server, port) in fastCGIServersAndPorts {
             Log.verbose("Stopping FastCGI Server on port \(port)...")
             server.stop()
