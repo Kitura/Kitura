@@ -23,16 +23,17 @@ import Dispatch
 
 // MARK Kitura
 
-///
+/// A set of helper functions to make it easier to create, start, and stop Kitura based servers.
 public class Kitura {
-
+    
     /// Add an HTTPServer on a port with a delegate.
     ///
     /// The server is only registered with the framework, it does not start listening
-    /// on the port until Kitura.run() is called.
+    /// on the port until Kitura.run() or Kitura.start() is called.
     ///
     /// - Parameter onPort: The port to listen on.
     /// - Parameter with: The `ServerDelegate` to use.
+    /// - Parameter withSSL: The `sslConfig` to use.
     /// - Returns: The created `HTTPServer`.
     @discardableResult
     public class func addHTTPServer(onPort port: Int, with delegate: ServerDelegate, withSSL sslConfig: SSLConfig?=nil) -> HTTPServer {
@@ -48,11 +49,11 @@ public class Kitura {
     /// Add a FastCGIServer on a port with a delegate.
     ///
     /// The server is only registered with the framework, it does not start listening
-    /// on the port until Kitura.run() is called.
+    /// on the port until Kitura.run() or Kitura.start() is called.
     ///
     /// - Parameter onPort: The port to listen on.
     /// - Parameter with: The `ServerDelegate` to use.
-    /// - Return: The created `FastCGIServer`.
+    /// - Returns: The created `FastCGIServer`.
     @discardableResult
     public class func addFastCGIServer(onPort port: Int, with delegate: ServerDelegate) -> FastCGIServer {
         let server = FastCGI.createServer()
@@ -60,12 +61,12 @@ public class Kitura {
         fastCGIServersAndPorts.append(server: server, port: port)
         return server
     }
-
+    
     /// Start the Kitura framework.
     ///
     /// Make all registered servers start listening on their port.
     ///
-    /// - Note: This function never returns - it should be the last call in your main.swift
+    /// - note: This function never returns - it should be the last call in your main.swift
     public class func run() {
         Log.verbose("Starting Kitura framework...")
         for (server, port) in httpServersAndPorts {
@@ -78,7 +79,7 @@ public class Kitura {
         }
         ListenerGroup.waitForListeners()
     }
-
+    
     /// Start all registered servers and return
     ///
     /// Make all registered servers start listening on their port.
@@ -92,26 +93,28 @@ public class Kitura {
             server.listen(port: port)
         }
     }
-
+    
     /// Stop all registered servers
     ///
     /// Make all registered servers stop listening on their port.
+    ///
+    /// - note: All of the registered servers are unregistered after they are stopped.
     public class func stop() {
         for (server, port) in httpServersAndPorts {
             Log.verbose("Stopping HTTP Server on port \(port)...")
             server.stop()
         }
         httpServersAndPorts.removeAll()
-
+        
         for (server, port) in fastCGIServersAndPorts {
             Log.verbose("Stopping FastCGI Server on port \(port)...")
             server.stop()
         }
         fastCGIServersAndPorts.removeAll()
     }
-
+    
     typealias Port = Int
     private static var httpServersAndPorts = [(server: HTTPServer, port: Port)]()
     private static var fastCGIServersAndPorts = [(server: FastCGIServer, port: Port)]()
-
+    
 }
