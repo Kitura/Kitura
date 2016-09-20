@@ -148,8 +148,12 @@ public class RouterResponse {
     /// - Returns: this RouterResponse.
     @discardableResult
     public func send(_ str: String) -> RouterResponse {
-        if let data = str.data(using: .utf8) {
-            send(data: data)
+        let utf8Length = str.lengthOfBytes(using: .utf8)
+        var utf8: [CChar] = Array<CChar>(repeating: 0, count: utf8Length + 10) // A little bit of padding
+        if str.getCString(&utf8, maxLength: utf8Length + 10, encoding: .utf8) {
+            let rawBytes = UnsafeRawPointer(UnsafePointer(utf8))
+            buffer.append(bytes: rawBytes.assumingMemoryBound(to: UInt8.self), length: utf8Length)
+            state.invokedSend = true
         }
         return self
     }
