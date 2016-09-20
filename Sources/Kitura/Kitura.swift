@@ -25,7 +25,7 @@ import Dispatch
 
 /// A set of helper functions to make it easier to create, start, and stop Kitura based servers.
 public class Kitura {
-    
+
     /// Add an HTTPServer on a port with a delegate.
     ///
     /// The server is only registered with the framework, it does not start listening
@@ -45,7 +45,7 @@ public class Kitura {
         httpServersAndPorts.append(server: server, port: port)
         return server
     }
-    
+
     /// Add a FastCGIServer on a port with a delegate.
     ///
     /// The server is only registered with the framework, it does not start listening
@@ -61,7 +61,7 @@ public class Kitura {
         fastCGIServersAndPorts.append(server: server, port: port)
         return server
     }
-    
+
     /// Start the Kitura framework.
     ///
     /// Make all registered servers start listening on their port.
@@ -79,7 +79,7 @@ public class Kitura {
         }
         ListenerGroup.waitForListeners()
     }
-    
+
     /// Start all registered servers and return
     ///
     /// Make all registered servers start listening on their port.
@@ -93,7 +93,7 @@ public class Kitura {
             server.listen(port: port)
         }
     }
-    
+
     /// Stop all registered servers
     ///
     /// Make all registered servers stop listening on their port.
@@ -112,9 +112,9 @@ public class Kitura {
         }
         fastCGIServersAndPorts.removeAll()
     }
-    
+
     typealias Port = Int
     private static var httpServersAndPorts = [(server: HTTPServer, port: Port)]()
     private static var fastCGIServersAndPorts = [(server: FastCGIServer, port: Port)]()
-    
+
 }
