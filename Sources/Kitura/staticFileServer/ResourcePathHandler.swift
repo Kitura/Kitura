@@ -70,9 +70,21 @@ extension StaticFileServer {
             }
 
             pathComponents.removeLast(numberOfComponentsFromOriginalRepositoryDirectoryToThisFile)
+            pathComponents = removePackagesDirectory(pathComponents: pathComponents)
+
             return separator + pathComponents.joined(separator: separator)
         }
 
+        static private func removePackagesDirectory(pathComponents: [String]) -> [String] {
+            var pathComponents = pathComponents
+            let numberOfComponentsFromKituraPackageToDependentRepository = 2
+            let packagesComponentIndex = pathComponents.endIndex + 1 - numberOfComponentsFromKituraPackageToDependentRepository
+            if pathComponents.count > numberOfComponentsFromKituraPackageToDependentRepository &&
+                 pathComponents[packagesComponentIndex] == "Packages" {
+                pathComponents.removeLast(numberOfComponentsFromKituraPackageToDependentRepository)
+            }
+            return pathComponents
+        }
         static private func isAbsolute(path: String) -> Bool {
             return path.hasPrefix(separator)
         }
