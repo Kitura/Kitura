@@ -21,16 +21,54 @@ extension StaticFileServer {
 
     // MARK: ResourcePathHandler
     class ResourcePathHandler {
+        static private let separatorCharacter: Character = "/"
+        static private let separator = String(separatorCharacter)
+
         static func getAbsolutePath(for path: String) -> String {
             var path = path
-            if path.hasSuffix("/") {
+            if path.hasSuffix(separator) {
                 path = String(path.characters.dropLast())
             }
 
             // If we received a path with a tilde (~) in the front, expand it.
             path = NSString(string: path).expandingTildeInPath
 
-            return path
+            if isAbsolute(path: path) {
+                return path
+            }
+
+
+            let fileManager = FileManager()
+
+            let absolutePath = fileManager.currentDirectoryPath + separator + path
+            if fileManager.fileExists(atPath: absolutePath) {
+                return absolutePath
+            }
+
+            // the file does not exist on a path relative to the current working directory
+            // return the path relative to the original repository directory
+            return getOriginalRepositoryPath() + separator + path
+        }
+
+        static private func getOriginalRepositoryPath() -> String {
+        // this file is at
+        // <original repository directory>/Sources/Kitura/staticFileServer/ResourcePathHandler.swift
+        // the original repository directory is four path components up
+            let currentFilePath = #file
+
+            var pathComponents =
+                currentFilePath.characters.split(separator: separatorCharacter).map(String.init)
+            let numberOfComponentsFromOriginalRepositoryDirectoryToThisFile = 4
+            pathComponents.removeLast(numberOfComponentsFromOriginalRepositoryDirectoryToThisFile)
+            return separator + pathComponents.joined(separator: separator)
+        }
+
+        static private func isAbsolute(path: String) -> Bool {
+            return path.hasPrefix(separator)
+        }
+
+        static private func isSeparator(_ string: String) -> Bool {
+            return string == separator
         }
     }
 }
