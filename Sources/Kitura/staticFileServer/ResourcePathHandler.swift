@@ -78,7 +78,7 @@ extension StaticFileServer {
         static private func removePackagesDirectory(pathComponents: [String]) -> [String] {
             var pathComponents = pathComponents
             let numberOfComponentsFromKituraPackageToDependentRepository = 2
-            let packagesComponentIndex = pathComponents.endIndex + 1 - numberOfComponentsFromKituraPackageToDependentRepository
+            let packagesComponentIndex = pathComponents.endIndex - numberOfComponentsFromKituraPackageToDependentRepository
             if pathComponents.count > numberOfComponentsFromKituraPackageToDependentRepository &&
                  pathComponents[packagesComponentIndex] == "Packages" {
                 pathComponents.removeLast(numberOfComponentsFromKituraPackageToDependentRepository)
