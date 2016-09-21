@@ -126,7 +126,7 @@ public class Router {
         }
 
         let filePath = viewsPath + resourceWithExtension
-        let absoluteFilePath =  StaticFileServer.ResourcePathHandler.getAbsolutePath(for: filePath)
+        let absoluteFilePath = StaticFileServer.ResourcePathHandler.getAbsolutePath(for: filePath)
         return try templateEngine.render(filePath: absoluteFilePath, context: context)
     }
 
