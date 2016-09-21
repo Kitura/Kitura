@@ -302,7 +302,7 @@ public class RouterResponse {
     /// - Parameter download: the file to download.
     /// - Throws: An error in the Cocoa domain, if the file cannot be read.
     public func send(download: String) throws {
-        try send(fileName: download)
+        try send(fileName: StaticFileServer.ResourcePathHandler.getAbsolutePath(for: download))
         headers.addAttachment(for: download)
     }
 
