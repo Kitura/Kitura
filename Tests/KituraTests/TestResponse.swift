@@ -33,6 +33,7 @@ class TestResponse: XCTestCase {
         return [
             ("testSimpleResponse", testSimpleResponse),
             ("testPostRequest", testPostRequest),
+            ("testPostJSONRequest", testPostRequest),
             ("testPostRequestWithDoubleBodyParser", testPostRequestWithDoubleBodyParser),
             ("testPostRequestUrlEncoded", testPostRequestUrlEncoded),
             ("testMultipartFormParsing", testMultipartFormParsing),
@@ -50,7 +51,7 @@ class TestResponse: XCTestCase {
             ("testSend", testSend)
         ]
     }
-    
+
     override func setUp() {
         doSetUp()
     }
@@ -96,6 +97,41 @@ class TestResponse: XCTestCase {
                 req.write(from: "plover\n")
                 req.write(from: "xyzzy\n")
             }
+        }
+    }
+
+    func testPostJSONRequest() {
+        let jsonToTest = JSON(["foo": "bar"])
+
+        performServerTest(router) { expectation in
+            self.performRequest("post", path: "/bodytest", callback: { response in
+                guard let response = response else {
+                    XCTFail("ClientRequest response object was nil")
+                    expectation.fulfill()
+                    return
+                }
+                XCTAssertNotNil(response.headers["Date"], "There was No Date header in the response")
+                do {
+                   guard let body = try response.readString() else {
+                       XCTFail("body in response is nil")
+                       expectation.fulfill()
+                       return
+                    }
+                   let returnedJSON = JSON.parse(string: body)
+                   XCTAssertEqual(returnedJSON, jsonToTest)
+                } catch {
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            }, headers: ["Content-Type": "application/json"]) { req in
+            do {
+                let jsonData = try jsonToTest.rawData()
+                req.write(from: jsonData)
+                req.write(from: "\n")
+            } catch {
+                XCTFail("caught error \(error)")
+            }
+           }
         }
     }
 
@@ -796,7 +832,6 @@ class TestResponse: XCTestCase {
         }
 
         let bodyTestHandler: RouterHandler = { request, response, next in
-            response.headers["Content-Type"] = "text/html; charset=utf-8"
             guard let requestBody = request.body else {
                 next ()
                 return
@@ -804,12 +839,25 @@ class TestResponse: XCTestCase {
             switch (requestBody) {
                 case .urlEncoded(let value):
                     do {
+                        response.headers["Content-Type"] = "text/html; charset=utf-8"
                         try response.send("<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> \(value) </body></html>\n\n").end()
-                    } catch {}
+                    } catch {
+                        XCTFail("caught error: \(error)")
+                    }
                 case .text(let value):
                     do {
+                        response.headers["Content-Type"] = "text/html; charset=utf-8"
                         try response.send("<!DOCTYPE html><html><body><b>Received text body: </b>\(value)</body></html>\n\n").end()
-                    } catch {}
+                    } catch {
+                        XCTFail("caught error: \(error)")
+                    }
+                case .json(let value):
+                    do {
+                        response.headers["Content-Type"] = "application/json; charset=utf-8"
+                        try response.send(data: value.rawData()).end()
+                    } catch {
+                        XCTFail("caught error: \(error)")
+                    }
                 default:
                     response.error = Error.failedToParseRequestBody(body: "\(request.body)")
 

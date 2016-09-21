@@ -32,7 +32,7 @@ extension KituraTest {
     func doSetUp() {
         PrintLogger.use()
     }
-    
+
     func doTearDown() {
         // sleep(10)
     }
@@ -65,7 +65,9 @@ extension KituraTest {
                 allHeaders[headerName] = headerValue
             }
         }
-        allHeaders["Content-Type"] = "text/plain"
+        if allHeaders["Content-Type"] == nil {
+            allHeaders["Content-Type"] = "text/plain"
+        }
         let options: [ClientRequest.Options] =
                 [.method(method), .hostname("localhost"), .port(8090), .path(path), .headers(allHeaders)]
         let req = HTTP.request(options, callback: callback)
