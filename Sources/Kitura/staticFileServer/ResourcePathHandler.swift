@@ -62,14 +62,14 @@ extension StaticFileServer {
 
             var pathComponents =
                 currentFilePath.characters.split(separator: separatorCharacter).map(String.init)
-            let numberOfComponentsFromOriginalRepositoryDirectoryToThisFile = 4
+            let numberOfComponentsFromKituraRepositoryDirectoryToThisFile = 4
 
-            guard pathComponents.count >= numberOfComponentsFromOriginalRepositoryDirectoryToThisFile else {
+            guard pathComponents.count >= numberOfComponentsFromKituraRepositoryDirectoryToThisFile else {
                 Log.error("unable to get original repository path for \(currentFilePath)")
                 return nil
             }
 
-            pathComponents.removeLast(numberOfComponentsFromOriginalRepositoryDirectoryToThisFile)
+            pathComponents.removeLast(numberOfComponentsFromKituraRepositoryDirectoryToThisFile)
             pathComponents = removePackagesDirectory(pathComponents: pathComponents)
 
             return separator + pathComponents.joined(separator: separator)
