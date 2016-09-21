@@ -47,10 +47,14 @@ extension StaticFileServer {
 
             // the file does not exist on a path relative to the current working directory
             // return the path relative to the original repository directory
-            return getOriginalRepositoryPath() + separator + path
+            guard let originalRepositoryPath = getOriginalRepositoryPath() else {
+                return absolutePath
+            }
+
+            return originalRepositoryPath + separator + path
         }
 
-        static private func getOriginalRepositoryPath() -> String {
+        static private func getOriginalRepositoryPath() -> String? {
         // this file is at
         // <original repository directory>/Sources/Kitura/staticFileServer/ResourcePathHandler.swift
         // the original repository directory is four path components up
@@ -59,6 +63,12 @@ extension StaticFileServer {
             var pathComponents =
                 currentFilePath.characters.split(separator: separatorCharacter).map(String.init)
             let numberOfComponentsFromOriginalRepositoryDirectoryToThisFile = 4
+
+            guard pathComponents.count >= numberOfComponentsFromOriginalRepositoryDirectoryToThisFile else {
+                Log.error("unable to get original repository path for \(currentFilePath)")
+                return nil
+            }
+
             pathComponents.removeLast(numberOfComponentsFromOriginalRepositoryDirectoryToThisFile)
             return separator + pathComponents.joined(separator: separator)
         }
