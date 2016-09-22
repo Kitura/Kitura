@@ -21,7 +21,7 @@ import KituraTemplateEngine
 
 // MARK Router
 
-/// The `Router` class provides the external intreface for the routing of requests to
+/// The `Router` class provides the external interface for the routing of requests to
 /// the appropriate code for handling. This includes:
 ///
 ///   - Routing requests to closures with the signature of `RouterHandler`
