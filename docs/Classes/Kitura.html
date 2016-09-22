@@ -20,7 +20,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (99% documented)
+         (98% documented)
       </p>
     
         <p class="header-col header-col--secondary">
@@ -122,6 +122,9 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/Part/HeaderType.html">– HeaderType</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SSLConfig.html">SSLConfig</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -163,9 +166,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:ZFC6Kitura6Kitura13addHTTPServerFT6onPortSi4withP9KituraNet14ServerDelegate__CS1_10HTTPServer"></a>
-                    <a name="//apple_ref/swift/Method/addHTTPServer(onPort:with:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:ZFC6Kitura6Kitura13addHTTPServerFT6onPortSi4withP9KituraNet14ServerDelegate__CS1_10HTTPServer">addHTTPServer(onPort:with:)</a>
+                    <a name="/s:ZFC6Kitura6Kitura13addHTTPServerFT6onPortSi4withP9KituraNet14ServerDelegate_7withSSLGSqVS_9SSLConfig__CS1_10HTTPServer"></a>
+                    <a name="//apple_ref/swift/Method/addHTTPServer(onPort:with:withSSL:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZFC6Kitura6Kitura13addHTTPServerFT6onPortSi4withP9KituraNet14ServerDelegate_7withSSLGSqVS_9SSLConfig__CS1_10HTTPServer">addHTTPServer(onPort:with:withSSL:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -190,6 +193,12 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
 
 </div>
 
+<div class="aside aside-parameter">
+    <p class="aside-title">Parameter</p>
+    Parameter withSSL: The <code>sslConfig</code> to use.
+
+</div>
+
 <div class="aside aside-returns">
     <p class="aside-title">Returns</p>
     The created <code>HTTPServer</code>.
@@ -201,7 +210,7 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kd">func</span> <span class="nf">addHTTPServer</span><span class="p">(</span><span class="n">onPort</span> <span class="nv">port</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">with</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt">ServerDelegate</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">HTTPServer</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kd">func</span> <span class="nf">addHTTPServer</span><span class="p">(</span><span class="n">onPort</span> <span class="nv">port</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">with</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt">ServerDelegate</span><span class="p">,</span> <span class="n">withSSL</span> <span class="nv">sslConfig</span><span class="p">:</span> <span class="kt"><a href="../Structs/SSLConfig.html">SSLConfig</a></span><span class="p">?</span><span class="o">=</span><span class="kc">nil</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">HTTPServer</span></code></pre>
 
                         </div>
                       </div>
@@ -231,6 +240,19 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
                               <td>
                                 <div>
                                   <p>The <code>ServerDelegate</code> to use.</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>withSSL</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code>sslConfig</code> to use.</p>
 
                                 </div>
                               </td>
@@ -439,7 +461,7 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-09-18)</p>
+      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-09-22)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
