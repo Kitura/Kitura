@@ -31,6 +31,7 @@ Kitura is a web framework and web server that is created for web services writte
 - URL parameters
 - Static file serving
 - [FastCGI support](Documentation/FastCGI.md)
+- SSL/TLS support
 - JSON parsing
 - Pluggable middleware
 
@@ -46,15 +47,8 @@ Version `1.0` of Kitura requires **Swift 3.0**. *Kitura is unlikely to compile w
 
 ### macOS
 
-1. Install [Homebrew](http://brew.sh/) (if you don't already have it installed):
-
- `$ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
-
-2. Install the necessary dependencies:
-
- `$ brew install curl`
-
-3. Download and install [Xcode 8](https://developer.apple.com/download/).
+1. Download and install [Xcode 8](https://developer.apple.com/download/).
+2. There is no step 2.
 
 Now you are ready to develop your first Kitura app. Check [Kitura-Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Getting Started](#getting-started).
 
@@ -272,14 +266,6 @@ All improvements to Kitura are very welcome! Here's how to get started with deve
 2. Build and run tests.
 
   `$ make test`
-
- ### Notes
- * Homebrew by default installs libraries to `/usr/local`, if yours is different, change the path to find the curl library, in `Package-Builder/build/Makefile`:
-
-   ```Makefile
-   SWIFTC_FLAGS = -Xswiftc -I/usr/local/include
-   LINKER_FLAGS = -Xlinker -L/usr/local/lib
-   ```
 
 You can find more info on contributing to Kitura in our [contributing guidelines](.github/CONTRIBUTING.md).
 
