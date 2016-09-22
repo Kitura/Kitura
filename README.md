@@ -204,9 +204,11 @@ Let's develop your first Kitura web application!
   Kitura.run()
   ```
 
-8. Optionally, add logging.
+  **NOTE:** Without adding logging, this code will provide no feedback that
+  things are operating properly when the application is run. While not
+  strictly _required_, adding logging is _recommended_.
 
-   In the code example above, no messages from Kitura will logged. You may want to add a logger to help diagnose any problems that occur.
+8. (OPTIONAL) Add logging.
 
    Add a HeliumLogger dependency to `Package.swift`.
 
