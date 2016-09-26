@@ -265,9 +265,7 @@ public class RouterResponse {
     /// - Returns: this RouterResponse.
     public func send(status: HTTPStatusCode) -> RouterResponse {
         self.status(status)
-        if let statusCode = HTTP.statusCodes[status.rawValue] {
-            send(statusCode)
-        }
+        send(HTTPURLResponse.localizedString(forStatusCode: status.rawValue))
         return self
     }
 
