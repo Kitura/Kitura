@@ -58,10 +58,16 @@ class TestStaticFileServer : XCTestCase {
                     XCTFail("No response body")
                 }
                 
-                XCTAssertEqual(response!.headers["x-custom-header"]!.first!, "Kitura")
+                XCTAssertNotNil(response!.headers["x-custom-header"])
+                if let header = response!.headers["x-custom-header"] {
+                    XCTAssertEqual(header.first!, "Kitura")
+                }
                 XCTAssertNotNil(response!.headers["Last-Modified"])
                 XCTAssertNotNil(response!.headers["Etag"])
-                XCTAssertEqual(response!.headers["Cache-Control"]!.first!, "max-age=2")
+                XCTAssertNotNil(response!.headers["Cache-Control"])
+                if let header = response!.headers["Cache-Control"] {
+                    XCTAssertEqual(header.first!, "max-age=2")
+                }
                 expectation.fulfill()
             })
         }, { expectation in
@@ -104,7 +110,10 @@ class TestStaticFileServer : XCTestCase {
                     XCTAssertNil(response!.headers["x-custom-header"])
                     XCTAssertNil(response!.headers["Last-Modified"])
                     XCTAssertNil(response!.headers["Etag"])
-                    XCTAssertEqual(response!.headers["Cache-Control"]!.first!, "max-age=0")
+                    XCTAssertNotNil(response!.headers["Cache-Control"])
+                    if let header = response!.headers["Cache-Control"] {
+                        XCTAssertEqual(header.first!, "max-age=0")
+                    }
                     expectation.fulfill()
                 })
             }, { expectation in
@@ -139,7 +148,10 @@ class TestStaticFileServer : XCTestCase {
                     XCTAssertNil(response!.headers["x-custom-header"])
                     XCTAssertNotNil(response!.headers["Last-Modified"])
                     XCTAssertNotNil(response!.headers["Etag"])
-                    XCTAssertEqual(response!.headers["Cache-Control"]!.first!, "max-age=0")
+                    XCTAssertNotNil(response!.headers["Cache-Control"])
+                    if let header = response!.headers["Cache-Control"] {
+                        XCTAssertEqual(header.first!, "max-age=0")
+                    }
                     expectation.fulfill()
                 })
         })

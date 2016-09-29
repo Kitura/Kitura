@@ -23,6 +23,7 @@ matrix:
       sudo: required
     - os: osx
       osx_image: xcode8
+      language: objective-c
       sudo: required
 
 before_install:
@@ -30,3 +31,5 @@ before_install:
 
 script:
   - ./Package-Builder/build-package.sh $TRAVIS_BRANCH $TRAVIS_BUILD_DIR
+  - ./xcodebuild.sh
+
