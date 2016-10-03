@@ -290,6 +290,7 @@ public class RouterResponse {
     /// - Returns: this RouterResponse.
     ///
     // influenced by http://expressjs.com/en/4x/api.html#app.render
+    @discardableResult
     public func render(_ resource: String, context: [String:Any]) throws -> RouterResponse {
         let renderedResource = try router.render(template: resource, context: context)
         return send(renderedResource)
