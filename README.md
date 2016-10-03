@@ -30,7 +30,7 @@ Kitura is a web framework and web server that is created for web services writte
 - URL routing (GET, POST, PUT, DELETE)
 - URL parameters
 - Static file serving
-- [FastCGI support](Documentation/FastCGI.md)
+- [FastCGI support](https://github.com/IBM-Swift/Kitura/blob/master/Documentation/FastCGI.md)
 - SSL/TLS support
 - JSON parsing
 - Pluggable middleware
