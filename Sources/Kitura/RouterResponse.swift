@@ -198,9 +198,13 @@ public class RouterResponse {
     /// - Returns: this RouterResponse.
     @discardableResult
     public func send(json: JSON) -> RouterResponse {
-        let jsonStr = json.description
-        headers.setType("json")
-        send(jsonStr)
+        do {
+            let jsonData = try json.rawData(options:.prettyPrinted)
+            headers.setType("json")
+            send(data: jsonData)
+        }
+        catch { } // Do nothing if the JSON to Data fails
+            
         return self
     }
 
