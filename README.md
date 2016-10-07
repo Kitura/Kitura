@@ -184,6 +184,7 @@ Let's develop your first Kitura web application!
 7. Your `Sources/main.swift` file should now look like this.
 
   ```swift
+  import Foundation
   import Kitura
 
   let router = Router()
@@ -226,6 +227,7 @@ Let's develop your first Kitura web application!
    Here is the finished `Sources/main.swift` file.
 
    ```swift
+   import Foundation
    import Kitura
    import HeliumLogger
 
