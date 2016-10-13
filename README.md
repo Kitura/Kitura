@@ -97,6 +97,8 @@ Now you are ready to develop your first Kitura app. Check [Kitura-Sample](https:
 
   You should see an output message that contains the string `Listening on port 8090`.
 
+6. Visit `http://localhost:8090/` in your web browser.
+
 ### Vagrant
 
 1. Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
