@@ -79,9 +79,11 @@ public class RouteRegex {
                 handlePath(path, regexStr: regexStr, keys: keys, nonKeyIndex: nonKeyIndex)
         }
 
-        regexStr.append("(?:/(?=$))?")
-        if !allowPartialMatch {
-            regexStr.append("$")
+        if allowPartialMatch {
+            regexStr.append("/?(?=/|$)")
+        }
+        else {
+            regexStr.append("/?$")
         }
 
         var regex: RegularExpressionType? = nil
