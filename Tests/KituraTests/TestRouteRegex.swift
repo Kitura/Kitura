@@ -40,7 +40,7 @@ class TestRouteRegex: XCTestCase {
         // Partial match false adds '$' end of string special character
         (regex, strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "test", allowPartialMatch: false)
         path = "/test"
-        range = regex!.rangeOfFirstMatch(in: path, range: NSMakeRange(0, path.characters.count))
+        range = regex!.rangeOfFirstMatch(in: path, options: [], range: NSMakeRange(0, path.characters.count))
         XCTAssertEqual(regex!.pattern, "^/test/?$")
         XCTAssertTrue(strings!.isEmpty)
         XCTAssertEqual(range.location, 0)
@@ -50,7 +50,7 @@ class TestRouteRegex: XCTestCase {
         // Partial match true does not include '$' end of string special character
         (regex, strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "test", allowPartialMatch: true)
         path = "/test/hello/world"
-        range = regex!.rangeOfFirstMatch(in: path, range: NSMakeRange(0, path.characters.count))
+        range = regex!.rangeOfFirstMatch(in: path, options: [], range: NSMakeRange(0, path.characters.count))
         XCTAssertEqual(regex!.pattern, "^/test/?(?=/|$)")
         XCTAssertTrue(strings!.isEmpty)
         XCTAssertEqual(range.location, 0)
@@ -58,7 +58,7 @@ class TestRouteRegex: XCTestCase {
 
         (regex, strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "test/:id", allowPartialMatch: true)
         path = "/test/123/hello/world"
-        range = regex!.rangeOfFirstMatch(in: path, range: NSMakeRange(0, path.characters.count))
+        range = regex!.rangeOfFirstMatch(in: path, options: [], range: NSMakeRange(0, path.characters.count))
         XCTAssertEqual(regex!.pattern, "^/test/(?:([^/]+?))/?(?=/|$)")
         XCTAssertFalse(strings!.isEmpty)
         XCTAssertEqual(strings![0], "id")
