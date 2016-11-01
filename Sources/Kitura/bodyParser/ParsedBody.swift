@@ -50,7 +50,7 @@ public indirect enum ParsedBody {
     /// - Returns: The parsed body as a JSON object, or nil if the body wasn't in
     ///           JSON format.
     public var asJSON: JSON? {
-        switch(self) {
+        switch self {
         case .json(let body):
             return body
         default:
@@ -63,7 +63,7 @@ public indirect enum ParsedBody {
     /// - Returns: The parsed body as an array of `Part` structs, or nil if the body wasn't in
     ///           multi-part form format.
     public var asMultiPart: [Part]? {
-        switch(self) {
+        switch self {
         case .multipart(let body):
             return body
         default:
@@ -75,7 +75,7 @@ public indirect enum ParsedBody {
     ///
     /// - Returns: The "text" body as a String, or nil if the body wasn't in text format.
     public var asText: String? {
-        switch(self) {
+        switch self {
         case .text(let body):
             return body
         default:
@@ -88,7 +88,7 @@ public indirect enum ParsedBody {
     /// - Returns: The parsed body as a Dictionary<String, String>, or nil if the body wasn't in
     ///           url encoded form format.
     public var asURLEncoded: [String:String]? {
-        switch(self) {
+        switch self {
         case .urlEncoded(let body):
             return body
         default:
