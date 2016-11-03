@@ -36,7 +36,7 @@ Kitura is a web framework and web server that is created for web services writte
 - Pluggable middleware
 
 ## Swift version
-Version `1.0` of Kitura requires **Swift 3.0**. *Kitura is unlikely to compile with any other version of Swift.*
+Version `1.1` of Kitura requires **Swift 3.0.1**.
 
 ## Installation
 
@@ -47,16 +47,14 @@ Version `1.0` of Kitura requires **Swift 3.0**. *Kitura is unlikely to compile w
 
 ### macOS
 
-1. Download and install [Xcode 8](https://developer.apple.com/download/).
+1. Download and install [Xcode 8.1](https://developer.apple.com/download/).
 2. There is no step 2.
 
 Now you are ready to develop your first Kitura app. Check [Kitura-Sample](https://github.com/IBM-Swift/Kitura-Sample) or see [Getting Started](#getting-started).
 
-> Note: if you have been using the Xcode 8 betas, you may also need to run `sudo xcode-select -r` to reset your selected developer directory.
-
 ### Ubuntu Linux
 
-Kitura is tested on Ubuntu 14.04 LTS and Ubuntu 15.10.
+Kitura is tested on Ubuntu 14.04 LTS, Ubuntu 15.10 and Ubuntu 16.04 LTS.
 
 1. Install the following system linux libraries:
 
@@ -157,7 +155,7 @@ Let's develop your first Kitura web application!
   let package = Package(
       name: "myFirstProject",
       dependencies: [
-          .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 1, minor: 0)
+          .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 1, minor: 1)
       ])
   ```
 
@@ -215,8 +213,8 @@ Let's develop your first Kitura web application!
    let package = Package(
        name: "myFirstProject",
        dependencies: [
-           .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 1, minor: 0),
-           .Package(url: "https://github.com/IBM-Swift/HeliumLogger.git", majorVersion: 1, minor: 0)
+           .Package(url: "https://github.com/IBM-Swift/Kitura.git", majorVersion: 1, minor: 1),
+           .Package(url: "https://github.com/IBM-Swift/HeliumLogger.git", majorVersion: 1, minor: 1)
        ])
    ```
 
