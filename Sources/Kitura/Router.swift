@@ -50,21 +50,31 @@ public class Router {
     /// Helper for serving file resources
     fileprivate let fileResourceServer = FileResourceServer()
 
+    private let mergeParams: Bool
+
     /// Initialize a `Router` instance
-    public init() {
+    /// - parameter mergeParams: Specify if this router should have access to path parameters
+    /// matched in its parent router. Defaults to `false`.
+    public init(mergeParams: Bool = false) {
+        self.mergeParams = mergeParams
+
         Log.verbose("Router initialized")
     }
 
     func routingHelper(_ method: RouterMethod, pattern: String?, handler: [RouterHandler]) -> Router {
-        elements.append(RouterElement(method: method, pattern: pattern, handler: handler))
+        elements.append(RouterElement(method: method,
+                                      pattern: pattern,
+                                      handler: handler,
+                                      mergeParams: mergeParams))
         return self
     }
 
     func routingHelper(_ method: RouterMethod, pattern: String?, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
         elements.append(RouterElement(method: method,
-            pattern: pattern,
-            middleware: middleware,
-            allowPartialMatch: allowPartialMatch))
+                                      pattern: pattern,
+                                      middleware: middleware,
+                                      allowPartialMatch: allowPartialMatch,
+                                      mergeParams: mergeParams))
         return self
     }
 

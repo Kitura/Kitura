@@ -41,6 +41,9 @@ class RouterElement {
     /// The middlewares to use
     private let middlewares: [RouterMiddleware]
 
+    /// mergeParams flag
+    private let mergeParams: Bool
+
     /// Initialize a RouterElement
     ///
     /// - Parameter method: The `RouterMethod`
@@ -49,19 +52,24 @@ class RouterElement {
     /// - Parameter allowPartialMatch: Are partial matches allowed. Defaults to true.
     /// - Returns: A `RouterElement` instance
     ///
-    init(method: RouterMethod, pattern: String?, middleware: [RouterMiddleware], allowPartialMatch: Bool = true) {
+    init(method: RouterMethod, pattern: String?, middleware: [RouterMiddleware],
+         allowPartialMatch: Bool = true, mergeParams: Bool = false) {
         self.method = method
         self.pattern = pattern
         self.regex = nil
         self.keys = nil
         self.middlewares = middleware
+        self.mergeParams = mergeParams
 
         (regex, keys) = RouteRegex.sharedInstance.buildRegex(fromPattern: pattern, allowPartialMatch: allowPartialMatch)
     }
 
     /// Convenience initializer
-    convenience init(method: RouterMethod, pattern: String?, handler: [RouterHandler]) {
-        self.init(method: method, pattern: pattern, middleware: handler.map {RouterMiddlewareGenerator(handler: $0)}, allowPartialMatch: false)
+    convenience init(method: RouterMethod, pattern: String?, handler: [RouterHandler],
+                     mergeParams: Bool = false) {
+        self.init(method: method, pattern: pattern,
+                  middleware: handler.map {RouterMiddlewareGenerator(handler: $0)},
+                  allowPartialMatch: false, mergeParams: mergeParams)
     }
 
     /// Process
@@ -124,7 +132,8 @@ class RouterElement {
     /// - Parameter match: the regular expression result
     /// - Parameter request:
     private func setParameters(forRequest request: RouterRequest, fromUrlPath urlPath: NSString, match: TextChekingResultType) {
-        var parameters = [String:String]()
+        var parameters = mergeParams ? request.parameters : [:]
+
         if let keys = keys {
             for index in 0..<keys.count {
                 #if os(Linux)

@@ -18,15 +18,40 @@ import Foundation
 import XCTest
 
 @testable import Kitura
+@testable import KituraNet
 
 class TestRouteRegex: XCTestCase {
-    
+
     static var allTests: [(String, (TestRouteRegex) -> () throws -> Void)] {
         return [
-                   ("testBuildRegexFromPattern", testBuildRegexFromPattern)
+            ("testBuildRegexFromPattern", testBuildRegexFromPattern)
         ]
     }
-    
+
+    override func setUp() {
+        doSetUp()
+    }
+
+    override func tearDown() {
+        doTearDown()
+    }
+
+
+    static let helloworld = "Hello world"
+
+    static let handler = { (req: RouterRequest, res: RouterResponse, next: () -> Void) throws in
+        try res.send(helloworld).end()
+    }
+
+    static let mountpath = "/helloworld"
+
+    static let subrouter = { () -> Router in
+        let subrouter = Router()
+        subrouter.all(mountpath, handler: handler)
+
+        return subrouter
+    }()
+
     func testBuildRegexFromPattern() {
         #if os(Linux)
             var regex: RegularExpression?
@@ -69,17 +94,17 @@ class TestRouteRegex: XCTestCase {
         XCTAssertEqual(regex!.pattern, "^/test/([^/]+?(?:/[^/]+?)*)/?$")
         XCTAssertFalse(strings!.isEmpty)
         XCTAssertEqual(strings![0], "id")
-        
+
         (regex, strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "test/:id*", allowPartialMatch: false)
         XCTAssertEqual(regex!.pattern, "^/test(?:/([^/]+?(?:/[^/]+?)*))?/?$")
         XCTAssertFalse(strings!.isEmpty)
         XCTAssertEqual(strings![0], "id")
-        
+
         (regex, strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "test/:id(\\d*)", allowPartialMatch: false)
         XCTAssertEqual(regex!.pattern, "^/test/(?:(\\d*))/?$")
         XCTAssertFalse(strings!.isEmpty)
         XCTAssertEqual(strings![0], "id")
-        
+
         (regex, strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "test/:id(Kitura\\d*)", allowPartialMatch: false)
         XCTAssertEqual(regex!.pattern, "^/test/(?:(Kitura\\d*))/?$")
         XCTAssertFalse(strings!.isEmpty)
@@ -89,5 +114,123 @@ class TestRouteRegex: XCTestCase {
         XCTAssertEqual(regex!.pattern, "^/test/(?:(Kitura\\d*))/?$")
         XCTAssertFalse(strings!.isEmpty)
         XCTAssertEqual(strings![0], "0")
+    }
+
+    func testSimplePaths() {
+        var router = Router()
+
+        router.all("", handler: TestRouteRegex.handler)
+
+        performServerTest(router, asyncTasks: { expectation in
+            self.performRequest("get", path: "", callback: { response in
+                XCTAssertEqual(response?.statusCode, .OK)
+
+                do {
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, TestRouteRegex.helloworld)
+                }
+                catch {
+                    XCTFail()
+                }
+
+                expectation.fulfill()
+            })
+        })
+
+        // This test is broken
+        // Skip for now
+//        router = Router()
+//
+//        router.all("", middleware: TestRouteRegex.subrouter)
+//
+//        performServerTest(router, asyncTasks: { expectation in
+//            self.performRequest("get", path: "/helloworld", callback: { response in
+//                XCTAssertEqual(response?.statusCode, .OK)
+//
+//                do {
+//                    let body = try response?.readString()
+//                    XCTAssertEqual(body, TestRouteRegex.helloworld)
+//                }
+//                catch {
+//                    XCTFail()
+//                }
+//
+//                expectation.fulfill()
+//            })
+//        })
+
+        router = Router()
+
+        router.all("/", handler: TestRouteRegex.handler)
+
+        performServerTest(router, asyncTasks: { expectation in
+            self.performRequest("get", path: "", callback: { response in
+                XCTAssertEqual(response?.statusCode, .OK)
+
+                do {
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, TestRouteRegex.helloworld)
+                }
+                catch {
+                    XCTFail()
+                }
+
+                expectation.fulfill()
+            })
+        })
+
+        // This test is broken
+        // Skip for now
+//        router = Router()
+//
+//        router.all("/", middleware: TestRouteRegex.subrouter)
+//
+//        performServerTest(router, asyncTasks: { expectation in
+//            self.performRequest("get", path: TestRouteRegex.mountpath, callback: { response in
+//                XCTAssertEqual(response?.statusCode, .OK)
+//
+//                do {
+//                    let body = try response?.readString()
+//                    XCTAssertEqual(body, TestRouteRegex.helloworld)
+//                }
+//                catch {
+//                    XCTFail()
+//                }
+//
+//                expectation.fulfill()
+//            })
+//        })
+
+        router = Router()
+
+        router.all("/*", handler: TestRouteRegex.handler)
+
+        performServerTest(router, asyncTasks: { expectation in
+            self.performRequest("get", path: "", callback: { response in
+                XCTAssertEqual(response?.statusCode, .OK)
+
+                do {
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, TestRouteRegex.helloworld)
+                }
+                catch {
+                    XCTFail()
+                }
+
+                expectation.fulfill()
+            })
+        })
+
+        router = Router()
+
+        router.all("/*", middleware: TestRouteRegex.subrouter)
+
+        performServerTest(router, asyncTasks: { expectation in
+            self.performRequest("get", path: TestRouteRegex.mountpath, callback: { response in
+                XCTAssertEqual(response?.statusCode, .notFound)
+
+                expectation.fulfill()
+            })
+        })
     }
 }

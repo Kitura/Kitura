@@ -18,8 +18,10 @@ import XCTest
 
 @testable import Kitura
 @testable import KituraNet
+import SwiftyJSON
 
 #if os(Linux)
+    import Foundation
     import Glibc
 #else
     import Darwin
@@ -148,6 +150,108 @@ class TestSubrouter: XCTestCase {
                 } catch {
                     XCTFail("No response body")
                 }
+                expectation.fulfill()
+            })
+        }
+    }
+
+    func testMergeParams() {
+        let subsubRouter1 = Router(mergeParams: true)
+
+        subsubRouter1.get("/subsub1/:subsub1") { req, res, next in
+            res.send(json: JSON(req.parameters))
+            next()
+        }
+
+        let subsubRouter2 = Router()
+
+        subsubRouter2.get("/subsub2/:subsub2") { req, res, next in
+            res.send(json: JSON(req.parameters))
+            next()
+        }
+
+        let subRouter1 = Router()
+
+        subRouter1.get("/sub1/:sub1", middleware: subsubRouter1)
+        subRouter1.get("/sub2/:sub2", middleware: subsubRouter2)
+
+        let subRouter2 = Router(mergeParams: true)
+
+        subRouter2.get("/sub1/:sub1", middleware: subsubRouter1)
+
+        let router = Router()
+
+        router.get("/root1/:root1", middleware: subRouter1)
+        router.get("/root2/:root2", middleware: subRouter2)
+
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/root1/123/sub1/456/subsub1/789", callback: { response in
+                XCTAssertEqual(response?.statusCode, .OK)
+
+                var data = Data()
+
+                do {
+                    try response?.readAllData(into: &data)
+                    let dict = JSON(data: data).dictionaryValue
+                    XCTAssertEqual(dict["subsub1"]?.stringValue, "789")
+                    XCTAssertEqual(dict["sub1"]?.stringValue, "456")
+                    XCTAssertEqual(dict["root1"], nil)
+
+                    XCTAssertEqual(dict["subsub2"], nil)
+                    XCTAssertEqual(dict["sub2"], nil)
+                }
+                catch {
+                    XCTFail()
+                }
+
+                expectation.fulfill()
+            })
+        }
+
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/root1/123/sub2/456/subsub2/789", callback: { response in
+                XCTAssertEqual(response?.statusCode, .OK)
+
+                var data = Data()
+
+                do {
+                    try response?.readAllData(into: &data)
+                    let dict = JSON(data: data).dictionaryValue
+                    XCTAssertEqual(dict["subsub2"]?.stringValue, "789")
+                    XCTAssertEqual(dict["sub2"], nil)
+                    XCTAssertEqual(dict["root1"], nil)
+
+                    XCTAssertEqual(dict["subsub1"], nil)
+                    XCTAssertEqual(dict["sub1"], nil)
+                }
+                catch {
+                    XCTFail()
+                }
+
+                expectation.fulfill()
+            })
+        }
+
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/root2/123/sub1/456/subsub1/789", callback: { response in
+                XCTAssertEqual(response?.statusCode, .OK)
+
+                var data = Data()
+
+                do {
+                    try response?.readAllData(into: &data)
+                    let dict = JSON(data: data).dictionaryValue
+                    XCTAssertEqual(dict["subsub1"]?.stringValue, "789")
+                    XCTAssertEqual(dict["sub1"]?.stringValue, "456")
+                    XCTAssertEqual(dict["root2"]?.stringValue, "123")
+
+                    XCTAssertEqual(dict["subsub2"], nil)
+                    XCTAssertEqual(dict["sub2"], nil)
+                }
+                catch {
+                    XCTFail()
+                }
+
                 expectation.fulfill()
             })
         }
