@@ -836,31 +836,30 @@ class TestResponse: XCTestCase {
                 next ()
                 return
             }
-            switch (requestBody) {
-                case .urlEncoded(let value):
-                    do {
-                        response.headers["Content-Type"] = "text/html; charset=utf-8"
-                        try response.send("<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> \(value) </body></html>\n\n").end()
-                    } catch {
-                        XCTFail("caught error: \(error)")
-                    }
-                case .text(let value):
-                    do {
-                        response.headers["Content-Type"] = "text/html; charset=utf-8"
-                        try response.send("<!DOCTYPE html><html><body><b>Received text body: </b>\(value)</body></html>\n\n").end()
-                    } catch {
-                        XCTFail("caught error: \(error)")
-                    }
-                case .json(let value):
-                    do {
-                        response.headers["Content-Type"] = "application/json; charset=utf-8"
-                        try response.send(data: value.rawData()).end()
-                    } catch {
-                        XCTFail("caught error: \(error)")
-                    }
-                default:
-                    response.error = Error.failedToParseRequestBody(body: "\(request.body)")
-
+            
+            if let urlEncoded = requestBody.asURLEncoded {
+                do {
+                    response.headers["Content-Type"] = "text/html; charset=utf-8"
+                    try response.send("<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> \(urlEncoded) </body></html>\n\n").end()
+                } catch {
+                    XCTFail("caught error: \(error)")
+                }
+            } else if let text = requestBody.asText {
+                do {
+                    response.headers["Content-Type"] = "text/html; charset=utf-8"
+                    try response.send("<!DOCTYPE html><html><body><b>Received text body: </b>\(text)</body></html>\n\n").end()
+                } catch {
+                    XCTFail("caught error: \(error)")
+                }
+            } else if let json = requestBody.asJSON {
+                do {
+                    response.headers["Content-Type"] = "application/json; charset=utf-8"
+                    try response.send(data: json.rawData()).end()
+                } catch {
+                    XCTFail("caught error: \(error)")
+                }
+            } else {
+                response.error = Error.failedToParseRequestBody(body: "\(request.body)")
             }
 
             next()
@@ -878,18 +877,19 @@ class TestResponse: XCTestCase {
         router.all("/multibodytest", middleware: BodyParser())
 
         router.post("/multibodytest") { request, response, next in
-            guard let requestBody = request.body else {
+            guard let body = request.body else {
                 next ()
                 return
             }
-            switch (requestBody) {
-            case .multipart(let parts):
-                for part in parts {
-                    response.send("\(part.name) \(part.body) ")
-                }
-            default:
+            guard let parts = body.asMultiPart else {
                 response.error = Error.failedToParseRequestBody(body: "\(request.body)")
+                next ()
+                return
             }
+            for part in parts {
+                response.send("\(part.name) \(part.body) ")
+            }
+            
             next()
         }
 
