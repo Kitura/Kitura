@@ -50,6 +50,8 @@ class RouterElement {
     /// - Parameter pattern: The String pattern to use
     /// - Parameter middleware: The `RouterMiddleware`s used to handle
     /// - Parameter allowPartialMatch: Are partial matches allowed. Defaults to true.
+    /// - Parameter mergeParams: Specify if this router should have access to path parameters
+    /// matched in its parent router. Defaults to `false`.
     /// - Returns: A `RouterElement` instance
     ///
     init(method: RouterMethod, pattern: String?, middleware: [RouterMiddleware],

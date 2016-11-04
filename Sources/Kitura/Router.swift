@@ -50,6 +50,7 @@ public class Router {
     /// Helper for serving file resources
     fileprivate let fileResourceServer = FileResourceServer()
 
+    /// Flag to enable/disable access to parent router's params
     private let mergeParams: Bool
 
     /// Initialize a `Router` instance
