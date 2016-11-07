@@ -36,7 +36,6 @@ class TestRouteRegex: XCTestCase {
         doTearDown()
     }
 
-
     static let helloworld = "Hello world"
 
     static let handler = { (req: RouterRequest, res: RouterResponse, next: () -> Void) throws in

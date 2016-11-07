@@ -149,10 +149,11 @@ public class Router {
     /// path and handles all of the mappings of paths below that.
     ///
     /// - Parameter route: The path to bind the sub router to.
-    ///
+    /// - parameter mergeParams: Specify if this router should have access to path parameters
+    /// matched in its parent router. Defaults to `false`.
     /// - Returns: The created sub router.
-    public func route(_ route: String) -> Router {
-        let subrouter = Router()
+    public func route(_ route: String, mergeParams: Bool = false) -> Router {
+        let subrouter = Router(mergeParams: mergeParams)
         self.all(route, middleware: subrouter)
         return subrouter
     }
