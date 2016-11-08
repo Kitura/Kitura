@@ -41,8 +41,8 @@ class RouterElement {
     /// The middlewares to use
     private let middlewares: [RouterMiddleware]
 
-    /// mergeParams flag
-    private let mergeParams: Bool
+    /// mergeParameters flag
+    private let mergeParameters: Bool
 
     /// Initialize a RouterElement
     ///
@@ -50,28 +50,28 @@ class RouterElement {
     /// - Parameter pattern: The String pattern to use
     /// - Parameter middleware: The `RouterMiddleware`s used to handle
     /// - Parameter allowPartialMatch: Are partial matches allowed. Defaults to true.
-    /// - Parameter mergeParams: Specify if this router should have access to path parameters
-    /// matched in its parent router. Defaults to `false`.
+    /// - Parameter mergeParameters: Specify if this router should have access to path
+    /// parameters matched in its parent router. Defaults to `false`.
     /// - Returns: A `RouterElement` instance
     ///
     init(method: RouterMethod, pattern: String?, middleware: [RouterMiddleware],
-         allowPartialMatch: Bool = true, mergeParams: Bool = false) {
+         allowPartialMatch: Bool = true, mergeParameters: Bool = false) {
         self.method = method
         self.pattern = pattern
         self.regex = nil
         self.keys = nil
         self.middlewares = middleware
-        self.mergeParams = mergeParams
+        self.mergeParameters = mergeParameters
 
         (regex, keys) = RouteRegex.sharedInstance.buildRegex(fromPattern: pattern, allowPartialMatch: allowPartialMatch)
     }
 
     /// Convenience initializer
     convenience init(method: RouterMethod, pattern: String?, handler: [RouterHandler],
-                     mergeParams: Bool = false) {
+                     mergeParameters: Bool = false) {
         self.init(method: method, pattern: pattern,
                   middleware: handler.map {RouterMiddlewareGenerator(handler: $0)},
-                  allowPartialMatch: false, mergeParams: mergeParams)
+                  allowPartialMatch: false, mergeParameters: mergeParameters)
     }
 
     /// Process
@@ -134,7 +134,7 @@ class RouterElement {
     /// - Parameter match: the regular expression result
     /// - Parameter request:
     private func setParameters(forRequest request: RouterRequest, fromUrlPath urlPath: NSString, match: TextChekingResultType) {
-        var parameters = mergeParams ? request.parameters : [:]
+        var parameters = mergeParameters ? request.parameters : [:]
 
         if let keys = keys {
             for index in 0..<keys.count {

@@ -165,7 +165,7 @@ class TestSubrouter: XCTestCase {
         }
 
         let router = Router()
-        let subsubRouter1 = router.route("/root1/:root1").route("/sub1/:sub1", mergeParams: true)
+        let subsubRouter1 = router.route("/root1/:root1").route("/sub1/:sub1", mergeParameters: true)
 
         subsubRouter1.all("/subsub1/:subsub1", handler: handler)
         subsubRouter1.all("/subsub2/:subsub2", handler: simpleHandler)

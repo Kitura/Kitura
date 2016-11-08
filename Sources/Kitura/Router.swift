@@ -51,13 +51,13 @@ public class Router {
     fileprivate let fileResourceServer = FileResourceServer()
 
     /// Flag to enable/disable access to parent router's params
-    private let mergeParams: Bool
+    private let mergeParameters: Bool
 
     /// Initialize a `Router` instance
-    /// - parameter mergeParams: Specify if this router should have access to path parameters
+    /// - parameter mergeParameters: Specify if this router should have access to path parameters
     /// matched in its parent router. Defaults to `false`.
-    public init(mergeParams: Bool = false) {
-        self.mergeParams = mergeParams
+    public init(mergeParameters: Bool = false) {
+        self.mergeParameters = mergeParameters
 
         Log.verbose("Router initialized")
     }
@@ -66,7 +66,7 @@ public class Router {
         elements.append(RouterElement(method: method,
                                       pattern: pattern,
                                       handler: handler,
-                                      mergeParams: mergeParams))
+                                      mergeParameters: mergeParameters))
         return self
     }
 
@@ -75,7 +75,7 @@ public class Router {
                                       pattern: pattern,
                                       middleware: middleware,
                                       allowPartialMatch: allowPartialMatch,
-                                      mergeParams: mergeParams))
+                                      mergeParameters: mergeParameters))
         return self
     }
 
@@ -149,11 +149,11 @@ public class Router {
     /// path and handles all of the mappings of paths below that.
     ///
     /// - Parameter route: The path to bind the sub router to.
-    /// - parameter mergeParams: Specify if this router should have access to path parameters
+    /// - parameter mergeParameters: Specify if this router should have access to path parameters
     /// matched in its parent router. Defaults to `false`.
     /// - Returns: The created sub router.
-    public func route(_ route: String, mergeParams: Bool = false) -> Router {
-        let subrouter = Router(mergeParams: mergeParams)
+    public func route(_ route: String, mergeParameters: Bool = false) -> Router {
+        let subrouter = Router(mergeParameters: mergeParameters)
         self.all(route, middleware: subrouter)
         return subrouter
     }
