@@ -41,27 +41,37 @@ class RouterElement {
     /// The middlewares to use
     private let middlewares: [RouterMiddleware]
 
+    /// mergeParameters flag
+    private let mergeParameters: Bool
+
     /// Initialize a RouterElement
     ///
     /// - Parameter method: The `RouterMethod`
     /// - Parameter pattern: The String pattern to use
     /// - Parameter middleware: The `RouterMiddleware`s used to handle
     /// - Parameter allowPartialMatch: Are partial matches allowed. Defaults to true.
+    /// - Parameter mergeParameters: Specify if this router should have access to path
+    /// parameters matched in its parent router. Defaults to `false`.
     /// - Returns: A `RouterElement` instance
     ///
-    init(method: RouterMethod, pattern: String?, middleware: [RouterMiddleware], allowPartialMatch: Bool = true) {
+    init(method: RouterMethod, pattern: String?, middleware: [RouterMiddleware],
+         allowPartialMatch: Bool = true, mergeParameters: Bool = false) {
         self.method = method
         self.pattern = pattern
         self.regex = nil
         self.keys = nil
         self.middlewares = middleware
+        self.mergeParameters = mergeParameters
 
         (regex, keys) = RouteRegex.sharedInstance.buildRegex(fromPattern: pattern, allowPartialMatch: allowPartialMatch)
     }
 
     /// Convenience initializer
-    convenience init(method: RouterMethod, pattern: String?, handler: [RouterHandler]) {
-        self.init(method: method, pattern: pattern, middleware: handler.map {RouterMiddlewareGenerator(handler: $0)}, allowPartialMatch: false)
+    convenience init(method: RouterMethod, pattern: String?, handler: [RouterHandler],
+                     mergeParameters: Bool = false) {
+        self.init(method: method, pattern: pattern,
+                  middleware: handler.map {RouterMiddlewareGenerator(handler: $0)},
+                  allowPartialMatch: false, mergeParameters: mergeParameters)
     }
 
     /// Process
@@ -124,7 +134,8 @@ class RouterElement {
     /// - Parameter match: the regular expression result
     /// - Parameter request:
     private func setParameters(forRequest request: RouterRequest, fromUrlPath urlPath: NSString, match: TextChekingResultType) {
-        var parameters = [String:String]()
+        var parameters = mergeParameters ? request.parameters : [:]
+
         if let keys = keys {
             for index in 0..<keys.count {
                 #if os(Linux)
