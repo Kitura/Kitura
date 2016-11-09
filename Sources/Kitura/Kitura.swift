@@ -71,11 +71,19 @@ public class Kitura {
         Log.verbose("Starting Kitura framework...")
         for (server, port) in httpServersAndPorts {
             Log.verbose("Starting an HTTP Server on port \(port)...")
-            server.listen(port: port)
+            do {
+                try server.listen(on: port)
+            } catch {
+                Log.error("Error listening on port \(port). Use server.failed(callback:) to handle")
+            }
         }
         for (server, port) in fastCGIServersAndPorts {
             Log.verbose("Starting a FastCGI Server on port \(port)...")
-            server.listen(port: port)
+            do {
+                try server.listen(on: port)
+            } catch {
+                Log.error("Error listening on port \(port). Use server.failed(callback:) to handle")
+            }
         }
         ListenerGroup.waitForListeners()
     }
@@ -86,11 +94,19 @@ public class Kitura {
     public class func start() {
         for (server, port) in httpServersAndPorts {
             Log.verbose("Starting an HTTP Server on port \(port)...")
-            server.listen(port: port)
+            do {
+                try server.listen(on: port)
+            } catch {
+                Log.error("Error listening on port \(port). Use server.failed(callback:) to handle")
+            }
         }
         for (server, port) in fastCGIServersAndPorts {
             Log.verbose("Starting a FastCGI Server on port \(port)...")
-            server.listen(port: port)
+            do {
+                try server.listen(on: port)
+            } catch {
+                Log.error("Error listening on port \(port). Use server.failed(callback:) to handle")
+            }
         }
     }
 
