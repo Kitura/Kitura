@@ -182,7 +182,7 @@ extension Router : RouterMiddleware {
         /// matched ranges always start at location 0, so it's OK to check via `hasPrefix`.
         /// `hasPrefix` has the advantage of being able to match "", whereas `.range()`
         /// does not.
-        guard urlPath.hasPrefix(mountpath) else {
+        guard mountpath == "" || urlPath.hasPrefix(mountpath) else {
             Log.error("Failed to find matches in url")
             return
         }
