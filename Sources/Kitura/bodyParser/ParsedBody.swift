@@ -45,7 +45,7 @@ public indirect enum ParsedBody {
     /// If the content type was "multipart/form-data" this associated value will
     /// contain an array of parts of multi-part respresentation of the body.
     case multipart([Part])
-    
+
     /// Extract a "JSON" body from the `ParsedBody` enum
     ///
     /// - Returns: The parsed body as a JSON object, or nil if the body wasn't in
@@ -58,7 +58,7 @@ public indirect enum ParsedBody {
             return nil
         }
     }
-    
+
     /// Extract a "multipart" body from the `ParsedBody` enum
     ///
     /// - Returns: The parsed body as an array of `Part` structs, or nil if the body wasn't in
@@ -71,7 +71,7 @@ public indirect enum ParsedBody {
             return nil
         }
     }
-    
+
     /// Extract a "text" body from the `ParsedBody` enum
     ///
     /// - Returns: The "text" body as a String, or nil if the body wasn't in text format.
@@ -83,12 +83,12 @@ public indirect enum ParsedBody {
             return nil
         }
     }
-    
+
     /// Extract a "urlEncoded" body from the `ParsedBody` enum
     ///
     /// - Returns: The parsed body as a Dictionary<String, String>, or nil if the body wasn't in
     ///           url encoded form format.
-    public var asURLEncoded: [String:String]? {
+    public var asURLEncoded: Query? {
         switch self {
         case .urlEncoded(let body):
             return body

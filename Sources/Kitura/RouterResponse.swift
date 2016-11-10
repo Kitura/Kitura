@@ -204,7 +204,7 @@ public class RouterResponse {
             send(data: jsonData)
         }
         catch { } // Do nothing if the JSON to Data fails
-            
+
         return self
     }
 
@@ -239,7 +239,7 @@ public class RouterResponse {
         }
 
         let jsonStr = jsonp.description
-        let taintedJSCallbackName = request.queryParameters[callbackParameter].string
+        let taintedJSCallbackName = request.requestParameters.query[callbackParameter].string
         if let jsCallbackName = validJsonpCallbackName(taintedJSCallbackName) {
             headers.setType("js")
             // Set header "X-Content-Type-Options: nosniff" and prefix body with

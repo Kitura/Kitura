@@ -41,7 +41,7 @@ class RouterElementWalker {
         self.request = request
         self.response = response
         self.callback = callback
-        self.parameters = request.parameters
+        self.parameters = request.requestParameters.url
     }
 
     /// Process the next router element
@@ -50,7 +50,7 @@ class RouterElementWalker {
 
         if elementIndex < self.elements.count {
             // reset parameters before processing next element
-            request.parameters = parameters
+            request.requestParameters.url = parameters
 
             elements[elementIndex].process(request: request, response: response) {
                 // Purposefully capture self here
