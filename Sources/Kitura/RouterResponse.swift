@@ -15,7 +15,6 @@
  */
 
 import KituraNet
-import KituraSys
 import SwiftyJSON
 
 import Foundation
@@ -149,8 +148,13 @@ public class RouterResponse {
     /// - Returns: this RouterResponse.
     @discardableResult
     public func send(_ str: String) -> RouterResponse {
-        if let data = StringUtils.toUtf8String(str) {
-            send(data: data)
+        let utf8Length = str.lengthOfBytes(using: .utf8)
+        let bufferLength = utf8Length + 1  // Add room for the NULL terminator
+        var utf8: [CChar] = Array<CChar>(repeating: 0, count: bufferLength)
+        if str.getCString(&utf8, maxLength: bufferLength, encoding: .utf8) {
+            let rawBytes = UnsafeRawPointer(UnsafePointer(utf8))
+            buffer.append(bytes: rawBytes.assumingMemoryBound(to: UInt8.self), length: utf8Length)
+            state.invokedSend = true
         }
         return self
     }
@@ -194,9 +198,13 @@ public class RouterResponse {
     /// - Returns: this RouterResponse.
     @discardableResult
     public func send(json: JSON) -> RouterResponse {
-        let jsonStr = json.description
-        headers.setType("json")
-        send(jsonStr)
+        do {
+            let jsonData = try json.rawData(options:.prettyPrinted)
+            headers.setType("json")
+            send(data: jsonData)
+        }
+        catch { } // Do nothing if the JSON to Data fails
+            
         return self
     }
 
@@ -261,9 +269,7 @@ public class RouterResponse {
     /// - Returns: this RouterResponse.
     public func send(status: HTTPStatusCode) -> RouterResponse {
         self.status(status)
-        if let statusCode = HTTP.statusCodes[status.rawValue] {
-            send(statusCode)
-        }
+        send(HTTPURLResponse.localizedString(forStatusCode: status.rawValue))
         return self
     }
 
@@ -288,6 +294,7 @@ public class RouterResponse {
     /// - Returns: this RouterResponse.
     ///
     // influenced by http://expressjs.com/en/4x/api.html#app.render
+    @discardableResult
     public func render(_ resource: String, context: [String:Any]) throws -> RouterResponse {
         let renderedResource = try router.render(template: resource, context: context)
         return send(renderedResource)
@@ -298,7 +305,7 @@ public class RouterResponse {
     /// - Parameter download: the file to download.
     /// - Throws: An error in the Cocoa domain, if the file cannot be read.
     public func send(download: String) throws {
-        try send(fileName: download)
+        try send(fileName: StaticFileServer.ResourcePathHandler.getAbsolutePath(for: download))
         headers.addAttachment(for: download)
     }
 

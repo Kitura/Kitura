@@ -33,15 +33,19 @@ public class Kitura {
     ///
     /// - Parameter onPort: The port to listen on.
     /// - Parameter with: The `ServerDelegate` to use.
+    /// - Parameter withSSL: The `sslConfig` to use.
     /// - Returns: The created `HTTPServer`.
     @discardableResult
-    public class func addHTTPServer(onPort port: Int, with delegate: ServerDelegate) -> HTTPServer {
+    public class func addHTTPServer(onPort port: Int, with delegate: ServerDelegate, withSSL sslConfig: SSLConfig?=nil) -> HTTPServer {
         let server = HTTP.createServer()
         server.delegate = delegate
+        if let sslConfig = sslConfig {
+            server.sslConfig = sslConfig.config
+        }
         httpServersAndPorts.append(server: server, port: port)
         return server
     }
-    
+
     /// Add a FastCGIServer on a port with a delegate.
     ///
     /// The server is only registered with the framework, it does not start listening
@@ -101,7 +105,6 @@ public class Kitura {
             server.stop()
         }
         httpServersAndPorts.removeAll()
-
         for (server, port) in fastCGIServersAndPorts {
             Log.verbose("Stopping FastCGI Server on port \(port)...")
             server.stop()

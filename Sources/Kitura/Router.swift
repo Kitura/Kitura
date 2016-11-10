@@ -21,7 +21,7 @@ import KituraTemplateEngine
 
 // MARK Router
 
-/// The `Router` class provides the external intreface for the routing of requests to
+/// The `Router` class provides the external interface for the routing of requests to
 /// the appropriate code for handling. This includes:
 ///
 ///   - Routing requests to closures with the signature of `RouterHandler`
@@ -32,7 +32,7 @@ import KituraTemplateEngine
 public class Router {
 
     /// Contains the list of routing elements
-    fileprivate var elements: [RouterElement] = []
+    var elements: [RouterElement] = []
 
     /// Map from file extensions to Template Engines
     private var templateEngines = [String: TemplateEngine]()
@@ -50,26 +50,37 @@ public class Router {
     /// Helper for serving file resources
     fileprivate let fileResourceServer = FileResourceServer()
 
+    /// Flag to enable/disable access to parent router's params
+    private let mergeParameters: Bool
+
     /// Initialize a `Router` instance
-    public init() {
+    /// - parameter mergeParameters: Specify if this router should have access to path parameters
+    /// matched in its parent router. Defaults to `false`.
+    public init(mergeParameters: Bool = false) {
+        self.mergeParameters = mergeParameters
+
         Log.verbose("Router initialized")
     }
 
     func routingHelper(_ method: RouterMethod, pattern: String?, handler: [RouterHandler]) -> Router {
-        elements.append(RouterElement(method: method, pattern: pattern, handler: handler))
+        elements.append(RouterElement(method: method,
+                                      pattern: pattern,
+                                      handler: handler,
+                                      mergeParameters: mergeParameters))
         return self
     }
 
     func routingHelper(_ method: RouterMethod, pattern: String?, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
         elements.append(RouterElement(method: method,
-            pattern: pattern,
-            middleware: middleware,
-            allowPartialMatch: allowPartialMatch))
+                                      pattern: pattern,
+                                      middleware: middleware,
+                                      allowPartialMatch: allowPartialMatch,
+                                      mergeParameters: mergeParameters))
         return self
     }
 
     // MARK: Template Engine
-    
+
     /// Sets the default templating engine to be used when the extension of a file in the
     /// `viewsPath` doesn't match the extension of one of the registered templating engines.
     ///
@@ -104,7 +115,7 @@ public class Router {
         guard let resourceExtension = URL(string: template)?.pathExtension else {
             throw TemplatingError.noTemplateEngineForExtension(extension: "")
         }
-        
+
         let fileExtension: String
         let resourceWithExtension: String
 
@@ -125,22 +136,24 @@ public class Router {
             throw TemplatingError.noTemplateEngineForExtension(extension: fileExtension)
         }
 
-        let filePath =  viewsPath + resourceWithExtension
-        return try templateEngine.render(filePath: filePath, context: context)
+        let filePath = viewsPath + resourceWithExtension
+        let absoluteFilePath = StaticFileServer.ResourcePathHandler.getAbsolutePath(for: filePath)
+        return try templateEngine.render(filePath: absoluteFilePath, context: context)
     }
-    
+
     // MARK: Sub router
-    
+
     /// Setup a "sub router" to handle requests. This can make it easier to
     /// build a server that serves a large set of paths, by breaking it up
     /// in to "sub router" where each sub router is mapped to it's own root
     /// path and handles all of the mappings of paths below that.
     ///
     /// - Parameter route: The path to bind the sub router to.
-    ///
+    /// - parameter mergeParameters: Specify if this router should have access to path parameters
+    /// matched in its parent router. Defaults to `false`.
     /// - Returns: The created sub router.
-    public func route(_ route: String) -> Router {
-        let subrouter = Router()
+    public func route(_ route: String, mergeParameters: Bool = false) -> Router {
+        let subrouter = Router(mergeParameters: mergeParameters)
         self.all(route, middleware: subrouter)
         return subrouter
     }

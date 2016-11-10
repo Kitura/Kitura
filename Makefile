@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # Makefile
-export KITURA_CI_BUILD_SCRIPTS_DIR=Package-Builder/build
+export BUILDER_SCRIPTS_DIR=Package-Builder/build
 
 -include Package-Builder/build/Makefile
 
@@ -21,7 +21,10 @@ Package-Builder/build/Makefile:
 	@echo --- Fetching Package-Builder submodule
 	git submodule update --init --remote --merge --recursive
 
-generateRouterVerbs: Sources/Kitura/RouterHTTPVerbs_generated.swift
+generateRouterVerbs: Sources/Kitura/RouterHTTPVerbs_generated.swift Tests/KituraTests/TestRouterHTTPVerbs_generated.swift
 
 Sources/Kitura/RouterHTTPVerbs_generated.swift: Configuration/RouterHTTPVerbs.txt
 	@bash Scripts/generate_router_verbs.sh $< $@
+
+Tests/KituraTests/TestRouterHTTPVerbs_generated.swift: Configuration/RouterHTTPVerbs.txt
+	@bash Scripts/generate_router_verb_tests.sh $< $@
