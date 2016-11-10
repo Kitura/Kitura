@@ -54,25 +54,15 @@ public class RouteRegex {
     /// - Parameter allowPartialMatch: True if a partial match is allowed. Defaults to false.
     /// - Returns: A tuple of the compiled `RegularExpressionType?` and array of keys
     internal func buildRegex(fromPattern: String?, allowPartialMatch: Bool = false) -> (RegularExpressionType?, [String]?) {
-        guard let fromPattern = fromPattern else {
+        guard let pattern = fromPattern else {
             return (nil, nil)
         }
 
-        var pattern = fromPattern
         var regexStr = "^"
         var keys = [String]()
         var nonKeyIndex = 0
 
-        if allowPartialMatch && pattern.hasSuffix("*") {
-            pattern = String(pattern.characters.dropLast())
-        }
-
         let paths = pattern.components(separatedBy: "/")
-
-        // Special case where only back slashes are specified
-        if paths.filter({$0 != ""}).isEmpty {
-            regexStr.append("/")
-        }
 
         for path in paths {
             (regexStr, keys, nonKeyIndex) =
@@ -80,10 +70,10 @@ public class RouteRegex {
         }
 
         if allowPartialMatch {
-            regexStr.append("/?(?=/|$)")
+            regexStr.append("(?:/(?=$))?(?=/|$)")
         }
         else {
-            regexStr.append("/?$")
+            regexStr.append("(?:/(?=$))?$")
         }
 
         var regex: RegularExpressionType? = nil

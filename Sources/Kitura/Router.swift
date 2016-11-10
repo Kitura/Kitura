@@ -177,11 +177,19 @@ extension Router : RouterMiddleware {
         }
 
         let mountpath = request.matchedPath
-        guard let prefixRange = urlPath.range(of: mountpath) else {
+
+        /// Note: Since regex always start with ^, the beginning of line character,
+        /// matched ranges always start at location 0, so it's OK to check via `hasPrefix`.
+        /// `hasPrefix` has the advantage of being able to match "", whereas `.range()`
+        /// does not.
+        guard urlPath.hasPrefix(mountpath) else {
             Log.error("Failed to find matches in url")
             return
         }
-        request.parsedURL.path?.removeSubrange(prefixRange)
+
+        let index = urlPath.index(urlPath.startIndex, offsetBy: mountpath.characters.count)
+
+        request.parsedURL.path = urlPath.substring(from: index)
 
         if request.parsedURL.path == "" {
             request.parsedURL.path = "/"
