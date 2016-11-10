@@ -708,7 +708,7 @@ class TestResponse: XCTestCase {
             })
         }
     }
-    
+
     func testSend() {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/data", callback: { response in
@@ -724,7 +724,7 @@ class TestResponse: XCTestCase {
                 expectation.fulfill()
             })
         }
-        
+
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/json", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
@@ -741,7 +741,7 @@ class TestResponse: XCTestCase {
                 expectation.fulfill()
             })
         }
-        
+
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/download", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
@@ -754,7 +754,7 @@ class TestResponse: XCTestCase {
                 catch{
                     XCTFail("No response body")
                 }
-            
+
                 expectation.fulfill()
             })
         }
@@ -794,7 +794,7 @@ class TestResponse: XCTestCase {
         router.get("/zxcv/:p1") { request, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             let p1 = request.parameters["p1"] ?? "(nil)"
-            let q = request.queryParameters["q"].string ?? "(nil)"
+            let q = request.queryParameters["q"] ?? "(nil)"
             let u1 = request.userInfo["u1"] as? String ?? "(nil)"
             do {
                 try response.send("<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=\(p1)<p><p>q=\(q)<p><p>u1=\(u1)</body></html>\n\n").end()
@@ -836,7 +836,7 @@ class TestResponse: XCTestCase {
                 next ()
                 return
             }
-            
+
             if let urlEncoded = requestBody.asURLEncoded {
                 do {
                     response.headers["Content-Type"] = "text/html; charset=utf-8"
@@ -889,7 +889,7 @@ class TestResponse: XCTestCase {
             for part in parts {
                 response.send("\(part.name) \(part.body) ")
             }
-            
+
             next()
         }
 
@@ -979,7 +979,7 @@ class TestResponse: XCTestCase {
             } catch {}
         }
 
-        
+
         router.get("/lifecycle") { request, response, next in
             var previousOnEndInvoked: LifecycleHandler? = nil
             let onEndInvoked = {
@@ -1001,8 +1001,8 @@ class TestResponse: XCTestCase {
             } catch {}
             next()
         }
-        
-        
+
+
         router.get("/data") { _, response, next in
             do {
                 try response.send(data: "<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n".data(using: .utf8)!).end()
@@ -1018,7 +1018,7 @@ class TestResponse: XCTestCase {
             } catch {}
             next()
         }
- 
+
         router.get("/download") { _, response, next in
             do {
                 try response.send(download: "./Tests/KituraTests/TestStaticFileServer/index.html")
@@ -1026,7 +1026,7 @@ class TestResponse: XCTestCase {
             next()
         }
 
-        
+
         router.error { request, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             do {
