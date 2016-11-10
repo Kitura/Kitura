@@ -34,7 +34,7 @@ extension RouterRequest {
 
         public subscript(key: String) -> String? {
             get {
-                return self.request.requestParameters.query["key"].string
+                return self.request.requestParameters.query[key].string
             }
         }
     }
