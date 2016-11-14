@@ -227,7 +227,7 @@ extension Router : RouterMiddleware {
             return
         }
 
-        let mountpath = request.matchedPath
+        let mountpath = request.consumedPath
 
         /// Note: Since regex always start with ^, the beginning of line character,
         /// matched ranges always start at location 0, so it's OK to check via `hasPrefix`.
@@ -240,10 +240,6 @@ extension Router : RouterMiddleware {
         let index = urlPath.index(urlPath.startIndex, offsetBy: mountpath.characters.count)
 
         request.parsedURL.path = urlPath.substring(from: index)
-
-        if request.parsedURL.path == "" {
-            request.parsedURL.path = "/"
-        }
 
         process(request: request, response: response) {
             request.parsedURL.path = urlPath
@@ -294,9 +290,8 @@ extension Router : ServerDelegate {
             return
         }
 
-        let lengthIndex = kituraResourcePrefix.endIndex
-        if  urlPath.characters.count > kituraResourcePrefix.characters.count && urlPath.substring(to: lengthIndex) == kituraResourcePrefix {
-            let resource = urlPath.substring(from: lengthIndex)
+        if  urlPath.hasPrefix(kituraResourcePrefix) {
+            let resource = urlPath.substring(from: kituraResourcePrefix.endIndex)
             fileResourceServer.sendIfFound(resource: resource, usingResponse: response)
         } else {
             let looper = RouterElementWalker(elements: self.elements,

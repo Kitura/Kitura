@@ -102,6 +102,9 @@ public class RouterRequest {
     /// The currently matched section of the URL.
     public internal(set) var matchedPath = ""
 
+    /// The currently consumed section of the URL.
+    var consumedPath = ""
+
     /// The original URL as a string.
     public var originalURL: String {
         return serverRequest.urlString
