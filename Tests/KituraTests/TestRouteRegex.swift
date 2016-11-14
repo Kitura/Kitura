@@ -137,7 +137,7 @@ class TestRouteRegex: XCTestCase {
                     XCTAssertEqual(body, helloworld)
                 }
                 catch {
-                    XCTFail()
+                    XCTFail("Unable to read response body")
                 }
 
                 expectation.fulfill()
@@ -157,7 +157,7 @@ class TestRouteRegex: XCTestCase {
                     XCTAssertEqual(body, helloworld)
                 }
                 catch {
-                    XCTFail()
+                    XCTFail("Unable to read response body")
                 }
 
                 expectation.fulfill()
@@ -177,7 +177,7 @@ class TestRouteRegex: XCTestCase {
                     XCTAssertEqual(body, helloworld)
                 }
                 catch {
-                    XCTFail()
+                    XCTFail("Unable to read response body")
                 }
 
                 expectation.fulfill()
@@ -197,7 +197,7 @@ class TestRouteRegex: XCTestCase {
                     XCTAssertEqual(body, helloworld)
                 }
                 catch {
-                    XCTFail()
+                    XCTFail("Unable to read response body")
                 }
 
                 expectation.fulfill()
@@ -217,7 +217,7 @@ class TestRouteRegex: XCTestCase {
                     XCTAssertEqual(body, helloworld)
                 }
                 catch {
-                    XCTFail()
+                    XCTFail("Unable to read response body")
                 }
 
                 expectation.fulfill()
@@ -251,7 +251,7 @@ class TestRouteRegex: XCTestCase {
                     XCTAssertEqual(body, helloworld)
                 }
                 catch {
-                    XCTFail()
+                    XCTFail("Unable to read response body")
                 }
 
                 expectation.fulfill()
@@ -271,7 +271,7 @@ class TestRouteRegex: XCTestCase {
                     XCTAssertEqual(body, helloworld)
                 }
                 catch {
-                    XCTFail()
+                    XCTFail("Unable to read response body")
                 }
 
                 expectation.fulfill()
@@ -295,7 +295,7 @@ class TestRouteRegex: XCTestCase {
                     XCTAssertEqual(dict["id"]?.stringValue, id)
                 }
                 catch {
-                    XCTFail()
+                    XCTFail("Unable to read response body")
                 }
                 
                 expectation.fulfill()
@@ -319,7 +319,7 @@ class TestRouteRegex: XCTestCase {
                     XCTAssertEqual(dict["id"]?.stringValue, id)
                 }
                 catch {
-                    XCTFail()
+                    XCTFail("Unable to read response body")
                 }
 
                 expectation.fulfill()
@@ -346,7 +346,7 @@ class TestRouteRegex: XCTestCase {
                     XCTAssertEqual(dict["id"]?.stringValue, helloworld)
                 }
                 catch {
-                    XCTFail()
+                    XCTFail("Unable to read response body")
                 }
                 
                 expectation.fulfill()
