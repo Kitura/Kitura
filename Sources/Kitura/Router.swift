@@ -53,6 +53,9 @@ public class Router {
     /// Flag to enable/disable access to parent router's params
     private let mergeParameters: Bool
 
+    ///
+    fileprivate var parameterHandlers = [String : [RouterParameterHandler]]()
+
     /// Initialize a `Router` instance
     /// - parameter mergeParameters: Specify if this router should have access to path parameters
     /// matched in its parent router. Defaults to `false`.
@@ -157,6 +160,31 @@ public class Router {
         self.all(route, middleware: subrouter)
         return subrouter
     }
+
+    ///
+    @discardableResult
+    public func parameter(_ name: String, handler: @escaping RouterParameterHandler...) -> Router {
+        return self.parameter([name], handlers: handler)
+    }
+
+    ///
+    @discardableResult
+    public func parameter(_ names: [String], handler: @escaping RouterParameterHandler...) -> Router {
+        return self.parameter(names, handlers: handler)
+    }
+
+    ///
+    @discardableResult
+    public func parameter(_ names: [String], handlers: [RouterParameterHandler]) -> Router {
+        for name in names {
+            if self.parameterHandlers[name] == nil {
+                self.parameterHandlers[name] = handlers
+            } else {
+                self.parameterHandlers[name]?.append(contentsOf: handlers)
+            }
+        }
+        return self
+    }
 }
 
 // MARK: RouterMiddleware extensions
@@ -241,7 +269,12 @@ extension Router : ServerDelegate {
             let resource = urlPath.substring(from: lengthIndex)
             fileResourceServer.sendIfFound(resource: resource, usingResponse: response)
         } else {
-            let looper = RouterElementWalker(elements: self.elements, request: request, response: response, callback: callback)
+            let looper = RouterElementWalker(elements: self.elements,
+                parameterHandlers: self.parameterHandlers,
+                request: request,
+                response: response,
+                callback: callback)
+
             looper.next()
         }
     }

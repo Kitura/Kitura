@@ -26,7 +26,8 @@ class TestRequests: XCTestCase {
         return [
                    ("testURLParameters", testURLParameters),
                    ("testCustomMiddlewareURLParameter", testCustomMiddlewareURLParameter),
-                   ("testCustomMiddlewareURLParameterWithQueryParam", testCustomMiddlewareURLParameterWithQueryParam)
+                   ("testCustomMiddlewareURLParameterWithQueryParam", testCustomMiddlewareURLParameterWithQueryParam),
+                   ("testParameters", testParameters)
         ]
     }
 
@@ -122,5 +123,41 @@ class TestRequests: XCTestCase {
 
 
         return router
+    }
+
+    func testParameters() {
+        let router = Router()
+
+        router.get("users/:user/:id") { request, response, next in
+            XCTAssertNotNil(request.parameters["user"])
+            XCTAssertNotNil(request.parameters["id"])
+            response.status(.OK)
+            next()
+        }
+
+        router.parameter("user") { request, response, value, next in
+            XCTAssertNotNil(value)
+            XCTAssertEqual(request.parameters["user"], value)
+
+            response.headers["User"] = value
+        }
+
+        router.parameter("id") { request, response, value, next in
+            XCTAssertNotNil(value)
+            XCTAssertEqual(request.parameters["id"], value)
+
+            response.headers["User-Id"] = value
+        }
+
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "users/random/1000", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertNotNil(response!.headers["User"])
+                XCTAssertNotNil(response!.headers["User-Id"])
+                XCTAssertEqual(response!.headers["User"]!.first, "random")
+                XCTAssertEqual(response!.headers["User-Id"]!.first, "1000")
+                expectation.fulfill()
+            })
+        }
     }
 }

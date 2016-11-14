@@ -36,12 +36,18 @@ class RouterElementWalker {
     /// Copy of request parameters to enable mergeParams
     private let parameters: [String: String]
 
-    init(elements: [RouterElement], request: RouterRequest, response: RouterResponse, callback: @escaping () -> Void) {
+    ///
+    private var parameterWalker: RouterParameterWalker
+
+    init(elements: [RouterElement], parameterHandlers: [String : [RouterParameterHandler]],
+        request: RouterRequest, response: RouterResponse, callback: @escaping () -> Void) {
         self.elements = elements
         self.request = request
         self.response = response
         self.callback = callback
         self.parameters = request.parameters
+
+        self.parameterWalker = RouterParameterWalker(handlers: parameterHandlers)
     }
 
     /// Process the next router element
@@ -54,7 +60,10 @@ class RouterElementWalker {
 
             elements[elementIndex].process(request: request, response: response) {
                 // Purposefully capture self here
-                self.next()
+
+                self.parameterWalker.handle(request: self.request, response: self.response) {
+                    self.next()
+                }
             }
         } else {
             callback()
