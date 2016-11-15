@@ -98,7 +98,7 @@ class RouterElement {
         // Either response error exists and method is error, or method matches
         guard let regex = regex else {
             request.route = pattern
-            request.parameters = [:]
+            request.parameters = mergeParameters ? request.parameters : [:]
             processHelper(request: request, response: response, next: next)
             return
         }

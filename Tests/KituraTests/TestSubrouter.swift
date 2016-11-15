@@ -171,7 +171,11 @@ class TestSubrouter: XCTestCase {
         subsubRouter1.all("/subsub2/:subsub2", handler: simpleHandler)
         subsubRouter1.all("/subsub2/passthrough", handler: handler)
 
-        performServerTest(router) { expectation in
+        router.route("/root2/:root2", mergeParameters: true).all() { req, res, next in
+            try res.send(json: JSON(req.parameters)).end()
+        }
+
+        performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path: "/root1/123/sub1/456/subsub1/789", callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -191,9 +195,7 @@ class TestSubrouter: XCTestCase {
 
                 expectation.fulfill()
             })
-        }
-
-        performServerTest(router) { expectation in
+        }, { expectation in
             self.performRequest("get", path: "/root1/123/sub1/456/subsub2/passthrough", callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -213,7 +215,25 @@ class TestSubrouter: XCTestCase {
 
                 expectation.fulfill()
             })
-        }
+        }, { expectation in
+            self.performRequest("get", path: "/root2/123", callback: { response in
+                XCTAssertEqual(response?.statusCode, .OK)
+
+                var data = Data()
+
+                do {
+                    try response?.readAllData(into: &data)
+                    let dict = JSON(data: data).dictionaryValue
+
+                    XCTAssertEqual(dict["root2"]?.stringValue, "123")
+                }
+                catch {
+                    XCTFail()
+                }
+
+                expectation.fulfill()
+            })
+        })
     }
 
     static func setupRouter() -> Router {
