@@ -18,14 +18,24 @@ public typealias RouterParameterHandler = (RouterRequest, RouterResponse, String
 
 class RouterParameterWalker {
 
-    ///
+    /// Collection of 'RouterParameterHandler' for specified parameter name
     private var parameterHandlers: [String : [RouterParameterHandler]]
 
     init(handlers: [String : [RouterParameterHandler]]) {
         self.parameterHandlers = handlers
     }
 
+    /// Invoke all possible parameter handlers for request
+    ///
+    /// - Parameter request: A current `RouterRequst` that is handled by a server
+    /// - Parameter response: A current `RouterResponse` that is handled by a server
+    /// - Parameter callback: A callback that will be invoked when all handlers are invoked
     func handle(request: RouterRequest, response: RouterResponse, with callback: @escaping () -> Void) {
+        guard self.parameterHandlers.count > 0 else {
+            callback()
+            return
+        }
+
         let filtered = request.parameters.filter { (key, _) in self.parameterHandlers.keys.contains(key) }
         self.handle(filtered: filtered, request: request, response: response, with: callback)
     }

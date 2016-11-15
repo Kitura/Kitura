@@ -161,19 +161,34 @@ public class Router {
         return subrouter
     }
 
+    /// Handle an URL parameter
     ///
+    /// - Parameter name: A single parameter name to be handled
+    /// - Parameter handler: A comma delimited set of `RouterParameterHandler`s that will be
+    ///                     invoked when request parses a parameter with specified name.
+    /// - Returns: Current router instance
     @discardableResult
     public func parameter(_ name: String, handler: @escaping RouterParameterHandler...) -> Router {
         return self.parameter([name], handlers: handler)
     }
 
+    /// Handle an URL parameter
     ///
+    /// - Parameter names: The array of parameter names that will be used to invoke handlers
+    /// - Parameter handler: A comma delimited set of `RouterParameterHandler`s that will be
+    ///                     invoked when request parses a parameter with specified name.
+    /// - Returns: Current router instance
     @discardableResult
     public func parameter(_ names: [String], handler: @escaping RouterParameterHandler...) -> Router {
         return self.parameter(names, handlers: handler)
     }
 
+    /// Handle an URL parameter
     ///
+    /// - Parameter names: The array of parameter names that will be used to invoke handlers
+    /// - Parameter handlers: The array of `RouterParameterHandler`s that will be
+    ///                     invoked when request parses a parameter with specified name.
+    /// - Returns: Current router instance
     @discardableResult
     public func parameter(_ names: [String], handlers: [RouterParameterHandler]) -> Router {
         for name in names {
