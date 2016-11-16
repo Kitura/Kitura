@@ -41,10 +41,12 @@ class RouterElement {
     /// The middlewares to use
     private let middlewares: [RouterMiddleware]
 
-    /// allowPartialMatch flag
+    /// Whether or not this RouterElement should removed the matched section of path or
+    /// keep it for its middlewares to use
     private let allowPartialMatch: Bool
 
-    /// mergeParameters flag
+    /// Whether or not this RouterElement should make its parent's parsed parameters
+    /// available for its middlewares to use
     private let mergeParameters: Bool
 
     /// Initialize a RouterElement
