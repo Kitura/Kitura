@@ -58,12 +58,11 @@ class RouterElementWalker {
             // reset parameters before processing next element
             request.parameters = parameters
 
-            elements[elementIndex].process(request: request, response: response) {
+            elements[elementIndex].process(request: request,
+                response: response,
+                parameterWalker: self.parameterWalker) {
                 // Purposefully capture self here
-
-                self.parameterWalker.handle(request: self.request, response: self.response) {
-                    self.next()
-                }
+                self.next()
             }
         } else {
             callback()

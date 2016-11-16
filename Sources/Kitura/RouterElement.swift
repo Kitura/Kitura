@@ -79,7 +79,7 @@ class RouterElement {
     /// - Parameter request: the request
     /// - Parameter response: the response
     /// - Parameter next: the callback
-    func process(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
+    func process(request: RouterRequest, response: RouterResponse, parameterWalker: RouterParameterWalker, next: @escaping () -> Void) {
         guard let path = request.parsedURL.path else {
             Log.error("Failed to process request (path is nil)")
             return
@@ -98,7 +98,7 @@ class RouterElement {
             processHelper(request: request, response: response, next: next)
             return
         }
-        
+
         let nsPath = NSString(string: path)
 
         guard let match = regex.firstMatch(in: path, options: [], range: NSMakeRange(0, path.characters.count)) else {
@@ -110,7 +110,10 @@ class RouterElement {
 
         request.route = pattern
         setParameters(forRequest: request, fromUrlPath: nsPath, match: match)
-        processHelper(request: request, response: response, next: next)
+
+        parameterWalker.handle(request: request, response: response) {
+            self.processHelper(request: request, response: response, next: next)
+        }
     }
 
     /// Process the helper

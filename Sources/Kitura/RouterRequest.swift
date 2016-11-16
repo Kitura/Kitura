@@ -86,7 +86,7 @@ public class RouterRequest {
 
         return subdomains.filter { !$0.isEmpty }
     }()
-    
+
     /// The HTTP version of the request.
     public let httpVersion: HTTPVersion
 
@@ -137,6 +137,8 @@ public class RouterRequest {
 
     /// Body of the message.
     public internal(set) var body: ParsedBody?
+
+    internal var handledNamedParameters = Set<String>()
 
     /// Initializes a `RouterRequest` instance
     ///
@@ -208,7 +210,7 @@ private class Cookies {
 
     /// Storage of parsed Cookie headers
     fileprivate var cookies = [String: HTTPCookie]()
-    
+
     /// Static for Cookie header key value
     private let cookieHeader = "cookie"
 
@@ -220,7 +222,7 @@ private class Cookies {
             initCookie(cookie, cookies: &cookies)
         }
     }
-    
+
     private func initCookie(_ cookie: String, cookies: inout [String: HTTPCookie]) {
         let cookieNameValues = cookie.components(separatedBy: "; ")
         for  cookieNameValue in cookieNameValues {

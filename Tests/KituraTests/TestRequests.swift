@@ -247,6 +247,13 @@ class TestRequests: XCTestCase {
                 XCTAssertNil(response!.headers["User-Id"])
                 XCTAssertEqual(response!.statusCode, .notAcceptable)
 
+                do {
+                    let body = try response!.readString()
+                    XCTAssertNil(body)
+                } catch {
+                    XCTFail()
+                }
+
                 expectation.fulfill()
             })
         })

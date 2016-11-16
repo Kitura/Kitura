@@ -36,7 +36,7 @@ class RouterParameterWalker {
             return
         }
 
-        let filtered = request.parameters.filter { (key, _) in self.parameterHandlers.keys.contains(key) }
+        let filtered = request.parameters.filter { (key, _) in self.parameterHandlers.keys.contains(key) && !request.handledNamedParameters.contains(key) }
         self.handle(filtered: filtered, request: request, response: response, with: callback)
     }
 
@@ -49,7 +49,8 @@ class RouterParameterWalker {
         var parameters = filtered
         let (key, value) = parameters.remove(at: parameters.startIndex)
 
-        if self.parameterHandlers[key] != nil,
+        if !request.handledNamedParameters.contains(key),
+            self.parameterHandlers[key] != nil,
             self.parameterHandlers[key]!.count > 0 {
                 let handler = self.parameterHandlers[key]!.remove(at: 0)
 
@@ -62,6 +63,7 @@ class RouterParameterWalker {
                     self.handle(filtered: parameters, request: request, response: response, with: callback)
                 }
         } else {
+            request.handledNamedParameters.insert(key)
             self.parameterHandlers[key] = nil
             self.handle(filtered: parameters, request: request, response: response, with: callback)
         }

@@ -159,6 +159,7 @@ public class Router {
     /// - Returns: The created sub router.
     public func route(_ route: String, mergeParameters: Bool = false) -> Router {
         let subrouter = Router(mergeParameters: mergeParameters)
+        subrouter.parameterHandlers = self.parameterHandlers
         self.all(route, middleware: subrouter)
         return subrouter
     }
