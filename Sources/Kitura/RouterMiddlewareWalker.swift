@@ -67,7 +67,7 @@ class RouterMiddlewareWalker {
                 response.error = error
                 self.next()
             }
-            
+
         } else {
             callback()
         }
