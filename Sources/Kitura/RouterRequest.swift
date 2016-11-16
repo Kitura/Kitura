@@ -22,6 +22,39 @@ import Foundation
 
 // MARK: RouterRequest
 
+extension RouterRequest {
+
+    public struct FakeDictionary {
+
+        private var request: RouterRequest
+
+        fileprivate init(_ request: RouterRequest) {
+            self.request = request
+        }
+
+        public subscript(key: String) -> String? {
+            get {
+                return self.request.requestParameters.query[key].string
+            }
+        }
+    }
+
+    public struct Parameters {
+
+        private var request: RouterRequest
+
+        fileprivate init(_ request: RouterRequest) {
+            self.request = request
+        }
+
+        var query: Query {
+            return self.request.parsedURL.queryParameters
+        }
+
+        var url = [String : String]()
+    }
+}
+
 /// Router request.
 public class RouterRequest {
 
@@ -86,7 +119,7 @@ public class RouterRequest {
 
         return subdomains.filter { !$0.isEmpty }
     }()
-    
+
     /// The HTTP version of the request.
     public let httpVersion: HTTPVersion
 
@@ -127,10 +160,22 @@ public class RouterRequest {
     }
 
     /// List of URL parameters.
-    public internal(set) var parameters: [String:String] = [:]
+    @available(*, deprecated, message: "Use .requestParameters.url")
+    public var parameters: [String:String] {
+        return self.requestParameters.url
+    }
 
     /// List of query parameters.
-    public var queryParameters: [String:String] { return parsedURL.queryParameters }
+    @available(*, deprecated, message: "Use .requestParameters.query")
+    public lazy var queryParameters: FakeDictionary = { [unowned self] in
+        return FakeDictionary(self)
+    }()
+
+    /// Value containing request URL and query parameters.
+    //TODO: possibly rename to parameters after deprecation.
+    public lazy internal(set) var requestParameters: Parameters = { [unowned self] in
+        return Parameters(self)
+    }()
 
     /// User info.
     public var userInfo: [String: Any] = [:]
@@ -208,7 +253,7 @@ private class Cookies {
 
     /// Storage of parsed Cookie headers
     fileprivate var cookies = [String: HTTPCookie]()
-    
+
     /// Static for Cookie header key value
     private let cookieHeader = "cookie"
 
@@ -220,7 +265,7 @@ private class Cookies {
             initCookie(cookie, cookies: &cookies)
         }
     }
-    
+
     private func initCookie(_ cookie: String, cookies: inout [String: HTTPCookie]) {
         let cookieNameValues = cookie.components(separatedBy: "; ")
         for  cookieNameValue in cookieNameValues {

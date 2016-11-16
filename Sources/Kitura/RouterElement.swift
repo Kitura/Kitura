@@ -94,11 +94,11 @@ class RouterElement {
         // Either response error exists and method is error, or method matches
         guard let regex = regex else {
             request.route = pattern
-            request.parameters = [:]
+            request.requestParameters.url = [:]
             processHelper(request: request, response: response, next: next)
             return
         }
-        
+
         let nsPath = NSString(string: path)
 
         guard let match = regex.firstMatch(in: path, options: [], range: NSMakeRange(0, path.characters.count)) else {
@@ -134,7 +134,7 @@ class RouterElement {
     /// - Parameter match: the regular expression result
     /// - Parameter request:
     private func setParameters(forRequest request: RouterRequest, fromUrlPath urlPath: NSString, match: TextChekingResultType) {
-        var parameters = mergeParameters ? request.parameters : [:]
+        var parameters = mergeParameters ? request.requestParameters.url : [:]
 
         if let keys = keys {
             for index in 0..<keys.count {
@@ -148,6 +148,6 @@ class RouterElement {
                 }
             }
         }
-        request.parameters = parameters
+        request.requestParameters.url = parameters
     }
 }

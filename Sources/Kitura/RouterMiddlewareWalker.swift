@@ -45,7 +45,7 @@ class RouterMiddlewareWalker {
         self.request = request
         self.response = response
         self.callback = callback
-        self.parameters = request.parameters
+        self.parameters = request.requestParameters.url
     }
 
     /// Handle the next middleware
@@ -60,14 +60,14 @@ class RouterMiddlewareWalker {
                 }
 
                 // reset parameters before processing next middleware
-                request.parameters = parameters
+                request.requestParameters.url = parameters
 
                 try middlewares[middlewareIndex].handle(request: request, response: response, next: closure)
             } catch {
                 response.error = error
                 self.next()
             }
-            
+
         } else {
             callback()
         }

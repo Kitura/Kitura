@@ -64,7 +64,7 @@ public class RouterResponse {
 
     /// Set of cookies to return with the response.
     public var cookies = [String: HTTPCookie]()
-    
+
     /// Optional error value.
     public var error: Swift.Error?
 
@@ -204,7 +204,7 @@ public class RouterResponse {
             send(data: jsonData)
         }
         catch { } // Do nothing if the JSON to Data fails
-            
+
         return self
     }
 
@@ -239,7 +239,7 @@ public class RouterResponse {
         }
 
         let jsonStr = jsonp.description
-        let taintedJSCallbackName = request.queryParameters[callbackParameter]
+        let taintedJSCallbackName = request.requestParameters.query[callbackParameter].string
         if let jsCallbackName = validJsonpCallbackName(taintedJSCallbackName) {
             headers.setType("js")
             // Set header "X-Content-Type-Options: nosniff" and prefix body with
@@ -329,7 +329,7 @@ public class RouterResponse {
         return oldWrittenDataFilter
     }
 
-    /// Perform content-negotiation on the Accept HTTP header on the request, when present. 
+    /// Perform content-negotiation on the Accept HTTP header on the request, when present.
     ///
     /// Uses request.accepts() to select a handler for the request, based on the acceptable types ordered by their
     /// quality values. If the header is not specified, the default callback is invoked. When no match is found,
