@@ -36,7 +36,7 @@ class RouterElementWalker {
     /// Copy of request parameters to enable mergeParams
     private let parameters: [String: String]
 
-    ///
+    /// An instance of `RouterParameterWalker` that is used to handle named parameters of requests
     private var parameterWalker: RouterParameterWalker
 
     init(elements: [RouterElement], parameterHandlers: [String : [RouterParameterHandler]],

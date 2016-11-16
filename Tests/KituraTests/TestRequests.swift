@@ -243,7 +243,6 @@ class TestRequests: XCTestCase {
             })
         }, { expectation in
             self.performRequest("get", path: "users/random/dsa", callback: { response in
-                print("bbb")
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertNil(response!.headers["User-Id"])
                 XCTAssertEqual(response!.statusCode, .notAcceptable)
