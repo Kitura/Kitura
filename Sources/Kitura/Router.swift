@@ -50,21 +50,32 @@ public class Router {
     /// Helper for serving file resources
     fileprivate let fileResourceServer = FileResourceServer()
 
+    /// Flag to enable/disable access to parent router's params
+    private let mergeParameters: Bool
+
     /// Initialize a `Router` instance
-    public init() {
+    /// - parameter mergeParameters: Specify if this router should have access to path parameters
+    /// matched in its parent router. Defaults to `false`.
+    public init(mergeParameters: Bool = false) {
+        self.mergeParameters = mergeParameters
+
         Log.verbose("Router initialized")
     }
 
     func routingHelper(_ method: RouterMethod, pattern: String?, handler: [RouterHandler]) -> Router {
-        elements.append(RouterElement(method: method, pattern: pattern, handler: handler))
+        elements.append(RouterElement(method: method,
+                                      pattern: pattern,
+                                      handler: handler,
+                                      mergeParameters: mergeParameters))
         return self
     }
 
     func routingHelper(_ method: RouterMethod, pattern: String?, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
         elements.append(RouterElement(method: method,
-            pattern: pattern,
-            middleware: middleware,
-            allowPartialMatch: allowPartialMatch))
+                                      pattern: pattern,
+                                      middleware: middleware,
+                                      allowPartialMatch: allowPartialMatch,
+                                      mergeParameters: mergeParameters))
         return self
     }
 
@@ -138,10 +149,11 @@ public class Router {
     /// path and handles all of the mappings of paths below that.
     ///
     /// - Parameter route: The path to bind the sub router to.
-    ///
+    /// - parameter mergeParameters: Specify if this router should have access to path parameters
+    /// matched in its parent router. Defaults to `false`.
     /// - Returns: The created sub router.
-    public func route(_ route: String) -> Router {
-        let subrouter = Router()
+    public func route(_ route: String, mergeParameters: Bool = false) -> Router {
+        let subrouter = Router(mergeParameters: mergeParameters)
         self.all(route, middleware: subrouter)
         return subrouter
     }
@@ -165,11 +177,18 @@ extension Router : RouterMiddleware {
         }
 
         let mountpath = request.matchedPath
-        guard let prefixRange = urlPath.range(of: mountpath) else {
+
+        /// Note: Since regex always start with ^, the beginning of line character,
+        /// matched ranges always start at location 0, so it's OK to check via `hasPrefix`.
+        /// Note: `hasPrefix("")` is `true` on macOS but `false` on Linux
+        guard mountpath == "" || urlPath.hasPrefix(mountpath) else {
             Log.error("Failed to find matches in url")
             return
         }
-        request.parsedURL.path?.removeSubrange(prefixRange)
+
+        let index = urlPath.index(urlPath.startIndex, offsetBy: mountpath.characters.count)
+
+        request.parsedURL.path = urlPath.substring(from: index)
 
         if request.parsedURL.path == "" {
             request.parsedURL.path = "/"

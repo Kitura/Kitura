@@ -1,1 +1,26 @@
-{"warnings":[{"file":"/Users/kallner/Projects/SwiftAtBackend/code/kitura-dev/Kitura-ProjectAutomation/VersionManagement/KituraPackagesToUpdate_09_22_16/Kitura/Sources/Kitura/RouterResponse.swift","line":295,"symbol":"render(_:context:)","symbol_kind":"source.lang.swift.decl.function.method.instance","warning":"undocumented"},{"file":"/Users/kallner/Projects/SwiftAtBackend/code/kitura-dev/Kitura-ProjectAutomation/VersionManagement/KituraPackagesToUpdate_09_22_16/Kitura/Sources/Kitura/SSLConfig.swift","line":21,"symbol":"SSLConfig","symbol_kind":"source.lang.swift.decl.struct","warning":"undocumented"},{"file":"/Users/kallner/Projects/SwiftAtBackend/code/kitura-dev/Kitura-ProjectAutomation/VersionManagement/KituraPackagesToUpdate_09_22_16/Kitura/Sources/Kitura/SSLConfig.swift","line":25,"symbol":"config","symbol_kind":"source.lang.swift.decl.var.instance","warning":"undocumented"}],"source_directory":"/Users/kallner/Projects/SwiftAtBackend/code/kitura-dev/Kitura-ProjectAutomation/VersionManagement/KituraPackagesToUpdate_09_22_16/Kitura"}
+{
+  "warnings": [
+    {
+      "file": "/Users/ipartrid/Kitura/Sources/Kitura/RouterResponse.swift",
+      "line": 298,
+      "symbol": "RouterResponse.render(_:context:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/ipartrid/Kitura/Sources/Kitura/SSLConfig.swift",
+      "line": 21,
+      "symbol": "SSLConfig",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/ipartrid/Kitura/Sources/Kitura/SSLConfig.swift",
+      "line": 25,
+      "symbol": "SSLConfig.config",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/ipartrid/Kitura"
+}
