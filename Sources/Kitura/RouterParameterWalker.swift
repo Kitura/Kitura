@@ -18,7 +18,7 @@ public typealias RouterParameterHandler = (RouterRequest, RouterResponse, String
 
 class RouterParameterWalker {
 
-    /// Collection of 'RouterParameterHandler' for specified parameter name
+    /// Collection of `RouterParameterHandler` for specified parameter name
     private var parameterHandlers: [String : [RouterParameterHandler]]
 
     init(handlers: [String : [RouterParameterHandler]]) {
@@ -27,9 +27,9 @@ class RouterParameterWalker {
 
     /// Invoke all possible parameter handlers for request
     ///
-    /// - Parameter request: A current `RouterRequst` that is handled by a server
+    /// - Parameter request: A current `RouterRequest` that is handled by a server
     /// - Parameter response: A current `RouterResponse` that is handled by a server
-    /// - Parameter callback: A callback that will be invoked when all handlers are invoked
+    /// - Parameter callback: A callback that will be invoked after all possible handlers are invoked
     func handle(request: RouterRequest, response: RouterResponse, with callback: @escaping () -> Void) {
         guard self.parameterHandlers.count > 0 else {
             callback()
@@ -41,11 +41,16 @@ class RouterParameterWalker {
     }
 
     private func handle(filtered: [(String, String)], request: RouterRequest, response: RouterResponse, with callback: @escaping () -> Void) {
-        if filtered.count > 0 {
-            var parameters = filtered
-            let (key, value) = parameters.remove(at: parameters.startIndex)
+        guard filtered.count > 0 else {
+            callback()
+            return
+        }
 
-            if self.parameterHandlers[key]!.count > 0 {
+        var parameters = filtered
+        let (key, value) = parameters.remove(at: parameters.startIndex)
+
+        if self.parameterHandlers[key] != nil,
+            self.parameterHandlers[key]!.count > 0 {
                 let handler = self.parameterHandlers[key]!.remove(at: 0)
 
                 do {
@@ -56,12 +61,9 @@ class RouterParameterWalker {
                     response.error = error
                     self.handle(filtered: parameters, request: request, response: response, with: callback)
                 }
-            }
-
+        } else {
             self.parameterHandlers[key] = nil
             self.handle(filtered: parameters, request: request, response: response, with: callback)
-        } else {
-            callback()
         }
     }
 }

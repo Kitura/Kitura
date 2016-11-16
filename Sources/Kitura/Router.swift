@@ -53,7 +53,9 @@ public class Router {
     /// Flag to enable/disable access to parent router's params
     private let mergeParameters: Bool
 
-    ///
+    /// Collection of `RouterParameterHandler` for specified parameter name
+    /// that will be passed to `RouterElementWalker` when server receives client request
+    /// and used to handle request's url parameters.
     fileprivate var parameterHandlers = [String : [RouterParameterHandler]]()
 
     /// Initialize a `Router` instance
@@ -161,7 +163,10 @@ public class Router {
         return subrouter
     }
 
-    /// Handle an URL parameter
+    // MARK: Parameter handling
+
+    /// Setup a  handler for specific name of request parameters.
+    /// This can make it easier to handle values of provided parameter name.
     ///
     /// - Parameter name: A single parameter name to be handled
     /// - Parameter handler: A comma delimited set of `RouterParameterHandler`s that will be
