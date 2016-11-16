@@ -177,7 +177,8 @@ public class Router {
         return self.parameter([name], handlers: handler)
     }
 
-    /// Handle an URL parameter
+    /// Setup a  handler for specific name of request parameters.
+    /// This can make it easier to handle values of provided parameter name.
     ///
     /// - Parameter names: The array of parameter names that will be used to invoke handlers
     /// - Parameter handler: A comma delimited set of `RouterParameterHandler`s that will be
@@ -188,7 +189,8 @@ public class Router {
         return self.parameter(names, handlers: handler)
     }
 
-    /// Handle an URL parameter
+    /// Setup a  handler for specific name of request parameters.
+    /// This can make it easier to handle values of provided parameter name.
     ///
     /// - Parameter names: The array of parameter names that will be used to invoke handlers
     /// - Parameter handlers: The array of `RouterParameterHandler`s that will be
