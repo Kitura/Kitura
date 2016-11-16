@@ -39,19 +39,30 @@ extension KituraTest {
 
     func performServerTest(_ router: ServerDelegate,
                            asyncTasks: @escaping (XCTestExpectation) -> Void...) {
-        Kitura.addHTTPServer(onPort: 8090, with: router)
-        Kitura.start()
-        sleep(1)
-        let requestQueue = DispatchQueue(label: "Request queue")
 
-        for (index, asyncTask) in asyncTasks.enumerated() {
-            let expectation = self.expectation(index)
-            requestQueue.async() {
-                asyncTask(expectation)
-            }
+        var expectations = [XCTestExpectation]()
+
+        for index in 0..<asyncTasks.count {
+            expectations.append(self.expectation(index))
         }
 
-        waitExpectation(timeout: 10) { error in
+        let exps = expectations
+
+        Kitura.addHTTPServer(onPort: 8090, with: router)
+            .started {
+               let requestQueue = DispatchQueue(label: "Request queue")
+
+               for value in zip(asyncTasks, exps) {
+                   let expectation = value.1
+                   requestQueue.async() {
+                       value.0(expectation)
+                   }
+               }
+        }
+
+        Kitura.start()
+
+        self.waitExpectation(timeout: 10) { error in
                 // blocks test until request completes
                 Kitura.stop()
                 XCTAssertNil(error)
