@@ -26,7 +26,9 @@ class TestRequests: XCTestCase {
         return [
                    ("testURLParameters", testURLParameters),
                    ("testCustomMiddlewareURLParameter", testCustomMiddlewareURLParameter),
-                   ("testCustomMiddlewareURLParameterWithQueryParam", testCustomMiddlewareURLParameterWithQueryParam)
+                   ("testCustomMiddlewareURLParameterWithQueryParam", testCustomMiddlewareURLParameterWithQueryParam),
+                   ("testParameters", testParameters),
+                   ("testParameterExit", testParameterExit),
         ]
     }
 
@@ -122,5 +124,138 @@ class TestRequests: XCTestCase {
 
 
         return router
+    }
+
+    func testParameters() {
+        let router = Router()
+
+        router.parameter("user") { request, response, value, next in
+            XCTAssertNotNil(value)
+            XCTAssertEqual(request.parameters["user"], value)
+            XCTAssertNil(response.headers["User"])
+
+            response.headers["User"] = value
+
+            next()
+        }
+
+        router.parameter("id") { request, response, value, next in
+            XCTAssertNotNil(value)
+            XCTAssertEqual(request.parameters["id"], value)
+            XCTAssertNil(response.headers["User-Id"])
+
+            response.headers["User-Id"] = value
+
+            next()
+        }
+
+        // default test
+        router.get("users/:user/:id") { request, response, next in
+            XCTAssertNotNil(request.parameters["user"])
+            XCTAssertNotNil(request.parameters["id"])
+            response.status(.OK)
+            next()
+        }
+
+        // subrouter tests
+        let subrouter = router.route("posts")
+
+        subrouter.get("/:post/:id") { request, response, next in
+            XCTAssertNotNil(request.parameters["post"])
+            XCTAssertNotNil(request.parameters["id"])
+            response.status(.OK)
+            next()
+        }
+
+        subrouter.get("/random/:id") { request, response, next in
+            XCTAssertNotNil(request.parameters["id"])
+            response.send(data: "success".data(using: .utf8)!)
+            next()
+        }
+
+        performServerTest(router, asyncTasks: { expectation in
+            self.performRequest("get", path: "users/random/1000", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertNotNil(response!.headers["User"])
+                XCTAssertNotNil(response!.headers["User-Id"])
+                XCTAssertEqual(response!.headers["User"]!.first, "random")
+                XCTAssertEqual(response!.headers["User-Id"]!.first, "1000")
+                expectation.fulfill()
+            })
+        }, { expectation in
+            self.performRequest("get", path: "posts/random/11000", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertNil(response!.headers["User"])
+                XCTAssertNotNil(response!.headers["User-Id"])
+                XCTAssertEqual(response!.headers["User-Id"]!.first, "11000")
+
+                do {
+                    let body = try response!.readString()
+                    XCTAssertNotNil(body)
+                    XCTAssertEqual(body!, "success")
+                } catch {
+                    XCTFail()
+                }
+
+                expectation.fulfill()
+            })
+        })
+    }
+
+    func testParameterExit() {
+        let router = Router()
+
+        router.parameter("id") { request, response, value, next in
+            XCTAssertNotNil(value)
+            XCTAssertEqual(request.parameters["id"], value)
+
+            guard Int(value) != nil else {
+                try response.status(.notAcceptable).end()
+                return
+            }
+
+            response.headers["User-Id"] = value
+            next()
+        }
+
+        // default test
+        router.get("users/:user/:id") { request, response, next in
+            XCTAssertNotNil(request.parameters["id"])
+            response.status(.OK).send(data: "\(request.parameters["id"]!)".data(using: .utf8)!)
+            next()
+        }
+
+        performServerTest(router, asyncTasks: { expectation in
+            self.performRequest("get", path: "users/random/1000", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertNotNil(response!.headers["User-Id"])
+                XCTAssertEqual(response!.headers["User-Id"]!.first!, "1000")
+
+                do {
+                    let body = try response!.readString()
+                    XCTAssertNotNil(body)
+                    XCTAssertEqual(body!, "1000")
+                } catch {
+                    XCTFail()
+                }
+
+                expectation.fulfill()
+            })
+        }, { expectation in
+            self.performRequest("get", path: "users/random/dsa", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertNil(response!.headers["User-Id"])
+                XCTAssertEqual(response!.statusCode, .notAcceptable)
+
+                do {
+                    let body = try response!.readString()
+                    XCTAssertNil(body)
+                } catch {
+                    XCTFail()
+                }
+
+                expectation.fulfill()
+            })
+        })
     }
 }

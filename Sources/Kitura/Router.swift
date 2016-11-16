@@ -53,6 +53,11 @@ public class Router {
     /// Flag to enable/disable access to parent router's params
     private let mergeParameters: Bool
 
+    /// Collection of `RouterParameterHandler` for specified parameter name
+    /// that will be passed to `RouterElementWalker` when server receives client request
+    /// and used to handle request's url parameters.
+    fileprivate var parameterHandlers = [String : [RouterParameterHandler]]()
+
     /// Initialize a `Router` instance
     /// - parameter mergeParameters: Specify if this router should have access to path parameters
     /// matched in its parent router. Defaults to `false`.
@@ -154,8 +159,54 @@ public class Router {
     /// - Returns: The created sub router.
     public func route(_ route: String, mergeParameters: Bool = false) -> Router {
         let subrouter = Router(mergeParameters: mergeParameters)
+        subrouter.parameterHandlers = self.parameterHandlers
         self.all(route, middleware: subrouter)
         return subrouter
+    }
+
+    // MARK: Parameter handling
+
+    /// Setup a  handler for specific name of request parameters.
+    /// This can make it easier to handle values of provided parameter name.
+    ///
+    /// - Parameter name: A single parameter name to be handled
+    /// - Parameter handler: A comma delimited set of `RouterParameterHandler`s that will be
+    ///                     invoked when request parses a parameter with specified name.
+    /// - Returns: Current router instance
+    @discardableResult
+    public func parameter(_ name: String, handler: @escaping RouterParameterHandler...) -> Router {
+        return self.parameter([name], handlers: handler)
+    }
+
+    /// Setup a  handler for specific name of request parameters.
+    /// This can make it easier to handle values of provided parameter name.
+    ///
+    /// - Parameter names: The array of parameter names that will be used to invoke handlers
+    /// - Parameter handler: A comma delimited set of `RouterParameterHandler`s that will be
+    ///                     invoked when request parses a parameter with specified name.
+    /// - Returns: Current router instance
+    @discardableResult
+    public func parameter(_ names: [String], handler: @escaping RouterParameterHandler...) -> Router {
+        return self.parameter(names, handlers: handler)
+    }
+
+    /// Setup a  handler for specific name of request parameters.
+    /// This can make it easier to handle values of provided parameter name.
+    ///
+    /// - Parameter names: The array of parameter names that will be used to invoke handlers
+    /// - Parameter handlers: The array of `RouterParameterHandler`s that will be
+    ///                     invoked when request parses a parameter with specified name.
+    /// - Returns: Current router instance
+    @discardableResult
+    public func parameter(_ names: [String], handlers: [RouterParameterHandler]) -> Router {
+        for name in names {
+            if self.parameterHandlers[name] == nil {
+                self.parameterHandlers[name] = handlers
+            } else {
+                self.parameterHandlers[name]?.append(contentsOf: handlers)
+            }
+        }
+        return self
     }
 }
 
@@ -248,7 +299,12 @@ extension Router : ServerDelegate {
             let resource = urlPath.substring(from: lengthIndex)
             fileResourceServer.sendIfFound(resource: resource, usingResponse: response)
         } else {
-            let looper = RouterElementWalker(elements: self.elements, request: request, response: response, callback: callback)
+            let looper = RouterElementWalker(elements: self.elements,
+                parameterHandlers: self.parameterHandlers,
+                request: request,
+                response: response,
+                callback: callback)
+
             looper.next()
         }
     }
