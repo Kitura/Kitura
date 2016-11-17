@@ -29,24 +29,14 @@ public class RouterRequest {
     let serverRequest: ServerRequest
 
     /// The hostname of the request.
-    public private(set) lazy var hostname: String = { [unowned self] () in
-        guard let host = self.headers["host"] else {
-            return self.parsedURL.host ?? ""
-        }
-        let range = host.range(of: ":")
-        return  range == nil ? host : host.substring(to: range!.lowerBound)
-    }()
+    public var hostname: String {
+        return url?.host ?? ""
+    }
 
     ///The port of the request.
-    public private(set) lazy var port: Int = { [unowned self] () in
-        guard let host = self.headers["host"] else {
-            return -1
-        }
-
-        let defaultPort: Int = 80
-        let range = host.range(of: ":")
-        return  range == nil ? defaultPort : Int(host.substring(from: range!.upperBound))!
-    }()
+    public var port: Int {
+        return url?.port ?? (url?.scheme == "https" ? 443 : 80)
+    }
 
     /// The domain name of the request.
     public private(set) lazy var domain: String = { [unowned self] in
@@ -94,6 +84,7 @@ public class RouterRequest {
     public let method: RouterMethod
 
     /// The parsed URL.
+    // TODO - REMOVE
     public let parsedURL: URLParser
 
     /// The router as a String.
@@ -102,13 +93,11 @@ public class RouterRequest {
     /// The currently matched section of the URL.
     public internal(set) var matchedPath = ""
 
-    /// The original URL as a string.
-    public var originalURL: String {
-        return serverRequest.urlString
-    }
+    /// The URL from the request if properly received
+    public internal(set) var url : URL?
 
-    /// The URL.
-    public let url: String
+    /// The URL from the request as URLComponents
+    public internal(set) var urlComponents = URLComponents()
 
     /// List of HTTP headers with simple String values.
     public let headers: Headers
@@ -145,10 +134,11 @@ public class RouterRequest {
     /// - Parameter request: the server request
     init(request: ServerRequest) {
         serverRequest = request
+        url = serverRequest.url
+        urlComponents = serverRequest.urlComponents
         httpVersion = HTTPVersion(major: serverRequest.httpVersionMajor ?? 1, minor: serverRequest.httpVersionMinor ?? 1)
         method = RouterMethod(fromRawValue: serverRequest.method)
-        parsedURL = URLParser(url: serverRequest.url, isConnect: false)
-        url = String(serverRequest.urlString)
+        parsedURL = URLParser(url: urlComponents.string!.data(using: .utf8)!, isConnect: false)
         headers = Headers(headers: serverRequest.headers)
     }
 

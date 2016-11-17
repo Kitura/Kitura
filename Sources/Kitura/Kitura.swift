@@ -74,7 +74,7 @@ public class Kitura {
             do {
                 try server.listen(on: port)
             } catch {
-                Log.error("Error listening on port \(port). Use server.failed(callback:) to handle")
+                Log.error("Error listening on port \(port): \(error). Use server.failed(callback:) to handle")
             }
         }
         for (server, port) in fastCGIServersAndPorts {
@@ -82,7 +82,7 @@ public class Kitura {
             do {
                 try server.listen(on: port)
             } catch {
-                Log.error("Error listening on port \(port). Use server.failed(callback:) to handle")
+                Log.error("Error listening on port \(port): \(error). Use server.failed(callback:) to handle")
             }
         }
         ListenerGroup.waitForListeners()
@@ -97,7 +97,7 @@ public class Kitura {
             do {
                 try server.listen(on: port)
             } catch {
-                Log.error("Error listening on port \(port). Use server.failed(callback:) to handle")
+                Log.error("Error listening on port \(port): \(error). Use server.failed(callback:) to handle")
             }
         }
         for (server, port) in fastCGIServersAndPorts {
@@ -105,7 +105,7 @@ public class Kitura {
             do {
                 try server.listen(on: port)
             } catch {
-                Log.error("Error listening on port \(port). Use server.failed(callback:) to handle")
+                Log.error("Error listening on port \(port): \(error). Use server.failed(callback:) to handle")
             }
         }
     }
