@@ -222,10 +222,7 @@ extension Router : RouterMiddleware {
     /// - Parameter next: The closure to invoke to cause the router to inspect the
     ///                  path in the list of paths.
     public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws {
-        guard let urlPath = request.parsedURL.path else {
-            Log.error("Failed to handle request")
-            return
-        }
+        let urlPath = request.urlComponents.path
 
         let mountpath = request.matchedPath
 
@@ -239,14 +236,14 @@ extension Router : RouterMiddleware {
 
         let index = urlPath.index(urlPath.startIndex, offsetBy: mountpath.characters.count)
 
-        request.parsedURL.path = urlPath.substring(from: index)
+        request.urlComponents.path = urlPath.substring(from: index)
 
-        if request.parsedURL.path == "" {
-            request.parsedURL.path = "/"
+        if request.urlComponents.path == "" {
+            request.urlComponents.path = "/"
         }
 
         process(request: request, response: response) {
-            request.parsedURL.path = urlPath
+            request.urlComponents.path = urlPath
             next()
         }
     }
@@ -289,10 +286,7 @@ extension Router : ServerDelegate {
     /// - Parameter callback: The closure to invoke to cause the router to inspect the
     ///                  path in the list of paths.
     fileprivate func process(request: RouterRequest, response: RouterResponse, callback: @escaping () -> Void) {
-        guard let urlPath = request.parsedURL.path else {
-            Log.error("Failed to process request")
-            return
-        }
+        let urlPath = request.urlComponents.path
 
         let lengthIndex = kituraResourcePrefix.endIndex
         if  urlPath.characters.count > kituraResourcePrefix.characters.count && urlPath.substring(to: lengthIndex) == kituraResourcePrefix {
@@ -317,11 +311,11 @@ extension Router : ServerDelegate {
     /// - Parameter response: The `RouterResponse` object used to send responses
     ///                      to the HTTP request.
     private func sendDefaultResponse(request: RouterRequest, response: RouterResponse) {
-        if request.parsedURL.path == "/" {
+        if request.urlComponents.path == "/" {
             fileResourceServer.sendIfFound(resource: "index.html", usingResponse: response)
         } else {
             do {
-                let errorMessage = "Cannot \(request.method) \(request.parsedURL.path ?? "")."
+                let errorMessage = "Cannot \(request.method) \(request.urlComponents.path)."
                 try response.status(.notFound).send(errorMessage).end()
             } catch {
                 Log.error("Error sending default not found message: \(error)")

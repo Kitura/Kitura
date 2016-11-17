@@ -30,12 +30,12 @@ public class RouterRequest {
 
     /// The hostname of the request.
     public var hostname: String {
-        return url?.host ?? ""
+        return urlComponents.host ?? ""
     }
 
     ///The port of the request.
     public var port: Int {
-        return url?.port ?? (url?.scheme == "https" ? 443 : 80)
+        return urlComponents.port ?? (urlComponents.scheme == "https" ? 443 : 80)
     }
 
     /// The domain name of the request.
@@ -84,8 +84,10 @@ public class RouterRequest {
     public let method: RouterMethod
 
     /// The parsed URL.
-    // TODO - REMOVE
-    public let parsedURL: URLParser
+    @available(*, deprecated, message: "use 'urlComponents' instead")
+    public lazy var parsedURL: URLParser = { [unowned self] in
+        return URLParser(url: self.urlComponents.string!.data(using: .utf8)!, isConnect: false)
+        }()
 
     /// The router as a String.
     public internal(set) var route: String?
@@ -93,8 +95,13 @@ public class RouterRequest {
     /// The currently matched section of the URL.
     public internal(set) var matchedPath = ""
 
-    /// The URL from the request if properly received
-    public internal(set) var url : URL?
+    /// The original URL as a string.
+    @available(*, deprecated, message: "use 'urlComponents' instead")
+    public var originalURL : String { return urlComponents.string ?? "" }
+
+    /// The URL.
+    @available(*, deprecated, message: "use 'urlComponents' instead")
+    public var url : String { return urlComponents.string ?? "" }
 
     /// The URL from the request as URLComponents
     public internal(set) var urlComponents = URLComponents()
@@ -119,7 +126,30 @@ public class RouterRequest {
     public internal(set) var parameters: [String:String] = [:]
 
     /// List of query parameters.
-    public var queryParameters: [String:String] { return parsedURL.queryParameters }
+    public lazy var queryParameters: [String:String] = { [unowned self] in
+        var qParams: [String:String] = [:]
+        /*
+        if let queryItems = self.urlComponents.queryItems {
+            for item in queryItems {
+                qParams[item.name] = item.value
+            }
+        }
+        */
+        // urlComponents.queryItems above crashes on linux as of swift 3.0.1
+        // so using our own simplistic parsing for now
+        if let query = self.urlComponents.query {
+            for item in query.components(separatedBy: "&") {
+                if let range = item.range(of: "=") {
+                    let key = item.substring(to: range.lowerBound)
+                    let val = item.substring(from: range.upperBound)
+                    qParams[key] = val
+                } else {
+                    qParams[item] = nil
+                }
+            }
+        }
+        return qParams
+    }()
 
     /// User info.
     public var userInfo: [String: Any] = [:]
@@ -134,11 +164,9 @@ public class RouterRequest {
     /// - Parameter request: the server request
     init(request: ServerRequest) {
         serverRequest = request
-        url = serverRequest.url
         urlComponents = serverRequest.urlComponents
         httpVersion = HTTPVersion(major: serverRequest.httpVersionMajor ?? 1, minor: serverRequest.httpVersionMinor ?? 1)
         method = RouterMethod(fromRawValue: serverRequest.method)
-        parsedURL = URLParser(url: urlComponents.string!.data(using: .utf8)!, isConnect: false)
         headers = Headers(headers: serverRequest.headers)
     }
 

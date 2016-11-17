@@ -110,9 +110,7 @@ public class StaticFileServer: RouterMiddleware {
             return next()
         }
 
-        guard let requestPath = request.parsedURL.path else {
-            return next()
-        }
+        let requestPath = request.urlComponents.path
 
         fileServer.serveFile(filePath, requestPath: requestPath, response: response)
         next()
