@@ -86,8 +86,10 @@ public class RouterRequest {
     /// The parsed URL.
     @available(*, deprecated, message: "use 'urlComponents' instead")
     public lazy var parsedURL: URLParser = { [unowned self] in
-        return URLParser(url: self.urlComponents.string!.data(using: .utf8)!, isConnect: false)
-        }()
+        let url = self.urlComponents.string ?? ""
+        let urlData = url.data(using: .utf8) ?? Data()
+        return URLParser(url: urlData, isConnect: false)
+    }()
 
     /// The router as a String.
     public internal(set) var route: String?
