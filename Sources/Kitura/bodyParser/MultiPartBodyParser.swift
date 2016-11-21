@@ -107,6 +107,11 @@ class MultiPartBodyParser: BodyParserProtocol {
                 let valueEndIndex = line.range(of: "\"", range: valueStartIndex..<line.endIndex)
                 part.name = line.substring(with: valueStartIndex..<(valueEndIndex?.lowerBound ?? line.endIndex))
             }
+            if let filenameRange = line.range(of: "filename=", options: caseInsensitiveSearch, range: labelRange.upperBound..<line.endIndex) {
+                let valueStartIndex = line.index(after: filenameRange.upperBound)
+                let valueEndIndex = line.range(of: "\"", range: valueStartIndex..<line.endIndex)
+                part.filename = line.substring(with: valueStartIndex..<(valueEndIndex?.lowerBound ?? line.endIndex))
+            }
             part.headers[.disposition] = line
             return
         }
