@@ -23,6 +23,9 @@ public struct Part {
     
     /// The name attribute of the part.
     public internal(set) var name = ""
+
+    /// The filename attribute of the part.
+    public internal(set) var filename = ""
     
     /// Content type of the data in the part.
     public internal(set) var type = "text/plain"
