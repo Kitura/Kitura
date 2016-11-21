@@ -98,12 +98,18 @@ public class RouterRequest {
     public internal(set) var matchedPath = ""
 
     /// The original URL as a string.
-    @available(*, deprecated, message: "use 'urlComponents' instead")
-    public var originalURL : String { return urlComponents.string ?? "" }
+    /// This contains just the path and query parameters starting with '/'
+    /// Use "urlComponents" for the full URL
+    @available(*, deprecated, message:
+        "This contains just the path and query parameters starting with '/'. use 'urlComponents' instead")
+    public var originalURL : String { return serverRequest.urlString }
 
     /// The URL.
-    @available(*, deprecated, message: "use 'urlComponents' instead")
-    public var url : String { return urlComponents.string ?? "" }
+    /// This contains just the path and query parameters starting with '/'
+    /// Use "urlComponents" for the full URL
+    @available(*, deprecated, message:
+        "This contains just the path and query parameters starting with '/'. use 'urlComponents' instead")
+    public var url : String { return serverRequest.urlString }
 
     /// The URL from the request as URLComponents
     public internal(set) var urlComponents = URLComponents()
