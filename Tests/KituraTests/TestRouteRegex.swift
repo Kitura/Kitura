@@ -48,7 +48,9 @@ class TestRouteRegex: XCTestCase {
             ("testBuildRegexFromPattern", testBuildRegexFromPattern),
             ("testSimplePaths", testSimplePaths),
             ("testSimpleMatches", testSimpleMatches),
-            ("testSimpleModifiers", testSimpleModifiers)
+            ("testSimpleModifiers", testSimpleModifiers),
+            ("testSimpleCustomMatches", testSimpleCustomMatches),
+            ("testCustomMatchesWithModifiers", testCustomMatchesWithModifiers)
         ]
     }
 

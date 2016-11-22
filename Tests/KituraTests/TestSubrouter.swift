@@ -34,7 +34,8 @@ class TestSubrouter: XCTestCase {
             ("testSimpleSub", testSimpleSub),
             ("testExternSub", testExternSub),
             ("testSubSubs", testSubSubs),
-            ("testMultipleMiddleware", testMultipleMiddleware)
+            ("testMultipleMiddleware", testMultipleMiddleware),
+            ("testMergeParams", testMergeParams)
         ]
     }
     
