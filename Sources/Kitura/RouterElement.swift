@@ -99,8 +99,10 @@ class RouterElement {
 
         // Either response error exists and method is error, or method matches
         guard let regex = regex else {
-            request.route = pattern
+            request.allowPartialMatch = allowPartialMatch
+            request.matchedPath = ""
             request.parameters = mergeParameters ? request.parameters : [:]
+            request.route = pattern
             processHelper(request: request, response: response, next: next)
             return
         }
@@ -113,7 +115,7 @@ class RouterElement {
         }
 
         request.matchedPath = nsPath.substring(with: match.range)
-        request.consumedPath = allowPartialMatch ? request.matchedPath : ""
+        request.allowPartialMatch = allowPartialMatch
 
         request.route = pattern
         setParameters(forRequest: request, fromUrlPath: nsPath, match: match)

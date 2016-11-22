@@ -102,8 +102,10 @@ public class RouterRequest {
     /// The currently matched section of the URL.
     public internal(set) var matchedPath = ""
 
-    /// The currently consumed section of the URL.
-    var consumedPath = ""
+    /// A Bool that indicates whether or not a partial match of the path by the pattern is
+    /// sufficient. If true, subrouter will snip matchedPath from path before processing
+    /// middleware
+    var allowPartialMatch = true
 
     /// The original URL as a string.
     public var originalURL: String {
