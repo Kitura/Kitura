@@ -156,11 +156,13 @@ public class Router {
     /// - Parameter route: The path to bind the sub router to.
     /// - parameter mergeParameters: Specify if this router should have access to path parameters
     /// matched in its parent router. Defaults to `false`.
+    /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
+    /// the path by the pattern is sufficient.
     /// - Returns: The created sub router.
-    public func route(_ route: String, mergeParameters: Bool = false) -> Router {
+    public func route(_ route: String, mergeParameters: Bool = false, allowPartialMatch: Bool = true) -> Router {
         let subrouter = Router(mergeParameters: mergeParameters)
         subrouter.parameterHandlers = self.parameterHandlers
-        self.all(route, middleware: subrouter)
+        self.all(route, allowPartialMatch: allowPartialMatch, middleware: subrouter)
         return subrouter
     }
 
@@ -227,22 +229,20 @@ extension Router : RouterMiddleware {
             return
         }
 
-        let mountpath = request.matchedPath
+        if request.allowPartialMatch {
+            let mountpath = request.matchedPath
 
-        /// Note: Since regex always start with ^, the beginning of line character,
-        /// matched ranges always start at location 0, so it's OK to check via `hasPrefix`.
-        /// Note: `hasPrefix("")` is `true` on macOS but `false` on Linux
-        guard mountpath == "" || urlPath.hasPrefix(mountpath) else {
-            Log.error("Failed to find matches in url")
-            return
-        }
+            /// Note: Since regex always start with ^, the beginning of line character,
+            /// matched ranges always start at location 0, so it's OK to check via `hasPrefix`.
+            /// Note: `hasPrefix("")` is `true` on macOS but `false` on Linux
+            guard mountpath == "" || urlPath.hasPrefix(mountpath) else {
+                Log.error("Failed to find matches in url")
+                return
+            }
 
-        let index = urlPath.index(urlPath.startIndex, offsetBy: mountpath.characters.count)
+            let index = urlPath.index(urlPath.startIndex, offsetBy: mountpath.characters.count)
 
-        request.parsedURL.path = urlPath.substring(from: index)
-
-        if request.parsedURL.path == "" {
-            request.parsedURL.path = "/"
+            request.parsedURL.path = urlPath.substring(from: index)
         }
 
         process(request: request, response: response) {
@@ -294,16 +294,15 @@ extension Router : ServerDelegate {
             return
         }
 
-        let lengthIndex = kituraResourcePrefix.endIndex
-        if  urlPath.characters.count > kituraResourcePrefix.characters.count && urlPath.substring(to: lengthIndex) == kituraResourcePrefix {
-            let resource = urlPath.substring(from: lengthIndex)
+        if  urlPath.hasPrefix(kituraResourcePrefix) {
+            let resource = urlPath.substring(from: kituraResourcePrefix.endIndex)
             fileResourceServer.sendIfFound(resource: resource, usingResponse: response)
         } else {
             let looper = RouterElementWalker(elements: self.elements,
-                parameterHandlers: self.parameterHandlers,
-                request: request,
-                response: response,
-                callback: callback)
+                                             parameterHandlers: self.parameterHandlers,
+                                             request: request,
+                                             response: response,
+                                             callback: callback)
 
             looper.next()
         }
