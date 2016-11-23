@@ -130,7 +130,19 @@ public class RouterRequest {
     public internal(set) var parameters: [String:String] = [:]
 
     /// List of query parameters.
-    public var queryParameters: [String:String] { return parsedURL.queryParameters }
+    public var queryParameters: [String:String] {
+        var decodedParameters: [String: String] = [:]
+        for (parameter, value) in parsedURL.queryParameters {
+            let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
+            if let decodedValue = valueReplacingPlus.removingPercentEncoding {
+                decodedParameters[parameter] = decodedValue
+            } else {
+                Log.warning("Unable to decode parameter \(parameter)")
+                decodedParameters[parameter] = valueReplacingPlus
+            }
+        }
+        return decodedParameters
+    }
 
     /// User info.
     public var userInfo: [String: Any] = [:]
