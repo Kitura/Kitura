@@ -147,7 +147,13 @@ class RouterElement {
                     let matchRange = match.rangeAt(index+1)
                 #endif
                 if  matchRange.location != NSNotFound  &&  matchRange.location != -1  {
-                    parameters[keys[index]] = urlPath.substring(with: matchRange)
+                    var parameter = urlPath.substring(with: matchRange)
+                    if let decodedParameter = parameter.removingPercentEncoding {
+                        parameter = decodedParameter
+                    } else {
+                        Log.warning("Unable to decode parameter \(keys[index])")
+                    }
+                    parameters[keys[index]] = parameter
                 }
             }
         }
