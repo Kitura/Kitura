@@ -370,6 +370,12 @@ class TestResponse: XCTestCase {
                           expectedReturnedQueryParameter: "John Doe")
     }
 
+    func testParametersPercentageEncoding() {
+        runTestParameters(pathParameter: "John%40Doe", queryParameter: "Jane%2BRoe",
+                          expectedReturnedPathParameter: "John@Doe",
+                          expectedReturnedQueryParameter: "Jane+Roe")
+    }
+
     func testRedirect() {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/redir", callback: {response in
