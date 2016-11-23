@@ -37,7 +37,7 @@ class TestResponse: XCTestCase {
             ("testPostRequestWithDoubleBodyParser", testPostRequestWithDoubleBodyParser),
             ("testPostRequestUrlEncoded", testPostRequestUrlEncoded),
             ("testMultipartFormParsing", testMultipartFormParsing),
-            ("testParameter", testParameter),
+            ("testParameters", testParameters),
             ("testRedirect", testRedirect),
             ("testErrorHandler", testErrorHandler),
             ("testHeaderModifiers", testHeaderModifiers),
@@ -318,19 +318,36 @@ class TestResponse: XCTestCase {
 
     }
 
-    func testParameter() {
-    	performServerTest(router) { expectation in
-            self.performRequest("get", path: "/zxcv/test?q=test2", callback: {response in
-                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+    private func runTestParameters(pathParameter: String, queryParameter: String,
+                                   expectedReturnedPathParameter: String? = nil,
+                                   expectedReturnedQueryParameter: String? = nil) {
+        let expectedReturnedPathParameter = expectedReturnedPathParameter ?? pathParameter
+        let expectedReturnedQueryParameter = expectedReturnedQueryParameter ?? queryParameter
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/zxcv/\(pathParameter)?q=\(queryParameter)",
+                callback: { response in
+                guard let response = response else {
+                    XCTFail("ClientRequest response object was nil")
+                    expectation.fulfill()
+                    return
+                }
+
                 do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=test<p><p>q=test2<p><p>u1=Ploni Almoni</body></html>\n\n")
+                    let body = try response.readString()
+                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Received /zxcv</b><p>" +
+                        "<p>p1=\(expectedReturnedPathParameter)<p>" +
+                        "<p>q=\(expectedReturnedQueryParameter)<p>" +
+                        "<p>u1=Ploni Almoni</body></html>\n\n")
                 } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
             })
         }
+    }
+
+    func testParameters() {
+        runTestParameters(pathParameter: "test1", queryParameter: "test2")
     }
 
     func testRedirect() {
