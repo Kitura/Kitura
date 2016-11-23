@@ -53,7 +53,8 @@ class TestRouteRegex: XCTestCase {
         return [
             ("testBuildRegexFromPattern", testBuildRegexFromPattern),
             ("testSimplePaths", testSimplePaths),
-            ("testSimpleMatches", testSimpleMatches)
+            ("testSimpleMatches", testSimpleMatches),
+            ("testRouteWithPercentEncoding",testRouteWithPercentEncoding)
         ]
     }
 
@@ -359,5 +360,34 @@ class TestRouteRegex: XCTestCase {
             })
         })
          */
+    }
+
+    func testRouteWithPercentEncoding() {
+        let router = Router()
+        router.get("/say hello", handler: makeHandler(helloworld + " with whitespace"))
+        router.get("/say%20hello", handler: makeHandler(helloworld + " with %20"))
+        router.get("/say+hello", handler: makeHandler(helloworld + " with +"))
+
+        performServerTest(router, asyncTasks: { expectation in
+            self.performRequest("get", path: "/say%20hello", callback: { response in
+                guard let response = response else {
+                    XCTFail("ClientRequest response object was nil")
+                    expectation.fulfill()
+                    return
+                }
+
+                XCTAssertEqual(response.statusCode, .OK)
+
+                do {
+                    let body = try response.readString()
+                    XCTAssertEqual(body, helloworld + " with %20")
+                }
+                catch {
+                    XCTFail("Unable to read response body")
+                }
+
+                expectation.fulfill()
+            })
+        })
     }
 }
