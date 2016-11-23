@@ -41,7 +41,12 @@ class RouterElement {
     /// The middlewares to use
     private let middlewares: [RouterMiddleware]
 
-    /// mergeParameters flag
+    /// Whether or not this RouterElement should removed the matched section of path or
+    /// keep it for its middlewares to use
+    private let allowPartialMatch: Bool
+
+    /// Whether or not this RouterElement should make its parent's parsed parameters
+    /// available for its middlewares to use
     private let mergeParameters: Bool
 
     /// Initialize a RouterElement
@@ -61,6 +66,7 @@ class RouterElement {
         self.regex = nil
         self.keys = nil
         self.middlewares = middleware
+        self.allowPartialMatch = allowPartialMatch
         self.mergeParameters = mergeParameters
 
         (regex, keys) = RouteRegex.sharedInstance.buildRegex(fromPattern: pattern, allowPartialMatch: allowPartialMatch)
@@ -86,15 +92,17 @@ class RouterElement {
         }
 
         guard (response.error != nil && method == .error)
-        || (response.error == nil && (method == request.method || method == .all)) else {
+            || (response.error == nil && (method == request.method || method == .all)) else {
             next()
             return
         }
 
         // Either response error exists and method is error, or method matches
         guard let regex = regex else {
+            request.allowPartialMatch = allowPartialMatch
+            request.matchedPath = ""
+            request.parameters = mergeParameters ? request.parameters : [:]
             request.route = pattern
-            request.parameters = [:]
             processHelper(request: request, response: response, next: next)
             return
         }
@@ -107,6 +115,7 @@ class RouterElement {
         }
 
         request.matchedPath = nsPath.substring(with: match.range)
+        request.allowPartialMatch = allowPartialMatch
 
         request.route = pattern
         setParameters(forRequest: request, fromUrlPath: nsPath, match: match)
