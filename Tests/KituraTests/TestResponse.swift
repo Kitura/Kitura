@@ -350,6 +350,26 @@ class TestResponse: XCTestCase {
         runTestParameters(pathParameter: "test1", queryParameter: "test2")
     }
 
+    func testParametersPercent20InPath() {
+        runTestParameters(pathParameter: "John%20Doe", queryParameter: "test2",
+                          expectedReturnedPathParameter: "John Doe")
+    }
+
+    func testParametersPlusInPath() {
+        runTestParameters(pathParameter: "John+Doe", queryParameter: "test2",
+                          expectedReturnedPathParameter: "John+Doe")
+    }
+
+    func testParametersPercent20InQuery() {
+        runTestParameters(pathParameter: "test1", queryParameter: "John%20Doe",
+                          expectedReturnedQueryParameter: "John Doe")
+    }
+
+    func testParametersPlusInQuery() {
+        runTestParameters(pathParameter: "test1", queryParameter: "John+Doe",
+                          expectedReturnedQueryParameter: "John Doe")
+    }
+
     func testRedirect() {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/redir", callback: {response in
