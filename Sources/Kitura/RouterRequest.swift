@@ -135,7 +135,19 @@ public class RouterRequest {
     public internal(set) var parameters: [String:String] = [:]
 
     /// List of query parameters.
-    public let queryParameters: [String:String]
+    public var queryParameters: [String:String] {
+        var decodedParameters: [String: String] = [:]
+        for (parameter, value) in parsedURL.queryParameters {
+            let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
+            if let decodedValue = valueReplacingPlus.removingPercentEncoding {
+                decodedParameters[parameter] = decodedValue
+            } else {
+                Log.warning("Unable to decode parameter \(parameter)")
+                decodedParameters[parameter] = valueReplacingPlus
+            }
+        }
+        return decodedParameters
+    }
 
     /// User info.
     public var userInfo: [String: Any] = [:]
@@ -155,21 +167,6 @@ public class RouterRequest {
         parsedURL = URLParser(url: serverRequest.url, isConnect: false)
         url = String(serverRequest.urlString)
         headers = Headers(headers: serverRequest.headers)
-        queryParameters = RouterRequest.decode(queryParameters: parsedURL.queryParameters)
-    }
-
-    private static func decode(queryParameters: [String: String]) -> [String: String]{
-        var decodedParameters: [String: String] = [:]
-        for (parameter, value) in queryParameters {
-            let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
-            if let decodedValue = valueReplacingPlus.removingPercentEncoding {
-                decodedParameters[parameter] = decodedValue
-            } else {
-                Log.warning("Unable to decode parameter \(parameter)")
-                decodedParameters[parameter] = valueReplacingPlus
-            }
-        }
-        return decodedParameters
     }
 
     /// Read the body of the request as Data.
