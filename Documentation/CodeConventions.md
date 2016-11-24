@@ -10,4 +10,3 @@ let emptyDictionary = [String: Float]()
 ```
 * Use four spaces for indentation
 * Maximum 100 characters line width
-* Newline character at the end of the file
