@@ -24,17 +24,23 @@ import XCTest
 fileprivate let helloworld = "Hello world"
 fileprivate let id = "123"
 fileprivate let mountpath = "/helloworld"
-fileprivate let handler = { (req: RouterRequest, res: RouterResponse, next: () -> Void) throws in
 
-    let parameters = req.parameters
+fileprivate let makeHandler = { (messageToSend: String) in
+    return { (req: RouterRequest, res: RouterResponse, next: () -> Void) throws in
 
-    if parameters.isEmpty {
-        try res.send(helloworld).end()
-    }
-    else {
-        try res.send(json: JSON(parameters)).end()
+        let parameters = req.parameters
+
+        if parameters.isEmpty {
+            try res.send(messageToSend).end()
+        }
+        else {
+            try res.send(json: JSON(parameters)).end()
+        }
     }
 }
+
+fileprivate let handler = makeHandler(helloworld)
+
 fileprivate let subrouter = { () -> Router in
     let subrouter = Router(mergeParameters: true)
     subrouter.all(mountpath, handler: handler)
@@ -48,6 +54,7 @@ class TestRouteRegex: XCTestCase {
             ("testBuildRegexFromPattern", testBuildRegexFromPattern),
             ("testSimplePaths", testSimplePaths),
             ("testSimpleMatches", testSimpleMatches),
+            ("testRouteWithPercentEncoding",testRouteWithPercentEncoding),
             ("testSimpleModifiers", testSimpleModifiers),
             ("testSimpleCustomMatches", testSimpleCustomMatches),
             ("testCustomMatchesWithModifiers", testCustomMatchesWithModifiers)
@@ -401,25 +408,25 @@ class TestRouteRegex: XCTestCase {
                 catch {
                     XCTFail("Unable to read response body")
                 }
-                
+
                 expectation.fulfill()
             })
         }, { expectation in
             self.performRequest("get", path: "/" + id, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
-                
+
                 var data = Data()
-                
+
                 do {
                     try response?.readAllData(into: &data)
                     let dict = JSON(data: data).dictionaryValue
-                    
+
                     XCTAssertEqual(dict["id"]?.stringValue, id)
                 }
                 catch {
                     XCTFail("Unable to read response body")
                 }
-                
+
                 expectation.fulfill()
             })
         })
@@ -569,7 +576,7 @@ class TestRouteRegex: XCTestCase {
                 catch {
                     XCTFail("Unable to read response body")
                 }
-                
+
                 expectation.fulfill()
             })
         })
@@ -619,7 +626,7 @@ class TestRouteRegex: XCTestCase {
                 catch {
                     XCTFail("Unable to read response body")
                 }
-                
+
                 expectation.fulfill()
             })
         })
@@ -667,7 +674,7 @@ class TestRouteRegex: XCTestCase {
                 catch {
                     XCTFail("Unable to read response body")
                 }
-                
+
                 expectation.fulfill()
             })
         })
@@ -825,7 +832,7 @@ class TestRouteRegex: XCTestCase {
         }, { expectation in
             self.performRequest("get", path: "/abc" + mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .notFound)
-                
+
                 expectation.fulfill()
             })
         })
@@ -881,7 +888,7 @@ class TestRouteRegex: XCTestCase {
                 catch {
                     XCTFail("Unable to read response body")
                 }
-                
+
                 expectation.fulfill()
             })
         }, { expectation in
@@ -949,7 +956,7 @@ class TestRouteRegex: XCTestCase {
         }, { expectation in
             self.performRequest("get", path: "/123/abc/456" + mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .notFound)
-                
+
                 expectation.fulfill()
             })
         })
@@ -999,7 +1006,7 @@ class TestRouteRegex: XCTestCase {
                 catch {
                     XCTFail("Unable to read response body")
                 }
-                
+
                 expectation.fulfill()
             })
         }, { expectation in
@@ -1059,7 +1066,36 @@ class TestRouteRegex: XCTestCase {
         }, { expectation in
             self.performRequest("get", path: "/123/abc/456" + mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .notFound)
-                
+
+                expectation.fulfill()
+            })
+        })
+    }
+
+    func testRouteWithPercentEncoding() {
+        let router = Router()
+        router.get("/say hello", handler: makeHandler(helloworld + " with whitespace"))
+        router.get("/say%20hello", handler: makeHandler(helloworld + " with %20"))
+        router.get("/say+hello", handler: makeHandler(helloworld + " with +"))
+
+        performServerTest(router, asyncTasks: { expectation in
+            self.performRequest("get", path: "/say%20hello", callback: { response in
+                guard let response = response else {
+                    XCTFail("ClientRequest response object was nil")
+                    expectation.fulfill()
+                    return
+                }
+
+                XCTAssertEqual(response.statusCode, .OK)
+
+                do {
+                    let body = try response.readString()
+                    XCTAssertEqual(body, helloworld + " with %20")
+                }
+                catch {
+                    XCTFail("Unable to read response body")
+                }
+
                 expectation.fulfill()
             })
         })
