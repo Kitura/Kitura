@@ -61,8 +61,14 @@ extension StaticFileServer {
             }
 
             if requestPath.hasPrefix(matchedPath) {
+                filePath += "/"
                 let url = String(requestPath.characters.dropFirst(matchedPath.characters.count))
-                filePath += "/" + url
+                if let decodedURL = url.removingPercentEncoding {
+                    filePath += decodedURL
+                } else {
+                    Log.warning("unable to decode url \(url)")
+                    filePath += url
+                }
             }
 
             if filePath.hasSuffix("/") {

@@ -167,4 +167,42 @@ class TestStaticFileServer : XCTestCase {
             response.headers["x-custom-header"] = "Kitura"
         }
     }
+
+    private typealias BodyChecker =  (String) -> Void
+    private func runGetResponseTest(path: String, expectedResponseText: String? = nil,
+                                    expectedStatusCode: HTTPStatusCode = HTTPStatusCode.OK,
+                                    bodyChecker: BodyChecker? = nil) {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: path, callback: { response in
+                guard let response = response else {
+                    XCTFail("ClientRequest response object was nil")
+                    expectation.fulfill()
+                    return
+                }
+                XCTAssertEqual(response.statusCode, expectedStatusCode,
+                               "No success status code returned")
+                if let optionalBody = try? response.readString(), let body = optionalBody {
+                    if let expectedResponseText = expectedResponseText {
+                        XCTAssertEqual(body, expectedResponseText, "mismatch in body")
+                    }
+                    bodyChecker?(body)
+                } else {
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            })
+        }
+    }
+
+    func testGetWithWhiteSpaces() {
+        runGetResponseTest(path: "/qwer/index%20with%20whitespace.html", expectedResponseText: "<!DOCTYPE html><html><body><b>Index with whitespace</b></body></html>\n")
+    }
+
+    func testGetWithSpecialCharacters() {
+        runGetResponseTest(path: "/qwer/index+@,.html", expectedResponseText: "<!DOCTYPE html><html><body><b>Index with plus at comma</b></body></html>\n")
+    }
+
+    func testGetWithSpecialCharactersEncoded() {
+        runGetResponseTest(path: "/qwer/index%2B%40%2C.html", expectedResponseText: "<!DOCTYPE html><html><body><b>Index with plus at comma</b></body></html>\n")
+    }
 }
