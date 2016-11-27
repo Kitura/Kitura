@@ -141,7 +141,14 @@ public class Router {
             throw TemplatingError.noTemplateEngineForExtension(extension: fileExtension)
         }
 
-        let filePath = viewsPath + resourceWithExtension
+        let filePath: String
+        if let decodedResourceExtension = resourceWithExtension.removingPercentEncoding {
+            filePath = viewsPath + decodedResourceExtension
+        } else {
+            Log.warning("Unable to decode url \(resourceWithExtension)")
+            filePath = viewsPath + resourceWithExtension
+        }
+
         let absoluteFilePath = StaticFileServer.ResourcePathHandler.getAbsolutePath(for: filePath)
         return try templateEngine.render(filePath: absoluteFilePath, context: context)
     }
