@@ -6,6 +6,8 @@
 ![macOS](https://img.shields.io/badge/os-macOS-green.svg?style=flat)
 ![Linux](https://img.shields.io/badge/os-linux-green.svg?style=flat)
 ![Apache 2](https://img.shields.io/badge/license-Apache2-blue.svg?style=flat)
+[![codecov](https://codecov.io/gh/IBM-Swift/Kitura/branch/master/graph/badge.svg)](https://codecov.io/gh/IBM-Swift/Kitura)
+[![codebeat badge](https://codebeat.co/badges/d2d1cb10-e587-44b7-b63a-0a76ffb7bd96)](https://codebeat.co/projects/github-com-ibm-swift-kitura)
 &nbsp;[![Slack Status](http://swift-at-ibm-slack.mybluemix.net/badge.svg)](http://swift-at-ibm-slack.mybluemix.net/)
 
 ## Summary
