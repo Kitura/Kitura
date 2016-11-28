@@ -120,6 +120,9 @@ public class RouterResponse {
             try response.write(from: content)
         }
         state.invokedEnd = true
+        
+        //Now that we've called the lifecycle methods, clear them to avoid retain cycles
+        self.lifecycle = Lifecycle()
         try response.end()
     }
 
