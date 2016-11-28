@@ -110,7 +110,7 @@ public class StaticFileServer: RouterMiddleware {
             return next()
         }
 
-        let requestPath = request.urlComponents.path
+        let requestPath = request.urlComponents.percentEncodedPath
 
         fileServer.serveFile(filePath, requestPath: requestPath, response: response)
         next()

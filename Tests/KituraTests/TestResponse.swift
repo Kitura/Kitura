@@ -37,7 +37,12 @@ class TestResponse: XCTestCase {
             ("testPostRequestWithDoubleBodyParser", testPostRequestWithDoubleBodyParser),
             ("testPostRequestUrlEncoded", testPostRequestUrlEncoded),
             ("testMultipartFormParsing", testMultipartFormParsing),
-            ("testParameter", testParameter),
+            ("testParameters", testParameters),
+            ("testParametersPercent20InPath", testParametersPercent20InPath),
+            ("testParametersPlusInPath", testParametersPlusInPath),
+            ("testParametersPercent20InQuery", testParametersPercent20InQuery),
+            ("testParametersPlusInQuery", testParametersPlusInQuery),
+            ("testParametersPercentageEncoding", testParametersPercentageEncoding),
             ("testRedirect", testRedirect),
             ("testErrorHandler", testErrorHandler),
             ("testHeaderModifiers", testHeaderModifiers),
@@ -227,7 +232,7 @@ class TestResponse: XCTestCase {
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!, "text text(\"text default\") file1 text(\"Content of a.txt.\") file2 text(\"<!DOCTYPE html><title>Content of a.html.</title>\") ")
+                    XCTAssertEqual(body!, "text  text(\"text default\") file1 a.txt text(\"Content of a.txt.\") file2 a.html text(\"<!DOCTYPE html><title>Content of a.html.</title>\") ")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -254,7 +259,7 @@ class TestResponse: XCTestCase {
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!, " text(\"text default\") file1 text(\"Content of a.txt.\") file2 text(\"<!DOCTYPE html><title>Content of a.html.</title>\") ")
+                    XCTAssertEqual(body!, "  text(\"text default\") file1 a.txt text(\"Content of a.txt.\") file2 a.html text(\"<!DOCTYPE html><title>Content of a.html.</title>\") ")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -284,7 +289,7 @@ class TestResponse: XCTestCase {
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!, " text(\"text default\") ")
+                    XCTAssertEqual(body!, "  text(\"text default\") ")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -318,19 +323,62 @@ class TestResponse: XCTestCase {
 
     }
 
-    func testParameter() {
-    	performServerTest(router) { expectation in
-            self.performRequest("get", path: "/zxcv/test?q=test2", callback: {response in
-                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+    private func runTestParameters(pathParameter: String, queryParameter: String,
+                                   expectedReturnedPathParameter: String? = nil,
+                                   expectedReturnedQueryParameter: String? = nil) {
+        let expectedReturnedPathParameter = expectedReturnedPathParameter ?? pathParameter
+        let expectedReturnedQueryParameter = expectedReturnedQueryParameter ?? queryParameter
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/zxcv/\(pathParameter)?q=\(queryParameter)",
+                callback: { response in
+                guard let response = response else {
+                    XCTFail("ClientRequest response object was nil")
+                    expectation.fulfill()
+                    return
+                }
+
                 do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=test<p><p>q=test2<p><p>u1=Ploni Almoni</body></html>\n\n")
+                    let body = try response.readString()
+                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Received /zxcv</b><p>" +
+                        "<p>p1=\(expectedReturnedPathParameter)<p>" +
+                        "<p>q=\(expectedReturnedQueryParameter)<p>" +
+                        "<p>u1=Ploni Almoni</body></html>\n\n")
                 } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
             })
         }
+    }
+
+    func testParameters() {
+        runTestParameters(pathParameter: "test1", queryParameter: "test2")
+    }
+
+    func testParametersPercent20InPath() {
+        runTestParameters(pathParameter: "John%20Doe", queryParameter: "test2",
+                          expectedReturnedPathParameter: "John Doe")
+    }
+
+    func testParametersPlusInPath() {
+        runTestParameters(pathParameter: "John+Doe", queryParameter: "test2",
+                          expectedReturnedPathParameter: "John+Doe")
+    }
+
+    func testParametersPercent20InQuery() {
+        runTestParameters(pathParameter: "test1", queryParameter: "John%20Doe",
+                          expectedReturnedQueryParameter: "John Doe")
+    }
+
+    func testParametersPlusInQuery() {
+        runTestParameters(pathParameter: "test1", queryParameter: "John+Doe",
+                          expectedReturnedQueryParameter: "John Doe")
+    }
+
+    func testParametersPercentageEncoding() {
+        runTestParameters(pathParameter: "John%40Doe", queryParameter: "Jane%2BRoe",
+                          expectedReturnedPathParameter: "John@Doe",
+                          expectedReturnedQueryParameter: "Jane+Roe")
     }
 
     func testRedirect() {
@@ -887,7 +935,7 @@ class TestResponse: XCTestCase {
                 return
             }
             for part in parts {
-                response.send("\(part.name) \(part.body) ")
+                response.send("\(part.name) \(part.filename) \(part.body) ")
             }
             
             next()

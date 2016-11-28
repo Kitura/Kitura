@@ -85,11 +85,14 @@ public class RouterRequest {
 
     /// The parsed URL.
     @available(*, deprecated, message: "use 'urlComponents' instead")
-    public lazy var parsedURL: URLParser = { [unowned self] in
-        let url = self.urlComponents.string ?? ""
-        let urlData = url.data(using: .utf8) ?? Data()
-        return URLParser(url: urlData, isConnect: false)
-    }()
+    public var parsedURL: URLParser {
+        var path = urlComponents.percentEncodedPath
+        if let query = urlComponents.percentEncodedQuery {
+            path += "?" + query
+        }
+        let pathData = path.data(using: .utf8) ?? Data()
+        return URLParser(url: pathData, isConnect: false)
+    }
 
     /// The router as a String.
     public internal(set) var route: String?
@@ -97,12 +100,13 @@ public class RouterRequest {
     /// The currently matched section of the URL.
     public internal(set) var matchedPath = ""
 
+    /// A Bool that indicates whether or not a partial match of the path by the pattern is
+    /// sufficient. If true, subrouter will snip matchedPath from path before processing
+    /// middleware
+    var allowPartialMatch = true
+
     /// The original URL as a string.
-    /// This contains just the path and query parameters starting with '/'
-    /// Use "urlComponents" for the full URL
-    @available(*, deprecated, message:
-        "This contains just the path and query parameters starting with '/'. use 'urlComponents' instead")
-    public var originalURL : String { return serverRequest.urlString }
+    public var originalURL : String { return serverRequest.urlComponents.string ?? "" }
 
     /// The URL.
     /// This contains just the path and query parameters starting with '/'
@@ -135,28 +139,25 @@ public class RouterRequest {
 
     /// List of query parameters.
     public lazy var queryParameters: [String:String] = { [unowned self] in
-        var qParams: [String:String] = [:]
-        /*
-        if let queryItems = self.urlComponents.queryItems {
-            for item in queryItems {
-                qParams[item.name] = item.value
-            }
-        }
-        */
-        // urlComponents.queryItems above crashes on linux as of swift 3.0.1
-        // so using our own simplistic parsing for now
-        if let query = self.urlComponents.query {
+        var decodedParameters: [String:String] = [:]
+        if let query = self.urlComponents.percentEncodedQuery {
             for item in query.components(separatedBy: "&") {
                 if let range = item.range(of: "=") {
                     let key = item.substring(to: range.lowerBound)
-                    let val = item.substring(from: range.upperBound)
-                    qParams[key] = val
+                    let value = item.substring(from: range.upperBound)
+                    let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
+                    if let decodedValue = valueReplacingPlus.removingPercentEncoding {
+                        decodedParameters[key] = decodedValue
+                    } else {
+                        Log.warning("Unable to decode query parameter \(key)")
+                        decodedParameters[key] = valueReplacingPlus
+                    }
                 } else {
-                    qParams[item] = nil
+                    decodedParameters[item] = nil
                 }
             }
         }
-        return qParams
+        return decodedParameters
     }()
 
     /// User info.

@@ -156,11 +156,13 @@ public class Router {
     /// - Parameter route: The path to bind the sub router to.
     /// - parameter mergeParameters: Specify if this router should have access to path parameters
     /// matched in its parent router. Defaults to `false`.
+    /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
+    /// the path by the pattern is sufficient.
     /// - Returns: The created sub router.
-    public func route(_ route: String, mergeParameters: Bool = false) -> Router {
+    public func route(_ route: String, mergeParameters: Bool = false, allowPartialMatch: Bool = true) -> Router {
         let subrouter = Router(mergeParameters: mergeParameters)
         subrouter.parameterHandlers = self.parameterHandlers
-        self.all(route, middleware: subrouter)
+        self.all(route, allowPartialMatch: allowPartialMatch, middleware: subrouter)
         return subrouter
     }
 
@@ -222,28 +224,25 @@ extension Router : RouterMiddleware {
     /// - Parameter next: The closure to invoke to cause the router to inspect the
     ///                  path in the list of paths.
     public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws {
-        let urlPath = request.urlComponents.path
+        let urlPath = request.urlComponents.percentEncodedPath
+        if request.allowPartialMatch {
+            let mountpath = request.matchedPath
 
-        let mountpath = request.matchedPath
+            /// Note: Since regex always start with ^, the beginning of line character,
+            /// matched ranges always start at location 0, so it's OK to check via `hasPrefix`.
+            /// Note: `hasPrefix("")` is `true` on macOS but `false` on Linux
+            guard mountpath == "" || urlPath.hasPrefix(mountpath) else {
+                Log.error("Failed to find matches in url")
+                return
+            }
 
-        /// Note: Since regex always start with ^, the beginning of line character,
-        /// matched ranges always start at location 0, so it's OK to check via `hasPrefix`.
-        /// Note: `hasPrefix("")` is `true` on macOS but `false` on Linux
-        guard mountpath == "" || urlPath.hasPrefix(mountpath) else {
-            Log.error("Failed to find matches in url")
-            return
-        }
+            let index = urlPath.index(urlPath.startIndex, offsetBy: mountpath.characters.count)
 
-        let index = urlPath.index(urlPath.startIndex, offsetBy: mountpath.characters.count)
-
-        request.urlComponents.path = urlPath.substring(from: index)
-
-        if request.urlComponents.path == "" {
-            request.urlComponents.path = "/"
+            request.urlComponents.percentEncodedPath = urlPath.substring(from: index)
         }
 
         process(request: request, response: response) {
-            request.urlComponents.path = urlPath
+            request.urlComponents.percentEncodedPath = urlPath
             next()
         }
     }
@@ -286,18 +285,17 @@ extension Router : ServerDelegate {
     /// - Parameter callback: The closure to invoke to cause the router to inspect the
     ///                  path in the list of paths.
     fileprivate func process(request: RouterRequest, response: RouterResponse, callback: @escaping () -> Void) {
-        let urlPath = request.urlComponents.path
+        let urlPath = request.urlComponents.percentEncodedPath
 
-        let lengthIndex = kituraResourcePrefix.endIndex
-        if  urlPath.characters.count > kituraResourcePrefix.characters.count && urlPath.substring(to: lengthIndex) == kituraResourcePrefix {
-            let resource = urlPath.substring(from: lengthIndex)
+        if  urlPath.hasPrefix(kituraResourcePrefix) {
+            let resource = urlPath.substring(from: kituraResourcePrefix.endIndex)
             fileResourceServer.sendIfFound(resource: resource, usingResponse: response)
         } else {
             let looper = RouterElementWalker(elements: self.elements,
-                parameterHandlers: self.parameterHandlers,
-                request: request,
-                response: response,
-                callback: callback)
+                                             parameterHandlers: self.parameterHandlers,
+                                             request: request,
+                                             response: response,
+                                             callback: callback)
 
             looper.next()
         }
@@ -311,11 +309,11 @@ extension Router : ServerDelegate {
     /// - Parameter response: The `RouterResponse` object used to send responses
     ///                      to the HTTP request.
     private func sendDefaultResponse(request: RouterRequest, response: RouterResponse) {
-        if request.urlComponents.path == "/" {
+        if request.urlComponents.percentEncodedPath == "/" {
             fileResourceServer.sendIfFound(resource: "index.html", usingResponse: response)
         } else {
             do {
-                let errorMessage = "Cannot \(request.method) \(request.urlComponents.path)."
+                let errorMessage = "Cannot \(request.method) \(request.urlComponents.percentEncodedPath)."
                 try response.status(.notFound).send(errorMessage).end()
             } catch {
                 Log.error("Error sending default not found message: \(error)")

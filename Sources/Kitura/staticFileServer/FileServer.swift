@@ -49,7 +49,7 @@ extension StaticFileServer {
 
         func getFilePath(from request: RouterRequest) -> String? {
             var filePath = servingFilesPath
-            let requestPath = request.urlComponents.path
+            let requestPath = request.urlComponents.percentEncodedPath
             var matchedPath = request.matchedPath
             if matchedPath.hasSuffix("*") {
                 matchedPath = String(matchedPath.characters.dropLast())
