@@ -33,11 +33,21 @@ class RouterElementWalker {
     /// Index of element currently being processed
     private var elementIndex = -1
 
-    init(elements: [RouterElement], request: RouterRequest, response: RouterResponse, callback: @escaping () -> Void) {
+    /// Copy of request parameters to enable mergeParams
+    private let parameters: [String: String]
+
+    /// An instance of `RouterParameterWalker` that is used to handle named parameters of requests
+    private var parameterWalker: RouterParameterWalker
+
+    init(elements: [RouterElement], parameterHandlers: [String : [RouterParameterHandler]],
+        request: RouterRequest, response: RouterResponse, callback: @escaping () -> Void) {
         self.elements = elements
         self.request = request
         self.response = response
         self.callback = callback
+        self.parameters = request.parameters
+
+        self.parameterWalker = RouterParameterWalker(handlers: parameterHandlers)
     }
 
     /// Process the next router element
@@ -45,7 +55,12 @@ class RouterElementWalker {
         elementIndex += 1
 
         if elementIndex < self.elements.count {
-            elements[elementIndex].process(request: request, response: response) {
+            // reset parameters before processing next element
+            request.parameters = parameters
+
+            elements[elementIndex].process(request: request,
+                response: response,
+                parameterWalker: self.parameterWalker) {
                 // Purposefully capture self here
                 self.next()
             }

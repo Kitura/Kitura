@@ -29,24 +29,14 @@ public class RouterRequest {
     let serverRequest: ServerRequest
 
     /// The hostname of the request.
-    public private(set) lazy var hostname: String = { [unowned self] () in
-        guard let host = self.headers["host"] else {
-            return self.parsedURL.host ?? ""
-        }
-        let range = host.range(of: ":")
-        return  range == nil ? host : host.substring(to: range!.lowerBound)
-    }()
+    public var hostname: String {
+        return urlComponents.host ?? ""
+    }
 
     ///The port of the request.
-    public private(set) lazy var port: Int = { [unowned self] () in
-        guard let host = self.headers["host"] else {
-            return -1
-        }
-
-        let defaultPort: Int = 80
-        let range = host.range(of: ":")
-        return  range == nil ? defaultPort : Int(host.substring(from: range!.upperBound))!
-    }()
+    public var port: Int {
+        return urlComponents.port ?? (urlComponents.scheme == "https" ? 443 : 80)
+    }
 
     /// The domain name of the request.
     public private(set) lazy var domain: String = { [unowned self] in
@@ -86,7 +76,7 @@ public class RouterRequest {
 
         return subdomains.filter { !$0.isEmpty }
     }()
-    
+
     /// The HTTP version of the request.
     public let httpVersion: HTTPVersion
 
@@ -94,7 +84,15 @@ public class RouterRequest {
     public let method: RouterMethod
 
     /// The parsed URL.
-    public let parsedURL: URLParser
+    @available(*, deprecated, message: "use 'urlComponents' instead")
+    public var parsedURL: URLParser {
+        var path = urlComponents.percentEncodedPath
+        if let query = urlComponents.percentEncodedQuery {
+            path += "?" + query
+        }
+        let pathData = path.data(using: .utf8) ?? Data()
+        return URLParser(url: pathData, isConnect: false)
+    }
 
     /// The router as a String.
     public internal(set) var route: String?
@@ -102,13 +100,23 @@ public class RouterRequest {
     /// The currently matched section of the URL.
     public internal(set) var matchedPath = ""
 
+    /// A Bool that indicates whether or not a partial match of the path by the pattern is
+    /// sufficient. If true, subrouter will snip matchedPath from path before processing
+    /// middleware
+    var allowPartialMatch = true
+
     /// The original URL as a string.
-    public var originalURL: String {
-        return serverRequest.urlString
-    }
+    public var originalURL : String { return serverRequest.urlComponents.string ?? "" }
 
     /// The URL.
-    public let url: String
+    /// This contains just the path and query parameters starting with '/'
+    /// Use "urlComponents" for the full URL
+    @available(*, deprecated, message:
+        "This contains just the path and query parameters starting with '/'. use 'urlComponents' instead")
+    public var url : String { return serverRequest.urlString }
+
+    /// The URL from the request as URLComponents
+    public internal(set) var urlComponents = URLComponents()
 
     /// List of HTTP headers with simple String values.
     public let headers: Headers
@@ -130,7 +138,27 @@ public class RouterRequest {
     public internal(set) var parameters: [String:String] = [:]
 
     /// List of query parameters.
-    public var queryParameters: [String:String] { return parsedURL.queryParameters }
+    public lazy var queryParameters: [String:String] = { [unowned self] in
+        var decodedParameters: [String:String] = [:]
+        if let query = self.urlComponents.percentEncodedQuery {
+            for item in query.components(separatedBy: "&") {
+                if let range = item.range(of: "=") {
+                    let key = item.substring(to: range.lowerBound)
+                    let value = item.substring(from: range.upperBound)
+                    let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
+                    if let decodedValue = valueReplacingPlus.removingPercentEncoding {
+                        decodedParameters[key] = decodedValue
+                    } else {
+                        Log.warning("Unable to decode query parameter \(key)")
+                        decodedParameters[key] = valueReplacingPlus
+                    }
+                } else {
+                    decodedParameters[item] = nil
+                }
+            }
+        }
+        return decodedParameters
+    }()
 
     /// User info.
     public var userInfo: [String: Any] = [:]
@@ -138,15 +166,16 @@ public class RouterRequest {
     /// Body of the message.
     public internal(set) var body: ParsedBody?
 
+    internal var handledNamedParameters = Set<String>()
+
     /// Initializes a `RouterRequest` instance
     ///
     /// - Parameter request: the server request
     init(request: ServerRequest) {
         serverRequest = request
+        urlComponents = serverRequest.urlComponents
         httpVersion = HTTPVersion(major: serverRequest.httpVersionMajor ?? 1, minor: serverRequest.httpVersionMinor ?? 1)
         method = RouterMethod(fromRawValue: serverRequest.method)
-        parsedURL = URLParser(url: serverRequest.url, isConnect: false)
-        url = String(serverRequest.urlString)
         headers = Headers(headers: serverRequest.headers)
     }
 
@@ -208,7 +237,7 @@ private class Cookies {
 
     /// Storage of parsed Cookie headers
     fileprivate var cookies = [String: HTTPCookie]()
-    
+
     /// Static for Cookie header key value
     private let cookieHeader = "cookie"
 
@@ -220,7 +249,7 @@ private class Cookies {
             initCookie(cookie, cookies: &cookies)
         }
     }
-    
+
     private func initCookie(_ cookie: String, cookies: inout [String: HTTPCookie]) {
         let cookieNameValues = cookie.components(separatedBy: "; ")
         for  cookieNameValue in cookieNameValues {

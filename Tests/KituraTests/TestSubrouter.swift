@@ -18,8 +18,10 @@ import XCTest
 
 @testable import Kitura
 @testable import KituraNet
+import SwiftyJSON
 
 #if os(Linux)
+    import Foundation
     import Glibc
 #else
     import Darwin
@@ -32,7 +34,8 @@ class TestSubrouter: XCTestCase {
             ("testSimpleSub", testSimpleSub),
             ("testExternSub", testExternSub),
             ("testSubSubs", testSubSubs),
-            ("testMultipleMiddleware", testMultipleMiddleware)
+            ("testMultipleMiddleware", testMultipleMiddleware),
+            ("testMergeParams", testMergeParams)
         ]
     }
     
@@ -151,6 +154,87 @@ class TestSubrouter: XCTestCase {
                 expectation.fulfill()
             })
         }
+    }
+
+    func testMergeParams() {
+        let simpleHandler = { (req: RouterRequest, res: RouterResponse, next: () -> Void) throws in
+            next()
+        }
+
+        let handler = { (req: RouterRequest, res: RouterResponse, next: () -> Void) throws in
+            try res.send(json: JSON(req.parameters)).end()
+        }
+
+        let router = Router()
+        let subsubRouter1 = router.route("/root1/:root1").route("/sub1/:sub1", mergeParameters: true)
+
+        subsubRouter1.all("/subsub1/:subsub1", handler: handler)
+        subsubRouter1.all("/subsub2/:subsub2", handler: simpleHandler)
+        subsubRouter1.all("/subsub2/passthrough", handler: handler)
+
+        router.route("/root2/:root2", mergeParameters: true).all() { req, res, next in
+            try res.send(json: JSON(req.parameters)).end()
+        }
+
+        performServerTest(router, asyncTasks: { expectation in
+            self.performRequest("get", path: "/root1/123/sub1/456/subsub1/789", callback: { response in
+                XCTAssertEqual(response?.statusCode, .OK)
+
+                var data = Data()
+
+                do {
+                    try response?.readAllData(into: &data)
+                    let dict = JSON(data: data).dictionaryValue
+
+                    XCTAssertEqual(dict["root1"], nil)
+                    XCTAssertEqual(dict["sub1"]?.stringValue, "456")
+                    XCTAssertEqual(dict["subsub1"]?.stringValue, "789")
+                }
+                catch {
+                    XCTFail()
+                }
+
+                expectation.fulfill()
+            })
+        }, { expectation in
+            self.performRequest("get", path: "/root1/123/sub1/456/subsub2/passthrough", callback: { response in
+                XCTAssertEqual(response?.statusCode, .OK)
+
+                var data = Data()
+
+                do {
+                    try response?.readAllData(into: &data)
+                    let dict = JSON(data: data).dictionaryValue
+
+                    XCTAssertEqual(dict["root1"], nil)
+                    XCTAssertEqual(dict["sub1"]?.stringValue, "456")
+                    XCTAssertEqual(dict["subsub2"], nil)
+                }
+                catch {
+                    XCTFail()
+                }
+
+                expectation.fulfill()
+            })
+        }, { expectation in
+            self.performRequest("get", path: "/root2/123", callback: { response in
+                XCTAssertEqual(response?.statusCode, .OK)
+
+                var data = Data()
+
+                do {
+                    try response?.readAllData(into: &data)
+                    let dict = JSON(data: data).dictionaryValue
+
+                    XCTAssertEqual(dict["root2"]?.stringValue, "123")
+                }
+                catch {
+                    XCTFail()
+                }
+
+                expectation.fulfill()
+            })
+        })
     }
 
     static func setupRouter() -> Router {

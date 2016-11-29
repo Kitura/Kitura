@@ -36,12 +36,16 @@ class RouterMiddlewareWalker {
     /// Index of the current middleware being handled
     private var middlewareIndex = -1
 
+    /// Copy of request parameters to enable mergeParams
+    private let parameters: [String: String]
+
     init(middlewares: [RouterMiddleware], method: RouterMethod, request: RouterRequest, response: RouterResponse, callback: @escaping () -> Void) {
         self.middlewares = middlewares
         self.method = method
         self.request = request
         self.response = response
         self.callback = callback
+        self.parameters = request.parameters
     }
 
     /// Handle the next middleware
@@ -54,13 +58,16 @@ class RouterMiddlewareWalker {
                     // Purposefully capture self here
                     self.next()
                 }
-                
+
+                // reset parameters before processing next middleware
+                request.parameters = parameters
+
                 try middlewares[middlewareIndex].handle(request: request, response: response, next: closure)
             } catch {
                 response.error = error
                 self.next()
             }
-            
+
         } else {
             callback()
         }

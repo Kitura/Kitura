@@ -81,13 +81,7 @@ public class StaticFileServer: RouterMiddleware {
     /// the headers of the response.
     public init(path: String = "./public", options: Options = Options(),
                  customResponseHeadersSetter: ResponseHeadersSetter? = nil) {
-        var path = path
-        if path.hasSuffix("/") {
-            path = String(path.characters.dropLast())
-        }
-
-        // If we received a path with a tilde (~) in the front, expand it.
-        path = NSString(string: path).expandingTildeInPath
+        let path = StaticFileServer.ResourcePathHandler.getAbsolutePath(for: path)
 
         let cacheOptions = options.cacheOptions
         let cacheRelatedHeadersSetter =
@@ -116,9 +110,7 @@ public class StaticFileServer: RouterMiddleware {
             return next()
         }
 
-        guard let requestPath = request.parsedURL.path else {
-            return next()
-        }
+        let requestPath = request.urlComponents.percentEncodedPath
 
         fileServer.serveFile(filePath, requestPath: requestPath, response: response)
         next()

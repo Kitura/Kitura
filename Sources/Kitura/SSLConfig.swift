@@ -22,7 +22,7 @@ public struct SSLConfig {
     
     // MARK: Properties
     
-    public private(set) var config:SSLService.Configuration
+    public private(set) var config: SSLService.Configuration
     
     // MARK: Lifecycle
     

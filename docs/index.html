@@ -19,7 +19,7 @@
         <a class="header-link" href="index.html">
           Kitura Docs
         </a>
-         (99% documented)
+         (98% documented)
       </p>
     
         <p class="header-col header-col--secondary">
@@ -121,6 +121,9 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/Part/HeaderType.html">– HeaderType</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SSLConfig.html">SSLConfig</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -131,6 +134,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura22RouterParameterHandler">RouterParameterHandler</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura17WrittenDataFilter">WrittenDataFilter</a>
@@ -155,21 +161,12 @@
 &nbsp;<a href="http://swift-at-ibm-slack.mybluemix.net/"><img src="http://swift-at-ibm-slack.mybluemix.net/badge.svg" alt="Slack Status"></a></p>
 <a href='#summary' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='summary'>Summary</h2>
 
-<p>Kitura is a web framework and web server that is created for web services written in Swift.</p>
+<p>Kitura is a web framework and web server that is created for web services written in Swift. For more information, visit <a href="http://www.kitura.io">www.kitura.io</a>.</p>
 <a href='#table-of-contents' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='table-of-contents'>Table of Contents</h2>
 
 <ul>
 <li><a href="#summary">Summary</a></li>
 <li><a href="#features">Features</a></li>
-<li><a href="#swift-version">Swift version</a></li>
-<li><a href="#installation">Installation</a>
-
-<ul>
-<li><a href="#macos">macOS</a></li>
-<li><a href="#ubuntu-linux">Ubuntu Linux</a></li>
-<li><a href="#docker">Docker</a></li>
-<li><a href="#vagrant">Vagrant</a></li>
-</ul></li>
 <li><a href="#getting-started">Getting Started</a></li>
 <li><a href="#contributing-to-kitura">Contributing to Kitura</a></li>
 <li><a href="#community">Community</a></li>
@@ -180,256 +177,14 @@
 <li>URL routing (GET, POST, PUT, DELETE)</li>
 <li>URL parameters</li>
 <li>Static file serving</li>
-<li><a href="Documentation/FastCGI.md">FastCGI support</a></li>
+<li><a href="https://github.com/IBM-Swift/Kitura/blob/master/Documentation/FastCGI.md">FastCGI support</a></li>
+<li>SSL/TLS support</li>
 <li>JSON parsing</li>
 <li>Pluggable middleware</li>
 </ul>
-<a href='#swift-version' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='swift-version'>Swift version</h2>
-
-<p>Version <code>0.32</code> of Kitura requires <strong>Swift 3.0</strong>. <em>Kitura is unlikely to compile with any other version of Swift.</em></p>
-<a href='#installation' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='installation'>Installation</h2>
-
-<ul>
-<li><a href="#macos">macOS</a></li>
-<li><a href="#ubuntu-linux">Ubuntu Linux</a></li>
-<li><a href="#docker">Docker</a></li>
-<li><a href="#vagrant">Vagrant</a></li>
-</ul>
-<a href='#macos' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h3 id='macos'>macOS</h3>
-
-<ol>
-<li>Install <a href="http://brew.sh/">Homebrew</a> (if you don&rsquo;t already have it installed):</li>
-</ol>
-
-<p><code>$ ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;</code></p>
-
-<ol>
-<li>Install the necessary dependencies:</li>
-</ol>
-
-<p><code>$ brew install curl</code></p>
-
-<ol>
-<li>Download and install <a href="https://developer.apple.com/download/">Xcode 8</a>.</li>
-</ol>
-
-<p>Now you are ready to develop your first Kitura app. Check <a href="https://github.com/IBM-Swift/Kitura-Sample">Kitura-Sample</a> or see <a href="#getting-started">Getting Started</a>.</p>
-
-<blockquote>
-<p>Note: if you have been using the Xcode 8 betas, you may also need to run <code>sudo xcode-select -r</code> to reset your selected developer directory.</p>
-</blockquote>
-<a href='#ubuntu-linux' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h3 id='ubuntu-linux'>Ubuntu Linux</h3>
-
-<p>Kitura is tested on Ubuntu 14.04 LTS and Ubuntu 15.10.</p>
-
-<ol>
-<li>Install the following system linux libraries:</li>
-</ol>
-
-<p><code>$ sudo apt-get install libcurl4-openssl-dev uuid-dev</code></p>
-
-<ol>
-<li>Install the <a href="#swift-version">required Swift version</a> from <code>swift.org</code>.</li>
-</ol>
-
-<p>After installing it (i.e. extracting the <code>.tar.gz</code> file), make sure you update your <code>PATH</code> environment variable so that it includes the extracted tools: <code>export PATH=/&lt;path to uncompress tar contents&gt;/usr/bin:$PATH</code>.</p>
-
-<p>Now you are ready to develop your first Kitura app. Check <a href="https://github.com/IBM-Swift/Kitura-Sample">Kitura-Sample</a> or see <a href="#getting-started">Getting Started</a>.</p>
-<a href='#docker' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h3 id='docker'>Docker</h3>
-
-<ol>
-<li><p>Install <a href="https://www.docker.com/products/docker">Docker</a> on your development system.</p></li>
-<li><p>Pull down the <a href="https://hub.docker.com/r/ibmcom/kitura-ubuntu/">kitura-ubuntu</a> image from Docker Hub:</p></li>
-</ol>
-
-<p><code>$ docker pull ibmcom/kitura-ubuntu:latest</code></p>
-
-<ol>
-<li>Create a Docker container using the <code>kitura-ubuntu</code> image you just downloaded and forward port 8090 on host to the container:</li>
-</ol>
-
-<p><code>$ docker run -i -p 8090:8090 -t ibmcom/kitura-ubuntu:latest /bin/bash</code></p>
-
-<ol>
-<li>From within the Docker container, execute the <code>clone_build_kitura.sh</code> script to build the <a href="https://github.com/IBM-Swift/Kitura-Starter-Bluemix">Kitura-Starter-Bluemix</a> sample project:</li>
-</ol>
-
-<p><code># /root/clone_build_kitura.sh</code></p>
-
-<p>The last two output lines from executing the <code>clone_build_kitura.sh</code> script should be similar to:</p>
-<pre class="highlight plaintext"><code>  Linking .build/debug/Kitura-Starter-Bluemix
-  &gt;&gt; Build for Kitura-Starter-Bluemix completed (see above for results).
-</code></pre>
-
-<ol>
-<li>You can now run the Kitura-Starter-Bluemix executable inside the Docker container:</li>
-</ol>
-
-<p><code># /root/start_kitura_sample.sh</code></p>
-
-<p>You should see an output message that contains the string <code>Listening on port 8090</code>.</p>
-<a href='#vagrant' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h3 id='vagrant'>Vagrant</h3>
-
-<ol>
-<li><p>Install <a href="https://www.virtualbox.org/wiki/Downloads">VirtualBox</a>.</p></li>
-<li><p>Install <a href="https://www.vagrantup.com/downloads.html">Vagrant</a>.</p></li>
-<li><p>From the root of the Kitura folder containing the <code>vagrantfile</code>, create and configure a guest machine:</p></li>
-</ol>
-
-<p><code>$ vagrant up</code></p>
-
-<ol>
-<li>SSH into the Vagrant machine:</li>
-</ol>
-
-<p><code>$ vagrant ssh</code></p>
-
-<ol>
-<li>As needed for development, edit the <code>vagrantfile</code> to setup <a href="https://www.vagrantup.com/docs/synced-folders/basic_usage.html">Synced Folders</a> to share files between your host and guest machine.</li>
-</ol>
-
-<p>Now you are ready to develop your first Kitura app. Check <a href="https://github.com/IBM-Swift/Kitura-Sample">Kitura-Sample</a> or see <a href="#getting-started">Getting Started</a>.</p>
 <a href='#getting-started' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='getting-started'>Getting Started</h2>
 
-<p>Let&rsquo;s develop your first Kitura web application!</p>
-
-<ol>
-<li>First, create a new project directory.</li>
-</ol>
-<pre class="highlight plaintext"><code>  $ mkdir myFirstProject
-</code></pre>
-
-<ol>
-<li>Next, create a new Swift project using the Swift Package Manager.</li>
-</ol>
-<pre class="highlight plaintext"><code>  $ cd myFirstProject
-  $ swift package init --type executable
-</code></pre>
-
-<p>Now your directory structure under myFirstProject should look like this:
-  <pre>
-  myFirstProject
-  ├── Package.swift
-  ├── Sources
-  │   └── main.swift
-  └── Tests
-      └── <i>empty</i>
-  </pre></p>
-
-<p>Note: For more information on the Swift Package Manager, go <a href="https://swift.org/package-manager">here</a>.</p>
-
-<ol>
-<li>In <code>Package.swift</code>, add Kitura as a dependency for your project.</li>
-</ol>
-<pre class="highlight swift"><code>  <span class="kd">import</span> <span class="kt">PackageDescription</span>
-
-  <span class="k">let</span> <span class="nv">package</span> <span class="o">=</span> <span class="kt">Package</span><span class="p">(</span>
-      <span class="nv">name</span><span class="p">:</span> <span class="s">"myFirstProject"</span><span class="p">,</span>
-      <span class="nv">dependencies</span><span class="p">:</span> <span class="p">[</span>
-          <span class="o">.</span><span class="kt">Package</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/IBM-Swift/Kitura.git"</span><span class="p">,</span> <span class="nv">majorVersion</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">minor</span><span class="p">:</span> <span class="mi">32</span><span class="p">)</span>
-      <span class="p">])</span>
-</code></pre>
-
-<ol>
-<li>In <code>Sources/main.swift</code>, import the Kitura module.</li>
-</ol>
-<pre class="highlight swift"><code>  <span class="kd">import</span> <span class="kt">Kitura</span>
-</code></pre>
-
-<ol>
-<li>Add a router and a path:</li>
-</ol>
-<pre class="highlight swift"><code>  <span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
-
-  <span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/"</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
-      <span class="n">response</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"Hello, World!"</span><span class="p">)</span>
-      <span class="nf">next</span><span class="p">()</span>
-  <span class="p">}</span>
-</code></pre>
-
-<ol>
-<li>Add an HTTP server and start the Kitura framework.</li>
-</ol>
-<pre class="highlight swift"><code>  <span class="kt">Kitura</span><span class="o">.</span><span class="nf">addHTTPServer</span><span class="p">(</span><span class="nv">onPort</span><span class="p">:</span> <span class="mi">8090</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="n">router</span><span class="p">)</span>
-  <span class="kt">Kitura</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
-</code></pre>
-
-<ol>
-<li>Your <code>Sources/main.swift</code> file should now look like this.</li>
-</ol>
-<pre class="highlight swift"><code>  <span class="kd">import</span> <span class="kt">Kitura</span>
-
-  <span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
-
-  <span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/"</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
-      <span class="n">response</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"Hello, World!"</span><span class="p">)</span>
-      <span class="nf">next</span><span class="p">()</span>
-  <span class="p">}</span>
-
-  <span class="kt">Kitura</span><span class="o">.</span><span class="nf">addHTTPServer</span><span class="p">(</span><span class="nv">onPort</span><span class="p">:</span> <span class="mi">8090</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="n">router</span><span class="p">)</span>
-  <span class="kt">Kitura</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
-</code></pre>
-
-<ol>
-<li>Optionally, add logging.</li>
-</ol>
-
-<p>In the code example above, no messages from Kitura will logged. You may want to add a logger to help diagnose any problems that occur.</p>
-
-<p>Add a HeliumLogger dependency to <code>Package.swift</code>.</p>
-<pre class="highlight swift"><code>   <span class="kd">import</span> <span class="kt">PackageDescription</span>
-
-   <span class="k">let</span> <span class="nv">package</span> <span class="o">=</span> <span class="kt">Package</span><span class="p">(</span>
-       <span class="nv">name</span><span class="p">:</span> <span class="s">"myFirstProject"</span><span class="p">,</span>
-       <span class="nv">dependencies</span><span class="p">:</span> <span class="p">[</span>
-           <span class="o">.</span><span class="kt">Package</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/IBM-Swift/Kitura.git"</span><span class="p">,</span> <span class="nv">majorVersion</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">minor</span><span class="p">:</span> <span class="mi">32</span><span class="p">),</span>
-           <span class="o">.</span><span class="kt">Package</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/IBM-Swift/HeliumLogger.git"</span><span class="p">,</span> <span class="nv">majorVersion</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">minor</span><span class="p">:</span> <span class="mi">17</span><span class="p">)</span>
-       <span class="p">])</span>
-</code></pre>
-
-<p>Enable HeliumLogger in <code>Sources/main.swift</code>.</p>
-<pre class="highlight swift"><code>   <span class="kd">import</span> <span class="kt">HeliumLogger</span>
-
-   <span class="kt">HeliumLogger</span><span class="o">.</span><span class="nf">use</span><span class="p">()</span>
-</code></pre>
-
-<p>Here is the finished <code>Sources/main.swift</code> file.</p>
-<pre class="highlight swift"><code>   <span class="kd">import</span> <span class="kt">Kitura</span>
-   <span class="kd">import</span> <span class="kt">HeliumLogger</span>
-
-   <span class="kt">HeliumLogger</span><span class="o">.</span><span class="nf">use</span><span class="p">()</span>
-
-   <span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
-
-   <span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/"</span><span class="p">)</span> <span class="p">{</span>
-       <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
-       <span class="n">response</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"Hello, World!"</span><span class="p">)</span>
-       <span class="nf">next</span><span class="p">()</span>
-   <span class="p">}</span>
-
-   <span class="kt">Kitura</span><span class="o">.</span><span class="nf">addHTTPServer</span><span class="p">(</span><span class="nv">onPort</span><span class="p">:</span> <span class="mi">8090</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="n">router</span><span class="p">)</span>
-   <span class="kt">Kitura</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
-</code></pre>
-
-<ol>
-<li>Compile your application:</li>
-</ol>
-
-<p><code>$ swift build</code></p>
-
-<p>Or copy our <a href="https://github.com/IBM-Swift/Package-Builder/blob/master/build">Makefile and build scripts</a> to your project directory and run <code>make build</code>. You may want to customize this Makefile and use it for building, testing and running your application. For example, you can clean your build directory, refetch all the dependencies, build, test and run your application by running <code>make clean refetch test run</code>.</p>
-
-<ol>
-<li>Now run your new web application:</li>
-</ol>
-
-<p><code>$ .build/debug/myFirstProject</code></p>
-
-<ol>
-<li>Open your browser at <a href="http://localhost:8090">http://localhost:8090</a></li>
-</ol>
+<p>Visit <a href="http://www.kitura.io/">www.kitura.io</a> for a Getting Started guide, tutorials, and API reference documentation.</p>
 <a href='#contributing-to-kitura' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='contributing-to-kitura'>Contributing to Kitura</h2>
 
 <p>All improvements to Kitura are very welcome! Here&rsquo;s how to get started with developing Kitura itself.</p>
@@ -446,12 +201,6 @@
 
 <p><code>$ make test</code></p>
 
-<p>### Notes
- * Homebrew by default installs libraries to <code>/usr/local</code>, if yours is different, change the path to find the curl library, in <code>Package-Builder/build/Makefile</code>:</p>
-<pre class="highlight plaintext"><code>   SWIFTC_FLAGS = -Xswiftc -I/usr/local/include
-   LINKER_FLAGS = -Xlinker -L/usr/local/lib
-</code></pre>
-
 <p>You can find more info on contributing to Kitura in our <a href=".github/CONTRIBUTING.md">contributing guidelines</a>.</p>
 <a href='#community' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='community'>Community</h2>
 
@@ -464,7 +213,7 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-09-18)</p>
+      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-11-17)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

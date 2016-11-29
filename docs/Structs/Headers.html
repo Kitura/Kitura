@@ -20,7 +20,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (99% documented)
+         (98% documented)
       </p>
     
         <p class="header-col header-col--secondary">
@@ -122,6 +122,9 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/Part/HeaderType.html">– HeaderType</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SSLConfig.html">SSLConfig</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -132,6 +135,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura22RouterParameterHandler">RouterParameterHandler</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura17WrittenDataFilter">WrittenDataFilter</a>
@@ -240,9 +246,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vV6Kitura7Headers10startIndexGVs15DictionaryIndexSSGSaSS__"></a>
+                    <a name="/s:vV6Kitura7Headers10startIndexGVs15DictionaryIndexSST3keySS5valueGSaSS___"></a>
                     <a name="//apple_ref/swift/Property/startIndex" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vV6Kitura7Headers10startIndexGVs15DictionaryIndexSSGSaSS__">startIndex</a>
+                    <a class="token" href="#/s:vV6Kitura7Headers10startIndexGVs15DictionaryIndexSST3keySS5valueGSaSS___">startIndex</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -267,71 +273,6 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:iV6Kitura7Headers9subscriptFGVs15DictionaryIndexSSGSaSS__TSSGSqSS__"></a>
-                    <a name="//apple_ref/swift/Method/subscript(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:iV6Kitura7Headers9subscriptFGVs15DictionaryIndexSSGSaSS__TSSGSqSS__">subscript(_:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Get a (key value) tuple from the <code>Headers</code> collection at the specified position.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    <p>Parameter position: The position in the <code>Headers</code> collection of the (key, value)
-                 tuple to return.</p>
-
-</div>
-
-<div class="aside aside-returns">
-    <p class="aside-title">Returns</p>
-    <p>A (key, value) tuple.</p>
-
-</div>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">subscript</span><span class="p">(</span><span class="nv">position</span><span class="p">:</span> <span class="kt"><a href="../Structs/Headers.html#/s:V6Kitura7Headers12HeadersIndex">HeadersIndex</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="kt">String</span><span class="p">,</span> <span class="kt">String</span><span class="p">?)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>position</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The position in the <code>Headers</code> collection of the (key, value) tuple to return.</p>
-
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div>
-                        <h4>Return Value</h4>
-                        <p>A (key, value) tuple.</p>
-
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
                     <a name="/s:V6Kitura7Headers12HeadersIndex"></a>
                     <a name="//apple_ref/swift/Alias/HeadersIndex" class="dashAnchor"></a>
                     <a class="token" href="#/s:V6Kitura7Headers12HeadersIndex">HeadersIndex</a>
@@ -349,7 +290,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">HeadersIndex</span> <span class="o">=</span> <span class="kt">DictionaryIndex</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span><span class="o">&gt;</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">HeadersIndex</span> <span class="o">=</span> <span class="kt">HeadersContainer</span><span class="o">.</span><span class="kt">Index</span></code></pre>
 
                         </div>
                       </div>
@@ -423,9 +364,74 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vV6Kitura7Headers8endIndexGVs15DictionaryIndexSSGSaSS__"></a>
+                    <a name="/s:iV6Kitura7Headers9subscriptFGVs15DictionaryIndexSST3keySS5valueGSaSS___TSSGSqSS__"></a>
+                    <a name="//apple_ref/swift/Method/subscript(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:iV6Kitura7Headers9subscriptFGVs15DictionaryIndexSST3keySS5valueGSaSS___TSSGSqSS__">subscript(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get a (key value) tuple from the <code>Headers</code> collection at the specified position.</p>
+
+<div class="aside aside-parameter">
+    <p class="aside-title">Parameter</p>
+    <p>Parameter position: The position in the <code>Headers</code> collection of the (key, value)
+                 tuple to return.</p>
+
+</div>
+
+<div class="aside aside-returns">
+    <p class="aside-title">Returns</p>
+    <p>A (key, value) tuple.</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">subscript</span><span class="p">(</span><span class="nv">position</span><span class="p">:</span> <span class="kt"><a href="../Structs/Headers.html#/s:V6Kitura7Headers12HeadersIndex">HeadersIndex</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="kt">String</span><span class="p">,</span> <span class="kt">String</span><span class="p">?)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>position</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The position in the <code>Headers</code> collection of the (key, value) tuple to return.</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>A (key, value) tuple.</p>
+
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vV6Kitura7Headers8endIndexGVs15DictionaryIndexSST3keySS5valueGSaSS___"></a>
                     <a name="//apple_ref/swift/Property/endIndex" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vV6Kitura7Headers8endIndexGVs15DictionaryIndexSSGSaSS__">endIndex</a>
+                    <a class="token" href="#/s:vV6Kitura7Headers8endIndexGVs15DictionaryIndexSST3keySS5valueGSaSS___">endIndex</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -450,9 +456,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FV6Kitura7Headers5indexFT5afterGVs15DictionaryIndexSSGSaSS___GS1_SSGSaSS__"></a>
+                    <a name="/s:FV6Kitura7Headers5indexFT5afterGVs15DictionaryIndexSST3keySS5valueGSaSS____GS1_SST3keySS5valueGSaSS___"></a>
                     <a name="//apple_ref/swift/Method/index(after:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FV6Kitura7Headers5indexFT5afterGVs15DictionaryIndexSSGSaSS___GS1_SSGSaSS__">index(after:)</a>
+                    <a class="token" href="#/s:FV6Kitura7Headers5indexFT5afterGVs15DictionaryIndexSST3keySS5valueGSaSS____GS1_SST3keySS5valueGSaSS___">index(after:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -775,7 +781,7 @@ Content-Type will be set based on the extension of the specified file.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-09-18)</p>
+      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-11-17)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

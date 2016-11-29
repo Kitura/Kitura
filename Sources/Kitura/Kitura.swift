@@ -33,6 +33,7 @@ public class Kitura {
     ///
     /// - Parameter onPort: The port to listen on.
     /// - Parameter with: The `ServerDelegate` to use.
+    /// - Parameter withSSL: The `sslConfig` to use.
     /// - Returns: The created `HTTPServer`.
     @discardableResult
     public class func addHTTPServer(onPort port: Int, with delegate: ServerDelegate, withSSL sslConfig: SSLConfig?=nil) -> HTTPServer {
@@ -44,7 +45,7 @@ public class Kitura {
         httpServersAndPorts.append(server: server, port: port)
         return server
     }
-    
+
     /// Add a FastCGIServer on a port with a delegate.
     ///
     /// The server is only registered with the framework, it does not start listening
@@ -70,11 +71,19 @@ public class Kitura {
         Log.verbose("Starting Kitura framework...")
         for (server, port) in httpServersAndPorts {
             Log.verbose("Starting an HTTP Server on port \(port)...")
-            server.listen(port: port)
+            do {
+                try server.listen(on: port)
+            } catch {
+                Log.error("Error listening on port \(port): \(error). Use server.failed(callback:) to handle")
+            }
         }
         for (server, port) in fastCGIServersAndPorts {
             Log.verbose("Starting a FastCGI Server on port \(port)...")
-            server.listen(port: port)
+            do {
+                try server.listen(on: port)
+            } catch {
+                Log.error("Error listening on port \(port): \(error). Use server.failed(callback:) to handle")
+            }
         }
         ListenerGroup.waitForListeners()
     }
@@ -85,11 +94,19 @@ public class Kitura {
     public class func start() {
         for (server, port) in httpServersAndPorts {
             Log.verbose("Starting an HTTP Server on port \(port)...")
-            server.listen(port: port)
+            do {
+                try server.listen(on: port)
+            } catch {
+                Log.error("Error listening on port \(port): \(error). Use server.failed(callback:) to handle")
+            }
         }
         for (server, port) in fastCGIServersAndPorts {
             Log.verbose("Starting a FastCGI Server on port \(port)...")
-            server.listen(port: port)
+            do {
+                try server.listen(on: port)
+            } catch {
+                Log.error("Error listening on port \(port): \(error). Use server.failed(callback:) to handle")
+            }
         }
     }
 
