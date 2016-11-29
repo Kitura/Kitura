@@ -23,7 +23,7 @@ import Foundation
 import Dispatch
 
 protocol KituraTest {
-    func expectation(_ index: Int) -> XCTestExpectation
+    func expectation(line: Int, index: Int) -> XCTestExpectation
     func waitExpectation(timeout t: TimeInterval, handler: XCWaitCompletionHandler?)
 }
 
@@ -34,27 +34,37 @@ extension KituraTest {
     }
 
     func doTearDown() {
-        // sleep(10)
     }
 
-    func performServerTest(_ router: ServerDelegate,
+    func performServerTest(_ router: ServerDelegate, line: Int = #line,
                            asyncTasks: @escaping (XCTestExpectation) -> Void...) {
-        Kitura.addHTTPServer(onPort: 8090, with: router)
+        let port = 8090
+        let server = Kitura.addHTTPServer(onPort: port, with: router)
+        defer {
+            Kitura.stop() // make sure to remove server from Kitura static list
+        }
+
+        var failed = false
+        server.failed { error in
+            failed = true
+            XCTFail("Error starting server on port \(port): \(error)")
+        }
+
         Kitura.start()
 
         let requestQueue = DispatchQueue(label: "Request queue")
-
-        for (index, asyncTask) in asyncTasks.enumerated() {
-            let expectation = self.expectation(index)
-            requestQueue.async() {
-                asyncTask(expectation)
+        if !failed {
+            for (index, asyncTask) in asyncTasks.enumerated() {
+                let expectation = self.expectation(line: line, index: index)
+                requestQueue.async() {
+                    asyncTask(expectation)
+                }
             }
-        }
 
-        waitExpectation(timeout: 10) { error in
-                // blocks test until request completes
-                Kitura.stop()
+            waitExpectation(timeout: 10) { error in
+                // wait for timeout or for all created expectations to be fulfilled
                 XCTAssertNil(error)
+            }
         }
     }
 
@@ -79,9 +89,8 @@ extension KituraTest {
 }
 
 extension XCTestCase: KituraTest {
-    func expectation(_ index: Int) -> XCTestExpectation {
-        let expectationDescription = "\(type(of: self))-\(index)"
-        return self.expectation(description: expectationDescription)
+    func expectation(line: Int, index: Int) -> XCTestExpectation {
+        return self.expectation(description: "\(type(of: self)):\(line)[\(index)]")
     }
 
     func waitExpectation(timeout t: TimeInterval, handler: XCWaitCompletionHandler?) {
