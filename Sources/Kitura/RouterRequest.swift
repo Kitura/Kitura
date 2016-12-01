@@ -42,11 +42,7 @@ public class RouterRequest {
     public private(set) lazy var domain: String = { [unowned self] in
         let pattern = "([a-z0-9][a-z0-9\\-]{1,63}\\.[a-z\\.]{2,6})$"
         do {
-            #if os(Linux)
-                let regex = try RegularExpression(pattern: pattern, options: [.caseInsensitive])
-            #else
-                let regex = try NSRegularExpression(pattern: pattern, options: [.caseInsensitive])
-            #endif
+            let regex = try RegularExpressionType(pattern: pattern, options: [.caseInsensitive])
 
             let hostnameRange = NSMakeRange(0, self.hostname.utf8.count)
 
@@ -125,14 +121,9 @@ public class RouterRequest {
     public var remoteAddress: String { return serverRequest.remoteAddress }
 
     /// Parsed Cookies, used to do a lazy parsing of the appropriate headers.
-    private lazy var _cookies: Cookies = { [unowned self] in
-        return Cookies(headers: self.serverRequest.headers)
+    public lazy var cookies: [String: HTTPCookie] = { [unowned self] in
+        return Cookies.parse(headers: self.serverRequest.headers)
     }()
-
-    /// Set of parsed cookies.
-    public var cookies: [String: HTTPCookie] {
-        return _cookies.cookies
-    }
 
     /// List of URL parameters.
     public internal(set) var parameters: [String:String] = [:]
@@ -234,42 +225,46 @@ public class RouterRequest {
 }
 
 private class Cookies {
-
-    /// Storage of parsed Cookie headers
-    fileprivate var cookies = [String: HTTPCookie]()
-
-    /// Static for Cookie header key value
-    private let cookieHeader = "cookie"
-
-    fileprivate init(headers: HeadersContainer) {
-        guard let rawCookies = headers[cookieHeader] else {
-            return
+    private static var separator: RegularExpressionType = {
+        do {
+            // matches that do not contain semicolons and do not start with whitespaces
+            // effectively splits string by ";\\s*"
+            return try RegularExpressionType(pattern: "[^;\\s][^;]*", options: [])
+        } catch { // should never throw here, famous last words
+            Log.error("Error creating cookie separator regex: \(error)")
+            exit(1)
         }
-        for cookie in rawCookies {
-            initCookie(cookie, cookies: &cookies)
-        }
-    }
+    }()
 
-    private func initCookie(_ cookie: String, cookies: inout [String: HTTPCookie]) {
-        let cookieNameValues = cookie.components(separatedBy: "; ")
-        for  cookieNameValue in cookieNameValues {
-            let cookieNameValueParts = cookieNameValue.components(separatedBy: "=")
-            if   cookieNameValueParts.count == 2 {
-                #if os(Linux)
-                    let cookieName = cookieNameValueParts[0]
-                    let cookieValue = cookieNameValueParts[1]
-                #else
-                    let cookieName = cookieNameValueParts[0] as NSString
-                    let cookieValue = cookieNameValueParts[1] as NSString
-                #endif
-                let theCookie = HTTPCookie(properties:
-                                                [HTTPCookiePropertyKey.domain: ".",
-                                                 HTTPCookiePropertyKey.path: "/",
-                                                 HTTPCookiePropertyKey.name: cookieName ,
-                                                 HTTPCookiePropertyKey.value: cookieValue])
+    fileprivate static func parse(headers: HeadersContainer) -> [String: HTTPCookie] {
+        var cookies = [String: HTTPCookie]()
+        if let cookieHeaders = headers["cookie"] {
+            for cookieHeader in cookieHeaders {
+                let nsCookieHeader = NSString(string: cookieHeader)
+                let results = Cookies.separator.matches(in: cookieHeader, options: [], range: NSMakeRange(0, nsCookieHeader.length))
 
-                cookies[cookieNameValueParts[0]] = theCookie
+                for result in results {
+                    let match = nsCookieHeader.substring(with: NSMakeRange(result.range.location, result.range.length))
+                    if let cookie = getCookie(cookieString: match) {
+                        cookies[cookie.name] = cookie
+                    }
+                }
             }
         }
+        return cookies
+    }
+
+    private static func getCookie(cookieString: String) -> HTTPCookie? {
+        guard let range = cookieString.range(of: "=") else {
+            return nil
+        }
+
+        let name = cookieString.substring(to: range.lowerBound)
+        let value = cookieString.substring(from: range.upperBound)
+        return HTTPCookie(properties:
+            [HTTPCookiePropertyKey.domain: ".",
+             HTTPCookiePropertyKey.path: "/",
+             HTTPCookiePropertyKey.name: name ,
+             HTTPCookiePropertyKey.value: value])
     }
 }
