@@ -32,6 +32,9 @@ class TestStaticFileServer : XCTestCase {
     static var allTests : [(String, (TestStaticFileServer) -> () throws -> Void)] {
         return [
             ("testFileServer", testFileServer),
+            ("testGetWithWhiteSpaces", testGetWithWhiteSpaces),
+            ("testGetWithSpecialCharacters", testGetWithSpecialCharacters),
+            ("testGetWithSpecialCharactersEncoded", testGetWithSpecialCharactersEncoded)
         ]
     }
     
