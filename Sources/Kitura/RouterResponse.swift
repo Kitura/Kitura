@@ -203,7 +203,9 @@ public class RouterResponse {
             headers.setType("json")
             send(data: jsonData)
         }
-        catch { } // Do nothing if the JSON to Data fails
+        catch {
+            Log.warning("Failed to convert JSON for sending: \(error.localizedDescription)")
+        }
             
         return self
     }
