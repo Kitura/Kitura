@@ -20,13 +20,13 @@ import XCTest
 
 XCTMain([
     testCase(TestContentType.allTests),
+    testCase(TestCookies.allTests),
     testCase(TestErrors.allTests),
+    testCase(TestMultiplicity.allTests),
     testCase(TestRequests.allTests),
     testCase(TestResponse.allTests),
-    testCase(TestMultiplicity.allTests),
-    testCase(TestCookies.allTests),
-    testCase(TestSubrouter.allTests),
     testCase(TestRouteRegex.allTests),
-    testCase(TestStaticFileServer.allTests),
-    testCase(TestRouterHTTPVerbs_generated.allTests)
+    testCase(TestRouterHTTPVerbs_generated.allTests),
+    testCase(TestSubrouter.allTests),
+    testCase(TestStaticFileServer.allTests)
 ])
