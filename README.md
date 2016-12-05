@@ -43,7 +43,7 @@ All improvements to Kitura are very welcome! Here's how to get started with deve
 
 2. Build and run tests.
 
-  `$ make test`
+  `$ swift test`
 
 You can find more info on contributing to Kitura in our [contributing guidelines](.github/CONTRIBUTING.md).
 
