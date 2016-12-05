@@ -102,14 +102,12 @@ public class RouterRequest {
 
     /// The URL.
     /// This contains just the path and query parameters starting with '/'
-    /// Use "urlURL" for the full URL
+    /// Use "urlURL" or "urlComponents" for the full URL
     @available(*, deprecated, message:
-        "This contains just the path and query parameters starting with '/'. use 'urlURL' instead")
+        "This contains just the path and query parameters starting with '/'. use 'urlURL' or 'urlComponents' instead")
     public var url : String { return serverRequest.urlString }
 
     /// The URL from the request as URLComponents
-    @available(*, deprecated, message:
-        "URLComponents has a memory leak as of swift 3.0.1. use 'urlURL' instead")
     public var urlComponents: URLComponents { return serverRequest.urlComponents }
 
     /// The URL from the request
