@@ -128,41 +128,41 @@ public class RouterRequest {
     private lazy var _cookies: Cookies = { [unowned self] in
         return Cookies(headers: self.serverRequest.headers)
     }()
-
+    
     /// Set of parsed cookies.
     public var cookies: [String: HTTPCookie] {
         return _cookies.cookies
     }
-
+    
     /// List of URL parameters.
     public internal(set) var parameters: [String:String] = [:]
-
+    
     /// List of query parameters.
     public lazy var queryParameters: [String:String] = { [unowned self] in
         var decodedParameters: [String:String] = [:]
         if let query = self.urlComponents.percentEncodedQuery {
             for item in query.components(separatedBy: "&") {
-                if let range = item.range(of: "=") {
-                    let key = item.substring(to: range.lowerBound)
-                    let value = item.substring(from: range.upperBound)
-                    let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
-                    if let decodedValue = valueReplacingPlus.removingPercentEncoding {
-                        decodedParameters[key] = decodedValue
-                    } else {
-                        Log.warning("Unable to decode query parameter \(key)")
-                        decodedParameters[key] = valueReplacingPlus
-                    }
-                } else {
+                guard let range = item.range(of: "=") else {
                     decodedParameters[item] = nil
+                    break
+                }
+                let key = item.substring(to: range.lowerBound)
+                let value = item.substring(from: range.upperBound)
+                let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
+                if let decodedValue = valueReplacingPlus.removingPercentEncoding {
+                    decodedParameters[key] = decodedValue
+                } else {
+                    Log.warning("Unable to decode query parameter \(key)")
+                    decodedParameters[key] = valueReplacingPlus
                 }
             }
         }
         return decodedParameters
-    }()
-
+        }()
+    
     /// User info.
     public var userInfo: [String: Any] = [:]
-
+    
     /// Body of the message.
     public internal(set) var body: ParsedBody?
 
