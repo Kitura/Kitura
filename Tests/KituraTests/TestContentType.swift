@@ -25,6 +25,7 @@ class TestContentType: XCTestCase {
         return [
             ("testInitialize", testInitialize),
             ("testFilename", testFilename),
+            ("testIsContentType", testIsContentType)
         ]
     }
 
