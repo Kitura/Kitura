@@ -28,5 +28,6 @@ XCTMain([
     testCase(TestRouteRegex.allTests),
     testCase(TestRouterHTTPVerbs_generated.allTests),
     testCase(TestSubrouter.allTests),
-    testCase(TestStaticFileServer.allTests)
+    testCase(TestStaticFileServer.allTests),
+    testCase(TestTemplateEngine.allTests)
 ])
