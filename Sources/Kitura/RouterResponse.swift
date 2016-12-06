@@ -34,6 +34,10 @@ public class RouterResponse {
         var invokedSend = false
     }
 
+    /// A set of functions called during the life cycle of a Request.
+    /// As The life cycle functions/closures may capture various things including the
+    /// response object in question, each life cycle function needs a reset function
+    /// to clear out any reference cycles that may have occurred.
     struct Lifecycle {
 
         /// Lifecycle hook called on end()
@@ -42,6 +46,16 @@ public class RouterResponse {
         /// Current pre-write lifecycle handler
         var writtenDataFilter: WrittenDataFilter = { body in
             return body
+        }
+        
+        mutating func resetOnEndInvoked() {
+            onEndInvoked = {}
+        }
+        
+        mutating func resetWrittenDataFilter() {
+            writtenDataFilter = { body in
+                return body
+            }
         }
     }
 
@@ -103,6 +117,7 @@ public class RouterResponse {
     @discardableResult
     public func end() throws {
         lifecycle.onEndInvoked()
+        lifecycle.resetOnEndInvoked()
 
         // Sets status code if unset
         if statusCode == .unknown {
@@ -110,6 +125,8 @@ public class RouterResponse {
         }
 
         let content = lifecycle.writtenDataFilter(buffer.data)
+        lifecycle.resetWrittenDataFilter()
+        
         let contentLength = headers["Content-Length"]
         if  contentLength == nil {
             headers["Content-Length"] = String(content.count)
