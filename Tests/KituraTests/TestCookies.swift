@@ -35,9 +35,9 @@ class TestCookies: XCTestCase {
 
     static var allTests: [(String, (TestCookies) -> () throws -> Void)] {
         return [
-            ("testCookieToServerWithColonSeparator", testCookieToServerWithColonSeparator),
-            ("testCookieToServerWithColonSpaceSeparator", testCookieToServerWithColonSpaceSeparator),
-            ("testCookieToServerWithColonWhitespacesSeparator", testCookieToServerWithColonWhitespacesSeparator),
+            ("testCookieToServerWithSemiColonSeparator", testCookieToServerWithSemiColonSeparator),
+            ("testCookieToServerWithSemiColonSpaceSeparator", testCookieToServerWithSemiColonSpaceSeparator),
+            ("testCookieToServerWithSemiColonWhitespacesSeparator", testCookieToServerWithSemiColonWhitespacesSeparator),
             ("testCookieFromServer", testCookieFromServer)
         ]
     }
@@ -52,15 +52,15 @@ class TestCookies: XCTestCase {
 
     let router = TestCookies.setupRouter()
 
-    func testCookieToServerWithColonSeparator() {
+    func testCookieToServerWithSemiColonSeparator() {
         cookieToServer(separator: ";")
     }
 
-    func testCookieToServerWithColonSpaceSeparator() {
+    func testCookieToServerWithSemiColonSpaceSeparator() {
         cookieToServer(separator: "; ")
     }
 
-    func testCookieToServerWithColonWhitespacesSeparator() {
+    func testCookieToServerWithSemiColonWhitespacesSeparator() {
         cookieToServer(separator: "; \t ")
     }
 

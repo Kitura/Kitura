@@ -127,33 +127,33 @@ public class RouterRequest {
 
     /// List of URL parameters.
     public internal(set) var parameters: [String:String] = [:]
-
+    
     /// List of query parameters.
     public lazy var queryParameters: [String:String] = { [unowned self] in
         var decodedParameters: [String:String] = [:]
         if let query = self.urlComponents.percentEncodedQuery {
             for item in query.components(separatedBy: "&") {
-                if let range = item.range(of: "=") {
-                    let key = item.substring(to: range.lowerBound)
-                    let value = item.substring(from: range.upperBound)
-                    let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
-                    if let decodedValue = valueReplacingPlus.removingPercentEncoding {
-                        decodedParameters[key] = decodedValue
-                    } else {
-                        Log.warning("Unable to decode query parameter \(key)")
-                        decodedParameters[key] = valueReplacingPlus
-                    }
-                } else {
+                guard let range = item.range(of: "=") else {
                     decodedParameters[item] = nil
+                    break
+                }
+                let key = item.substring(to: range.lowerBound)
+                let value = item.substring(from: range.upperBound)
+                let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
+                if let decodedValue = valueReplacingPlus.removingPercentEncoding {
+                    decodedParameters[key] = decodedValue
+                } else {
+                    Log.warning("Unable to decode query parameter \(key)")
+                    decodedParameters[key] = valueReplacingPlus
                 }
             }
         }
         return decodedParameters
-    }()
-
+        }()
+    
     /// User info.
     public var userInfo: [String: Any] = [:]
-
+    
     /// Body of the message.
     public internal(set) var body: ParsedBody?
 
@@ -245,7 +245,7 @@ private class Cookies {
 
                 for result in results {
                     let match = nsCookieHeader.substring(with: NSMakeRange(result.range.location, result.range.length))
-                    if let cookie = getCookie(cookieString: match) {
+                    if let cookie = getCookie(cookie: match) {
                         cookies[cookie.name] = cookie
                     }
                 }
@@ -254,13 +254,13 @@ private class Cookies {
         return cookies
     }
 
-    private static func getCookie(cookieString: String) -> HTTPCookie? {
-        guard let range = cookieString.range(of: "=") else {
+    private static func getCookie(cookie: String) -> HTTPCookie? {
+        guard let range = cookie.range(of: "=") else {
             return nil
         }
 
-        let name = cookieString.substring(to: range.lowerBound)
-        let value = cookieString.substring(from: range.upperBound)
+        let name = cookie.substring(to: range.lowerBound)
+        let value = cookie.substring(from: range.upperBound)
         return HTTPCookie(properties:
             [HTTPCookiePropertyKey.domain: ".",
              HTTPCookiePropertyKey.path: "/",
