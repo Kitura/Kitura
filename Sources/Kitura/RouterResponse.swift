@@ -34,10 +34,10 @@ public class RouterResponse {
         var invokedSend = false
     }
 
-    /// A set of functions called durin the life cycle of a Request.
+    /// A set of functions called during the life cycle of a Request.
     /// As The life cycle functions/closures may capture various things including the
-    /// response object in question, each life cycle functions needs a reset function
-    /// to clear out any cycles.
+    /// response object in question, each life cycle function needs a reset function
+    /// to clear out any reference cycles that may have occurred.
     struct Lifecycle {
 
         /// Lifecycle hook called on end()
