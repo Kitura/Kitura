@@ -53,20 +53,39 @@ class TestCookies: XCTestCase {
     let router = TestCookies.setupRouter()
 
     func testCookieToServerWithSemiColonSeparator() {
-        cookieToServer(separator: ";")
+        cookieToServer(separator: ";", quoteValue: false)
     }
 
     func testCookieToServerWithSemiColonSpaceSeparator() {
-        cookieToServer(separator: "; ")
+        cookieToServer(separator: "; ", quoteValue: true)
     }
 
     func testCookieToServerWithSemiColonWhitespacesSeparator() {
-        cookieToServer(separator: "; \t ")
+        cookieToServer(separator: "; \t ", quoteValue: true)
     }
 
-    private func cookieToServer(separator: String) {
+    private func cookieToServer(separator: String, quoteValue: Bool) {
         performServerTest(router, asyncTasks: { expectation in
-            let cookies = ["Plover=value with spaces", "Zxcv=(E = mc^2)", "name with spaces and values with equals=====", "unicode values=\u{1f3c8} = \u{1f37a} "]
+            let cookieMap = [" Plover ": " value with spaces ",
+                           "Zxcv": "(E = mc^2)",
+                           "value with one quote": "\"",
+                           "empty value": "",
+                           "value with embedded quotes": "x\"=\"y",
+                           "name with spaces and values with equals": "=====",
+                           "unicode values": "x (\u{1f3c8}) = (\u{1f37a}) y"]
+            var rawCookies = [String]()
+            var parsedCookies = [String]()
+            for (name, value) in cookieMap {
+                let name = name.trimmingCharacters(in: .whitespaces)
+                if quoteValue {
+                    rawCookies.append(name + "=\"" + value + "\"")
+                    parsedCookies.append(name + "=" + value)
+                } else {
+                    rawCookies.append(name + "=" + value)
+                    parsedCookies.append(name + "=" + value.trimmingCharacters(in: .whitespaces))
+                }
+            }
+
             self.performRequest("get", path: "/1/cookiedump", callback: {response in
                 XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "cookiedump route did not match single path request")
                 do {
@@ -75,7 +94,8 @@ class TestCookies: XCTestCase {
 
                     let responseBody = String(data: data as Data, encoding: .utf8)
                     if  let responseBody = responseBody {
-                        XCTAssertEqual(responseBody.components(separatedBy: responseBodySeparator).sorted(), cookies.sorted())
+                        XCTAssertEqual(responseBody.components(separatedBy: responseBodySeparator).sorted(),
+                                       parsedCookies.sorted())
                     } else {
                         XCTFail("Response body wasn't an UTF8 string")
                     }
@@ -83,7 +103,7 @@ class TestCookies: XCTestCase {
                     XCTFail("Failed reading the body of the response")
                 }
                 expectation.fulfill()
-            }, headers: ["Cookie": cookies.joined(separator: separator)])
+            }, headers: ["Cookie": rawCookies.joined(separator: separator)])
         })
     }
 

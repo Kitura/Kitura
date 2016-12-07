@@ -225,29 +225,17 @@ public class RouterRequest {
 }
 
 private class Cookies {
-    private static var separator: RegularExpressionType = {
-        do {
-            // matches that do not contain semicolons and do not start with whitespaces
-            // effectively splits string by ";\\s*"
-            return try RegularExpressionType(pattern: "[^;\\s][^;]*", options: [])
-        } catch { // should never throw here, famous last words
-            Log.error("Error creating cookie separator regex: \(error)")
-            exit(1)
-        }
-    }()
-
     fileprivate static func parse(headers: HeadersContainer) -> [String: HTTPCookie] {
         var cookies = [String: HTTPCookie]()
-        if let cookieHeaders = headers["cookie"] {
-            for cookieHeader in cookieHeaders {
-                let nsCookieHeader = NSString(string: cookieHeader)
-                let results = Cookies.separator.matches(in: cookieHeader, options: [], range: NSMakeRange(0, nsCookieHeader.length))
+        guard let cookieHeaders = headers["cookie"] else {
+            return cookies
+        }
 
-                for result in results {
-                    let match = nsCookieHeader.substring(with: NSMakeRange(result.range.location, result.range.length))
-                    if let cookie = getCookie(cookie: match) {
-                        cookies[cookie.name] = cookie
-                    }
+        for cookieHeader in cookieHeaders {
+            for cookie in cookieHeader.components(separatedBy: ";") {
+                let trimmedCookie = cookie.trimmingCharacters(in: .whitespaces)
+                if let cookie = getCookie(cookie: trimmedCookie) {
+                    cookies[cookie.name] = cookie
                 }
             }
         }
@@ -259,12 +247,19 @@ private class Cookies {
             return nil
         }
 
-        let name = cookie.substring(to: range.lowerBound)
-        let value = cookie.substring(from: range.upperBound)
+        let name = cookie.substring(to: range.lowerBound).trimmingCharacters(in: .whitespaces)
+        var value = cookie.substring(from: range.upperBound).trimmingCharacters(in: .whitespaces)
+        let chars = value.characters
+        if chars.count >= 2 && chars.first == "\"" && chars.last == "\"" {
+            // unquote value
+            value.remove(at: value.startIndex)
+            value.remove(at: value.index(before: value.endIndex))
+        }
+
         return HTTPCookie(properties:
             [HTTPCookiePropertyKey.domain: ".",
              HTTPCookiePropertyKey.path: "/",
-             HTTPCookiePropertyKey.name: name ,
+             HTTPCookiePropertyKey.name: name,
              HTTPCookiePropertyKey.value: value])
     }
 }
