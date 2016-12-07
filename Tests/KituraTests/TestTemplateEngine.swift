@@ -32,7 +32,9 @@ class TestTemplateEngine : XCTestCase {
     
     static var allTests : [(String, (TestTemplateEngine) -> () throws -> Void)] {
         return [
-            ("testNoTemplateEngineForExtension", testNoTemplateEngineForExtension),
+            ("testEmptyExtension", testEmptyExtension),
+            ("testMissingExtension", testMissingExtension),
+            ("testNoDefaultEngine", testNoDefaultEngine),
             ("testRender", testRender)
         ]
     }
@@ -45,11 +47,12 @@ class TestTemplateEngine : XCTestCase {
         doTearDown()
     }
     
-    let router = TestTemplateEngine.setupRouter()
-    
-    func testNoTemplateEngineForExtension() {
+    func testEmptyExtension() {
+        let router = Router()
+        router.setDefault(templateEngine: MockTemplateEngine())
+
         do {
-            _ = try router.render(template: "wrong_extension", context: [:])
+            _ = try router.render(template: "", context: [:])
         }
         catch TemplatingError.noTemplateEngineForExtension {
             //Expect this error to be thrown
@@ -58,20 +61,45 @@ class TestTemplateEngine : XCTestCase {
             XCTFail("Error during render \(error)")
         }
     }
+
+    func testMissingExtension() {
+        let router = Router()
+        router.setDefault(templateEngine: MockTemplateEngine())
+
+        do {
+            _ = try router.render(template: "index.html", context: [:])
+        }
+        catch TemplatingError.noTemplateEngineForExtension {
+            //Expect this error to be thrown
+        }
+        catch {
+            XCTFail("Error during render \(error)")
+        }
+    }
+
+    func testNoDefaultEngine() {
+        let router = Router()
+        
+        do {
+            let _ = try router.render(template: "test", context: [:])
+        } catch TemplatingError.noDefaultTemplateEngineAndNoExtensionSpecified {
+            //Expect this error to be thrown
+        }
+        catch {
+            XCTFail("Error during render \(error)")
+        }
+    }
     
     func testRender() {
+        let router = Router()
+        router.setDefault(templateEngine: MockTemplateEngine())
+
         do {
             let content = try router.render(template: "test.mock", context: [:])
             XCTAssertEqual(content,"Hello World!")
         } catch {
             XCTFail("Error during render \(error)")
         }
-    }
-    
-    static func setupRouter() -> Router {
-        let router = Router()
-        router.setDefault(templateEngine: MockTemplateEngine())
-        return router
     }
 }
 
