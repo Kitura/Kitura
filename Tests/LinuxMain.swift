@@ -30,5 +30,5 @@ XCTMain([
     testCase(TestSubrouter.allTests),
     testCase(TestStaticFileServer.allTests),
     testCase(TestTemplateEngine.allTests),
-    textCase(TestQuery.allTests),
+    testCase(TestQuery.allTests),
 ])
