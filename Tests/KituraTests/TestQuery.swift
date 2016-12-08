@@ -51,6 +51,8 @@ class TestQuery: XCTestCase {
             XCTAssertNotNil(request.queryParameters["q"])
             XCTAssertNotNil(request.query["q"].string)
             XCTAssertEqual(request.query["q"].string, request.queryParameters["q"])
+
+            response.send(request.query["q"].string ?? "")
         }
 
         router.get("/ints") { request, response, next in
@@ -64,6 +66,8 @@ class TestQuery: XCTestCase {
             XCTAssertNotNil(request.query["q"].string)
             let parameterInt = Int(param!)
             XCTAssertEqual(request.query["q"].int, parameterInt)
+
+            response.send(request.query["q"].string ?? "")
         }
 
         router.get("/non_int") { request, response, next in
@@ -82,6 +86,8 @@ class TestQuery: XCTestCase {
             XCTAssertNil(request.query["q"].int)
             XCTAssertNotNil(request.query["q"].string)
             XCTAssertEqual(request.query["q"].string, request.queryParameters["q"])
+
+            response.send(request.query["q"].string ?? "")
         }
 
         router.get("/array") { request, response, next in
@@ -113,6 +119,8 @@ class TestQuery: XCTestCase {
             XCTAssertEqual(request.query["q", 2].int, request.query["q"][2].int)
 
             XCTAssertNil(request.query["q"][3].int)
+
+            response.send(request.query["q", 0].string ?? "")
         }
 
         router.get("/dictionary") { request, response, next in
@@ -147,31 +155,63 @@ class TestQuery: XCTestCase {
             XCTAssertNil(request.query["q"][1].int)
             XCTAssertNil(request.query["q"]["2"].int)
             XCTAssertNil(request.query["q"]["a3"].int)
+
+            response.send(request.query["q", "str"].string ?? "")
         }
 
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path: "/strings?q=tra-ta-ta".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!, callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+
+                let string = try! response!.readString()
+
+                XCTAssertNotNil(string)
+                XCTAssertEqual(string, "tra-ta-ta")
+
                 expectation.fulfill()
             })
         }, { expectation in
             self.performRequest("get", path: "/ints?q=1050".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!, callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+
+                let string = try! response!.readString()
+
+                XCTAssertNotNil(string)
+                XCTAssertEqual(string, "1050")
+
                 expectation.fulfill()
             })
         }, { expectation in
             self.performRequest("get", path: "/non_int?q=105ess0".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!, callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+
+                let string = try! response!.readString()
+
+                XCTAssertNotNil(string)
+                XCTAssertEqual(string, "105ess0")
+
                 expectation.fulfill()
             })
         }, { expectation in
             self.performRequest("get", path: "/array?q[]=1&q[]=2&q[]=3".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!, callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+
+                let string = try! response!.readString()
+
+                XCTAssertNotNil(string)
+                XCTAssertEqual(string, "1")
+
                 expectation.fulfill()
             })
         }, { expectation in
             self.performRequest("get", path: "/dictionary?q[a]=1&q[str]=done&q[1]=int".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!, callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+
+                let string = try! response!.readString()
+
+                XCTAssertNotNil(string)
+                XCTAssertEqual(string, "done")
+
                 expectation.fulfill()
             })
         })
@@ -201,6 +241,8 @@ class TestQuery: XCTestCase {
             XCTAssertNotNil(body.string)
             XCTAssertEqual(body.string, "hello")
             XCTAssertEqual(body.string, string)
+
+            response.send(body.string ?? "")
         }
 
         router.post("/json") { request, response, next in
@@ -223,6 +265,8 @@ class TestQuery: XCTestCase {
             XCTAssertEqual(body["foo"].string, "bar")
             XCTAssertEqual(body["foo"].string, json["foo"].stringValue)  // can't use json["foo"].string because of: Ambiguous use of 'subscript'
             XCTAssertEqual(body["foo"].string, (json["foo"] as JSON).string) //workaround for 'json["foo"].string'
+
+            response.send(body["foo"].string ?? "")
         }
 
         router.post("/multipart") { request, response, next in
@@ -252,12 +296,20 @@ class TestQuery: XCTestCase {
             }
 
             XCTAssertEqual(body["text"].string, string)
+
+            response.send(body["text"].string ?? "")
         }
 
 
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("post", path: "/text", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+
+                let string = try! response!.readString()
+
+                XCTAssertNotNil(string)
+                XCTAssertEqual(string, "hello")
+
                 expectation.fulfill()
             }) { req in
                 req.write(from: "hello")
@@ -267,6 +319,12 @@ class TestQuery: XCTestCase {
 
             self.performRequest("post", path: "/json", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+
+                let string = try! response!.readString()
+
+                XCTAssertNotNil(string)
+                XCTAssertEqual(string, "bar")
+
                 expectation.fulfill()
             }, headers: ["Content-Type": "application/json"]) { req in
                 do {
@@ -281,6 +339,12 @@ class TestQuery: XCTestCase {
 
             self.performRequest("post", path: "/multipart", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+
+                let string = try! response!.readString()
+
+                XCTAssertNotNil(string)
+                XCTAssertEqual(string, "text default")
+
                 expectation.fulfill()
             }) {req in
                 req.headers["Content-Type"] = "multipart/form-data; boundary=---------------------------9051914041544843365972754266"
