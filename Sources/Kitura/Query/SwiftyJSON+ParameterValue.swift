@@ -14,21 +14,32 @@
  * limitations under the License.
  **/
 
-import XCTest
+import Foundation
+import SwiftyJSON
 
-@testable import KituraTests
+extension JSON: ParameterValue {
+    
+    public var data: Data? {
+        return nil
+    }
+    
+    public var array: [Any]? {
+        return self.arrayObject
+    }
+    
+    public var dictionary: [String : Any]? {
+        return self.dictionaryObject
+    }
 
-XCTMain([
-    testCase(TestContentType.allTests),
-    testCase(TestCookies.allTests),
-    testCase(TestErrors.allTests),
-    testCase(TestMultiplicity.allTests),
-    testCase(TestRequests.allTests),
-    testCase(TestResponse.allTests),
-    testCase(TestRouteRegex.allTests),
-    testCase(TestRouterHTTPVerbs_generated.allTests),
-    testCase(TestSubrouter.allTests),
-    testCase(TestStaticFileServer.allTests),
-    testCase(TestTemplateEngine.allTests),
-    textCase(TestQuery.allTests),
-])
+    public subscript(keys: [QueryKeyProtocol]) -> ParameterValue {
+        get {
+            return self[keys as [JSONSubscriptType]]
+        }
+    }
+    
+    public subscript(keys: QueryKeyProtocol...) -> ParameterValue {
+        get {
+            return self[keys]
+        }
+    }
+}
