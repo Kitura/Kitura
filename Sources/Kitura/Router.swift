@@ -270,15 +270,15 @@ extension Router : ServerDelegate {
 
         process(request: routeReq, response: routeResp) { [weak self, weak routeReq, weak routeResp] () in
             guard let strongSelf = self else {
-                Log.error("Found nil self at #file #line")
+                Log.error("Found nil self at \(#file) \(#line)")
                 return
             }
             guard let routeReq = routeReq else {
-                Log.error("Found nil routeReq at #file #line")
+                Log.error("Found nil routeReq at \(#file) \(#line)")
                 return
             }
             guard let routeResp = routeResp else {
-                Log.error("Found nil routeResp at #file #line")
+                Log.error("Found nil routeResp at \(#file) \(#line)")
                 return
             }
             do {
