@@ -268,11 +268,23 @@ extension Router : ServerDelegate {
         let routeReq = RouterRequest(request: request)
         let routeResp = RouterResponse(response: response, router: self, request: routeReq)
 
-        process(request: routeReq, response: routeResp) { [unowned self] () in
+        process(request: routeReq, response: routeResp) { [weak self, weak routeReq, weak routeResp] () in
+            guard let strongSelf = self else {
+                Log.error("Found nil self at #file #line")
+                return
+            }
+            guard let routeReq = routeReq else {
+                Log.error("Found nil routeReq at #file #line")
+                return
+            }
+            guard let routeResp = routeResp else {
+                Log.error("Found nil routeResp at #file #line")
+                return
+            }
             do {
                 if  !routeResp.state.invokedEnd {
                     if  routeResp.statusCode == .unknown  && !routeResp.state.invokedSend {
-                        self.sendDefaultResponse(request: routeReq, response: routeResp)
+                        strongSelf.sendDefaultResponse(request: routeReq, response: routeResp)
                     }
                     try routeResp.end()
                 }
