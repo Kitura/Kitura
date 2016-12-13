@@ -34,7 +34,8 @@ class TestStaticFileServer : XCTestCase {
             ("testFileServer", testFileServer),
             ("testGetWithWhiteSpaces", testGetWithWhiteSpaces),
             ("testGetWithSpecialCharacters", testGetWithSpecialCharacters),
-            ("testGetWithSpecialCharactersEncoded", testGetWithSpecialCharactersEncoded)
+            ("testGetWithSpecialCharactersEncoded", testGetWithSpecialCharactersEncoded),
+            ("testGetKituraResource", testGetKituraResource)
         ]
     }
     
@@ -207,5 +208,9 @@ class TestStaticFileServer : XCTestCase {
 
     func testGetWithSpecialCharactersEncoded() {
         runGetResponseTest(path: "/qwer/index%2B%40%2C.html", expectedResponseText: "<!DOCTYPE html><html><body><b>Index with plus at comma</b></body></html>\n")
+    }
+    
+    func testGetKituraResource() {
+        runGetResponseTest(path: "/@@Kitura-router@@/")
     }
 }
