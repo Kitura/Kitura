@@ -95,8 +95,9 @@ public class BodyParser: RouterMiddleware {
                 boundary = boundary.substring(to: parameterStart.lowerBound)
             }
             return MultiPartBodyParser(boundary: boundary)
+        } else { //Default: parse body as `.raw(Data)`
+            return RawBodyParser()
         }
-        return nil
     }
 
     /// Read incoming message for Parse
