@@ -35,8 +35,12 @@ class FileResourceServer {
 
     private func getFilePath(for resource: String) -> String? {
         let fileManager = FileManager.default
-        let potentialResource = getResourcePathBasedOnSourceLocation(for: resource)
+        var potentialResource = getResourcePathBasedOnSourceLocation(for: resource)
 
+        if potentialResource.hasSuffix("/") {
+            potentialResource += "index.html"
+        }
+        
         let fileExists = fileManager.fileExists(atPath: potentialResource)
         if fileExists {
             return potentialResource
