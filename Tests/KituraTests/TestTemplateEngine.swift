@@ -32,7 +32,7 @@ class TestTemplateEngine : XCTestCase {
     
     static var allTests : [(String, (TestTemplateEngine) -> () throws -> Void)] {
         return [
-            ("testEmptyExtension", testEmptyExtension),
+            ("testEmptyTemplateName", testEmptyTemplateName),
             ("testMissingExtension", testMissingExtension),
             ("testNoDefaultEngine", testNoDefaultEngine),
             ("testRender", testRender)
@@ -47,7 +47,7 @@ class TestTemplateEngine : XCTestCase {
         doTearDown()
     }
     
-    func testEmptyExtension() {
+    func testEmptyTemplateName() {
         let router = Router()
         router.setDefault(templateEngine: MockTemplateEngine())
 
