@@ -69,22 +69,7 @@ public class Kitura {
     /// - note: This function never returns - it should be the last call in your main.swift
     public class func run() {
         Log.verbose("Starting Kitura framework...")
-        for (server, port) in httpServersAndPorts {
-            Log.verbose("Starting an HTTP Server on port \(port)...")
-            do {
-                try server.listen(on: port)
-            } catch {
-                Log.error("Error listening on port \(port): \(error). Use server.failed(callback:) to handle")
-            }
-        }
-        for (server, port) in fastCGIServersAndPorts {
-            Log.verbose("Starting a FastCGI Server on port \(port)...")
-            do {
-                try server.listen(on: port)
-            } catch {
-                Log.error("Error listening on port \(port): \(error). Use server.failed(callback:) to handle")
-            }
-        }
+        start()
         ListenerGroup.waitForListeners()
     }
 
