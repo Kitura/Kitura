@@ -231,7 +231,11 @@ extension Router : RouterMiddleware {
     /// - Parameter next: The closure to invoke to cause the router to inspect the
     ///                  path in the list of paths.
     public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws {
-        let urlPath = request.urlComponents.percentEncodedPath
+        guard let urlPath = request.parsedURL.path else {
+            Log.error("request.parsedURL.path is nil. Failed to handle request")
+            return
+        }
+
         if request.allowPartialMatch {
             let mountpath = request.matchedPath
 
@@ -245,11 +249,11 @@ extension Router : RouterMiddleware {
 
             let index = urlPath.index(urlPath.startIndex, offsetBy: mountpath.characters.count)
 
-            request.urlComponents.percentEncodedPath = urlPath.substring(from: index)
+            request.parsedURL.path = urlPath.substring(from: index)
         }
 
         process(request: request, response: response) {
-            request.urlComponents.percentEncodedPath = urlPath
+            request.parsedURL.path = urlPath
             next()
         }
     }
@@ -304,7 +308,10 @@ extension Router : ServerDelegate {
     /// - Parameter callback: The closure to invoke to cause the router to inspect the
     ///                  path in the list of paths.
     fileprivate func process(request: RouterRequest, response: RouterResponse, callback: @escaping () -> Void) {
-        let urlPath = request.urlComponents.percentEncodedPath
+        guard let urlPath = request.parsedURL.path else {
+            Log.error("request.parsedURL.path is nil. Failed to process request")
+            return
+        }
 
         if  urlPath.hasPrefix(kituraResourcePrefix) {
             let resource = urlPath.substring(from: kituraResourcePrefix.endIndex)
@@ -328,11 +335,11 @@ extension Router : ServerDelegate {
     /// - Parameter response: The `RouterResponse` object used to send responses
     ///                      to the HTTP request.
     private func sendDefaultResponse(request: RouterRequest, response: RouterResponse) {
-        if request.urlComponents.percentEncodedPath == "/" {
+        if request.parsedURL.path == "/" {
             fileResourceServer.sendIfFound(resource: "index.html", usingResponse: response)
         } else {
             do {
-                let errorMessage = "Cannot \(request.method) \(request.urlComponents.percentEncodedPath)."
+                let errorMessage = "Cannot \(request.method) \(request.parsedURL.path ?? "")."
                 try response.status(.notFound).send(errorMessage).end()
             } catch {
                 Log.error("Error sending default not found message: \(error)")
