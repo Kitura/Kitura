@@ -29,8 +29,8 @@ public struct Query: CustomStringConvertible {
     #endif
     
     /// Regular expression used to parse dicrionary or array passed as query object
-    static var indexedParameterRegex: RegularExpressionType? = {
-        return try? RegularExpressionType(pattern: "([^\\[\\]\\,\\.\\s]*)\\[([^\\[\\]\\,\\.\\s]*)\\]", options: .caseInsensitive)
+    static var keyedParameterRegex: RegularExpressionType? = {
+        return try? RegularExpressionType(pattern: "([^\\[\\]\\,\\.\\s]*)\\[([^\\[\\]\\,\\.\\s]+)\\]", options: .caseInsensitive)
     }()
     
     public static let null = Query()

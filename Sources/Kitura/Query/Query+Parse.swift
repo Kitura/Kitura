@@ -66,7 +66,7 @@ extension Query {
     
     static private func parse(root: inout Query, key: String?, value: Query) {
         if let key = key,
-            let regex = Query.indexedParameterRegex,
+            let regex = Query.keyedParameterRegex,
             let match = regex.firstMatch(in: key, options: [], range: NSMakeRange(0, key.characters.count)) {
             let nsKey = NSString(string: key)
             
@@ -84,28 +84,25 @@ extension Query {
             let indexKey = nsKey.substring(with: indexRange).trimmed
             
             let nextKey = nsKey.replacingCharacters(in: matchRange, with: indexKey)
-            
-            if !indexKey.isEmpty {
-                Query.parse(root: &root,
-                            key: nextKey,
-                            parameterKey: parameterKey,
-                            defaultRaw: [:],
-                            value: value) { $0.dictionary }
-            } else {
-                Query.parse(root: &root,
-                            key: nextKey,
-                            parameterKey: parameterKey,
-                            defaultRaw: [],
-                            value: value) { $0.array }
-            }
-        } else if let key = key,
+        
+            Query.parse(root: &root,
+                        key: nextKey,
+                        parameterKey: parameterKey,
+                        defaultRaw: [:],
+                        value: value) { $0.dictionary }
+        } else if let key = key?.replacingOccurrences(of: "[]", with: ""),
             !key.isEmpty {
-            root[key] = value
-        } else if case .array(var existingArray) = root.type {
-            existingArray.append(value.object)
-            root = Query(existingArray)
-        } else {
-            root = value
+            
+            let currentValue = root[key]
+            if case .null = currentValue.type {
+                root[key] = value
+            } else if case .array(var array) = currentValue.type {
+                array.append(value.object)
+                root[key] = Query(array)
+            } else {
+                let array = [currentValue.object, value.object]
+                root[key] = Query(array)
+            }
         }
     }
     

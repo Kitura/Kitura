@@ -122,6 +122,39 @@ class TestQuery: XCTestCase {
 
             response.send(request.query["q", 0].string ?? "")
         }
+        
+        router.get("/same_property_array") { request, response, next in
+            defer {
+                response.status(.OK)
+                next()
+            }
+            
+            XCTAssertNotNil(request.queryParameters["q"])
+            
+            if case .null = request.query["q"].type {
+                XCTFail()
+            }
+            
+            XCTAssertNil(request.query["q"].int)
+            XCTAssertNil(request.query["q"].string)
+            XCTAssertNotNil(request.query["q"].array)
+            
+            XCTAssertEqual(request.query["q"][0].int, 1)
+            XCTAssertEqual(request.query["q"][1].int, 2)
+            XCTAssertEqual(request.query["q"][2].int, 3)
+            
+            XCTAssertEqual(request.query["q", 0].int, 1)
+            XCTAssertEqual(request.query["q", 1].int, 2)
+            XCTAssertEqual(request.query["q", 2].int, 3)
+            
+            XCTAssertEqual(request.query["q", 0].int, request.query["q"][0].int)
+            XCTAssertEqual(request.query["q", 1].int, request.query["q"][1].int)
+            XCTAssertEqual(request.query["q", 2].int, request.query["q"][2].int)
+            
+            XCTAssertNil(request.query["q"][3].int)
+            
+            response.send(request.query["q", 0].string ?? "")
+        }
 
         router.get("/dictionary") { request, response, next in
             defer {
@@ -201,6 +234,17 @@ class TestQuery: XCTestCase {
                 XCTAssertNotNil(string)
                 XCTAssertEqual(string, "1")
 
+                expectation.fulfill()
+            })
+        }, { expectation in
+            self.performRequest("get", path: "/same_property_array?q=1&q=2&q=3".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!, callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                
+                let string = try! response!.readString()
+                
+                XCTAssertNotNil(string)
+                XCTAssertEqual(string, "1")
+                
                 expectation.fulfill()
             })
         }, { expectation in
