@@ -191,6 +191,35 @@ class TestQuery: XCTestCase {
 
             response.send(request.query["q", "str"].string ?? "")
         }
+        
+        router.get("/array_in_dictionary") { request, response, next in
+            defer {
+                response.status(.OK)
+                next()
+            }
+            
+            XCTAssertNotNil(request.queryParameters["q%5Ba%5D"])
+            
+            if case .null = request.query["q"].type {
+                XCTFail()
+            }
+            
+            XCTAssertNil(request.query["q"].int)
+            XCTAssertNil(request.query["q"].string)
+            XCTAssertNil(request.query["q"].array)
+            XCTAssertNotNil(request.query["q"].dictionary)
+            
+            XCTAssertNil(request.query["q"]["a"].int)
+            XCTAssertNotNil(request.query["q"]["a"].array)
+            
+            XCTAssertEqual(request.query["q", "a"][0].int, 1)
+            XCTAssertEqual(request.query["q", "a"][1].string, "done")
+            XCTAssertEqual(request.query["q", "a"][2].string, "int")
+            
+            XCTAssertEqual(request.query["q", "b"].int, 10)
+            
+            response.send(request.query["q", "b"].string ?? "")
+        }
 
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path: "/strings?q=tra-ta-ta".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!, callback: { response in
@@ -256,6 +285,17 @@ class TestQuery: XCTestCase {
                 XCTAssertNotNil(string)
                 XCTAssertEqual(string, "done")
 
+                expectation.fulfill()
+            })
+        }, { expectation in
+            self.performRequest("get", path: "/array_in_dictionary?q[a]=1&q[a]=done&q[a]=int&q[b]=10".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!, callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                
+                let string = try! response!.readString()
+                
+                XCTAssertNotNil(string)
+                XCTAssertEqual(string, "10")
+                
                 expectation.fulfill()
             })
         })

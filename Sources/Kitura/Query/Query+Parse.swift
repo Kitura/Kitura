@@ -41,6 +41,8 @@ extension Query {
     }
     
     static private func parse(fromText query: String, into root: inout Query) {
+        
+        print("QUERY == \(query)")
         let pairs = query.components(separatedBy: "&")
         
         for pair in pairs {
@@ -60,11 +62,15 @@ extension Query {
             
             let value = Query(valueString)
             if case .null = value.type { continue }
+            print("key = \(key)")
             Query.parse(root: &root, key: key, value: value)
         }
+        
+        print("PARSED == \(root)")
     }
     
     static private func parse(root: inout Query, key: String?, value: Query) {
+        print("root = \(root), key = \(key), value = \(value)")
         if let key = key,
             let regex = Query.keyedParameterRegex,
             let match = regex.firstMatch(in: key, options: [], range: NSMakeRange(0, key.characters.count)) {
@@ -94,12 +100,14 @@ extension Query {
             !key.isEmpty {
             
             let currentValue = root[key]
-            if case .null = currentValue.type {
+            
+            switch currentValue.type {
+            case .null:
                 root[key] = value
-            } else if case .array(var array) = currentValue.type {
+            case .array(var array):
                 array.append(value.object)
                 root[key] = Query(array)
-            } else {
+            default:
                 let array = [currentValue.object, value.object]
                 root[key] = Query(array)
             }
@@ -113,29 +121,27 @@ extension Query {
                               value: Query,
                               raw rawClosure: (Query) -> Any?) {
         var newParameter: Query
+        var currentValue = root[parameterKey]
         
-        if !parameterKey.isEmpty,
-            let raw = rawClosure(root[parameterKey]) {
-            newParameter = Query(raw)
-        } else if parameterKey.isEmpty,
-            let raw = root.array?.first {
-            newParameter = Query(raw)
+        if case .dictionary = currentValue.type {
+            newParameter = currentValue
         } else {
-            newParameter = Query(defaultRaw)
+            newParameter = Query([:])
         }
         
         Query.parse(root: &newParameter, key: key, value: value)
         
-        if !parameterKey.isEmpty {
+        currentValue = root[parameterKey]
+        
+        switch currentValue.type {
+        case .null, .dictionary:
             root[parameterKey] = newParameter
-        } else if case .array(var array) = root.type {
-            if array.count > 0 {
-                array[0] = newParameter.object
-            } else {
-                array.append(newParameter.object)
-            }
-            
-            root = Query(array)
+        case .array(var array):
+            array.append(newParameter.object)
+            root[parameterKey] = Query(array)
+        default:
+            let array = [currentValue.object, newParameter.object]
+            root[parameterKey] = Query(array)
         }
     }
 }
