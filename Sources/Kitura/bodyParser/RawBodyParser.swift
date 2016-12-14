@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright IBM Corporation 2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,24 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- **/
+ */
 
-import XCTest
+import Foundation
 
-@testable import KituraTests
-
-XCTMain([
-    testCase(TestContentType.allTests),
-    testCase(TestCookies.allTests),
-    testCase(TestErrors.allTests),
-    testCase(TestMultiplicity.allTests),
-    testCase(TestRequests.allTests),
-    testCase(TestResponse.allTests),
-    testCase(TestRouteRegex.allTests),
-    testCase(TestRouterHTTPVerbs_generated.allTests),
-    testCase(TestServer.allTests),
-    testCase(TestSubrouter.allTests),
-    testCase(TestStaticFileServer.allTests),
-    testCase(TestTemplateEngine.allTests),
-    testCase(TestQuery.allTests),
-])
+class RawBodyParser: BodyParserProtocol {
+    func parse(_ data: Data) -> ParsedBody? {
+        return ParsedBody.raw(data)
+    }
+}

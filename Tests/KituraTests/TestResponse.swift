@@ -37,6 +37,7 @@ class TestResponse: XCTestCase {
             ("testPostRequestWithDoubleBodyParser", testPostRequestWithDoubleBodyParser),
             ("testPostRequestUrlEncoded", testPostRequestUrlEncoded),
             ("testMultipartFormParsing", testMultipartFormParsing),
+            ("testRawDataPost", testRawDataPost),
             ("testParameters", testParameters),
             ("testParametersPercent20InPath", testParametersPercent20InPath),
             ("testParametersPlusInPath", testParametersPlusInPath),
@@ -320,7 +321,40 @@ class TestResponse: XCTestCase {
                 req.write(from: "This does not contain any valid boundary")
             }
         }
-
+        
+    }
+    
+    func testRawDataPost() {
+        performServerTest(router) { expectation in
+            self.performRequest("post",
+                                path: "/bodytest",
+                                callback: {
+                                    (response) in
+                                    guard let response = response else {
+                                        XCTFail("Client response was nil on raw data post.")
+                                        expectation.fulfill()
+                                        return
+                                    }
+                                    
+                                    XCTAssertNotNil(response.headers["Date"], "There was No Date header in the response")
+                                    do {
+                                        let responseString = try response.readString()
+                                        XCTAssertEqual("length: 2048", responseString)
+                                    }
+                                    catch {
+                                        XCTFail("Failed posting raw data")
+                                    }
+                                    expectation.fulfill()
+            },
+                                headers: ["Content-Type": "application/octet-stream"],
+                                requestModifier: {
+                                    (request) in
+                                    let length = 2048
+                                    let bytes = [UInt32](repeating: 0, count: length).map { _ in 0 }
+                                    let randomData = Data(bytes: bytes, count: length)
+                                    request.write(from: randomData)
+            })
+        }
     }
 
     private func runTestParameters(pathParameter: String, queryParameter: String,
@@ -906,7 +940,13 @@ class TestResponse: XCTestCase {
                 } catch {
                     XCTFail("caught error: \(error)")
                 }
-            } else {
+            } else if case let .raw(data) = requestBody {
+                XCTAssertNotNil(data)
+                let length = "2048"
+                _ = response.send("length: \(length)")
+                next()
+            }
+            else {
                 response.error = Error.failedToParseRequestBody(body: "\(request.body)")
             }
 
