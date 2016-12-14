@@ -35,7 +35,8 @@ class TestStaticFileServer : XCTestCase {
             ("testGetWithWhiteSpaces", testGetWithWhiteSpaces),
             ("testGetWithSpecialCharacters", testGetWithSpecialCharacters),
             ("testGetWithSpecialCharactersEncoded", testGetWithSpecialCharactersEncoded),
-            ("testGetKituraResource", testGetKituraResource)
+            ("testGetKituraResource", testGetKituraResource),
+            ("testGetMissingKituraResource", testGetMissingKituraResource)
         ]
     }
     
@@ -190,7 +191,7 @@ class TestStaticFileServer : XCTestCase {
                         XCTAssertEqual(body, expectedResponseText, "mismatch in body")
                     }
                     bodyChecker?(body)
-                } else {
+                } else if expectedStatusCode != HTTPStatusCode.notFound {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -213,4 +214,9 @@ class TestStaticFileServer : XCTestCase {
     func testGetKituraResource() {
         runGetResponseTest(path: "/@@Kitura-router@@/")
     }
+    
+    func testGetMissingKituraResource() {
+        runGetResponseTest(path: "/@@Kitura-router@@/missing.file", expectedStatusCode: HTTPStatusCode.notFound)
+    }
+
 }
