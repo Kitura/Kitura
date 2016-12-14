@@ -18,7 +18,7 @@ import Foundation
 
 extension String {
     
-    var trimmed: String {
+    fileprivate var trimmed: String {
         let characterSet = CharacterSet(charactersIn: " \"\n")
         return self.trimmingCharacters(in: characterSet)
     }
