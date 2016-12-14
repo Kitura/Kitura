@@ -191,7 +191,7 @@ class TestStaticFileServer : XCTestCase {
                         XCTAssertEqual(body, expectedResponseText, "mismatch in body")
                     }
                     bodyChecker?(body)
-                } else if expectedStatusCode != HTTPStatusCode.notFound {
+                } else {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()

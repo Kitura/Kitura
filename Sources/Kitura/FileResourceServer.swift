@@ -23,9 +23,9 @@ class FileResourceServer {
     func sendIfFound(resource: String, usingResponse response: RouterResponse) {
         guard let resourceFileName = getFilePath(for: resource) else {
             do {
-                try response.status(.notFound).end()
+                try response.send("Cannot find resource: \(resource)").status(.notFound).end()
             } catch {
-                Log.error("failed to send not found response")
+                Log.error("failed to send not found response for resource: \(resource)")
             }
             return
         }
