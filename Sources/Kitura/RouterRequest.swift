@@ -30,12 +30,12 @@ public class RouterRequest {
 
     /// The hostname of the request.
     public var hostname: String {
-        return urlComponents.host ?? ""
+        return urlURL.host ?? ""
     }
 
     ///The port of the request.
     public var port: Int {
-        return urlComponents.port ?? (urlComponents.scheme == "https" ? 443 : 80)
+        return urlURL.port ?? (urlURL.scheme == "https" ? 443 : 80)
     }
 
     /// The domain name of the request.
@@ -80,15 +80,7 @@ public class RouterRequest {
     public let method: RouterMethod
 
     /// The parsed URL.
-    @available(*, deprecated, message: "use 'urlComponents' instead")
-    public var parsedURL: URLParser {
-        var path = urlComponents.percentEncodedPath
-        if let query = urlComponents.percentEncodedQuery {
-            path += "?" + query
-        }
-        let pathData = path.data(using: .utf8) ?? Data()
-        return URLParser(url: pathData, isConnect: false)
-    }
+    public let parsedURL: URLParser
 
     /// The router as a String.
     public internal(set) var route: String?
@@ -102,17 +94,23 @@ public class RouterRequest {
     var allowPartialMatch = true
 
     /// The original URL as a string.
-    public var originalURL : String { return serverRequest.urlComponents.string ?? "" }
+    public var originalURL : String { return serverRequest.urlURL.absoluteString }
 
     /// The URL.
     /// This contains just the path and query parameters starting with '/'
-    /// Use "urlComponents" for the full URL
+    /// Use 'urlURL' for the full URL
     @available(*, deprecated, message:
-        "This contains just the path and query parameters starting with '/'. use 'urlComponents' instead")
+        "This contains just the path and query parameters starting with '/'. use 'urlURL' instead")
     public var url : String { return serverRequest.urlString }
 
     /// The URL from the request as URLComponents
-    public internal(set) var urlComponents = URLComponents()
+    /// URLComponents has a memory leak on linux as of swift 3.0.1. Use 'urlURL' instead
+    @available(*, deprecated, message:
+        "URLComponents has a memory leak on linux as of swift 3.0.1. use 'urlURL' instead")
+    public var urlComponents: URLComponents { return serverRequest.urlComponents }
+
+    /// The URL from the request
+    public var urlURL : URL { return serverRequest.urlURL }
 
     /// List of HTTP headers with simple String values.
     public let headers: Headers
@@ -131,7 +129,7 @@ public class RouterRequest {
     /// List of query parameters.
     public lazy var queryParameters: [String:String] = { [unowned self] in
         var decodedParameters: [String:String] = [:]
-        if let query = self.urlComponents.percentEncodedQuery {
+        if let query = self.urlURL.query {
             for item in query.components(separatedBy: "&") {
                 guard let range = item.range(of: "=") else {
                     decodedParameters[item] = nil
@@ -164,7 +162,7 @@ public class RouterRequest {
     /// - Parameter request: the server request
     init(request: ServerRequest) {
         serverRequest = request
-        urlComponents = serverRequest.urlComponents
+        parsedURL = URLParser(url: request.urlURL.absoluteString.data(using: .utf8)!, isConnect: false)
         httpVersion = HTTPVersion(major: serverRequest.httpVersionMajor ?? 1, minor: serverRequest.httpVersionMinor ?? 1)
         method = RouterMethod(fromRawValue: serverRequest.method)
         headers = Headers(headers: serverRequest.headers)
