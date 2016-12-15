@@ -68,7 +68,7 @@ public struct Query: CustomStringConvertible {
     
     fileprivate(set) public var type: ParameterType = .null(object: NSNull())
     
-    private init() { }
+    internal init() { }
     
     /// Initialize a new Query instance.
     ///
@@ -156,17 +156,7 @@ extension Query {
         }
     }
     
-    internal(set) public subscript(key: QueryKeyProtocol) -> Query {
-        set {
-            let realKey = key.queryKey
-            switch (realKey, self.type) {
-            case (.key(let key), .dictionary(var dictionary)):
-                dictionary[key] = newValue.object
-                self.type = .dictionary(dictionary)
-            default:
-                break
-            }
-        }
+    public subscript(key: QueryKeyProtocol) -> Query {
         get {
             let realKey = key.queryKey
             
