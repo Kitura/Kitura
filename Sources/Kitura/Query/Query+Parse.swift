@@ -66,8 +66,8 @@ extension Query {
         if let startKeyRange = key.range(of: "["),
             let endKeyRange = key.range(of: "]", range: (startKeyRange.upperBound..<key.endIndex)) {
             
-            let rootKey = key.substring(to: startKeyRange.lowerBound)
-            let nextKey = key.substring(with: (startKeyRange.upperBound..<endKeyRange.lowerBound)) + key.substring(from: endKeyRange.upperBound)
+            let rootKey = key.substring(to: startKeyRange.lowerBound).trimmed
+            let nextKey = key.substring(with: (startKeyRange.upperBound..<endKeyRange.lowerBound)).trimmed + key.substring(from: endKeyRange.upperBound)
             
             guard !nextKey.isEmpty else {
                 self.store(in: &root, key: rootKey, value: value)
