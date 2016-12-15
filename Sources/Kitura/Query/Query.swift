@@ -155,9 +155,8 @@ extension Query {
                 }
                 return Query(value)
             case (.index(let index), .array(let array)):
-                guard array.count > index,
-                    index >= 0 else {
-                        return Query.null
+                guard index < array.count else {
+                    return Query.null
                 }
                 return Query(array[index])
             default:
