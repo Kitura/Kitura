@@ -140,6 +140,8 @@ extension ParsedBody: ParameterValue {
                 
                 let found: ParameterValue = parts.first { $0.name == name } ?? Query.null
                 return found[keys]
+            case .urlEncoded(let dictionary):
+                return Query(dictionary)[keys]
             default:
                 return Query.null
             }
