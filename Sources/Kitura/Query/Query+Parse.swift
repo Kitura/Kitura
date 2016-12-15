@@ -16,14 +16,6 @@
 
 import Foundation
 
-extension String {
-    
-    fileprivate var trimmed: String {
-        let characterSet = CharacterSet(charactersIn: " \"\n")
-        return self.trimmingCharacters(in: characterSet)
-    }
-}
-
 // MARK: Query parsing.
 extension Query {
     
@@ -66,13 +58,14 @@ extension Query {
         if let startKeyRange = key.range(of: "["),
             let endKeyRange = key.range(of: "]", range: (startKeyRange.upperBound..<key.endIndex)) {
             
-            let rootKey = key.substring(to: startKeyRange.lowerBound).trimmed
-            let nextKey = key.substring(with: (startKeyRange.upperBound..<endKeyRange.lowerBound)).trimmed + key.substring(from: endKeyRange.upperBound)
+            let rootKey = key.substring(to: startKeyRange.lowerBound)
             
-            guard !nextKey.isEmpty else {
+            guard startKeyRange.upperBound != endKeyRange.lowerBound else {
                 self.store(in: &root, key: rootKey, value: value)
                 return
             }
+            
+            let nextKey = key.substring(with: (startKeyRange.upperBound..<endKeyRange.lowerBound)) + key.substring(from: endKeyRange.upperBound)
             
             let storedValue = root[rootKey]
             switch storedValue {
