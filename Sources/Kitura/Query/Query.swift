@@ -22,19 +22,7 @@ import Foundation
 ///
 public struct Query: CustomStringConvertible {
     
-    #if os(Linux)
-    typealias RegularExpressionType = RegularExpression
-    #else
-    typealias RegularExpressionType = NSRegularExpression
-    #endif
-    
-    /// Regular expression used to parse dicrionary or array passed as query object
-    static var keyedParameterRegex: RegularExpressionType? = {
-        return try? RegularExpressionType(pattern: "([^\\[\\]\\,\\.\\s]*)\\[([^\\[\\]\\,\\.\\s]+)\\]", options: .caseInsensitive)
-    }()
-    
     public static let null = Query()
-    
     
     /// Query parameter types
     ///
