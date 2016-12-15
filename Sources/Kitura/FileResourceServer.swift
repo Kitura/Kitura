@@ -22,6 +22,11 @@ class FileResourceServer {
     /// if file found - send it in response
     func sendIfFound(resource: String, usingResponse response: RouterResponse) {
         guard let resourceFileName = getFilePath(for: resource) else {
+            do {
+                try response.send("Cannot find resource: \(resource)").status(.notFound).end()
+            } catch {
+                Log.error("failed to send not found response for resource: \(resource)")
+            }
             return
         }
 
@@ -66,10 +71,10 @@ class FileResourceServer {
             let packagePath = fileManager.currentDirectoryPath + "/Packages"
             let packages = try fileManager.contentsOfDirectory(atPath: packagePath)
             for package in packages {
-                let potentalResource = "\(packagePath)/\(package)/Sources/Kitura/resources/\(resource)"
-                let resourceExists = fileManager.fileExists(atPath: potentalResource)
+                let potentialResource = "\(packagePath)/\(package)/Sources/Kitura/resources/\(resource)"
+                let resourceExists = fileManager.fileExists(atPath: potentialResource)
                 if resourceExists {
-                    return potentalResource
+                    return potentialResource
                 }
             }
         } catch {

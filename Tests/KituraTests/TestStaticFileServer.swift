@@ -35,7 +35,8 @@ class TestStaticFileServer : XCTestCase {
             ("testGetWithWhiteSpaces", testGetWithWhiteSpaces),
             ("testGetWithSpecialCharacters", testGetWithSpecialCharacters),
             ("testGetWithSpecialCharactersEncoded", testGetWithSpecialCharactersEncoded),
-            ("testGetKituraResource", testGetKituraResource)
+            ("testGetKituraResource", testGetKituraResource),
+            ("testGetMissingKituraResource", testGetMissingKituraResource)
         ]
     }
     
@@ -213,4 +214,9 @@ class TestStaticFileServer : XCTestCase {
     func testGetKituraResource() {
         runGetResponseTest(path: "/@@Kitura-router@@/")
     }
+    
+    func testGetMissingKituraResource() {
+        runGetResponseTest(path: "/@@Kitura-router@@/missing.file", expectedStatusCode: HTTPStatusCode.notFound)
+    }
+
 }
