@@ -23,13 +23,12 @@ extension Query {
     ///
     /// - Parameter query: URL query string to be parsed.
     public init(fromText query: String?) {
-        guard let query = query,
-            let escapedQuery = query.removingPercentEncoding else {
+        guard let query = query else {
                 self.init()
                 return
         }
         
-        let dictionary = Query.parse(query: escapedQuery)
+        let dictionary = Query.parse(query: query)
         self.init(dictionary)
     }
     
@@ -38,12 +37,19 @@ extension Query {
         let keyValues = query.components(separatedBy: "&")
         
         for keyValue in keyValues {
-            let pairs = keyValue.components(separatedBy: "=")
+            guard let range = keyValue.range(of: "=") else {
+                continue
+            }
             
-            guard pairs.count == 2,
-                let key = pairs.first,
-                !key.isEmpty,
-                let value = pairs.last,
+            guard let key = keyValue.substring(to: range.lowerBound)
+                .removingPercentEncoding,
+                !key.isEmpty else {
+                    continue
+            }
+            
+            guard let value = keyValue.substring(from: range.upperBound)
+                .replacingOccurrences(of: "+", with: " ")
+                .removingPercentEncoding,
                 !value.isEmpty else {
                     continue
             }
