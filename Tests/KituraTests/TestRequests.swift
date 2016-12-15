@@ -121,8 +121,6 @@ class TestRequests: XCTestCase {
             next()
         }
 
-
-
         return router
     }
 

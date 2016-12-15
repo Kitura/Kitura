@@ -20,17 +20,17 @@ import KituraNet
 /// The struct containing the HTTP headers and implements the headers APIs for the
 /// `RouterRequest` and `RouterResponse` classes.
 public struct Headers {
-    
+
     /// The header storage
     internal var headers: HeadersContainer
-    
+
     /// Initialize a `Headers` instance
     ///
     /// - Parameter headers: The container for the headers
     init(headers: HeadersContainer) {
         self.headers = headers
     }
-    
+
     /// Append values to the header
     ///
     /// - Parameter key: The key of the header to append a value to.
@@ -42,7 +42,7 @@ public struct Headers {
 
 /// Conformance to the `Collection` protocol
 extension Headers: Collection {
-    
+
     /// The starting index of the `Headers` collection
     public var startIndex: HeadersIndex {
         return headers.startIndex
@@ -52,11 +52,10 @@ extension Headers: Collection {
     public var endIndex: HeadersIndex {
         return headers.endIndex
     }
-    
+
     /// The type of an Index of the `Headers` collection.
     public typealias HeadersIndex = HeadersContainer.Index
-    
-    
+
     /// Get the value of a HTTP header
     ///
     /// - Parameter key: The HTTP header key whose value is to be retrieved
@@ -66,7 +65,7 @@ extension Headers: Collection {
         get {
             return headers[key]?.first
         }
-        
+
         set(newValue) {
             if let newValue = newValue {
                 headers[key] = [newValue]
@@ -75,7 +74,7 @@ extension Headers: Collection {
             }
         }
     }
-    
+
     /// Get a (key value) tuple from the `Headers` collection at the specified position.
     ///
     /// - Parameter position: The position in the `Headers` collection of the (key, value)
@@ -88,15 +87,17 @@ extension Headers: Collection {
             return (key, value.first)
         }
     }
-    
+
     /// Get the next Index in the `Headers` collection after the one specified.
     ///
     /// - Parameter after: The Index whose successor is to be returned.
     ///
     /// - Returns: The Index in the `Headers` collection after the one specified.
+    //  swiftlint:disable variable_name
     public func index(after i: HeadersIndex) -> HeadersIndex {
         return headers.index(after: i)
     }
+    //  swiftlint:enable variable_name
 }
 
 /// Various convenience methods for setting various HTTP headers

@@ -20,7 +20,6 @@ import LoggerAPI
 import Foundation
 import Dispatch
 
-
 // MARK Kitura
 
 /// A set of helper functions to make it easier to create, start, and stop Kitura based servers.

@@ -52,13 +52,13 @@ extension StaticFileServer {
                 }
             }
         }
-        
+
         private func addETag(response: RouterResponse,
                              fileAttributes: [FileAttributeKey : Any]) {
             if generateETag {
                 let date = fileAttributes[FileAttributeKey.modificationDate] as? Date
                 let size = fileAttributes[FileAttributeKey.size] as? NSNumber
-                
+
                 if let date = date, let size = size {
                     let sizeHex = String(Int(size), radix: 16, uppercase: false)
                     let timeHex = String(Int(date.timeIntervalSince1970), radix: 16, uppercase: false)
@@ -67,7 +67,7 @@ extension StaticFileServer {
                 }
             }
         }
-        
+
         private func setMaxAge(response: RouterResponse) {
             response.headers["Cache-Control"] = "max-age=\(maxAgeCacheControlHeader)"
         }

@@ -321,9 +321,9 @@ class TestResponse: XCTestCase {
                 req.write(from: "This does not contain any valid boundary")
             }
         }
-        
+
     }
-    
+
     func testRawDataPost() {
         performServerTest(router) { expectation in
             self.performRequest("post",
@@ -335,13 +335,12 @@ class TestResponse: XCTestCase {
                                         expectation.fulfill()
                                         return
                                     }
-                                    
+
                                     XCTAssertNotNil(response.headers["Date"], "There was No Date header in the response")
                                     do {
                                         let responseString = try response.readString()
                                         XCTAssertEqual("length: 2048", responseString)
-                                    }
-                                    catch {
+                                    } catch {
                                         XCTFail("Failed posting raw data")
                                     }
                                     expectation.fulfill()
@@ -790,7 +789,7 @@ class TestResponse: XCTestCase {
             })
         }
     }
-    
+
     func testSend() {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/data", callback: { response in
@@ -806,7 +805,7 @@ class TestResponse: XCTestCase {
                 expectation.fulfill()
             })
         }
-        
+
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/json", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
@@ -823,7 +822,7 @@ class TestResponse: XCTestCase {
                 expectation.fulfill()
             })
         }
-        
+
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/download", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
@@ -831,12 +830,11 @@ class TestResponse: XCTestCase {
                 XCTAssertEqual(response!.headers["Content-Type"]?.first, "text/html", "Wrong Content-Type header")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
-                }
-                catch{
+                    XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
+                } catch {
                     XCTFail("No response body")
                 }
-            
+
                 expectation.fulfill()
             })
         }
@@ -918,7 +916,7 @@ class TestResponse: XCTestCase {
                 next ()
                 return
             }
-            
+
             if let urlEncoded = requestBody.asURLEncoded {
                 do {
                     response.headers["Content-Type"] = "text/html; charset=utf-8"
@@ -945,8 +943,7 @@ class TestResponse: XCTestCase {
                 let length = "2048"
                 _ = response.send("length: \(length)")
                 next()
-            }
-            else {
+            } else {
                 response.error = Error.failedToParseRequestBody(body: "\(request.body)")
             }
 
@@ -960,7 +957,6 @@ class TestResponse: XCTestCase {
         router.all("/doublebodytest", middleware: BodyParser())
         router.all("/doublebodytest", middleware: BodyParser())
         router.post("/doublebodytest", handler: bodyTestHandler)
-
 
         router.all("/multibodytest", middleware: BodyParser())
 
@@ -977,7 +973,7 @@ class TestResponse: XCTestCase {
             for part in parts {
                 response.send("\(part.name) \(part.filename) \(part.body) ")
             }
-            
+
             next()
         }
 
@@ -1067,7 +1063,6 @@ class TestResponse: XCTestCase {
             } catch {}
         }
 
-        
         router.get("/lifecycle") { request, response, next in
             var previousOnEndInvoked: LifecycleHandler? = nil
             let onEndInvoked = {
@@ -1089,8 +1084,7 @@ class TestResponse: XCTestCase {
             } catch {}
             next()
         }
-        
-        
+
         router.get("/data") { _, response, next in
             do {
                 try response.send(data: "<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n".data(using: .utf8)!).end()
@@ -1106,7 +1100,7 @@ class TestResponse: XCTestCase {
             } catch {}
             next()
         }
- 
+
         router.get("/download") { _, response, next in
             do {
                 try response.send(download: "./Tests/KituraTests/TestStaticFileServer/index.html")
@@ -1114,7 +1108,6 @@ class TestResponse: XCTestCase {
             next()
         }
 
-        
         router.error { request, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             do {

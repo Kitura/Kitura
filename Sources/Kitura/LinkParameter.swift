@@ -20,25 +20,25 @@
 ///
 /// See [RFC 5988](https://tools.ietf.org/html/rfc5988) for more details.
 public enum LinkParameter: String {
-    
+
     /// The relation type of the link.
     case rel
-    
+
     /// The context of a link conveyed in the Link header field.
     case anchor
-    
+
     /// An indication that the semantics of the relationship are in the reverse direction.
     case rev
-    
+
     /// A hint indicating what the language of the result of dereferencing the link should be.
     case hreflang
-    
+
     /// An intended destination medium or media for style information.
     case media
-    
+
     /// A human-readable label of the destination of a link.
     case title
-    
+
     /// A hint indicating what the media type of the result of dereferencing the link should be.
     case type
 }

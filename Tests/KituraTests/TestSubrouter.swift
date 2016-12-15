@@ -38,7 +38,7 @@ class TestSubrouter: XCTestCase {
             ("testMergeParams", testMergeParams)
         ]
     }
-    
+
     override func setUp() {
         doSetUp()
     }
@@ -189,8 +189,7 @@ class TestSubrouter: XCTestCase {
                     XCTAssertEqual(dict["root1"], nil)
                     XCTAssertEqual(dict["sub1"]?.stringValue, "456")
                     XCTAssertEqual(dict["subsub1"]?.stringValue, "789")
-                }
-                catch {
+                } catch {
                     XCTFail()
                 }
 
@@ -209,8 +208,7 @@ class TestSubrouter: XCTestCase {
                     XCTAssertEqual(dict["root1"], nil)
                     XCTAssertEqual(dict["sub1"]?.stringValue, "456")
                     XCTAssertEqual(dict["subsub2"], nil)
-                }
-                catch {
+                } catch {
                     XCTFail()
                 }
 
@@ -227,8 +225,7 @@ class TestSubrouter: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["root2"]?.stringValue, "123")
-                }
-                catch {
+                } catch {
                     XCTFail()
                 }
 

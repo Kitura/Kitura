@@ -37,7 +37,6 @@ extension StaticFileServer {
                 return path
             }
 
-
             let fileManager = FileManager()
 
             let absolutePath = fileManager.currentDirectoryPath + separator + path

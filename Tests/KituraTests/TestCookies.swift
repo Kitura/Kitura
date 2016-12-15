@@ -41,7 +41,7 @@ class TestCookies: XCTestCase {
             ("testCookieFromServer", testCookieFromServer)
         ]
     }
-    
+
     override func setUp() {
         doSetUp()
     }
@@ -193,7 +193,6 @@ class TestCookies: XCTestCase {
 
         return (resultCookie, resultExpire)
     }
-
 
     static func setupRouter() -> Router {
         let router = Router()

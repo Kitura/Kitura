@@ -27,9 +27,9 @@ import SwiftyJSON
     import Darwin
 #endif
 
-class TestStaticFileServer : XCTestCase {
+class TestStaticFileServer: XCTestCase {
 
-    static var allTests : [(String, (TestStaticFileServer) -> () throws -> Void)] {
+    static var allTests: [(String, (TestStaticFileServer) -> () throws -> Void)] {
         return [
             ("testFileServer", testFileServer),
             ("testGetWithWhiteSpaces", testGetWithWhiteSpaces),
@@ -39,7 +39,7 @@ class TestStaticFileServer : XCTestCase {
             ("testGetMissingKituraResource", testGetMissingKituraResource)
         ]
     }
-    
+
     override func setUp() {
         doSetUp()
     }
@@ -57,12 +57,11 @@ class TestStaticFileServer : XCTestCase {
                 XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
-                }
-                catch{
+                    XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
+                } catch {
                     XCTFail("No response body")
                 }
-                
+
                 XCTAssertEqual(response!.headers["x-custom-header"]!.first!, "Kitura")
                 XCTAssertNotNil(response!.headers["Last-Modified"])
                 XCTAssertNotNil(response!.headers["Etag"])
@@ -75,9 +74,8 @@ class TestStaticFileServer : XCTestCase {
                 XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
-                }
-                catch{
+                    XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -88,9 +86,8 @@ class TestStaticFileServer : XCTestCase {
                 XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 do {
                     let body = try response!.readString()
-                    XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
-                }
-                catch{
+                    XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
+                } catch {
                     XCTFail("No response body")
                 }
                 expectation.fulfill()
@@ -101,9 +98,8 @@ class TestStaticFileServer : XCTestCase {
                     XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                     do {
                         let body = try response!.readString()
-                        XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
-                    }
-                    catch{
+                        XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
+                    } catch {
                         XCTFail("No response body")
                     }
                     XCTAssertNil(response!.headers["x-custom-header"])
@@ -136,9 +132,8 @@ class TestStaticFileServer : XCTestCase {
                     XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                     do {
                         let body = try response!.readString()
-                        XCTAssertEqual(body!,"<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
-                    }
-                    catch{
+                        XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
+                    } catch {
                         XCTFail("No response body")
                     }
                     XCTAssertNil(response!.headers["x-custom-header"])
@@ -152,22 +147,22 @@ class TestStaticFileServer : XCTestCase {
 
     static func setupRouter() -> Router {
         let router = Router()
-        
+
         var cacheOptions = StaticFileServer.CacheOptions(maxAgeCacheControlHeader: 2)
         var options = StaticFileServer.Options(possibleExtensions: ["exe", "html"], cacheOptions: cacheOptions)
         router.all("/qwer", middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options:options, customResponseHeadersSetter: HeaderSetter()))
-        
+
         cacheOptions = StaticFileServer.CacheOptions(addLastModifiedHeader: false, generateETag: false)
         options = StaticFileServer.Options(serveIndexForDirectory: false, cacheOptions: cacheOptions)
         router.all("/zxcv", middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options:options))
 
         options = StaticFileServer.Options(redirect: false)
         router.all("/asdf", middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options:options))
-        
+
         return router
     }
-    
-    class HeaderSetter : ResponseHeadersSetter {
+
+    class HeaderSetter: ResponseHeadersSetter {
         func setCustomResponseHeaders(response: RouterResponse, filePath: String, fileAttributes: [FileAttributeKey : Any]) {
             response.headers["x-custom-header"] = "Kitura"
         }
@@ -210,11 +205,11 @@ class TestStaticFileServer : XCTestCase {
     func testGetWithSpecialCharactersEncoded() {
         runGetResponseTest(path: "/qwer/index%2B%40%2C.html", expectedResponseText: "<!DOCTYPE html><html><body><b>Index with plus at comma</b></body></html>\n")
     }
-    
+
     func testGetKituraResource() {
         runGetResponseTest(path: "/@@Kitura-router@@/")
     }
-    
+
     func testGetMissingKituraResource() {
         runGetResponseTest(path: "/@@Kitura-router@@/missing.file", expectedStatusCode: HTTPStatusCode.notFound)
     }

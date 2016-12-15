@@ -27,7 +27,6 @@ import XCTest
     import Darwin
 #endif
 
-
 class TestErrors: XCTestCase {
 
     static var allTests: [(String, (TestErrors) -> () throws -> Void)] {
@@ -37,7 +36,7 @@ class TestErrors: XCTestCase {
             ("testInvalidHeader", testInvalidHeader)
         ]
     }
-    
+
     override func setUp() {
         doSetUp()
     }
