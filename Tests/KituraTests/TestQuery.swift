@@ -290,7 +290,7 @@ class TestQuery: XCTestCase {
     func testParameterValueJSON() {
         var json = JSON(["a", "b"]) as ParameterValue
         
-        XCTAssertNil(json.data)
+        XCTAssertNotNil(json.data)
         XCTAssertEqual(json.array as! [String], ["a", "b"])
         XCTAssertNil(json.dictionary)
         XCTAssertEqual(json[0].string, "a")
