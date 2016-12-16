@@ -59,6 +59,9 @@ extension Part: ParameterValue {
     
     public subscript(keys: [QueryKeyProtocol]) -> ParameterValue {
         get {
+            guard keys.count > 0 else {
+                return self
+            }
             return self.body[keys]
         }
     }

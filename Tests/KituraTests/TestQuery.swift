@@ -643,10 +643,17 @@ class TestQuery: XCTestCase {
                 return
             }
 
-
+            guard let parsedBody = (body["text"].object as? Part)?.body,
+                case .text = parsedBody else {
+                    XCTFail("wrong part body")
+                    return
+            }
+            
+            XCTAssertNotNil(body["text"].data)
+            XCTAssertEqual(body["text"].data, "text default".data(using: .utf8))
             XCTAssertNotNil(body["text"].string)
             XCTAssertEqual(body["text"].string, "text default")
-
+            
             guard let text = parts.first,
                 case .text(let string) = text.body else {
                     XCTFail()
@@ -654,6 +661,14 @@ class TestQuery: XCTestCase {
             }
 
             XCTAssertEqual(body["text"].string, string)
+            
+            XCTAssertEqual(body["number"].int, 10)
+            XCTAssertEqual(body["number"].double, 10.0)
+            
+            XCTAssertEqual(body["boolean"].bool, true)
+            
+            XCTAssertNil(body["text"].array)
+            XCTAssertNil(body["text"].dictionary)
 
             response.send(body["text"].string ?? "")
         }
@@ -709,6 +724,12 @@ class TestQuery: XCTestCase {
                 req.write(from: "-----------------------------9051914041544843365972754266\r\n" +
                     "Content-Disposition: form-data; name=\"text\"\r\n\r\n" +
                     "text default\r\n" +
+                    "-----------------------------9051914041544843365972754266\r\n" +
+                    "Content-Disposition: form-data; name=\"number\"\r\n\r\n" +
+                    "10\r\n" +
+                    "-----------------------------9051914041544843365972754266\r\n" +
+                    "Content-Disposition: form-data; name=\"boolean\"\r\n\r\n" +
+                    "true\r\n" +
                     "-----------------------------9051914041544843365972754266--")
             }
         })
