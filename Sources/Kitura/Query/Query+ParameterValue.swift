@@ -16,17 +16,6 @@
 
 import Foundation
 
-extension Bool {
-    
-    /// Convenience initializer from string.
-    ///
-    /// - Parameter string: string to be used for conversion.
-    fileprivate init?(_ string: String) {
-        guard string == "true" || string == "false" else { return nil }
-        self.init(string == "true")
-    }
-}
-
 // MARK: Query parameter return values.
 extension Query: ParameterValue {
     

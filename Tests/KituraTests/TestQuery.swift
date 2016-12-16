@@ -50,6 +50,7 @@ class TestQuery: XCTestCase {
             return
         }
         
+        XCTAssertEqual(query.data, "1050".data(using: .utf8))
         XCTAssertEqual(query.object as? Int, 1050)
         XCTAssertEqual(query.int, 1050)
         XCTAssertEqual(query.double, 1050)
@@ -59,6 +60,7 @@ class TestQuery: XCTestCase {
         XCTAssertEqual(query.bool, true)
         XCTAssertEqual(query.count, 0)
         XCTAssertEqual(query.description, "1050")
+        XCTAssertFalse(query.isNull)
         
         query = Query(10.5)
         
@@ -75,6 +77,7 @@ class TestQuery: XCTestCase {
         XCTAssertNil(query.dictionary)
         XCTAssertNil(query.bool)
         XCTAssertEqual(query.count, 0)
+        XCTAssertFalse(query.isNull)
         
         query = Query("10501")
         
@@ -91,6 +94,7 @@ class TestQuery: XCTestCase {
         XCTAssertNil(query.dictionary)
         XCTAssertEqual(query.bool, true)
         XCTAssertEqual(query.count, 0)
+        XCTAssertFalse(query.isNull)
         
         query = Query("10.501")
         
@@ -107,6 +111,7 @@ class TestQuery: XCTestCase {
         XCTAssertNil(query.dictionary)
         XCTAssertNil(query.bool)
         XCTAssertEqual(query.count, 0)
+        XCTAssertFalse(query.isNull)
         
         query = Query(false)
         
@@ -123,6 +128,7 @@ class TestQuery: XCTestCase {
         XCTAssertNil(query.dictionary)
         XCTAssertEqual(query.bool, false)
         XCTAssertEqual(query.count, 0)
+        XCTAssertFalse(query.isNull)
         
         query = Query("true")
         
@@ -139,6 +145,7 @@ class TestQuery: XCTestCase {
         XCTAssertNil(query.dictionary)
         XCTAssertEqual(query.bool, true)
         XCTAssertEqual(query.count, 0)
+        XCTAssertFalse(query.isNull)
         
         query = Query("text")
         
@@ -156,6 +163,7 @@ class TestQuery: XCTestCase {
         XCTAssertNil(query.dictionary)
         XCTAssertNil(query.bool)
         XCTAssertEqual(query.count, 0)
+        XCTAssertFalse(query.isNull)
         
         query = Query([1, 2, 3])
         
@@ -172,6 +180,7 @@ class TestQuery: XCTestCase {
         XCTAssertNil(query.dictionary)
         XCTAssertNil(query.bool)
         XCTAssertEqual(query.count, 3)
+        XCTAssertFalse(query.isNull)
         
         query = Query(["1" : 1])
         
@@ -188,6 +197,7 @@ class TestQuery: XCTestCase {
         XCTAssertEqual((query.dictionary as? [String : Int])!, ["1" : 1])
         XCTAssertNil(query.bool)
         XCTAssertEqual(query.count, 1)
+        XCTAssertFalse(query.isNull)
         
         struct null {
             
@@ -209,6 +219,17 @@ class TestQuery: XCTestCase {
         XCTAssertNil(query.dictionary)
         XCTAssertNil(query.bool)
         XCTAssertEqual(query.count, 0)
+        XCTAssertTrue(query.isNull)
+        
+        
+        query = Query("10".data(using: .utf8)!)
+        
+        guard case .data = query.type else {
+            XCTFail("query should have data type")
+            return
+        }
+        
+        XCTAssertEqual(query.data, "10".data(using: .utf8))
     }
     
     func testQueryParse() {
@@ -250,18 +271,26 @@ class TestQuery: XCTestCase {
         XCTAssertNil(query["d", "a"].int)
         XCTAssertEqual(query["d", "b"].int, 2)
         
+        queryString = "=&a=&d[b]=2"
+        query = Query(fromText: queryString)
+        XCTAssertNil(query["d", "a"].int)
+        XCTAssertEqual(query["d", "b"].int, 2)
+        
         query = Query(fromText: nil)
         XCTAssertEqual(query.count, 0)
         XCTAssertNil(query.dictionary)
+        XCTAssertTrue(query.isNull)
         guard case .null = query.type else {
             XCTFail("should be null type")
             return
         }
+        
     }
     
     func testParameterValueJSON() {
         var json = JSON(["a", "b"]) as ParameterValue
         
+        XCTAssertNil(json.data)
         XCTAssertEqual(json.array as! [String], ["a", "b"])
         XCTAssertNil(json.dictionary)
         XCTAssertEqual(json[0].string, "a")
