@@ -69,6 +69,7 @@ class TestQuery: XCTestCase {
             return
         }
         
+        XCTAssertEqual(query.data, "10.5".data(using: .utf8))
         XCTAssertEqual(query.object as? Double, 10.5)
         XCTAssertEqual(query.int, 10)
         XCTAssertEqual(query.double, 10.5)
@@ -120,6 +121,7 @@ class TestQuery: XCTestCase {
             return
         }
         
+        XCTAssertEqual(query.data, "false".data(using: .utf8))
         XCTAssertEqual(query.object as? Bool, false)
         XCTAssertEqual(query.int, 0)
         XCTAssertNil(query.double)
@@ -172,6 +174,7 @@ class TestQuery: XCTestCase {
             return
         }
         
+        XCTAssertEqual(query.data, String(describing: [1, 2, 3]).data(using: .utf8))
         XCTAssertEqual((query.object as? [Int])!, [1, 2, 3])
         XCTAssertNil(query.int)
         XCTAssertNil(query.double)
@@ -189,6 +192,7 @@ class TestQuery: XCTestCase {
             return
         }
         
+        XCTAssertEqual(query.data, String(describing: ["1" : 1]).data(using: .utf8))
         XCTAssertEqual((query.object as? [String : Int])!, ["1" : 1])
         XCTAssertNil(query.int)
         XCTAssertNil(query.double)
@@ -199,9 +203,13 @@ class TestQuery: XCTestCase {
         XCTAssertEqual(query.count, 1)
         XCTAssertFalse(query.isNull)
         
-        struct null {
+        struct null: CustomStringConvertible {
             
             var value: Int
+            
+            var description: String {
+                return "\(self.value)"
+            }
         }
         
         query = Query(null(value: 10))
@@ -211,6 +219,7 @@ class TestQuery: XCTestCase {
             return
         }
         
+        XCTAssertEqual(query.data, "10".data(using: .utf8))
         XCTAssertEqual((query.object as? null)?.value, 10)
         XCTAssertNil(query.int)
         XCTAssertNil(query.double)
@@ -229,6 +238,7 @@ class TestQuery: XCTestCase {
             return
         }
         
+        XCTAssertEqual(query.object as? Data, "10".data(using: .utf8))
         XCTAssertEqual(query.data, "10".data(using: .utf8))
     }
     
