@@ -348,7 +348,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">parsedURL</span><span class="p">:</span> <span class="kt">URLParser</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">parsedURL</span><span class="p">:</span> <span class="kt">URLParser</span></code></pre>
 
                         </div>
                       </div>
@@ -451,7 +451,7 @@
                       <div class="abstract">
                         <p>The URL.
 This contains just the path and query parameters starting with &rsquo;/&rsquo;
-Use <q>urlComponents</q> for the full URL</p>
+Use &lsquo;urlURL&rsquo; for the full URL</p>
 
                       </div>
                       <div class="declaration">
@@ -478,14 +478,42 @@ Use <q>urlComponents</q> for the full URL</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The URL from the request as URLComponents</p>
+                        <p>The URL from the request as URLComponents
+URLComponents has a memory leak on linux as of swift 3.0.1. Use &lsquo;urlURL&rsquo; instead</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">urlComponents</span> <span class="o">=</span> <span class="kt">URLComponents</span><span class="p">()</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">urlComponents</span><span class="p">:</span> <span class="kt">URLComponents</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC6Kitura13RouterRequest6urlURLV10Foundation3URL"></a>
+                    <a name="//apple_ref/swift/Property/urlURL" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC6Kitura13RouterRequest6urlURLV10Foundation3URL">urlURL</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The URL from the request</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">urlURL</span> <span class="p">:</span> <span class="kt">URL</span></code></pre>
 
                         </div>
                       </div>
@@ -559,14 +587,14 @@ Use <q>urlComponents</q> for the full URL</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Set of parsed cookies.</p>
+                        <p>Parsed Cookies, used to do a lazy parsing of the appropriate headers.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">cookies</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">HTTPCookie</span><span class="p">]</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">cookies</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">HTTPCookie</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="p">[</span><span class="k">unowned</span> <span class="k">self</span><span class="p">]</span> <span class="k">in</span></code></pre>
 
                         </div>
                       </div>
@@ -1055,7 +1083,7 @@ specified in the first parameter.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-12-01)</p>
+      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-12-16)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
