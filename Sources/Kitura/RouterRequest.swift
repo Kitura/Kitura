@@ -42,11 +42,7 @@ public class RouterRequest {
     public private(set) lazy var domain: String = { [unowned self] in
         let pattern = "([a-z0-9][a-z0-9\\-]{1,63}\\.[a-z\\.]{2,6})$"
         do {
-            #if os(Linux)
-                let regex = try RegularExpression(pattern: pattern, options: [.caseInsensitive])
-            #else
-                let regex = try NSRegularExpression(pattern: pattern, options: [.caseInsensitive])
-            #endif
+            let regex = try RegularExpressionType(pattern: pattern, options: [.caseInsensitive])
 
             let hostnameRange = NSMakeRange(0, self.hostname.utf8.count)
 
@@ -123,14 +119,9 @@ public class RouterRequest {
     public var remoteAddress: String { return serverRequest.remoteAddress }
 
     /// Parsed Cookies, used to do a lazy parsing of the appropriate headers.
-    private lazy var _cookies: Cookies = { [unowned self] in
-        return Cookies(headers: self.serverRequest.headers)
+    public lazy var cookies: [String: HTTPCookie] = { [unowned self] in
+        return Cookies.parse(headers: self.serverRequest.headers)
     }()
-
-    /// Set of parsed cookies.
-    public var cookies: [String: HTTPCookie] {
-        return _cookies.cookies
-    }
 
     /// List of URL parameters.
     public internal(set) var parameters: [String:String] = [:]
@@ -241,42 +232,41 @@ public class RouterRequest {
 }
 
 private class Cookies {
-
-    /// Storage of parsed Cookie headers
-    fileprivate var cookies = [String: HTTPCookie]()
-
-    /// Static for Cookie header key value
-    private let cookieHeader = "cookie"
-
-    fileprivate init(headers: HeadersContainer) {
-        guard let rawCookies = headers[cookieHeader] else {
-            return
+    fileprivate static func parse(headers: HeadersContainer) -> [String: HTTPCookie] {
+        var cookies = [String: HTTPCookie]()
+        guard let cookieHeaders = headers["cookie"] else {
+            return cookies
         }
-        for cookie in rawCookies {
-            initCookie(cookie, cookies: &cookies)
-        }
-    }
 
-    private func initCookie(_ cookie: String, cookies: inout [String: HTTPCookie]) {
-        let cookieNameValues = cookie.components(separatedBy: "; ")
-        for  cookieNameValue in cookieNameValues {
-            let cookieNameValueParts = cookieNameValue.components(separatedBy: "=")
-            if   cookieNameValueParts.count == 2 {
-                #if os(Linux)
-                    let cookieName = cookieNameValueParts[0]
-                    let cookieValue = cookieNameValueParts[1]
-                #else
-                    let cookieName = cookieNameValueParts[0] as NSString
-                    let cookieValue = cookieNameValueParts[1] as NSString
-                #endif
-                let theCookie = HTTPCookie(properties:
-                                                [HTTPCookiePropertyKey.domain: ".",
-                                                 HTTPCookiePropertyKey.path: "/",
-                                                 HTTPCookiePropertyKey.name: cookieName ,
-                                                 HTTPCookiePropertyKey.value: cookieValue])
-
-                cookies[cookieNameValueParts[0]] = theCookie
+        for cookieHeader in cookieHeaders {
+            for cookie in cookieHeader.components(separatedBy: ";") {
+                let trimmedCookie = cookie.trimmingCharacters(in: .whitespaces)
+                if let cookie = getCookie(cookie: trimmedCookie) {
+                    cookies[cookie.name] = cookie
+                }
             }
         }
+        return cookies
+    }
+
+    private static func getCookie(cookie: String) -> HTTPCookie? {
+        guard let range = cookie.range(of: "=") else {
+            return nil
+        }
+
+        let name = cookie.substring(to: range.lowerBound).trimmingCharacters(in: .whitespaces)
+        var value = cookie.substring(from: range.upperBound).trimmingCharacters(in: .whitespaces)
+        let chars = value.characters
+        if chars.count >= 2 && chars.first == "\"" && chars.last == "\"" {
+            // unquote value
+            value.remove(at: value.startIndex)
+            value.remove(at: value.index(before: value.endIndex))
+        }
+
+        return HTTPCookie(properties:
+            [HTTPCookiePropertyKey.domain: ".",
+             HTTPCookiePropertyKey.path: "/",
+             HTTPCookiePropertyKey.name: name,
+             HTTPCookiePropertyKey.value: value])
     }
 }
