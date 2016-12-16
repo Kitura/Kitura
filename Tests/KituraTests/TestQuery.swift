@@ -623,6 +623,15 @@ class TestQuery: XCTestCase {
             XCTAssertEqual(body["foo"].string, json["foo"].stringValue)  // can't use json["foo"].string because of: Ambiguous use of 'subscript'
             XCTAssertEqual(body["foo"].string, (json["foo"] as JSON).string) //workaround for 'json["foo"].string'
             XCTAssertEqual(body["inner", "a"].string, (json["inner", "a"] as JSON).string)
+            
+            XCTAssertEqual(body["number"].int, 10)
+            XCTAssertEqual(body["number"].double, 10.0)
+            
+            XCTAssertEqual(body["boolean"].bool, true)
+            
+            XCTAssertNil(body.array)
+            XCTAssertNotNil(body.dictionary)
+            XCTAssertEqual(body.dictionary?.count, 4)
 
             response.send(body["foo"].string ?? "")
         }
@@ -688,7 +697,7 @@ class TestQuery: XCTestCase {
                 req.write(from: "hello")
             }
         }, { expectation in
-            let jsonToTest = JSON(["foo": "bar", "inner" : ["a" : "b"]])
+            let jsonToTest = JSON(["foo": "bar", "inner" : ["a" : "b"], "number" : 10, "boolean" : true])
 
             self.performRequest("post", path: "/json", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
