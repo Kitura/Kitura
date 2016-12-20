@@ -35,6 +35,7 @@ public class RouteRegex {
     private let unnamedCaptureRegex: RegularExpressionType
     private let keyRegex: RegularExpressionType
     private let nonKeyRegex: RegularExpressionType
+    private let simpleStringChecker: RegularExpressionType
 
     private init() {
         do {
@@ -42,6 +43,8 @@ public class RouteRegex {
             unnamedCaptureRegex = try RegularExpressionType(pattern: "(.*)?(?:(?:\\(((?:\\\\.|[^()])+)\\))(?:([+*?])?))", options: [])
             keyRegex = namedCaptureRegex
             nonKeyRegex = unnamedCaptureRegex
+            
+            simpleStringChecker = try RegularExpressionType(pattern: "(.*)?[\\*\\.\\:\\+\\?\\(\\)\\[\\]\\\\]", options: [])
         } catch {
             Log.error("Failed to create regular expressions used to parse Route patterns")
             exit(1)
@@ -53,9 +56,15 @@ public class RouteRegex {
     /// - Parameter pattern: Optional string
     /// - Parameter allowPartialMatch: True if a partial match is allowed. Defaults to false.
     /// - Returns: A tuple of the compiled `RegularExpressionType?` and array of keys
-    internal func buildRegex(fromPattern: String?, allowPartialMatch: Bool = false) -> (RegularExpressionType?, [String]?) {
+    internal func buildRegex(fromPattern: String?, allowPartialMatch: Bool = false) -> (RegularExpressionType?, Bool, [String]?) {
         guard let pattern = fromPattern else {
-            return (nil, nil)
+            return (nil, false, nil)
+        }
+        
+        // Check and see if the pattern is a simple string (no capture no regular expression
+        let range = NSMakeRange(0, pattern.characters.count)
+        guard let _ = simpleStringChecker.firstMatch(in: pattern, options: [], range: range) else {
+            return (nil, true, nil)
         }
 
         var regexStr = "^"
@@ -83,7 +92,7 @@ public class RouteRegex {
             Log.error("Failed to compile the regular expression for the route \(pattern)")
         }
 
-        return (regex, keys)
+        return (regex, false, keys)
     }
 
     func handlePath(_ path: String, regexStr: String, keys: [String], nonKeyIndex: Int) ->

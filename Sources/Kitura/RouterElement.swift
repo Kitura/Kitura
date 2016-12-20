@@ -34,6 +34,9 @@ class RouterElement {
     #else
         private var regex: NSRegularExpression?
     #endif
+    
+    /// The pattern is a simple string
+    private var isSimpleString = false
 
     /// The list of keys
     private var keys: [String]?
@@ -62,14 +65,14 @@ class RouterElement {
     init(method: RouterMethod, pattern: String?, middleware: [RouterMiddleware],
          allowPartialMatch: Bool = true, mergeParameters: Bool = false) {
         self.method = method
-        self.pattern = pattern
+        self.pattern = pattern?.hasPrefix("/") ?? true ? pattern : "/" + (pattern ?? "")
         self.regex = nil
         self.keys = nil
         self.middlewares = middleware
         self.allowPartialMatch = allowPartialMatch
         self.mergeParameters = mergeParameters
 
-        (regex, keys) = RouteRegex.sharedInstance.buildRegex(fromPattern: pattern, allowPartialMatch: allowPartialMatch)
+        (regex, isSimpleString, keys) = RouteRegex.sharedInstance.buildRegex(fromPattern: pattern, allowPartialMatch: allowPartialMatch)
     }
 
     /// Convenience initializer
@@ -94,6 +97,34 @@ class RouterElement {
         guard (response.error != nil && method == .error)
             || (response.error == nil && (method == request.method || method == .all)) else {
             next()
+            return
+        }
+        
+        // Check and see if the pattern is just a simple string
+        guard !isSimpleString else {
+            let pathToMatch = path.isEmpty ? "/" : path
+            let matched: Bool
+            let matchedPath: String
+            
+            if allowPartialMatch {
+                matched = pathToMatch.hasPrefix(pattern!)
+                matchedPath = matched && !pattern!.isEmpty && pattern! != "/" ? pattern! : ""
+            }
+            else {
+                matched = pathToMatch == pattern!
+                matchedPath = matched ? pathToMatch : ""
+            }
+            
+            if matched {
+                request.matchedPath = matchedPath
+                request.allowPartialMatch = allowPartialMatch
+                request.parameters = mergeParameters ? request.parameters : [:]
+                request.route = pattern
+                processHelper(request: request, response: response, next: next)
+            }
+            else {
+                next()
+            }
             return
         }
 
