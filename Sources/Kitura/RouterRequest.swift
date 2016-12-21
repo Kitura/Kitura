@@ -162,7 +162,7 @@ public class RouterRequest {
     /// - Parameter request: the server request
     init(request: ServerRequest) {
         serverRequest = request
-        parsedURL = URLParser(url: request.urlURL.absoluteString.data(using: .utf8)!, isConnect: false)
+        parsedURL = URLParser(url: request.url, isConnect: false)
         httpVersion = HTTPVersion(major: serverRequest.httpVersionMajor ?? 1, minor: serverRequest.httpVersionMinor ?? 1)
         method = RouterMethod(fromRawValue: serverRequest.method)
         headers = Headers(headers: serverRequest.headers)
