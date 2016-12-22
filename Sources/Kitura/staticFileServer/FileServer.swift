@@ -49,7 +49,7 @@ extension StaticFileServer {
 
         func getFilePath(from request: RouterRequest) -> String? {
             var filePath = servingFilesPath
-            guard let requestPath = request.parsedURL.path else {
+            guard let requestPath = request.parsedURLPath.path else {
                 return nil
             }
             var matchedPath = request.matchedPath
