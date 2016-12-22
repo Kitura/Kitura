@@ -79,8 +79,19 @@ public class RouterRequest {
     /// The method of the request.
     public let method: RouterMethod
 
+    private var _parsedURL: URLParser?
+    internal let parsedURLPath: URLParser
+
     /// The parsed URL.
-    public let parsedURL: URLParser
+    public private(set) lazy var parsedURL: URLParser = { [unowned self] in
+        if let result = self._parsedURL {
+            return result
+        } else {
+            let result = URLParser(url: self.serverRequest.urlURL.absoluteString.data(using: .utf8)!, isConnect: false)
+            self._parsedURL = result
+            return result
+        }
+    }()
 
     /// The router as a String.
     public internal(set) var route: String?
@@ -162,7 +173,7 @@ public class RouterRequest {
     /// - Parameter request: the server request
     init(request: ServerRequest) {
         serverRequest = request
-        parsedURL = URLParser(url: request.url, isConnect: false)
+        parsedURLPath = URLParser(url: request.url, isConnect: false)
         httpVersion = HTTPVersion(major: serverRequest.httpVersionMajor ?? 1, minor: serverRequest.httpVersionMinor ?? 1)
         method = RouterMethod(fromRawValue: serverRequest.method)
         headers = Headers(headers: serverRequest.headers)
