@@ -156,6 +156,85 @@ extension StaticFileServer {
             }
             response.statusCode = .OK
         }
+        
+        func streamFile(_ filePath: String, request: RouterRequest, response: RouterResponse) {
+            let fileManager = FileManager()
+            var isDirectory = ObjCBool(false)
+            
+            if fileManager.fileExists(atPath: filePath, isDirectory: &isDirectory) {
+                #if os(Linux)
+                    let isDirectoryBool = isDirectory
+                #else
+                    let isDirectoryBool = isDirectory.boolValue
+                #endif
+                
+                if !isDirectoryBool {
+                    streamNonDirectoryFile(filePath, request: request, response: response)
+                    return
+                }
+            }
+        }
+        
+        @discardableResult
+        private func streamNonDirectoryFile(_ filePath: String, request: RouterRequest, response: RouterResponse) -> Bool {
+            if  !isValidFilePath(filePath) {
+                return false
+            }
+            
+            do {
+                let fileAttributes = try FileManager().attributesOfItem(atPath: filePath)
+                responseHeadersSetter?.setCustomResponseHeaders(response: response,
+                                                                filePath: filePath,
+                                                                fileAttributes: fileAttributes)
+                
+                let rangeInfo = request.headers["Range"]?.components(separatedBy: "=")
+                
+                guard let rangeUnit = rangeInfo?.first,
+                    rangeUnit == "bytes",
+                    var byteRanges = rangeInfo?.last?.components(separatedBy: "-"),
+                    byteRanges.count == 2 else {
+                    response.statusCode = .badRequest
+                    return false
+                }
+                
+                guard let streamData = try? Data(contentsOf: URL(fileURLWithPath: filePath), options: [.mappedIfSafe]) else {
+                    return false
+                }
+                
+                let startByte, stopByte: Int
+                
+                if byteRanges[0] == "" {
+                    startByte = max(0, streamData.count - (Int(byteRanges[1]) ?? 1))
+                    stopByte = streamData.count - 1
+                } else {
+                    startByte = max(0, Int(byteRanges[0]) ?? 0)
+                    stopByte = min(streamData.count - 1, Int(byteRanges[1]) ?? streamData.count - 1)
+                }
+                
+                guard startByte < stopByte else {
+                    response.statusCode = .badRequest
+                    return false
+                }
+                
+                let dataRange = streamData.subdata(in: startByte..<stopByte + 1)
+                
+                let contentType = ContentType.sharedInstance.getContentType(forFileName: filePath)
+                if let contentType = contentType {
+                    response.headers["Content-Type"] = contentType
+                }
+                response.headers["Content-Range"] = "bytes \(startByte)-\(stopByte)/\(streamData.count)"
+                response.headers["Accept-Ranges"] = "bytes"
+                response.headers["Content-Length"] = String(describing: stopByte - startByte + 1)
+                
+                response.send(data: dataRange)
+            } catch {
+                Log.error("serving file at path \(filePath) error: \(error)")
+            }
+            
+            response.statusCode = .partialContent
+            
+            return true
+        }
 
         private func isValidFilePath(_ filePath: String) -> Bool {
             // Check that no-one is using ..'s in the path to poke around the filesystem
