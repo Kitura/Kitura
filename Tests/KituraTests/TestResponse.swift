@@ -1153,7 +1153,22 @@ class TestResponse: XCTestCase {
             } catch {}
             next()
         }
+        
+        router.error([{ request, response, next in
+            // Dummy error handler
+            next()
+        }])
+        
+        router.error(DummyErrorMiddleware())
+        
+        router.error([DummyErrorMiddleware()])
 
 	return router
+    }
+    
+    class DummyErrorMiddleware: RouterMiddleware {
+        func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws {
+            next()
+        }
     }
 }
