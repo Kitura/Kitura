@@ -163,7 +163,7 @@ public class RouterRequest {
     /// A `Query` type representation of request's query parameters
     public lazy var query: Query = { [unowned self] in
         if let query = self.urlURL.query {
-            return Query(fromText: query)
+            return Query(percentEncodedQuery: query)
         }
 
         return Query.null
