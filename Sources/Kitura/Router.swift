@@ -231,8 +231,8 @@ extension Router : RouterMiddleware {
     /// - Parameter next: The closure to invoke to cause the router to inspect the
     ///                  path in the list of paths.
     public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws {
-        guard let urlPath = request.parsedURL.path else {
-            Log.error("request.parsedURL.path is nil. Failed to handle request")
+        guard let urlPath = request.parsedURLPath.path else {
+            Log.error("request.parsedURLPath.path is nil. Failed to handle request")
             return
         }
 
@@ -249,11 +249,11 @@ extension Router : RouterMiddleware {
 
             let index = urlPath.index(urlPath.startIndex, offsetBy: mountpath.characters.count)
 
-            request.parsedURL.path = urlPath.substring(from: index)
+            request.parsedURLPath.path = urlPath.substring(from: index)
         }
 
         process(request: request, response: response) {
-            request.parsedURL.path = urlPath
+            request.parsedURLPath.path = urlPath
             next()
         }
     }
@@ -308,8 +308,8 @@ extension Router : ServerDelegate {
     /// - Parameter callback: The closure to invoke to cause the router to inspect the
     ///                  path in the list of paths.
     fileprivate func process(request: RouterRequest, response: RouterResponse, callback: @escaping () -> Void) {
-        guard let urlPath = request.parsedURL.path else {
-            Log.error("request.parsedURL.path is nil. Failed to process request")
+        guard let urlPath = request.parsedURLPath.path else {
+            Log.error("request.parsedURLPath.path is nil. Failed to process request")
             return
         }
 
@@ -335,11 +335,11 @@ extension Router : ServerDelegate {
     /// - Parameter response: The `RouterResponse` object used to send responses
     ///                      to the HTTP request.
     private func sendDefaultResponse(request: RouterRequest, response: RouterResponse) {
-        if request.parsedURL.path == "/" {
+        if request.parsedURLPath.path == "/" {
             fileResourceServer.sendIfFound(resource: "index.html", usingResponse: response)
         } else {
             do {
-                let errorMessage = "Cannot \(request.method) \(request.parsedURL.path ?? "")."
+                let errorMessage = "Cannot \(request.method) \(request.parsedURLPath.path ?? "")."
                 try response.status(.notFound).send(errorMessage).end()
             } catch {
                 Log.error("Error sending default not found message: \(error)")

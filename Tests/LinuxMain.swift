@@ -19,6 +19,7 @@ import XCTest
 @testable import KituraTests
 
 XCTMain([
+    testCase(MiscellaneousTests.allTests),
     testCase(TestContentType.allTests),
     testCase(TestCookies.allTests),
     testCase(TestErrors.allTests),
