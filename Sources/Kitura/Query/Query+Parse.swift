@@ -85,9 +85,14 @@ extension Query {
                 self.parse(into: &dictionary, key: nextKey, value: value)
                 root[rootKey] = dictionary
             case var array as [Any]:
-                var dictionary = [String : Any]()
-                self.parse(into: &dictionary, key: nextKey, value: value)
-                array.append(dictionary)
+                if var dictionary = array.last as? [String : Any] {
+                    self.parse(into: &dictionary, key: nextKey, value: value)
+                    array[array.count - 1] = dictionary
+                } else {
+                    var dictionary = [String : Any]()
+                    self.parse(into: &dictionary, key: nextKey, value: value)
+                    array.append(dictionary)
+                }
                 root[rootKey] = array
             case let current?:
                 var array = [current]

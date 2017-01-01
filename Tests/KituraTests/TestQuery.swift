@@ -220,6 +220,36 @@ class TestQuery: XCTestCase {
             
             response.send(request.query["q", "b"].string ?? "")
         }
+        
+        router.get("/dictionary_in_array") { request, response, next in
+            defer {
+                response.status(.OK)
+                next()
+            }
+            
+            XCTAssertNotNil(request.queryParameters["q"])
+            
+            if case .null = request.query["q"].type {
+                XCTFail()
+            }
+            
+            XCTAssertNil(request.query["q"].int)
+            XCTAssertNil(request.query["q"].string)
+            XCTAssertNotNil(request.query["q"].array)
+            
+            XCTAssertNotNil(request.query["q"][0].int)
+            XCTAssertNotNil(request.query["q"][1].int)
+            
+            XCTAssertEqual(request.query["q"][0].int, 1)
+            XCTAssertEqual(request.query["q"][1].int, 2)
+            
+            XCTAssertEqual(request.query["q", 2, "a"][0].string, "done")
+            XCTAssertEqual(request.query["q", 2, "a"][1].string, "int")
+            
+            XCTAssertEqual(request.query["q", 2, "b"].int, 10)
+            
+            response.send(request.query["q", 2, "b"].string ?? "")
+        }
 
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path: "/strings?q=tra-ta-ta".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!, callback: { response in
@@ -300,6 +330,17 @@ class TestQuery: XCTestCase {
             })
         }, { expectation in
             self.performRequest("get", path: "/array_in_dictionary?q[a]=1&q[a]=done&q[a]=int&q[b]=10".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!, callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                
+                let string = try! response!.readString()
+                
+                XCTAssertNotNil(string)
+                XCTAssertEqual(string, "10")
+                
+                expectation.fulfill()
+            })
+        }, { expectation in
+            self.performRequest("get", path: "/dictionary_in_array?q=1,2&q[a]=done&q[a]=int&q[b]=10".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!, callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 
                 let string = try! response!.readString()
