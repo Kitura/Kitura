@@ -96,7 +96,7 @@ class TestQuery: XCTestCase {
                 next()
             }
 
-            XCTAssertNotNil(request.queryParameters["q%5B%5D"])
+            XCTAssertNotNil(request.queryParameters["q%5B%5D"] ?? request.queryParameters["q"])
 
             if case .null = request.query["q"].type {
                 XCTFail()
@@ -263,6 +263,17 @@ class TestQuery: XCTestCase {
                 XCTAssertNotNil(string)
                 XCTAssertEqual(string, "1")
 
+                expectation.fulfill()
+            })
+        }, { expectation in
+            self.performRequest("get", path: "/array?q=1,2,3".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!, callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                
+                let string = try! response!.readString()
+                
+                XCTAssertNotNil(string)
+                XCTAssertEqual(string, "1")
+                
                 expectation.fulfill()
             })
         }, { expectation in
