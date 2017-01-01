@@ -16,34 +16,28 @@
 
 import Foundation
 
-extension Bool {
-    
-    /// Convenience initializer from string.
-    ///
-    /// - Parameter string: string to be used for conversion.
-    fileprivate init?(_ string: String) {
-        guard string == "true" || string == "false" else { return nil }
-        self.init(string == "true")
-    }
-}
-
 // MARK: Query parameter return values.
 extension Query: ParameterValue {
     
     /// Query parameter as optional 'Data' value
     public var data: Data? {
         switch self.type {
+        case .data(let data):
+            return data
         case .string(let value):
             return value.data(using: .utf8, allowLossyConversion: false)
-        case .int(let value as Any),
-             .double(let value as Any),
-             .bool(let value as Any),
-             .array(let value as Any),
-             .dictionary(let value as Any),
-             .null(let value):
+        case .int(let value):
             return String(describing: value).data(using: .utf8, allowLossyConversion: false)
-        default:
-            return nil
+        case .double(let value):
+            return String(describing: value).data(using: .utf8, allowLossyConversion: false)
+        case .bool(let value):
+            return String(describing: value).data(using: .utf8, allowLossyConversion: false)
+        case .array(let value):
+            return String(describing: value).data(using: .utf8, allowLossyConversion: false)
+        case .dictionary(let value):
+            return String(describing: value).data(using: .utf8, allowLossyConversion: false)
+        case .null(let value):
+            return String(describing: value).data(using: .utf8, allowLossyConversion: false)
         }
     }
     

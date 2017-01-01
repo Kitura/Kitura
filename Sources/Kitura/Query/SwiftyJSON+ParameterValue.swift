@@ -20,7 +20,7 @@ import SwiftyJSON
 extension JSON: ParameterValue {
     
     public var data: Data? {
-        return nil
+        return try? self.rawData()
     }
     
     public var array: [Any]? {
