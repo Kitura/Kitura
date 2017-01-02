@@ -245,48 +245,53 @@ class TestQuery: XCTestCase {
     func testQueryParse() {
         var queryString = "q=1"
         
-        var query = Query(fromText: queryString)
+        var query = Query(percentEncodedQuery: queryString)
         XCTAssertEqual(query["q"].string, "1")
         
         queryString = "array=10&array=12"
-        query = Query(fromText: queryString)
+        query = Query(percentEncodedQuery: queryString)
         XCTAssertEqual(query["array", 0].int, 10)
         XCTAssertEqual(query["array", 1].int, 12)
         
+        queryString = "array=101,121"
+        query = Query(percentEncodedQuery: queryString)
+        XCTAssertEqual(query["array", 0].int, 101)
+        XCTAssertEqual(query["array", 1].int, 121)
+        
         queryString = "array[]=1&array[]=2"
-        query = Query(fromText: queryString)
+        query = Query(percentEncodedQuery: queryString)
         XCTAssertEqual(query["array", 0].int, 1)
         XCTAssertEqual(query["array", 1].int, 2)
         
         queryString = "d[a]=1&d[b]=2"
-        query = Query(fromText: queryString)
+        query = Query(percentEncodedQuery: queryString)
         XCTAssertEqual(query["d", "a"].int, 1)
         XCTAssertEqual(query["d", "b"].int, 2)
         
         queryString = "d=1&d[a]=1&d[b]=2"
-        query = Query(fromText: queryString)
+        query = Query(percentEncodedQuery: queryString)
         XCTAssertEqual(query["d", 0].int, 1)
         XCTAssertEqual(query["d", 1, "a"].int, 1)
-        XCTAssertEqual(query["d", 2, "b"].int, 2)
+        XCTAssertEqual(query["d", 1, "b"].int, 2)
         
         queryString = "d[a]=1&d[b]=2&d=1"
-        query = Query(fromText: queryString)
+        query = Query(percentEncodedQuery: queryString)
         XCTAssertEqual(query["d", 0, "a"].int, 1)
         XCTAssertEqual(query["d", 0, "b"].int, 2)
         XCTAssertEqual(query["d", 1].int, 1)
         
         
         queryString = "d[a]1&d[b]=2"
-        query = Query(fromText: queryString)
+        query = Query(percentEncodedQuery: queryString)
         XCTAssertNil(query["d", "a"].int)
         XCTAssertEqual(query["d", "b"].int, 2)
         
         queryString = "=&a=&d[b]=2"
-        query = Query(fromText: queryString)
+        query = Query(percentEncodedQuery: queryString)
         XCTAssertNil(query["d", "a"].int)
         XCTAssertEqual(query["d", "b"].int, 2)
         
-        query = Query(fromText: nil)
+        query = Query(percentEncodedQuery: nil)
         XCTAssertEqual(query.count, 0)
         XCTAssertNil(query.dictionary)
         XCTAssertTrue(query.isNull)
