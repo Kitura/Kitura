@@ -246,7 +246,8 @@ public class RouterResponse {
             RouterResponse.sanitizeJSIdentifierRegex = try RegularExpressionType(pattern: "[^\\[\\]\\w$.]", options: [])
         }
         func sanitizeJSIdentifier(_ ident: String) -> String {
-            return RouterResponse.sanitizeJSIdentifierRegex?.stringByReplacingMatches(in: ident, options: [], range: NSMakeRange(0, ident.utf16.count), withTemplate: "") ?? ""
+            return RouterResponse.sanitizeJSIdentifierRegex!.stringByReplacingMatches(in: ident, options: [],
+                                    range: NSRange(location: 0, length: ident.utf16.count), withTemplate: "")
         }
         func validJsonpCallbackName(_ name: String?) -> String? {
             if let name = name {
