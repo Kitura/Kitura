@@ -30,7 +30,7 @@ class TestContentType: XCTestCase {
     }
 
     let contentType = ContentType.sharedInstance
-    
+
     func testInitialize() {
 
         let pngType = contentType.getContentType(forExtension: "png")
@@ -50,7 +50,7 @@ class TestContentType: XCTestCase {
     }
 
     func testFilename() {
-    
+
         var result = contentType.getContentType(forFileName: "foo.png")
         XCTAssertEqual(result, "image/png")
 
@@ -68,7 +68,7 @@ class TestContentType: XCTestCase {
 
         result = contentType.getContentType(forFileName: "test.with.periods.html")
         XCTAssertEqual(result, "text/html")
-        
+
         result = contentType.getContentType(forFileName: "test/html")
         XCTAssertEqual(result, "text/html")
     }
@@ -79,16 +79,16 @@ class TestContentType: XCTestCase {
 
         result = contentType.isContentType("json", ofType: "json")
         XCTAssertTrue(result)
-        
+
         result = contentType.isContentType("text/html", ofType: "json")
         XCTAssertFalse(result)
-        
+
         result = contentType.isContentType("application/x-www-form-urlencoded", ofType: "urlencoded")
         XCTAssertTrue(result)
 
         result = contentType.isContentType("multipart/form-data", ofType: "multipart")
         XCTAssertTrue(result)
-        
+
     }
-    
+
 }

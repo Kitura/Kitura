@@ -126,7 +126,9 @@ public class Router {
 
         if resourceExtension.isEmpty {
             fileExtension = defaultEngineFileExtension ?? ""
-            //TODO use stringByAppendingPathExtension once issue https://bugs.swift.org/browse/SR-999 is resolved
+            // swiftlint:disable todo
+            //TODO: Use stringByAppendingPathExtension once issue https://bugs.swift.org/browse/SR-999 is resolved
+            // swiftlint:enable todo
             resourceWithExtension = template + "." + fileExtension
         } else {
             fileExtension = resourceExtension

@@ -22,7 +22,9 @@ import XCTest
 @testable import KituraNet
 
 fileprivate let helloworld = "Hello world"
+// swiftlint:disable variable_name
 fileprivate let id = "123"
+// swiftlint:enable variable_name
 fileprivate let mountpath = "/helloworld"
 
 fileprivate let makeHandler = { (messageToSend: String) in
@@ -32,8 +34,7 @@ fileprivate let makeHandler = { (messageToSend: String) in
 
         if parameters.isEmpty {
             try res.send(messageToSend).end()
-        }
-        else {
+        } else {
             try res.send(json: JSON(parameters)).end()
         }
     }
@@ -54,7 +55,7 @@ class TestRouteRegex: XCTestCase {
             ("testBuildRegexFromPattern", testBuildRegexFromPattern),
             ("testSimplePaths", testSimplePaths),
             ("testSimpleMatches", testSimpleMatches),
-            ("testRouteWithPercentEncoding",testRouteWithPercentEncoding),
+            ("testRouteWithPercentEncoding", testRouteWithPercentEncoding),
             ("testSimpleModifiers", testSimpleModifiers),
             ("testSimpleCustomMatches", testSimpleCustomMatches),
             ("testCustomMatchesWithModifiers", testCustomMatchesWithModifiers)
@@ -82,17 +83,16 @@ class TestRouteRegex: XCTestCase {
         // Partial match false adds '$' end of string special character
         (regex, strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "test", allowPartialMatch: false)
         path = "/test"
-        range = regex!.rangeOfFirstMatch(in: path, options: [], range: NSMakeRange(0, path.characters.count))
+        range = regex!.rangeOfFirstMatch(in: path, options: [], range: NSRange(location: 0, length: path.characters.count))
         XCTAssertEqual(regex!.pattern, "^/test(?:/(?=$))?$")
         XCTAssertTrue(strings!.isEmpty)
         XCTAssertEqual(range.location, 0)
         XCTAssertEqual(range.length, 5)
 
-
         // Partial match true does not include '$' end of string special character
         (regex, strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "test", allowPartialMatch: true)
         path = "/test/hello/world"
-        range = regex!.rangeOfFirstMatch(in: path, options: [], range: NSMakeRange(0, path.characters.count))
+        range = regex!.rangeOfFirstMatch(in: path, options: [], range: NSRange(location: 0, length: path.characters.count))
         XCTAssertEqual(regex!.pattern, "^/test(?:/(?=$))?(?=/|$)")
         XCTAssertTrue(strings!.isEmpty)
         XCTAssertEqual(range.location, 0)
@@ -100,7 +100,7 @@ class TestRouteRegex: XCTestCase {
 
         (regex, strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "test/:id", allowPartialMatch: true)
         path = "/test/123/hello/world"
-        range = regex!.rangeOfFirstMatch(in: path, options: [], range: NSMakeRange(0, path.characters.count))
+        range = regex!.rangeOfFirstMatch(in: path, options: [], range: NSRange(location: 0, length: path.characters.count))
         XCTAssertEqual(regex!.pattern, "^/test/(?:([^/]+?))(?:/(?=$))?(?=/|$)")
         XCTAssertFalse(strings!.isEmpty)
         XCTAssertEqual(strings![0], "id")
@@ -149,8 +149,7 @@ class TestRouteRegex: XCTestCase {
                 do {
                     let body = try response?.readString()
                     XCTAssertEqual(body, helloworld)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -169,8 +168,7 @@ class TestRouteRegex: XCTestCase {
                 do {
                     let body = try response?.readString()
                     XCTAssertEqual(body, helloworld)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -209,8 +207,7 @@ class TestRouteRegex: XCTestCase {
                 do {
                     let body = try response?.readString()
                     XCTAssertEqual(body, helloworld)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -229,8 +226,7 @@ class TestRouteRegex: XCTestCase {
                 do {
                     let body = try response?.readString()
                     XCTAssertEqual(body, helloworld)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -249,8 +245,7 @@ class TestRouteRegex: XCTestCase {
                 do {
                     let body = try response?.readString()
                     XCTAssertEqual(body, helloworld)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -286,8 +281,7 @@ class TestRouteRegex: XCTestCase {
                 do {
                     let body = try response?.readString()
                     XCTAssertEqual(body, helloworld)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -306,8 +300,7 @@ class TestRouteRegex: XCTestCase {
                 do {
                     let body = try response?.readString()
                     XCTAssertEqual(body, helloworld)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -330,8 +323,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, id)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -354,8 +346,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, id)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -378,8 +369,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, String(mountpath.characters.dropFirst()))
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -404,8 +394,7 @@ class TestRouteRegex: XCTestCase {
                 do {
                     let body = try response?.readString()
                     XCTAssertEqual(body, helloworld)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -422,8 +411,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, id)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -442,8 +430,7 @@ class TestRouteRegex: XCTestCase {
                 do {
                     let body = try response?.readString()
                     XCTAssertEqual(body, helloworld)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -460,8 +447,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, id)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -480,8 +466,7 @@ class TestRouteRegex: XCTestCase {
                 do {
                     let body = try response?.readString()
                     XCTAssertEqual(body, helloworld)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -498,8 +483,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, id)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -516,8 +500,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, "123/abc/456")
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -536,8 +519,7 @@ class TestRouteRegex: XCTestCase {
                 do {
                     let body = try response?.readString()
                     XCTAssertEqual(body, helloworld)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -554,8 +536,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, id)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -572,8 +553,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, "123/abc/456")
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -604,8 +584,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, id)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -622,8 +601,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, "123/abc/456")
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -652,8 +630,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, id)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -670,8 +647,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, "123/abc/456")
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -698,8 +674,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, id)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -728,8 +703,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, id)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -760,8 +734,7 @@ class TestRouteRegex: XCTestCase {
                 do {
                     let body = try response?.readString()
                     XCTAssertEqual(body, helloworld)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -778,8 +751,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, id)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -804,8 +776,7 @@ class TestRouteRegex: XCTestCase {
                 do {
                     let body = try response?.readString()
                     XCTAssertEqual(body, helloworld)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -822,8 +793,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, id)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -848,8 +818,7 @@ class TestRouteRegex: XCTestCase {
                 do {
                     let body = try response?.readString()
                     XCTAssertEqual(body, helloworld)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -866,8 +835,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, id)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -884,8 +852,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, "123/456/789")
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -910,8 +877,7 @@ class TestRouteRegex: XCTestCase {
                 do {
                     let body = try response?.readString()
                     XCTAssertEqual(body, helloworld)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -928,8 +894,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, id)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -946,8 +911,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, "123/456/789")
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -984,8 +948,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, id)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -1002,8 +965,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, "123/456/789")
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -1038,8 +1000,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, id)
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -1056,8 +1017,7 @@ class TestRouteRegex: XCTestCase {
                     let dict = JSON(data: data).dictionaryValue
 
                     XCTAssertEqual(dict["id"]?.stringValue, "123/456/789")
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 
@@ -1091,8 +1051,7 @@ class TestRouteRegex: XCTestCase {
                 do {
                     let body = try response.readString()
                     XCTAssertEqual(body, helloworld + " with %20")
-                }
-                catch {
+                } catch {
                     XCTFail("Unable to read response body")
                 }
 

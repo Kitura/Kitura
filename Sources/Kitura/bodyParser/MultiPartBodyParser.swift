@@ -43,7 +43,7 @@ class MultiPartBodyParser: BodyParserProtocol {
         var parts: [Part] = []
         // split the body into component parts separated by the boundary, drop the preamble part
         let componentParts = data.components(separatedBy: boundaryData).dropFirst()
-        
+
         var endBoundaryEncountered = false
         for componentPart in componentParts {
             // end when we see a component starting with endBoundaryData
@@ -51,7 +51,7 @@ class MultiPartBodyParser: BodyParserProtocol {
                 endBoundaryEncountered = true
                 break
             }
-            
+
             if let part = getPart(componentPart) {
                 parts.append(part)
             }
@@ -63,7 +63,7 @@ class MultiPartBodyParser: BodyParserProtocol {
         guard let found = componentPart.range(of: endHeaderData, in: 0 ..< componentPart.count) else {
             return nil
         }
-        
+
         var part = Part()
         let headers = componentPart.subdata(in: 0 ..< found.lowerBound)
         let headerLines = headers.components(separatedBy: newLineData)
@@ -118,7 +118,9 @@ class MultiPartBodyParser: BodyParserProtocol {
 
         let options: String.CompareOptions  = [.anchored, .caseInsensitive]
         if line.range(of: "content-transfer-encoding:", options: options, range: line.startIndex..<line.endIndex) != nil {
+            // swiftlint:disable todo
             //TODO: Deal with this
+            // swiftlint:enable todo
             part.headers[.transferEncoding] = line
             return
         }
@@ -129,7 +131,7 @@ class MultiPartBodyParser: BodyParserProtocol {
     private func getLabelRange(of searchedString: String, in containingString: String) ->
         Range<String.Index>? {
         let options: String.CompareOptions = [.anchored, .caseInsensitive]
-            
+
         return containingString.range(of: searchedString,
                                       options: options,
                                       range: containingString.startIndex..<containingString.endIndex)
@@ -137,18 +139,18 @@ class MultiPartBodyParser: BodyParserProtocol {
 }
 
 extension Data {
-    
+
     func hasSuffix(_ data: Data) -> Bool {
         if data.count > self.count {
             return false
         }
         return self.subdata(in: self.count - data.count ..< self.count) == data
     }
-    
+
     // mimic String.components(separatedBy separator: String) -> [String]
     func components(separatedBy separator: Data) -> [Data] {
         var parts: [Data] = []
-        
+
         var search: Range = 0 ..< self.count
         while true {
             // search for the next occurence of the separator
@@ -158,7 +160,7 @@ extension Data {
             }
             // add a part up to the found location
             parts.append(self.subdata(in: search.lowerBound ..< found.lowerBound))
-            
+
             search = found.upperBound ..< self.count
         }
         return parts

@@ -42,7 +42,7 @@ class TestCookies: XCTestCase {
             ("testNoCookies", testNoCookies)
         ]
     }
-    
+
     override func setUp() {
         doSetUp()
     }
@@ -168,7 +168,7 @@ class TestCookies: XCTestCase {
                         for  part in parts[1..<parts.count] {
                             var pieces = part.components(separatedBy: "=")
                             let piece = pieces[0].lowercased()
-                            switch(piece) {
+                            switch piece {
                             case "secure", "httponly":
                                 let secureValue = "Yes"
                                 properties[HTTPCookiePropertyKey.secure] = secureValue
@@ -194,7 +194,7 @@ class TestCookies: XCTestCase {
 
         return (resultCookie, resultExpire)
     }
-    
+
     func testNoCookies() {
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path: "/1/cookiedump", callback: {response in
@@ -202,7 +202,7 @@ class TestCookies: XCTestCase {
                 do {
                     var data = Data()
                     try response!.readAllData(into: &data)
-                    
+
                     let responseBody = String(data: data as Data, encoding: .utf8)
                     if  let responseBody = responseBody {
                         XCTAssertEqual(responseBody, "")
@@ -214,14 +214,13 @@ class TestCookies: XCTestCase {
                 }
                 expectation.fulfill()
             })
-        },
-        { expectation in
+        }, { expectation in
             self.performRequest("get", path: "/1/cookiedump", callback: {response in
                 XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "cookiedump route did not match single path request")
                 do {
                     var data = Data()
                     try response!.readAllData(into: &data)
-                    
+
                     let responseBody = String(data: data as Data, encoding: .utf8)
                     if  let responseBody = responseBody {
                         XCTAssertEqual(responseBody, "")
@@ -235,7 +234,6 @@ class TestCookies: XCTestCase {
             }, headers: ["Cookie": "ploverxyzzy"])
         })
     }
-
 
     static func setupRouter() -> Router {
         let router = Router()
