@@ -136,7 +136,7 @@ public class RouterRequest {
 
     /// List of URL parameters.
     public internal(set) var parameters: [String:String] = [:]
-    
+
     /// List of query parameters.
     public lazy var queryParameters: [String:String] = { [unowned self] in
         var decodedParameters: [String:String] = [:]
@@ -159,10 +159,19 @@ public class RouterRequest {
         }
         return decodedParameters
         }()
-    
+
+    /// A `Query` type representation of request's query parameters
+    public lazy var query: Query = { [unowned self] in
+        if let query = self.urlURL.query {
+            return Query(percentEncodedQuery: query)
+        }
+
+        return Query.null
+    }()
+
     /// User info.
     public var userInfo: [String: Any] = [:]
-    
+
     /// Body of the message.
     public internal(set) var body: ParsedBody?
 
