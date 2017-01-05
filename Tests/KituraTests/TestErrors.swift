@@ -14,7 +14,7 @@
  * limitations under the License.
  **/
 
-import Kitura
+@testable import Kitura
 import KituraNet
 
 import Foundation
@@ -48,13 +48,17 @@ class TestErrors: XCTestCase {
     let router = Router()
 
     func testInvalidMethod() {
-        performServerTest(router) { expectation in
+        performServerTest(router, asyncTasks: { expectation in
             self.performRequest("invalid", path: "/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(response!.statusCode)")
                 expectation.fulfill()
             })
-        }
+        }, { expectation in
+            let method = RouterMethod(fromRawValue: "PLOVER")
+            XCTAssertEqual(method, .unknown, "Router method should be .unknown, it was \(method)")
+            expectation.fulfill()
+        })
     }
 
     func testInvalidEndpoint() {

@@ -127,6 +127,12 @@ class TestStaticFileServer: XCTestCase {
                     expectation.fulfill()
                 })
             }, { expectation in
+                self.performRequest("put", path:"/asdf", callback: {response in
+                    XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                    XCTAssertEqual(response!.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(response!.statusCode)")
+                    expectation.fulfill()
+                })
+            }, { expectation in
                 self.performRequest("get", path:"/asdf/", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
@@ -157,7 +163,8 @@ class TestStaticFileServer: XCTestCase {
         router.all("/zxcv", middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options:options))
 
         options = StaticFileServer.Options(redirect: false)
-        router.all("/asdf", middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options:options))
+        let directoryURL = URL(fileURLWithPath: #file + "/../TestStaticFileServer").standardizedFileURL
+        router.all("/asdf", middleware: StaticFileServer(path: directoryURL.path, options:options))
 
         return router
     }

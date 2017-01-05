@@ -87,9 +87,5 @@ extension StaticFileServer {
         static private func isAbsolute(path: String) -> Bool {
             return path.hasPrefix(separator)
         }
-
-        static private func isSeparator(_ string: String) -> Bool {
-            return string == separator
-        }
     }
 }

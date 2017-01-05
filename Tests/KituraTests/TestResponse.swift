@@ -33,6 +33,7 @@ class TestResponse: XCTestCase {
         return [
             ("testSimpleResponse", testSimpleResponse),
             ("testPostRequest", testPostRequest),
+            ("testPostRequestTheHardWay", testPostRequestTheHardWay),
             ("testPostJSONRequest", testPostRequest),
             ("testPostRequestWithDoubleBodyParser", testPostRequestWithDoubleBodyParser),
             ("testPostRequestUrlEncoded", testPostRequestUrlEncoded),
@@ -95,6 +96,24 @@ class TestResponse: XCTestCase {
                 do {
                     let body = try response!.readString()
                     XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Received text body: </b>plover\nxyzzy\n</body></html>\n\n")
+                } catch {
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            }) {req in
+                req.write(from: "plover\n")
+                req.write(from: "xyzzy\n")
+            }
+        }
+    }
+
+    func testPostRequestTheHardWay() {
+        performServerTest(router) { expectation in
+            self.performRequest("post", path: "/bodytesthardway", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body!, "Read 13 bytes")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -522,7 +541,7 @@ class TestResponse: XCTestCase {
 
         router.get("/customPage") { request, response, next in
 
-            XCTAssertEqual(request.accepts(types: "html"), "html", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(type: "html"), "html", "Accepts did not return expected value")
             XCTAssertEqual(request.accepts(types: "text/html"), "text/html", "Accepts did not return expected value")
             XCTAssertEqual(request.accepts(types: ["json", "text"]), "json", "Accepts did not return expected value")
             XCTAssertEqual(request.accepts(types: "application/json"), "application/json", "Accepts did not return expected value")
@@ -953,6 +972,12 @@ class TestResponse: XCTestCase {
         router.all("/bodytest", middleware: BodyParser())
         router.post("/bodytest", handler: bodyTestHandler)
 
+        router.post("/bodytesthardway") { request, response, next in
+            let body = try request.readString()
+            response.status(.OK).send("Read \(body?.characters.count ?? 0) bytes")
+            next()
+        }
+
         //intentially BodyParser is added twice, to check how two body parsers work together
         router.all("/doublebodytest", middleware: BodyParser())
         router.all("/doublebodytest", middleware: BodyParser())
@@ -1122,6 +1147,21 @@ class TestResponse: XCTestCase {
             next()
         }
 
+        router.error([ { request, response, next in
+            // Dummy error handler
+            next()
+        }])
+
+        router.error(DummyErrorMiddleware())
+
+        router.error([DummyErrorMiddleware()])
+
 	return router
+    }
+
+    class DummyErrorMiddleware: RouterMiddleware {
+        func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws {
+            next()
+        }
     }
 }

@@ -24,7 +24,9 @@ import Dispatch
 
 protocol KituraTest {
     func expectation(line: Int, index: Int) -> XCTestExpectation
+    // swiftlint:disable variable_name
     func waitExpectation(timeout t: TimeInterval, handler: XCWaitCompletionHandler?)
+    // swiftlint:enable variable_name
 }
 
 extension KituraTest {
@@ -93,7 +95,9 @@ extension XCTestCase: KituraTest {
         return self.expectation(description: "\(type(of: self)):\(line)[\(index)]")
     }
 
+    // swiftlint:disable variable_name
     func waitExpectation(timeout t: TimeInterval, handler: XCWaitCompletionHandler?) {
+    // swiftlint:enable variable_name
         self.waitForExpectations(timeout: t, handler: handler)
     }
 }

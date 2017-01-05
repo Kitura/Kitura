@@ -68,6 +68,9 @@ class TestContentType: XCTestCase {
 
         result = contentType.getContentType(forFileName: "test.with.periods.html")
         XCTAssertEqual(result, "text/html")
+
+        result = contentType.getContentType(forFileName: "test/html")
+        XCTAssertEqual(result, "text/html")
     }
 
     func testIsContentType() {
