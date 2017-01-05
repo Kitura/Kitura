@@ -21,22 +21,22 @@ import XCTest
 @testable import KituraNet
 
 class MiscellaneousTests: XCTestCase {
-    
+
     static var allTests: [(String, (MiscellaneousTests) -> () throws -> Void)] {
         return [
             ("testHeaders", testHeaders),
             ("testHeadersHelpers", testHeadersHelpers)
         ]
     }
-    
+
     func testHeaders() {
         var headers = Headers(headers: HeadersContainer())
         headers.append("plover", value: "xyzzy")
         headers.append("kitura", value: "The greatest")
-        
+
         var (key, value) = headers[headers.startIndex]
         let firstKeyWasKitura: Bool
-        
+
         switch key {
         case "kitura":
             XCTAssertNotNil(value, "Value for the header kitura was nil")
@@ -50,10 +50,10 @@ class MiscellaneousTests: XCTestCase {
             firstKeyWasKitura = false
             XCTFail("The header key was neither kitura nor plover, it was \(key)")
         }
-        
+
         let next = headers.index(after: headers.startIndex)
         XCTAssertLessThan(next, headers.endIndex, "Next should be less than the endIndex")
-        
+
         (key, value) = headers[next]
         switch key {
         case "kitura":
@@ -68,34 +68,34 @@ class MiscellaneousTests: XCTestCase {
             XCTFail("The header key was neither kitura nor plover, it was \(key)")
         }
     }
-    
+
     func testHeadersHelpers() {
         var headers = Headers(headers: HeadersContainer())
-        
+
         headers.setLocation("back")   // Without referrer set
         var location = headers["Location"]
         XCTAssertNotNil(location, "Location header wasn't set")
         XCTAssertEqual(location!, "/", "Location header should have been /, it was \(location!)")
-        
+
         let referrer = "http://plover.com/xyzzy"
         headers["referrer"] = referrer
         headers.setLocation("back")   // With referrer set
         location = headers["Location"]
         XCTAssertEqual(location!, referrer, "Location header should have been \(referrer), it was \(location!)")
-        
+
         headers.setType("html", charset: "UTF-8")
         let contentType = headers["Content-Type"]
         XCTAssertNotNil(contentType, "Content-Type header wasn't set")
         let expectedContentType = "text/html; charset=UTF-8"
         XCTAssertEqual(contentType!, expectedContentType, "Content-Type header should have been \(expectedContentType), it was \(contentType!)")
-        
+
         var contentDispostion = headers["Content-Disposition"]
         XCTAssertNil(contentDispostion, "Content-Disposition shouldn't have been set yet")
-        
+
         headers.addAttachment(for: "")
         contentDispostion = headers["Content-Disposition"]
         XCTAssertNil(contentDispostion, "Content-Disposition shouldn't have been set. It's value is \(contentDispostion!)")
-        
+
         headers.addAttachment()
         contentDispostion = headers["Content-Disposition"]
         XCTAssertNotNil(contentDispostion, "Content-Disposition should have been set.")

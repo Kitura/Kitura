@@ -18,7 +18,7 @@
 
 extension Router {
     // MARK: error
-    
+
     /// Setup error handling that will cause a set of one or more closures
     /// of the type `RouterHandler` to be invoked when an error occurs.
     ///

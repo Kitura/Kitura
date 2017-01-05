@@ -47,11 +47,11 @@ public class RouterResponse {
         var writtenDataFilter: WrittenDataFilter = { body in
             return body
         }
-        
+
         mutating func resetOnEndInvoked() {
             onEndInvoked = {}
         }
-        
+
         mutating func resetWrittenDataFilter() {
             writtenDataFilter = { body in
                 return body
@@ -81,7 +81,7 @@ public class RouterResponse {
 
     /// Set of cookies to return with the response.
     public var cookies = [String: HTTPCookie]()
-    
+
     /// Optional error value.
     public var error: Swift.Error?
 
@@ -129,7 +129,7 @@ public class RouterResponse {
 
         let content = lifecycle.writtenDataFilter(buffer.data)
         lifecycle.resetWrittenDataFilter()
-        
+
         let contentLength = headers["Content-Length"]
         if  contentLength == nil {
             headers["Content-Length"] = String(content.count)
@@ -170,7 +170,7 @@ public class RouterResponse {
     public func send(_ str: String) -> RouterResponse {
         let utf8Length = str.lengthOfBytes(using: .utf8)
         let bufferLength = utf8Length + 1  // Add room for the NULL terminator
-        var utf8: [CChar] = Array<CChar>(repeating: 0, count: bufferLength)
+        var utf8: [CChar] = [CChar](repeating: 0, count: bufferLength)
         if str.getCString(&utf8, maxLength: bufferLength, encoding: .utf8) {
             let rawBytes = UnsafeRawPointer(UnsafePointer(utf8))
             buffer.append(bytes: rawBytes.assumingMemoryBound(to: UInt8.self), length: utf8Length)
@@ -222,11 +222,10 @@ public class RouterResponse {
             let jsonData = try json.rawData(options:.prettyPrinted)
             headers.setType("json")
             send(data: jsonData)
-        }
-        catch {
+        } catch {
             Log.warning("Failed to convert JSON for sending: \(error.localizedDescription)")
         }
-            
+
         return self
     }
 

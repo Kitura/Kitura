@@ -28,7 +28,7 @@ class TestRequests: XCTestCase {
                    ("testCustomMiddlewareURLParameter", testCustomMiddlewareURLParameter),
                    ("testCustomMiddlewareURLParameterWithQueryParam", testCustomMiddlewareURLParameterWithQueryParam),
                    ("testParameters", testParameters),
-                   ("testParameterExit", testParameterExit),
+                   ("testParameterExit", testParameterExit)
         ]
     }
 
@@ -73,7 +73,9 @@ class TestRequests: XCTestCase {
     }
 
     private func runMiddlewareTest(path: String) {
+        // swiftlint:disable nesting
         class CustomMiddleware: RouterMiddleware {
+        // swiftlint:enable nesting
             func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
                 let id = request.parameters["id"]
                 XCTAssertNotNil(id, "URL parameter 'id' in custom middleware was nil")
@@ -123,8 +125,6 @@ class TestRequests: XCTestCase {
             } catch {}
             next()
         }
-
-
 
         return router
     }

@@ -20,13 +20,13 @@ import Foundation
 
 /// An error that can be thrown while handling JSONP.
 public enum JSONPError: Swift.Error {
-    
+
     /// The error thrown if the callback query parameter is invalid.
     case invalidCallbackName(name: String?)
 }
 
 extension JSONPError: CustomStringConvertible {
-    
+
     /// A String representation of the error.
     public var description: String {
         switch self {

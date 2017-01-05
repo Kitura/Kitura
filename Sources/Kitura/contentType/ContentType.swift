@@ -138,11 +138,13 @@ public class ContentType {
             return "multipart/*"
         case "json":
             return "application/json"
+            // swiftlint:disable todo
             // TODO: +json?
             //            if (type[0] === '+') {
             //                // "+json" -> "*/*+json" expando
             //                type = '*/*' + type
             //            }
+            // swiftlint:enable todo
         default:
             return type
         }

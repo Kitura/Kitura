@@ -27,7 +27,6 @@ import XCTest
     import Darwin
 #endif
 
-
 class TestErrors: XCTestCase {
 
     static var allTests: [(String, (TestErrors) -> () throws -> Void)] {
@@ -37,7 +36,7 @@ class TestErrors: XCTestCase {
             ("testInvalidHeader", testInvalidHeader)
         ]
     }
-    
+
     override func setUp() {
         doSetUp()
     }
@@ -55,8 +54,7 @@ class TestErrors: XCTestCase {
                 XCTAssertEqual(response!.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(response!.statusCode)")
                 expectation.fulfill()
             })
-        },
-        { expectation in
+        }, { expectation in
             let method = RouterMethod(fromRawValue: "PLOVER")
             XCTAssertEqual(method, .unknown, "Router method should be .unknown, it was \(method)")
             expectation.fulfill()
