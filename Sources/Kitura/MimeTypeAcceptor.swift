@@ -62,10 +62,10 @@ extension RouterRequest {
         ///
         /// - Parameter headerValues: Array of Accept header values.
         /// - Parameter types: Array of content/mime type strings.
-        /// - Parameter wildcard: Special value that matches any value. For example "*" or "*/*"
+        /// - Parameter matchAllPattern: Special header value that matches all types. For example "*" or "*/*"
         /// - Returns: Most acceptable type or nil if there are none
-        static func accepts(headerValues: [String], types: [String], wildcard: String) -> String? {
-            let criteriaMatches = getCriteriaMatches(headerValues: headerValues, types: types, wildcard: wildcard)
+        static func accepts(headerValues: [String], types: [String], matchAllPattern: String) -> String? {
+            let criteriaMatches = getCriteriaMatches(headerValues: headerValues, types: types, matchAllPattern: matchAllPattern)
 
             // sort by priority and by qValue to determine best type to return
             let sortedMatches = Array(criteriaMatches).sorted {
@@ -84,19 +84,19 @@ extension RouterRequest {
 
         private typealias CriteriaMatches = [String : (priority: Int, qValue: Double)]
 
-        private static func getCriteriaMatches(headerValues: [String], types: [String], wildcard: String) -> CriteriaMatches {
+        private static func getCriteriaMatches(headerValues: [String], types: [String], matchAllPattern: String) -> CriteriaMatches {
             var criteriaMatches = [String : (priority: Int, qValue: Double)]()
 
             for rawHeaderValue in headerValues {
                 for type in types {
-                    handleMatch(rawHeaderValue: rawHeaderValue, type: type, wildcard: wildcard,
+                    handleMatch(rawHeaderValue: rawHeaderValue, type: type, matchAllPattern: matchAllPattern,
                                 criteriaMatches: &criteriaMatches)
                 }
             }
             return criteriaMatches
         }
 
-        private static func handleMatch(rawHeaderValue: String, type: String, wildcard: String,
+        private static func handleMatch(rawHeaderValue: String, type: String, matchAllPattern: String,
                                         criteriaMatches: inout CriteriaMatches) {
             let parsedHeaderValue = parse(mediaType: rawHeaderValue)
             let headerType = parsedHeaderValue.type
@@ -111,12 +111,13 @@ extension RouterRequest {
                 criteriaMatches[type] = (priority: priority, qValue: qValue)
             }
 
-            if headerType == mimeType { // exact match, e.g. text/html == text/html
+            // type and optional subtype match, e.g. text/html == text/html  or  gzip == gzip
+            if headerType == mimeType {
                 setMatch(withPriority: 1, qValue: parsedHeaderValue.qValue, in: &criteriaMatches)
                 return
             }
 
-            if headerType == wildcard {
+            if headerType == matchAllPattern {
                 if criteriaMatches[type] == nil { // else do nothing
                     setMatch(withPriority: 3, qValue: parsedHeaderValue.qValue, in: &criteriaMatches)
                 }
@@ -126,8 +127,9 @@ extension RouterRequest {
             if headerType.hasSuffix("/*") {
                 let index = headerType.index(headerType.endIndex, offsetBy: -1)
                 let headerTypePrefix = headerType.substring(to: index) // strip the trailing *
+
                 if mimeType.hasPrefix(headerTypePrefix) {
-                    // partial match, e.g. text/html == text/*
+                    // type/* match, e.g. mimeType: text/html matches headerType: text/*
                     if let match = criteriaMatches[type] {
                         if match.priority > 2 {
                             setMatch(withPriority: 2, qValue: parsedHeaderValue.qValue, in: &criteriaMatches)

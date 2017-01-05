@@ -590,7 +590,7 @@ class TestResponse: XCTestCase {
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 expectation.fulfill()
             }) {req in
-                req.headers = ["Accept" : "*/*;q=.1, application/*;q=0.2, image/jpeg;q=0.8, text/html, text/plain"]
+                req.headers = ["accept" : "*/*;q=.001, application/*;q=0.2, image/jpeg;q=0.8, text/html, text/plain"]
             }
         })
     }
@@ -640,7 +640,7 @@ class TestResponse: XCTestCase {
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 expectation.fulfill()
             }) {req in
-                req.headers = ["Accept-Encoding" : "gzip;q=0.5, compress;q=1.0, *;q=0.1"]
+                req.headers = ["accept-encoding" : "gzip;q=0.5, compress;q=1.0, *;q=0.001"]
             }
         })
     }

@@ -208,8 +208,14 @@ public class RouterRequest {
         }
 
         let headerValues = acceptHeaderValue.characters.split(separator: ",").map(String.init)
-        let wildcard = (header == "Accept" ? "*/*" : "*")
-        return MimeTypeAcceptor.accepts(headerValues: headerValues, types: types, wildcard: wildcard)
+        // special header value that matches all types
+        let matchAllPattern: String
+        if header.caseInsensitiveCompare("Accept") == .orderedSame {
+            matchAllPattern = "*/*"
+        } else {
+            matchAllPattern = "*"
+        }
+        return MimeTypeAcceptor.accepts(headerValues: headerValues, types: types, matchAllPattern: matchAllPattern)
     }
 
     /// Check if passed in types are acceptable based on the request's header field
