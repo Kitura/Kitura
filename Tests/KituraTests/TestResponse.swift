@@ -50,6 +50,7 @@ class TestResponse: XCTestCase {
             ("testHeaderModifiers", testHeaderModifiers),
             ("testRouteFunc", testRouteFunc),
             ("testAcceptTypes", testAcceptTypes),
+            ("testAcceptEncodingTypes", testAcceptEncodingTypes),
             ("testFormat", testFormat),
             ("testLink", testLink),
             ("testSubdomains", testSubdomains),
@@ -589,7 +590,57 @@ class TestResponse: XCTestCase {
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 expectation.fulfill()
             }) {req in
-                req.headers = ["Accept" : "application/*;q=0.2, image/jpeg;q=0.8, text/html, text/plain, */*;q=.7"]
+                req.headers = ["accept" : "*/*;q=.001, application/*;q=0.2, image/jpeg;q=0.8, text/html, text/plain"]
+            }
+        })
+    }
+
+    func testAcceptEncodingTypes() {
+        router.get("/customPage") { request, response, next in
+            XCTAssertEqual(request.accepts(header: "Accept-Encoding", type: "gzip"), "gzip", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(header: "Accept-Encoding", types: "compress"), "compress", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(header: "Accept-Encoding", types: ["compress", "gzip"]), "gzip", "Accepts did not return expected value")
+
+            // should NOT match "*" here as q = 0
+            XCTAssertNil(request.accepts(header: "Accept-Encoding", types: "deflate"), "Request accepts this type when it shouldn't")
+
+            do {
+                try response.status(HTTPStatusCode.OK).send("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n").end()
+            } catch {}
+            next()
+        }
+
+        router.get("/customPage2") { request, response, next in
+            XCTAssertEqual(request.accepts(header: "Accept-Encoding", type: "gzip"), "gzip", "Accepts did not return expected value")
+            XCTAssertEqual(request.accepts(header: "Accept-Encoding", types: "compress"), "compress", "Accepts did not return expected value")
+            //should match compress instead of gzip here as q value is greater
+            XCTAssertEqual(request.accepts(header: "Accept-Encoding", types: ["compress", "gzip"]), "compress", "Accepts did not return expected value")
+
+            // should match "*" here as q > 0
+            XCTAssertEqual(request.accepts(header: "Accept-Encoding", types: "deflate"), "deflate", "Accepts did not return expected value")
+
+            // should NOT match here as header is incorrect
+            XCTAssertNil(request.accepts(header: "Accept-Charset", types: "deflate"), "Request accepts this type when it shouldn't")
+
+            do {
+                try response.status(HTTPStatusCode.OK).send("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n").end()
+            } catch {}
+            next()
+        }
+
+        performServerTest(router, asyncTasks: { expectation in
+            self.performRequest("get", path: "/customPage", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                expectation.fulfill()
+            }) {req in
+                req.headers = ["Accept-Encoding" : "compress;q=0.5, gzip;q=1.0, *;q=0"]
+            }
+        }, { expectation in
+            self.performRequest("get", path:"/customPage2", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                expectation.fulfill()
+            }) {req in
+                req.headers = ["accept-encoding" : "gzip;q=0.5, compress;q=1.0, *;q=0.001"]
             }
         })
     }

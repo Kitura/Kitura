@@ -62,9 +62,10 @@ extension RouterRequest {
         ///
         /// - Parameter headerValues: Array of Accept header values.
         /// - Parameter types: Array of content/mime type strings.
+        /// - Parameter matchAllPattern: Special header value that matches all types. For example "*" or "*/*"
         /// - Returns: Most acceptable type or nil if there are none
-        static func accepts(headerValues: [String], types: [String]) -> String? {
-            let criteriaMatches = getCriteriaMatches(headerValues: headerValues, types: types)
+        static func accepts(headerValues: [String], types: [String], matchAllPattern: String) -> String? {
+            let criteriaMatches = getCriteriaMatches(headerValues: headerValues, types: types, matchAllPattern: matchAllPattern)
 
             // sort by priority and by qValue to determine best type to return
             let sortedMatches = Array(criteriaMatches).sorted {
@@ -83,51 +84,60 @@ extension RouterRequest {
 
         private typealias CriteriaMatches = [String : (priority: Int, qValue: Double)]
 
-        private static func getCriteriaMatches(headerValues: [String], types: [String]) -> CriteriaMatches {
+        private static func getCriteriaMatches(headerValues: [String], types: [String], matchAllPattern: String) -> CriteriaMatches {
             var criteriaMatches = [String : (priority: Int, qValue: Double)]()
 
             for rawHeaderValue in headerValues {
                 for type in types {
-                    handleMatch(rawHeaderValue: rawHeaderValue, type: type,
+                    handleMatch(rawHeaderValue: rawHeaderValue, type: type, matchAllPattern: matchAllPattern,
                                 criteriaMatches: &criteriaMatches)
                 }
             }
             return criteriaMatches
         }
 
-        private static func handleMatch(rawHeaderValue: String, type: String,
+        private static func handleMatch(rawHeaderValue: String, type: String, matchAllPattern: String,
                                         criteriaMatches: inout CriteriaMatches) {
             let parsedHeaderValue = parse(mediaType: rawHeaderValue)
+            let headerType = parsedHeaderValue.type
+            guard !headerType.isEmpty && parsedHeaderValue.qValue > 0.0 else {
+                // quality value of 0 indicates not acceptable
+                return
+            }
+
             let mimeType = getMimeType(forExtension: type)
-            
+
             func setMatch(withPriority priority: Int, qValue: Double, in criteriaMatches: inout CriteriaMatches) {
                 criteriaMatches[type] = (priority: priority, qValue: qValue)
             }
 
-            if parsedHeaderValue.type == mimeType { // exact match, e.g. text/html == text/html
+            // type and optional subtype match, e.g. text/html == text/html  or  gzip == gzip
+            if headerType == mimeType {
                 setMatch(withPriority: 1, qValue: parsedHeaderValue.qValue, in: &criteriaMatches)
                 return
             }
 
-            if parsedHeaderValue.type == "*/*" {
+            if headerType == matchAllPattern {
                 if criteriaMatches[type] == nil { // else do nothing
                     setMatch(withPriority: 3, qValue: parsedHeaderValue.qValue, in: &criteriaMatches)
                 }
                 return
             }
-            let regularExpressionSearch = String.CompareOptions.regularExpression
-            if nil == mimeType.range(of: parsedHeaderValue.type,
-                                     options: regularExpressionSearch) {
-                return
-            }
 
-            // partial match, e.g. text/html == text/*
-            if let match = criteriaMatches[type] {
-                if match.priority > 2 {
-                    setMatch(withPriority: 2, qValue: parsedHeaderValue.qValue, in: &criteriaMatches)
+            if headerType.hasSuffix("/*") {
+                let index = headerType.index(headerType.endIndex, offsetBy: -1)
+                let headerTypePrefix = headerType.substring(to: index) // strip the trailing *
+
+                if mimeType.hasPrefix(headerTypePrefix) {
+                    // type/* match, e.g. mimeType: text/html matches headerType: text/*
+                    if let match = criteriaMatches[type] {
+                        if match.priority > 2 {
+                            setMatch(withPriority: 2, qValue: parsedHeaderValue.qValue, in: &criteriaMatches)
+                        }
+                    } else {
+                        setMatch(withPriority: 2, qValue: parsedHeaderValue.qValue, in: &criteriaMatches)
+                    }
                 }
-            } else {
-                setMatch(withPriority: 2, qValue: parsedHeaderValue.qValue, in: &criteriaMatches)
             }
         }
     }
