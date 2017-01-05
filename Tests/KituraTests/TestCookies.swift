@@ -235,6 +235,46 @@ class TestCookies: XCTestCase {
         })
     }
 
+    func testNoCookies() {
+        performServerTest(router, asyncTasks: { expectation in
+            self.performRequest("get", path: "/1/cookiedump", callback: {response in
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "cookiedump route did not match single path request")
+                do {
+                    var data = Data()
+                    try response!.readAllData(into: &data)
+
+                    let responseBody = String(data: data as Data, encoding: .utf8)
+                    if  let responseBody = responseBody {
+                        XCTAssertEqual(responseBody, "")
+                    } else {
+                        XCTFail("Response body wasn't an UTF8 string")
+                    }
+                } catch {
+                    XCTFail("Failed reading the body of the response")
+                }
+                expectation.fulfill()
+            })
+        }, { expectation in
+            self.performRequest("get", path: "/1/cookiedump", callback: {response in
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "cookiedump route did not match single path request")
+                do {
+                    var data = Data()
+                    try response!.readAllData(into: &data)
+
+                    let responseBody = String(data: data as Data, encoding: .utf8)
+                    if  let responseBody = responseBody {
+                        XCTAssertEqual(responseBody, "")
+                    } else {
+                        XCTFail("Response body wasn't an UTF8 string")
+                    }
+                } catch {
+                    XCTFail("Failed reading the body of the response")
+                }
+                expectation.fulfill()
+            }, headers: ["Cookie": "ploverxyzzy"])
+        })
+    }
+
     static func setupRouter() -> Router {
         let router = Router()
 
