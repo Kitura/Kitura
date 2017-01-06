@@ -77,7 +77,14 @@ public class RouterResponse {
     private var lifecycle = Lifecycle()
 
     // regex used to sanitize javascript identifiers
-    private static var sanitizeJSIdentifierRegex: RegularExpressionType? = nil
+    private static let sanitizeJSIdentifierRegex: RegularExpressionType! = {
+        do {
+            return try RegularExpressionType(pattern: "[^\\[\\]\\w$.]", options: [])
+        } catch { // pattern is a known valid literal, should never throw
+            Log.error("Error initializing sanitizeJSIdentifierRegex: \(error)")
+            return nil
+        }
+    }()
 
     /// Set of cookies to return with the response.
     public var cookies = [String: HTTPCookie]()
@@ -241,11 +248,8 @@ public class RouterResponse {
     /// is the alphanumeric characters and `[]$._`).
     /// - Returns: this RouterResponse.
     public func send(jsonp: JSON, callbackParameter: String = "callback") throws -> RouterResponse {
-        if RouterResponse.sanitizeJSIdentifierRegex == nil {
-            RouterResponse.sanitizeJSIdentifierRegex = try RegularExpressionType(pattern: "[^\\[\\]\\w$.]", options: [])
-        }
         func sanitizeJSIdentifier(_ ident: String) -> String {
-            return RouterResponse.sanitizeJSIdentifierRegex!.stringByReplacingMatches(in: ident, options: [],
+            return RouterResponse.sanitizeJSIdentifierRegex.stringByReplacingMatches(in: ident, options: [],
                                     range: NSRange(location: 0, length: ident.utf16.count), withTemplate: "")
         }
         func validJsonpCallbackName(_ name: String?) -> String? {
