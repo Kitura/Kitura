@@ -37,7 +37,8 @@ class TestTemplateEngine: XCTestCase {
             ("testNoDefaultEngine", testNoDefaultEngine),
             ("testRender", testRender),
             ("testRenderWithExtensionAndWithoutDefaultTemplateEngine",
-             testRenderWithExtensionAndWithoutDefaultTemplateEngine)
+             testRenderWithExtensionAndWithoutDefaultTemplateEngine),
+            ("testRegisterWithNonDefaultExtension", testRegisterWithNonDefaultExtension)
         ]
     }
 
@@ -105,6 +106,34 @@ class TestTemplateEngine: XCTestCase {
 
         do {
             let content = try router.render(template: "test.mock", context: [:])
+            XCTAssertEqual(content, "Hello World!")
+        } catch {
+            XCTFail("Error during render \(error)")
+        }
+    }
+
+    func testRegisterWithNonDefaultExtension() {
+        let router = Router()
+        router.add(templateEngine: MockTemplateEngine())
+        router.add(templateEngine: MockTemplateEngine(), forFileExtension: "html")
+        router.add(templateEngine: MockTemplateEngine(), forFileExtension: "htm")
+
+        do {
+            let content = try router.render(template: "test.mock", context: [:])
+            XCTAssertEqual(content, "Hello World!")
+        } catch {
+            XCTFail("Error during render \(error)")
+        }
+
+        do {
+            let content = try router.render(template: "test.html", context: [:])
+            XCTAssertEqual(content, "Hello World!")
+        } catch {
+            XCTFail("Error during render \(error)")
+        }
+
+        do {
+            let content = try router.render(template: "test.htm", context: [:])
             XCTAssertEqual(content, "Hello World!")
         } catch {
             XCTFail("Error during render \(error)")

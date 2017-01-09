@@ -103,8 +103,10 @@ public class Router {
     /// that match the extension it supports.
     ///
     /// - Parameter templateEngine: The templating engine to register.
-    public func add(templateEngine: TemplateEngine) {
-        templateEngines[templateEngine.fileExtension] = templateEngine
+    /// - Parameter forFileExtension: The extension of the files to apply the template engine on.
+    public func add(templateEngine: TemplateEngine, forFileExtension fileExtension: String? = nil) {
+        let fileExtension = fileExtension ?? templateEngine.fileExtension
+        templateEngines[fileExtension] = templateEngine
     }
 
     /// Render a template using a context
