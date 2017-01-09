@@ -35,7 +35,9 @@ class TestTemplateEngine: XCTestCase {
             ("testEmptyTemplateName", testEmptyTemplateName),
             ("testMissingExtension", testMissingExtension),
             ("testNoDefaultEngine", testNoDefaultEngine),
-            ("testRender", testRender)
+            ("testRender", testRender),
+            ("testRenderWithExtensionAndWithoutDefaultTemplateEngine",
+             testRenderWithExtensionAndWithoutDefaultTemplateEngine)
         ]
     }
 
@@ -88,6 +90,18 @@ class TestTemplateEngine: XCTestCase {
     func testRender() {
         let router = Router()
         router.setDefault(templateEngine: MockTemplateEngine())
+
+        do {
+            let content = try router.render(template: "test.mock", context: [:])
+            XCTAssertEqual(content, "Hello World!")
+        } catch {
+            XCTFail("Error during render \(error)")
+        }
+    }
+
+    func testRenderWithExtensionAndWithoutDefaultTemplateEngine() {
+        let router = Router()
+        router.add(templateEngine: MockTemplateEngine())
 
         do {
             let content = try router.render(template: "test.mock", context: [:])
