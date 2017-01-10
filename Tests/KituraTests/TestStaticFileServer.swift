@@ -32,6 +32,7 @@ class TestStaticFileServer: XCTestCase {
     static var allTests: [(String, (TestStaticFileServer) -> () throws -> Void)] {
         return [
             ("testFileServer", testFileServer),
+            ("testFileServerSSL", testFileServerSSL),
             ("testGetWithWhiteSpaces", testGetWithWhiteSpaces),
             ("testGetWithSpecialCharacters", testGetWithSpecialCharacters),
             ("testGetWithSpecialCharactersEncoded", testGetWithSpecialCharactersEncoded),
@@ -51,8 +52,16 @@ class TestStaticFileServer: XCTestCase {
     let router = TestStaticFileServer.setupRouter()
 
     func testFileServer() {
-    	performServerTest(router, asyncTasks: { expectation in
-            self.performRequest("get", path:"/qwer", callback: {response in
+        testFileServer(useSSL: false)
+    }
+
+    func testFileServerSSL() {
+        testFileServer(useSSL: true)
+    }
+
+    func testFileServer(useSSL: Bool) {
+        performServerTest(router, useSSL: useSSL, asyncTasks: { expectation in
+            self.performRequest("get", path:"/qwer", useSSL: useSSL, callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 do {
@@ -69,7 +78,7 @@ class TestStaticFileServer: XCTestCase {
                 expectation.fulfill()
             })
         }, { expectation in
-            self.performRequest("get", path:"/qwer/index.html", callback: {response in
+            self.performRequest("get", path:"/qwer/index.html", useSSL: useSSL, callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 do {
@@ -81,7 +90,7 @@ class TestStaticFileServer: XCTestCase {
                 expectation.fulfill()
             })
         }, { expectation in
-            self.performRequest("get", path:"/qwer/index", callback: {response in
+            self.performRequest("get", path:"/qwer/index", useSSL: useSSL, callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                 do {
@@ -93,7 +102,7 @@ class TestStaticFileServer: XCTestCase {
                 expectation.fulfill()
             })
             }, { expectation in
-                self.performRequest("get", path:"/zxcv/index.html", callback: {response in
+                self.performRequest("get", path:"/zxcv/index.html", useSSL: useSSL, callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                     do {
@@ -109,31 +118,31 @@ class TestStaticFileServer: XCTestCase {
                     expectation.fulfill()
                 })
             }, { expectation in
-                self.performRequest("get", path:"/zxcv", callback: {response in
+                self.performRequest("get", path:"/zxcv", useSSL: useSSL, callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response!.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(response!.statusCode)")
                     expectation.fulfill()
                 })
             }, { expectation in
-                self.performRequest("get", path:"/zxcv/index", callback: {response in
+                self.performRequest("get", path:"/zxcv/index", useSSL: useSSL, callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response!.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(response!.statusCode)")
                     expectation.fulfill()
                 })
             }, { expectation in
-                self.performRequest("get", path:"/asdf", callback: {response in
+                self.performRequest("get", path:"/asdf", useSSL: useSSL, callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response!.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(response!.statusCode)")
                     expectation.fulfill()
                 })
             }, { expectation in
-                self.performRequest("put", path:"/asdf", callback: {response in
+                self.performRequest("put", path:"/asdf", useSSL: useSSL, callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response!.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(response!.statusCode)")
                     expectation.fulfill()
                 })
             }, { expectation in
-                self.performRequest("get", path:"/asdf/", callback: {response in
+                self.performRequest("get", path:"/asdf/", useSSL: useSSL, callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
                     do {
