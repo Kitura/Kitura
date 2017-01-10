@@ -38,10 +38,11 @@ extension KituraTest {
     func doTearDown() {
     }
 
-    func performServerTest(_ router: ServerDelegate, line: Int = #line,
+    func performServerTest(_ router: ServerDelegate, useSSL: Bool = false, line: Int = #line,
                            asyncTasks: @escaping (XCTestExpectation) -> Void...) {
         let port = 8090
-        let server = Kitura.addHTTPServer(onPort: port, with: router)
+        let sslConfig = useSSL ? TestSSLConfig.sslConfig : nil
+        let server = Kitura.addHTTPServer(onPort: port, with: router, withSSL: sslConfig)
         defer {
             Kitura.stop() // make sure to remove server from Kitura static list
         }
@@ -70,7 +71,8 @@ extension KituraTest {
         }
     }
 
-    func performRequest(_ method: String, path: String, callback: @escaping ClientRequest.Callback, headers: [String: String]? = nil, requestModifier: ((ClientRequest) -> Void)? = nil) {
+    func performRequest(_ method: String, path: String, useSSL: Bool = false, callback: @escaping ClientRequest.Callback,
+                        headers: [String: String]? = nil, requestModifier: ((ClientRequest) -> Void)? = nil) {
         var allHeaders = [String: String]()
         if  let headers = headers {
             for  (headerName, headerValue) in headers {
@@ -80,13 +82,18 @@ extension KituraTest {
         if allHeaders["Content-Type"] == nil {
             allHeaders["Content-Type"] = "text/plain"
         }
-        let options: [ClientRequest.Options] =
-                [.method(method), .hostname("localhost"), .port(8090), .path(path), .headers(allHeaders)]
+        let schema = useSSL ? "https" : "http"
+        var options: [ClientRequest.Options] =
+                [.method(method), .schema(schema), .hostname("localhost"), .port(8090), .path(path),
+                 .headers(allHeaders)]
+        if useSSL {
+            options.append(.disableSSLVerification)
+        }
         let req = HTTP.request(options, callback: callback)
         if let requestModifier = requestModifier {
             requestModifier(req)
         }
-        req.end()
+        req.end(close: true)
     }
 }
 
@@ -100,4 +107,27 @@ extension XCTestCase: KituraTest {
     // swiftlint:enable variable_name
         self.waitForExpectations(timeout: t, handler: handler)
     }
+}
+
+private class TestSSLConfig {
+    fileprivate static let sslConfig: SSLConfig = {
+        let path = #file
+        let sslConfigDir: String
+        if let range = path.range(of: "/", options: .backwards) {
+            sslConfigDir = path.substring(to: range.lowerBound) + "/SSLConfig/"
+        } else {
+            sslConfigDir = "./SSLConfig/"
+        }
+
+        #if os(Linux)
+            let certificatePath = sslConfigDir + "certificate.pem"
+            let keyPath = sslConfigDir + "key.pem"
+            return SSLConfig(withCACertificateDirectory: nil, usingCertificateFile: certificatePath,
+                             withKeyFile: keyPath, usingSelfSignedCerts: true)
+        #else
+            let chainFilePath = sslConfigDir + "certificateChain.pfx"
+            return SSLConfig(withChainFilePath: chainFilePath, withPassword: "kitura",
+                             usingSelfSignedCerts: true)
+        #endif
+    }()
 }
