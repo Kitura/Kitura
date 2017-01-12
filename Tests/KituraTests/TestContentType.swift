@@ -19,7 +19,7 @@ import XCTest
 
 @testable import Kitura
 
-class TestContentType: XCTestCase {
+class TestContentType: KituraTest {
 
     static var allTests: [(String, (TestContentType) -> () throws -> Void)] {
         return [

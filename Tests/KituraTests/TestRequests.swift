@@ -20,7 +20,7 @@ import Foundation
 @testable import Kitura
 @testable import KituraNet
 
-class TestRequests: XCTestCase {
+class TestRequests: KituraTest {
 
     static var allTests: [(String, (TestRequests) -> () throws -> Void)] {
         return [
@@ -78,7 +78,7 @@ class TestRequests: XCTestCase {
         }
 
         performServerTest(router, useSSL: useSSL) { expectation in
-            self.performRequest("get", path: "/zxcv/ploni", useSSL: useSSL, callback: { response in
+            self.performRequest("get", path: "/zxcv/ploni", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 expectation.fulfill()
             })
@@ -110,7 +110,7 @@ class TestRequests: XCTestCase {
         }
 
         performServerTest(router, useSSL: useSSL) { expectation in
-            self.performRequest("get", path: path, useSSL: useSSL, callback: { response in
+            self.performRequest("get", path: path, callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 expectation.fulfill()
             })
@@ -206,7 +206,7 @@ class TestRequests: XCTestCase {
         }
 
         performServerTest(router, useSSL: useSSL, asyncTasks: { expectation in
-            self.performRequest("get", path: "users/random/1000", useSSL: useSSL, callback: { response in
+            self.performRequest("get", path: "users/random/1000", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertNotNil(response!.headers["User"])
                 XCTAssertNotNil(response!.headers["User-Id"])
@@ -215,7 +215,7 @@ class TestRequests: XCTestCase {
                 expectation.fulfill()
             })
         }, { expectation in
-            self.performRequest("get", path: "posts/random/11000", useSSL: useSSL, callback: { response in
+            self.performRequest("get", path: "posts/random/11000", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertNil(response!.headers["User"])
                 XCTAssertNotNil(response!.headers["User-Id"])
@@ -266,7 +266,7 @@ class TestRequests: XCTestCase {
         }
 
         performServerTest(router, useSSL: useSSL, asyncTasks: { expectation in
-            self.performRequest("get", path: "users/random/1000", useSSL: useSSL, callback: { response in
+            self.performRequest("get", path: "users/random/1000", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertNotNil(response!.headers["User-Id"])
                 XCTAssertEqual(response!.headers["User-Id"]!.first!, "1000")
@@ -282,7 +282,7 @@ class TestRequests: XCTestCase {
                 expectation.fulfill()
             })
         }, { expectation in
-            self.performRequest("get", path: "users/random/dsa", useSSL: useSSL, callback: { response in
+            self.performRequest("get", path: "users/random/dsa", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertNil(response!.headers["User-Id"])
                 XCTAssertEqual(response!.statusCode, .notAcceptable)

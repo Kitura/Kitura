@@ -22,14 +22,31 @@ import Kitura
 import Foundation
 import Dispatch
 
-protocol KituraTest {
-    func expectation(line: Int, index: Int) -> XCTestExpectation
-    // swiftlint:disable variable_name
-    func waitExpectation(timeout t: TimeInterval, handler: XCWaitCompletionHandler?)
-    // swiftlint:enable variable_name
-}
+class KituraTest: XCTestCase {
 
-extension KituraTest {
+    static private let useSSLDefault = true
+    private var useSSL = useSSLDefault
+
+    static let sslConfig: SSLConfig = {
+        let path = #file
+        let sslConfigDir: String
+        if let range = path.range(of: "/", options: .backwards) {
+            sslConfigDir = path.substring(to: range.lowerBound) + "/SSLConfig/"
+        } else {
+            sslConfigDir = "./SSLConfig/"
+        }
+
+        #if os(Linux)
+            let certificatePath = sslConfigDir + "certificate.pem"
+            let keyPath = sslConfigDir + "key.pem"
+            return SSLConfig(withCACertificateDirectory: nil, usingCertificateFile: certificatePath,
+                             withKeyFile: keyPath, usingSelfSignedCerts: true)
+        #else
+            let chainFilePath = sslConfigDir + "certificateChain.pfx"
+            return SSLConfig(withChainFilePath: chainFilePath, withPassword: "kitura",
+                             usingSelfSignedCerts: true)
+        #endif
+    }()
 
     func doSetUp() {
         PrintLogger.use()
@@ -38,10 +55,11 @@ extension KituraTest {
     func doTearDown() {
     }
 
-    func performServerTest(_ router: ServerDelegate, useSSL: Bool = false, line: Int = #line,
+    func performServerTest(_ router: ServerDelegate, useSSL: Bool = useSSLDefault, line: Int = #line,
                            asyncTasks: @escaping (XCTestExpectation) -> Void...) {
         let port = 8090
-        let sslConfig = useSSL ? TestSSLConfig.sslConfig : nil
+        self.useSSL = useSSL
+        let sslConfig = useSSL ? KituraTest.sslConfig : nil
         let server = Kitura.addHTTPServer(onPort: port, with: router, withSSL: sslConfig)
         defer {
             Kitura.stop() // make sure to remove server from Kitura static list
@@ -71,7 +89,7 @@ extension KituraTest {
         }
     }
 
-    func performRequest(_ method: String, path: String, useSSL: Bool = false, callback: @escaping ClientRequest.Callback,
+    func performRequest(_ method: String, path: String, callback: @escaping ClientRequest.Callback,
                         headers: [String: String]? = nil, requestModifier: ((ClientRequest) -> Void)? = nil) {
         var allHeaders = [String: String]()
         if  let headers = headers {
@@ -82,11 +100,11 @@ extension KituraTest {
         if allHeaders["Content-Type"] == nil {
             allHeaders["Content-Type"] = "text/plain"
         }
-        let schema = useSSL ? "https" : "http"
+        let schema = self.useSSL ? "https" : "http"
         var options: [ClientRequest.Options] =
                 [.method(method), .schema(schema), .hostname("localhost"), .port(8090), .path(path),
                  .headers(allHeaders)]
-        if useSSL {
+        if self.useSSL {
             options.append(.disableSSLVerification)
         }
         let req = HTTP.request(options, callback: callback)
@@ -95,39 +113,12 @@ extension KituraTest {
         }
         req.end(close: true)
     }
-}
 
-extension XCTestCase: KituraTest {
     func expectation(line: Int, index: Int) -> XCTestExpectation {
         return self.expectation(description: "\(type(of: self)):\(line)[\(index)]")
     }
 
-    // swiftlint:disable variable_name
-    func waitExpectation(timeout t: TimeInterval, handler: XCWaitCompletionHandler?) {
-    // swiftlint:enable variable_name
-        self.waitForExpectations(timeout: t, handler: handler)
+    func waitExpectation(timeout: TimeInterval, handler: XCWaitCompletionHandler?) {
+        self.waitForExpectations(timeout: timeout, handler: handler)
     }
-}
-
-private class TestSSLConfig {
-    fileprivate static let sslConfig: SSLConfig = {
-        let path = #file
-        let sslConfigDir: String
-        if let range = path.range(of: "/", options: .backwards) {
-            sslConfigDir = path.substring(to: range.lowerBound) + "/SSLConfig/"
-        } else {
-            sslConfigDir = "./SSLConfig/"
-        }
-
-        #if os(Linux)
-            let certificatePath = sslConfigDir + "certificate.pem"
-            let keyPath = sslConfigDir + "key.pem"
-            return SSLConfig(withCACertificateDirectory: nil, usingCertificateFile: certificatePath,
-                             withKeyFile: keyPath, usingSelfSignedCerts: true)
-        #else
-            let chainFilePath = sslConfigDir + "certificateChain.pfx"
-            return SSLConfig(withChainFilePath: chainFilePath, withPassword: "kitura",
-                             usingSelfSignedCerts: true)
-        #endif
-    }()
 }
