@@ -126,6 +126,10 @@ public class RouterResponse {
     /// - Throws: Socket.Error if an error occurred while writing to a socket.
     @discardableResult
     public func end() throws {
+        guard !state.invokedEnd else {
+            Log.warning("RouterResponse end() invoked more than once for \(self.request.urlURL)")
+            return
+        }
         lifecycle.onEndInvoked()
         lifecycle.resetOnEndInvoked()
 
@@ -175,6 +179,10 @@ public class RouterResponse {
     /// - Returns: this RouterResponse.
     @discardableResult
     public func send(_ str: String) -> RouterResponse {
+        guard !state.invokedEnd else {
+            Log.warning("RouterResponse send(str:) invoked after end() for \(self.request.urlURL)")
+            return self
+        }
         let utf8Length = str.lengthOfBytes(using: .utf8)
         let bufferLength = utf8Length + 1  // Add room for the NULL terminator
         var utf8: [CChar] = [CChar](repeating: 0, count: bufferLength)
@@ -192,6 +200,10 @@ public class RouterResponse {
     /// - Returns: this RouterResponse.
     @discardableResult
     public func send(data: Data) -> RouterResponse {
+        guard !state.invokedEnd else {
+            Log.warning("RouterResponse send(data:) invoked after end() for \(self.request.urlURL)")
+            return self
+        }
         buffer.append(data: data)
         state.invokedSend = true
         return self
@@ -207,6 +219,10 @@ public class RouterResponse {
     ///       If the fileName is relative, it is relative to the current directory.
     @discardableResult
     public func send(fileName: String) throws -> RouterResponse {
+        guard !state.invokedEnd else {
+            Log.warning("RouterResponse send(fileName:) invoked after end() for \(self.request.urlURL)")
+            return self
+        }
         let data = try Data(contentsOf: URL(fileURLWithPath: fileName))
 
         let contentType = ContentType.sharedInstance.getContentType(forFileName: fileName)
@@ -225,6 +241,10 @@ public class RouterResponse {
     /// - Returns: this RouterResponse.
     @discardableResult
     public func send(json: JSON) -> RouterResponse {
+        guard !state.invokedEnd else {
+            Log.warning("RouterResponse send(json:) invoked after end() for \(self.request.urlURL)")
+            return self
+        }
         do {
             let jsonData = try json.rawData(options:.prettyPrinted)
             headers.setType("json")
@@ -248,6 +268,10 @@ public class RouterResponse {
     /// is the alphanumeric characters and `[]$._`).
     /// - Returns: this RouterResponse.
     public func send(jsonp: JSON, callbackParameter: String = "callback") throws -> RouterResponse {
+        guard !state.invokedEnd else {
+            Log.warning("RouterResponse send(jsonp:) invoked after end() for \(self.request.urlURL)")
+            return self
+        }
         func sanitizeJSIdentifier(_ ident: String) -> String {
             return RouterResponse.sanitizeJSIdentifierRegex.stringByReplacingMatches(in: ident, options: [],
                                     range: NSRange(location: 0, length: ident.utf16.count), withTemplate: "")
@@ -296,6 +320,10 @@ public class RouterResponse {
     /// - Parameter status: the HTTP status code.
     /// - Returns: this RouterResponse.
     public func send(status: HTTPStatusCode) -> RouterResponse {
+        guard !state.invokedEnd else {
+            Log.warning("RouterResponse send(status:) invoked after end() for \(self.request.urlURL)")
+            return self
+        }
         self.status(status)
         send(HTTPURLResponse.localizedString(forStatusCode: status.rawValue))
         return self
@@ -333,6 +361,10 @@ public class RouterResponse {
     /// - Parameter download: the file to download.
     /// - Throws: An error in the Cocoa domain, if the file cannot be read.
     public func send(download: String) throws {
+        guard !state.invokedEnd else {
+            Log.warning("RouterResponse send(download:) invoked after end() for \(self.request.urlURL)")
+            return
+        }
         try send(fileName: StaticFileServer.ResourcePathHandler.getAbsolutePath(for: download))
         headers.addAttachment(for: download)
     }
