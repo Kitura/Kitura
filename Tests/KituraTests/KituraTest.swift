@@ -24,8 +24,11 @@ import Dispatch
 
 class KituraTest: XCTestCase {
 
-    static private let useSSLDefault = true
-    private var useSSL = useSSLDefault
+    static let useSSLDefault = true
+    static let portDefault = 8090
+
+    var useSSL = useSSLDefault
+    var port = portDefault
 
     static let sslConfig: SSLConfig = {
         let path = #file
@@ -55,9 +58,8 @@ class KituraTest: XCTestCase {
     func doTearDown() {
     }
 
-    func performServerTest(_ router: ServerDelegate, useSSL: Bool = useSSLDefault, line: Int = #line,
+    func performServerTest(_ router: ServerDelegate, port: Int = portDefault, useSSL: Bool = useSSLDefault, line: Int = #line,
                            asyncTasks: @escaping (XCTestExpectation) -> Void...) {
-        let port = 8090
         self.useSSL = useSSL
         let sslConfig = useSSL ? KituraTest.sslConfig : nil
         let server = Kitura.addHTTPServer(onPort: port, with: router, withSSL: sslConfig)
@@ -73,8 +75,8 @@ class KituraTest: XCTestCase {
 
         Kitura.start()
 
-        let requestQueue = DispatchQueue(label: "Request queue")
         if !failed {
+            let requestQueue = DispatchQueue(label: "Request queue")
             for (index, asyncTask) in asyncTasks.enumerated() {
                 let expectation = self.expectation(line: line, index: index)
                 requestQueue.async() {
@@ -82,8 +84,8 @@ class KituraTest: XCTestCase {
                 }
             }
 
+            // wait for timeout or for all created expectations to be fulfilled
             waitExpectation(timeout: 10) { error in
-                // wait for timeout or for all created expectations to be fulfilled
                 XCTAssertNil(error)
             }
         }
@@ -91,6 +93,7 @@ class KituraTest: XCTestCase {
 
     func performRequest(_ method: String, path: String, callback: @escaping ClientRequest.Callback,
                         headers: [String: String]? = nil, requestModifier: ((ClientRequest) -> Void)? = nil) {
+
         var allHeaders = [String: String]()
         if  let headers = headers {
             for  (headerName, headerValue) in headers {
@@ -100,13 +103,15 @@ class KituraTest: XCTestCase {
         if allHeaders["Content-Type"] == nil {
             allHeaders["Content-Type"] = "text/plain"
         }
+
         let schema = self.useSSL ? "https" : "http"
         var options: [ClientRequest.Options] =
-                [.method(method), .schema(schema), .hostname("localhost"), .port(8090), .path(path),
+                [.method(method), .schema(schema), .hostname("localhost"), .port(Int16(self.port)), .path(path),
                  .headers(allHeaders)]
         if self.useSSL {
             options.append(.disableSSLVerification)
         }
+
         let req = HTTP.request(options, callback: callback)
         if let requestModifier = requestModifier {
             requestModifier(req)
