@@ -56,7 +56,8 @@ class TestResponse: KituraTest {
             ("testSubdomains", testSubdomains),
             ("testJsonp", testJsonp),
             ("testLifecycle", testLifecycle),
-            ("testSend", testSend)
+            ("testSend", testSend),
+            ("testSendAfterEnd", testSendAfterEnd)
         ]
     }
 
@@ -911,6 +912,22 @@ class TestResponse: KituraTest {
 
     }
 
+    func testSendAfterEnd() {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/send_after_end", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response!.statusCode, HTTPStatusCode.forbidden, "HTTP Status code was \(response!.statusCode)")
+                do {
+                    let body = try response!.readString()
+                    XCTAssertEqual(body?.lowercased(), "forbidden<!DOCTYPE html><html><body><b>forbidden</b></body></html>\n\n".lowercased())
+                } catch {
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            })
+        }
+    }
+
     static func setupRouter() -> Router {
         let router = Router()
 
@@ -1184,6 +1201,21 @@ class TestResponse: KituraTest {
             next()
         }
 
+        router.get("/send_after_end") { _, response, next in
+            do {
+                let json = JSON([ "some": "json" ])
+                try response.send(status: HTTPStatusCode.forbidden).send(data: "<!DOCTYPE html><html><body><b>forbidden</b></body></html>\n\n".data(using: .utf8)!).end()
+                try response.send(status: HTTPStatusCode.OK).end()
+                response.send("string")
+                response.send(json: json)
+                try response.send(jsonp: json, callbackParameter: "cb").end()
+                try response.send(data: json.rawData())
+                try response.send(fileName: "./Tests/KituraTests/TestStaticFileServer/index.html")
+                try response.send(download: "./Tests/KituraTests/TestStaticFileServer/index.html")
+            } catch {}
+            next()
+        }
+
         router.error { request, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             do {
@@ -1207,7 +1239,7 @@ class TestResponse: KituraTest {
 
         router.error([DummyErrorMiddleware()])
 
-	return router
+        return router
     }
 
     class DummyErrorMiddleware: RouterMiddleware {
