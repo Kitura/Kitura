@@ -301,7 +301,9 @@ extension Router : ServerDelegate {
                     if  routeResp.statusCode == .unknown  && !routeResp.state.invokedSend {
                         strongSelf.sendDefaultResponse(request: routeReq, response: routeResp)
                     }
-                    try routeResp.end()
+                    if  !routeResp.state.invokedEnd {
+                        try routeResp.end()
+                    }
                 }
             } catch {
                 // Not much to do here

@@ -19,7 +19,7 @@ import XCTest
 @testable import Kitura
 @testable import KituraNet
 
-class TestMultiplicity: XCTestCase {
+class TestMultiplicity: KituraTest {
 
     static var allTests: [(String, (TestMultiplicity) -> () throws -> Void)] {
         return [

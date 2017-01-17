@@ -27,11 +27,12 @@ import SwiftyJSON
     import Darwin
 #endif
 
-class TestStaticFileServer: XCTestCase {
+class TestStaticFileServer: KituraTest {
 
     static var allTests: [(String, (TestStaticFileServer) -> () throws -> Void)] {
         return [
             ("testFileServer", testFileServer),
+            ("testFileServerSSL", testFileServerSSL),
             ("testGetWithWhiteSpaces", testGetWithWhiteSpaces),
             ("testGetWithSpecialCharacters", testGetWithSpecialCharacters),
             ("testGetWithSpecialCharactersEncoded", testGetWithSpecialCharactersEncoded),
@@ -51,7 +52,15 @@ class TestStaticFileServer: XCTestCase {
     let router = TestStaticFileServer.setupRouter()
 
     func testFileServer() {
-    	performServerTest(router, asyncTasks: { expectation in
+        testFileServer(useSSL: false)
+    }
+
+    func testFileServerSSL() {
+        testFileServer(useSSL: true)
+    }
+
+    func testFileServer(useSSL: Bool) {
+        performServerTest(router, useSSL: useSSL, asyncTasks: { expectation in
             self.performRequest("get", path:"/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")

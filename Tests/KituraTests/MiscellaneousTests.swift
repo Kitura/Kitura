@@ -20,7 +20,7 @@ import XCTest
 @testable import Kitura
 @testable import KituraNet
 
-class MiscellaneousTests: XCTestCase {
+class MiscellaneousTests: KituraTest {
 
     static var allTests: [(String, (MiscellaneousTests) -> () throws -> Void)] {
         return [
