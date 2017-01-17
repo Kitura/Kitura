@@ -27,7 +27,7 @@ import SwiftyJSON
     import Darwin
 #endif
 
-class TestSubrouter: XCTestCase {
+class TestSubrouter: KituraTest {
 
     static var allTests: [(String, (TestSubrouter) -> () throws -> Void)] {
         return [
