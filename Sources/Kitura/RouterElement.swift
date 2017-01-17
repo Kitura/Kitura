@@ -103,11 +103,17 @@ class RouterElement {
         // Check and see if the pattern is just a simple string
         guard !isSimpleString else {
             let pathToMatch = path.isEmpty ? "/" : path
-            let matched: Bool
+            var matched: Bool
             let matchedPath: String
             
             if allowPartialMatch {
                 matched = pathToMatch.hasPrefix(pattern!)
+                if matched && pattern! != "/" {
+                    let patternCount = pattern!.characters.count
+                    if pathToMatch.characters.count > patternCount {
+                        matched = pathToMatch[pathToMatch.index(pathToMatch.startIndex, offsetBy: patternCount)] == "/"
+                    }
+                }
                 matchedPath = matched && !pattern!.isEmpty && pattern! != "/" ? pattern! : ""
             }
             else {
