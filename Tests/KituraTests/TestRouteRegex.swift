@@ -49,7 +49,7 @@ fileprivate let subrouter = { () -> Router in
     return subrouter
 }()
 
-class TestRouteRegex: XCTestCase {
+class TestRouteRegex: KituraTest {
     static var allTests: [(String, (TestRouteRegex) -> () throws -> Void)] {
         return [
             ("testBuildRegexFromPattern", testBuildRegexFromPattern),

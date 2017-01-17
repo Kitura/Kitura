@@ -19,7 +19,7 @@ import Dispatch
 
 import Kitura
 
-class TestServer: XCTestCase {
+class TestServer: KituraTest {
 
     static var allTests: [(String, (TestServer) -> () throws -> Void)] {
         return [

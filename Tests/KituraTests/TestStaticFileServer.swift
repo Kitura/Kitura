@@ -27,7 +27,7 @@ import SwiftyJSON
     import Darwin
 #endif
 
-class TestStaticFileServer: XCTestCase {
+class TestStaticFileServer: KituraTest {
 
     static var allTests: [(String, (TestStaticFileServer) -> () throws -> Void)] {
         return [
