@@ -221,4 +221,8 @@ class TestStaticFileServer: KituraTest {
         runGetResponseTest(path: "/@@Kitura-router@@/missing.file", expectedStatusCode: HTTPStatusCode.notFound)
     }
 
+    func testAbsolutePathFunction() {
+        XCTAssertEqual(StaticFileServer.ResourcePathHandler.getAbsolutePath(for: "/"), "/", "Absolute path did not resolve to system root")
+    }
+
 }
