@@ -45,7 +45,7 @@ class FileResourceServer {
         if potentialResource.hasSuffix("/") {
             potentialResource += "index.html"
         }
-        
+
         let fileExists = fileManager.fileExists(atPath: potentialResource)
         if fileExists {
             return potentialResource
@@ -59,9 +59,9 @@ class FileResourceServer {
         let resourceFilePrefixRange: NSRange
         let lastSlash = fileName.range(of: "/", options: .backwards)
         if  lastSlash.location != NSNotFound {
-            resourceFilePrefixRange = NSMakeRange(0, lastSlash.location+1)
+            resourceFilePrefixRange = NSRange(location: 0, length: lastSlash.location+1)
         } else {
-            resourceFilePrefixRange = NSMakeRange(0, fileName.length)
+            resourceFilePrefixRange = NSRange(location: 0, length: fileName.length)
         }
         return fileName.substring(with: resourceFilePrefixRange) + "resources/" + resource
     }

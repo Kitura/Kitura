@@ -1,6 +1,5 @@
 /// For use with TestSubrouter.swift
 
-
 import Kitura
 import KituraNet
 

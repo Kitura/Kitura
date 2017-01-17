@@ -1,0 +1,11 @@
+included:
+    - Sources
+    - Tests
+excluded:
+    - Sources/Kitura/RouterHTTPVerbs_generated.swift
+    - Tests/KituraTests/TestRouterHTTPVerbs_generated.swift
+disabled_rules:
+  - file_length
+  - line_length
+  - type_body_length
+  - function_body_length

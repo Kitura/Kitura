@@ -23,13 +23,6 @@ import LoggerAPI
 /// or to determine if it's an acceptable value.
 public class ContentType {
 
-    /// Whether to use the local mime-type definitions or the ones in the file
-    #if os(Linux)
-        private let mimeTypeEmbedded: Bool = true
-    #else
-        private let mimeTypeEmbedded: Bool = false
-    #endif
-
     /// A dictionary of extensions to MIME type descriptions
     private var extToContentType = [String:String]()
 
@@ -38,20 +31,6 @@ public class ContentType {
 
     /// The following function loads the MIME types from an external file
     private init () {
-        // MARK: Remove this when Linux reading of JSON files works.
-        if mimeTypeEmbedded {
-
-            Log.warning("Loading embedded MIME types.")
-
-            for (contentType, exts) in rawTypes {
-                for ext in exts {
-                    extToContentType[ext] = contentType
-                }
-            }
-
-            return
-        }
-
         let contentTypesData = contentTypesString.data(using: .utf8)
         guard contentTypesData != nil else {
             Log.error("Error parsing \(contentTypesString)")
@@ -159,38 +138,16 @@ public class ContentType {
             return "multipart/*"
         case "json":
             return "application/json"
+            // swiftlint:disable todo
             // TODO: +json?
             //            if (type[0] === '+') {
             //                // "+json" -> "*/*+json" expando
             //                type = '*/*' + type
             //            }
+            // swiftlint:enable todo
         default:
             return type
         }
     }
-
-    /// The raw types
-    /// *Note*: This will be removed once JSON parsing and the types.json file can be read.
-    private var rawTypes = [
-        "text/plain": ["txt", "text", "conf", "def", "list", "log", "in", "ini"],
-        "text/html": ["html", "htm"],
-        "text/css": ["css"],
-        "text/csv": ["csv"],
-        "text/xml": [],
-        "text/javascript": [],
-        "text/markdown": [],
-        "text/x-markdown": ["markdown", "md", "mkd"],
-
-        "application/json": ["json", "map"],
-        "application/x-www-form-urlencoded": [],
-        "application/xml": ["xml", "xsl", "xsd"],
-        "application/javascript": ["js"],
-
-        "image/bmp": ["bmp"],
-        "image/png": ["png"],
-        "image/gif": ["gif"],
-        "image/jpeg": ["jpeg", "jpg", "jpe"],
-        "image/svg+xml": ["svg", "svgz"]
-    ]
 
 }

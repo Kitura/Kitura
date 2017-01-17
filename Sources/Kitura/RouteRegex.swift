@@ -80,8 +80,7 @@ public class RouteRegex {
 
         if allowPartialMatch {
             regexStr.append("(?:/(?=$))?(?=/|$)")
-        }
-        else {
+        } else {
             regexStr.append("(?:/(?=$))?$")
         }
 
@@ -133,7 +132,7 @@ public class RouteRegex {
             return (true, prefix, ".*", plusQuestStar)
         }
 
-        let range = NSMakeRange(0, path.characters.count)
+            let range = NSRange(location: 0, length: path.characters.count)
             let nsPath = NSString(string: path)           // Needed for substring
 
         if let keyMatch = keyRegex.firstMatch(in: path, options: [], range: range) {
@@ -147,7 +146,7 @@ public class RouteRegex {
             #else
                 let keyMatchRange = keyMatch.rangeAt(2)
             #endif
-            
+
             keys.append(nsPath.substring(with: keyMatchRange))
             matched = true
         } else if let nonKeyMatch = nonKeyRegex.firstMatch(in: path, options: [], range: range) {
@@ -186,7 +185,7 @@ public class RouteRegex {
                                   matchExp: String) -> String {
         // We have some kind of capture for this path element
         // Build the runtime regex depending on whether or not there is "repetition"
-        switch(plusQuestStar) {
+        switch plusQuestStar {
         case "+":
             return "/\(prefix)(\(matchExp)(?:/\(matchExp))*)"
         case "?":

@@ -44,7 +44,7 @@ public class RouterRequest {
         do {
             let regex = try RegularExpressionType(pattern: pattern, options: [.caseInsensitive])
 
-            let hostnameRange = NSMakeRange(0, self.hostname.utf8.count)
+            let hostnameRange = NSRange(location: 0, length: self.hostname.utf8.count)
 
             guard let match = regex.matches(in: self.hostname, options: [], range: hostnameRange).first else {
                 return self.hostname
@@ -79,8 +79,19 @@ public class RouterRequest {
     /// The method of the request.
     public let method: RouterMethod
 
+    private var _parsedURL: URLParser?
+    internal let parsedURLPath: URLParser
+
     /// The parsed URL.
-    public let parsedURL: URLParser
+    public private(set) lazy var parsedURL: URLParser = { [unowned self] in
+        if let result = self._parsedURL {
+            return result
+        } else {
+            let result = URLParser(url: self.serverRequest.urlURL.absoluteString.data(using: .utf8)!, isConnect: false)
+            self._parsedURL = result
+            return result
+        }
+    }()
 
     /// The router as a String.
     public internal(set) var route: String?
@@ -94,14 +105,14 @@ public class RouterRequest {
     var allowPartialMatch = true
 
     /// The original URL as a string.
-    public var originalURL : String { return serverRequest.urlURL.absoluteString }
+    public var originalURL: String { return serverRequest.urlURL.absoluteString }
 
     /// The URL.
     /// This contains just the path and query parameters starting with '/'
     /// Use 'urlURL' for the full URL
     @available(*, deprecated, message:
         "This contains just the path and query parameters starting with '/'. use 'urlURL' instead")
-    public var url : String { return serverRequest.urlString }
+    public var url: String { return serverRequest.urlString }
 
     /// The URL from the request as URLComponents
     /// URLComponents has a memory leak on linux as of swift 3.0.1. Use 'urlURL' instead
@@ -110,7 +121,7 @@ public class RouterRequest {
     public var urlComponents: URLComponents { return serverRequest.urlComponents }
 
     /// The URL from the request
-    public var urlURL : URL { return serverRequest.urlURL }
+    public var urlURL: URL { return serverRequest.urlURL }
 
     /// List of HTTP headers with simple String values.
     public let headers: Headers
@@ -125,7 +136,7 @@ public class RouterRequest {
 
     /// List of URL parameters.
     public internal(set) var parameters: [String:String] = [:]
-    
+
     /// List of query parameters.
     public lazy var queryParameters: [String:String] = { [unowned self] in
         var decodedParameters: [String:String] = [:]
@@ -148,10 +159,10 @@ public class RouterRequest {
         }
         return decodedParameters
         }()
-    
+
     /// User info.
     public var userInfo: [String: Any] = [:]
-    
+
     /// Body of the message.
     public internal(set) var body: ParsedBody?
 
@@ -162,7 +173,7 @@ public class RouterRequest {
     /// - Parameter request: the server request
     init(request: ServerRequest) {
         serverRequest = request
-        parsedURL = URLParser(url: request.urlURL.absoluteString.data(using: .utf8)!, isConnect: false)
+        parsedURLPath = URLParser(url: request.url, isConnect: false)
         httpVersion = HTTPVersion(major: serverRequest.httpVersionMajor ?? 1, minor: serverRequest.httpVersionMinor ?? 1)
         method = RouterMethod(fromRawValue: serverRequest.method)
         headers = Headers(headers: serverRequest.headers)
@@ -197,7 +208,14 @@ public class RouterRequest {
         }
 
         let headerValues = acceptHeaderValue.characters.split(separator: ",").map(String.init)
-        return MimeTypeAcceptor.accepts(headerValues: headerValues, types: types)
+        // special header value that matches all types
+        let matchAllPattern: String
+        if header.caseInsensitiveCompare("Accept") == .orderedSame {
+            matchAllPattern = "*/*"
+        } else {
+            matchAllPattern = "*"
+        }
+        return MimeTypeAcceptor.accepts(headerValues: headerValues, types: types, matchAllPattern: matchAllPattern)
     }
 
     /// Check if passed in types are acceptable based on the request's header field

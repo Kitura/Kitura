@@ -27,7 +27,7 @@ public class PrintLogger: Logger {
     public func isLogging(_ level: LoggerAPI.LoggerMessageType) -> Bool {
         return true
     }
-    
+
     public static func use() {
         Log.logger = PrintLogger()
         setbuf(stdout, nil)

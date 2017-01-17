@@ -28,7 +28,7 @@ class TestRequests: XCTestCase {
                    ("testCustomMiddlewareURLParameter", testCustomMiddlewareURLParameter),
                    ("testCustomMiddlewareURLParameterWithQueryParam", testCustomMiddlewareURLParameterWithQueryParam),
                    ("testParameters", testParameters),
-                   ("testParameterExit", testParameterExit),
+                   ("testParameterExit", testParameterExit)
         ]
     }
 
@@ -49,6 +49,9 @@ class TestRequests: XCTestCase {
         router.get("/zxcv/:p1") { request, _, next in
             let parameter = request.parameters["p1"]
             XCTAssertNotNil(parameter, "URL parameter p1 was nil")
+            XCTAssertEqual(request.hostname, "localhost", "RouterRequest.hostname wasn't localhost, it was \(request.hostname)")
+            XCTAssertEqual(request.port, 8090, "RouterRequest.port wasn't 8090, it was \(request.port)")
+            XCTAssertEqual(request.remoteAddress, "127.0.0.1", "RouterRequest.remoteAddress wasn't 127.0.0.1, it was \(request.remoteAddress)")
             next()
         }
         router.get("/zxcv/ploni") { request, _, next in
@@ -70,7 +73,9 @@ class TestRequests: XCTestCase {
     }
 
     private func runMiddlewareTest(path: String) {
+        // swiftlint:disable nesting
         class CustomMiddleware: RouterMiddleware {
+        // swiftlint:enable nesting
             func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
                 let id = request.parameters["id"]
                 XCTAssertNotNil(id, "URL parameter 'id' in custom middleware was nil")
@@ -121,8 +126,6 @@ class TestRequests: XCTestCase {
             next()
         }
 
-
-
         return router
     }
 
@@ -139,7 +142,7 @@ class TestRequests: XCTestCase {
             next()
         }
 
-        router.parameter("id") { request, response, value, next in
+        router.parameter(["id"]) { request, response, value, next in
             XCTAssertNotNil(value)
             XCTAssertEqual(request.parameters["id"], value)
             XCTAssertNil(response.headers["User-Id"])
