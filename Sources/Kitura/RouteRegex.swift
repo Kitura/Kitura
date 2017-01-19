@@ -35,7 +35,7 @@ public class RouteRegex {
     private let unnamedCaptureRegex: RegularExpressionType
     private let keyRegex: RegularExpressionType
     private let nonKeyRegex: RegularExpressionType
-    private let simpleStringChecker: RegularExpressionType
+    private let complexRouteCharacters = CharacterSet(charactersIn: "*.:+?()[]\\")
 
     private init() {
         do {
@@ -43,8 +43,6 @@ public class RouteRegex {
             unnamedCaptureRegex = try RegularExpressionType(pattern: "(.*)?(?:(?:\\(((?:\\\\.|[^()])+)\\))(?:([+*?])?))", options: [])
             keyRegex = namedCaptureRegex
             nonKeyRegex = unnamedCaptureRegex
-            
-            simpleStringChecker = try RegularExpressionType(pattern: "(.*)?[\\*\\.\\:\\+\\?\\(\\)\\[\\]\\\\]", options: [])
         } catch {
             Log.error("Failed to create regular expressions used to parse Route patterns")
             exit(1)
@@ -63,10 +61,9 @@ public class RouteRegex {
         }
         
         // Check and see if the pattern is a simple string (no captures and not a regular expression)
-        let range = NSMakeRange(0, pattern.characters.count)
-        guard let _ = simpleStringChecker.firstMatch(in: pattern, options: [], range: range) else {
+        if pattern.rangeOfCharacter(from: complexRouteCharacters) == nil {
             return (nil, true, nil)
-        }
+        } 
 
         var regexStr = "^"
         var keys = [String]()
