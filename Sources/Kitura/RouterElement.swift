@@ -143,22 +143,24 @@ class RouterElement {
     /// - Parameter response: the router response
     /// - Parameter next: the closure for the next execution block
     private func performSimpleMatch(path: String, request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
+        guard let pattern = pattern else { return }
+        
         let pathToMatch = path.isEmpty ? "/" : path
         var matched: Bool
         let matchedPath: String
         
         if allowPartialMatch {
-            matched = pathToMatch.hasPrefix(pattern!)
-            if matched && pattern! != "/" {
-                let patternCount = pattern!.characters.count
+            matched = pathToMatch.hasPrefix(pattern)
+            if matched && pattern != "/" {
+                let patternCount = pattern.characters.count
                 if pathToMatch.characters.count > patternCount {
                     matched = pathToMatch[pathToMatch.index(pathToMatch.startIndex, offsetBy: patternCount)] == "/"
                 }
             }
-            matchedPath = matched && !pattern!.isEmpty && pattern! != "/" ? pattern! : ""
+            matchedPath = matched && !pattern.isEmpty && pattern != "/" ? pattern : ""
         }
         else {
-            matched = pathToMatch == pattern!
+            matched = pathToMatch == pattern
             matchedPath = matched ? pathToMatch : ""
         }
         
