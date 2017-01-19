@@ -62,7 +62,7 @@ public class RouteRegex {
             return (nil, false, nil)
         }
         
-        // Check and see if the pattern is a simple string (no capture no regular expression
+        // Check and see if the pattern is a simple string (no captures and not a regular expression)
         let range = NSMakeRange(0, pattern.characters.count)
         guard let _ = simpleStringChecker.firstMatch(in: pattern, options: [], range: range) else {
             return (nil, true, nil)
