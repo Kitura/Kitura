@@ -26,7 +26,7 @@ extension StaticFileServer {
 
         static func getAbsolutePath(for path: String) -> String {
             var path = path
-            if path.hasSuffix(separator) {
+            if path.hasSuffix(separator) && path != separator {
                 path = String(path.characters.dropLast())
             }
 

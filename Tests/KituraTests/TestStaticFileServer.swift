@@ -27,7 +27,7 @@ import SwiftyJSON
     import Darwin
 #endif
 
-class TestStaticFileServer: XCTestCase {
+class TestStaticFileServer: KituraTest {
 
     static var allTests: [(String, (TestStaticFileServer) -> () throws -> Void)] {
         return [
@@ -219,6 +219,10 @@ class TestStaticFileServer: XCTestCase {
 
     func testGetMissingKituraResource() {
         runGetResponseTest(path: "/@@Kitura-router@@/missing.file", expectedStatusCode: HTTPStatusCode.notFound)
+    }
+
+    func testAbsolutePathFunction() {
+        XCTAssertEqual(StaticFileServer.ResourcePathHandler.getAbsolutePath(for: "/"), "/", "Absolute path did not resolve to system root")
     }
 
 }

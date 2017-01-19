@@ -28,7 +28,7 @@ import KituraTemplateEngine
     import Darwin
 #endif
 
-class TestTemplateEngine: XCTestCase {
+class TestTemplateEngine: KituraTest {
 
     static var allTests: [(String, (TestTemplateEngine) -> () throws -> Void)] {
         return [

@@ -20,7 +20,7 @@ import Foundation
 @testable import Kitura
 @testable import KituraNet
 
-class TestRequests: XCTestCase {
+class TestRequests: KituraTest {
 
     static var allTests: [(String, (TestRequests) -> () throws -> Void)] {
         return [
@@ -50,7 +50,7 @@ class TestRequests: XCTestCase {
             let parameter = request.parameters["p1"]
             XCTAssertNotNil(parameter, "URL parameter p1 was nil")
             XCTAssertEqual(request.hostname, "localhost", "RouterRequest.hostname wasn't localhost, it was \(request.hostname)")
-            XCTAssertEqual(request.port, 8090, "RouterRequest.port wasn't 8090, it was \(request.port)")
+            XCTAssertEqual(request.port, self.port, "RouterRequest.port wasn't \(self.port), it was \(request.port)")
             XCTAssertEqual(request.remoteAddress, "127.0.0.1", "RouterRequest.remoteAddress wasn't 127.0.0.1, it was \(request.remoteAddress)")
             next()
         }

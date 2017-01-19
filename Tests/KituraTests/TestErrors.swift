@@ -27,7 +27,7 @@ import XCTest
     import Darwin
 #endif
 
-class TestErrors: XCTestCase {
+class TestErrors: KituraTest {
 
     static var allTests: [(String, (TestErrors) -> () throws -> Void)] {
         return [
@@ -51,7 +51,7 @@ class TestErrors: XCTestCase {
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("invalid", path: "/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(response?.statusCode)")
                 expectation.fulfill()
             })
         }, { expectation in
