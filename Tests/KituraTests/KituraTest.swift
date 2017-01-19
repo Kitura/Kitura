@@ -27,8 +27,9 @@ class KituraTest: XCTestCase {
     static let useSSLDefault = true
     static let portDefault = 8090
 
-    var useSSL = useSSLDefault
-    var port = portDefault
+    static private(set) var server: HTTPServer? = nil
+    static private(set) var port = portDefault
+    static private(set) var useSSL = useSSLDefault
 
     static let sslConfig: SSLConfig = {
         let path = #file
@@ -58,14 +59,21 @@ class KituraTest: XCTestCase {
     func doTearDown() {
     }
 
-    func performServerTest(_ router: ServerDelegate, port: Int = portDefault, useSSL: Bool = useSSLDefault, line: Int = #line,
-                           asyncTasks: @escaping (XCTestExpectation) -> Void...) {
-        self.useSSL = useSSL
+    private static func startServer(router: ServerDelegate, port: Int, useSSL: Bool) {
+        if KituraTest.server != nil {
+            if port == KituraTest.port && useSSL == KituraTest.useSSL {
+                KituraTest.server!.delegate = router
+                return
+            } else {
+                stopServer()
+            }
+        }
+
+        KituraTest.port = port
+        KituraTest.useSSL = useSSL
+
         let sslConfig = useSSL ? KituraTest.sslConfig : nil
         let server = Kitura.addHTTPServer(onPort: port, with: router, withSSL: sslConfig)
-        defer {
-            Kitura.stop() // make sure to remove server from Kitura static list
-        }
 
         var failed = false
         server.failed { error in
@@ -76,18 +84,34 @@ class KituraTest: XCTestCase {
         Kitura.start()
 
         if !failed {
-            let requestQueue = DispatchQueue(label: "Request queue")
-            for (index, asyncTask) in asyncTasks.enumerated() {
-                let expectation = self.expectation(line: line, index: index)
-                requestQueue.async() {
-                    asyncTask(expectation)
-                }
-            }
+            KituraTest.server = server
+        }
+    }
 
-            // wait for timeout or for all created expectations to be fulfilled
-            waitExpectation(timeout: 10) { error in
-                XCTAssertNil(error)
+    static func stopServer() {
+        Kitura.stop()
+        KituraTest.server = nil
+    }
+
+    func performServerTest(_ router: ServerDelegate, port: Int = portDefault, useSSL: Bool = useSSLDefault,
+                           line: Int = #line, asyncTasks: @escaping (XCTestExpectation) -> Void...) {
+
+        KituraTest.startServer(router: router, port: port, useSSL: useSSL)
+        guard KituraTest.server != nil else {
+            return
+        }
+
+        let requestQueue = DispatchQueue(label: "Request queue")
+        for (index, asyncTask) in asyncTasks.enumerated() {
+            let expectation = self.expectation(line: line, index: index)
+            requestQueue.async() {
+                asyncTask(expectation)
             }
+        }
+
+        // wait for timeout or for all created expectations to be fulfilled
+        waitForExpectations(timeout: 10) { error in
+            XCTAssertNil(error)
         }
     }
 
@@ -104,11 +128,11 @@ class KituraTest: XCTestCase {
             allHeaders["Content-Type"] = "text/plain"
         }
 
-        let schema = self.useSSL ? "https" : "http"
+        let schema = KituraTest.useSSL ? "https" : "http"
         var options: [ClientRequest.Options] =
-                [.method(method), .schema(schema), .hostname("localhost"), .port(Int16(self.port)), .path(path),
+                [.method(method), .schema(schema), .hostname("localhost"), .port(Int16(KituraTest.port)), .path(path),
                  .headers(allHeaders)]
-        if self.useSSL {
+        if KituraTest.useSSL {
             options.append(.disableSSLVerification)
         }
 
@@ -121,9 +145,5 @@ class KituraTest: XCTestCase {
 
     func expectation(line: Int, index: Int) -> XCTestExpectation {
         return self.expectation(description: "\(type(of: self)):\(line)[\(index)]")
-    }
-
-    func waitExpectation(timeout: TimeInterval, handler: XCWaitCompletionHandler?) {
-        self.waitForExpectations(timeout: timeout, handler: handler)
     }
 }

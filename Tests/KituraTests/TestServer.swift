@@ -31,6 +31,7 @@ class TestServer: KituraTest {
 
     override func setUp() {
         doSetUp()
+        KituraTest.stopServer() // stop common server so we can run these tests
     }
 
     override func tearDown() {
@@ -103,7 +104,7 @@ class TestServer: KituraTest {
             Kitura.stop()
         }
 
-        waitExpectation(timeout: 10) { error in
+        waitForExpectations(timeout: 10) { error in
             XCTAssertNil(error)
         }
     }
@@ -116,7 +117,7 @@ class TestServer: KituraTest {
             Kitura.run()
         }
 
-        waitExpectation(timeout: 10) { error in
+        waitForExpectations(timeout: 10) { error in
             Kitura.stop()
             XCTAssertNil(error)
         }
@@ -131,7 +132,7 @@ class TestServer: KituraTest {
             Kitura.start()
         }
 
-        waitExpectation(timeout: 10) { error in
+        waitForExpectations(timeout: 10) { error in
             Kitura.stop()
             XCTAssertNil(error)
         }
