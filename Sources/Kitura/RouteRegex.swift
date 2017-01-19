@@ -1,5 +1,5 @@
 /*
- * Copyright IBM Corporation 2016
+ * Copyright IBM Corporation 2016, 2017
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,8 @@ public class RouteRegex {
     ///
     /// - Parameter pattern: Optional string
     /// - Parameter allowPartialMatch: True if a partial match is allowed. Defaults to false.
-    /// - Returns: A tuple of the compiled `RegularExpressionType?` and array of keys
+    /// - Returns: A tuple of the compiled `RegularExpressionType?`, a bool as to whether or not
+    ///            this is a simple String compare, and array of keys
     internal func buildRegex(fromPattern: String?, allowPartialMatch: Bool = false) -> (RegularExpressionType?, Bool, [String]?) {
         guard let pattern = fromPattern else {
             return (nil, false, nil)
