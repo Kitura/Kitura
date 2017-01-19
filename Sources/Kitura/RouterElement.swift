@@ -87,6 +87,7 @@ class RouterElement {
     ///
     /// - Parameter request: the request
     /// - Parameter response: the response
+    /// - Parameter parameterWalker: the walker for the list of parameter handlers
     /// - Parameter next: the callback
     func process(request: RouterRequest, response: RouterResponse, parameterWalker: RouterParameterWalker, next: @escaping () -> Void) {
         guard let path = request.parsedURLPath.path else {
@@ -102,35 +103,7 @@ class RouterElement {
         
         // Check and see if the pattern is just a simple string
         guard !isSimpleString else {
-            let pathToMatch = path.isEmpty ? "/" : path
-            var matched: Bool
-            let matchedPath: String
-            
-            if allowPartialMatch {
-                matched = pathToMatch.hasPrefix(pattern!)
-                if matched && pattern! != "/" {
-                    let patternCount = pattern!.characters.count
-                    if pathToMatch.characters.count > patternCount {
-                        matched = pathToMatch[pathToMatch.index(pathToMatch.startIndex, offsetBy: patternCount)] == "/"
-                    }
-                }
-                matchedPath = matched && !pattern!.isEmpty && pattern! != "/" ? pattern! : ""
-            }
-            else {
-                matched = pathToMatch == pattern!
-                matchedPath = matched ? pathToMatch : ""
-            }
-            
-            if matched {
-                request.matchedPath = matchedPath
-                request.allowPartialMatch = allowPartialMatch
-                request.parameters = mergeParameters ? request.parameters : [:]
-                request.route = pattern
-                processHelper(request: request, response: response, next: next)
-            }
-            else {
-                next()
-            }
+            performSimpleMatch(path: path, request: request, response: response, next: next)
             return
         }
 
@@ -144,6 +117,7 @@ class RouterElement {
             return
         }
 
+        // The pattern is a regular expression that needs to be checked
         let nsPath = NSString(string: path)
 
         guard let match = regex.firstMatch(in: path, options: [], range: NSRange(location: 0, length: path.characters.count)) else {
@@ -159,6 +133,44 @@ class RouterElement {
 
         parameterWalker.handle(request: request, response: response) {
             self.processHelper(request: request, response: response, next: next)
+        }
+    }
+    
+    /// Perform a simple match
+    ///
+    /// - Parameter path: the path being matched
+    /// - Parameter request: the request
+    /// - Parameter response: the router response
+    /// - Parameter next: the closure for the next execution block
+    private func performSimpleMatch(path: String, request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
+        let pathToMatch = path.isEmpty ? "/" : path
+        var matched: Bool
+        let matchedPath: String
+        
+        if allowPartialMatch {
+            matched = pathToMatch.hasPrefix(pattern!)
+            if matched && pattern! != "/" {
+                let patternCount = pattern!.characters.count
+                if pathToMatch.characters.count > patternCount {
+                    matched = pathToMatch[pathToMatch.index(pathToMatch.startIndex, offsetBy: patternCount)] == "/"
+                }
+            }
+            matchedPath = matched && !pattern!.isEmpty && pattern! != "/" ? pattern! : ""
+        }
+        else {
+            matched = pathToMatch == pattern!
+            matchedPath = matched ? pathToMatch : ""
+        }
+        
+        if matched {
+            request.matchedPath = matchedPath
+            request.allowPartialMatch = allowPartialMatch
+            request.parameters = mergeParameters ? request.parameters : [:]
+            request.route = pattern
+            processHelper(request: request, response: response, next: next)
+        }
+        else {
+            next()
         }
     }
 
