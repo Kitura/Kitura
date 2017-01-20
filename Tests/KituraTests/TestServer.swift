@@ -30,12 +30,8 @@ class TestServer: KituraTest {
     }
 
     override func setUp() {
-        doSetUp()
-        KituraTest.stopServer() // stop common server so we can run these tests
-    }
-
-    override func tearDown() {
-        doTearDown()
+        super.setUp()
+        stopServer() // stop common server so we can run these tests
     }
 
     private func setupServerAndExpectations(expectStart: Bool, expectStop: Bool, expectFail: Bool,

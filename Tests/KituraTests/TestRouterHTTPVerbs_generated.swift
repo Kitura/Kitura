@@ -48,8 +48,7 @@ class TestRouterHTTPVerbs_generated: KituraTest {
 
     // check that all verbs with BodyTestHandler parameter was added to elements array
     func testFirstTypeVerbsAdded() {
-        let router = Router()
-        performServerTest(router) { expectation in
+            let router = Router()
             var verbsArray: [String] = []
             verbsArray.append("ALL")
             router.all("/bodytest", handler: self.BodyTestHandler)
@@ -119,13 +118,10 @@ class TestRouterHTTPVerbs_generated: KituraTest {
                     return
                 }
             }
-            expectation.fulfill()
-        }
     }
 
     func testSecondTypeVerbsAdded() {
-        let router = Router()
-        performServerTest(router) { expectation in
+            let router = Router()
             var verbsArray: [String] = []
             verbsArray.append("ALL")
             router.all("/bodytest", handler: [self.BodyTestHandler, self.BodyTestHandler])
@@ -195,13 +191,10 @@ class TestRouterHTTPVerbs_generated: KituraTest {
                     return
                 }
             }
-            expectation.fulfill()
-        }
     }
 
     func testThirdTypeVerbsAdded() {
-        let router = Router()
-        performServerTest(router) { expectation in
+            let router = Router()
             var verbsArray: [String] = []
             let bodyParser = BodyParser()
             verbsArray.append("ALL")
@@ -272,13 +265,10 @@ class TestRouterHTTPVerbs_generated: KituraTest {
                     return
                 }
             }
-            expectation.fulfill()
-        }
     }
 
     func testFourthTypeVerbsAdded() {
-        let router = Router()
-        performServerTest(router) { expectation in
+            let router = Router()
             var verbsArray: [String] = []
             let bodyParser = BodyParser()
             verbsArray.append("ALL")
@@ -349,7 +339,5 @@ class TestRouterHTTPVerbs_generated: KituraTest {
                     return
                 }
             }
-            expectation.fulfill()
-        }
     }
 }

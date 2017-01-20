@@ -43,14 +43,6 @@ class TestCookies: KituraTest {
         ]
     }
 
-    override func setUp() {
-        doSetUp()
-    }
-
-    override func tearDown() {
-        doTearDown()
-    }
-
     let router = TestCookies.setupRouter()
 
     func testCookieToServerWithSemiColonSeparator() {

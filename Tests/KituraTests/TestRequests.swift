@@ -25,37 +25,16 @@ class TestRequests: KituraTest {
     static var allTests: [(String, (TestRequests) -> () throws -> Void)] {
         return [
                    ("testURLParameters", testURLParameters),
-                   ("testURLParametersSSL", testURLParametersSSL),
                    ("testCustomMiddlewareURLParameter", testCustomMiddlewareURLParameter),
-                   ("testCustomMiddlewareURLParameterSSL", testCustomMiddlewareURLParameterSSL),
                    ("testCustomMiddlewareURLParameterWithQueryParam", testCustomMiddlewareURLParameterWithQueryParam),
-                   ("testCustomMiddlewareURLParameterWithQueryParamSSL", testCustomMiddlewareURLParameterWithQueryParamSSL),
                    ("testParameters", testParameters),
-                   ("testParametersSSL", testParametersSSL),
-                   ("testParameterExit", testParameterExit),
-                   ("testParameterExitSSL", testParameterExitSSL)
+                   ("testParameterExit", testParameterExit)
         ]
-    }
-
-    override func setUp() {
-        doSetUp()
-    }
-
-    override func tearDown() {
-        doTearDown()
     }
 
     let router = TestRequests.setupRouter()
 
     func testURLParameters() {
-        testURLParameters(useSSL: false)
-    }
-
-    func testURLParametersSSL() {
-        testURLParameters(useSSL: true)
-    }
-
-    func testURLParameters(useSSL: Bool) {
         // Set up router for this test
         let router = Router()
 
@@ -63,7 +42,7 @@ class TestRequests: KituraTest {
             let parameter = request.parameters["p1"]
             XCTAssertNotNil(parameter, "URL parameter p1 was nil")
             XCTAssertEqual(request.hostname, "localhost", "RouterRequest.hostname wasn't localhost, it was \(request.hostname)")
-            XCTAssertEqual(request.port, KituraTest.port, "RouterRequest.port wasn't \(KituraTest.port), it was \(request.port)")
+            XCTAssertEqual(request.port, self.port, "RouterRequest.port wasn't \(self.port), it was \(request.port)")
             XCTAssertEqual(request.remoteAddress, "127.0.0.1", "RouterRequest.remoteAddress wasn't 127.0.0.1, it was \(request.remoteAddress)")
             next()
         }
@@ -77,7 +56,7 @@ class TestRequests: KituraTest {
             next()
         }
 
-        performServerTest(router, useSSL: useSSL) { expectation in
+        performServerTest(router) { expectation in
             self.performRequest("get", path: "/zxcv/ploni", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 expectation.fulfill()
@@ -85,7 +64,7 @@ class TestRequests: KituraTest {
         }
     }
 
-    private func runMiddlewareTest(path: String, useSSL: Bool) {
+    private func runMiddlewareTest(path: String) {
         // swiftlint:disable nesting
         class CustomMiddleware: RouterMiddleware {
         // swiftlint:enable nesting
@@ -109,7 +88,7 @@ class TestRequests: KituraTest {
             next()
         }
 
-        performServerTest(router, useSSL: useSSL) { expectation in
+        performServerTest(router) { expectation in
             self.performRequest("get", path: path, callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 expectation.fulfill()
@@ -118,19 +97,11 @@ class TestRequests: KituraTest {
     }
 
     func testCustomMiddlewareURLParameter() {
-        runMiddlewareTest(path: "/user/my_custom_id", useSSL: false)
-    }
-
-    func testCustomMiddlewareURLParameterSSL() {
-        runMiddlewareTest(path: "/user/my_custom_id", useSSL: true)
+        runMiddlewareTest(path: "/user/my_custom_id")
     }
 
     func testCustomMiddlewareURLParameterWithQueryParam() {
-        runMiddlewareTest(path: "/user/my_custom_id?some_param=value", useSSL: false)
-    }
-
-    func testCustomMiddlewareURLParameterWithQueryParamSSL() {
-        runMiddlewareTest(path: "/user/my_custom_id?some_param=value", useSSL: true)
+        runMiddlewareTest(path: "/user/my_custom_id?some_param=value")
     }
 
     static func setupRouter() -> Router {
@@ -151,14 +122,6 @@ class TestRequests: KituraTest {
     }
 
     func testParameters() {
-        testParameters(useSSL: false)
-    }
-
-    func testParametersSSL() {
-        testParameters(useSSL: true)
-    }
-
-    func testParameters(useSSL: Bool) {
         let router = Router()
 
         router.parameter("user") { request, response, value, next in
@@ -205,7 +168,7 @@ class TestRequests: KituraTest {
             next()
         }
 
-        performServerTest(router, useSSL: useSSL, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path: "users/random/1000", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertNotNil(response!.headers["User"])
@@ -235,14 +198,6 @@ class TestRequests: KituraTest {
     }
 
     func testParameterExit() {
-        testParameterExit(useSSL: false)
-    }
-
-    func testParameterExitSSL() {
-        testParameterExit(useSSL: true)
-    }
-
-    func testParameterExit(useSSL: Bool) {
         let router = Router()
 
         router.parameter("id") { request, response, value, next in
@@ -265,7 +220,7 @@ class TestRequests: KituraTest {
             next()
         }
 
-        performServerTest(router, useSSL: useSSL, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path: "users/random/1000", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertNotNil(response!.headers["User-Id"])

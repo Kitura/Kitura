@@ -61,14 +61,6 @@ class TestResponse: KituraTest {
         ]
     }
 
-    override func setUp() {
-        doSetUp()
-    }
-
-    override func tearDown() {
-        doTearDown()
-    }
-
     let router = TestResponse.setupRouter()
 
     func testSimpleResponse() {
