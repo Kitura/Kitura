@@ -1,5 +1,5 @@
 /*
- * Copyright IBM Corporation 2016
+ * Copyright IBM Corporation 2016, 2017
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,9 @@ class RouterElement {
     #else
         private var regex: NSRegularExpression?
     #endif
+    
+    /// The pattern is a simple string
+    private var isSimpleString = false
 
     /// The list of keys
     private var keys: [String]?
@@ -62,14 +65,14 @@ class RouterElement {
     init(method: RouterMethod, pattern: String?, middleware: [RouterMiddleware],
          allowPartialMatch: Bool = true, mergeParameters: Bool = false) {
         self.method = method
-        self.pattern = pattern
+        self.pattern = pattern?.hasPrefix("/") ?? true ? pattern : "/" + (pattern ?? "")
         self.regex = nil
         self.keys = nil
         self.middlewares = middleware
         self.allowPartialMatch = allowPartialMatch
         self.mergeParameters = mergeParameters
 
-        (regex, keys) = RouteRegex.sharedInstance.buildRegex(fromPattern: pattern, allowPartialMatch: allowPartialMatch)
+        (regex, isSimpleString, keys) = RouteRegex.sharedInstance.buildRegex(fromPattern: pattern, allowPartialMatch: allowPartialMatch)
     }
 
     /// Convenience initializer
@@ -84,6 +87,7 @@ class RouterElement {
     ///
     /// - Parameter request: the request
     /// - Parameter response: the response
+    /// - Parameter parameterWalker: the walker for the list of parameter handlers
     /// - Parameter next: the callback
     func process(request: RouterRequest, response: RouterResponse, parameterWalker: RouterParameterWalker, next: @escaping () -> Void) {
         guard let path = request.parsedURLPath.path else {
@@ -94,6 +98,12 @@ class RouterElement {
         guard (response.error != nil && method == .error)
             || (response.error == nil && (method == request.method || method == .all)) else {
             next()
+            return
+        }
+        
+        // Check and see if the pattern is just a simple string
+        guard !isSimpleString else {
+            performSimpleMatch(path: path, request: request, response: response, next: next)
             return
         }
 
@@ -107,6 +117,7 @@ class RouterElement {
             return
         }
 
+        // The pattern is a regular expression that needs to be checked
         let nsPath = NSString(string: path)
 
         guard let match = regex.firstMatch(in: path, options: [], range: NSRange(location: 0, length: path.characters.count)) else {
@@ -122,6 +133,46 @@ class RouterElement {
 
         parameterWalker.handle(request: request, response: response) {
             self.processHelper(request: request, response: response, next: next)
+        }
+    }
+    
+    /// Perform a simple match
+    ///
+    /// - Parameter path: the path being matched
+    /// - Parameter request: the request
+    /// - Parameter response: the router response
+    /// - Parameter next: the closure for the next execution block
+    private func performSimpleMatch(path: String, request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
+        guard let pattern = pattern else { return }
+        
+        let pathToMatch = path.isEmpty ? "/" : path
+        var matched: Bool
+        let matchedPath: String
+        
+        if allowPartialMatch {
+            matched = pathToMatch.hasPrefix(pattern)
+            if matched && pattern != "/" {
+                let patternCount = pattern.characters.count
+                if pathToMatch.characters.count > patternCount {
+                    matched = pathToMatch[pathToMatch.index(pathToMatch.startIndex, offsetBy: patternCount)] == "/"
+                }
+            }
+            matchedPath = matched && !pattern.isEmpty && pattern != "/" ? pattern : ""
+        }
+        else {
+            matched = pathToMatch == pattern
+            matchedPath = matched ? pathToMatch : ""
+        }
+        
+        if matched {
+            request.matchedPath = matchedPath
+            request.allowPartialMatch = allowPartialMatch
+            request.parameters = mergeParameters ? request.parameters : [:]
+            request.route = pattern
+            processHelper(request: request, response: response, next: next)
+        }
+        else {
+            next()
         }
     }
 

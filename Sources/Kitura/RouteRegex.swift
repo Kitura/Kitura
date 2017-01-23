@@ -1,5 +1,5 @@
 /*
- * Copyright IBM Corporation 2016
+ * Copyright IBM Corporation 2016, 2017
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ public class RouteRegex {
     private let unnamedCaptureRegex: RegularExpressionType
     private let keyRegex: RegularExpressionType
     private let nonKeyRegex: RegularExpressionType
+    private let complexRouteCharacters = CharacterSet(charactersIn: "*.:+?()[]\\")
 
     private init() {
         do {
@@ -52,11 +53,17 @@ public class RouteRegex {
     ///
     /// - Parameter pattern: Optional string
     /// - Parameter allowPartialMatch: True if a partial match is allowed. Defaults to false.
-    /// - Returns: A tuple of the compiled `RegularExpressionType?` and array of keys
-    internal func buildRegex(fromPattern: String?, allowPartialMatch: Bool = false) -> (RegularExpressionType?, [String]?) {
+    /// - Returns: A tuple of the compiled `RegularExpressionType?`, a bool as to whether or not
+    ///            this is a simple String compare, and array of keys
+    internal func buildRegex(fromPattern: String?, allowPartialMatch: Bool = false) -> (RegularExpressionType?, Bool, [String]?) {
         guard let pattern = fromPattern else {
-            return (nil, nil)
+            return (nil, false, nil)
         }
+        
+        // Check and see if the pattern is a simple string (no captures and not a regular expression)
+        if pattern.rangeOfCharacter(from: complexRouteCharacters) == nil {
+            return (nil, true, nil)
+        } 
 
         var regexStr = "^"
         var keys = [String]()
@@ -82,7 +89,7 @@ public class RouteRegex {
             Log.error("Failed to compile the regular expression for the route \(pattern)")
         }
 
-        return (regex, keys)
+        return (regex, false, keys)
     }
 
     func handlePath(_ path: String, regexStr: String, keys: [String], nonKeyIndex: Int) ->
