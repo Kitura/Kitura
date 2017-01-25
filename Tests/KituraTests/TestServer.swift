@@ -17,6 +17,7 @@
 import XCTest
 import Dispatch
 
+import KituraNet
 import Kitura
 
 class TestServer: KituraTest {
@@ -29,13 +30,15 @@ class TestServer: KituraTest {
         ]
     }
 
+    let httpPort = 8090
+    let fastCgiPort = 9000
+
     override func setUp() {
         super.setUp()
         stopServer() // stop common server so we can run these tests
     }
 
-    private func setupServerAndExpectations(expectStart: Bool, expectStop: Bool, expectFail: Bool,
-                                            httpPort: Int = 8090, fastCgiPort: Int = 9000) {
+    private func setupServerAndExpectations(expectStart: Bool, expectStop: Bool, expectFail: Bool) {
         let router = Router()
         let httpServer = Kitura.addHTTPServer(onPort: httpPort, with: router)
         let fastCgiServer = Kitura.addFastCGIServer(onPort: fastCgiPort, with: router)
@@ -120,17 +123,30 @@ class TestServer: KituraTest {
     }
 
     func testServerFail() {
-        setupServerAndExpectations(expectStart: false, expectStop: false, expectFail: true,
-                                   httpPort: -1, fastCgiPort: -1)
+        do {
+            let httpServer = HTTP.createServer()
+            let fastCgiServer = FastCGI.createServer()
+            defer {
+                httpServer.stop()
+                fastCgiServer.stop()
+            }
+            try httpServer.listen(on: httpPort)
+            try fastCgiServer.listen(on: fastCgiPort)
 
-        let requestQueue = DispatchQueue(label: "Request queue")
-        requestQueue.async() {
-            Kitura.start()
-        }
+            // setupServer startup should fail as we are already listening on the ports
+            setupServerAndExpectations(expectStart: false, expectStop: false, expectFail: true)
 
-        waitForExpectations(timeout: 10) { error in
-            Kitura.stop()
-            XCTAssertNil(error)
+            let requestQueue = DispatchQueue(label: "Request queue")
+            requestQueue.async() {
+                Kitura.start()
+            }
+
+            waitForExpectations(timeout: 10) { error in
+                Kitura.stop()
+                XCTAssertNil(error)
+            }
+        } catch {
+            XCTFail("Unexpected error starting server: \(error)")
         }
     }
 }
