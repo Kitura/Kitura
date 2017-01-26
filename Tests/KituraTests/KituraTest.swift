@@ -65,7 +65,7 @@ class KituraTest: XCTestCase {
         PrintLogger.use(colored: true)
     }
 
-    func performServerTest(_ router: ServerDelegate, sslOption: SSLOption = SSLOption.both,
+    func performServerTest(_ router: ServerDelegate, sslOption: SSLOption = SSLOption.httpOnly,
                            line: Int = #line, asyncTasks: @escaping (XCTestExpectation) -> Void...) {
         if sslOption != SSLOption.httpsOnly {
             self.port = KituraTest.httpPort
