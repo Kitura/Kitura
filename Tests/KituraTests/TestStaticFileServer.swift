@@ -47,27 +47,27 @@ class TestStaticFileServer: KituraTest {
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path:"/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
                 do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
                 } catch {
                     XCTFail("No response body")
                 }
 
-                XCTAssertEqual(response!.headers["x-custom-header"]!.first!, "Kitura")
-                XCTAssertNotNil(response!.headers["Last-Modified"])
-                XCTAssertNotNil(response!.headers["Etag"])
-                XCTAssertEqual(response!.headers["Cache-Control"]!.first!, "max-age=2")
+                XCTAssertEqual(response?.headers["x-custom-header"]?.first, "Kitura")
+                XCTAssertNotNil(response?.headers["Last-Modified"])
+                XCTAssertNotNil(response?.headers["Etag"])
+                XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=2")
                 expectation.fulfill()
             })
         }, { expectation in
             self.performRequest("get", path:"/qwer/index.html", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
                 do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -76,10 +76,10 @@ class TestStaticFileServer: KituraTest {
         }, { expectation in
             self.performRequest("get", path:"/qwer/index", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
                 do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -88,57 +88,57 @@ class TestStaticFileServer: KituraTest {
             }, { expectation in
                 self.performRequest("get", path:"/zxcv/index.html", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
                     do {
-                        let body = try response!.readString()
-                        XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
+                        let body = try response?.readString()
+                        XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
                     } catch {
                         XCTFail("No response body")
                     }
-                    XCTAssertNil(response!.headers["x-custom-header"])
-                    XCTAssertNil(response!.headers["Last-Modified"])
-                    XCTAssertNil(response!.headers["Etag"])
-                    XCTAssertEqual(response!.headers["Cache-Control"]!.first!, "max-age=0")
+                    XCTAssertNil(response?.headers["x-custom-header"])
+                    XCTAssertNil(response?.headers["Last-Modified"])
+                    XCTAssertNil(response?.headers["Etag"])
+                    XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=0")
                     expectation.fulfill()
                 })
             }, { expectation in
                 self.performRequest("get", path:"/zxcv", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    XCTAssertEqual(response!.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(response!.statusCode)")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(response?.statusCode)")
                     expectation.fulfill()
                 })
             }, { expectation in
                 self.performRequest("get", path:"/zxcv/index", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    XCTAssertEqual(response!.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(response!.statusCode)")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(response?.statusCode)")
                     expectation.fulfill()
                 })
             }, { expectation in
                 self.performRequest("get", path:"/asdf", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    XCTAssertEqual(response!.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(response!.statusCode)")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(response?.statusCode)")
                     expectation.fulfill()
                 })
             }, { expectation in
                 self.performRequest("put", path:"/asdf", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    XCTAssertEqual(response!.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(response!.statusCode)")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(response?.statusCode)")
                     expectation.fulfill()
                 })
             }, { expectation in
                 self.performRequest("get", path:"/asdf/", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
                     do {
-                        let body = try response!.readString()
-                        XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
+                        let body = try response?.readString()
+                        XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
                     } catch {
                         XCTFail("No response body")
                     }
-                    XCTAssertNil(response!.headers["x-custom-header"])
-                    XCTAssertNotNil(response!.headers["Last-Modified"])
-                    XCTAssertNotNil(response!.headers["Etag"])
-                    XCTAssertEqual(response!.headers["Cache-Control"]!.first!, "max-age=0")
+                    XCTAssertNil(response?.headers["x-custom-header"])
+                    XCTAssertNotNil(response?.headers["Last-Modified"])
+                    XCTAssertNotNil(response?.headers["Etag"])
+                    XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=0")
                     expectation.fulfill()
                 })
         })

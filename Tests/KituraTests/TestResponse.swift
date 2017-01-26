@@ -67,12 +67,12 @@ class TestResponse: KituraTest {
     	performServerTest(router) { expectation in
             self.performRequest("get", path:"/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
-                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
-                //XCTAssertEqual(response!.method, "GET", "The request wasn't recognized as a get")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
+                //XCTAssertEqual(response?.method, "GET", "The request wasn't recognized as a get")
                 do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -85,11 +85,11 @@ class TestResponse: KituraTest {
     	performServerTest(router) { expectation in
             self.performRequest("post", path: "/bodytest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                //XCTAssertEqual(response!.method, "POST", "The request wasn't recognized as a post")
-                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
+                //XCTAssertEqual(response?.method, "POST", "The request wasn't recognized as a post")
+                XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
                 do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Received text body: </b>plover\nxyzzy\n</body></html>\n\n")
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Received text body: </b>plover\nxyzzy\n</body></html>\n\n")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -106,8 +106,8 @@ class TestResponse: KituraTest {
             self.performRequest("post", path: "/bodytesthardway", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!, "Read 13 bytes")
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "Read 13 bytes")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -158,11 +158,11 @@ class TestResponse: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("post", path: "/doublebodytest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                //XCTAssertEqual(response!.method, "POST", "The request wasn't recognized as a post")
-                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
+                //XCTAssertEqual(response?.method, "POST", "The request wasn't recognized as a post")
+                XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
                 do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Received text body: </b>plover\nxyzzy\n</body></html>\n\n")
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Received text body: </b>plover\nxyzzy\n</body></html>\n\n")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -178,10 +178,10 @@ class TestResponse: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("post", path: "/bodytest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
+                XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
                 do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> [\"swift\": \"rocks\"] </body></html>\n\n")
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> [\"swift\": \"rocks\"] </body></html>\n\n")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -195,10 +195,10 @@ class TestResponse: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("post", path: "/bodytest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertNotNil(response!.headers["Date"], "There was No Date header in the response")
+                XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
                 do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> [\"swift\": \"rocks\"] </body></html>\n\n")
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> [\"swift\": \"rocks\"] </body></html>\n\n")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -245,8 +245,8 @@ class TestResponse: KituraTest {
             self.performRequest("post", path: "/multibodytest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!, "text  text(\"text default\") file1 a.txt text(\"Content of a.txt.\") file2 a.html text(\"<!DOCTYPE html><title>Content of a.html.</title>\") ")
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "text  text(\"text default\") file1 a.txt text(\"Content of a.txt.\") file2 a.html text(\"<!DOCTYPE html><title>Content of a.html.</title>\") ")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -272,8 +272,8 @@ class TestResponse: KituraTest {
             self.performRequest("post", path: "/multibodytest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!, "  text(\"text default\") file1 a.txt text(\"Content of a.txt.\") file2 a.html text(\"<!DOCTYPE html><title>Content of a.html.</title>\") ")
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "  text(\"text default\") file1 a.txt text(\"Content of a.txt.\") file2 a.html text(\"<!DOCTYPE html><title>Content of a.html.</title>\") ")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -302,8 +302,8 @@ class TestResponse: KituraTest {
             self.performRequest("post", path: "/multibodytest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!, "  text(\"text default\") ")
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "  text(\"text default\") ")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -323,8 +323,8 @@ class TestResponse: KituraTest {
             self.performRequest("post", path: "/multibodytest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!, "Cannot POST /multibodytest.")
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "Cannot POST /multibodytest.")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -432,8 +432,8 @@ class TestResponse: KituraTest {
             self.performRequest("get", path: "/redir", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
-                    let body = try response!.readString()
-                    XCTAssertNotNil(body!.range(of: "ibm"), "response does not contain IBM")
+                    let body = try response?.readString()
+                    XCTAssertNotNil(body?.range(of: "ibm"), "response does not contain IBM")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -447,9 +447,9 @@ class TestResponse: KituraTest {
             self.performRequest("get", path: "/error", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
-                    let body = try response!.readString()
+                    let body = try response?.readString()
                     let errorDescription = "foo is nil"
-                    XCTAssertEqual(body!, "Caught the error: \(errorDescription)")
+                    XCTAssertEqual(body, "Caught the error: \(errorDescription)")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -462,10 +462,10 @@ class TestResponse: KituraTest {
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path: "/route", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
                 do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!, "get 1\nget 2\n")
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "get 1\nget 2\n")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -474,10 +474,10 @@ class TestResponse: KituraTest {
         }, { expectation in
             self.performRequest("post", path: "/route", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
                 do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!, "post received")
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "post received")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -491,30 +491,30 @@ class TestResponse: KituraTest {
         router.get("/headerTest") { _, response, next in
 
             response.headers.append("Content-Type", value: "text/html")
-            XCTAssertEqual(response.headers["Content-Type"]!, "text/html")
+            XCTAssertEqual(response.headers["Content-Type"], "text/html")
 
             response.headers.append("Content-Type", value: "text/plain; charset=utf-8")
-            XCTAssertEqual(response.headers["Content-Type"]!, "text/html")
+            XCTAssertEqual(response.headers["Content-Type"], "text/html")
 
             response.headers["Content-Type"] = nil
             XCTAssertNil(response.headers["Content-Type"])
 
             response.headers.append("Content-Type", value: "text/plain, image/png")
-            XCTAssertEqual(response.headers["Content-Type"]!, "text/plain, image/png")
+            XCTAssertEqual(response.headers["Content-Type"], "text/plain, image/png")
 
             response.headers.append("Content-Type", value: "text/html, image/jpeg")
-            XCTAssertEqual(response.headers["Content-Type"]!, "text/plain, image/png")
+            XCTAssertEqual(response.headers["Content-Type"], "text/plain, image/png")
 
             response.headers.append("Content-Type", value: "charset=UTF-8")
-            XCTAssertEqual(response.headers["Content-Type"]!, "text/plain, image/png")
+            XCTAssertEqual(response.headers["Content-Type"], "text/plain, image/png")
 
             response.headers["Content-Type"] = nil
 
             response.headers.append("Content-Type", value: "text/html")
-            XCTAssertEqual(response.headers["Content-Type"]!, "text/html")
+            XCTAssertEqual(response.headers["Content-Type"], "text/html")
 
             response.headers.append("Content-Type", value: "image/png, text/plain")
-            XCTAssertEqual(response.headers["Content-Type"]!, "text/html")
+            XCTAssertEqual(response.headers["Content-Type"], "text/html")
 
             do {
                 try response.status(HTTPStatusCode.OK).send("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n").end()
@@ -641,11 +641,11 @@ class TestResponse: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("get", path:"/format", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
-                XCTAssertEqual(response!.headers["Content-Type"]!.first!, "text/html")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertEqual(response?.headers["Content-Type"]?.first, "text/html")
                 do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!, "<!DOCTYPE html><html><body>Hi from Kitura!</body></html>\n\n")
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "<!DOCTYPE html><html><body>Hi from Kitura!</body></html>\n\n")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -656,11 +656,11 @@ class TestResponse: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("get", path:"/format", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
-                XCTAssertEqual(response!.headers["Content-Type"]!.first!, "text/plain")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertEqual(response?.headers["Content-Type"]?.first, "text/plain")
                 do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!, "Hi from Kitura!")
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "Hi from Kitura!")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -671,10 +671,10 @@ class TestResponse: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("get", path:"/format", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
                 do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!, "default")
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "default")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -688,10 +688,10 @@ class TestResponse: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/single_link", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
-                let header = response!.headers["Link"]?.first
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                let header = response?.headers["Link"]?.first
                 XCTAssertNotNil(header, "Link header should not be nil")
-                XCTAssertEqual(header!, "<https://developer.ibm.com/swift>; rel=\"root\"")
+                XCTAssertEqual(header, "<https://developer.ibm.com/swift>; rel=\"root\"")
                 expectation.fulfill()
             })
         }
@@ -699,13 +699,13 @@ class TestResponse: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/multiple_links", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
                 let firstLink = "<https://developer.ibm.com/swift/products/ibm-swift-sandbox/>; rel=\"next\""
                 let secondLink = "<https://developer.ibm.com/swift/products/ibm-bluemix/>; rel=\"prev\""
-                let header = response!.headers["Link"]?.first
+                let header = response?.headers["Link"]?.first
                 XCTAssertNotNil(header, "Link header should not be nil")
-                XCTAssertNotNil(header!.range(of: firstLink), "link header should contain first link")
-                XCTAssertNotNil(header!.range(of: secondLink), "link header should contain second link")
+                XCTAssertNotNil(header?.range(of: firstLink), "link header should contain first link")
+                XCTAssertNotNil(header?.range(of: secondLink), "link header should contain second link")
                 expectation.fulfill()
             })
         }
@@ -715,16 +715,16 @@ class TestResponse: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/jsonp?callback=testfn", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
                 do {
-                    let body = try response!.readString()
+                    let body = try response?.readString()
 #if os(Linux)
                     let expected = "{\n  \"some\": \"json\"\n}"
 #else
                     let expected = "{\n  \"some\" : \"json\"\n}"
 #endif
-                    XCTAssertEqual(body!, "/**/ testfn(\(expected))")
-                    XCTAssertEqual(response!.headers["Content-Type"]!.first!, "application/javascript")
+                    XCTAssertEqual(body, "/**/ testfn(\(expected))")
+                    XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/javascript")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -735,7 +735,7 @@ class TestResponse: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/jsonp?callback=test+fn", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(response?.statusCode)")
                 expectation.fulfill()
             })
         }
@@ -743,7 +743,7 @@ class TestResponse: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/jsonp", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(response?.statusCode)")
                 expectation.fulfill()
             })
         }
@@ -751,16 +751,16 @@ class TestResponse: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/jsonp_cb?cb=testfn", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
                 do {
-                    let body = try response!.readString()
+                    let body = try response?.readString()
 #if os(Linux)
                     let expected = "{\n  \"some\": \"json\"\n}"
 #else
                     let expected = "{\n  \"some\" : \"json\"\n}"
 #endif
-                    XCTAssertEqual(body!, "/**/ testfn(\(expected))")
-                    XCTAssertEqual(response!.headers["Content-Type"]!.first!, "application/javascript")
+                    XCTAssertEqual(body, "/**/ testfn(\(expected))")
+                    XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/javascript")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -771,16 +771,16 @@ class TestResponse: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/jsonp_encoded?callback=testfn", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
                 do {
-                    let body = try response!.readString()
+                    let body = try response?.readString()
                     #if os(Linux)
                         let expected = "{\n  \"some\": \"json with bad js chars \\u2028 \\u2029\"\n}"
                     #else
                         let expected = "{\n  \"some\" : \"json with bad js chars \\u2028 \\u2029\"\n}"
                     #endif
-                    XCTAssertEqual(body!, "/**/ testfn(\(expected))")
-                    XCTAssertEqual(response!.headers["Content-Type"]!.first!, "application/javascript")
+                    XCTAssertEqual(body, "/**/ testfn(\(expected))")
+                    XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/javascript")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -793,10 +793,10 @@ class TestResponse: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/subdomains", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
-                let hostHeader = response!.headers["Host"]?.first
-                let domainHeader = response!.headers["Domain"]?.first
-                let subdomainsHeader = response!.headers["Subdomain"]?.first
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                let hostHeader = response?.headers["Host"]?.first
+                let domainHeader = response?.headers["Domain"]?.first
+                let subdomainsHeader = response?.headers["Subdomain"]?.first
 
                 XCTAssertEqual(hostHeader, "localhost", "Wrong http response host")
                 XCTAssertEqual(domainHeader, "localhost", "Wrong http response domain")
@@ -808,10 +808,10 @@ class TestResponse: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/subdomains", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
-                let hostHeader = response!.headers["Host"]?.first
-                let domainHeader = response!.headers["Domain"]?.first
-                let subdomainsHeader = response!.headers["Subdomain"]?.first
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                let hostHeader = response?.headers["Host"]?.first
+                let domainHeader = response?.headers["Domain"]?.first
+                let subdomainsHeader = response?.headers["Subdomain"]?.first
 
                 XCTAssertEqual(hostHeader, "a.b.c.example.com", "Wrong http response host")
                 XCTAssertEqual(domainHeader, "example.com", "Wrong http response domain")
@@ -823,10 +823,10 @@ class TestResponse: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/subdomains", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
-                let hostHeader = response!.headers["Host"]?.first
-                let domainHeader = response!.headers["Domain"]?.first
-                let subdomainsHeader = response!.headers["Subdomain"]?.first
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                let hostHeader = response?.headers["Host"]?.first
+                let domainHeader = response?.headers["Domain"]?.first
+                let subdomainsHeader = response?.headers["Subdomain"]?.first
 
                 XCTAssertEqual(hostHeader, "a.b.c.d.example.co.uk", "Wrong http response host")
                 XCTAssertEqual(domainHeader, "example.co.uk", "Wrong http response domain")
@@ -840,11 +840,11 @@ class TestResponse: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/lifecycle", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
-                XCTAssertEqual(response!.headers["x-lifecycle"]?.first, "kitura", "Wrong lifecycle header")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertEqual(response?.headers["x-lifecycle"]?.first, "kitura", "Wrong lifecycle header")
                 do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Filtered</b></body></html>\n\n")
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Filtered</b></body></html>\n\n")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -857,10 +857,10 @@ class TestResponse: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/data", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
                 do {
                     var body = Data()
-                    _ = try response!.read(into: &body)
+                    _ = try response?.read(into: &body)
                     XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n".data(using: .utf8)!)
                 } catch {
                     XCTFail("No response body")
@@ -872,11 +872,11 @@ class TestResponse: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/json", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
-                XCTAssertEqual(response!.headers["Content-Type"]?.first, "application/json", "Wrong Content-Type header")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/json", "Wrong Content-Type header")
                 do {
                     var body = Data()
-                    _ = try response!.read(into: &body)
+                    _ = try response?.read(into: &body)
                     let json = JSON(data: body)
                     XCTAssertEqual(json["some"], "json")
                 } catch {
@@ -889,11 +889,11 @@ class TestResponse: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/download", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")
-                XCTAssertEqual(response!.headers["Content-Type"]?.first, "text/html", "Wrong Content-Type header")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertEqual(response?.headers["Content-Type"]?.first, "text/html", "Wrong Content-Type header")
                 do {
-                    let body = try response!.readString()
-                    XCTAssertEqual(body!, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -908,9 +908,9 @@ class TestResponse: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/send_after_end", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.forbidden, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.forbidden, "HTTP Status code was \(response?.statusCode)")
                 do {
-                    let body = try response!.readString()
+                    let body = try response?.readString()
                     XCTAssertEqual(body?.lowercased(), "forbidden<!DOCTYPE html><html><body><b>forbidden</b></body></html>\n\n".lowercased())
                 } catch {
                     XCTFail("No response body")

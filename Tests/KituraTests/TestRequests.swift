@@ -48,7 +48,7 @@ class TestRequests: KituraTest {
         }
         router.get("/zxcv/ploni") { request, _, next in
             let parameter = request.parameters["p1"]
-            XCTAssertNil(parameter, "URL parameter p1 was not nil, it's value was \(parameter!)")
+            XCTAssertNil(parameter, "URL parameter p1 was not nil, it's value was \(parameter)")
             next()
         }
         router.all() { _, response, next in
@@ -171,23 +171,23 @@ class TestRequests: KituraTest {
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path: "users/random/1000", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertNotNil(response!.headers["User"])
-                XCTAssertNotNil(response!.headers["User-Id"])
-                XCTAssertEqual(response!.headers["User"]!.first, "random")
-                XCTAssertEqual(response!.headers["User-Id"]!.first, "1000")
+                XCTAssertNotNil(response?.headers["User"])
+                XCTAssertNotNil(response?.headers["User-Id"])
+                XCTAssertEqual(response?.headers["User"]?.first, "random")
+                XCTAssertEqual(response?.headers["User-Id"]?.first, "1000")
                 expectation.fulfill()
             })
         }, { expectation in
             self.performRequest("get", path: "posts/random/11000", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertNil(response!.headers["User"])
-                XCTAssertNotNil(response!.headers["User-Id"])
-                XCTAssertEqual(response!.headers["User-Id"]!.first, "11000")
+                XCTAssertNil(response?.headers["User"])
+                XCTAssertNotNil(response?.headers["User-Id"])
+                XCTAssertEqual(response?.headers["User-Id"]?.first, "11000")
 
                 do {
-                    let body = try response!.readString()
+                    let body = try response?.readString()
                     XCTAssertNotNil(body)
-                    XCTAssertEqual(body!, "success")
+                    XCTAssertEqual(body, "success")
                 } catch {
                     XCTFail()
                 }
@@ -216,20 +216,22 @@ class TestRequests: KituraTest {
         // default test
         router.get("users/:user/:id") { request, response, next in
             XCTAssertNotNil(request.parameters["id"])
-            response.status(.OK).send(data: "\(request.parameters["id"]!)".data(using: .utf8)!)
+            if let id = request.parameters["id"] {
+                response.status(.OK).send(data: "\(id)".data(using: .utf8)!)
+            }
             next()
         }
 
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path: "users/random/1000", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertNotNil(response!.headers["User-Id"])
-                XCTAssertEqual(response!.headers["User-Id"]!.first!, "1000")
+                XCTAssertNotNil(response?.headers["User-Id"])
+                XCTAssertEqual(response?.headers["User-Id"]?.first, "1000")
 
                 do {
-                    let body = try response!.readString()
+                    let body = try response?.readString()
                     XCTAssertNotNil(body)
-                    XCTAssertEqual(body!, "1000")
+                    XCTAssertEqual(body, "1000")
                 } catch {
                     XCTFail()
                 }
@@ -239,11 +241,11 @@ class TestRequests: KituraTest {
         }, { expectation in
             self.performRequest("get", path: "users/random/dsa", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertNil(response!.headers["User-Id"])
-                XCTAssertEqual(response!.statusCode, .notAcceptable)
+                XCTAssertNil(response?.headers["User-Id"])
+                XCTAssertEqual(response?.statusCode, .notAcceptable)
 
                 do {
-                    let body = try response!.readString()
+                    let body = try response?.readString()
                     XCTAssertNil(body)
                 } catch {
                     XCTFail()

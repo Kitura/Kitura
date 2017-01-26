@@ -35,17 +35,17 @@ class TestMultiplicity: KituraTest {
     func testPlus() {
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path: "/1/plus", callback: {response in
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "Plus route did not match single path request")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "Plus route did not match single path request")
                 expectation.fulfill()
             })
         }, { expectation in
             self.performRequest("get", path: "/1/plus/plus", callback: {response in
-                    XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "Plus route did not match multiple path request")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "Plus route did not match multiple path request")
                     expectation.fulfill()
                 })
         }, { expectation in
             self.performRequest("get", path: "/1", callback: {response in
-                    XCTAssertEqual(response!.statusCode, HTTPStatusCode.notFound, "Plus route did not miss empty path request")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "Plus route did not miss empty path request")
                     expectation.fulfill()
                 })
         })
@@ -54,17 +54,17 @@ class TestMultiplicity: KituraTest {
     func testStar() {
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path: "/2/star", callback: {response in
-                    XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "Star route did not match single path request")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "Star route did not match single path request")
                   expectation.fulfill()
             })
         }, { expectation in
             self.performRequest("get", path: "/2/star/star", callback: {response in
-                    XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "Star route did not match multiple path request")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "Star route did not match multiple path request")
                   expectation.fulfill()
                 })
         }, { expectation in
             self.performRequest("get", path: "/2", callback: {response in
-                    XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "Star route did not match empty path request")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "Star route did not match empty path request")
                   expectation.fulfill()
                 })
         })
@@ -73,17 +73,17 @@ class TestMultiplicity: KituraTest {
     func testQuestion() {
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path: "/3/question", callback: {response in
-                    XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "Question route did not match single path request")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "Question route did not match single path request")
                   expectation.fulfill()
                 })
         }, { expectation in
             self.performRequest("get", path: "/3/question/question", callback: {response in
-                    XCTAssertEqual(response!.statusCode, HTTPStatusCode.notFound, "Question route did not miss multiple path request")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "Question route did not miss multiple path request")
                   expectation.fulfill()
                 })
         }, { expectation in
             self.performRequest("get", path: "/3", callback: {response in
-                    XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "Question route did not match empty path request")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "Question route did not match empty path request")
                   expectation.fulfill()
                 })
         })
@@ -92,17 +92,17 @@ class TestMultiplicity: KituraTest {
     func testCombined() {
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path: "/4/question/plus", callback: {response in
-                    XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "Complex route did not match dropped star ending")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "Complex route did not match dropped star ending")
                   expectation.fulfill()
                 })
         }, { expectation in
             self.performRequest("get", path: "/4/plus/plus/star", callback: {response in
-                    XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "Complex route did not match dropped beginning with extra middle")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "Complex route did not match dropped beginning with extra middle")
                   expectation.fulfill()
                 })
         }, { expectation in
             self.performRequest("get", path: "/4/question/plusssssss/plus/pluss/star/star", callback: {response in
-                    XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "Complex route did not match internal extra plus signs with multiple extras")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "Complex route did not match internal extra plus signs with multiple extras")
                   expectation.fulfill()
                 })
         })
