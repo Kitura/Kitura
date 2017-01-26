@@ -37,14 +37,6 @@ class TestErrors: KituraTest {
         ]
     }
 
-    override func setUp() {
-        doSetUp()
-    }
-
-    override func tearDown() {
-        doTearDown()
-    }
-
     let router = Router()
 
     func testInvalidMethod() {

@@ -39,14 +39,6 @@ class TestSubrouter: KituraTest {
         ]
     }
 
-    override func setUp() {
-        doSetUp()
-    }
-
-    override func tearDown() {
-        doTearDown()
-    }
-
     let router = TestSubrouter.setupRouter()
 
     func testSimpleSub() {

@@ -30,14 +30,6 @@ class TestMultiplicity: KituraTest {
         ]
     }
 
-    override func setUp() {
-        doSetUp()
-    }
-
-    override func tearDown() {
-        doTearDown()
-    }
-
     let router = TestMultiplicity.setupRouter()
 
     func testPlus() {

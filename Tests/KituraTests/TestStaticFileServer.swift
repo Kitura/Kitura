@@ -36,22 +36,15 @@ class TestStaticFileServer: KituraTest {
             ("testGetWithSpecialCharacters", testGetWithSpecialCharacters),
             ("testGetWithSpecialCharactersEncoded", testGetWithSpecialCharactersEncoded),
             ("testGetKituraResource", testGetKituraResource),
-            ("testGetMissingKituraResource", testGetMissingKituraResource)
+            ("testGetMissingKituraResource", testGetMissingKituraResource),
+            ("testAbsolutePathFunction", testAbsolutePathFunction)
         ]
-    }
-
-    override func setUp() {
-        doSetUp()
-    }
-
-    override func tearDown() {
-        doTearDown()
     }
 
     let router = TestStaticFileServer.setupRouter()
 
     func testFileServer() {
-    	performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path:"/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response!.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response!.statusCode)")

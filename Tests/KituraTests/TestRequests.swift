@@ -32,14 +32,6 @@ class TestRequests: KituraTest {
         ]
     }
 
-    override func setUp() {
-        doSetUp()
-    }
-
-    override func tearDown() {
-        doTearDown()
-    }
-
     let router = TestRequests.setupRouter()
 
     func testURLParameters() {

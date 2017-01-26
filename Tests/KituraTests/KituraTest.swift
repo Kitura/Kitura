@@ -22,13 +22,22 @@ import Kitura
 import Foundation
 import Dispatch
 
+enum SSLOption {
+    case both
+    case httpOnly
+    case httpsOnly
+}
+
 class KituraTest: XCTestCase {
 
-    static let useSSLDefault = false
-    static let portDefault = 8090
+    static let httpPort = 8080
+    static let httpsPort = 8443
 
-    var useSSL = useSSLDefault
-    var port = portDefault
+    static private(set) var httpServer: HTTPServer? = nil
+    static private(set) var httpsServer: HTTPServer? = nil
+
+    private(set) var port = -1
+    private(set) var useSSL = false
 
     static let sslConfig: SSLConfig = {
         let path = #file
@@ -51,44 +60,87 @@ class KituraTest: XCTestCase {
         #endif
     }()
 
-    func doSetUp() {
+    override func setUp() {
+        super.setUp()
         PrintLogger.use(colored: true)
     }
 
-    func doTearDown() {
+    func performServerTest(_ router: ServerDelegate, sslOption: SSLOption = SSLOption.httpOnly,
+                           line: Int = #line, asyncTasks: @escaping (XCTestExpectation) -> Void...) {
+        if sslOption != SSLOption.httpsOnly {
+            self.port = KituraTest.httpPort
+            self.useSSL = false
+            doPerformServerTest(router: router, line: line, asyncTasks: asyncTasks)
+        }
+
+        if sslOption != SSLOption.httpOnly {
+            self.port = KituraTest.httpsPort
+            self.useSSL = true
+            doPerformServerTest(router: router, line: line, asyncTasks: asyncTasks)
+        }
     }
 
-    func performServerTest(_ router: ServerDelegate, port: Int = portDefault, useSSL: Bool = useSSLDefault, line: Int = #line,
-                           asyncTasks: @escaping (XCTestExpectation) -> Void...) {
-        self.useSSL = useSSL
-        let sslConfig = useSSL ? KituraTest.sslConfig : nil
-        let server = Kitura.addHTTPServer(onPort: port, with: router, withSSL: sslConfig)
-        defer {
-            Kitura.stop() // make sure to remove server from Kitura static list
+    func doPerformServerTest(router: ServerDelegate, line: Int, asyncTasks: [(XCTestExpectation) -> Void]) {
+
+        guard startServer(router: router) else {
+            XCTFail("Error starting server on port \(port). useSSL:\(useSSL)")
+            return
         }
 
-        var failed = false
-        server.failed { error in
-            failed = true
-            XCTFail("Error starting server on port \(port): \(error)")
-        }
-
-        Kitura.start()
-
-        if !failed {
-            let requestQueue = DispatchQueue(label: "Request queue")
-            for (index, asyncTask) in asyncTasks.enumerated() {
-                let expectation = self.expectation(line: line, index: index)
-                requestQueue.async() {
-                    asyncTask(expectation)
-                }
-            }
-
-            // wait for timeout or for all created expectations to be fulfilled
-            waitExpectation(timeout: 10) { error in
-                XCTAssertNil(error)
+        let requestQueue = DispatchQueue(label: "Request queue")
+        for (index, asyncTask) in asyncTasks.enumerated() {
+            let expectation = self.expectation(line: line, index: index)
+            requestQueue.async() {
+                asyncTask(expectation)
             }
         }
+
+        // wait for timeout or for all created expectations to be fulfilled
+        waitForExpectations(timeout: 10) { error in
+            XCTAssertNil(error)
+        }
+    }
+
+    private func startServer(router: ServerDelegate) -> Bool {
+        if useSSL {
+            if let server = KituraTest.httpsServer {
+                server.delegate = router
+                return true
+            }
+        } else {
+            if let server = KituraTest.httpServer {
+                server.delegate = router
+                return true
+            }
+        }
+
+        let server = HTTP.createServer()
+        server.delegate = router
+        if useSSL {
+            server.sslConfig = KituraTest.sslConfig.config
+        }
+
+        do {
+            try server.listen(on: port)
+
+            if useSSL {
+                KituraTest.httpsServer = server
+            } else {
+                KituraTest.httpServer = server
+            }
+            return true
+        } catch {
+            XCTFail("Error starting server: \(error)")
+            return false
+        }
+    }
+
+    func stopServer() {
+        KituraTest.httpServer?.stop()
+        KituraTest.httpServer = nil
+
+        KituraTest.httpsServer?.stop()
+        KituraTest.httpsServer = nil
     }
 
     func performRequest(_ method: String, path: String, callback: @escaping ClientRequest.Callback,
@@ -120,10 +172,6 @@ class KituraTest: XCTestCase {
     }
 
     func expectation(line: Int, index: Int) -> XCTestExpectation {
-        return self.expectation(description: "\(type(of: self)):\(line)[\(index)]")
-    }
-
-    func waitExpectation(timeout: TimeInterval, handler: XCWaitCompletionHandler?) {
-        self.waitForExpectations(timeout: timeout, handler: handler)
+        return self.expectation(description: "\(type(of: self)):\(line)[\(index)](ssl:\(useSSL))")
     }
 }

@@ -62,14 +62,6 @@ class TestRouteRegex: KituraTest {
         ]
     }
 
-    override func setUp() {
-        doSetUp()
-    }
-
-    override func tearDown() {
-        doTearDown()
-    }
-
     func testBuildRegexFromPattern() {
         #if os(Linux)
             var regex: RegularExpression?

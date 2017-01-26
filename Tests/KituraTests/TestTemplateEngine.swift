@@ -44,14 +44,6 @@ class TestTemplateEngine: KituraTest {
         ]
     }
 
-    override func setUp() {
-        doSetUp()
-    }
-
-    override func tearDown() {
-        doTearDown()
-    }
-
     func testEmptyTemplateName() {
         let router = Router()
         router.setDefault(templateEngine: MockTemplateEngine())
