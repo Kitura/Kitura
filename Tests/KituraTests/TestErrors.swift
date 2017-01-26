@@ -57,7 +57,7 @@ class TestErrors: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/notreal", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response!.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(response!.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(response?.statusCode)")
                 expectation.fulfill()
             })
         }
