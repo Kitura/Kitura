@@ -60,9 +60,13 @@ class KituraTest: XCTestCase {
         #endif
     }()
 
+    private static let initOnce: () = {
+        PrintLogger.use(colored: true)
+    }()
+
     override func setUp() {
         super.setUp()
-        PrintLogger.use(colored: true)
+        KituraTest.initOnce
     }
 
     func performServerTest(_ router: ServerDelegate, sslOption: SSLOption = SSLOption.both,
