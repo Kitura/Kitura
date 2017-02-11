@@ -32,6 +32,7 @@ class TestResponse: KituraTest {
     static var allTests: [(String, (TestResponse) -> () throws -> Void)] {
         return [
             ("testSimpleResponse", testSimpleResponse),
+            ("testResponseNoEndOrNext", testResponseNoEndOrNext),
             ("testPostRequest", testPostRequest),
             ("testPostRequestTheHardWay", testPostRequestTheHardWay),
             ("testPostJSONRequest", testPostRequest),
@@ -73,6 +74,22 @@ class TestResponse: KituraTest {
                 do {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+                } catch {
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            })
+        }
+    }
+
+    func testResponseNoEndOrNext() {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path:"/noEndOrNext", callback: {response in
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
+                do {
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>noEndOrNext</b></body></html>\n\n")
                 } catch {
                     XCTFail("No response body")
                 }
@@ -948,6 +965,11 @@ class TestResponse: KituraTest {
                 try response.send("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n").end()
             } catch {}
             next()
+        }
+
+        router.get("/noEndOrNext") { _, response, next in
+            response.headers["Content-Type"] = "text/html; charset=utf-8"
+            response.send("<!DOCTYPE html><html><body><b>noEndOrNext</b></body></html>\n\n")
         }
 
         router.get("/zxcv/:p1") { request, response, next in
