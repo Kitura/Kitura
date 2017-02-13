@@ -123,6 +123,10 @@ public class RouterResponse {
 
     deinit {
         if !state.invokedEnd {
+            if !state.invokedSend && statusCode == .unknown {
+                statusCode = .serviceUnavailable
+            }
+
             do {
                 try end()
             } catch {
