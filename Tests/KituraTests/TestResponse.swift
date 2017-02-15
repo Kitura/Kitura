@@ -32,6 +32,8 @@ class TestResponse: KituraTest {
     static var allTests: [(String, (TestResponse) -> () throws -> Void)] {
         return [
             ("testSimpleResponse", testSimpleResponse),
+            ("testResponseNoEndOrNext", testResponseNoEndOrNext),
+            ("testEmptyHandler", testEmptyHandler),
             ("testPostRequest", testPostRequest),
             ("testPostRequestTheHardWay", testPostRequestTheHardWay),
             ("testPostJSONRequest", testPostRequest),
@@ -74,7 +76,39 @@ class TestResponse: KituraTest {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
+                }
+                expectation.fulfill()
+            })
+        }
+    }
+
+    func testResponseNoEndOrNext() {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path:"/noEndOrNext", callback: {response in
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
+                do {
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>noEndOrNext</b></body></html>\n\n")
+                } catch {
+                    XCTFail("Error reading body")
+                }
+                expectation.fulfill()
+            })
+        }
+    }
+
+    func testEmptyHandler() {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path:"/emptyHandler", callback: {response in
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.serviceUnavailable, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
+                do {
+                    let body = try response?.readString()
+                    XCTAssertNil(body, "No body expected, but was received: '\(body!)'")
+                } catch {
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
             })
@@ -91,7 +125,7 @@ class TestResponse: KituraTest {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Received text body: </b>plover\nxyzzy\n</body></html>\n\n")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
             }) {req in
@@ -109,7 +143,7 @@ class TestResponse: KituraTest {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "Read 13 bytes")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
             }) {req in
@@ -139,7 +173,7 @@ class TestResponse: KituraTest {
                    let returnedJSON = JSON.parse(string: body)
                    XCTAssertEqual(returnedJSON, jsonToTest)
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
             }, headers: ["Content-Type": "application/json"]) { req in
@@ -164,7 +198,7 @@ class TestResponse: KituraTest {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Received text body: </b>plover\nxyzzy\n</body></html>\n\n")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
             }) {req in
@@ -183,7 +217,7 @@ class TestResponse: KituraTest {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> [\"swift\": \"rocks\"] </body></html>\n\n")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
             }) {req in
@@ -200,7 +234,7 @@ class TestResponse: KituraTest {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> [\"swift\": \"rocks\"] </body></html>\n\n")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
             }) {req in
@@ -248,7 +282,7 @@ class TestResponse: KituraTest {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "text  text(\"text default\") file1 a.txt text(\"Content of a.txt.\") file2 a.html text(\"<!DOCTYPE html><title>Content of a.html.</title>\") ")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
             }) {req in
@@ -275,7 +309,7 @@ class TestResponse: KituraTest {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "  text(\"text default\") file1 a.txt text(\"Content of a.txt.\") file2 a.html text(\"<!DOCTYPE html><title>Content of a.html.</title>\") ")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
             }) {req in
@@ -305,7 +339,7 @@ class TestResponse: KituraTest {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "  text(\"text default\") ")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
             }) {req in
@@ -326,7 +360,7 @@ class TestResponse: KituraTest {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "Cannot POST /multibodytest.")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
             }) {req in
@@ -390,7 +424,7 @@ class TestResponse: KituraTest {
                         "<p>q=\(expectedReturnedQueryParameter)<p>" +
                         "<p>u1=Ploni Almoni</body></html>\n\n")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
             })
@@ -435,7 +469,7 @@ class TestResponse: KituraTest {
                     let body = try response?.readString()
                     XCTAssertNotNil(body?.range(of: "ibm"), "response does not contain IBM")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
             })
@@ -451,7 +485,7 @@ class TestResponse: KituraTest {
                     let errorDescription = "foo is nil"
                     XCTAssertEqual(body, "Caught the error: \(errorDescription)")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
             })
@@ -467,7 +501,7 @@ class TestResponse: KituraTest {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "get 1\nget 2\n")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
             })
@@ -479,7 +513,7 @@ class TestResponse: KituraTest {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "post received")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
             })
@@ -647,7 +681,7 @@ class TestResponse: KituraTest {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "<!DOCTYPE html><html><body>Hi from Kitura!</body></html>\n\n")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
                 }, headers: ["Accept" : "text/html"])
@@ -662,7 +696,7 @@ class TestResponse: KituraTest {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "Hi from Kitura!")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
                 }, headers: ["Accept" : "text/plain"])
@@ -676,7 +710,7 @@ class TestResponse: KituraTest {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "default")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
                 }, headers: ["Accept" : "text/cmd"])
@@ -726,7 +760,7 @@ class TestResponse: KituraTest {
                     XCTAssertEqual(body, "/**/ testfn(\(expected))")
                     XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/javascript")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
             })
@@ -762,7 +796,7 @@ class TestResponse: KituraTest {
                     XCTAssertEqual(body, "/**/ testfn(\(expected))")
                     XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/javascript")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
             })
@@ -782,7 +816,7 @@ class TestResponse: KituraTest {
                     XCTAssertEqual(body, "/**/ testfn(\(expected))")
                     XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/javascript")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
             })
@@ -846,7 +880,7 @@ class TestResponse: KituraTest {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Filtered</b></body></html>\n\n")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
             })
@@ -863,7 +897,7 @@ class TestResponse: KituraTest {
                     _ = try response?.read(into: &body)
                     XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n".data(using: .utf8)!)
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
             })
@@ -880,7 +914,7 @@ class TestResponse: KituraTest {
                     let json = JSON(data: body)
                     XCTAssertEqual(json["some"], "json")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
             })
@@ -895,7 +929,7 @@ class TestResponse: KituraTest {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
 
                 expectation.fulfill()
@@ -913,7 +947,7 @@ class TestResponse: KituraTest {
                     let body = try response?.readString()
                     XCTAssertEqual(body?.lowercased(), "forbidden<!DOCTYPE html><html><body><b>forbidden</b></body></html>\n\n".lowercased())
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Error reading body")
                 }
                 expectation.fulfill()
             })
@@ -948,6 +982,14 @@ class TestResponse: KituraTest {
                 try response.send("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n").end()
             } catch {}
             next()
+        }
+
+        router.get("/noEndOrNext") { _, response, _ in
+            response.headers["Content-Type"] = "text/html; charset=utf-8"
+            response.send("<!DOCTYPE html><html><body><b>noEndOrNext</b></body></html>\n\n")
+        }
+
+        router.get("/emptyHandler") { _, _, _ in
         }
 
         router.get("/zxcv/:p1") { request, response, next in

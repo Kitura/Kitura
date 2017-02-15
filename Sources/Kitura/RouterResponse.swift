@@ -121,6 +121,20 @@ public class RouterResponse {
         statusCode = .unknown
     }
 
+    deinit {
+        if !state.invokedEnd {
+            if !state.invokedSend && statusCode == .unknown {
+                statusCode = .serviceUnavailable
+            }
+
+            do {
+                try end()
+            } catch {
+                Log.warning("Error in RouterResponse end(): \(error)")
+            }
+        }
+    }
+
     /// End the response.
     ///
     /// - Throws: Socket.Error if an error occurred while writing to a socket.
