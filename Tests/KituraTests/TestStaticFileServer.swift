@@ -157,7 +157,7 @@ class TestStaticFileServer: KituraTest {
                     try response?.readAllData(into: &data)
 
                     let expectedLength = 10
-                    XCTAssertEqual(response?.headers["Content-Length"]!.first, "\(expectedLength)")
+                    XCTAssertEqual(response?.headers["Content-Length"]?.first, "\(expectedLength)")
                     XCTAssertEqual(data.count, expectedLength, "Expected \(expectedLength) bytes, got \(data.count)")
                     
                     let dataArray: [UInt8] = data.withUnsafeBytes { [UInt8](UnsafeBufferPointer(start: $0, count: data.count)) }
@@ -172,7 +172,7 @@ class TestStaticFileServer: KituraTest {
                 XCTAssertNil(response?.headers["x-custom-header"])
                 XCTAssertNil(response?.headers["Last-Modified"])
                 XCTAssertNil(response?.headers["Etag"])
-                XCTAssertEqual(response?.headers["Cache-Control"]!.first, "max-age=0")
+                XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=0")
                 expectation.fulfill()
             }, headers: ["Range": "bytes=0-9"])
         }, { expectation in
@@ -184,7 +184,7 @@ class TestStaticFileServer: KituraTest {
                     try response?.readAllData(into: &data)
                     
                     let expectedLength = 20
-                    XCTAssertEqual(response?.headers["Content-Length"]!.first, "\(expectedLength)")
+                    XCTAssertEqual(response?.headers["Content-Length"]?.first, "\(expectedLength)")
                     XCTAssertEqual(data.count, expectedLength, "Expected \(expectedLength) bytes, got \(data.count)")
 
                     let dataArray: [UInt8] = data.withUnsafeBytes { [UInt8](UnsafeBufferPointer(start: $0, count: data.count)) }
@@ -199,7 +199,7 @@ class TestStaticFileServer: KituraTest {
                 XCTAssertNil(response?.headers["x-custom-header"])
                 XCTAssertNil(response?.headers["Last-Modified"])
                 XCTAssertNil(response?.headers["Etag"])
-                XCTAssertEqual(response?.headers["Cache-Control"]!.first, "max-age=0")
+                XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=0")
                 expectation.fulfill()
             }, headers: ["Range": "bytes=-20"])
         }, { expectation in
@@ -211,7 +211,7 @@ class TestStaticFileServer: KituraTest {
                     try response?.readAllData(into: &data)
                     
                     let expectedLength = 20
-                    XCTAssertEqual(response?.headers["Content-Length"]!.first, "\(expectedLength)")
+                    XCTAssertEqual(response?.headers["Content-Length"]?.first, "\(expectedLength)")
                     XCTAssertEqual(data.count, expectedLength, "Expected \(expectedLength) bytes, got \(data.count)")
                     
                     let dataArray: [UInt8] = data.withUnsafeBytes { [UInt8](UnsafeBufferPointer(start: $0, count: data.count)) }
@@ -226,7 +226,7 @@ class TestStaticFileServer: KituraTest {
                 XCTAssertNil(response?.headers["x-custom-header"])
                 XCTAssertNil(response?.headers["Last-Modified"])
                 XCTAssertNil(response?.headers["Etag"])
-                XCTAssertEqual(response?.headers["Cache-Control"]!.first, "max-age=0")
+                XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=0")
                 expectation.fulfill()
             }, headers: ["Range": "bytes=80-"])
         }, { expectation in
@@ -238,7 +238,7 @@ class TestStaticFileServer: KituraTest {
                     try response?.readAllData(into: &data)
                     
                     let expectedLength = 0
-                    XCTAssertEqual(response?.headers["Content-Length"]!.first, "\(expectedLength)")
+                    XCTAssertEqual(response?.headers["Content-Length"]?.first, "\(expectedLength)")
                     XCTAssertEqual(data.count, expectedLength, "Expected \(expectedLength) bytes, got \(data.count)")
                 }
                 catch{
@@ -248,7 +248,7 @@ class TestStaticFileServer: KituraTest {
                 XCTAssertNil(response?.headers["x-custom-header"])
                 XCTAssertNil(response?.headers["Last-Modified"])
                 XCTAssertNil(response?.headers["Etag"])
-                XCTAssertEqual(response?.headers["Cache-Control"]!.first, "max-age=0")
+                XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=0")
                 expectation.fulfill()
             }, headers: ["Range": "bytes=100-20"])
         }, { expectation in
@@ -260,7 +260,7 @@ class TestStaticFileServer: KituraTest {
                     try response?.readAllData(into: &data)
                     
                     let expectedLength = 90
-                    XCTAssertEqual(response?.headers["Content-Length"]!.first, "\(expectedLength)")
+                    XCTAssertEqual(response?.headers["Content-Length"]?.first, "\(expectedLength)")
                     XCTAssertEqual(data.count, expectedLength, "Expected \(expectedLength) bytes, got \(data.count)")
                     
                     let dataArray: [UInt8] = data.withUnsafeBytes { [UInt8](UnsafeBufferPointer(start: $0, count: data.count)) }
@@ -276,7 +276,7 @@ class TestStaticFileServer: KituraTest {
                 XCTAssertNil(response?.headers["x-custom-header"])
                 XCTAssertNil(response?.headers["Last-Modified"])
                 XCTAssertNil(response?.headers["Etag"])
-                XCTAssertEqual(response?.headers["Cache-Control"]!.first, "max-age=0")
+                XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=0")
                 expectation.fulfill()
             }, headers: ["Range": "bytes=10-999999999999999"])
         }, { expectation in
@@ -288,7 +288,7 @@ class TestStaticFileServer: KituraTest {
                     try response?.readAllData(into: &data)
                     
                     let expectedLength = 0
-                    XCTAssertEqual(response?.headers["Content-Length"]!.first, "\(expectedLength)")
+                    XCTAssertEqual(response?.headers["Content-Length"]?.first, "\(expectedLength)")
                     XCTAssertEqual(data.count, expectedLength, "Expected \(expectedLength) bytes, got \(data.count)")
                 }
                 catch{
@@ -298,7 +298,7 @@ class TestStaticFileServer: KituraTest {
                 XCTAssertNil(response?.headers["x-custom-header"])
                 XCTAssertNil(response?.headers["Last-Modified"])
                 XCTAssertNil(response?.headers["Etag"])
-                XCTAssertEqual(response?.headers["Cache-Control"]!.first, "max-age=0")
+                XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=0")
                 expectation.fulfill()
             }, headers: ["Range": "bytes=-"])
         }, { expectation in
@@ -310,7 +310,7 @@ class TestStaticFileServer: KituraTest {
                     try response?.readAllData(into: &data)
                     
                     let expectedLength = 0
-                    XCTAssertEqual(response?.headers["Content-Length"]!.first, "\(expectedLength)")
+                    XCTAssertEqual(response?.headers["Content-Length"]?.first, "\(expectedLength)")
                     XCTAssertEqual(data.count, expectedLength, "Expected \(expectedLength) bytes, got \(data.count)")
                 }
                 catch{
@@ -320,7 +320,7 @@ class TestStaticFileServer: KituraTest {
                 XCTAssertNil(response?.headers["x-custom-header"])
                 XCTAssertNil(response?.headers["Last-Modified"])
                 XCTAssertNil(response?.headers["Etag"])
-                XCTAssertEqual(response?.headers["Cache-Control"]!.first, "max-age=0")
+                XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=0")
                 expectation.fulfill()
             }, headers: ["Range": "bytes=30"])
         }, { expectation in
@@ -332,7 +332,7 @@ class TestStaticFileServer: KituraTest {
                     try response?.readAllData(into: &data)
                     
                     let expectedLength = 0
-                    XCTAssertEqual(response?.headers["Content-Length"]!.first, "\(expectedLength)")
+                    XCTAssertEqual(response?.headers["Content-Length"]?.first, "\(expectedLength)")
                     XCTAssertEqual(data.count, expectedLength, "Expected \(expectedLength) bytes, got \(data.count)")
                 }
                 catch{
@@ -342,7 +342,7 @@ class TestStaticFileServer: KituraTest {
                 XCTAssertNil(response?.headers["x-custom-header"])
                 XCTAssertNil(response?.headers["Last-Modified"])
                 XCTAssertNil(response?.headers["Etag"])
-                XCTAssertEqual(response?.headers["Cache-Control"]!.first, "max-age=0")
+                XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=0")
                 expectation.fulfill()
             }, headers: ["Range": "bytes=0-0,-1"])
         }, { expectation in
@@ -354,7 +354,7 @@ class TestStaticFileServer: KituraTest {
                     try response?.readAllData(into: &data)
                     
                     let expectedLength = 100
-                    XCTAssertEqual(response?.headers["Content-Length"]!.first, "\(expectedLength)")
+                    XCTAssertEqual(response?.headers["Content-Length"]?.first, "\(expectedLength)")
                     XCTAssertEqual(data.count, expectedLength, "Expected \(expectedLength) bytes, got \(data.count)")
                     
                     let dataArray: [UInt8] = data.withUnsafeBytes { [UInt8](UnsafeBufferPointer(start: $0, count: data.count)) }
@@ -370,7 +370,7 @@ class TestStaticFileServer: KituraTest {
                 XCTAssertNil(response?.headers["x-custom-header"])
                 XCTAssertNil(response?.headers["Last-Modified"])
                 XCTAssertNil(response?.headers["Etag"])
-                XCTAssertEqual(response?.headers["Cache-Control"]!.first, "max-age=0")
+                XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=0")
                 expectation.fulfill()
             }, headers: ["Range": "bytes=A-B"])
         }, { expectation in
@@ -389,9 +389,9 @@ class TestStaticFileServer: KituraTest {
                     try response?.readAllData(into: &data)
                     
                     let expectedLength = 10
-                    XCTAssertEqual(response?.headers["Content-Length"]!.first, "\(expectedLength)")
+                    XCTAssertEqual(response?.headers["Content-Length"]?.first, "\(expectedLength)")
                     XCTAssertEqual(data.count, expectedLength, "Expected \(expectedLength) bytes, got \(data.count)")
-                    XCTAssertEqual(response?.headers["Content-Type"]!.first, "text/html")
+                    XCTAssertEqual(response?.headers["Content-Type"]?.first, "text/html")
                 }
                 catch{
                     XCTFail("No response body")
