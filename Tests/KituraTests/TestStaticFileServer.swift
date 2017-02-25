@@ -32,6 +32,7 @@ class TestStaticFileServer: KituraTest {
     static var allTests: [(String, (TestStaticFileServer) -> () throws -> Void)] {
         return [
             ("testFileServer", testFileServer),
+            ("testStreamFileServer", testStreamFileServer),
             ("testGetWithWhiteSpaces", testGetWithWhiteSpaces),
             ("testGetWithSpecialCharacters", testGetWithSpecialCharacters),
             ("testGetWithSpecialCharactersEncoded", testGetWithSpecialCharactersEncoded),
