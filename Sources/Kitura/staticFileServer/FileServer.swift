@@ -186,49 +186,51 @@ extension StaticFileServer {
                 responseHeadersSetter?.setCustomResponseHeaders(response: response,
                                                                 filePath: filePath,
                                                                 fileAttributes: fileAttributes)
-                
+
                 let rangeInfo = request.headers["Range"]?.components(separatedBy: "=")
-                
                 guard let rangeUnit = rangeInfo?.first,
                     rangeUnit == "bytes",
                     var byteRanges = rangeInfo?.last?.components(separatedBy: "-"),
                     byteRanges.count == 2 else {
-                    response.statusCode = .badRequest
-                    return false
+                        response.statusCode = .badRequest
+                        return false
                 }
                 
-                guard let streamData = try? Data(contentsOf: URL(fileURLWithPath: filePath), options: [.alwaysMapped]),
-                    streamData.count > 0 else {
-                    response.statusCode = .notFound
-                    return false
+                guard let fileHandle = FileHandle(forReadingAtPath: filePath),
+                    let fileSize = (fileAttributes[FileAttributeKey.size] as? NSNumber)?.uint64Value,
+                    fileSize > 0 else {
+                        response.statusCode = .notFound
+                        return false
                 }
-                
-                let startByte, stopByte: Int
+
+                let endByte = fileSize - 1
+                let startByte, stopByte: UInt64
                 
                 if byteRanges[0] == "" {
-                    startByte = max(0, streamData.count - (Int(byteRanges[1]) ?? 1))
-                    stopByte = streamData.count - 1
+                    startByte = max(0, fileSize - (UInt64(byteRanges[1]) ?? 1))
+                    stopByte = endByte
                 } else {
-                    startByte = max(0, Int(byteRanges[0]) ?? 0)
-                    stopByte = min(streamData.count - 1, Int(byteRanges[1]) ?? streamData.count - 1)
+                    startByte = UInt64(byteRanges[0]) ?? 0
+                    stopByte = min(endByte, UInt64(byteRanges[1]) ?? endByte)
                 }
                 
-                guard startByte < stopByte else {
+                guard stopByte > startByte else {
                     response.statusCode = .badRequest
                     return false
                 }
                 
-                let dataRange = streamData.subdata(in: startByte..<stopByte + 1)
+                fileHandle.seek(toFileOffset: startByte)
+                let responseData = fileHandle.readData(ofLength: Int(stopByte - startByte + 1))
                 
                 let contentType = ContentType.sharedInstance.getContentType(forFileName: filePath)
                 if let contentType = contentType {
                     response.headers["Content-Type"] = contentType
                 }
-                response.headers["Content-Range"] = "bytes \(startByte)-\(stopByte)/\(streamData.count)"
+                response.headers["Content-Range"] = "bytes \(startByte)-\(stopByte)/\(fileSize)"
                 response.headers["Accept-Ranges"] = "bytes"
                 response.headers["Content-Length"] = String(describing: stopByte - startByte + 1)
                 
-                response.send(data: dataRange)
+                response.send(data: responseData)
             } catch {
                 Log.error("serving file at path \(filePath) error: \(error)")
             }
