@@ -381,6 +381,13 @@ class TestStaticFileServer: KituraTest {
                 expectation.fulfill()
             }, headers: ["Range": "bytes=0-9"])
         }, { expectation in
+            self.performRequest("get", path:"/zxcv/emptyFile", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
+                
+                expectation.fulfill()
+            }, headers: ["Range": "bytes=0-9"])
+        }, { expectation in
             self.performRequest("get", path:"/qwer/index.html", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent, "HTTP Status code was \(String(describing: response?.statusCode))")
