@@ -197,7 +197,9 @@ extension StaticFileServer {
                     return false
                 }
                 
-                guard let streamData = try? Data(contentsOf: URL(fileURLWithPath: filePath), options: [.mappedIfSafe]) else {
+                guard let streamData = try? Data(contentsOf: URL(fileURLWithPath: filePath), options: [.alwaysMapped]),
+                    streamData.count > 0 else {
+                    response.statusCode = .notFound
                     return false
                 }
                 
