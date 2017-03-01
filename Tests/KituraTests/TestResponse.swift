@@ -903,7 +903,7 @@ class TestResponse: KituraTest {
             })
         }
 
-        performServerTest(router) { expectation in
+        performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path: "/json", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
@@ -918,7 +918,39 @@ class TestResponse: KituraTest {
                 }
                 expectation.fulfill()
             })
-        }
+        },
+        { expectation in
+            self.performRequest("get", path: "/jsonDictionary", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/json", "Wrong Content-Type header")
+                do {
+                    var body = Data()
+                    _ = try response?.read(into: &body)
+                    let json = JSON(data: body)
+                    XCTAssertEqual(json["some"], "json")
+                } catch {
+                    XCTFail("Error reading body")
+                }
+                expectation.fulfill()
+            })
+        },
+        { expectation in
+            self.performRequest("get", path: "/jsonArray", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/json", "Wrong Content-Type header")
+                do {
+                    var body = Data()
+                    _ = try response?.read(into: &body)
+                    let json = JSON(data: body)
+                    XCTAssertEqual(json[2], "json")
+                } catch {
+                    XCTFail("Error reading body")
+                }
+                expectation.fulfill()
+            })
+        })
 
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/download", callback: { response in
@@ -1224,6 +1256,22 @@ class TestResponse: KituraTest {
             let json = JSON([ "some": "json" ])
             do {
                 try response.send(json: json).end()
+            } catch {}
+            next()
+        }
+        
+        router.get("/jsonDictionary") { _, response, next in
+            response.headers["Content-Type"] = "application/json"
+            do {
+                try response.send(json: ["some": "json"]).end()
+            } catch {}
+            next()
+        }
+        
+        router.get("/jsonArray") { _, response, next in
+            response.headers["Content-Type"] = "application/json"
+            do {
+                try response.send(json: ["some", 10, "json"]).end()
             } catch {}
             next()
         }
