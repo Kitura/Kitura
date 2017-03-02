@@ -930,7 +930,7 @@ class TestResponse: KituraTest {
                     let json = JSON(data: body)
                     XCTAssertEqual(json["some"], "json")
                 } catch {
-                    XCTFail("Error reading body")
+                    XCTFail("Error reading body. Error=\(error.localizedDescription)")
                 }
                 expectation.fulfill()
             })
@@ -946,7 +946,7 @@ class TestResponse: KituraTest {
                     let json = JSON(data: body)
                     XCTAssertEqual(json[2], "json")
                 } catch {
-                    XCTFail("Error reading body")
+                    XCTFail("Error reading body. Error=\(error.localizedDescription)")
                 }
                 expectation.fulfill()
             })
@@ -961,7 +961,7 @@ class TestResponse: KituraTest {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
                 } catch {
-                    XCTFail("Error reading body")
+                    XCTFail("Error reading body. Error=\(error.localizedDescription)")
                 }
 
                 expectation.fulfill()
@@ -979,7 +979,7 @@ class TestResponse: KituraTest {
                     let body = try response?.readString()
                     XCTAssertEqual(body?.lowercased(), "forbidden<!DOCTYPE html><html><body><b>forbidden</b></body></html>\n\n".lowercased())
                 } catch {
-                    XCTFail("Error reading body")
+                    XCTFail("Error reading body. Error=\(error.localizedDescription)")
                 }
                 expectation.fulfill()
             })
@@ -1012,7 +1012,9 @@ class TestResponse: KituraTest {
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             do {
                 try response.send("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n").end()
-            } catch {}
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+            }
             next()
         }
 
@@ -1031,14 +1033,18 @@ class TestResponse: KituraTest {
             let u1 = request.userInfo["u1"] as? String ?? "(nil)"
             do {
                 try response.send("<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=\(p1)<p><p>q=\(q)<p><p>u1=\(u1)</body></html>\n\n").end()
-            } catch {}
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+            }
             next()
         }
 
         router.get("/redir") { _, response, next in
             do {
                 try response.redirect("http://www.ibm.com")
-            } catch {}
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+            }
 
             next()
         }
@@ -1256,7 +1262,9 @@ class TestResponse: KituraTest {
             let json = JSON([ "some": "json" ])
             do {
                 try response.send(json: json).end()
-            } catch {}
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+            }
             next()
         }
         
@@ -1264,7 +1272,9 @@ class TestResponse: KituraTest {
             response.headers["Content-Type"] = "application/json"
             do {
                 try response.send(json: ["some": "json"]).end()
-            } catch {}
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+            }
             next()
         }
         
@@ -1272,14 +1282,18 @@ class TestResponse: KituraTest {
             response.headers["Content-Type"] = "application/json"
             do {
                 try response.send(json: ["some", 10, "json"]).end()
-            } catch {}
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+            }
             next()
         }
 
         router.get("/download") { _, response, next in
             do {
                 try response.send(download: "./Tests/KituraTests/TestStaticFileServer/index.html")
-            } catch {}
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+            }
             next()
         }
 
