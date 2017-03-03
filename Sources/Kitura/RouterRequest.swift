@@ -139,7 +139,7 @@ public class RouterRequest {
 
     /// List of query parameters.
     public lazy var queryParameters: [String:String] = { [unowned self] in
-        return self.urlURL.query?.asUrlEncoded ?? [:]
+        return self.urlURL.query?.urlDecodedFieldValuePairs ?? [:]
     }()
 
     /// User info.

@@ -22,7 +22,7 @@ class URLEncodedBodyParser: BodyParserProtocol {
             return nil
         }
         
-        let parsedBody = bodyAsString.asUrlEncoded
+        let parsedBody = bodyAsString.urlDecodedFieldValuePairs
         return parsedBody.count > 0 ? .urlEncoded(parsedBody) : nil
     }
 }

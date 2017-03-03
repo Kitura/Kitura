@@ -20,11 +20,12 @@ import LoggerAPI
 extension String {
     
     /// Parses percent encoded string into query parameters
-    var asUrlEncoded: [String : String] {
+    var urlDecodedFieldValuePairs: [String : String] {
         var result: [String:String] = [:]
         
         for item in self.components(separatedBy: "&") {
             guard let range = item.range(of: "=") else {
+                result[item] = nil
                 continue
             }
             
