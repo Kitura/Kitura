@@ -19,8 +19,9 @@ import LoggerAPI
 
 extension String {
     
+    /// Parses percent encoded string into query parameters
     var asUrlEncoded: [String : String] {
-        var decodedParameters: [String:String] = [:]
+        var result: [String:String] = [:]
         
         for item in self.components(separatedBy: "&") {
             guard let range = item.range(of: "=") else {
@@ -31,13 +32,13 @@ extension String {
             let value = item.substring(from: range.upperBound)
             let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
             if let decodedValue = valueReplacingPlus.removingPercentEncoding {
-                decodedParameters[key] = decodedValue
+                result[key] = decodedValue
             } else {
                 Log.warning("Unable to decode query parameter \(key)")
-                decodedParameters[key] = valueReplacingPlus
+                result[key] = valueReplacingPlus
             }
         }
         
-        return decodedParameters
+        return result
     }
 }
