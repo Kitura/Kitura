@@ -139,26 +139,8 @@ public class RouterRequest {
 
     /// List of query parameters.
     public lazy var queryParameters: [String:String] = { [unowned self] in
-        var decodedParameters: [String:String] = [:]
-        if let query = self.urlURL.query {
-            for item in query.components(separatedBy: "&") {
-                guard let range = item.range(of: "=") else {
-                    decodedParameters[item] = nil
-                    break
-                }
-                let key = item.substring(to: range.lowerBound)
-                let value = item.substring(from: range.upperBound)
-                let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
-                if let decodedValue = valueReplacingPlus.removingPercentEncoding {
-                    decodedParameters[key] = decodedValue
-                } else {
-                    Log.warning("Unable to decode query parameter \(key)")
-                    decodedParameters[key] = valueReplacingPlus
-                }
-            }
-        }
-        return decodedParameters
-        }()
+        return self.urlURL.query?.asUrlEncoded ?? [:]
+    }()
 
     /// User info.
     public var userInfo: [String: Any] = [:]

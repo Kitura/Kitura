@@ -18,25 +18,11 @@ import Foundation
 
 class URLEncodedBodyParser: BodyParserProtocol {
     func parse(_ data: Data) -> ParsedBody? {
-        var parsedBody = [String:String]()
-        var success = true
-        let bodyAsString = String(data: data as Data, encoding: .utf8)
-
-        if let bodyAsString = bodyAsString {
-            let bodyAsArray = bodyAsString.components(separatedBy: "&")
-
-            for element in bodyAsArray {
-                let elementPair = element.components(separatedBy: "=")
-                if elementPair.count == 2 {
-                    parsedBody[elementPair[0]] = elementPair[1]
-                } else {
-                    success = false
-                }
-            }
-            if success && parsedBody.count > 0 {
-                return .urlEncoded(parsedBody)
-            }
+        guard let bodyAsString = String(data: data, encoding: .utf8) else {
+            return nil
         }
-        return nil
+        
+        let parsedBody = bodyAsString.asUrlEncoded
+        return parsedBody.count > 0 ? .urlEncoded(parsedBody) : nil
     }
 }
