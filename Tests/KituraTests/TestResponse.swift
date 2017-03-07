@@ -1304,6 +1304,8 @@ class TestResponse: KituraTest {
                 try response.send(status: HTTPStatusCode.OK).end()
                 response.send("string")
                 response.send(json: json)
+                response.send(json: ["some": "json"])
+                response.send(json: ["some", 10, "json"])
                 try response.send(jsonp: json, callbackParameter: "cb").end()
                 try response.send(data: json.rawData())
                 try response.send(fileName: "./Tests/KituraTests/TestStaticFileServer/index.html")
