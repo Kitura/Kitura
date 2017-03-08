@@ -113,8 +113,13 @@ public class StaticFileServer: RouterMiddleware {
         guard let requestPath = request.parsedURLPath.path else {
             return next()
         }
+        
+        if request.headers["Range"] != nil {
+            fileServer.streamFile(filePath, request: request, response: response)
+        } else {
+            fileServer.serveFile(filePath, requestPath: requestPath, response: response)
+        }
 
-        fileServer.serveFile(filePath, requestPath: requestPath, response: response)
         next()
     }
 }

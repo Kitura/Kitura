@@ -32,6 +32,7 @@ class TestStaticFileServer: KituraTest {
     static var allTests: [(String, (TestStaticFileServer) -> () throws -> Void)] {
         return [
             ("testFileServer", testFileServer),
+            ("testStreamFileServer", testStreamFileServer),
             ("testGetWithWhiteSpaces", testGetWithWhiteSpaces),
             ("testGetWithSpecialCharacters", testGetWithSpecialCharacters),
             ("testGetWithSpecialCharactersEncoded", testGetWithSpecialCharactersEncoded),
@@ -47,7 +48,7 @@ class TestStaticFileServer: KituraTest {
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path:"/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
@@ -64,7 +65,7 @@ class TestStaticFileServer: KituraTest {
         }, { expectation in
             self.performRequest("get", path:"/qwer/index.html", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
@@ -76,7 +77,7 @@ class TestStaticFileServer: KituraTest {
         }, { expectation in
             self.performRequest("get", path:"/qwer/index", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
@@ -88,7 +89,7 @@ class TestStaticFileServer: KituraTest {
             }, { expectation in
                 self.performRequest("get", path:"/zxcv/index.html", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                     do {
                         let body = try response?.readString()
                         XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
@@ -104,31 +105,31 @@ class TestStaticFileServer: KituraTest {
             }, { expectation in
                 self.performRequest("get", path:"/zxcv", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(response?.statusCode)")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
                     expectation.fulfill()
                 })
             }, { expectation in
                 self.performRequest("get", path:"/zxcv/index", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(response?.statusCode)")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
                     expectation.fulfill()
                 })
             }, { expectation in
                 self.performRequest("get", path:"/asdf", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(response?.statusCode)")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
                     expectation.fulfill()
                 })
             }, { expectation in
                 self.performRequest("put", path:"/asdf", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(response?.statusCode)")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
                     expectation.fulfill()
                 })
             }, { expectation in
                 self.performRequest("get", path:"/asdf/", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                     do {
                         let body = try response?.readString()
                         XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
@@ -141,6 +142,270 @@ class TestStaticFileServer: KituraTest {
                     XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=0")
                     expectation.fulfill()
                 })
+        })
+    }
+    
+    func testStreamFileServer() {
+        let streamDataLength = 100
+        
+        performServerTest(router, asyncTasks: { expectation in
+            self.performRequest("get", path:"/zxcv/streamdata", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent, "HTTP Status code was \(String(describing: response?.statusCode))")
+                do {
+                    var data = Data()
+                    try response?.readAllData(into: &data)
+
+                    let expectedLength = 10
+                    XCTAssertEqual(response?.headers["Content-Length"]?.first, "\(expectedLength)")
+                    XCTAssertEqual(data.count, expectedLength, "Expected \(expectedLength) bytes, got \(data.count)")
+                    
+                    let dataArray: [UInt8] = data.withUnsafeBytes { [UInt8](UnsafeBufferPointer(start: $0, count: data.count)) }
+                    for (dataOffset, dataValue) in dataArray.enumerated() {
+                        XCTAssertEqual(dataValue, UInt8(dataOffset), "Value of byte at offset \(dataOffset) was \(dataValue)")
+                    }
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                
+                XCTAssertNil(response?.headers["x-custom-header"])
+                XCTAssertNil(response?.headers["Last-Modified"])
+                XCTAssertNil(response?.headers["Etag"])
+                XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=0")
+                expectation.fulfill()
+            }, headers: ["Range": "bytes=0-9"])
+        }, { expectation in
+            self.performRequest("get", path:"/zxcv/streamdata", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent, "HTTP Status code was \(String(describing: response?.statusCode))")
+                do {
+                    var data = Data()
+                    try response?.readAllData(into: &data)
+                    
+                    let expectedLength = 20
+                    XCTAssertEqual(response?.headers["Content-Length"]?.first, "\(expectedLength)")
+                    XCTAssertEqual(data.count, expectedLength, "Expected \(expectedLength) bytes, got \(data.count)")
+
+                    let dataArray: [UInt8] = data.withUnsafeBytes { [UInt8](UnsafeBufferPointer(start: $0, count: data.count)) }
+                    for (dataOffset, dataValue) in dataArray.enumerated() {
+                        XCTAssertEqual(dataValue, UInt8(dataOffset + streamDataLength - expectedLength), "Value of byte at offset \(dataOffset) was \(dataValue)")
+                    }
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                
+                XCTAssertNil(response?.headers["x-custom-header"])
+                XCTAssertNil(response?.headers["Last-Modified"])
+                XCTAssertNil(response?.headers["Etag"])
+                XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=0")
+                expectation.fulfill()
+            }, headers: ["Range": "bytes=-20"])
+        }, { expectation in
+            self.performRequest("get", path:"/zxcv/streamdata", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent, "HTTP Status code was \(String(describing: response?.statusCode))")
+                do {
+                    var data = Data()
+                    try response?.readAllData(into: &data)
+                    
+                    let expectedLength = 20
+                    XCTAssertEqual(response?.headers["Content-Length"]?.first, "\(expectedLength)")
+                    XCTAssertEqual(data.count, expectedLength, "Expected \(expectedLength) bytes, got \(data.count)")
+                    
+                    let dataArray: [UInt8] = data.withUnsafeBytes { [UInt8](UnsafeBufferPointer(start: $0, count: data.count)) }
+                    for (dataOffset, dataValue) in dataArray.enumerated() {
+                        XCTAssertEqual(dataValue, UInt8(dataOffset + streamDataLength - expectedLength), "Value of byte at offset \(dataOffset) was \(dataValue)")
+                    }
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                
+                XCTAssertNil(response?.headers["x-custom-header"])
+                XCTAssertNil(response?.headers["Last-Modified"])
+                XCTAssertNil(response?.headers["Etag"])
+                XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=0")
+                expectation.fulfill()
+            }, headers: ["Range": "bytes=80-"])
+        }, { expectation in
+            self.performRequest("get", path:"/zxcv/streamdata", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(String(describing: response?.statusCode))")
+                do {
+                    var data = Data()
+                    try response?.readAllData(into: &data)
+                    
+                    let expectedLength = 0
+                    XCTAssertEqual(response?.headers["Content-Length"]?.first, "\(expectedLength)")
+                    XCTAssertEqual(data.count, expectedLength, "Expected \(expectedLength) bytes, got \(data.count)")
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                
+                XCTAssertNil(response?.headers["x-custom-header"])
+                XCTAssertNil(response?.headers["Last-Modified"])
+                XCTAssertNil(response?.headers["Etag"])
+                XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=0")
+                expectation.fulfill()
+            }, headers: ["Range": "bytes=100-20"])
+        }, { expectation in
+            self.performRequest("get", path:"/zxcv/streamdata", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent, "HTTP Status code was \(String(describing: response?.statusCode))")
+                do {
+                    var data = Data()
+                    try response?.readAllData(into: &data)
+                    
+                    let expectedLength = 90
+                    XCTAssertEqual(response?.headers["Content-Length"]?.first, "\(expectedLength)")
+                    XCTAssertEqual(data.count, expectedLength, "Expected \(expectedLength) bytes, got \(data.count)")
+                    
+                    let dataArray: [UInt8] = data.withUnsafeBytes { [UInt8](UnsafeBufferPointer(start: $0, count: data.count)) }
+                    
+                    for (dataOffset, dataValue) in dataArray.enumerated() {
+                        XCTAssertEqual(dataValue, UInt8(dataOffset + streamDataLength - expectedLength), "Value of byte at offset \(dataOffset) was \(dataValue)")
+                    }
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                
+                XCTAssertNil(response?.headers["x-custom-header"])
+                XCTAssertNil(response?.headers["Last-Modified"])
+                XCTAssertNil(response?.headers["Etag"])
+                XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=0")
+                expectation.fulfill()
+            }, headers: ["Range": "bytes=10-999999999999999"])
+        }, { expectation in
+            self.performRequest("get", path:"/zxcv/streamdata", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(String(describing: response?.statusCode))")
+                do {
+                    var data = Data()
+                    try response?.readAllData(into: &data)
+                    
+                    let expectedLength = 0
+                    XCTAssertEqual(response?.headers["Content-Length"]?.first, "\(expectedLength)")
+                    XCTAssertEqual(data.count, expectedLength, "Expected \(expectedLength) bytes, got \(data.count)")
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                
+                XCTAssertNil(response?.headers["x-custom-header"])
+                XCTAssertNil(response?.headers["Last-Modified"])
+                XCTAssertNil(response?.headers["Etag"])
+                XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=0")
+                expectation.fulfill()
+            }, headers: ["Range": "bytes=-"])
+        }, { expectation in
+            self.performRequest("get", path:"/zxcv/streamdata", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(String(describing: response?.statusCode))")
+                do {
+                    var data = Data()
+                    try response?.readAllData(into: &data)
+                    
+                    let expectedLength = 0
+                    XCTAssertEqual(response?.headers["Content-Length"]?.first, "\(expectedLength)")
+                    XCTAssertEqual(data.count, expectedLength, "Expected \(expectedLength) bytes, got \(data.count)")
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                
+                XCTAssertNil(response?.headers["x-custom-header"])
+                XCTAssertNil(response?.headers["Last-Modified"])
+                XCTAssertNil(response?.headers["Etag"])
+                XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=0")
+                expectation.fulfill()
+            }, headers: ["Range": "bytes=30"])
+        }, { expectation in
+            self.performRequest("get", path:"/zxcv/streamdata", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(String(describing: response?.statusCode))")
+                do {
+                    var data = Data()
+                    try response?.readAllData(into: &data)
+                    
+                    let expectedLength = 0
+                    XCTAssertEqual(response?.headers["Content-Length"]?.first, "\(expectedLength)")
+                    XCTAssertEqual(data.count, expectedLength, "Expected \(expectedLength) bytes, got \(data.count)")
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                
+                XCTAssertNil(response?.headers["x-custom-header"])
+                XCTAssertNil(response?.headers["Last-Modified"])
+                XCTAssertNil(response?.headers["Etag"])
+                XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=0")
+                expectation.fulfill()
+            }, headers: ["Range": "bytes=0-0,-1"])
+        }, { expectation in
+            self.performRequest("get", path:"/zxcv/streamdata", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent, "HTTP Status code was \(String(describing: response?.statusCode))")
+                do {
+                    var data = Data()
+                    try response?.readAllData(into: &data)
+                    
+                    let expectedLength = 100
+                    XCTAssertEqual(response?.headers["Content-Length"]?.first, "\(expectedLength)")
+                    XCTAssertEqual(data.count, expectedLength, "Expected \(expectedLength) bytes, got \(data.count)")
+                    
+                    let dataArray: [UInt8] = data.withUnsafeBytes { [UInt8](UnsafeBufferPointer(start: $0, count: data.count)) }
+                    
+                    for (dataOffset, dataValue) in dataArray.enumerated() {
+                        XCTAssertEqual(dataValue, UInt8(dataOffset + streamDataLength - expectedLength), "Value of byte at offset \(dataOffset) was \(dataValue)")
+                    }
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                
+                XCTAssertNil(response?.headers["x-custom-header"])
+                XCTAssertNil(response?.headers["Last-Modified"])
+                XCTAssertNil(response?.headers["Etag"])
+                XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=0")
+                expectation.fulfill()
+            }, headers: ["Range": "bytes=A-B"])
+        }, { expectation in
+            self.performRequest("get", path:"/zxcv/invalidfile", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
+                
+                expectation.fulfill()
+            }, headers: ["Range": "bytes=0-9"])
+        }, { expectation in
+            self.performRequest("get", path:"/zxcv/emptyFile", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
+                
+                expectation.fulfill()
+            }, headers: ["Range": "bytes=0-9"])
+        }, { expectation in
+            self.performRequest("get", path:"/qwer/index.html", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent, "HTTP Status code was \(String(describing: response?.statusCode))")
+                do {
+                    var data = Data()
+                    try response?.readAllData(into: &data)
+                    
+                    let expectedLength = 10
+                    XCTAssertEqual(response?.headers["Content-Length"]?.first, "\(expectedLength)")
+                    XCTAssertEqual(data.count, expectedLength, "Expected \(expectedLength) bytes, got \(data.count)")
+                    XCTAssertEqual(response?.headers["Content-Type"]?.first, "text/html")
+                }
+                catch{
+                    XCTFail("No response body")
+                }
+                
+                expectation.fulfill()
+            }, headers: ["Range": "bytes=0-9"])
         })
     }
 
