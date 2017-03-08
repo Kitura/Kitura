@@ -269,6 +269,54 @@ public class RouterResponse {
 
         return self
     }
+    
+    #if os(Linux)
+        typealias JSONSerializationType = LclJSONSerialization
+    #else
+        typealias JSONSerializationType = JSONSerialization
+    #endif
+    
+    /// Send JSON.
+    ///
+    /// - Parameter json: The array to send in JSON format.
+    /// - Returns: this RouterResponse.
+    @discardableResult
+    public func send(json: [Any]) -> RouterResponse {
+        guard !state.invokedEnd else {
+            Log.warning("RouterResponse send(json:) invoked after end() for \(self.request.urlURL)")
+            return self
+        }
+        do {
+            let jsonData = try JSONSerializationType.data(withJSONObject: json, options:.prettyPrinted)
+            headers.setType("json")
+            send(data: jsonData)
+        } catch {
+            Log.warning("Failed to convert JSON for sending: \(error.localizedDescription)")
+        }
+        
+        return self
+    }
+    
+    /// Send JSON.
+    ///
+    /// - Parameter json: The Dictionary to send in JSON format as a hash.
+    /// - Returns: this RouterResponse.
+    @discardableResult
+    public func send(json: [String: Any]) -> RouterResponse {
+        guard !state.invokedEnd else {
+            Log.warning("RouterResponse send(json:) invoked after end() for \(self.request.urlURL)")
+            return self
+        }
+        do {
+            let jsonData = try JSONSerializationType.data(withJSONObject: json, options:.prettyPrinted)
+            headers.setType("json")
+            send(data: jsonData)
+        } catch {
+            Log.warning("Failed to convert JSON for sending: \(error.localizedDescription)")
+        }
+        
+        return self
+    }
 
     /// Send JSON with JSONP callback.
     ///

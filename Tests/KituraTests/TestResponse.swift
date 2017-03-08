@@ -903,7 +903,7 @@ class TestResponse: KituraTest {
             })
         }
 
-        performServerTest(router) { expectation in
+        performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path: "/json", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
@@ -918,7 +918,39 @@ class TestResponse: KituraTest {
                 }
                 expectation.fulfill()
             })
-        }
+        },
+        { expectation in
+            self.performRequest("get", path: "/jsonDictionary", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/json", "Wrong Content-Type header")
+                do {
+                    var body = Data()
+                    _ = try response?.read(into: &body)
+                    let json = JSON(data: body)
+                    XCTAssertEqual(json["some"], "json")
+                } catch {
+                    XCTFail("Error reading body. Error=\(error.localizedDescription)")
+                }
+                expectation.fulfill()
+            })
+        },
+        { expectation in
+            self.performRequest("get", path: "/jsonArray", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/json", "Wrong Content-Type header")
+                do {
+                    var body = Data()
+                    _ = try response?.read(into: &body)
+                    let json = JSON(data: body)
+                    XCTAssertEqual(json[2], "json")
+                } catch {
+                    XCTFail("Error reading body. Error=\(error.localizedDescription)")
+                }
+                expectation.fulfill()
+            })
+        })
 
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/download", callback: { response in
@@ -929,7 +961,7 @@ class TestResponse: KituraTest {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
                 } catch {
-                    XCTFail("Error reading body")
+                    XCTFail("Error reading body. Error=\(error.localizedDescription)")
                 }
 
                 expectation.fulfill()
@@ -947,7 +979,7 @@ class TestResponse: KituraTest {
                     let body = try response?.readString()
                     XCTAssertEqual(body?.lowercased(), "forbidden<!DOCTYPE html><html><body><b>forbidden</b></body></html>\n\n".lowercased())
                 } catch {
-                    XCTFail("Error reading body")
+                    XCTFail("Error reading body. Error=\(error.localizedDescription)")
                 }
                 expectation.fulfill()
             })
@@ -980,7 +1012,9 @@ class TestResponse: KituraTest {
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             do {
                 try response.send("<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n").end()
-            } catch {}
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+            }
             next()
         }
 
@@ -999,14 +1033,18 @@ class TestResponse: KituraTest {
             let u1 = request.userInfo["u1"] as? String ?? "(nil)"
             do {
                 try response.send("<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=\(p1)<p><p>q=\(q)<p><p>u1=\(u1)</body></html>\n\n").end()
-            } catch {}
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+            }
             next()
         }
 
         router.get("/redir") { _, response, next in
             do {
                 try response.redirect("http://www.ibm.com")
-            } catch {}
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+            }
 
             next()
         }
@@ -1224,14 +1262,38 @@ class TestResponse: KituraTest {
             let json = JSON([ "some": "json" ])
             do {
                 try response.send(json: json).end()
-            } catch {}
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+            }
+            next()
+        }
+        
+        router.get("/jsonDictionary") { _, response, next in
+            response.headers["Content-Type"] = "application/json"
+            do {
+                try response.send(json: ["some": "json"]).end()
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+            }
+            next()
+        }
+        
+        router.get("/jsonArray") { _, response, next in
+            response.headers["Content-Type"] = "application/json"
+            do {
+                try response.send(json: ["some", 10, "json"]).end()
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+            }
             next()
         }
 
         router.get("/download") { _, response, next in
             do {
                 try response.send(download: "./Tests/KituraTests/TestStaticFileServer/index.html")
-            } catch {}
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+            }
             next()
         }
 
@@ -1242,6 +1304,8 @@ class TestResponse: KituraTest {
                 try response.send(status: HTTPStatusCode.OK).end()
                 response.send("string")
                 response.send(json: json)
+                response.send(json: ["some": "json"])
+                response.send(json: ["some", 10, "json"])
                 try response.send(jsonp: json, callbackParameter: "cb").end()
                 try response.send(data: json.rawData())
                 try response.send(fileName: "./Tests/KituraTests/TestStaticFileServer/index.html")
