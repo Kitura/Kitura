@@ -98,22 +98,25 @@ public class Kitura {
     ///
     /// Make all registered servers stop listening on their port.
     ///
-    /// - note: All of the registered servers are unregistered after they are stopped.
-    public class func stop() {
+    /// - Parameter unregister: If servers should be unregistered after stopped (default true).
+    public class func stop(unregister: Bool = true) {
         for (server, port) in httpServersAndPorts {
             Log.verbose("Stopping HTTP Server on port \(port)...")
             server.stop()
         }
-        httpServersAndPorts.removeAll()
+
         for (server, port) in fastCGIServersAndPorts {
             Log.verbose("Stopping FastCGI Server on port \(port)...")
             server.stop()
         }
-        fastCGIServersAndPorts.removeAll()
+
+        if unregister {
+            httpServersAndPorts.removeAll()
+            fastCGIServersAndPorts.removeAll()
+        }
     }
 
     typealias Port = Int
-    private static var httpServersAndPorts = [(server: HTTPServer, port: Port)]()
-    private static var fastCGIServersAndPorts = [(server: FastCGIServer, port: Port)]()
-
+    internal private(set) static var httpServersAndPorts = [(server: HTTPServer, port: Port)]()
+    internal private(set) static var fastCGIServersAndPorts = [(server: FastCGIServer, port: Port)]()
 }

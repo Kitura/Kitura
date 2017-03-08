@@ -18,7 +18,7 @@ import XCTest
 import Dispatch
 
 import KituraNet
-import Kitura
+@testable import Kitura
 
 class TestServer: KituraTest {
 
@@ -26,7 +26,8 @@ class TestServer: KituraTest {
         return [
             ("testServerStartStop", testServerStartStop),
             ("testServerRun", testServerRun),
-            ("testServerFail", testServerFail)
+            ("testServerFail", testServerFail),
+            ("testServerRestart", testServerRestart)
         ]
     }
 
@@ -148,5 +149,53 @@ class TestServer: KituraTest {
         } catch {
             XCTFail("Unexpected error starting server: \(error)")
         }
+    }
+
+    func testServerRestart() {
+        let port = httpPort
+        let path = "/testServerRestart"
+        let body = "Server is running."
+
+        let router = Router()
+        router.get(path) { _, response, next in
+            response.send(body)
+            next()
+        }
+
+        let server = Kitura.addHTTPServer(onPort: port, with: router)
+        server.sslConfig = KituraTest.sslConfig.config
+
+        let stopped = DispatchSemaphore(value: 0)
+        server.stopped {
+            stopped.signal()
+        }
+
+        Kitura.start()
+        testResponse(port: port, path: path, expectedBody: body)
+        Kitura.stop(unregister: false)
+        stopped.wait()
+
+        XCTAssertEqual(Kitura.httpServersAndPorts.count, 1, "Kitura.httpServersAndPorts.count is \(Kitura.httpServersAndPorts.count), should be 1")
+        testResponse(port: port, path: path, expectedBody: nil, expectedStatus: nil)
+
+        Kitura.start()
+        testResponse(port: port, path: path, expectedBody: body)
+        Kitura.stop() // default for unregister is true
+
+        XCTAssertEqual(Kitura.httpServersAndPorts.count, 0, "Kitura.httpServersAndPorts.count is \(Kitura.httpServersAndPorts.count), should be 0")
+    }
+
+    private func testResponse(port: Int, method: String = "get", path: String, expectedBody: String?, expectedStatus: HTTPStatusCode? = HTTPStatusCode.OK) {
+
+        performRequest(method, path: path, port: port, useSSL: true, callback: { response in
+            let status = response?.statusCode
+            XCTAssertEqual(status, expectedStatus, "status was \(status), expected \(expectedStatus)")
+            do {
+                let body = try response?.readString()
+                XCTAssertEqual(body, expectedBody, "body was '\(body)', expected '\(expectedBody)'")
+            } catch {
+                XCTFail("Error reading body: \(error)")
+            }
+        })
     }
 }

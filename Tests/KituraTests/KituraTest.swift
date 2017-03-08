@@ -147,8 +147,12 @@ class KituraTest: XCTestCase {
         KituraTest.httpsServer = nil
     }
 
-    func performRequest(_ method: String, path: String, callback: @escaping ClientRequest.Callback,
-                        headers: [String: String]? = nil, requestModifier: ((ClientRequest) -> Void)? = nil) {
+    func performRequest(_ method: String, path: String, port: Int? = nil, useSSL: Bool? = nil,
+                        callback: @escaping ClientRequest.Callback, headers: [String: String]? = nil,
+                        requestModifier: ((ClientRequest) -> Void)? = nil) {
+
+        let port = Int16(port ?? self.port)
+        let useSSL = useSSL ?? self.useSSL
 
         var allHeaders = [String: String]()
         if  let headers = headers {
@@ -160,11 +164,11 @@ class KituraTest: XCTestCase {
             allHeaders["Content-Type"] = "text/plain"
         }
 
-        let schema = self.useSSL ? "https" : "http"
+        let schema = useSSL ? "https" : "http"
         var options: [ClientRequest.Options] =
-                [.method(method), .schema(schema), .hostname("localhost"), .port(Int16(self.port)), .path(path),
+                [.method(method), .schema(schema), .hostname("localhost"), .port(port), .path(path),
                  .headers(allHeaders)]
-        if self.useSSL {
+        if useSSL {
             options.append(.disableSSLVerification)
         }
 
