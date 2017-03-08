@@ -161,9 +161,8 @@ class TestServer: KituraTest {
             response.send(body)
             next()
         }
-        Kitura.addHTTPServer(onPort: port, with: router)
 
-        let server = Kitura.httpServersAndPorts[0].server
+        let server = Kitura.addHTTPServer(onPort: port, with: router)
         server.sslConfig = KituraTest.sslConfig.config
 
         let stopped = DispatchSemaphore(value: 0)
@@ -171,23 +170,19 @@ class TestServer: KituraTest {
             stopped.signal()
         }
 
-        testResponse(port: port, path: path, expectedBody: nil, expectedStatus: nil)
-
         Kitura.start()
         testResponse(port: port, path: path, expectedBody: body)
         Kitura.stop(unregister: false)
         stopped.wait()
 
+        XCTAssertEqual(Kitura.httpServersAndPorts.count, 1, "Kitura.httpServersAndPorts.count is \(Kitura.httpServersAndPorts.count), should be 1")
         testResponse(port: port, path: path, expectedBody: nil, expectedStatus: nil)
 
         Kitura.start()
         testResponse(port: port, path: path, expectedBody: body)
-        Kitura.stop(unregister: true)
-        stopped.wait()
+        Kitura.stop() // default for unregister is true
 
-        Kitura.start() // should be no servers to start as we just unregistered them
-        testResponse(port: port, path: path, expectedBody: nil, expectedStatus: nil)
-        Kitura.stop()
+        XCTAssertEqual(Kitura.httpServersAndPorts.count, 0, "Kitura.httpServersAndPorts.count is \(Kitura.httpServersAndPorts.count), should be 0")
     }
 
     private func testResponse(port: Int, method: String = "get", path: String, expectedBody: String?, expectedStatus: HTTPStatusCode? = HTTPStatusCode.OK) {
