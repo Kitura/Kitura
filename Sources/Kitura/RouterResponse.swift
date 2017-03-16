@@ -138,7 +138,6 @@ public class RouterResponse {
     /// End the response.
     ///
     /// - Throws: Socket.Error if an error occurred while writing to a socket.
-    @discardableResult
     public func end() throws {
         guard !state.invokedEnd else {
             Log.warning("RouterResponse end() invoked more than once for \(self.request.urlURL)")
