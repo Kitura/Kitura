@@ -43,7 +43,7 @@ class TestErrors: KituraTest {
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("invalid", path: "/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response?.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(String(describing: response?.statusCode))")
                 expectation.fulfill()
             })
         }, { expectation in
@@ -57,7 +57,7 @@ class TestErrors: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/notreal", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
                 expectation.fulfill()
             })
         }

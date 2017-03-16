@@ -45,7 +45,7 @@ class TestSubrouter: KituraTest {
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path:"/sub", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
                 //XCTAssertEqual(response?.method, "GET", "The request wasn't recognized as a get")
                 do {
@@ -76,7 +76,7 @@ class TestSubrouter: KituraTest {
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path:"/extern", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
                 //XCTAssertEqual(response?.method, "GET", "The request wasn't recognized as a get")
                 do {
@@ -105,7 +105,7 @@ class TestSubrouter: KituraTest {
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path:"/sub/sub2", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
                 //XCTAssertEqual(response?.method, "GET", "The request wasn't recognized as a get")
                 do {
@@ -134,7 +134,7 @@ class TestSubrouter: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("get", path:"/middle/sub1", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
                 //XCTAssertEqual(response?.method, "GET", "The request wasn't recognized as a get")
                 do {

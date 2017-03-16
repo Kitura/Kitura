@@ -47,7 +47,7 @@ class TestStaticFileServer: KituraTest {
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path:"/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
@@ -64,7 +64,7 @@ class TestStaticFileServer: KituraTest {
         }, { expectation in
             self.performRequest("get", path:"/qwer/index.html", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
@@ -76,7 +76,7 @@ class TestStaticFileServer: KituraTest {
         }, { expectation in
             self.performRequest("get", path:"/qwer/index", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
@@ -88,7 +88,7 @@ class TestStaticFileServer: KituraTest {
             }, { expectation in
                 self.performRequest("get", path:"/zxcv/index.html", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                     do {
                         let body = try response?.readString()
                         XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
@@ -104,31 +104,31 @@ class TestStaticFileServer: KituraTest {
             }, { expectation in
                 self.performRequest("get", path:"/zxcv", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(response?.statusCode)")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
                     expectation.fulfill()
                 })
             }, { expectation in
                 self.performRequest("get", path:"/zxcv/index", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(response?.statusCode)")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
                     expectation.fulfill()
                 })
             }, { expectation in
                 self.performRequest("get", path:"/asdf", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(response?.statusCode)")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
                     expectation.fulfill()
                 })
             }, { expectation in
                 self.performRequest("put", path:"/asdf", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(response?.statusCode)")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing:response?.statusCode))")
                     expectation.fulfill()
                 })
             }, { expectation in
                 self.performRequest("get", path:"/asdf/", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response?.statusCode)")
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                     do {
                         let body = try response?.readString()
                         XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
