@@ -31,7 +31,7 @@ extension JSONPError: CustomStringConvertible {
     public var description: String {
         switch self {
         case .invalidCallbackName(let name):
-            return "Invalid callback name \(name)"
+            return "Invalid callback name \(String(describing: name))"
         }
     }
 }
