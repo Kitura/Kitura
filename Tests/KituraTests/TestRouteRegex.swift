@@ -64,7 +64,11 @@ class TestRouteRegex: KituraTest {
 
     func testBuildRegexFromPattern() {
         #if os(Linux)
-            var regex: RegularExpression?
+            #if swift(>=3.1)
+                var regex: NSRegularExpression?
+            #else
+                var regex: RegularExpression?
+            #endif
         #else
             var regex: NSRegularExpression?
         #endif
