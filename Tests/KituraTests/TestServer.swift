@@ -189,10 +189,10 @@ class TestServer: KituraTest {
 
         performRequest(method, path: path, port: port, useSSL: true, callback: { response in
             let status = response?.statusCode
-            XCTAssertEqual(status, expectedStatus, "status was \(status), expected \(expectedStatus)")
+            XCTAssertEqual(status, expectedStatus, "status was \(String(describing: status)), expected \(String(describing: expectedStatus))")
             do {
                 let body = try response?.readString()
-                XCTAssertEqual(body, expectedBody, "body was '\(body)', expected '\(expectedBody)'")
+                XCTAssertEqual(body, expectedBody, "body was '\(String(describing: body))', expected '\(String(describing: expectedBody))'")
             } catch {
                 XCTFail("Error reading body: \(error)")
             }

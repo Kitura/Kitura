@@ -48,7 +48,7 @@ class TestRequests: KituraTest {
         }
         router.get("/zxcv/ploni") { request, _, next in
             let parameter = request.parameters["p1"]
-            XCTAssertNil(parameter, "URL parameter p1 was not nil, it's value was \(parameter)")
+            XCTAssertNil(parameter, "URL parameter p1 was not nil, it's value was \(String(describing: parameter))")
             next()
         }
         router.all() { _, response, next in

@@ -40,11 +40,11 @@ class MiscellaneousTests: KituraTest {
         switch key {
         case "kitura":
             XCTAssertNotNil(value, "Value for the header kitura was nil")
-            XCTAssertEqual(value, "The greatest", "The value for the kitura header wasn't \"The greatest\". It was \(value)")
+            XCTAssertEqual(value, "The greatest", "The value for the kitura header wasn't \"The greatest\". It was \(String(describing: value))")
             firstKeyWasKitura = true
         case "plover":
             XCTAssertNotNil(value, "Value for the header plover was nil")
-            XCTAssertEqual(value, "xyzzy", "The value for the plover header wasn't \"xyzzy\". It was \(value)")
+            XCTAssertEqual(value, "xyzzy", "The value for the plover header wasn't \"xyzzy\". It was \(String(describing: value))")
             firstKeyWasKitura = false
         default:
             firstKeyWasKitura = false
@@ -59,11 +59,11 @@ class MiscellaneousTests: KituraTest {
         case "kitura":
             XCTAssertFalse(firstKeyWasKitura, "Second key was kitura, it should not have been")
             XCTAssertNotNil(value, "Value for the header kitura was nil")
-            XCTAssertEqual(value, "The greatest", "The value for the kitura header wasn't \"The greatest\". It was \(value)")
+            XCTAssertEqual(value, "The greatest", "The value for the kitura header wasn't \"The greatest\". It was \(String(describing: value))")
         case "plover":
             XCTAssertTrue(firstKeyWasKitura, "The first key should have been kitura")
             XCTAssertNotNil(value, "Value for the header plover was nil")
-            XCTAssertEqual(value, "xyzzy", "The value for the plover header wasn't \"xyzzy\". It was \(value)")
+            XCTAssertEqual(value, "xyzzy", "The value for the plover header wasn't \"xyzzy\". It was \(String(describing: value))")
         default:
             XCTFail("The header key was neither kitura nor plover, it was \(key)")
         }
@@ -75,30 +75,30 @@ class MiscellaneousTests: KituraTest {
         headers.setLocation("back")   // Without referrer set
         var location = headers["Location"]
         XCTAssertNotNil(location, "Location header wasn't set")
-        XCTAssertEqual(location, "/", "Location header should have been /, it was \(location)")
+        XCTAssertEqual(location, "/", "Location header should have been /, it was \(String(describing: location))")
 
         let referrer = "http://plover.com/xyzzy"
         headers["referrer"] = referrer
         headers.setLocation("back")   // With referrer set
         location = headers["Location"]
-        XCTAssertEqual(location, referrer, "Location header should have been \(referrer), it was \(location)")
+        XCTAssertEqual(location, referrer, "Location header should have been \(referrer), it was \(String(describing: location))")
 
         headers.setType("html", charset: "UTF-8")
         let contentType = headers["Content-Type"]
         XCTAssertNotNil(contentType, "Content-Type header wasn't set")
         let expectedContentType = "text/html; charset=UTF-8"
-        XCTAssertEqual(contentType, expectedContentType, "Content-Type header should have been \(expectedContentType), it was \(contentType)")
+        XCTAssertEqual(contentType, expectedContentType, "Content-Type header should have been \(expectedContentType), it was \(String(describing: contentType))")
 
         var contentDispostion = headers["Content-Disposition"]
         XCTAssertNil(contentDispostion, "Content-Disposition shouldn't have been set yet")
 
         headers.addAttachment(for: "")
         contentDispostion = headers["Content-Disposition"]
-        XCTAssertNil(contentDispostion, "Content-Disposition shouldn't have been set. It's value is \(contentDispostion)")
+        XCTAssertNil(contentDispostion, "Content-Disposition shouldn't have been set. It's value is \(String(describing: contentDispostion))")
 
         headers.addAttachment()
         contentDispostion = headers["Content-Disposition"]
         XCTAssertNotNil(contentDispostion, "Content-Disposition should have been set.")
-        XCTAssertEqual(contentDispostion, "attachment", "Content-Disposition should have the value attachment. It has the value \(contentDispostion)")
+        XCTAssertEqual(contentDispostion, "attachment", "Content-Disposition should have the value attachment. It has the value \(String(describing: contentDispostion))")
     }
 }
