@@ -86,7 +86,7 @@ class TestResponse: KituraTest {
     }
 
     func testLargeGet() {
-        performServerTest(router) { expectation in
+        performServerTest(router, timeout: 30) { expectation in
             let uint8 = UInt8.max
             let count = 1024 * 1024
 
@@ -109,7 +109,7 @@ class TestResponse: KituraTest {
     }
 
     func testLargePost() {
-        performServerTest(router) { expectation in
+        performServerTest(router, timeout: 30) { expectation in
             let count = 1024 * 1024
             let postData = Data(repeating: UInt8.max, count: count)
 
