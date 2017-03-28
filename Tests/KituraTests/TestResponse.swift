@@ -32,6 +32,8 @@ class TestResponse: KituraTest {
     static var allTests: [(String, (TestResponse) -> () throws -> Void)] {
         return [
             ("testSimpleResponse", testSimpleResponse),
+            ("testLargeGet", testLargeGet),
+            ("testLargePost", testLargePost),
             ("testResponseNoEndOrNext", testResponseNoEndOrNext),
             ("testEmptyHandler", testEmptyHandler),
             ("testPostRequest", testPostRequest),
@@ -79,6 +81,54 @@ class TestResponse: KituraTest {
                     XCTFail("Error reading body")
                 }
                 expectation.fulfill()
+            })
+        }
+    }
+
+    func testLargeGet() {
+        performServerTest(router, timeout: 30) { expectation in
+            let uint8 = UInt8.max
+            let count = 1024 * 1024
+
+            self.performRequest("get", path:"/largeGet?uint8=\(uint8)&count=\(count)", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
+
+                do {
+                    var data = Data(capacity: count/32)
+                    let length = try response?.readAllData(into: &data)
+                    XCTAssertEqual(length, count, "Expected \(count) bytes, received \(String(describing: length)).")
+                    XCTAssertEqual(data, Data(repeating: uint8, count: count), "Received data different from expected data")
+                } catch {
+                    XCTFail("Error reading body")
+                }
+
+                expectation.fulfill()
+            })
+        }
+    }
+
+    func testLargePost() {
+        performServerTest(router, timeout: 30) { expectation in
+            let count = 1024 * 1024
+            let postData = Data(repeating: UInt8.max, count: count)
+
+            self.performRequest("post", path: "/largePost", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
+
+                do {
+                    var data = Data(capacity: count/32)
+                    let length = try response?.readAllData(into: &data)
+                    XCTAssertEqual(length, count, "Expected \(count) bytes, received \(String(describing: length)).")
+                    XCTAssertEqual(data, postData, "Received data different from posted data")
+                } catch {
+                    XCTFail("Error reading body")
+                }
+
+                expectation.fulfill()
+            }, requestModifier: { request in
+                request.write(from: postData)
             })
         }
     }
@@ -1016,6 +1066,29 @@ class TestResponse: KituraTest {
                 XCTFail("Error sending response. Error=\(error.localizedDescription)")
             }
             next()
+        }
+
+        router.get("/largeGet") { request, response, _ in
+            do {
+                let uint8 = UInt8(request.queryParameters["uint8"] ?? "NA")
+                let count = Int(request.queryParameters["count"] ?? "NA")
+                if let uint8 = uint8, let count = count {
+                    response.send(data: Data(repeating: uint8, count: count))
+                }
+                try response.end()
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+            }
+        }
+
+        router.post("/largePost") { request, response, _ in
+            do {
+                var data = Data()
+                let count = try request.read(into: &data)
+                try response.send(data: data).end()
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+            }
         }
 
         router.get("/noEndOrNext") { _, response, _ in
