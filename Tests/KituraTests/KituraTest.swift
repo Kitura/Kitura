@@ -69,22 +69,22 @@ class KituraTest: XCTestCase {
         KituraTest.initOnce
     }
 
-    func performServerTest(_ router: ServerDelegate, sslOption: SSLOption = SSLOption.both,
+    func performServerTest(_ router: ServerDelegate, sslOption: SSLOption = SSLOption.both, timeout: TimeInterval = 10,
                            line: Int = #line, asyncTasks: @escaping (XCTestExpectation) -> Void...) {
         if sslOption != SSLOption.httpsOnly {
             self.port = KituraTest.httpPort
             self.useSSL = false
-            doPerformServerTest(router: router, line: line, asyncTasks: asyncTasks)
+            doPerformServerTest(router: router, timeout: timeout, line: line, asyncTasks: asyncTasks)
         }
 
         if sslOption != SSLOption.httpOnly {
             self.port = KituraTest.httpsPort
             self.useSSL = true
-            doPerformServerTest(router: router, line: line, asyncTasks: asyncTasks)
+            doPerformServerTest(router: router, timeout: timeout, line: line, asyncTasks: asyncTasks)
         }
     }
 
-    func doPerformServerTest(router: ServerDelegate, line: Int, asyncTasks: [(XCTestExpectation) -> Void]) {
+    func doPerformServerTest(router: ServerDelegate, timeout: TimeInterval, line: Int, asyncTasks: [(XCTestExpectation) -> Void]) {
 
         guard startServer(router: router) else {
             XCTFail("Error starting server on port \(port). useSSL:\(useSSL)")
@@ -100,7 +100,7 @@ class KituraTest: XCTestCase {
         }
 
         // wait for timeout or for all created expectations to be fulfilled
-        waitForExpectations(timeout: 10) { error in
+        waitForExpectations(timeout: timeout) { error in
             XCTAssertNil(error)
         }
     }
