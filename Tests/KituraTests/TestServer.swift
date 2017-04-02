@@ -1,5 +1,5 @@
 /**
- * Copyright IBM Corporation 2016
+ * Copyright IBM Corporation 2016, 2017
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,10 +39,10 @@ class TestServer: KituraTest {
         stopServer() // stop common server so we can run these tests
     }
 
-    private func setupServerAndExpectations(expectStart: Bool, expectStop: Bool, expectFail: Bool) {
+    private func setupServerAndExpectations(expectStart: Bool, expectStop: Bool, expectFail: Bool, httpPort: Int?=nil, fastCgiPort: Int?=nil) {
         let router = Router()
-        let httpServer = Kitura.addHTTPServer(onPort: httpPort, with: router)
-        let fastCgiServer = Kitura.addFastCGIServer(onPort: fastCgiPort, with: router)
+        let httpServer = Kitura.addHTTPServer(onPort: httpPort ?? self.httpPort, with: router)
+        let fastCgiServer = Kitura.addFastCGIServer(onPort: fastCgiPort ?? self.fastCgiPort, with: router)
 
         if expectStart {
             let httpStarted = expectation(description: "HTTPServer started()")
@@ -124,30 +124,18 @@ class TestServer: KituraTest {
     }
 
     func testServerFail() {
-        do {
-            let httpServer = HTTP.createServer()
-            let fastCgiServer = FastCGI.createServer()
-            defer {
-                httpServer.stop()
-                fastCgiServer.stop()
-            }
-            try httpServer.listen(on: httpPort)
-            try fastCgiServer.listen(on: fastCgiPort)
+        // setupServer startup should fail as we are passing in illegal ports
+        setupServerAndExpectations(expectStart: false, expectStop: false, expectFail: true,
+                                   httpPort: -1, fastCgiPort: -2)
 
-            // setupServer startup should fail as we are already listening on the ports
-            setupServerAndExpectations(expectStart: false, expectStop: false, expectFail: true)
+        let requestQueue = DispatchQueue(label: "Request queue")
+        requestQueue.async() {
+            Kitura.start()
+        }
 
-            let requestQueue = DispatchQueue(label: "Request queue")
-            requestQueue.async() {
-                Kitura.start()
-            }
-
-            waitForExpectations(timeout: 10) { error in
-                Kitura.stop()
-                XCTAssertNil(error)
-            }
-        } catch {
-            XCTFail("Unexpected error starting server: \(error)")
+        waitForExpectations(timeout: 10) { error in
+            Kitura.stop()
+            XCTAssertNil(error)
         }
     }
 
