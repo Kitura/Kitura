@@ -1,5 +1,6 @@
+
 /*
- * Copyright IBM Corporation 2016
+ * Copyright IBM Corporation 2016, 2017
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,11 +77,20 @@ extension StaticFileServer {
 
         static private func removePackagesDirectory(pathComponents: [String]) -> [String] {
             var pathComponents = pathComponents
-            let numberOfComponentsFromKituraPackageToDependentRepository = 2
+            let numberOfComponentsFromKituraPackageToDependentRepository = 3
             let packagesComponentIndex = pathComponents.endIndex - numberOfComponentsFromKituraPackageToDependentRepository
             if pathComponents.count > numberOfComponentsFromKituraPackageToDependentRepository &&
-                 pathComponents[packagesComponentIndex] == "Packages" {
+                pathComponents[packagesComponentIndex] == ".build"  &&
+                pathComponents[packagesComponentIndex+1] == "checkouts" {
                 pathComponents.removeLast(numberOfComponentsFromKituraPackageToDependentRepository)
+            }
+            else {
+                let numberOfComponentsFromEditableKituraPackageToDependentRepository = 2
+                let editablePackagesComponentIndex = pathComponents.endIndex - numberOfComponentsFromEditableKituraPackageToDependentRepository
+                if pathComponents.count > numberOfComponentsFromEditableKituraPackageToDependentRepository &&
+                    pathComponents[editablePackagesComponentIndex] == "Packages" {
+                    pathComponents.removeLast(numberOfComponentsFromEditableKituraPackageToDependentRepository)
+                }
             }
             return pathComponents
         }

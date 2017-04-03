@@ -1,5 +1,5 @@
 /*
- * Copyright IBM Corporation 2016
+ * Copyright IBM Corporation 2016, 2017
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,13 +68,15 @@ class FileResourceServer {
 
     private func getResourcePathBasedOnCurrentDirectory(for resource: String, withFileManager fileManager: FileManager) -> String? {
         do {
-            let packagePath = fileManager.currentDirectoryPath + "/Packages"
-            let packages = try fileManager.contentsOfDirectory(atPath: packagePath)
-            for package in packages {
-                let potentialResource = "\(packagePath)/\(package)/Sources/Kitura/resources/\(resource)"
-                let resourceExists = fileManager.fileExists(atPath: potentialResource)
-                if resourceExists {
-                    return potentialResource
+            for suffix in ["/Packages", "/.build/checkouts"] {
+                let packagePath = fileManager.currentDirectoryPath + suffix
+                let packages = try fileManager.contentsOfDirectory(atPath: packagePath)
+                for package in packages {
+                    let potentialResource = "\(packagePath)/\(package)/Sources/Kitura/resources/\(resource)"
+                    let resourceExists = fileManager.fileExists(atPath: potentialResource)
+                    if resourceExists {
+                        return potentialResource
+                    }
                 }
             }
         } catch {
