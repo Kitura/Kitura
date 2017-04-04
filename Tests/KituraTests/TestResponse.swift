@@ -61,7 +61,8 @@ class TestResponse: KituraTest {
             ("testJsonp", testJsonp),
             ("testLifecycle", testLifecycle),
             ("testSend", testSend),
-            ("testSendAfterEnd", testSendAfterEnd)
+            ("testSendAfterEnd", testSendAfterEnd),
+            ("testChangeStatusCodeOnInvokedSend", testChangeStatusCodeOnInvokedSend)
         ]
     }
 
@@ -1036,6 +1037,22 @@ class TestResponse: KituraTest {
         }
     }
 
+    func testChangeStatusCodeOnInvokedSend() {
+        performServerTest(router, asyncTasks: { expectation in
+            self.performRequest("get", path: "/code_unknown_to_ok", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, .OK, "HTTP Status code was \(String(describing: response?.statusCode))")
+                expectation.fulfill()
+            })
+        },{ expectation in
+            self.performRequest("get", path: "/code_notFound_no_change", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, .notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
+                expectation.fulfill()
+            })
+        })
+    }
+
     static func setupRouter() -> Router {
         let router = Router()
 
@@ -1385,6 +1402,24 @@ class TestResponse: KituraTest {
                 try response.send(download: "./Tests/KituraTests/TestStaticFileServer/index.html")
             } catch {}
             next()
+        }
+
+        router.get("/code_unknown_to_ok") { _, response, next in
+            XCTAssert(response.statusCode == .unknown)
+
+            response.send("Hello world")
+
+            XCTAssert(response.statusCode == .OK)
+        }
+
+        router.get("/code_notFound_no_change") { _, response, next in
+            response.status(.notFound)
+
+            XCTAssert(response.statusCode == .notFound)
+
+            response.send("Hello world")
+
+            XCTAssert(response.statusCode == .notFound)
         }
 
         router.error { request, response, next in
