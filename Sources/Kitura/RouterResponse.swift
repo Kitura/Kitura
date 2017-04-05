@@ -26,12 +26,20 @@ import LoggerAPI
 public class RouterResponse {
 
     struct State {
+        weak var response: RouterResponse?
 
         /// Whether the response has ended
         var invokedEnd = false
 
         /// Whether data has been added to buffer
-        var invokedSend = false
+        var invokedSend = false {
+            didSet {
+                if invokedSend && response?.statusCode == .unknown {
+                    // change statusCode to .OK
+                    response?.statusCode = .OK
+                }
+            }
+        }
     }
 
     /// A set of functions called during the life cycle of a Request.
@@ -119,6 +127,7 @@ public class RouterResponse {
         self.request = request
         headers = Headers(headers: response.headers)
         statusCode = .unknown
+        state.response = self
     }
 
     deinit {
