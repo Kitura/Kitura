@@ -19,17 +19,17 @@ import XCTest
 @testable import KituraTests
 
 XCTMain([
-    testCase(MiscellaneousTests.allTests),
-    testCase(TestContentType.allTests),
-    testCase(TestCookies.allTests),
-    testCase(TestErrors.allTests),
-    testCase(TestMultiplicity.allTests),
-    testCase(TestRequests.allTests),
-    testCase(TestResponse.allTests),
-    testCase(TestRouteRegex.allTests),
-    testCase(TestRouterHTTPVerbs_generated.allTests),
-    testCase(TestServer.allTests),
-    testCase(TestSubrouter.allTests),
-    testCase(TestStaticFileServer.allTests),
-    testCase(TestTemplateEngine.allTests)
+    testCase(MiscellaneousTests.allTests.shuffled()),
+    testCase(TestContentType.allTests.shuffled()),
+    testCase(TestCookies.allTests.shuffled()),
+    testCase(TestErrors.allTests.shuffled()),
+    testCase(TestMultiplicity.allTests.shuffled()),
+    testCase(TestRequests.allTests.shuffled()),
+    testCase(TestResponse.allTests.shuffled()),
+    testCase(TestRouteRegex.allTests.shuffled()),
+    testCase(TestRouterHTTPVerbs_generated.allTests.shuffled()),
+    testCase(TestServer.allTests.shuffled()),
+    testCase(TestSubrouter.allTests.shuffled()),
+    testCase(TestStaticFileServer.allTests.shuffled()),
+    testCase(TestTemplateEngine.allTests.shuffled())
 ])

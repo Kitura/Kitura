@@ -28,7 +28,8 @@ class TestRequests: KituraTest {
                    ("testCustomMiddlewareURLParameter", testCustomMiddlewareURLParameter),
                    ("testCustomMiddlewareURLParameterWithQueryParam", testCustomMiddlewareURLParameterWithQueryParam),
                    ("testParameters", testParameters),
-                   ("testParameterExit", testParameterExit)
+                   ("testParameterExit", testParameterExit),
+                   ("testLinuxTestSuiteIncludesAllTests", testLinuxTestSuiteIncludesAllTests)
         ]
     }
 
@@ -254,5 +255,14 @@ class TestRequests: KituraTest {
                 expectation.fulfill()
             })
         })
+    }
+    
+    func testLinuxTestSuiteIncludesAllTests() {
+        #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+            let thisClass = type(of: self)
+            let linuxCount = thisClass.allTests.count
+            let darwinCount = Int(thisClass.defaultTestSuite().testCaseCount)
+            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from allTests")
+        #endif
     }
 }

@@ -27,7 +27,8 @@ class TestServer: KituraTest {
             ("testServerStartStop", testServerStartStop),
             ("testServerRun", testServerRun),
             ("testServerFail", testServerFail),
-            ("testServerRestart", testServerRestart)
+            ("testServerRestart", testServerRestart),
+            ("testLinuxTestSuiteIncludesAllTests", testLinuxTestSuiteIncludesAllTests)
         ]
     }
 
@@ -185,5 +186,14 @@ class TestServer: KituraTest {
                 XCTFail("Error reading body: \(error)")
             }
         })
+    }
+    
+    func testLinuxTestSuiteIncludesAllTests() {
+        #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+            let thisClass = type(of: self)
+            let linuxCount = thisClass.allTests.count
+            let darwinCount = Int(thisClass.defaultTestSuite().testCaseCount)
+            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from allTests")
+        #endif
     }
 }

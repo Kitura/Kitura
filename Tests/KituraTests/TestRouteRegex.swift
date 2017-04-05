@@ -58,7 +58,8 @@ class TestRouteRegex: KituraTest {
             ("testRouteWithPercentEncoding", testRouteWithPercentEncoding),
             ("testSimpleModifiers", testSimpleModifiers),
             ("testSimpleCustomMatches", testSimpleCustomMatches),
-            ("testCustomMatchesWithModifiers", testCustomMatchesWithModifiers)
+            ("testCustomMatchesWithModifiers", testCustomMatchesWithModifiers),
+            ("testLinuxTestSuiteIncludesAllTests", testLinuxTestSuiteIncludesAllTests)
         ]
     }
 
@@ -1070,5 +1071,14 @@ class TestRouteRegex: KituraTest {
                 expectation.fulfill()
             })
         })
+    }
+    
+    func testLinuxTestSuiteIncludesAllTests() {
+        #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+            let thisClass = type(of: self)
+            let linuxCount = thisClass.allTests.count
+            let darwinCount = Int(thisClass.defaultTestSuite().testCaseCount)
+            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from allTests")
+        #endif
     }
 }
