@@ -62,7 +62,8 @@ class TestResponse: KituraTest {
             ("testLifecycle", testLifecycle),
             ("testSend", testSend),
             ("testSendAfterEnd", testSendAfterEnd),
-            ("testChangeStatusCodeOnInvokedSend", testChangeStatusCodeOnInvokedSend)
+            ("testChangeStatusCodeOnInvokedSend", testChangeStatusCodeOnInvokedSend),
+            ("testLinuxTestSuiteIncludesAllTests", testLinuxTestSuiteIncludesAllTests)
         ]
     }
 
@@ -1452,5 +1453,14 @@ class TestResponse: KituraTest {
         func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws {
             next()
         }
+    }
+    
+    func testLinuxTestSuiteIncludesAllTests() {
+        #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+            let thisClass = type(of: self)
+            let linuxCount = thisClass.allTests.count
+            let darwinCount = Int(thisClass.defaultTestSuite().testCaseCount)
+            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from allTests")
+        #endif
     }
 }

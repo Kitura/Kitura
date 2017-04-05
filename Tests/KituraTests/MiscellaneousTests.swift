@@ -25,7 +25,8 @@ class MiscellaneousTests: KituraTest {
     static var allTests: [(String, (MiscellaneousTests) -> () throws -> Void)] {
         return [
             ("testHeaders", testHeaders),
-            ("testHeadersHelpers", testHeadersHelpers)
+            ("testHeadersHelpers", testHeadersHelpers),
+            ("testLinuxTestSuiteIncludesAllTests", testLinuxTestSuiteIncludesAllTests)
         ]
     }
 
@@ -100,5 +101,14 @@ class MiscellaneousTests: KituraTest {
         contentDispostion = headers["Content-Disposition"]
         XCTAssertNotNil(contentDispostion, "Content-Disposition should have been set.")
         XCTAssertEqual(contentDispostion, "attachment", "Content-Disposition should have the value attachment. It has the value \(String(describing: contentDispostion))")
+    }
+    
+    func testLinuxTestSuiteIncludesAllTests() {
+        #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+            let thisClass = type(of: self)
+            let linuxCount = thisClass.allTests.count
+            let darwinCount = Int(thisClass.defaultTestSuite().testCaseCount)
+            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from allTests")
+        #endif
     }
 }

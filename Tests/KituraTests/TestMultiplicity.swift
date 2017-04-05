@@ -26,7 +26,8 @@ class TestMultiplicity: KituraTest {
             ("testPlus", testPlus),
             ("testStar", testStar),
             ("testQuestion", testQuestion),
-            ("testCombined", testCombined)
+            ("testCombined", testCombined),
+            ("testLinuxTestSuiteIncludesAllTests", testLinuxTestSuiteIncludesAllTests)
         ]
     }
 
@@ -143,5 +144,14 @@ class TestMultiplicity: KituraTest {
         }
 
         return router
+    }
+    
+    func testLinuxTestSuiteIncludesAllTests() {
+        #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+            let thisClass = type(of: self)
+            let linuxCount = thisClass.allTests.count
+            let darwinCount = Int(thisClass.defaultTestSuite().testCaseCount)
+            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from allTests")
+        #endif
     }
 }
