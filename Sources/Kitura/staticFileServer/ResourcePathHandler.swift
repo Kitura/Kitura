@@ -39,8 +39,13 @@ extension StaticFileServer {
             }
 
             let fileManager = FileManager()
+            var absolutePath = ""
+            #if os(iOS)
+                absolutePath = Bundle.main.resourcePath! + separator + path
+            #else
+                absolutePath = fileManager.currentDirectoryPath + separator + path
+            #endif
 
-            let absolutePath = fileManager.currentDirectoryPath + separator + path
             if fileManager.fileExists(atPath: absolutePath) {
                 return absolutePath
             }
