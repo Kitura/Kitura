@@ -40,8 +40,7 @@ class TestTemplateEngine: KituraTest {
              testRenderWithExtensionAndWithoutDefaultTemplateEngine),
             ("testAddWithFileExtensions", testAddWithFileExtensions),
             ("testAddWithFileExtensionsWithoutTheDefaultOne",
-             testAddWithFileExtensionsWithoutTheDefaultOne),
-            ("testLinuxTestSuiteIncludesAllTests", testLinuxTestSuiteIncludesAllTests)
+             testAddWithFileExtensionsWithoutTheDefaultOne)
         ]
     }
 
@@ -159,15 +158,6 @@ class TestTemplateEngine: KituraTest {
         } catch {
             XCTFail("Error during render \(error)")
         }
-    }
-    
-    func testLinuxTestSuiteIncludesAllTests() {
-        #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-            let thisClass = type(of: self)
-            let linuxCount = thisClass.allTests.count
-            let darwinCount = Int(thisClass.defaultTestSuite().testCaseCount)
-            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from allTests")
-        #endif
     }
 }
 

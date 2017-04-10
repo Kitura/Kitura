@@ -35,8 +35,7 @@ class TestSubrouter: KituraTest {
             ("testExternSub", testExternSub),
             ("testSubSubs", testSubSubs),
             ("testMultipleMiddleware", testMultipleMiddleware),
-            ("testMergeParams", testMergeParams),
-            ("testLinuxTestSuiteIncludesAllTests", testLinuxTestSuiteIncludesAllTests)
+            ("testMergeParams", testMergeParams)
         ]
     }
 
@@ -266,14 +265,5 @@ class TestSubrouter: KituraTest {
         router.all("/sub", middleware: subRouter)
 
         return router
-    }
-    
-    func testLinuxTestSuiteIncludesAllTests() {
-        #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-            let thisClass = type(of: self)
-            let linuxCount = thisClass.allTests.count
-            let darwinCount = Int(thisClass.defaultTestSuite().testCaseCount)
-            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from allTests")
-        #endif
     }
 }
