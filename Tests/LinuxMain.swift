@@ -56,4 +56,4 @@ XCTMain([
     testCase(TestSubrouter.allTests.shuffled()),
     testCase(TestStaticFileServer.allTests.shuffled()),
     testCase(TestTemplateEngine.allTests.shuffled())
-])
+].shuffled())
