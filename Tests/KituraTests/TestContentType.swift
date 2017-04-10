@@ -25,8 +25,7 @@ class TestContentType: KituraTest {
         return [
             ("testInitialize", testInitialize),
             ("testFilename", testFilename),
-            ("testIsContentType", testIsContentType),
-            ("testLinuxTestSuiteIncludesAllTests", testLinuxTestSuiteIncludesAllTests)
+            ("testIsContentType", testIsContentType)
         ]
     }
 
@@ -90,14 +89,5 @@ class TestContentType: KituraTest {
         result = contentType.isContentType("multipart/form-data", ofType: "multipart")
         XCTAssertTrue(result)
 
-    }
-
-    func testLinuxTestSuiteIncludesAllTests() {
-        #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-            let thisClass = type(of: self)
-            let linuxCount = thisClass.allTests.count
-            let darwinCount = Int(thisClass.defaultTestSuite().testCaseCount)
-            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from allTests")
-        #endif
     }
 }
