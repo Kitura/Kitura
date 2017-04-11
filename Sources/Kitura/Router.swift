@@ -59,7 +59,8 @@ public class Router {
     fileprivate var parameterHandlers = [String : [RouterParameterHandler]]()
 
     /// Initialize a `Router` instance
-    /// - parameter mergeParameters: Specify if this router should have access to path parameters
+    ///
+    /// - Parameter mergeParameters: Specify if this router should have access to path parameters
     /// matched in its parent router. Defaults to `false`.
     public init(mergeParameters: Bool = false) {
         self.mergeParameters = mergeParameters
@@ -172,7 +173,7 @@ public class Router {
     /// path and handles all of the mappings of paths below that.
     ///
     /// - Parameter route: The path to bind the sub router to.
-    /// - parameter mergeParameters: Specify if this router should have access to path parameters
+    /// - Parameter mergeParameters: Specify if this router should have access to path parameters
     /// matched in its parent router. Defaults to `false`.
     /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
     /// the path by the pattern is sufficient.
