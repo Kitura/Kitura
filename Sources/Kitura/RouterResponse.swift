@@ -416,13 +416,14 @@ public class RouterResponse {
     ///
     /// - Parameter resource: the resource name without extension.
     /// - Parameter context: a dictionary of local variables of the resource.
+    /// - Parameter options: a dictionary of options to pass to template engine.
     /// - Throws: TemplatingError if no file extension was specified or there is no template engine defined for the extension.
     /// - Returns: this RouterResponse.
     ///
     // influenced by http://expressjs.com/en/4x/api.html#app.render
     @discardableResult
-    public func render(_ resource: String, context: [String:Any]) throws -> RouterResponse {
-        let renderedResource = try router.render(template: resource, context: context)
+    public func render(_ resource: String, context: [String:Any], options: [String:Any]? = nil) throws -> RouterResponse {
+        let renderedResource = try router.render(template: resource, context: context, options: options)
         return send(renderedResource)
     }
 
