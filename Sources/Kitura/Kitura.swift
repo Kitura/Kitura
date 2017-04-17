@@ -38,9 +38,7 @@ public class Kitura {
     public class func addHTTPServer(onPort port: Int, with delegate: ServerDelegate, withSSL sslConfig: SSLConfig?=nil) -> HTTPServer {
         let server = HTTP.createServer()
         server.delegate = delegate
-        if let sslConfig = sslConfig {
-            server.sslConfig = sslConfig.config
-        }
+        server.sslConfig = sslConfig?.config
         httpServersAndPorts.append(server: server, port: port)
         return server
     }

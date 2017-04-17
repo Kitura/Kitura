@@ -102,19 +102,22 @@ public class StaticFileServer: RouterMiddleware {
     /// - Parameter response: the router response.
     /// - Parameter next: the closure for the next execution block.
     public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
+        defer {
+            next()
+        }
+
         guard request.serverRequest.method == "GET" || request.serverRequest.method == "HEAD" else {
-            return next()
+            return
         }
 
         guard let filePath = fileServer.getFilePath(from: request) else {
-            return next()
+            return
         }
 
         guard let requestPath = request.parsedURLPath.path else {
-            return next()
+            return
         }
 
         fileServer.serveFile(filePath, requestPath: requestPath, response: response)
-        next()
     }
 }
