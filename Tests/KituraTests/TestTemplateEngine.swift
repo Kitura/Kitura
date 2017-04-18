@@ -36,6 +36,8 @@ class TestTemplateEngine: KituraTest {
             ("testMissingExtension", testMissingExtension),
             ("testNoDefaultEngine", testNoDefaultEngine),
             ("testRender", testRender),
+            ("testRenderWithServer", testRenderWithServer),
+            ("testRenderWithServerAndSubRouter", testRenderWithServerAndSubRouter),
             ("testRenderWithExtensionAndWithoutDefaultTemplateEngine",
              testRenderWithExtensionAndWithoutDefaultTemplateEngine),
             ("testAddWithFileExtensions", testAddWithFileExtensions),
@@ -91,6 +93,57 @@ class TestTemplateEngine: KituraTest {
             XCTAssertEqual(content, "Hello World!")
         } catch {
             XCTFail("Error during render \(error)")
+        }
+    }
+
+    func testRenderWithServer() {
+        let router = Router()
+        setupRouterForRendering(router)
+        performRenderServerTest(withRouter: router, onPath: "/render")
+    }
+
+    func testRenderWithServerAndSubRouter() {
+        let subRouter = Router()
+        setupRouterForRendering(subRouter)
+
+        let router = Router()
+        router.get("/sub", middleware: subRouter)
+        performRenderServerTest(withRouter: subRouter, onPath: "/sub/render")
+    }
+
+    private func setupRouterForRendering(_ router: Router) {
+        router.setDefault(templateEngine: MockTemplateEngine())
+
+        router.get("/render") { request, response, next in
+            do {
+               let content = try router.render(template: "test.mock", context: [:])
+               response.status(HTTPStatusCode.OK).send(content)
+	       next()
+            } catch {
+               response.status(HTTPStatusCode.internalServerError).send("Failed to render")
+	       next()
+            }
+        }
+    }
+
+    private func performRenderServerTest(withRouter router: Router, onPath path: String) {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: path, callback: { response in
+                guard let response = response else {
+                    XCTFail("Got nil response")
+                    expectation.fulfill()
+                    return
+                }
+                XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response.statusCode)")
+
+                do {
+                    let body = try response.readString()
+                    XCTAssertEqual(body, "Hello World!")
+                } catch {
+                    XCTFail("Error reading body")
+                }
+                expectation.fulfill()
+            })
         }
     }
 
