@@ -107,8 +107,8 @@ class TestTemplateEngine: KituraTest {
         setupRouterForRendering(subRouter)
 
         let router = Router()
-        router.get("/sub", middleware: subRouter)
-        performRenderServerTest(withRouter: subRouter, onPath: "/sub/render")
+        router.all("/sub", middleware: subRouter)
+        performRenderServerTest(withRouter: router, onPath: "/sub/render")
     }
 
     private func setupRouterForRendering(_ router: Router) {
