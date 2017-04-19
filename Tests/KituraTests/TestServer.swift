@@ -31,7 +31,7 @@ class TestServer: KituraTest {
         ]
     }
 
-    let httpPort = 8090
+    let httpPort = 8080
     let fastCgiPort = 9000
 
     override func setUp() {
