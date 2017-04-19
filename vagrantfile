@@ -3,8 +3,8 @@
 
 BOX_URL =  'https://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box'.freeze
 
-SWIFT_PATH = 'https://swift.org/builds/swift-3.0.2-release/ubuntu1404/swift-3.0.2-RELEASE'.freeze
-SWIFT_DIRECTORY = 'swift-3.0.2-RELEASE-ubuntu14.04'.freeze
+SWIFT_PATH = 'https://swift.org/builds/swift-3.1-release/ubuntu1404/swift-3.1-RELEASE'.freeze
+SWIFT_DIRECTORY = 'swift-3.1-RELEASE-ubuntu14.04'.freeze
 SWIFT_FILE = "#{SWIFT_DIRECTORY}.tar.gz".freeze
 SWIFT_HOME = "/home/vagrant/#{SWIFT_DIRECTORY}".freeze
 
@@ -13,7 +13,7 @@ KITURA_BRANCH = 'master'.freeze
 
 Vagrant.configure(2) do |config|
   config.vm.box = BOX_URL
-  config.vm.network 'forwarded_port', guest: 8090, host: 8090
+  config.vm.network 'forwarded_port', guest: 8080, host: 8080
 
   # Prevents "stdin: is not a tty" on Ubuntu (https://github.com/mitchellh/vagrant/issues/1673)
   config.vm.provision 'fix-no-tty', type: 'shell' do |s|
