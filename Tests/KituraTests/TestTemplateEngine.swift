@@ -37,6 +37,7 @@ class TestTemplateEngine: KituraTest {
             ("testNoDefaultEngine", testNoDefaultEngine),
             ("testRender", testRender),
             ("testRenderWithServer", testRenderWithServer),
+            ("testRenderWithOptionsWithServer", testRenderWithOptionsWithServer),
             ("testRenderWithServerAndSubRouter", testRenderWithServerAndSubRouter),
             ("testRenderWithExtensionAndWithoutDefaultTemplateEngine",
              testRenderWithExtensionAndWithoutDefaultTemplateEngine),
@@ -102,22 +103,35 @@ class TestTemplateEngine: KituraTest {
         performRenderServerTest(withRouter: router, onPath: "/render")
     }
 
+    func testRenderWithOptionsWithServer() {
+        let router = Router()
+        setupRouterForRendering(router, options: MockRenderingOptions())
+        performRenderServerTest(withRouter: router, onPath: "/render")
+    }
+
     func testRenderWithServerAndSubRouter() {
+        //TODO enable this test once https://github.com/IBM-Swift/Kitura/issues/1070 is resolved
+        /*
+
         let subRouter = Router()
         setupRouterForRendering(subRouter)
 
         let router = Router()
         router.all("/sub", middleware: subRouter)
         performRenderServerTest(withRouter: router, onPath: "/sub/render")
+        */
     }
 
-    private func setupRouterForRendering(_ router: Router) {
+    private func setupRouterForRendering(_ router: Router, options: RenderingOptions? = nil) {
         router.setDefault(templateEngine: MockTemplateEngine())
 
-        router.get("/render") { request, response, next in
+        router.get("/render") { _, response, next in
             do {
-               let content = try router.render(template: "test.mock", context: [:])
-               response.status(HTTPStatusCode.OK).send(content)
+               if let options = options {
+                   try response.render("test.mock", context: [:], options: options)
+               } else {
+                   try response.render("test.mock", context: [:])
+               }
 	       next()
             } catch {
                response.status(HTTPStatusCode.internalServerError).send("Failed to render")
@@ -221,4 +235,7 @@ class MockTemplateEngine: TemplateEngine {
     public func render(filePath: String, context: [String: Any]) throws -> String {
         return "Hello World!"
     }
+}
+
+class MockRenderingOptions: RenderingOptions {
 }
