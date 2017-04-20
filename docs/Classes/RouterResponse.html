@@ -8,6 +8,9 @@
     <script src="../js/jquery.min.js" defer></script>
     <script src="../js/jazzy.js" defer></script>
     
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
   </head>
   <body>
 
@@ -21,6 +24,12 @@
           Kitura Docs
         </a>
          (98% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
       </p>
     
         <p class="header-col header-col--secondary">
@@ -322,18 +331,6 @@
                       <div class="abstract">
                         <p>Send a string.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter str: the string to send.
-
-</div>
-
-<div class="aside aside-returns">
-    <p class="aside-title">Returns</p>
-    this RouterResponse.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -385,18 +382,6 @@
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Send data.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter data: the data to send.
-
-</div>
-
-<div class="aside aside-returns">
-    <p class="aside-title">Returns</p>
-    this RouterResponse.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -450,21 +435,9 @@
                       <div class="abstract">
                         <p>Send a file.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter fileName: the name of the file to send.
-
-</div>
-
 <div class="aside aside-throws">
     <p class="aside-title">Throws</p>
     An error in the Cocoa domain, if the file cannot be read.
-
-</div>
-
-<div class="aside aside-returns">
-    <p class="aside-title">Returns</p>
-    <p>this RouterResponse.</p>
 
 </div>
 
@@ -527,18 +500,6 @@
                       <div class="abstract">
                         <p>Send JSON.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter json: the JSON object to send.
-
-</div>
-
-<div class="aside aside-returns">
-    <p class="aside-title">Returns</p>
-    this RouterResponse.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -590,18 +551,6 @@
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Send JSON.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter json: The array to send in JSON format.
-
-</div>
-
-<div class="aside aside-returns">
-    <p class="aside-title">Returns</p>
-    this RouterResponse.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -655,18 +604,6 @@
                       <div class="abstract">
                         <p>Send JSON.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter json: The Dictionary to send in JSON format as a hash.
-
-</div>
-
-<div class="aside aside-returns">
-    <p class="aside-title">Returns</p>
-    this RouterResponse.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -719,31 +656,12 @@
                       <div class="abstract">
                         <p>Send JSON with JSONP callback.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter json: the JSON object to send.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    <p>Parameter callbackthe name of the URL query
-parameter whose value contains the JSONP callback function.</p>
-
-</div>
-
 <div class="aside aside-throws">
     <p class="aside-title">Throws</p>
     <p><code><a href="../Enums/JSONPError.html#/s:FO6Kitura10JSONPError19invalidCallbackNameFMS0_FT4nameGSqSS__S0_">JSONPError.invalidCallbackName</a></code> if the the callback
 query parameter of the request URL is missing or its value is
 empty or contains invalid characters (the set of valid characters
 is the alphanumeric characters and <code>[]$._</code>).</p>
-
-</div>
-
-<div class="aside aside-returns">
-    <p class="aside-title">Returns</p>
-    <p>this RouterResponse.</p>
 
 </div>
 
@@ -812,18 +730,6 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                       <div class="abstract">
                         <p>Set the status code.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter status: the HTTP status code object.
-
-</div>
-
-<div class="aside aside-returns">
-    <p class="aside-title">Returns</p>
-    this RouterResponse.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -875,18 +781,6 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Send the HTTP status code.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter status: the HTTP status code.
-
-</div>
-
-<div class="aside aside-returns">
-    <p class="aside-title">Returns</p>
-    this RouterResponse.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -940,27 +834,9 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                       <div class="abstract">
                         <p>Redirect to path with status code.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    the path for the redirect.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    the status code for the redirect.
-
-</div>
-
 <div class="aside aside-throws">
     <p class="aside-title">Throws</p>
     Socket.Error if an error occurred while writing to a socket.
-
-</div>
-
-<div class="aside aside-returns">
-    <p class="aside-title">Returns</p>
-    this RouterResponse.
 
 </div>
 
@@ -984,9 +860,9 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FC6Kitura14RouterResponse6renderFzTSS7contextGVs10DictionarySSP___S0_"></a>
-                    <a name="//apple_ref/swift/Method/render(_:context:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FC6Kitura14RouterResponse6renderFzTSS7contextGVs10DictionarySSP___S0_">render(_:context:)</a>
+                    <a name="/s:FC6Kitura14RouterResponse6renderFzTSS7contextGVs10DictionarySSP__7optionsP20KituraTemplateEngine16RenderingOptions__S0_"></a>
+                    <a name="//apple_ref/swift/Method/render(_:context:options:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Kitura14RouterResponse6renderFzTSS7contextGVs10DictionarySSP__7optionsP20KituraTemplateEngine16RenderingOptions__S0_">render(_:context:options:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1022,12 +898,6 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Set headers and attach file for downloading.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter download: the file to download.
-
-</div>
 
 <div class="aside aside-throws">
     <p class="aside-title">Throws</p>
@@ -1082,18 +952,6 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                       <div class="abstract">
                         <p>Set the pre-flush lifecycle handler and return the previous one.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter newOnEndInvoked: The new pre-flush lifecycle handler.
-
-</div>
-
-<div class="aside aside-returns">
-    <p class="aside-title">Returns</p>
-    The old pre-flush lifecycle handler.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -1146,18 +1004,6 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                       <div class="abstract">
                         <p>Set the written data filter and return the previous one.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter newWrittenDataFilter: The new written data filter.
-
-</div>
-
-<div class="aside aside-returns">
-    <p class="aside-title">Returns</p>
-    The old written data filter.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -1208,18 +1054,12 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Perform content-negotiation on the Accept HTTP header on the request, when present. </p>
+                        <p>Perform content-negotiation on the Accept HTTP header on the request, when present.</p>
 
 <p>Uses request.accepts() to select a handler for the request, based on the acceptable types ordered by their
 quality values. If the header is not specified, the default callback is invoked. When no match is found,
 the server invokes the default callback if exists, or responds with 406 “Not Acceptable”.
 The Content-Type response header is set when a callback is selected.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter callbacks: a dictionary that maps content types to handlers.
-
-</div>
 
 <div class="aside aside-throws">
     <p class="aside-title">Throws</p>
@@ -1267,8 +1107,8 @@ The Content-Type response header is set when a callback is selected.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-04-11)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-04-20)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.5</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>
