@@ -16,9 +16,11 @@
 
 import KituraNet
 import SwiftyJSON
+import KituraTemplateEngine
+import LoggerAPI
 
 import Foundation
-import LoggerAPI
+
 
 // MARK: RouterResponse
 
@@ -277,13 +279,13 @@ public class RouterResponse {
 
         return self
     }
-    
+
     #if os(Linux)
         typealias JSONSerializationType = LclJSONSerialization
     #else
         typealias JSONSerializationType = JSONSerialization
     #endif
-    
+
     /// Send JSON.
     ///
     /// - Parameter json: The array to send in JSON format.
@@ -301,10 +303,10 @@ public class RouterResponse {
         } catch {
             Log.warning("Failed to convert JSON for sending: \(error.localizedDescription)")
         }
-        
+
         return self
     }
-    
+
     /// Send JSON.
     ///
     /// - Parameter json: The Dictionary to send in JSON format as a hash.
@@ -322,7 +324,7 @@ public class RouterResponse {
         } catch {
             Log.warning("Failed to convert JSON for sending: \(error.localizedDescription)")
         }
-        
+
         return self
     }
 
@@ -416,13 +418,15 @@ public class RouterResponse {
     ///
     /// - Parameter resource: the resource name without extension.
     /// - Parameter context: a dictionary of local variables of the resource.
+    /// - Parameter options: rendering options, specific per template engine
     /// - Throws: TemplatingError if no file extension was specified or there is no template engine defined for the extension.
     /// - Returns: this RouterResponse.
     ///
     // influenced by http://expressjs.com/en/4x/api.html#app.render
     @discardableResult
-    public func render(_ resource: String, context: [String:Any]) throws -> RouterResponse {
-        let renderedResource = try router.render(template: resource, context: context)
+    public func render(_ resource: String, context: [String:Any],
+                       options: RenderingOptions = NullRenderingOptions()) throws -> RouterResponse {
+        let renderedResource = try router.render(template: resource, context: context, options: options)
         return send(renderedResource)
     }
 
@@ -459,7 +463,7 @@ public class RouterResponse {
         return oldWrittenDataFilter
     }
 
-    /// Perform content-negotiation on the Accept HTTP header on the request, when present. 
+    /// Perform content-negotiation on the Accept HTTP header on the request, when present.
     ///
     /// Uses request.accepts() to select a handler for the request, based on the acceptable types ordered by their
     /// quality values. If the header is not specified, the default callback is invoked. When no match is found,
