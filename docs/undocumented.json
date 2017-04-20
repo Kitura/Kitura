@@ -1,33 +1,33 @@
 {
   "warnings": [
     {
-      "file": "/Users/ylin/Swift/Kitura/Sources/Kitura/RouterParameterWalker.swift",
+      "file": "/Users/vadime/dev/EnterpriseSwift/Kitura/Sources/Kitura/RouterParameterWalker.swift",
       "line": 17,
       "symbol": "RouterParameterHandler",
       "symbol_kind": "source.lang.swift.decl.typealias",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/ylin/Swift/Kitura/Sources/Kitura/RouterResponse.swift",
-      "line": 424,
-      "symbol": "RouterResponse.render(_:context:)",
+      "file": "/Users/vadime/dev/EnterpriseSwift/Kitura/Sources/Kitura/RouterResponse.swift",
+      "line": 427,
+      "symbol": "RouterResponse.render(_:context:options:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/ylin/Swift/Kitura/Sources/Kitura/SSLConfig.swift",
+      "file": "/Users/vadime/dev/EnterpriseSwift/Kitura/Sources/Kitura/SSLConfig.swift",
       "line": 21,
       "symbol": "SSLConfig",
       "symbol_kind": "source.lang.swift.decl.struct",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/ylin/Swift/Kitura/Sources/Kitura/SSLConfig.swift",
+      "file": "/Users/vadime/dev/EnterpriseSwift/Kitura/Sources/Kitura/SSLConfig.swift",
       "line": 25,
       "symbol": "SSLConfig.config",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     }
   ],
-  "source_directory": "/Users/ylin/Swift/Kitura"
+  "source_directory": "/Users/vadime/dev/EnterpriseSwift/Kitura"
 }
