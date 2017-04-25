@@ -8,6 +8,9 @@
     <script src="../js/jquery.min.js" defer></script>
     <script src="../js/jazzy.js" defer></script>
     
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
   </head>
   <body>
 
@@ -21,6 +24,12 @@
           Kitura Docs
         </a>
          (98% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
       </p>
     
         <p class="header-col header-col--secondary">
@@ -218,13 +227,6 @@ appropriate templating engine for content generation.</p>
                       <div class="abstract">
                         <p>Initialize a <code>Router</code> instance</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter mergeParameters: Specify if this router should have access to path parameters
-matched in its parent router. Defaults to <code>false</code>.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -284,12 +286,6 @@ matched in its parent router. Defaults to <code>false</code>.
                         <p>Sets the default templating engine to be used when the extension of a file in the
 <code><a href="../Classes/Router.html#/s:vC6Kitura6Router9viewsPathSS">viewsPath</a></code> doesn&rsquo;t match the extension of one of the registered templating engines.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter templateEngine: The new default templating engine
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -337,25 +333,6 @@ matched in its parent router. Defaults to <code>false</code>.
                       <div class="abstract">
                         <p>Register a templating engine. The templating engine will handle files in the <code><a href="../Classes/Router.html#/s:vC6Kitura6Router9viewsPathSS">viewsPath</a></code>
 that match the extension it supports.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter templateEngine: The templating engine to register.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter forFileExtensions: The extensions of the files to apply the template engine on.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter useDefaultFileExtension: flag to specify if the default file extension of the
-template engine should be used
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -444,32 +421,6 @@ template engine should be used
 build a server that serves a large set of paths, by breaking it up
 in to <q>sub router</q> where each sub router is mapped to it&rsquo;s own root
 path and handles all of the mappings of paths below that.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter route: The path to bind the sub router to.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter mergeParameters: Specify if this router should have access to path parameters
-matched in its parent router. Defaults to <code>false</code>.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-returns">
-    <p class="aside-title">Returns</p>
-    The created sub router.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -561,25 +512,6 @@ the path by the pattern is sufficient.
                         <p>Setup a  handler for specific name of request parameters.
 This can make it easier to handle values of provided parameter name.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter name: A single parameter name to be handled
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura22RouterParameterHandler">RouterParameterHandler</a></code>s that will be
-                invoked when request parses a parameter with specified name.
-
-</div>
-
-<div class="aside aside-returns">
-    <p class="aside-title">Returns</p>
-    Current router instance
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -646,25 +578,6 @@ This can make it easier to handle values of provided parameter name.</p>
                         <p>Setup a  handler for specific name of request parameters.
 This can make it easier to handle values of provided parameter name.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter names: The array of parameter names that will be used to invoke handlers
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura22RouterParameterHandler">RouterParameterHandler</a></code>s that will be
-                invoked when request parses a parameter with specified name.
-
-</div>
-
-<div class="aside aside-returns">
-    <p class="aside-title">Returns</p>
-    Current router instance
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -730,25 +643,6 @@ This can make it easier to handle values of provided parameter name.</p>
                       <div class="abstract">
                         <p>Setup a  handler for specific name of request parameters.
 This can make it easier to handle values of provided parameter name.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter names: The array of parameter names that will be used to invoke handlers
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handlers: The array of <code><a href="../Typealiases.html#/s:6Kitura22RouterParameterHandler">RouterParameterHandler</a></code>s that will be
-                invoked when request parses a parameter with specified name.
-
-</div>
-
-<div class="aside aside-returns">
-    <p class="aside-title">Returns</p>
-    Current router instance
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -818,27 +712,6 @@ This can make it easier to handle values of provided parameter name.</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Handle an HTTP request as a middleware. Used for sub routing.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter request: The <code><a href="../Classes/RouterRequest.html">RouterRequest</a></code> object that is used to work with
-                the incoming request.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter response: The <code><a href="../Classes/RouterResponse.html">RouterResponse</a></code> object used to send responses
-                 to the HTTP request.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter next: The closure to invoke to cause the router to inspect the
-             path in the list of paths.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -917,20 +790,6 @@ This can make it easier to handle values of provided parameter name.</p>
                       <div class="abstract">
                         <p>Handle the HTTP request</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter request: The <code>ServerRequest</code> object used to work with the incoming
-                HTTP request at the Kitura-net API level.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter response: The <code>ServerResponse</code> object used to send responses to the
-                 HTTP request at the Kitura-net API level.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -1003,13 +862,6 @@ This can make it easier to handle values of provided parameter name.</p>
                         <p>Setup error handling that will cause a set of one or more closures
 of the type <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code> to be invoked when an error occurs.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code> that will be
-                invoked if an error ocurrs.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -1057,13 +909,6 @@ of the type <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">Router
                       <div class="abstract">
                         <p>Setup error handling that will cause an array of one or more closures
 of the type <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code> to be invoked when an error occurs.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: An array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code> that will be
-                invoked if an error ocurrs.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -1113,13 +958,6 @@ of the type <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">Router
                         <p>Setup error handling that will cause a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code>
 to be invoked when an error occurs.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter middleware: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                   invoked if an error ocurrs.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -1167,13 +1005,6 @@ to be invoked when an error occurs.</p>
                       <div class="abstract">
                         <p>Setup error handling that will cause an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code>
 to be invoked when an error occurs.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter middleware: An array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                   invoked if an error ocurrs.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -1234,20 +1065,6 @@ to be invoked when an error occurs.</p>
                         <p>Setup a set of one or more closures of the type <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code> that will be
 invoked when any request comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when any request comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -1311,20 +1128,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when any request comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when any request comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -1386,27 +1189,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when any request comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when any request comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -1482,27 +1264,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when any request comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when any request comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -1590,20 +1351,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP GET requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP GET requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -1666,20 +1413,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP GET requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP GET requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -1741,27 +1474,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP GET requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP GET requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -1837,27 +1549,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP GET requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP GET requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -1945,20 +1636,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP HEAD requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP HEAD requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -2021,20 +1698,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP HEAD requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP HEAD requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -2096,27 +1759,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP HEAD requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP HEAD requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -2192,27 +1834,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP HEAD requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP HEAD requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -2300,20 +1921,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP POST requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP POST requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -2376,20 +1983,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP POST requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP POST requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -2451,27 +2044,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP POST requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP POST requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -2547,27 +2119,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP POST requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP POST requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -2655,20 +2206,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP PUT requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP PUT requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -2731,20 +2268,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP PUT requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP PUT requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -2806,27 +2329,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP PUT requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP PUT requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -2902,27 +2404,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP PUT requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP PUT requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -3010,20 +2491,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP DELETE requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP DELETE requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -3086,20 +2553,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP DELETE requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP DELETE requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -3161,27 +2614,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP DELETE requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP DELETE requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -3257,27 +2689,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP DELETE requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP DELETE requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -3365,20 +2776,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP OPTIONS requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP OPTIONS requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -3441,20 +2838,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP OPTIONS requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP OPTIONS requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -3516,27 +2899,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP OPTIONS requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP OPTIONS requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -3612,27 +2974,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP OPTIONS requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP OPTIONS requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -3720,20 +3061,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP TRACE requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP TRACE requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -3796,20 +3123,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP TRACE requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP TRACE requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -3871,27 +3184,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP TRACE requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP TRACE requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -3967,27 +3259,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP TRACE requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP TRACE requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -4075,20 +3346,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP COPY requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP COPY requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -4151,20 +3408,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP COPY requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP COPY requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -4226,27 +3469,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP COPY requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP COPY requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -4322,27 +3544,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP COPY requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP COPY requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -4430,20 +3631,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP LOCK requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP LOCK requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -4506,20 +3693,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP LOCK requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP LOCK requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -4581,27 +3754,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP LOCK requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP LOCK requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -4677,27 +3829,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP LOCK requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP LOCK requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -4785,20 +3916,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP MKCOL requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP MKCOL requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -4861,20 +3978,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP MKCOL requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP MKCOL requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -4936,27 +4039,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP MKCOL requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP MKCOL requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -5032,27 +4114,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP MKCOL requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP MKCOL requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -5140,20 +4201,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP MOVE requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP MOVE requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -5216,20 +4263,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP MOVE requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP MOVE requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -5291,27 +4324,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP MOVE requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP MOVE requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -5387,27 +4399,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP MOVE requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP MOVE requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -5495,20 +4486,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP PURGE requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP PURGE requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -5571,20 +4548,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP PURGE requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP PURGE requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -5646,27 +4609,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP PURGE requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP PURGE requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -5742,27 +4684,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP PURGE requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP PURGE requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -5850,20 +4771,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP PROPFIND requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP PROPFIND requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -5926,20 +4833,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP PROPFIND requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP PROPFIND requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -6001,27 +4894,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP PROPFIND requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP PROPFIND requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -6097,27 +4969,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP PROPFIND requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP PROPFIND requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -6205,20 +5056,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP PROPPATCH requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP PROPPATCH requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -6281,20 +5118,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP PROPPATCH requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP PROPPATCH requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -6356,27 +5179,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP PROPPATCH requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP PROPPATCH requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -6452,27 +5254,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP PROPPATCH requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP PROPPATCH requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -6560,20 +5341,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP UNLOCK requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP UNLOCK requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -6636,20 +5403,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP UNLOCK requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP UNLOCK requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -6711,27 +5464,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP UNLOCK requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP UNLOCK requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -6807,27 +5539,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP UNLOCK requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP UNLOCK requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -6915,20 +5626,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP REPORT requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP REPORT requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -6991,20 +5688,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP REPORT requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP REPORT requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -7066,27 +5749,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP REPORT requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP REPORT requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -7162,27 +5824,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP REPORT requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP REPORT requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -7270,20 +5911,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP MKACTIVITY requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP MKACTIVITY requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -7346,20 +5973,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP MKACTIVITY requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP MKACTIVITY requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -7421,27 +6034,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP MKACTIVITY requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP MKACTIVITY requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -7517,27 +6109,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP MKACTIVITY requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP MKACTIVITY requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -7625,20 +6196,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP CHECKOUT requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP CHECKOUT requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -7701,20 +6258,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP CHECKOUT requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP CHECKOUT requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -7776,27 +6319,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP CHECKOUT requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP CHECKOUT requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -7872,27 +6394,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP CHECKOUT requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP CHECKOUT requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -7980,20 +6481,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP MERGE requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP MERGE requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -8056,20 +6543,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP MERGE requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP MERGE requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -8131,27 +6604,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP MERGE requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP MERGE requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -8227,27 +6679,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP MERGE requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP MERGE requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -8335,20 +6766,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP MSEARCH requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP MSEARCH requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -8411,20 +6828,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP MSEARCH requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP MSEARCH requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -8486,27 +6889,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP MSEARCH requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP MSEARCH requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -8582,27 +6964,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP MSEARCH requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP MSEARCH requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -8690,20 +7051,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP NOTIFY requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP NOTIFY requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -8766,20 +7113,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP NOTIFY requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP NOTIFY requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -8841,27 +7174,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP NOTIFY requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP NOTIFY requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -8937,27 +7249,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP NOTIFY requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP NOTIFY requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -9045,20 +7336,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP SUBSCRIBE requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP SUBSCRIBE requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -9121,20 +7398,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP SUBSCRIBE requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP SUBSCRIBE requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -9196,27 +7459,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP SUBSCRIBE requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP SUBSCRIBE requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -9292,27 +7534,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP SUBSCRIBE requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP SUBSCRIBE requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -9400,20 +7621,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP UNSUBSCRIBE requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP UNSUBSCRIBE requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -9476,20 +7683,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP UNSUBSCRIBE requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP UNSUBSCRIBE requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -9551,27 +7744,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP UNSUBSCRIBE requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP UNSUBSCRIBE requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -9647,27 +7819,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP UNSUBSCRIBE requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP UNSUBSCRIBE requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -9755,20 +7906,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP PATCH requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP PATCH requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -9831,20 +7968,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP PATCH requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP PATCH requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -9906,27 +8029,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP PATCH requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP PATCH requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -10002,27 +8104,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP PATCH requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP PATCH requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -10110,20 +8191,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP SEARCH requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP SEARCH requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -10186,20 +8253,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP SEARCH requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP SEARCH requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -10261,27 +8314,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP SEARCH requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP SEARCH requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -10357,27 +8389,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <p>Setup an array of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP SEARCH requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP SEARCH requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -10465,20 +8476,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP CONNECT requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP CONNECT requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -10541,20 +8538,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
 invoked when HTTP CONNECT requests comes to the server. If a path pattern is
 specified, the handlers will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the handlers to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code>s that will be
-                invoked when HTTP CONNECT requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -10616,27 +8599,6 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                         <p>Setup a set of one or more <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
 invoked when HTTP CONNECT requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: A comma delimited set of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP CONNECT requests comes to the server.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -10713,27 +8675,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
 invoked when HTTP CONNECT requests comes to the server. If a path pattern is
 specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> will only be invoked if the pattern is matched.</p>
 
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter path: An optional String specifying the pattern that needs to be
-             matched, in order for the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> to be invoked.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-                          the path by the pattern is sufficient.
-
-</div>
-
-<div class="aside aside-parameter">
-    <p class="aside-title">Parameter</p>
-    Parameter handler: The array of <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> that will be
-                invoked when HTTP CONNECT requests comes to the server.
-
-</div>
-
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -10800,8 +8741,8 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-04-11)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-04-20)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.5</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>
