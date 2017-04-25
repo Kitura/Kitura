@@ -8,10 +8,5 @@ if [ -n "${DOCKER_IMAGE}" ]; then
 else
     test -n "${SWIFT_VERSION}" && echo "${SWIFT_VERSION}" > .swift-version || echo "SWIFT_VERSION not set, using $(cat .swift-version)"
     git clone https://github.com/IBM-Swift/Package-Builder.git
-
-    # this line messes up PATH and breaks the build in ubuntu 16.04, comment it out till we get it fixed
-    sed -i.bak '/^export PATH=.*\/clang\//s/^/#/' Package-Builder/linux/install_swift_binaries.sh
-    diff Package-Builder/linux/install_swift_binaries.sh*
-
     ./Package-Builder/build-package.sh -projectDir $(pwd)
 fi
