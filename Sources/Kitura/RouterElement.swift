@@ -29,15 +29,7 @@ class RouterElement {
     private let pattern: String?
 
     /// The regular expression
-    #if os(Linux)
-        #if swift(>=3.1)
-            private var regex: NSRegularExpression?
-        #else
-            private var regex: RegularExpression?
-        #endif
-    #else
-        private var regex: NSRegularExpression?
-    #endif
+    private var regex: NSRegularExpression?
     
     /// The pattern is a simple string
     private var isSimpleString = false
