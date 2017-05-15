@@ -62,10 +62,10 @@
             darwinCount = Int(TestRouteRegex.defaultTestSuite().testCaseCount)
             XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestRouteRegex.allTests")
             
-            // TestRouterHTTPVerbs_generated
-            linuxCount = TestRouterHTTPVerbs_generated.allTests.count
-            darwinCount = Int(TestRouterHTTPVerbs_generated.defaultTestSuite().testCaseCount)
-            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestRouterHTTPVerbs_generated.allTests")
+            // TestRouterHTTPVerbsGenerated
+            linuxCount = TestRouterHTTPVerbsGenerated.allTests.count
+            darwinCount = Int(TestRouterHTTPVerbsGenerated.defaultTestSuite().testCaseCount)
+            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestRouterHTTPVerbsGenerated.allTests")
             
             // TestServer
             linuxCount = TestServer.allTests.count
