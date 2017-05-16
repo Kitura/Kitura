@@ -70,7 +70,7 @@ class TestErrors: KituraTest {
                 // should this be ok?
                 expectation.fulfill()
             }) {req in
-                req.headers = ["garbage" : "dfsfdsf"]
+                req.headers = ["garbage": "dfsfdsf"]
             }
         }
     }

@@ -51,7 +51,7 @@ class TestRequests: KituraTest {
             XCTAssertNil(parameter, "URL parameter p1 was not nil, it's value was \(String(describing: parameter))")
             next()
         }
-        router.all() { _, response, next in
+        router.all { _, response, next in
             response.status(.OK).send("OK")
             next()
         }

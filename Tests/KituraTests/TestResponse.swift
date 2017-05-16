@@ -426,8 +426,7 @@ class TestResponse: KituraTest {
         performServerTest(router) { expectation in
             self.performRequest("post",
                                 path: "/bodytest",
-                                callback: {
-                                    (response) in
+                                callback: { response in
                                     guard let response = response else {
                                         XCTFail("Client response was nil on raw data post.")
                                         expectation.fulfill()
@@ -442,10 +441,9 @@ class TestResponse: KituraTest {
                                         XCTFail("Failed posting raw data")
                                     }
                                     expectation.fulfill()
-            },
+                                },
                                 headers: ["Content-Type": "application/octet-stream"],
-                                requestModifier: {
-                                    (request) in
+                                requestModifier: { request in
                                     let length = 2048
                                     let bytes = [UInt32](repeating: 0, count: length).map { _ in 0 }
                                     let randomData = Data(bytes: bytes, count: length)
@@ -660,14 +658,14 @@ class TestResponse: KituraTest {
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 expectation.fulfill()
             }) {req in
-                req.headers = ["Accept" : "text/*;q=.5, application/json, application/*;q=.3"]
+                req.headers = ["Accept": "text/*;q=.5, application/json, application/*;q=.3"]
             }
         }, { expectation in
             self.performRequest("get", path:"/customPage2", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 expectation.fulfill()
             }) {req in
-                req.headers = ["accept" : "*/*;q=.001, application/*;q=0.2, image/jpeg;q=0.8, text/html, text/plain"]
+                req.headers = ["accept": "*/*;q=.001, application/*;q=0.2, image/jpeg;q=0.8, text/html, text/plain"]
             }
         })
     }
@@ -710,14 +708,14 @@ class TestResponse: KituraTest {
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 expectation.fulfill()
             }) {req in
-                req.headers = ["Accept-Encoding" : "compress;q=0.5, gzip;q=1.0, *;q=0"]
+                req.headers = ["Accept-Encoding": "compress;q=0.5, gzip;q=1.0, *;q=0"]
             }
         }, { expectation in
             self.performRequest("get", path:"/customPage2", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 expectation.fulfill()
             }) {req in
-                req.headers = ["accept-encoding" : "gzip;q=0.5, compress;q=1.0, *;q=0.001"]
+                req.headers = ["accept-encoding": "gzip;q=0.5, compress;q=1.0, *;q=0.001"]
             }
         })
     }
@@ -735,7 +733,7 @@ class TestResponse: KituraTest {
                     XCTFail("Error reading body")
                 }
                 expectation.fulfill()
-                }, headers: ["Accept" : "text/html"])
+                }, headers: ["Accept": "text/html"])
         }
 
         performServerTest(router) { expectation in
@@ -750,7 +748,7 @@ class TestResponse: KituraTest {
                     XCTFail("Error reading body")
                 }
                 expectation.fulfill()
-                }, headers: ["Accept" : "text/plain"])
+                }, headers: ["Accept": "text/plain"])
         }
 
         performServerTest(router) { expectation in
@@ -764,7 +762,7 @@ class TestResponse: KituraTest {
                     XCTFail("Error reading body")
                 }
                 expectation.fulfill()
-                }, headers: ["Accept" : "text/cmd"])
+                }, headers: ["Accept": "text/cmd"])
         }
 
     }
@@ -902,7 +900,7 @@ class TestResponse: KituraTest {
                 XCTAssertEqual(domainHeader, "example.com", "Wrong http response domain")
                 XCTAssertEqual(subdomainsHeader, "a, b, c", "Wrong http response subdomains")
                 expectation.fulfill()
-            }, headers: ["Host" : "a.b.c.example.com"])
+            }, headers: ["Host": "a.b.c.example.com"])
         }
 
         performServerTest(router) { expectation in
@@ -917,7 +915,7 @@ class TestResponse: KituraTest {
                 XCTAssertEqual(domainHeader, "example.co.uk", "Wrong http response domain")
                 XCTAssertEqual(subdomainsHeader, "a, b, c, d", "Wrong http response subdomains")
                 expectation.fulfill()
-            }, headers: ["Host" : "a.b.c.d.example.co.uk"])
+            }, headers: ["Host": "a.b.c.d.example.co.uk"])
         }
     }
 
@@ -1044,7 +1042,8 @@ class TestResponse: KituraTest {
                 XCTAssertEqual(response?.statusCode, .OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 expectation.fulfill()
             })
-        },{ expectation in
+        },
+        { expectation in
             self.performRequest("get", path: "/code_notFound_no_change", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, .notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
@@ -1254,16 +1253,16 @@ class TestResponse: KituraTest {
 
         }
 
-        router.get("/format") { request, response, next in
+        router.get("/format") { _, response, _ in
             do {
                 try response.format(callbacks: [
-                                                   "text/plain" : callbackText,
-                                                   "text/html" : callbackHtml,
-                                                   "default" : callbackDefault])
+                                                   "text/plain": callbackText,
+                                                   "text/html": callbackHtml,
+                                                   "default": callbackDefault])
             } catch {}
         }
 
-        router.get("/single_link") { request, response, next in
+        router.get("/single_link") { _, response, _ in
             do {
                 response.headers.addLink("https://developer.ibm.com/swift",
                                      linkParameters: [.rel: "root"])
@@ -1271,7 +1270,7 @@ class TestResponse: KituraTest {
             } catch {}
         }
 
-        router.get("/multiple_links") { request, response, next in
+        router.get("/multiple_links") { _, response, _ in
             do {
                 response.headers.addLink("https://developer.ibm.com/swift/products/ibm-bluemix/",
                          linkParameters: [.rel: "prev"])
@@ -1281,7 +1280,7 @@ class TestResponse: KituraTest {
             } catch {}
         }
 
-        router.get("/jsonp") { request, response, next in
+        router.get("/jsonp") { _, response, _ in
             let json = JSON([ "some": "json" ])
             do {
                 do {
@@ -1292,7 +1291,7 @@ class TestResponse: KituraTest {
             } catch {}
         }
 
-        router.get("/jsonp_cb") { request, response, next in
+        router.get("/jsonp_cb") { _, response, _ in
             let json = JSON([ "some": "json" ])
             do {
                 do {
@@ -1303,7 +1302,7 @@ class TestResponse: KituraTest {
             } catch {}
         }
 
-        router.get("/jsonp_encoded") { request, response, next in
+        router.get("/jsonp_encoded") { _, response, _ in
 #if os(Linux)
             let json = JSON([ "some": JSON("json with bad js chars \u{2028} \u{2029}") ])
 #else
@@ -1318,7 +1317,7 @@ class TestResponse: KituraTest {
             } catch {}
         }
 
-        router.get("/lifecycle") { request, response, next in
+        router.get("/lifecycle") { _, response, next in
             var previousOnEndInvoked: LifecycleHandler? = nil
             let onEndInvoked = {
                 response.headers["x-lifecycle"] = "kitura"
@@ -1357,7 +1356,7 @@ class TestResponse: KituraTest {
             }
             next()
         }
-        
+
         router.get("/jsonDictionary") { _, response, next in
             response.headers["Content-Type"] = "application/json"
             do {
@@ -1367,7 +1366,7 @@ class TestResponse: KituraTest {
             }
             next()
         }
-        
+
         router.get("/jsonArray") { _, response, next in
             response.headers["Content-Type"] = "application/json"
             do {
@@ -1404,7 +1403,7 @@ class TestResponse: KituraTest {
             next()
         }
 
-        router.get("/code_unknown_to_ok") { _, response, next in
+        router.get("/code_unknown_to_ok") { _, response, _ in
             XCTAssert(response.statusCode == .unknown)
 
             response.send("Hello world")
@@ -1412,7 +1411,7 @@ class TestResponse: KituraTest {
             XCTAssert(response.statusCode == .OK)
         }
 
-        router.get("/code_notFound_no_change") { _, response, next in
+        router.get("/code_notFound_no_change") { _, response, _ in
             response.status(.notFound)
 
             XCTAssert(response.statusCode == .notFound)
@@ -1422,7 +1421,7 @@ class TestResponse: KituraTest {
             XCTAssert(response.statusCode == .notFound)
         }
 
-        router.error { request, response, next in
+        router.error { _, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             do {
                 let errorDescription: String
