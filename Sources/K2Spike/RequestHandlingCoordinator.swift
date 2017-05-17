@@ -27,14 +27,7 @@ public class RequestHandlingCoordinator {
         
         let (proccessedReq, processedContext) = self.runPreProcessors(req: req, context: initialContext)
 
-        //FIXME: Handle Error case
         let routeTuple = router.route(request: req)
-
-//        if let responseCreator = routeTuple?.1{
-//            return responseCreator.serve(request: proccessedReq, context: processedContext, response:runPostProcessors(req: proccessedReq, context: processedContext, res: res))
-//        }
-//        
-//        return WebAppFailureHandler().serve(request: proccessedReq, context: processedContext, response:runPostProcessors(req: proccessedReq, context: processedContext, res: res))
 
         guard let handler = routeTuple?.1 else {
             // No response creator found
