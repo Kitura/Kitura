@@ -40,8 +40,7 @@ class TestStack: XCTestCase {
         XCTAssertEqual(item, topItem, "expected \(item), returned \(topItem)")
     }
 
-    private func popAndAssert<Element: Equatable>(var _ stack: inout Stack<Element>, item: Element) {
-
+    private func popAndAssert<Element: Equatable>(_ stack: inout Stack<Element>, item: Element) {
         let popped = stack.pop()
         XCTAssertEqual(item, popped, "expected \(item), returned \(popped)")
     }
