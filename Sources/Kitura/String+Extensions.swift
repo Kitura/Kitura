@@ -18,17 +18,17 @@ import Foundation
 import LoggerAPI
 
 extension String {
-    
+
     /// Parses percent encoded string into query parameters
     var urlDecodedFieldValuePairs: [String : String] {
         var result: [String:String] = [:]
-        
+
         for item in self.components(separatedBy: "&") {
             guard let range = item.range(of: "=") else {
                 result[item] = nil
                 continue
             }
-            
+
             let key = item.substring(to: range.lowerBound)
             let value = item.substring(from: range.upperBound)
             let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
@@ -39,7 +39,7 @@ extension String {
                 result[key] = valueReplacingPlus
             }
         }
-        
+
         return result
     }
 }

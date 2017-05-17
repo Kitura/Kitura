@@ -33,8 +33,8 @@ class KituraTest: XCTestCase {
     static let httpPort = 8080
     static let httpsPort = 8443
 
-    static private(set) var httpServer: HTTPServer? = nil
-    static private(set) var httpsServer: HTTPServer? = nil
+    static private(set) var httpServer: HTTPServer? 
+    static private(set) var httpsServer: HTTPServer?
 
     private(set) var port = -1
     private(set) var useSSL = false
@@ -94,7 +94,7 @@ class KituraTest: XCTestCase {
         let requestQueue = DispatchQueue(label: "Request queue")
         for (index, asyncTask) in asyncTasks.enumerated() {
             let expectation = self.expectation(line: line, index: index)
-            requestQueue.async() {
+            requestQueue.async {
                 asyncTask(expectation)
             }
         }
