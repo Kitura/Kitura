@@ -11,7 +11,7 @@ import K2Spike
 import HTTPSketch
 
 class UUIDGeneratorWebApp: ResponseCreating {
-    func serve(req: HTTPRequest, context: RequestContext, res: HTTPResponseWriter ) -> HTTPBodyProcessing {
+    func serve(request req: HTTPRequest, context: RequestContext, response res: HTTPResponseWriter ) -> HTTPBodyProcessing {
         //Assume the router gave us the right request - at least for now
         res.writeResponse(HTTPResponse(httpVersion: req.httpVersion,
                                        status: .ok,

@@ -9,8 +9,11 @@ class K2SpikeTests: XCTestCase {
     func testResponseOK() {
         let request = HTTPRequest(method: .GET, target:"/echo", httpVersion: (1, 1), headers: HTTPHeaders([("X-foo", "bar")]))
         let resolver = TestResponseResolver(request: request, requestBody: Data())
-        let coordinator = RequestHandlingCoordinator.init(router: Router(map: [Path(path:"/echo", verb:.GET): EchoWebApp()]))
+        var router = Router()
+        router.add(verb: .GET, path: "/echo", responseCreator: EchoWebApp())
+        let coordinator = RequestHandlingCoordinator(router: router)
         resolver.resolveHandler(coordinator.handle)
+
         XCTAssertNotNil(resolver.response)
         XCTAssertNotNil(resolver.responseBody)
         XCTAssertEqual(HTTPResponseStatus.ok.code, resolver.response?.status.code ?? 0)
@@ -20,8 +23,11 @@ class K2SpikeTests: XCTestCase {
         let testString="This is a test"
         let request = HTTPRequest(method: .POST, target:"/echo", httpVersion: (1, 1), headers: HTTPHeaders([("X-foo", "bar")]))
         let resolver = TestResponseResolver(request: request, requestBody: testString.data(using: .utf8)!)
-        let coordinator = RequestHandlingCoordinator.init(router: Router(map: [Path(path:"/echo", verb:.POST): EchoWebApp()]))
+        var router = Router()
+        router.add(verb: .POST, path: "/echo", responseCreator: EchoWebApp())
+        let coordinator = RequestHandlingCoordinator(router: router)
         resolver.resolveHandler(coordinator.handle)
+
         XCTAssertNotNil(resolver.response)
         XCTAssertNotNil(resolver.responseBody)
         XCTAssertEqual(HTTPResponseStatus.ok.code, resolver.response?.status.code ?? 0)
@@ -31,8 +37,11 @@ class K2SpikeTests: XCTestCase {
     func testHello() {
         let request = HTTPRequest(method: .GET, target:"/helloworld", httpVersion: (1, 1), headers: HTTPHeaders([("X-foo", "bar")]))
         let resolver = TestResponseResolver(request: request, requestBody: Data())
-        let coordinator = RequestHandlingCoordinator.init(router: Router(map: [Path(path:"/helloworld", verb:.GET): HelloWorldWebApp()]))
+        var router = Router()
+        router.add(verb: .GET, path: "/helloworld", responseCreator: HelloWorldWebApp())
+        let coordinator = RequestHandlingCoordinator(router: router)
         resolver.resolveHandler(coordinator.handle)
+
         XCTAssertNotNil(resolver.response)
         XCTAssertNotNil(resolver.responseBody)
         XCTAssertEqual(HTTPResponseStatus.ok.code, resolver.response?.status.code ?? 0)
@@ -42,9 +51,11 @@ class K2SpikeTests: XCTestCase {
     func testHelloEndToEnd() {
         HeliumLogger.use(.info)
         let receivedExpectation = self.expectation(description: "Received web response \(#function)")
-        
-        let coordinator = RequestHandlingCoordinator.init(router: Router(map: [Path(path:"/helloworld", verb:.GET): HelloWorldWebApp()]))
-        let server = HTTPSimpleServer()
+        var router = Router()
+        router.add(verb: .GET, path: "/helloworld", responseCreator: HelloWorldWebApp())
+        let coordinator = RequestHandlingCoordinator.init(router: router)
+        let server = BlueSocketSimpleServer()
+
         do {
             try server.start(port: 0, webapp: coordinator.handle)
             let session = URLSession(configuration: URLSessionConfiguration.default)
@@ -75,9 +86,11 @@ class K2SpikeTests: XCTestCase {
         HeliumLogger.use(.info)
         let receivedExpectation = self.expectation(description: "Received web response \(#function)")
         let testString="This is a test"
+        var router = Router()
+        router.add(verb: .POST, path: "/echo", responseCreator: EchoWebApp())
+        let coordinator = RequestHandlingCoordinator(router: router)
+        let server = BlueSocketSimpleServer()
 
-        let coordinator = RequestHandlingCoordinator.init(router: Router(map: [Path(path:"/echo", verb:.POST): EchoWebApp()]))
-        let server = HTTPSimpleServer()
         do {
             try server.start(port: 0, webapp: coordinator.handle)
             let session = URLSession(configuration: URLSessionConfiguration.default)
@@ -117,9 +130,11 @@ class K2SpikeTests: XCTestCase {
         let testString1="This is a test"
         let testString2="This is a test, too"
         let testString3="This is also a test"
-        
-        let coordinator = RequestHandlingCoordinator.init(router: Router(map: [Path(path:"/echo", verb:.POST): EchoWebApp()]))
-        let server = HTTPSimpleServer()
+        var router = Router()
+        router.add(verb: .POST, path: "/echo", responseCreator: EchoWebApp())
+        let coordinator = RequestHandlingCoordinator(router: router)
+        let server = BlueSocketSimpleServer()
+
         do {
             try server.start(port: 0, webapp: coordinator.handle)
             let session = URLSession(configuration: URLSessionConfiguration.default)
@@ -217,10 +232,11 @@ class K2SpikeTests: XCTestCase {
         }
         
         let testData = Data(testDataLong)
-        
-        let coordinator = RequestHandlingCoordinator.init(router: Router(map: [Path(path:"/echo", verb:.POST): EchoWebApp()]))
-        
-        let server = HTTPSimpleServer()
+        var router = Router()
+        router.add(verb: .POST, path: "/echo", responseCreator: EchoWebApp())
+        let coordinator = RequestHandlingCoordinator(router: router)
+        let server = BlueSocketSimpleServer()
+
         do {
             try server.start(port: 0, webapp: coordinator.handle)
             let session = URLSession(configuration: URLSessionConfiguration.default)
@@ -253,13 +269,15 @@ class K2SpikeTests: XCTestCase {
     func testWithCookieHelloEndToEnd() {
         HeliumLogger.use(.info)
         let receivedExpectation = self.expectation(description: "Received web response \(#function)")
+        var router = Router()
+        router.add(verb: .GET, path: "/helloworld", responseCreator: HelloWorldWebApp())
+        let helloWorldCoordinator = RequestHandlingCoordinator(router: router)
+        router = Router()
+        router.add(verb: .GET, path: "/uuid", responseCreator: UUIDGeneratorWebApp())
+        let uuidCoordinator = RequestHandlingCoordinator(router: router)
         
-        let helloWorldCoordinator = RequestHandlingCoordinator.init(router: Router(map: [Path(path:"/helloworld", verb:.GET): HelloWorldWebApp()]))
-        
-        let uuidCoordinator = RequestHandlingCoordinator.init(router: Router(map: [Path(path:"/uuid", verb:.GET): UUIDGeneratorWebApp()]))
-        
-        let helloWorldServer = HTTPSimpleServer()
-        let uuidServer = HTTPSimpleServer()
+        let helloWorldServer = BlueSocketSimpleServer()
+        let uuidServer = BlueSocketSimpleServer()
         do {
             try uuidServer.start(port: 0, webapp: uuidCoordinator.handle)
             let urlForUUID = URL(string: "http://localhost:\(uuidServer.port)/uuid")!

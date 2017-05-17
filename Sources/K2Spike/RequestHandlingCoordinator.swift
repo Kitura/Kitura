@@ -26,14 +26,79 @@ public class RequestHandlingCoordinator {
         let initialContext = RequestContext(dict:[:])
         
         let (proccessedReq, processedContext) = self.runPreProcessors(req: req, context: initialContext)
-        
-        let routeTupple = router.route(request: req) //FIXME: Handle Error case
-        
-        if let responseCreator = routeTupple?.1 {
-            return responseCreator.serve(req: proccessedReq, context: processedContext, res:runPostProcessors(req: proccessedReq, context: processedContext, res: res))
+
+        //FIXME: Handle Error case
+        let routeTuple = router.route(request: req)
+
+//        if let responseCreator = routeTuple?.1{
+//            return responseCreator.serve(request: proccessedReq, context: processedContext, response:runPostProcessors(req: proccessedReq, context: processedContext, res: res))
+//        }
+//        
+//        return WebAppFailureHandler().serve(request: proccessedReq, context: processedContext, response:runPostProcessors(req: proccessedReq, context: processedContext, res: res))
+
+        guard let handler = routeTuple?.1 else {
+            // No response creator found
+            // Handle failure
+            return serveWithFailureHandler(request: proccessedReq, context: processedContext, response: res)
         }
-        
-        return WebAppFailureHandler().serve(req: proccessedReq, context: processedContext, res:runPostProcessors(req: proccessedReq, context: processedContext, res: res))
+
+        switch handler {
+        case .skipParameters(let responseCreator):
+            return responseCreator.serve(request: proccessedReq, context: processedContext, response:runPostProcessors(req: proccessedReq, context: processedContext, res: res))
+        case .skipBody(let parameterType, let responseCreator):
+            // Step 1:
+            // Generate parameter object
+            guard let parameters = parameterType.init(pathParameters: routeTuple?.0?.parameters, queryParameters: routeTuple?.0?.queries, headers: proccessedReq.headers) else {
+                return serveWithFailureHandler(request: proccessedReq, context: processedContext, response: res)
+            }
+
+            // Step 2:
+            // Serve content using parameters
+            return responseCreator.serve(request: proccessedReq, context: processedContext, parameters: parameters, response: runPostProcessors(req: proccessedReq, context: processedContext, res: res))
+        case .parseBody(let parameterType, let responseCreator):
+            var body = Data()
+
+            // Have to parse body parameters
+            return .processBody { (chunk, stop) in
+                switch chunk {
+                case .chunk(let data, let finishedProcessing):
+                    // Step 1:
+                    // Buffer the body chunks
+                    if (data.count > 0) {
+                        body.append(Data(data))
+                    }
+                    finishedProcessing()
+                case .end:
+                    // Step 2:
+                    // Generate parameter object
+                    if let parameters = parameterType.init(pathParameters: routeTuple?.0?.parameters, queryParameters: routeTuple?.0?.queries, headers: proccessedReq.headers, body: body) {
+                        // Step 3:
+                        // Get response object from serving content using parameters
+                        let responseObject = responseCreator.serve(request: proccessedReq, context: processedContext, parameters: parameters, response: res)
+
+                        // Step 4:
+                        // Write response
+                        if let data = responseObject.toData() {
+                            res.writeBody(data: data)
+                        }
+
+                        // TODO
+                        // Write HTTPResponse
+                    }
+                    else {
+                        res.writeResponse(HTTPResponse(httpVersion: req.httpVersion,
+                                                       status: .notFound,
+                                                       transferEncoding: .chunked,
+                                                       headers: HTTPHeaders()))
+                    }
+
+                    res.done()
+                default:
+                    stop = true
+                    res.abort()
+                }
+            }
+        }
     }
     
     public func addPreProcessor(_ preprocessor: @escaping HTTPPreProcessing) {
@@ -84,6 +149,10 @@ public class RequestHandlingCoordinator {
         
         return responseWriter
     }
+
+    private func serveWithFailureHandler(request: HTTPRequest, context: RequestContext, response: HTTPResponseWriter) -> HTTPBodyProcessing {
+        return WebAppFailureHandler().serve(request: request, context: context, response: runPostProcessors(req: request, context: context, res: response))
+    }
 }
 
 public typealias HTTPPostProcessing = (_ req: HTTPRequest, _ context: RequestContext, _ res: HTTPResponseWriter) -> HTTPPostProcessingStatus
@@ -101,7 +170,7 @@ public enum HTTPPostProcessingStatus {
     case replace(res: HTTPResponseWriter)
 }
 
-public protocol ResponseCreating: class {
-    func serve(req: HTTPRequest, context: RequestContext, res: HTTPResponseWriter ) -> HTTPBodyProcessing
-}
+//public protocol ResponseCreating: class {
+//    func serve(request: HTTPRequest, context: RequestContext, response: HTTPResponseWriter) -> HTTPBodyProcessing
+//}
 
