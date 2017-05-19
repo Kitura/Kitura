@@ -29,7 +29,7 @@ public class RequestHandlingCoordinator {
 
         let routeTuple = router.route(request: req)
 
-        guard let handler = routeTuple?.1 else {
+        guard let handler = routeTuple?.handler else {
             // No response creator found
             // Handle failure
             return serveWithFailureHandler(request: proccessedReq, context: processedContext, response: res)
@@ -41,7 +41,7 @@ public class RequestHandlingCoordinator {
         case .skipBody(let parameterType, let responseCreator):
             // Step 1:
             // Generate parameter object
-            guard let parameters = parameterType.init(pathParameters: routeTuple?.0?.parameters, queryParameters: routeTuple?.0?.queries, headers: proccessedReq.headers) else {
+            guard let parameters = parameterType.init(pathParameters: routeTuple?.components?.parameters, queryParameters: routeTuple?.components?.queries, headers: proccessedReq.headers) else {
                 return serveWithFailureHandler(request: proccessedReq, context: processedContext, response: res)
             }
 
@@ -49,7 +49,7 @@ public class RequestHandlingCoordinator {
             // Serve content using parameters
             return responseCreator.serve(request: proccessedReq, context: processedContext, parameters: parameters, response: runPostProcessors(req: proccessedReq, context: processedContext, res: res))
         case .parseBody(let parameterType, let responseCreator):
-            var body = Data()
+            var body = DispatchData.empty
 
             // Have to parse body parameters
             return .processBody { (chunk, stop) in
@@ -58,13 +58,13 @@ public class RequestHandlingCoordinator {
                     // Step 1:
                     // Buffer the body chunks
                     if (data.count > 0) {
-                        body.append(Data(data))
+                        body.append(data)
                     }
                     finishedProcessing()
                 case .end:
                     // Step 2:
                     // Generate parameter object
-                    if let parameters = parameterType.init(pathParameters: routeTuple?.0?.parameters, queryParameters: routeTuple?.0?.queries, headers: proccessedReq.headers, body: body) {
+                    if let parameters = parameterType.init(pathParameters: routeTuple?.components?.parameters, queryParameters: routeTuple?.components?.queries, headers: proccessedReq.headers, body: body) {
                         // Step 3:
                         // Get response object from serving content using parameters
                         let responseObject = responseCreator.serve(request: proccessedReq, context: processedContext, parameters: parameters, response: res)
