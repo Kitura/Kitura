@@ -95,6 +95,7 @@ public struct Router {
         map[Path(path: path, verb: verb)] = .parseBody(parameterType, responseCreator)
     }
 
+    // Given an HTTPRequest, find the request handler
     func route(request: HTTPRequest) -> (components: PathComponents?, handler: Handler)? {
         guard let verb = Verb(request.method) else {
             return nil
