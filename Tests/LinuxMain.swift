@@ -51,7 +51,7 @@ XCTMain([
     testCase(TestRequests.allTests.shuffled()),
     testCase(TestResponse.allTests.shuffled()),
     testCase(TestRouteRegex.allTests.shuffled()),
-    testCase(TestRouterHTTPVerbs_generated.allTests.shuffled()),
+    testCase(TestRouterHTTPVerbsGenerated.allTests.shuffled()),
     testCase(TestServer.allTests.shuffled()),
     testCase(TestSubrouter.allTests.shuffled()),
     testCase(TestStaticFileServer.allTests.shuffled()),

@@ -164,7 +164,7 @@ class TestSubrouter: KituraTest {
         subsubRouter1.all("/subsub2/:subsub2", handler: simpleHandler)
         subsubRouter1.all("/subsub2/passthrough", handler: handler)
 
-        router.route("/root2/:root2", mergeParameters: true).all() { req, res, next in
+        router.route("/root2/:root2", mergeParameters: true).all { req, res, _ in
             try res.send(json: JSON(req.parameters)).end()
         }
 
@@ -228,21 +228,21 @@ class TestSubrouter: KituraTest {
 
     static func setupRouter() -> Router {
         let subsubRouter = Router()
-        subsubRouter.get("/") { request, response, next in
+        subsubRouter.get("/") { _, response, next in
             response.status(HTTPStatusCode.OK).send("hello from the sub sub")
             next()
         }
-        subsubRouter.get("/sub1") { request, response, next in
+        subsubRouter.get("/sub1") { _, response, next in
             response.status(HTTPStatusCode.OK).send("subsub1")
             next()
         }
 
         let subRouter = Router()
-        subRouter.get("/") { request, response, next in
+        subRouter.get("/") { _, response, next in
             response.status(HTTPStatusCode.OK).send("hello from the sub")
             next()
         }
-        subRouter.get("/sub1") { request, response, next in
+        subRouter.get("/sub1") { _, response, next in
             response.status(HTTPStatusCode.OK).send("sub1")
             next()
         }
@@ -250,11 +250,11 @@ class TestSubrouter: KituraTest {
         subRouter.all("/sub2", middleware: subsubRouter)
 
         let router = Router()
-        let middleware = RouterMiddlewareGenerator { (request: RouterRequest, response: RouterResponse, next: () -> Void) in
+        let middleware = RouterMiddlewareGenerator { _, response, next in
             response.status(HTTPStatusCode.OK).send("first middle\n")
             next()
         }
-        let middleware2 = RouterMiddlewareGenerator { (request: RouterRequest, response: RouterResponse, next: () -> Void) in
+        let middleware2 = RouterMiddlewareGenerator { _, response, next in
             response.status(HTTPStatusCode.OK).send("last middle\n")
             next()
         }
