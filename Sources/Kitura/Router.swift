@@ -293,7 +293,10 @@ extension Router : ServerDelegate {
     ///                      HTTP request at the Kitura-net API level.
     public func handle(request: ServerRequest, response: ServerResponse) {
         let routeReq = RouterRequest(request: request)
-        let routeResp = RouterResponse(response: response, router: self, request: routeReq)
+        //TODO fix the stack
+        var routerStack = Stack<Router>()
+        routerStack.push(self)
+        let routeResp = RouterResponse(response: response, routerStack: routerStack, request: routeReq)
 
         process(request: routeReq, response: routeResp) { [weak self, weak routeReq, weak routeResp] () in
             guard let strongSelf = self else {
