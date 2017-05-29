@@ -128,22 +128,11 @@ public class Router {
     /// - Throws: Any error thrown by the Templating Engine when it fails to
     ///          render the template.
     internal func render(template: String, context: [String: Any], options: RenderingOptions = NullRenderingOptions()) throws -> String {
-        guard let resourceExtension = URL(string: template)?.pathExtension else {
+        let (optionalFileExtension, resourceWithExtension) = calculateExtension(template: template)
+
+        // extension is nil (not the empty string), this should not happen
+        guard let fileExtension = optionalFileExtension else {
             throw TemplatingError.noTemplateEngineForExtension(extension: "")
-        }
-
-        let fileExtension: String
-        let resourceWithExtension: String
-
-        if resourceExtension.isEmpty {
-            fileExtension = defaultEngineFileExtension ?? ""
-            // swiftlint:disable todo
-            //TODO: Use stringByAppendingPathExtension once issue https://bugs.swift.org/browse/SR-999 is resolved
-            // swiftlint:enable todo
-            resourceWithExtension = template + "." + fileExtension
-        } else {
-            fileExtension = resourceExtension
-            resourceWithExtension = template
         }
 
         if fileExtension.isEmpty {
@@ -166,6 +155,27 @@ public class Router {
         return try templateEngine.render(filePath: absoluteFilePath, context: context)
     }
 
+    private func calculateExtension(template: String) -> (fileExtension: String?, resourceWithExtension: String) {
+        let fileExtension: String
+        let resourceWithExtension: String
+
+        guard let resourceExtension = URL(string: template)?.pathExtension else {
+            return (fileExtension: nil, resourceWithExtension: template)
+        }
+
+        if resourceExtension.isEmpty {
+            fileExtension = defaultEngineFileExtension ?? ""
+            // swiftlint:disable todo
+            //TODO: Use stringByAppendingPathExtension once issue https://bugs.swift.org/browse/SR-999 is resolved
+            // swiftlint:enable todo
+            resourceWithExtension = template + "." + fileExtension
+        } else {
+            fileExtension = resourceExtension
+            resourceWithExtension = template
+        }
+
+        return (fileExtension: fileExtension, resourceWithExtension: resourceWithExtension)
+    }
     // MARK: Sub router
 
     /// Setup a "sub router" to handle requests. This can make it easier to
