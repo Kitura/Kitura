@@ -1,6 +1,7 @@
 // Protocols related to parameters
 
 import Foundation
+import Dispatch
 import HTTPSketch
 
 // All parameter objects that do not require body inspection inherit this
