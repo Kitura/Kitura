@@ -42,7 +42,7 @@ public class RouterRequest {
     public private(set) lazy var domain: String = { [unowned self] in
         let pattern = "([a-z0-9][a-z0-9\\-]{1,63}\\.[a-z\\.]{2,6})$"
         do {
-            let regex = try RegularExpressionType(pattern: pattern, options: [.caseInsensitive])
+            let regex = try NSRegularExpression(pattern: pattern, options: [.caseInsensitive])
 
             let hostnameRange = NSRange(location: 0, length: self.hostname.utf8.count)
 

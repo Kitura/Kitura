@@ -20,6 +20,10 @@ import LoggerAPI
 import Foundation
 import Dispatch
 
+#if os(Linux) && !swift(>=3.1)
+    typealias NSRegularExpression = RegularExpression
+#endif
+
 // MARK Kitura
 
 /// A set of helper functions to make it easier to create, start, and stop Kitura based servers.
