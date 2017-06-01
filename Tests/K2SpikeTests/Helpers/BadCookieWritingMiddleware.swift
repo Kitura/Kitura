@@ -10,7 +10,7 @@ import Foundation
 import Dispatch
 import LoggerAPI
 import K2Spike
-import HTTPSketch
+import SwiftServerHttp
 
 class BadCookieWritingMiddleware {
     

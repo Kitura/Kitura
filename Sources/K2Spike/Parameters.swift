@@ -2,7 +2,7 @@
 
 import Foundation
 import Dispatch
-import HTTPSketch
+import SwiftServerHttp
 
 // All parameter objects that do not require body inspection inherit this
 public protocol BodylessParameterContaining {

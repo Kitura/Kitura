@@ -1,7 +1,7 @@
 import XCTest
 import HeliumLogger
 
-@testable import HTTPSketch
+@testable import SwiftServerHttp
 
 @testable import K2Spike
 

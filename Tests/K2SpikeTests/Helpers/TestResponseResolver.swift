@@ -9,7 +9,7 @@
 import Foundation
 import Dispatch
 import K2Spike
-import HTTPSketch
+import SwiftServerHttp
 
 class TestResponseResolver: HTTPResponseWriter {
     let request: HTTPRequest

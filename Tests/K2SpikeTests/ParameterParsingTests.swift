@@ -1,5 +1,5 @@
 import XCTest
-@testable import HTTPSketch
+@testable import SwiftServerHttp
 @testable import K2Spike
 
 class ParameterParsingTests: XCTestCase {

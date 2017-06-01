@@ -8,7 +8,7 @@
 
 import Foundation
 import Dispatch
-import HTTPSketch
+import SwiftServerHttp
 
 public class RequestHandlingCoordinator {
     

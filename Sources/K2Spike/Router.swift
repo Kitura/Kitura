@@ -1,5 +1,5 @@
 import Foundation
-import HTTPSketch
+import SwiftServerHttp
 
 extension String {
     var isPathParameter: Bool {

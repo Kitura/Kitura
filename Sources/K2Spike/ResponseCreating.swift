@@ -1,4 +1,4 @@
-import HTTPSketch
+import SwiftServerHttp
 
 // Protocols related to ResponseCreating
 

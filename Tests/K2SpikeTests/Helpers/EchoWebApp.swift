@@ -1,6 +1,6 @@
 import Foundation
 import K2Spike
-import HTTPSketch
+import SwiftServerHttp
 
 class EchoWebApp: ResponseCreating {
     func serve(request req: HTTPRequest, context: RequestContext, response res: HTTPResponseWriter ) -> HTTPBodyProcessing {
