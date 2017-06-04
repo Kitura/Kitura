@@ -434,8 +434,16 @@ public class RouterResponse {
     }
 
     private func getRouterThatCanRender(resource: String) -> Router? {
-        // temporary
-        return routerStack.topItem
+        var routerStackToTraverse = routerStack
+
+        while routerStackToTraverse.topItem != nil {
+            let router = routerStackToTraverse.pop()
+
+            if router.getTemplateEngine(template: resource) != nil {
+                return router
+            }
+        }
+        return nil
     }
 
     /// Set headers and attach file for downloading.
