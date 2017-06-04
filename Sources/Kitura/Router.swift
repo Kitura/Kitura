@@ -115,6 +115,8 @@ public class Router {
         for fileExtension in fileExtensions {
             templateEngines[fileExtension] = templateEngine
         }
+        let absoluteViewsPath = StaticFileServer.ResourcePathHandler.getAbsolutePath(for: viewsPath)
+        templateEngine.setRootPaths(rootPaths: [absoluteViewsPath])
     }
 
     /// Render a template using a context
