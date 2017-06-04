@@ -165,7 +165,8 @@ public class Router {
         }
 
         let absoluteFilePath = StaticFileServer.ResourcePathHandler.getAbsolutePath(for: filePath)
-        return try templateEngine.render(filePath: absoluteFilePath, context: context)
+        return try templateEngine.render(filePath: absoluteFilePath, context: context, options: options,
+                                         templateName: template)
     }
 
     // MARK: Sub router
