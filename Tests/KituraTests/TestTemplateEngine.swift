@@ -109,19 +109,6 @@ class TestTemplateEngine: KituraTest {
         performRenderServerTest(withRouter: router, onPath: "/render")
     }
 
-    func testRenderWithServerAndSubRouter() {
-        //TODO enable this test once https://github.com/IBM-Swift/Kitura/issues/1070 is resolved
-        /*
-
-        let subRouter = Router()
-        setupRouterForRendering(subRouter)
-
-        let router = Router()
-        router.all("/sub", middleware: subRouter)
-        performRenderServerTest(withRouter: router, onPath: "/sub/render")
-        */
-    }
-
     private func setupRouterForRendering(_ router: Router, options: RenderingOptions? = nil) {
         router.setDefault(templateEngine: MockTemplateEngine())
 
