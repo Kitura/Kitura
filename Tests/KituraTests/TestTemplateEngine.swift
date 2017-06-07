@@ -38,7 +38,6 @@ class TestTemplateEngine: KituraTest {
             ("testRender", testRender),
             ("testRenderWithServer", testRenderWithServer),
             ("testRenderWithOptionsWithServer", testRenderWithOptionsWithServer),
-            ("testRenderWithServerAndSubRouter", testRenderWithServerAndSubRouter),
             ("testRenderWithExtensionAndWithoutDefaultTemplateEngine",
              testRenderWithExtensionAndWithoutDefaultTemplateEngine),
             ("testAddWithFileExtensions", testAddWithFileExtensions),
