@@ -77,7 +77,7 @@ class TestTemplateEngine: KituraTest {
         let router = Router()
 
         do {
-            let _ = try router.render(template: "test", context: [:])
+            _ = try router.render(template: "test", context: [:])
         } catch TemplatingError.noDefaultTemplateEngineAndNoExtensionSpecified {
             //Expect this error to be thrown
         } catch {
