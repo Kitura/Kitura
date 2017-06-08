@@ -38,7 +38,6 @@ class TestTemplateEngine: KituraTest {
             ("testRender", testRender),
             ("testRenderWithServer", testRenderWithServer),
             ("testRenderWithOptionsWithServer", testRenderWithOptionsWithServer),
-            ("testRenderWithServerAndSubRouter", testRenderWithServerAndSubRouter),
             ("testRenderWithExtensionAndWithoutDefaultTemplateEngine",
              testRenderWithExtensionAndWithoutDefaultTemplateEngine),
             ("testAddWithFileExtensions", testAddWithFileExtensions),
@@ -77,7 +76,7 @@ class TestTemplateEngine: KituraTest {
         let router = Router()
 
         do {
-            let _ = try router.render(template: "test", context: [:])
+            _ = try router.render(template: "test", context: [:])
         } catch TemplatingError.noDefaultTemplateEngineAndNoExtensionSpecified {
             //Expect this error to be thrown
         } catch {
@@ -107,19 +106,6 @@ class TestTemplateEngine: KituraTest {
         let router = Router()
         setupRouterForRendering(router, options: MockRenderingOptions())
         performRenderServerTest(withRouter: router, onPath: "/render")
-    }
-
-    func testRenderWithServerAndSubRouter() {
-        //TODO enable this test once https://github.com/IBM-Swift/Kitura/issues/1070 is resolved
-        /*
-
-        let subRouter = Router()
-        setupRouterForRendering(subRouter)
-
-        let router = Router()
-        router.all("/sub", middleware: subRouter)
-        performRenderServerTest(withRouter: router, onPath: "/sub/render")
-        */
     }
 
     private func setupRouterForRendering(_ router: Router, options: RenderingOptions? = nil) {
