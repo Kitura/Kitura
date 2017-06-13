@@ -446,6 +446,18 @@ public class RouterResponse {
         return nil
     }
 
+    /// Push router into router stack
+    ///
+    /// - Parameter: router - router to push
+    func push(router: Router) {
+        routerStack.push(router)
+    }
+
+    /// Pop router from router stack
+    func popRouter() {
+        let _ = routerStack.pop()
+    }
+
     /// Set headers and attach file for downloading.
     ///
     /// - Parameter download: the file to download.
