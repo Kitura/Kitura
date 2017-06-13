@@ -115,6 +115,10 @@ public class Router {
         for fileExtension in fileExtensions {
             templateEngines[fileExtension] = templateEngine
         }
+        setRootPaths(forTemplateEngine: templateEngine)
+    }
+
+    private func setRootPaths(forTemplateEngine templateEngine: TemplateEngine) {
         let absoluteViewsPath = StaticFileServer.ResourcePathHandler.getAbsolutePath(for: viewsPath)
         templateEngine.setRootPaths(rootPaths: [absoluteViewsPath])
     }
