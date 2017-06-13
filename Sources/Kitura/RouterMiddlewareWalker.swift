@@ -62,7 +62,14 @@ class RouterMiddlewareWalker {
                 // reset parameters before processing next middleware
                 request.parameters = parameters
 
-                try middlewares[middlewareIndex].handle(request: request, response: response, next: closure)
+                let middleware = middlewares[middlewareIndex]
+                if let router = middleware as? Router {
+                    response.push(router: router)
+                }
+                try middleware.handle(request: request, response: response, next: closure)
+                if middleware is Router {
+                    response.popRouter()
+                }
             } catch {
                 response.error = error
                 self.next()
