@@ -42,7 +42,13 @@ public class Router {
 
     /// The root directory for templates that will be automatically handed over to an
     /// appropriate templating engine for content generation.
-    public var viewsPath = "./Views/"
+    public var viewsPath = "./Views/" {
+        didSet {
+            for (_, templateEngine) in templateEngines {
+                setRootPaths(forTemplateEngine: templateEngine)
+            }
+        }
+    }
 
     /// Prefix for special page resources
     fileprivate let kituraResourcePrefix = "/@@Kitura-router@@/"
