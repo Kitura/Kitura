@@ -40,6 +40,8 @@ class TestTemplateEngine: KituraTest {
             ("testRenderWithOptionsWithServer", testRenderWithOptionsWithServer),
             ("testRenderWithExtensionAndWithoutDefaultTemplateEngine",
              testRenderWithExtensionAndWithoutDefaultTemplateEngine),
+            ("testRenderWithExtensionAndWithoutDefaultTemplateEngineAfterSettingViewsPath",
+             testRenderWithExtensionAndWithoutDefaultTemplateEngineAfterSettingViewsPath),
             ("testAddWithFileExtensions", testAddWithFileExtensions),
             ("testAddWithFileExtensionsWithoutTheDefaultOne",
              testAddWithFileExtensionsWithoutTheDefaultOne)
@@ -150,6 +152,19 @@ class TestTemplateEngine: KituraTest {
     func testRenderWithExtensionAndWithoutDefaultTemplateEngine() {
         let router = Router()
         router.add(templateEngine: MockTemplateEngine())
+
+        do {
+            let content = try router.render(template: "test.mock", context: [:])
+            XCTAssertEqual(content, "Hello World!")
+        } catch {
+            XCTFail("Error during render \(error)")
+        }
+    }
+
+    func testRenderWithExtensionAndWithoutDefaultTemplateEngineAfterSettingViewsPath() {
+        let router = Router()
+        router.add(templateEngine: MockTemplateEngine())
+        router.viewsPath = "./Views2/"
 
         do {
             let content = try router.render(template: "test.mock", context: [:])
