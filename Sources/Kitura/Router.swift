@@ -299,8 +299,10 @@ extension Router : RouterMiddleware {
             request.parsedURLPath.path = urlPath.substring(from: index)
         }
 
+        response.push(router: self)
         process(request: request, response: response) {
             request.parsedURLPath.path = urlPath
+            response.popRouter()
             next()
         }
     }
