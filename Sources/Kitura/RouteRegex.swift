@@ -20,31 +20,21 @@ import Foundation
 
 // MARK RouteRegex
 
-#if os(Linux)
-    #if swift(>=3.1)
-        typealias RegularExpressionType = NSRegularExpression
-    #else
-        typealias RegularExpressionType = RegularExpression
-    #endif
-#else
-    typealias RegularExpressionType = NSRegularExpression
-#endif
-
 /// A set of helper functions for router path matching using regular expression.
 public class RouteRegex {
     /// A shared instance of RouteRegex.
     public static let sharedInstance = RouteRegex()
 
-    private let namedCaptureRegex: RegularExpressionType
-    private let unnamedCaptureRegex: RegularExpressionType
-    private let keyRegex: RegularExpressionType
-    private let nonKeyRegex: RegularExpressionType
+    private let namedCaptureRegex: NSRegularExpression
+    private let unnamedCaptureRegex: NSRegularExpression
+    private let keyRegex: NSRegularExpression
+    private let nonKeyRegex: NSRegularExpression
     private let complexRouteCharacters = CharacterSet(charactersIn: "*.:+?()[]\\")
 
     private init() {
         do {
-            namedCaptureRegex = try RegularExpressionType(pattern: "(.*)?(?:\\:(\\w+)(?:\\(((?:\\\\.|[^()])+)\\))?(?:([+*?])?))", options: [])
-            unnamedCaptureRegex = try RegularExpressionType(pattern: "(.*)?(?:(?:\\(((?:\\\\.|[^()])+)\\))(?:([+*?])?))", options: [])
+            namedCaptureRegex = try NSRegularExpression(pattern: "(.*)?(?:\\:(\\w+)(?:\\(((?:\\\\.|[^()])+)\\))?(?:([+*?])?))", options: [])
+            unnamedCaptureRegex = try NSRegularExpression(pattern: "(.*)?(?:(?:\\(((?:\\\\.|[^()])+)\\))(?:([+*?])?))", options: [])
             keyRegex = namedCaptureRegex
             nonKeyRegex = unnamedCaptureRegex
         } catch {
@@ -57,9 +47,9 @@ public class RouteRegex {
     ///
     /// - Parameter pattern: Optional string
     /// - Parameter allowPartialMatch: True if a partial match is allowed. Defaults to false.
-    /// - Returns: A tuple of the compiled `RegularExpressionType?`, a bool as to whether or not
+    /// - Returns: A tuple of the compiled `NSRegularExpression?`, a bool as to whether or not
     ///            this is a simple String compare, and array of keys
-    internal func buildRegex(fromPattern: String?, allowPartialMatch: Bool = false) -> (RegularExpressionType?, Bool, [String]?) {
+    internal func buildRegex(fromPattern: String?, allowPartialMatch: Bool = false) -> (NSRegularExpression?, Bool, [String]?) {
         guard let pattern = fromPattern else {
             return (nil, false, nil)
         }
@@ -86,9 +76,9 @@ public class RouteRegex {
             regexStr.append("(?:/(?=$))?$")
         }
 
-        var regex: RegularExpressionType? = nil
+        var regex: NSRegularExpression? = nil
         do {
-            regex = try RegularExpressionType(pattern: regexStr, options: [])
+            regex = try NSRegularExpression(pattern: regexStr, options: [])
         } catch {
             Log.error("Failed to compile the regular expression for the route \(pattern)")
         }

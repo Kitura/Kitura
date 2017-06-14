@@ -87,9 +87,9 @@ public class RouterResponse {
     private var lifecycle = Lifecycle()
 
     // regex used to sanitize javascript identifiers
-    private static let sanitizeJSIdentifierRegex: RegularExpressionType! = {
+    private static let sanitizeJSIdentifierRegex: NSRegularExpression! = {
         do {
-            return try RegularExpressionType(pattern: "[^\\[\\]\\w$.]", options: [])
+            return try NSRegularExpression(pattern: "[^\\[\\]\\w$.]", options: [])
         } catch { // pattern is a known valid literal, should never throw
             Log.error("Error initializing sanitizeJSIdentifierRegex: \(error)")
             return nil
