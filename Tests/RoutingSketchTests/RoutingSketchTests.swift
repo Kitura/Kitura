@@ -5,10 +5,27 @@ import XCTest
 
 class RouterTests: XCTestCase {
     static var allTests = [
-        ("testRouting", testRouting),
-        ]
+        ("testSimpleRoute", testSimpleRoute),
+        ("testParamRoute", testParamRoute)
+    ]
 
-    func testRouting() {
+    func testSimpleRoute() {
+        let resCreator = EchoWebApp()
+        var router = Router()
+        router.add(verb: .GET, path: "/foobar", responseCreator: resCreator)
+        let request = HTTPRequest(method: .GET, target: "/foobar?foo=bar&hello=world", httpVersion: (1, 1), headers: HTTPHeaders())
+
+        guard let (components, _) = router.route(request: request) else {
+            XCTFail("No match found")
+
+            return
+        }
+
+        XCTAssert(components?.parameters?.isEmpty == true)
+        XCTAssertNotNil(components?.queries)
+    }
+
+    func testParamRoute() {
         let resCreator = EchoWebApp()
         var router = Router()
         router.add(verb: .GET, path: "/users/{id}", responseCreator: resCreator)

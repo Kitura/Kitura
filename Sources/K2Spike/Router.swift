@@ -2,6 +2,7 @@ import Foundation
 import SwiftServerHttp
 
 extension String {
+    // OpenAPI-style path parameter
     var isPathParameter: Bool {
         return self.hasPrefix("{") && self.hasSuffix("}")
     }
@@ -11,24 +12,40 @@ extension String {
             return nil
         }
 
+        // Drop first and last characters
         return self[self.index(after: self.startIndex)..<self.index(before: self.endIndex)]
     }
 }
 
+// Results from parsing request URL
 struct PathComponents {
     let parameters: [String: String]?
     let queries: [URLQueryItem]?
+    let restOfURL: String?
 }
 
+// URL parser
+// Match URL with defined path and break URL into path parameters,
+// queries, and restOfURL (if defined path allows partial match)
 struct URLParameterParser {
     var pathComponents: [String]
+    var partialMatch: Bool
 
-    init(path: String) {
+    init(path: String, partialMatch: Bool = false) {
+        // Split by "/" instead of doing URL.pathComponents because
+        // path string can contain parameter captures and hence is not
+        // a proper URL
         pathComponents = path.components(separatedBy: "/")
 
         if pathComponents.first == "" {
             pathComponents.removeFirst()
         }
+
+        if pathComponents.last == "" {
+            pathComponents.removeLast()
+        }
+
+        self.partialMatch = partialMatch
     }
 
     func parse(_ string: String) -> PathComponents? {
@@ -44,19 +61,32 @@ struct URLParameterParser {
             components.removeFirst()
         }
 
-        guard pathComponents.count == components.count else {
-            return nil
+        if partialMatch {
+            // Request URL must have at least as many components
+            // as the defined path does
+            guard pathComponents.count <= components.count else {
+                return nil
+            }
+        }
+        else {
+            // Request URL must have exactly as many components as
+            // the defined path does
+            guard pathComponents.count == components.count else {
+                return nil
+            }
         }
 
         var parameters: [String: String] = [:]
 
         for i in 0..<pathComponents.count {
             if let parameter = pathComponents[i].parameterName {
+                // Current component in defined path is a parameter
+                // Capture the component
                 parameters[parameter] = components[i]
             }
             else {
                 guard pathComponents[i] == components[i] else {
-                    // path does not match
+                    // Path does not match request URL
                     return nil
                 }
             }
@@ -66,7 +96,15 @@ struct URLParameterParser {
         // Parse URL for query parameters
         let queries = URLComponents(string: string)?.queryItems
 
-        return PathComponents(parameters: parameters, queries: queries)
+        // Step 3
+        // Save restOfURL if partialMatch
+        var restOfURL: String? = nil
+
+        if partialMatch {
+            restOfURL = "/" + components[pathComponents.count..<components.count].joined(separator: "/")
+        }
+
+        return PathComponents(parameters: parameters, queries: queries, restOfURL: restOfURL)
     }
 }
 
@@ -76,47 +114,68 @@ public struct Router {
         case parseBody(ParameterContaining.Type, ParameterResponseCreating)
         case skipParameters(ResponseCreating)
         case skipBody(BodylessParameterContaining.Type, BodylessParameterResponseCreating)
+        case serveFile(FileServer)
     }
 
-    private var map: [Path: Handler] = [:]
+    private var handlers: [Path: Handler] = [:]
+
+    private var fileServer: (path: String, handler: FileServer)?
+
+    public init() {}
 
     // Add a response creator that doesn't require any parameter parsing
     public mutating func add(verb: Verb, path: String, responseCreator: ResponseCreating) {
-        map[Path(path: path, verb: verb)] = .skipParameters(responseCreator)
+        handlers[Path(path: path, verb: verb)] = .skipParameters(responseCreator)
     }
 
-    // Add a chunked response creator that requires parameter parsing, excluding the body
+    // Add a chunked response creator that requires parameter parsing,
+    // excluding the body
     public mutating func add(verb: Verb, path: String, parameterType: BodylessParameterContaining.Type, responseCreator: BodylessParameterResponseCreating) {
-        map[Path(path: path, verb: verb)] = .skipBody(parameterType, responseCreator)
+        handlers[Path(path: path, verb: verb)] = .skipBody(parameterType, responseCreator)
     }
 
-    // Add a stored response creator that requires parameter parsing, including the body
+    // Add a stored response creator that requires parameter parsing,
+    // including the body
     public mutating func add(verb: Verb, path: String, parameterType: ParameterContaining.Type, responseCreator: ParameterResponseCreating) {
-        map[Path(path: path, verb: verb)] = .parseBody(parameterType, responseCreator)
+        handlers[Path(path: path, verb: verb)] = .parseBody(parameterType, responseCreator)
+    }
+
+    // Add a file server that is used when no other defined path match
+    // the request URL
+    public mutating func add(path: String, fileServer: FileServer) {
+        self.fileServer = (path, fileServer)
     }
 
     // Given an HTTPRequest, find the request handler
     func route(request: HTTPRequest) -> (components: PathComponents?, handler: Handler)? {
         guard let verb = Verb(request.method) else {
+            // Unsupported method
             return nil
         }
 
-        //shortcut for exact match
+        // Shortcut for exact match
         let exactPath = Path(path: request.target, verb: verb)
 
-        if let exactMatch = map[exactPath] {
+        if let exactMatch = handlers[exactPath] {
             return (nil, exactMatch)
         }
 
-        for (path, match) in map {
-            guard verb == path.verb,
-                let components = URLParameterParser(path: path.path).parse(request.target) else {
-                    continue
+        // Search map of routes for a matching handler
+        for (path, match) in handlers {
+            if verb == path.verb,
+                let components = URLParameterParser(path: path.path).parse(request.target) {
+                    return (components, match)
             }
-
-            return (components, match)
         }
-        
+
+        // No match found
+        // Check file server
+        if let fileServer = fileServer,
+            let components = URLParameterParser(path: fileServer.path, partialMatch: true).parse(request.target) {
+            // File server matches
+            return (components, .serveFile(fileServer.handler))
+        }
+
         return nil
     }
 }
@@ -124,7 +183,7 @@ public struct Router {
 public struct RequestContext {
     let storage: [String: Any]
 
-    init(dict:[String:Any]) {
+    init(dict: [String:Any] = [:]) {
         storage = dict
     }
     

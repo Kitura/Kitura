@@ -11,5 +11,9 @@ public protocol BodylessParameterResponseCreating {
 }
 
 public protocol ParameterResponseCreating {
-    func serve(request: HTTPRequest, context: RequestContext, parameters: ParameterContaining, response: HTTPResponseWriter) -> ResponseObject
+    func serve(request: HTTPRequest, context: RequestContext, parameters: ParameterContaining, response: HTTPResponseWriter) -> (response: HTTPResponse, responseBody: ResponseObject)
+}
+
+public protocol FileResponseCreating {
+    func serve(request: HTTPRequest, context: RequestContext, filePath: String, response: HTTPResponseWriter) -> HTTPBodyProcessing
 }

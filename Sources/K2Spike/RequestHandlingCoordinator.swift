@@ -20,10 +20,10 @@ public class RequestHandlingCoordinator {
     public init(router: Router) {
         self.router = router
     }
+
+    public func handle(req: HTTPRequest, res: HTTPResponseWriter) -> HTTPBodyProcessing {
         
-    public func handle(req: HTTPRequest, res: HTTPResponseWriter ) -> HTTPBodyProcessing {
-        
-        let initialContext = RequestContext(dict:[:])
+        let initialContext = RequestContext()
         
         let (proccessedReq, processedContext) = self.runPreProcessors(req: req, context: initialContext)
 
@@ -60,6 +60,7 @@ public class RequestHandlingCoordinator {
                     if (data.count > 0) {
                         body.append(data)
                     }
+
                     finishedProcessing()
                 case .end:
                     // Step 2:
@@ -67,16 +68,19 @@ public class RequestHandlingCoordinator {
                     if let parameters = parameterType.init(pathParameters: routeTuple.components?.parameters, queryParameters: routeTuple.components?.queries, headers: proccessedReq.headers, body: body) {
                         // Step 3:
                         // Get response object from serving content using parameters
-                        let responseObject = responseCreator.serve(request: proccessedReq, context: processedContext, parameters: parameters, response: res)
+                        let (response, responseObject) = responseCreator.serve(request: proccessedReq, context: processedContext, parameters: parameters, response: res)
 
                         // Step 4:
                         // Write response
-                        if let data = responseObject.toData() {
-                            res.writeBody(data: data)
-                        }
+                        res.writeResponse(response)
 
-                        // TODO
-                        // Write HTTPResponse
+                        // Step 5:
+                        // Write response body
+                        if let data = responseObject.toData() {
+                            res.writeBody(data: data) { _ in
+                                res.done()
+                            }
+                        }
                     }
                     else {
                         res.writeResponse(HTTPResponse(httpVersion: req.httpVersion,
@@ -91,6 +95,8 @@ public class RequestHandlingCoordinator {
                     res.abort()
                 }
             }
+        case .serveFile(let fileServer):
+            return fileServer.serve(request: proccessedReq, context: processedContext, filePath: routeTuple.components?.restOfURL ?? "/", response: runPostProcessors(req: proccessedReq, context: processedContext, res: res))
         }
     }
     
