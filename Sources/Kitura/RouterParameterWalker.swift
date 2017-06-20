@@ -44,10 +44,6 @@ class RouterParameterWalker {
             }
         }
 
-//        let filtered = request.parameters.filter { (key, _) in
-//            self.parameterHandlers.keys.contains(key) && !request.handledNamedParameters.contains(key)
-//        }
-
         self.handle(filtered: filtered, request: request, response: response, with: callback)
     }
 
