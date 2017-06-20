@@ -199,7 +199,7 @@ public class Router {
     ///                     invoked when request parses a parameter with specified name.
     /// - Returns: Current router instance
     @discardableResult
-    public func parameter(_ name: String, handler: @escaping RouterParameterHandler...) -> Router {
+    public func parameter(_ name: String, handler: RouterParameterHandler...) -> Router {
         return self.parameter([name], handlers: handler)
     }
 
@@ -211,7 +211,7 @@ public class Router {
     ///                     invoked when request parses a parameter with specified name.
     /// - Returns: Current router instance
     @discardableResult
-    public func parameter(_ names: [String], handler: @escaping RouterParameterHandler...) -> Router {
+    public func parameter(_ names: [String], handler: RouterParameterHandler...) -> Router {
         return self.parameter(names, handlers: handler)
     }
 
