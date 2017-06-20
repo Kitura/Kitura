@@ -25,10 +25,25 @@ public struct FileServer: FileResponseCreating {
     public func serve(request: HTTPRequest, context: RequestContext, filePath: String, response: HTTPResponseWriter) -> HTTPBodyProcessing {
         let fileURL = URL(fileURLWithPath: folderPath).appendingPathComponent(filePath)
 
+        // Check if file exists
+        guard FileManager.default.fileExists(atPath: fileURL.path) else {
+            // Return 404
+            let httpResponse = HTTPResponse(httpVersion: request.httpVersion,
+                                            status: .notFound,
+                                            transferEncoding: .chunked,
+                                            headers: HTTPHeaders())
+
+            response.writeResponse(httpResponse)
+            response.done()
+
+            return .discardBody
+        }
+
         // Load data from file
         guard let fileData = try? Data(contentsOf:fileURL) else {
+            // Return 500
             let httpResponse = HTTPResponse(httpVersion: request.httpVersion,
-                                        status: .badRequest,
+                                        status: .internalServerError,
                                         transferEncoding: .chunked,
                                         headers: HTTPHeaders())
 

@@ -6,7 +6,8 @@ import K2Spike
 
 class FileServerTests: XCTestCase {
     static var allTests = [
-        ("testFileServer", testFileServer)
+        ("testFileServer", testFileServer),
+        ("testFileNotFound", testFileNotFound)
     ]
 
     let testFolderURL = URL(fileURLWithPath: #file).appendingPathComponent("../Files").standardized
@@ -15,7 +16,7 @@ class FileServerTests: XCTestCase {
         let request = HTTPRequest(method: .GET, target: "/testFile.json", httpVersion: (1, 1), headers: HTTPHeaders())
         let resolver = TestResponseResolver(request: request, requestBody: Data())
         var router = Router()
-        router.add(path: "/", fileServer: FileServer(folderPath: testFolderURL.path))
+        router.setDefaultFileServer(FileServer(folderPath: testFolderURL.path), atPath: "/")
         let coordinator = RequestHandlingCoordinator(router: router)
 
         resolver.resolveHandler(coordinator.handle)
@@ -33,5 +34,17 @@ class FileServerTests: XCTestCase {
         }
 
         XCTAssert((object as? [String: String])?["foo"] == "bar")
+    }
+
+    func testFileNotFound() {
+        let request = HTTPRequest(method: .GET, target: "/does-not-exist.js", httpVersion: (1, 1), headers: HTTPHeaders())
+        let resolver = TestResponseResolver(request: request, requestBody: Data())
+        var router = Router()
+        router.setDefaultFileServer(FileServer(folderPath: testFolderURL.path), atPath: "/")
+        let coordinator = RequestHandlingCoordinator(router: router)
+
+        resolver.resolveHandler(coordinator.handle)
+
+        XCTAssert(resolver.response?.status == .notFound)
     }
 }

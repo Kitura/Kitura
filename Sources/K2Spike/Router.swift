@@ -140,10 +140,10 @@ public struct Router {
         handlers[Path(path: path, verb: verb)] = .parseBody(parameterType, responseCreator)
     }
 
-    // Add a file server that is used when no other defined path match
+    // Set a file server that is used when no other defined path match
     // the request URL
-    public mutating func add(path: String, fileServer: FileServer) {
-        self.fileServer = (path, fileServer)
+    public mutating func setDefaultFileServer(_ fileServer: FileServer, atPath: String) {
+        self.fileServer = (atPath, fileServer)
     }
 
     // Given an HTTPRequest, find the request handler

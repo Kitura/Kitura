@@ -1,7 +1,6 @@
 import XCTest
 @testable import SwiftServerHttp
 @testable import K2Spike
-@testable import RoutingSketch
 
 class RouterTests: XCTestCase {
     static var allTests = [
