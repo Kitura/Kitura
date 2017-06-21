@@ -42,7 +42,13 @@ public class Router {
 
     /// The root directory for templates that will be automatically handed over to an
     /// appropriate templating engine for content generation.
-    public var viewsPath = "./Views/"
+    public var viewsPath = "./Views/" {
+        didSet {
+            for (_, templateEngine) in templateEngines {
+                setRootPaths(forTemplateEngine: templateEngine)
+            }
+        }
+    }
 
     /// Prefix for special page resources
     fileprivate let kituraResourcePrefix = "/@@Kitura-router@@/"
@@ -115,6 +121,10 @@ public class Router {
         for fileExtension in fileExtensions {
             templateEngines[fileExtension] = templateEngine
         }
+        setRootPaths(forTemplateEngine: templateEngine)
+    }
+
+    private func setRootPaths(forTemplateEngine templateEngine: TemplateEngine) {
         let absoluteViewsPath = StaticFileServer.ResourcePathHandler.getAbsolutePath(for: viewsPath)
         templateEngine.setRootPaths(rootPaths: [absoluteViewsPath])
     }
@@ -166,7 +176,7 @@ public class Router {
 
         let absoluteFilePath = StaticFileServer.ResourcePathHandler.getAbsolutePath(for: filePath)
         return try templateEngine.render(filePath: absoluteFilePath, context: context, options: options,
-                                         templateName: template)
+                                         templateName: resourceWithExtension)
     }
 
     // MARK: Sub router
