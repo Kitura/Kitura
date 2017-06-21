@@ -155,7 +155,7 @@ public class RouteRegex {
         return (matched, prefix, matchExp, plusQuestStar)
     }
 
-    #if os(Linux)
+    #if os(Linux) && swift(>=3.1.1) && !swift(>=3.1)
     typealias TextCheckingResultType = TextCheckingResult
     #else
     typealias TextCheckingResultType = NSTextCheckingResult
