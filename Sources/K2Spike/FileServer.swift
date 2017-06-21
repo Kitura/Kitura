@@ -39,6 +39,20 @@ public struct FileServer: FileResponseCreating {
             return .discardBody
         }
 
+        // Check if file is readable
+        guard FileManager.default.isReadableFile(atPath: fileURL.path) else {
+            // Return 403
+            let httpResponse = HTTPResponse(httpVersion: request.httpVersion,
+                                            status: .forbidden,
+                                            transferEncoding: .chunked,
+                                            headers: HTTPHeaders())
+
+            response.writeResponse(httpResponse)
+            response.done()
+
+            return .discardBody
+        }
+
         // Load data from file
         guard let fileData = try? Data(contentsOf:fileURL) else {
             // Return 500
