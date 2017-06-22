@@ -28,7 +28,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when any request comes to the server.
     @discardableResult
-    public func all(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func all(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.all, pattern: path, handler: handler)
     }
 
@@ -85,7 +85,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP GET requests comes to the server.
     @discardableResult
-    public func get(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func get(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.get, pattern: path, handler: handler)
     }
 
@@ -142,7 +142,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP HEAD requests comes to the server.
     @discardableResult
-    public func head(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func head(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.head, pattern: path, handler: handler)
     }
 
@@ -199,7 +199,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP POST requests comes to the server.
     @discardableResult
-    public func post(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func post(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.post, pattern: path, handler: handler)
     }
 
@@ -256,7 +256,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP PUT requests comes to the server.
     @discardableResult
-    public func put(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func put(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.put, pattern: path, handler: handler)
     }
 
@@ -313,7 +313,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP DELETE requests comes to the server.
     @discardableResult
-    public func delete(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func delete(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.delete, pattern: path, handler: handler)
     }
 
@@ -370,7 +370,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP OPTIONS requests comes to the server.
     @discardableResult
-    public func options(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func options(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.options, pattern: path, handler: handler)
     }
 
@@ -427,7 +427,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP TRACE requests comes to the server.
     @discardableResult
-    public func trace(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func trace(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.trace, pattern: path, handler: handler)
     }
 
@@ -484,7 +484,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP COPY requests comes to the server.
     @discardableResult
-    public func copy(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func copy(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.copy, pattern: path, handler: handler)
     }
 
@@ -541,7 +541,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP LOCK requests comes to the server.
     @discardableResult
-    public func lock(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func lock(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.lock, pattern: path, handler: handler)
     }
 
@@ -598,7 +598,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP MKCOL requests comes to the server.
     @discardableResult
-    public func mkCol(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func mkCol(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.mkCol, pattern: path, handler: handler)
     }
 
@@ -655,7 +655,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP MOVE requests comes to the server.
     @discardableResult
-    public func move(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func move(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.move, pattern: path, handler: handler)
     }
 
@@ -712,7 +712,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP PURGE requests comes to the server.
     @discardableResult
-    public func purge(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func purge(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.purge, pattern: path, handler: handler)
     }
 
@@ -769,7 +769,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP PROPFIND requests comes to the server.
     @discardableResult
-    public func propFind(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func propFind(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.propFind, pattern: path, handler: handler)
     }
 
@@ -826,7 +826,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP PROPPATCH requests comes to the server.
     @discardableResult
-    public func propPatch(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func propPatch(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.propPatch, pattern: path, handler: handler)
     }
 
@@ -883,7 +883,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP UNLOCK requests comes to the server.
     @discardableResult
-    public func unlock(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func unlock(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.unlock, pattern: path, handler: handler)
     }
 
@@ -940,7 +940,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP REPORT requests comes to the server.
     @discardableResult
-    public func report(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func report(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.report, pattern: path, handler: handler)
     }
 
@@ -997,7 +997,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP MKACTIVITY requests comes to the server.
     @discardableResult
-    public func mkActivity(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func mkActivity(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.mkActivity, pattern: path, handler: handler)
     }
 
@@ -1054,7 +1054,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP CHECKOUT requests comes to the server.
     @discardableResult
-    public func checkout(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func checkout(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.checkout, pattern: path, handler: handler)
     }
 
@@ -1111,7 +1111,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP MERGE requests comes to the server.
     @discardableResult
-    public func merge(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func merge(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.merge, pattern: path, handler: handler)
     }
 
@@ -1168,7 +1168,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP MSEARCH requests comes to the server.
     @discardableResult
-    public func mSearch(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func mSearch(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.mSearch, pattern: path, handler: handler)
     }
 
@@ -1225,7 +1225,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP NOTIFY requests comes to the server.
     @discardableResult
-    public func notify(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func notify(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.notify, pattern: path, handler: handler)
     }
 
@@ -1282,7 +1282,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP SUBSCRIBE requests comes to the server.
     @discardableResult
-    public func subscribe(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func subscribe(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.subscribe, pattern: path, handler: handler)
     }
 
@@ -1339,7 +1339,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP UNSUBSCRIBE requests comes to the server.
     @discardableResult
-    public func unsubscribe(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func unsubscribe(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.unsubscribe, pattern: path, handler: handler)
     }
 
@@ -1396,7 +1396,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP PATCH requests comes to the server.
     @discardableResult
-    public func patch(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func patch(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.patch, pattern: path, handler: handler)
     }
 
@@ -1453,7 +1453,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP SEARCH requests comes to the server.
     @discardableResult
-    public func search(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func search(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.search, pattern: path, handler: handler)
     }
 
@@ -1510,7 +1510,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler`s that will be
     ///                     invoked when HTTP CONNECT requests comes to the server.
     @discardableResult
-    public func connect(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func connect(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.connect, pattern: path, handler: handler)
     }
 

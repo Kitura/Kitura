@@ -70,7 +70,7 @@ class KituraTest: XCTestCase {
     }
 
     func performServerTest(_ router: ServerDelegate, sslOption: SSLOption = SSLOption.both, timeout: TimeInterval = 10,
-                           line: Int = #line, asyncTasks: @escaping (XCTestExpectation) -> Void...) {
+                           line: Int = #line, asyncTasks: (XCTestExpectation) -> Void...) {
         if sslOption != SSLOption.httpsOnly {
             self.port = KituraTest.httpPort
             self.useSSL = false
