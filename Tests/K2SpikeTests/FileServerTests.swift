@@ -53,11 +53,11 @@ class FileServerTests: XCTestCase {
 
     // Mimic request to an unreadable file
     func testFileNotReadable() {
-        let filePath = testFolderURL.appendingPathComponent("/testFile.json").path
+        let filePath = testFolderURL.appendingPathComponent("/unreadable.json").path
 
         // Get file permissions
         guard let attributes = try? FileManager.default.attributesOfItem(atPath: filePath),
-            let permissions = attributes[FileAttributeKey.posixPermissions] else {
+            let permissions = attributes[FileAttributeKey.posixPermissions] as? Int else {
                 XCTFail("Unable to get file permissions")
                 return
         }
@@ -69,7 +69,7 @@ class FileServerTests: XCTestCase {
             return
         }
 
-        let request = HTTPRequest(method: .GET, target: "/testFile.json", httpVersion: (1, 1), headers: HTTPHeaders())
+        let request = HTTPRequest(method: .GET, target: "/unreadable.json", httpVersion: (1, 1), headers: HTTPHeaders())
         let resolver = TestResponseResolver(request: request, requestBody: Data())
         var router = Router()
         router.setDefaultFileServer(FileServer(folderPath: testFolderURL.path), atPath: "/")
@@ -80,6 +80,9 @@ class FileServerTests: XCTestCase {
         XCTAssert(resolver.response?.status == .forbidden)
 
         // Reset file permission to previous value
-        try? FileManager.default.setAttributes([FileAttributeKey.posixPermissions: permissions], ofItemAtPath: filePath)
+        guard let _ = try? FileManager.default.setAttributes([FileAttributeKey.posixPermissions: permissions], ofItemAtPath: filePath) else {
+            XCTFail("Unable to reset file permissions to \(String(permissions, radix: 8))")
+            return
+        }
     }
 }
