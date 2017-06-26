@@ -72,8 +72,8 @@ public class RouterResponse {
     /// The server response
     let response: ServerResponse
 
-    /// The router
-    unowned let router: Router
+    /// The router stack
+    private var routerStack: Stack<Router>
 
     /// The associated request
     let request: RouterRequest
@@ -119,13 +119,13 @@ public class RouterResponse {
     /// Initialize a `RouterResponse` instance
     ///
     /// - Parameter response: The `ServerResponse` object to work with
-    /// - Parameter router: The `Router` instance that this `RouterResponse` is
+    /// - Parameter routerStack: The stack of `Router` instances that this `RouterResponse` is
     ///                    working with.
     /// - Parameter request: The `RouterRequest` object that is paired with this
     ///                     `RouterResponse` object.
-    init(response: ServerResponse, router: Router, request: RouterRequest) {
+    init(response: ServerResponse, routerStack: Stack<Router>, request: RouterRequest) {
         self.response = response
-        self.router = router
+        self.routerStack = routerStack
         self.request = request
         headers = Headers(headers: response.headers)
         statusCode = .unknown
@@ -426,8 +426,36 @@ public class RouterResponse {
     @discardableResult
     public func render(_ resource: String, context: [String:Any],
                        options: RenderingOptions = NullRenderingOptions()) throws -> RouterResponse {
+        guard let router = getRouterThatCanRender(resource: resource) else {
+            throw TemplatingError.noTemplateEngineForExtension(extension: "")
+        }
         let renderedResource = try router.render(template: resource, context: context, options: options)
         return send(renderedResource)
+    }
+
+    private func getRouterThatCanRender(resource: String) -> Router? {
+        var routerStackToTraverse = routerStack
+
+        while routerStackToTraverse.topItem != nil {
+            let router = routerStackToTraverse.pop()
+
+            if router.getTemplateEngine(template: resource) != nil {
+                return router
+            }
+        }
+        return nil
+    }
+
+    /// Push router into router stack
+    ///
+    /// - Parameter: router - router to push
+    func push(router: Router) {
+        routerStack.push(router)
+    }
+
+    /// Pop router from router stack
+    func popRouter() {
+        let _ = routerStack.pop()
     }
 
     /// Set headers and attach file for downloading.

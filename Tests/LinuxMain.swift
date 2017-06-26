@@ -23,7 +23,7 @@ extension MutableCollection where Indices.Iterator.Element == Index {
     mutating func shuffle() {
         let c = count
         guard c > 1 else { return }
-        
+
         srand(UInt32(time(nil)))
         for (firstUnshuffled , unshuffledCount) in zip(indices, stride(from: c, to: 1, by: -1)) {
             let d: IndexDistance = numericCast(random() % numericCast(unshuffledCount))
@@ -55,5 +55,6 @@ XCTMain([
     testCase(TestServer.allTests.shuffled()),
     testCase(TestSubrouter.allTests.shuffled()),
     testCase(TestStaticFileServer.allTests.shuffled()),
-    testCase(TestTemplateEngine.allTests.shuffled())
+    testCase(TestTemplateEngine.allTests.shuffled()),
+    testCase(TestStack.allTests.shuffled())
 ].shuffled())

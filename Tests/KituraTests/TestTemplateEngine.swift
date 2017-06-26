@@ -37,6 +37,7 @@ class TestTemplateEngine: KituraTest {
             ("testNoDefaultEngine", testNoDefaultEngine),
             ("testRender", testRender),
             ("testRenderWithServer", testRenderWithServer),
+            ("testRenderWithServerAndSubRouter", testRenderWithServerAndSubRouter),
             ("testRenderWithOptionsWithServer", testRenderWithOptionsWithServer),
             ("testRenderWithExtensionAndWithoutDefaultTemplateEngine",
              testRenderWithExtensionAndWithoutDefaultTemplateEngine),
@@ -108,6 +109,15 @@ class TestTemplateEngine: KituraTest {
         let router = Router()
         setupRouterForRendering(router, options: MockRenderingOptions())
         performRenderServerTest(withRouter: router, onPath: "/render")
+    }
+
+    func testRenderWithServerAndSubRouter() {
+        let subRouter = Router()
+        setupRouterForRendering(subRouter)
+
+        let router = Router()
+        router.all("/sub", middleware: subRouter)
+        performRenderServerTest(withRouter: router, onPath: "/sub/render")
     }
 
     private func setupRouterForRendering(_ router: Router, options: RenderingOptions? = nil) {
