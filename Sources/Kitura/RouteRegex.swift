@@ -155,13 +155,11 @@ public class RouteRegex {
         return (matched, prefix, matchExp, plusQuestStar)
     }
 
-    #if os(Linux)
-    typealias TextCheckingResultType = TextCheckingResult
-    #else
-    typealias TextCheckingResultType = NSTextCheckingResult
+    #if os(Linux) && !swift(>=3.2)
+    typealias NSTextCheckingResult = TextCheckingResult
     #endif
 
-    func extract(fromPath path: NSString, with match: TextCheckingResultType, at index: Int,
+    func extract(fromPath path: NSString, with match: NSTextCheckingResult, at index: Int,
                  to string: inout String) {
         #if os(Linux)
             let range = match.range(at: index)

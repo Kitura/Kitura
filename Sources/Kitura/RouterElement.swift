@@ -182,17 +182,15 @@ class RouterElement {
         looper.next()
     }
 
-    #if os(Linux)
-        typealias TextCheckingResultType = TextCheckingResult
-    #else
-        typealias TextCheckingResultType = NSTextCheckingResult
+    #if os(Linux) && !swift(>=3.2)
+        typealias NSTextCheckingResult = TextCheckingResult
     #endif
 
     /// Update the request parameters
     ///
     /// - Parameter match: the regular expression result
     /// - Parameter request:
-    private func setParameters(forRequest request: RouterRequest, fromUrlPath urlPath: NSString, match: TextCheckingResultType) {
+    private func setParameters(forRequest request: RouterRequest, fromUrlPath urlPath: NSString, match: NSTextCheckingResult) {
         var parameters = mergeParameters ? request.parameters : [:]
 
         if let keys = keys {

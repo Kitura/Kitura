@@ -22,18 +22,21 @@ matrix:
       dist: trusty
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=ubuntu:16.04
+      env: DOCKER_IMAGE=ubuntu:16.04 SWIFT_SNAPSHOT=4.0-DEVELOPMENT-SNAPSHOT-2017-06-25-a
     - os: linux
       dist: trusty
       sudo: required
-      services: docker
-      env: DOCKER_IMAGE=ubuntu:16.04 SWIFT_VERSION=3.0.2
     - os: linux
       dist: trusty
       sudo: required
+      env: SWIFT_SNAPSHOT=4.0-DEVELOPMENT-SNAPSHOT-2017-06-25-a
     - os: osx
       osx_image: xcode8.3
       sudo: required
+    # - os: osx
+    #   osx_image: xcode8.3
+    #   sudo: required
+    #   env: SWIFT_SNAPSHOT=4.0-DEVELOPMENT-SNAPSHOT-2017-06-25-a
 
 script:
   - ./build.sh
