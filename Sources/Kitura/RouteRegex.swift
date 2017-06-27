@@ -156,7 +156,7 @@ public class RouteRegex {
     }
 
     #if os(Linux) && !swift(>=3.2)
-    typealias NSTextCheckingresult = TextCheckingResult
+    typealias NSTextCheckingResult = TextCheckingResult
     #endif
 
     func extract(fromPath path: NSString, with match: NSTextCheckingResult, at index: Int,
