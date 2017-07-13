@@ -72,3 +72,4 @@ fastlane/test_output
 *.DS_Store
 *.orig
 /.idea
+/Package.resolved

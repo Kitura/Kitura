@@ -1,6 +1,6 @@
 import XCTest
-@testable import SwiftServerHttp
-@testable import K2Spike
+@testable import HTTP
+@testable import Kitura
 
 class ParameterParsingTests: XCTestCase {
     static var allTests = [
@@ -9,7 +9,7 @@ class ParameterParsingTests: XCTestCase {
     ]
 
     func testBodylessParameterParsing() {
-        let request = HTTPRequest(method: .GET, target: "/world?hello=world", httpVersion: (1, 1), headers: HTTPHeaders([("hello", "world")]))
+        let request = HTTPRequest(method: .get, target: "/world?hello=world", httpVersion: HTTPVersion(major: 1,minor: 1), headers: HTTPHeaders(dictionaryLiteral: ("hello", "world")))
         let resolver = TestResponseResolver(request: request, requestBody: Data())
         var router = Router()
         router.add(verb: .GET, path: "/{hello}", parameterType: NoBodyParameters.self, responseCreator: NoBodyResponse())
@@ -19,7 +19,7 @@ class ParameterParsingTests: XCTestCase {
     }
 
     func testWithBodyParameterParsing() {
-        let request = HTTPRequest(method: .GET, target: "/world?hello=world", httpVersion: (1, 1), headers: HTTPHeaders([("hello", "world")]))
+        let request = HTTPRequest(method: .get, target: "/world?hello=world", httpVersion: HTTPVersion(major: 1,minor: 1), headers: HTTPHeaders(dictionaryLiteral: ("hello", "world")))
         let resolver = TestResponseResolver(request: request, requestBody: Data())
         var router = Router()
         router.add(verb: .GET, path: "/{hello}", parameterType: WithBodyParameters.self, responseCreator: WithBodyResponse())
@@ -56,7 +56,7 @@ struct NoBodyParameters: BodylessParameterContaining {
         }
 
         self.pathParam = pathParam
-        self.headerParam = headers["hello"]
+        self.headerParam = [headers[HTTPHeaders.Name("hello")]!]
         self.queryParam = queryParam
     }
 }
@@ -92,7 +92,7 @@ struct WithBodyParameters: ParameterContaining {
         }
 
         self.pathParam = pathParam
-        self.headerParam = headers["hello"]
+        self.headerParam = [headers[HTTPHeaders.Name("hello")]!]
         self.queryParam = queryParam
         self.body = body
     }

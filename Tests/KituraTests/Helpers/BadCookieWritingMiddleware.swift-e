@@ -1,6 +1,6 @@
 //
 //  BadCookieWritingMiddleware.swift
-//  K2Spike
+//  Kitura
 //
 //  Created by Carl Brown on 5/1/17.
 //
@@ -9,8 +9,8 @@
 import Foundation
 import Dispatch
 import LoggerAPI
-import K2Spike
-import SwiftServerHttp
+import Kitura
+import SwiftServerHTTP
 
 class BadCookieWritingMiddleware {
     

@@ -1,4 +1,4 @@
-import SwiftServerHttp
+import SwiftServerHTTP
 
 public enum Verb: String {
     case GET = "get"

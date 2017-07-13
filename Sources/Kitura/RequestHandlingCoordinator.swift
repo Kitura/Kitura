@@ -1,6 +1,6 @@
 //
 //  RequestHandlingCoordinator.swift
-//  K2Spike
+//  Kitura
 //
 //  Created by Carl Brown on 4/28/17.
 //
@@ -8,7 +8,7 @@
 
 import Foundation
 import Dispatch
-import SwiftServerHttp
+import HTTP
 
 public class RequestHandlingCoordinator {
     

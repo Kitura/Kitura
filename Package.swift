@@ -1,22 +1,33 @@
-// swift-tools-version:3.1
+// swift-tools-version:4.0
+// The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
 let package = Package(
-    name: "K2Spike",
+    name: "Kitura",
+    products: [
+        // Products define the executables and libraries produced by a package, and make them visible to other packages.
+        .library(
+            name: "Kitura",
+            targets: ["Kitura"]),
+    ],
     dependencies: [
-        .Package(url: "https://github.com/IBM-Swift/CHTTPParser.git", majorVersion: 0, minor: 1),
-        .Package(url: "https://github.com/swift-server/http.git", majorVersion: 0, minor: 0),
-        .Package(url: "https://github.com/IBM-Swift/LoggerAPI.git", majorVersion: 1, minor: 7),
-        .Package(url: "https://github.com/IBM-Swift/HeliumLogger.git", majorVersion: 1, minor: 7),
-        .Package(url: "https://github.com/IBM-Swift/BlueSocket.git", majorVersion: 0, minor: 12),
-        .Package(url: "https://github.com/IBM-Swift/CCurl.git", majorVersion: 0, minor: 2)
+        // Dependencies declare other packages that this package depends on.
+        // .package(url: /* package url */, from: "1.0.0"),
+        .package(url: "https://github.com/IBM-Swift/CHTTPParser.git", .branch("master")),
+        .package(url: "https://github.com/carlbrown/http.git", .branch("develop")),
+        .package(url: "https://github.com/IBM-Swift/LoggerAPI.git", from: "1.7.0"),
+        .package(url: "https://github.com/IBM-Swift/HeliumLogger.git", from: "1.7.0"),
+        .package(url: "https://github.com/IBM-Swift/BlueSocket.git", from: "0.12.0"),
+    ],
+    targets: [
+        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
+        // Targets can depend on other targets in this package, and on products in packages which this package depends on.
+        .target(
+            name: "Kitura",
+            dependencies: ["CHTTPParser","SwiftServerHTTP","HeliumLogger","LoggerAPI","Socket"]),
+        .testTarget(
+            name: "KituraTests",
+            dependencies: ["Kitura"]),
     ]
 )
-
-#if os(Linux)
-    package.dependencies.append(
-        .Package(url: "https://github.com/IBM-Swift/CEpoll.git", majorVersion: 0, minor: 1))
-    package.dependencies.append(
-        .Package(url: "https://github.com/IBM-Swift/BlueSignals.git", majorVersion: 0, minor: 9))
-#endif

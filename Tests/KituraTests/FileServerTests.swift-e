@@ -1,8 +1,8 @@
 import Foundation
 import XCTest
 
-import K2Spike
-@testable import SwiftServerHttp
+import Kitura
+@testable import SwiftServerHTTP
 
 class FileServerTests: XCTestCase {
     static var allTests = [

@@ -1,6 +1,6 @@
 import XCTest
-@testable import SwiftServerHttp
-@testable import K2Spike
+@testable import HTTP
+@testable import Kitura
 
 class RouterTests: XCTestCase {
     static var allTests = [
@@ -12,7 +12,7 @@ class RouterTests: XCTestCase {
         let resCreator = EchoWebApp()
         var router = Router()
         router.add(verb: .GET, path: "/foobar", responseCreator: resCreator)
-        let request = HTTPRequest(method: .GET, target: "/foobar?foo=bar&hello=world", httpVersion: (1, 1), headers: HTTPHeaders())
+        let request = HTTPRequest(method: .get, target: "/foobar?foo=bar&hello=world", httpVersion: HTTPVersion(major: 1,minor: 1), headers: HTTPHeaders())
 
         guard let (components, _) = router.route(request: request) else {
             XCTFail("No match found")
@@ -28,7 +28,7 @@ class RouterTests: XCTestCase {
         let resCreator = EchoWebApp()
         var router = Router()
         router.add(verb: .GET, path: "/users/{id}", responseCreator: resCreator)
-        let request = HTTPRequest(method: .GET, target: "/users/123?foo=bar&hello=world", httpVersion: (1, 1), headers: HTTPHeaders())
+        let request = HTTPRequest(method: .get, target: "/users/123?foo=bar&hello=world", httpVersion: HTTPVersion(major: 1,minor: 1), headers: HTTPHeaders())
 
         guard let (components, _) = router.route(request: request) else {
             XCTFail("No match found")

@@ -30,22 +30,22 @@
 
             // FileServerTests
             linuxCount = FileServerTests.allTests.count
-            darwinCount = Int(FileServerTests.defaultTestSuite().testCaseCount)
+            darwinCount = Int(FileServerTests.defaultTestSuite.testCaseCount)
             XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from FileServerTests.allTests")
 
-            // K2SpikeTests
-            linuxCount = K2SpikeTests.allTests.count
-            darwinCount = Int(K2SpikeTests.defaultTestSuite().testCaseCount)
-            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from K2SpikeTests.allTests")
+            // KituraTests
+            linuxCount = KituraTests.allTests.count
+            darwinCount = Int(KituraTests.defaultTestSuite.testCaseCount)
+            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from KituraTests.allTests")
 
             // ParameterParsingTests
             linuxCount = ParameterParsingTests.allTests.count
-            darwinCount = Int(ParameterParsingTests.defaultTestSuite().testCaseCount)
+            darwinCount = Int(ParameterParsingTests.defaultTestSuite.testCaseCount)
             XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from ParameterParsingTests.allTests")
 
             // RouterTests
             linuxCount = RouterTests.allTests.count
-            darwinCount = Int(RouterTests.defaultTestSuite().testCaseCount)
+            darwinCount = Int(RouterTests.defaultTestSuite.testCaseCount)
             XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from RouterTests.allTests")
         }
     }

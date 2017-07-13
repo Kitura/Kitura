@@ -1,6 +1,6 @@
 //
 //  TestResponseResolver.swift
-//  K2Spike
+//  Kitura
 //
 //  Created by Carl Brown on 4/24/17.
 //
@@ -8,8 +8,8 @@
 
 import Foundation
 import Dispatch
-import K2Spike
-import SwiftServerHttp
+import Kitura
+import SwiftServerHTTP
 
 class TestResponseResolver: HTTPResponseWriter {
     let request: HTTPRequest

@@ -1,11 +1,11 @@
 import XCTest
 import HeliumLogger
 
-@testable import SwiftServerHttp
+@testable import SwiftServerHTTP
 
-@testable import K2Spike
+@testable import Kitura
 
-class K2SpikeTests: XCTestCase {
+class KituraTests: XCTestCase {
     func testResponseOK() {
         let request = HTTPRequest(method: .GET, target:"/echo", httpVersion: (1, 1), headers: HTTPHeaders([("X-foo", "bar")]))
         let resolver = TestResponseResolver(request: request, requestBody: Data())

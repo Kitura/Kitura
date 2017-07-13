@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import SwiftServerHttp
+import HTTP
 
 class WebAppFailureHandler: ResponseCreating {
     func serve(request req: HTTPRequest, context: RequestContext, response res: HTTPResponseWriter ) -> HTTPBodyProcessing {
