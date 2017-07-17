@@ -32,7 +32,7 @@ class KituraTests: XCTestCase {
         XCTAssertNotNil(resolver.response)
         XCTAssertNotNil(resolver.responseBody)
         XCTAssertEqual(HTTPResponseStatus.ok.code, resolver.response?.status.code ?? 0)
-        XCTAssertEqual(testString, String(data: resolver.responseBody ?? Data(), encoding: .utf8) ?? "Nil")
+        XCTAssertEqual(testString, resolver.responseBody?.withUnsafeBytes { String(bytes: $0, encoding: .utf8) } ?? "Nil")
     }
     
     func testHello() {
@@ -46,7 +46,8 @@ class KituraTests: XCTestCase {
         XCTAssertNotNil(resolver.response)
         XCTAssertNotNil(resolver.responseBody)
         XCTAssertEqual(HTTPResponseStatus.ok.code, resolver.response?.status.code ?? 0)
-        XCTAssertEqual("Hello, World!", String(data: resolver.responseBody ?? Data(), encoding: .utf8) ?? "Nil")
+        XCTAssertEqual("Hello, World!", resolver.responseBody?.withUnsafeBytes { String(bytes: $0, encoding: .utf8) } ?? "Nil")
+
     }
     
     func testHelloEndToEnd() {

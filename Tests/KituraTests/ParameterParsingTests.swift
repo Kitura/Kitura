@@ -107,16 +107,11 @@ struct Response: ResponseObject {
 }
 
 struct WithBodyResponse: ParameterResponseCreating {
-    func serve(request: HTTPRequest, context: RequestContext, parameters: ParameterContaining, response: HTTPResponseWriter) -> (response: HTTPResponse, responseBody: ResponseObject) {
+    func serve(request: HTTPRequest, context: RequestContext, parameters: ParameterContaining, response: HTTPResponseWriter) -> (status: HTTPResponseStatus, headers: HTTPHeaders, responseBody: ResponseObject) {
         guard let parameters = parameters as? WithBodyParameters else {
             XCTFail("Wrong parameter type")
 
-            let httpResponse = HTTPResponse(httpVersion: request.httpVersion,
-                                        status: .badRequest,
-                                        transferEncoding: .chunked,
-                                        headers: HTTPHeaders())
-
-            return (response: httpResponse, responseBody: Response(body: "Error"))
+            return (status: .badRequest, headers:HTTPHeaders(dictionaryLiteral: (.transferEncoding, "chunked")), responseBody: Response(body: "Error"))
         }
 
         XCTAssert(parameters.headerParam.count == 1)
@@ -126,10 +121,7 @@ struct WithBodyResponse: ParameterResponseCreating {
         XCTAssert(parameters.queryParam[0].value == "world")
         XCTAssert(parameters.body == "hello=world")
 
-        let httpResponse = HTTPResponse(httpVersion: request.httpVersion,
-                                    status: .ok,
-                                    transferEncoding: .chunked,
-                                    headers: HTTPHeaders())
-        return (response: httpResponse, responseBody: Response(body: "Pass"))
+        return (status: .ok, headers:HTTPHeaders(dictionaryLiteral: (.transferEncoding, "chunked")), responseBody: Response(body: "Pass"))
+
     }
 }

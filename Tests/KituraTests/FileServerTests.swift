@@ -30,12 +30,14 @@ class FileServerTests: XCTestCase {
             return
         }
 
-        guard let object = try? JSONSerialization.jsonObject(with: payload) else {
-            XCTFail("Response body is not JSON")
-            return
+        payload.withUnsafeBytes {
+            let payloadData = Data($0)
+            if let object = try? JSONSerialization.jsonObject(with: payloadData) {
+                XCTAssert((object as? [String: String])?["foo"] == "bar")
+            } else {
+                XCTFail("Response body is not JSON")
+            }
         }
-
-        XCTAssert((object as? [String: String])?["foo"] == "bar")
     }
 
     // Mimic request to a nonexistent file

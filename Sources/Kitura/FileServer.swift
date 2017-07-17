@@ -28,12 +28,7 @@ public struct FileServer: FileResponseCreating {
         // Check if file exists
         guard FileManager.default.fileExists(atPath: fileURL.path) else {
             // Return 404
-            let httpResponse = HTTPResponse(httpVersion: request.httpVersion,
-                                            status: .notFound,
-                                            transferEncoding: .chunked,
-                                            headers: HTTPHeaders())
-
-            response.writeResponse(httpResponse)
+            response.writeHeader(status: .notFound, headers: [.transferEncoding: "chunked"])
             response.done()
 
             return .discardBody
@@ -42,12 +37,7 @@ public struct FileServer: FileResponseCreating {
         // Check if file is readable
         guard FileManager.default.isReadableFile(atPath: fileURL.path) else {
             // Return 403
-            let httpResponse = HTTPResponse(httpVersion: request.httpVersion,
-                                            status: .forbidden,
-                                            transferEncoding: .chunked,
-                                            headers: HTTPHeaders())
-
-            response.writeResponse(httpResponse)
+            response.writeHeader(status: .forbidden, headers: [.transferEncoding: "chunked"])
             response.done()
 
             return .discardBody
@@ -56,12 +46,7 @@ public struct FileServer: FileResponseCreating {
         // Load data from file
         guard let fileData = try? Data(contentsOf:fileURL) else {
             // Return 500
-            let httpResponse = HTTPResponse(httpVersion: request.httpVersion,
-                                        status: .internalServerError,
-                                        transferEncoding: .chunked,
-                                        headers: HTTPHeaders())
-
-            response.writeResponse(httpResponse)
+            response.writeHeader(status: .internalServerError, headers: [.transferEncoding: "chunked"])
             response.done()
 
             return .discardBody
@@ -75,13 +60,8 @@ public struct FileServer: FileResponseCreating {
         }
 
         // Write response and body
-        let httpResponse = HTTPResponse(httpVersion: request.httpVersion,
-                                        status: .ok,
-                                        transferEncoding: .chunked,
-                                        headers: HTTPHeaders(dictionaryLiteral: ("Content-Type", mimeType)))
-
-        response.writeResponse(httpResponse)
-        response.writeBody(data: fileData) { _ in
+        response.writeHeader(status: .ok, headers: [.transferEncoding: "chunked",.contentType: mimeType])
+        response.writeBody(fileData) { _ in
             response.done()
         }
 

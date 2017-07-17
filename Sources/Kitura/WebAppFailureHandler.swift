@@ -12,10 +12,7 @@ import HTTP
 class WebAppFailureHandler: ResponseCreating {
     func serve(request req: HTTPRequest, context: RequestContext, response res: HTTPResponseWriter ) -> HTTPBodyProcessing {
         //Assume the router gave us the right request - at least for now
-        res.writeResponse(HTTPResponse(httpVersion: req.httpVersion,
-                                       status: .notFound,
-                                       transferEncoding: .chunked,
-                                       headers: HTTPHeaders()))
+        res.writeHeader(status: .notFound, headers: [.transferEncoding: "chunked"])
         return .processBody { (chunk, stop) in
             switch chunk {
             case .chunk(_, let finishedProcessing):

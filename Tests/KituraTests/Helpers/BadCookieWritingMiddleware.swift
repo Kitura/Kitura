@@ -19,6 +19,7 @@ class BadCookieWritingMiddleware {
     let urlForUUIDFetch: URL
     
     private class HTTPResponseWriterAddingCookie : HTTPResponseWriter {
+        
         let oldResponseWriter: HTTPResponseWriter
         let cookieValue: String
         
@@ -27,34 +28,28 @@ class BadCookieWritingMiddleware {
             self.cookieValue = cookieValue
         }
         
-        func writeResponse(_ response: HTTPResponse) {
-            var responseWithCookie = response
+        func writeHeader(status: HTTPResponseStatus, headers: HTTPHeaders, completion: @escaping (Result) -> Void) {
+            var newHeaders = headers
             
-            responseWithCookie.headers["Set-Cookie"] = self.cookieValue
+            newHeaders.append(["Set-Cookie": self.cookieValue])
             
-            oldResponseWriter.writeResponse(responseWithCookie)
+            oldResponseWriter.writeHeader(status: status, headers: newHeaders)
+
         }
         
-        func writeContinue(headers: HTTPHeaders?) { return oldResponseWriter.writeContinue(headers:headers) }
-        
-        
-        func writeTrailer(key: String, value: String) { return oldResponseWriter.writeTrailer(key:key, value:value) }
-        
-        func writeBody(data: DispatchData, completion: @escaping (Result<POSIXError, ()>) -> Void) {
-            return oldResponseWriter.writeBody(data:data, completion: completion)
+        func writeTrailer(_ trailers: HTTPHeaders, completion: @escaping (Result) -> Void) {
+            oldResponseWriter.writeTrailer(trailers, completion: completion)
         }
 
-        func writeBody(data: DispatchData) { return oldResponseWriter.writeBody(data:data) }
-        
-        func writeBody(data: Data, completion: @escaping (Result<POSIXError, ()>) -> Void) {
-            return oldResponseWriter.writeBody(data:data, completion: completion)
+        func writeBody(_ data: UnsafeHTTPResponseBody, completion: @escaping (Result) -> Void) {
+            oldResponseWriter.writeBody(data, completion: completion)
         }
-        func writeBody(data: Data)  { return oldResponseWriter.writeBody(data:data) }
-        
+
+        func done(completion: @escaping (Result) -> Void) {
+            return oldResponseWriter.done(completion: completion)
+        }
+
         func done() { return oldResponseWriter.done() }
-        func done(completion: @escaping (Result<POSIXError, ()>) -> Void) {
-            return oldResponseWriter.done(completion:completion)
-        }
         func abort()  { return oldResponseWriter.abort() }
 
     }

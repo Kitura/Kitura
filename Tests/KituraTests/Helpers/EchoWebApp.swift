@@ -5,14 +5,11 @@ import HTTP
 class EchoWebApp: ResponseCreating {
     func serve(request req: HTTPRequest, context: RequestContext, response res: HTTPResponseWriter ) -> HTTPBodyProcessing {
         //Assume the router gave us the right request - at least for now
-        res.writeResponse(HTTPResponse(httpVersion: req.httpVersion,
-                                       status: .ok,
-                                       transferEncoding: .chunked,
-                                       headers: HTTPHeaders(dictionaryLiteral: ("X-foo", "bar"))))
+        res.writeHeader(status: .ok, headers: [.transferEncoding: "chunked"])
         return .processBody { (chunk, stop) in
             switch chunk {
             case .chunk(let data, let finishedProcessing):
-                res.writeBody(data: data) { _ in
+                res.writeBody(data) { _ in
                     finishedProcessing()
                 }
             case .end:

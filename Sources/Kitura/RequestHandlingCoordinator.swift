@@ -68,25 +68,22 @@ public class RequestHandlingCoordinator {
                     if let parameters = parameterType.init(pathParameters: routeTuple.components?.parameters, queryParameters: routeTuple.components?.queries, headers: proccessedReq.headers, body: body) {
                         // Step 3:
                         // Get response object from serving content using parameters
-                        let (response, responseObject) = responseCreator.serve(request: proccessedReq, context: processedContext, parameters: parameters, response: res)
+                        let (status, headers, responseObject) = responseCreator.serve(request: proccessedReq, context: processedContext, parameters: parameters, response: res)
 
                         // Step 4:
                         // Write response
-                        res.writeResponse(response)
+                        res.writeHeader(status: status, headers: headers)
 
                         // Step 5:
                         // Write response body
                         if let data = responseObject.toData() {
-                            res.writeBody(data: data) { _ in
+                            res.writeBody(data) { _ in
                                 res.done()
                             }
                         }
                     }
                     else {
-                        res.writeResponse(HTTPResponse(httpVersion: req.httpVersion,
-                                                       status: .notFound,
-                                                       transferEncoding: .chunked,
-                                                       headers: HTTPHeaders()))
+                        res.writeHeader(status: .notFound, headers: [.transferEncoding: "chunked"])
                     }
 
                     res.done()
