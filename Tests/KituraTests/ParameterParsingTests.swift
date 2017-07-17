@@ -1,4 +1,5 @@
 import XCTest
+import Dispatch
 @testable import HTTP
 @testable import Kitura
 

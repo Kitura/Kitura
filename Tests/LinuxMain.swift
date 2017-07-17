@@ -1,8 +1,8 @@
 import XCTest
-@testable import K2SpikeTests
+@testable import KituraTests
 
 XCTMain([
-    testCase(K2SpikeTests.allTests),
+    testCase(KituraTests.allTests),
     testCase(RouterTests.allTests),
     testCase(ParameterParsingTests.allTests),
     testCase(FileServerTests.allTests)
