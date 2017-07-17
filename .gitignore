@@ -71,5 +71,6 @@ fastlane/test_output
 /*.xcodeproj
 *.DS_Store
 *.orig
+*.swift-e
 /.idea
 /Package.resolved
