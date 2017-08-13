@@ -69,7 +69,7 @@ public struct SSLConfig {
     ///
     /// - Parameters:
     ///		- chainFilePath:			Path to the certificate chain file (optional). *(see note above)*
-    ///		- password:					Password for the chain file (optional).
+    ///		- password:					Export password for the chain file (optional). This is required if using a certificate chain file.
     ///		- selfSigned:				True if certs are `self-signed`, false otherwise. Defaults to true.
     ///
     ///	- Returns:	New SSLConfig instance.

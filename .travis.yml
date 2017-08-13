@@ -24,14 +24,19 @@ matrix:
     - os: linux
       dist: trusty
       sudo: required
-      env: SWIFT_VERSION=3.0.2
+      env: SWIFT_SNAPSHOT=$SWIFT_4_DEV_SNAPSHOT
+    - os: linux
+      dist: trusty
+      sudo: required
+      services: docker
+      env: DOCKER_IMAGE=ubuntu:16.04 SWIFT_SNAPSHOT=$SWIFT_4_DEV_SNAPSHOT
     - os: osx
       osx_image: xcode8.3
       sudo: required
-
-before_install:
-  - git clone https://github.com/IBM-Swift/Package-Builder.git
-  - test -n "$SWIFT_VERSION" && echo "$SWIFT_VERSION" > .swift-version || echo "SWIFT_VERSION not set, using $(cat .swift-version)"
+    - os: osx
+      osx_image: xcode9
+      sudo: required
+      env: SWIFT_SNAPSHOT=$SWIFT_4_DEV_SNAPSHOT
 
 script:
-  - ./Package-Builder/build-package.sh -projectDir $TRAVIS_BUILD_DIR
+  - ./build.sh

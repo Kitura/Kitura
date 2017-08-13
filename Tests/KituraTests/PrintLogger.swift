@@ -48,7 +48,7 @@ public class PrintLogger: Logger {
             return
         }
 
-        let color : TerminalColor
+        let color: TerminalColor
         switch type {
         case .warning:
             color = .yellow

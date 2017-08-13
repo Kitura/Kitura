@@ -122,11 +122,12 @@ public class BodyParser: RouterMiddleware {
     /// - Returns: data for the body.
     public class func readBodyData(with reader: RouterRequest) throws -> Data {
         var bodyData = Data()
+        var length = 0
 
-        var length = try reader.read(into: &bodyData)
-        while length != 0 {
+        repeat {
             length = try reader.read(into: &bodyData)
-        }
+        } while length != 0
+
         return bodyData
     }
 }

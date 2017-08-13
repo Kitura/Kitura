@@ -67,14 +67,15 @@ class FileResourceServer {
     }
 
     private func getResourcePathBasedOnCurrentDirectory(for resource: String, withFileManager fileManager: FileManager) -> String? {
-        do {
-            for suffix in ["/Packages", "/.build/checkouts"] {
-                let packagePath: String
-                #if os(iOS)
-                    packagePath = Bundle.main.resourcePath! + suffix
-                #else
-                    packagePath = fileManager.currentDirectoryPath + suffix
-                #endif
+        for suffix in ["/Packages", "/.build/checkouts"] {
+            let packagePath: String
+            #if os(iOS)
+                packagePath = Bundle.main.resourcePath! + suffix
+            #else
+                packagePath = fileManager.currentDirectoryPath + suffix
+            #endif
+
+            do {
                 let packages = try fileManager.contentsOfDirectory(atPath: packagePath)
                 for package in packages {
                     let potentialResource = "\(packagePath)/\(package)/Sources/Kitura/resources/\(resource)"
@@ -83,9 +84,9 @@ class FileResourceServer {
                         return potentialResource
                     }
                 }
+            } catch {
+              Log.error("No packages found in \(packagePath)")
             }
-        } catch {
-            return nil
         }
         return nil
     }

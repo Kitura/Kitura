@@ -90,5 +90,4 @@ class TestContentType: KituraTest {
         XCTAssertTrue(result)
 
     }
-
 }

@@ -29,15 +29,7 @@ class RouterElement {
     private let pattern: String?
 
     /// The regular expression
-    #if os(Linux)
-        #if swift(>=3.1)
-            private var regex: NSRegularExpression?
-        #else
-            private var regex: RegularExpression?
-        #endif
-    #else
-        private var regex: NSRegularExpression?
-    #endif
+    private var regex: NSRegularExpression?
     
     /// The pattern is a simple string
     private var isSimpleString = false
@@ -190,17 +182,15 @@ class RouterElement {
         looper.next()
     }
 
-    #if os(Linux)
-        typealias TextCheckingResultType = TextCheckingResult
-    #else
-        typealias TextCheckingResultType = NSTextCheckingResult
+    #if os(Linux) && !swift(>=3.2)
+        typealias NSTextCheckingResult = TextCheckingResult
     #endif
 
     /// Update the request parameters
     ///
     /// - Parameter match: the regular expression result
     /// - Parameter request:
-    private func setParameters(forRequest request: RouterRequest, fromUrlPath urlPath: NSString, match: TextCheckingResultType) {
+    private func setParameters(forRequest request: RouterRequest, fromUrlPath urlPath: NSString, match: NSTextCheckingResult) {
         var parameters = mergeParameters ? request.parameters : [:]
 
         if let keys = keys {

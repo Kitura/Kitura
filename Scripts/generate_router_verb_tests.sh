@@ -49,9 +49,9 @@ import Glibc
 import Darwin
 #endif
 
-class TestRouterHTTPVerbs_generated: XCTestCase {
+class TestRouterHTTPVerbsGenerated: KituraTest {
 
-    static var allTests: [(String, (TestRouterHTTPVerbs_generated) -> () throws -> Void)] {
+    static var allTests: [(String, (TestRouterHTTPVerbsGenerated) -> () throws -> Void)] {
         return [
             ("testFirstTypeVerbsAdded", testFirstTypeVerbsAdded),
             ("testSecondTypeVerbsAdded", testSecondTypeVerbsAdded),
@@ -60,7 +60,7 @@ class TestRouterHTTPVerbs_generated: XCTestCase {
         ]
     }
 
-    let BodyTestHandler: RouterHandler = { request, response, next in
+    let bodyTestHandler: RouterHandler = { request, response, next in
         guard let requestBody = request.body else {
             next ()
             return
@@ -68,10 +68,9 @@ class TestRouterHTTPVerbs_generated: XCTestCase {
         next()
     }
 
-    // check that all verbs with BodyTestHandler parameter was added to elements array
+    // check that all verbs with bodyTestHandler parameter was added to elements array
     func testFirstTypeVerbsAdded() {
-        let router = Router()
-        performServerTest(router) { expectation in
+            let router = Router()
             var verbsArray: [String] = []
 EOF
             for VERB in `sed '/^$/d' ${INPUT_FILE} | sed '/^#/d'`; do
@@ -79,7 +78,7 @@ EOF
                 VERB_UPPER_CASE=`echo $VERB | tr '[:lower:]' '[:upper:]'`
 cat <<EOF >> ${OUTPUT_FILE}
             verbsArray.append("$VERB_UPPER_CASE")
-            router.$VERB_LOW_CASE("/bodytest", handler: self.BodyTestHandler)
+            router.$VERB_LOW_CASE("/bodytest", handler: self.bodyTestHandler)
 EOF
             done
 cat <<EOF >> ${OUTPUT_FILE}
@@ -97,13 +96,10 @@ cat <<EOF >> ${OUTPUT_FILE}
                     return
                 }
             }
-            expectation.fulfill()
-        }
     }
 
     func testSecondTypeVerbsAdded() {
-        let router = Router()
-        performServerTest(router) { expectation in
+            let router = Router()
             var verbsArray: [String] = []
 EOF
             for VERB in `sed '/^$/d' ${INPUT_FILE} | sed '/^#/d'`; do
@@ -111,7 +107,7 @@ EOF
                 VERB_UPPER_CASE=`echo $VERB | tr '[:lower:]' '[:upper:]'`
 cat <<EOF >> ${OUTPUT_FILE}
             verbsArray.append("$VERB_UPPER_CASE")
-            router.$VERB_LOW_CASE("/bodytest", handler: [self.BodyTestHandler, self.BodyTestHandler])
+            router.$VERB_LOW_CASE("/bodytest", handler: [self.bodyTestHandler, self.bodyTestHandler])
 EOF
             done
 cat <<EOF >> ${OUTPUT_FILE}
@@ -129,13 +125,10 @@ cat <<EOF >> ${OUTPUT_FILE}
                     return
                 }
             }
-            expectation.fulfill()
-        }
     }
 
     func testThirdTypeVerbsAdded() {
-        let router = Router()
-        performServerTest(router) { expectation in
+            let router = Router()
             var verbsArray: [String] = []
             let bodyParser = BodyParser()
 EOF
@@ -162,13 +155,10 @@ cat <<EOF >> ${OUTPUT_FILE}
                     return
                 }
             }
-            expectation.fulfill()
-        }
     }
 
     func testFourthTypeVerbsAdded() {
-        let router = Router()
-        performServerTest(router) { expectation in
+            let router = Router()
             var verbsArray: [String] = []
             let bodyParser = BodyParser()
 EOF
@@ -195,7 +185,5 @@ cat <<EOF >> ${OUTPUT_FILE}
                     return
                 }
             }
-            expectation.fulfill()
-        }
     }
 }
