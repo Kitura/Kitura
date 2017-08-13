@@ -70,7 +70,10 @@ class FileResourceServer {
         for suffix in ["/Packages", "/.build/checkouts"] {
             let packagePath: String
             #if os(iOS)
-                packagePath = Bundle.main.resourcePath! + suffix
+                guard let resourcePath = Bundle.main.resourcePath else {
+                    continue
+                }
+                packagePath = resourcePath + suffix
             #else
                 packagePath = fileManager.currentDirectoryPath + suffix
             #endif
