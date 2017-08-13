@@ -69,7 +69,7 @@ class FileResourceServer {
     private func getResourcePathBasedOnCurrentDirectory(for resource: String, withFileManager fileManager: FileManager) -> String? {
         do {
             for suffix in ["/Packages", "/.build/checkouts"] {
-                var packagePath = ""
+                let packagePath: String
                 #if os(iOS)
                     packagePath = Bundle.main.resourcePath! + suffix
                 #else
