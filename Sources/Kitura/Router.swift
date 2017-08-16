@@ -195,7 +195,7 @@ public struct RequestContext {
     
     public func adding(dict:[String:Any]) -> RequestContext {
         var newstorage = storage
-        dict.forEach{ newstorage[$0] = $1 }
+        dict.forEach { newstorage[$0] = $1 }
         return RequestContext(dict: newstorage)
     }
 }
