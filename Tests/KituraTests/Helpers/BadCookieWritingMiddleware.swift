@@ -83,7 +83,7 @@ class BadCookieWritingMiddleware {
             }
             let index = uuidString.index(uuidString.startIndex, offsetBy: 36
             )
-            completionHandler(req, context.adding(dict: ["X-OurUUID":uuidString.substring(to: index)]))
+            completionHandler(req, context.adding(dict: ["X-OurUUID": String(uuidString[..<index])]))
         }
         dataTask.resume()
         return .willCallCompletionBlock

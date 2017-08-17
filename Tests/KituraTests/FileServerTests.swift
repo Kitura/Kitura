@@ -59,14 +59,14 @@ class FileServerTests: XCTestCase {
 
         // Get file permissions
         guard let attributes = try? FileManager.default.attributesOfItem(atPath: filePath),
-            let permissions = attributes[FileAttributeKey.posixPermissions] as? Int else {
+            let permissions = attributes[FileAttributeKey.posixPermissions] as? NSNumber else {
                 XCTFail("Unable to get file permissions")
                 return
         }
 
         // Change file permission to be unreadable
         // 222 is -w--w--w-
-        guard let _ = try? FileManager.default.setAttributes([FileAttributeKey.posixPermissions: 0o222], ofItemAtPath: filePath) else {
+        guard let _ = try? FileManager.default.setAttributes([FileAttributeKey.posixPermissions: NSNumber(value: 0o222)], ofItemAtPath: filePath) else {
             XCTFail("Unable to set file permissions")
             return
         }
@@ -83,7 +83,7 @@ class FileServerTests: XCTestCase {
 
         // Reset file permission to previous value
         guard let _ = try? FileManager.default.setAttributes([FileAttributeKey.posixPermissions: permissions], ofItemAtPath: filePath) else {
-            XCTFail("Unable to reset file permissions to \(String(permissions, radix: 8))")
+            XCTFail("Unable to reset file permissions to \(String(permissions.intValue, radix: 8))")
             return
         }
     }
