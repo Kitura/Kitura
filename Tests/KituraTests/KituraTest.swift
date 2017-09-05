@@ -40,21 +40,15 @@ class KituraTest: XCTestCase {
     private(set) var useSSL = false
 
     static let sslConfig: SSLConfig = {
-        let path = #file
-        let sslConfigDir: String
-        if let range = path.range(of: "/", options: .backwards) {
-            sslConfigDir = path.substring(to: range.lowerBound) + "/SSLConfig/"
-        } else {
-            sslConfigDir = "./SSLConfig/"
-        }
+        let sslConfigDir = URL(fileURLWithPath: #file).appendingPathComponent("../SSLConfig")
 
         #if os(Linux)
-            let certificatePath = sslConfigDir + "certificate.pem"
-            let keyPath = sslConfigDir + "key.pem"
+            let certificatePath = sslConfigDir.appendingPathComponent("certificate.pem").standardized.path
+            let keyPath = sslConfigDir.appendingPathComponent("key.pem").standardized.path
             return SSLConfig(withCACertificateDirectory: nil, usingCertificateFile: certificatePath,
                              withKeyFile: keyPath, usingSelfSignedCerts: true)
         #else
-            let chainFilePath = sslConfigDir + "certificateChain.pfx"
+            let chainFilePath = sslConfigDir.appendingPathComponent("certificateChain.pfx").standardized.path
             return SSLConfig(withChainFilePath: chainFilePath, withPassword: "kitura",
                              usingSelfSignedCerts: true)
         #endif
@@ -70,7 +64,7 @@ class KituraTest: XCTestCase {
     }
 
     func performServerTest(_ router: ServerDelegate, sslOption: SSLOption = SSLOption.both, timeout: TimeInterval = 10,
-                           line: Int = #line, asyncTasks: @escaping (XCTestExpectation) -> Void...) {
+                           line: Int = #line, asyncTasks: (XCTestExpectation) -> Void...) {
         if sslOption != SSLOption.httpsOnly {
             self.port = KituraTest.httpPort
             self.useSSL = false
@@ -166,8 +160,8 @@ class KituraTest: XCTestCase {
 
         let schema = useSSL ? "https" : "http"
         var options: [ClientRequest.Options] =
-                [.method(method), .schema(schema), .hostname("localhost"), .port(port), .path(path),
-                 .headers(allHeaders)]
+            [.method(method), .schema(schema), .hostname("localhost"), .port(port), .path(path),
+             .headers(allHeaders)]
         if useSSL {
             options.append(.disableSSLVerification)
         }

@@ -57,7 +57,7 @@ public class RouterRequest {
             Log.error("Failed to create regular expressions for domain property")
             return self.hostname
         }
-    }()
+        }()
 
     /// The subdomains string array of request.
     public private(set) lazy var subdomains: [String] = { [unowned self] in
@@ -71,7 +71,7 @@ public class RouterRequest {
         var subdomains = subdomainsString.components(separatedBy: ".")
 
         return subdomains.filter { !$0.isEmpty }
-    }()
+        }()
 
     /// The HTTP version of the request.
     public let httpVersion: HTTPVersion
@@ -91,7 +91,7 @@ public class RouterRequest {
             self._parsedURL = result
             return result
         }
-    }()
+        }()
 
     /// The router as a String.
     public internal(set) var route: String?
@@ -111,13 +111,13 @@ public class RouterRequest {
     /// This contains just the path and query parameters starting with '/'
     /// Use 'urlURL' for the full URL
     @available(*, deprecated, message:
-        "This contains just the path and query parameters starting with '/'. use 'urlURL' instead")
+    "This contains just the path and query parameters starting with '/'. use 'urlURL' instead")
     public var url: String { return serverRequest.urlString }
 
     /// The URL from the request as URLComponents
     /// URLComponents has a memory leak on linux as of swift 3.0.1. Use 'urlURL' instead
     @available(*, deprecated, message:
-        "URLComponents has a memory leak on linux as of swift 3.0.1. use 'urlURL' instead")
+    "URLComponents has a memory leak on linux as of swift 3.0.1. use 'urlURL' instead")
     public var urlComponents: URLComponents { return serverRequest.urlComponents }
 
     /// The URL from the request
@@ -132,7 +132,7 @@ public class RouterRequest {
     /// Parsed Cookies, used to do a lazy parsing of the appropriate headers.
     public lazy var cookies: [String: HTTPCookie] = { [unowned self] in
         return Cookies.parse(headers: self.serverRequest.headers)
-    }()
+        }()
 
     /// List of URL parameters.
     public internal(set) var parameters: [String:String] = [:]
@@ -140,7 +140,7 @@ public class RouterRequest {
     /// List of query parameters.
     public lazy var queryParameters: [String:String] = { [unowned self] in
         return self.urlURL.query?.urlDecodedFieldValuePairs ?? [:]
-    }()
+        }()
 
     /// User info.
     public var userInfo: [String: Any] = [:]
@@ -245,8 +245,21 @@ private class Cookies {
             return nil
         }
 
-        let name = cookie.substring(to: range.lowerBound).trimmingCharacters(in: .whitespaces)
-        var value = cookie.substring(from: range.upperBound).trimmingCharacters(in: .whitespaces)
+        #if swift(>=3.2)
+            #if os(Linux)
+                // https://bugs.swift.org/browse/SR-5727
+                // ETA post-4.0
+                let name = String(cookie[..<range.lowerBound]).trimmingCharacters(in: .whitespaces)
+                var value = String(cookie[range.upperBound...]).trimmingCharacters(in: .whitespaces)
+            #else
+                let name = cookie[..<range.lowerBound].trimmingCharacters(in: .whitespaces)
+                var value = cookie[range.upperBound...].trimmingCharacters(in: .whitespaces)
+            #endif
+        #else
+            let name = cookie.substring(to: range.lowerBound).trimmingCharacters(in: .whitespaces)
+            var value = cookie.substring(from: range.upperBound).trimmingCharacters(in: .whitespaces)
+        #endif
+
         let chars = value.characters
         if chars.count >= 2 && chars.first == "\"" && chars.last == "\"" {
             // unquote value

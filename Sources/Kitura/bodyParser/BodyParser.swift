@@ -49,7 +49,7 @@ public class BodyParser: RouterMiddleware {
 
         guard request.headers["Content-Length"] != nil,
             let contentType = request.headers["Content-Type"] else {
-            return next()
+                return next()
         }
 
         request.body = BodyParser.parse(request, contentType: contentType)
@@ -79,7 +79,11 @@ public class BodyParser: RouterMiddleware {
         // "application/x-www-form-urlencoded"
         var contentTypeWithoutParameters = contentType
         if let parameterStart = contentTypeWithoutParameters.range(of: ";") {
-            contentTypeWithoutParameters = contentType.substring(to: parameterStart.lowerBound)
+            #if swift(>=3.2)
+                contentTypeWithoutParameters = String(contentType[..<parameterStart.lowerBound])
+            #else
+                contentTypeWithoutParameters = contentType.substring(to: parameterStart.lowerBound)
+            #endif
         }
         if let parser = parserMap[contentTypeWithoutParameters] {
             return parser
@@ -89,10 +93,22 @@ public class BodyParser: RouterMiddleware {
             guard let boundryIndex = contentType.range(of: "boundary=") else {
                 return nil
             }
-            var boundary = contentType.substring(from: boundryIndex.upperBound).replacingOccurrences(of: "\"", with: "")
+
+            #if swift(>=3.2)
+                #if os(Linux)
+                    // https://bugs.swift.org/browse/SR-5727
+                    // ETA post-4.0
+                    var boundary = String(contentType[boundryIndex.upperBound...]).replacingOccurrences(of: "\"", with: "")
+                #else
+                    var boundary = contentType[boundryIndex.upperBound...].replacingOccurrences(of: "\"", with: "")
+                #endif
+            #else
+                var boundary = contentType.substring(from: boundryIndex.upperBound).replacingOccurrences(of: "\"", with: "")
+            #endif
+
             // remove any trailing parameters - as per RFC 2046 section 5.1.1., a semicolon cannot be part of a boundary
             if let parameterStart = boundary.range(of: ";") {
-                boundary = boundary.substring(to: parameterStart.lowerBound)
+                boundary.removeSubrange(parameterStart.lowerBound..<boundary.endIndex)
             }
             return MultiPartBodyParser(boundary: boundary)
         } else { //Default: parse body as `.raw(Data)`

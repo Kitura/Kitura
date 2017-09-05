@@ -60,7 +60,13 @@ extension StaticFileServer {
                 let size = fileAttributes[FileAttributeKey.size] as? NSNumber
 
                 if let date = date, let size = size {
-                    let sizeHex = String(Int(size), radix: 16, uppercase: false)
+                    #if swift(>=3.2) && !os(Linux)
+                        // https://bugs.swift.org/browse/SR-5850
+                        let sizeHex = String(Int(truncating: size), radix: 16, uppercase: false)
+                    #else
+                        let sizeHex = String(Int(size), radix: 16, uppercase: false)
+                    #endif
+
                     let timeHex = String(Int(date.timeIntervalSince1970), radix: 16, uppercase: false)
                     let etag = "W/\"\(sizeHex)-\(timeHex)\""
                     response.headers["Etag"] = etag

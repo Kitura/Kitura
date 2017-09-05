@@ -36,7 +36,14 @@ class RouterParameterWalker {
             return
         }
 
-        let filtered = request.parameters.filter { (key, _) in self.parameterHandlers.keys.contains(key) && !request.handledNamedParameters.contains(key) }
+        #if swift(>=3.2)
+            let filtered = request.parameters.filter { (key, _) in
+                self.parameterHandlers.keys.contains(key) && !request.handledNamedParameters.contains(key)
+                }.map { ($0, $1) }
+        #else
+            let filtered = request.parameters.filter { (key, _) in self.parameterHandlers.keys.contains(key) && !request.handledNamedParameters.contains(key) }
+        #endif
+
         self.handle(filtered: filtered, request: request, response: response, with: callback)
     }
 
@@ -50,18 +57,16 @@ class RouterParameterWalker {
         let (key, value) = parameters.remove(at: parameters.startIndex)
 
         if !request.handledNamedParameters.contains(key),
-            self.parameterHandlers[key] != nil,
-            self.parameterHandlers[key]!.count > 0 {
-                let handler = self.parameterHandlers[key]!.remove(at: 0)
-
-                do {
-                    try handler(request, response, value) {
-                        self.handle(filtered: parameters, request: request, response: response, with: callback)
-                    }
-                } catch {
-                    response.error = error
+            (self.parameterHandlers[key]?.count ?? 0) > 0,
+            let handler = self.parameterHandlers[key]?.remove(at: 0) {
+            do {
+                try handler(request, response, value) {
                     self.handle(filtered: parameters, request: request, response: response, with: callback)
                 }
+            } catch {
+                response.error = error
+                self.handle(filtered: parameters, request: request, response: response, with: callback)
+            }
         } else {
             request.handledNamedParameters.insert(key)
             self.parameterHandlers[key] = nil

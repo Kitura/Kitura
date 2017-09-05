@@ -93,8 +93,8 @@ class RouterElement {
 
         guard (response.error != nil && method == .error)
             || (response.error == nil && (method == request.method || method == .all)) else {
-            next()
-            return
+                next()
+                return
         }
         
         // Check and see if the pattern is just a simple string
@@ -183,7 +183,7 @@ class RouterElement {
     }
 
     #if os(Linux) && !swift(>=3.2)
-        typealias NSTextCheckingResult = TextCheckingResult
+    typealias NSTextCheckingResult = TextCheckingResult
     #endif
 
     /// Update the request parameters
@@ -195,11 +195,12 @@ class RouterElement {
 
         if let keys = keys {
             for index in 0..<keys.count {
-                #if os(Linux)
-                    let matchRange = match.range(at: index+1)
+                #if !os(Linux) && !swift(>=3.2)
+                    let matchRange = match.rangeAt(index + 1)
                 #else
-                    let matchRange = match.rangeAt(index+1)
+                    let matchRange = match.range(at: index+1)
                 #endif
+
                 if  matchRange.location != NSNotFound  &&  matchRange.location != -1  {
                     var parameter = urlPath.substring(with: matchRange)
                     if let decodedParameter = parameter.removingPercentEncoding {
