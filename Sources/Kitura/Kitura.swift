@@ -48,7 +48,7 @@ public class Kitura {
         server.delegate = delegate
         server.sslConfig = sslConfig?.config
         server.keepAliveState = keepAliveState
-        httpServersAndPorts.append(server: server, port: port)
+        httpServersAndPorts.append((server: server, port: port))
         return server
     }
 
@@ -64,7 +64,7 @@ public class Kitura {
     public class func addFastCGIServer(onPort port: Int, with delegate: ServerDelegate) -> FastCGIServer {
         let server = FastCGI.createServer()
         server.delegate = delegate
-        fastCGIServersAndPorts.append(server: server, port: port)
+        fastCGIServersAndPorts.append((server: server, port: port))
         return server
     }
 

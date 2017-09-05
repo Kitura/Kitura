@@ -39,14 +39,14 @@ public class ContentType {
 
         let jsonParseOptions = JSONSerialization.ReadingOptions.mutableContainers
         let parsedObject = try? JSONSerialization.jsonObject(with: contentTypesData!,
-                                                                   options: jsonParseOptions)
+                                                             options: jsonParseOptions)
 
         // MARK: Linux Foundation will return an Any instead of an AnyObject
         // Need to test if this breaks the Linux build.
         guard parsedObject != nil,
             let jsonData = parsedObject as? [String : [String]] else {
-            Log.error("JSON could not be parsed")
-            return
+                Log.error("JSON could not be parsed")
+                return
         }
 
         for (contentType, exts) in jsonData {
@@ -86,7 +86,11 @@ public class ContentType {
             extRange = lastPathElemRange
         }
 
-        return getContentType(forExtension: fileName.substring(with: extRange))
+        #if swift(>=3.2)
+            return getContentType(forExtension: String(fileName[extRange]))
+        #else
+            return getContentType(forExtension: fileName.substring(with: extRange))
+        #endif
     }
 
     /// Check if the message content type matches the type descriptor.
@@ -144,7 +148,7 @@ public class ContentType {
             //                // "+json" -> "*/*+json" expando
             //                type = '*/*' + type
             //            }
-            // swiftlint:enable todo
+        // swiftlint:enable todo
         default:
             return type
         }

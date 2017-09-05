@@ -1,5 +1,5 @@
 /**
- * Copyright IBM Corporation 2016
+ * Copyright IBM Corporation 2016, 2017
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,6 +74,11 @@ public class PrintLogger: Logger {
         guard let range = path.range(of: "/", options: .backwards) else {
             return path
         }
-        return path.substring(from: range.upperBound)
+
+        #if swift(>=3.2)
+            return String(path[range.upperBound...])
+        #else
+            return path.substring(from: range.upperBound)
+        #endif
     }
 }

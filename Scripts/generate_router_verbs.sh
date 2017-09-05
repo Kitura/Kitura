@@ -63,7 +63,7 @@ cat <<EOF >> ${OUTPUT_FILE}
     /// - Parameter handler: A comma delimited set of \`RouterHandler\`s that will be
     ///                     invoked when $DOC_TEXT_1 request$DOC_TEXT_2 comes to the server.
     @discardableResult
-    public func $VERB_LOW_CASE(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router {
+    public func $VERB_LOW_CASE(_ path: String?=nil, handler: RouterHandler...) -> Router {
         return routingHelper(.$VERB_LOW_CASE, pattern: path, handler: handler)
     }
 

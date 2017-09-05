@@ -230,7 +230,7 @@ public class Router {
     ///                     invoked when request parses a parameter with specified name.
     /// - Returns: Current router instance
     @discardableResult
-    public func parameter(_ name: String, handler: @escaping RouterParameterHandler...) -> Router {
+    public func parameter(_ name: String, handler: RouterParameterHandler...) -> Router {
         return self.parameter([name], handlers: handler)
     }
 
@@ -242,7 +242,7 @@ public class Router {
     ///                     invoked when request parses a parameter with specified name.
     /// - Returns: Current router instance
     @discardableResult
-    public func parameter(_ names: [String], handler: @escaping RouterParameterHandler...) -> Router {
+    public func parameter(_ names: [String], handler: RouterParameterHandler...) -> Router {
         return self.parameter(names, handlers: handler)
     }
 
@@ -296,7 +296,11 @@ extension Router : RouterMiddleware {
 
             let index = urlPath.index(urlPath.startIndex, offsetBy: mountpath.characters.count)
 
-            request.parsedURLPath.path = urlPath.substring(from: index)
+            #if swift(>=3.2)
+                request.parsedURLPath.path = String(urlPath[index...])
+            #else
+                request.parsedURLPath.path = urlPath.substring(from: index)
+            #endif
         }
 
         response.push(router: self)
@@ -368,7 +372,11 @@ extension Router : ServerDelegate {
         }
 
         if  urlPath.hasPrefix(kituraResourcePrefix) {
-            let resource = urlPath.substring(from: kituraResourcePrefix.endIndex)
+            #if swift(>=3.2)
+                let resource = String(urlPath[kituraResourcePrefix.endIndex...])
+            #else
+                let resource = urlPath.substring(from: kituraResourcePrefix.endIndex)
+            #endif
             fileResourceServer.sendIfFound(resource: resource, usingResponse: response)
         } else {
             let looper = RouterElementWalker(elements: self.elements,

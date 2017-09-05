@@ -1,5 +1,5 @@
 /**
- * Copyright IBM Corporation 2016
+ * Copyright IBM Corporation 2016, 2017
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,20 +19,37 @@ import Glibc
 @testable import KituraTests
 
 // http://stackoverflow.com/questions/24026510/how-do-i-shuffle-an-array-in-swift
-extension MutableCollection where Indices.Iterator.Element == Index {
-    mutating func shuffle() {
-        let c = count
-        guard c > 1 else { return }
+#if swift(>=3.2)
+    extension MutableCollection {
+        mutating func shuffle() {
+            let c = count
+            guard c > 1 else { return }
 
-        srand(UInt32(time(nil)))
-        for (firstUnshuffled , unshuffledCount) in zip(indices, stride(from: c, to: 1, by: -1)) {
-            let d: IndexDistance = numericCast(random() % numericCast(unshuffledCount))
-            guard d != 0 else { continue }
-            let i = index(firstUnshuffled, offsetBy: d)
-            swap(&self[firstUnshuffled], &self[i])
+            srand(UInt32(time(nil)))
+            for (firstUnshuffled , unshuffledCount) in zip(indices, stride(from: c, to: 1, by: -1)) {
+                let d: IndexDistance = numericCast(random() % numericCast(unshuffledCount))
+                guard d != 0 else { continue }
+                let i = index(firstUnshuffled, offsetBy: d)
+                swapAt(firstUnshuffled, i)
+            }
         }
     }
-}
+#else
+    extension MutableCollection where Indices.Iterator.Element == Index {
+        mutating func shuffle() {
+            let c = count
+            guard c > 1 else { return }
+
+            srand(UInt32(time(nil)))
+            for (firstUnshuffled , unshuffledCount) in zip(indices, stride(from: c, to: 1, by: -1)) {
+                let d: IndexDistance = numericCast(random() % numericCast(unshuffledCount))
+                guard d != 0 else { continue }
+                let i = index(firstUnshuffled, offsetBy: d)
+                swap(&self[firstUnshuffled], &self[i])
+            }
+        }
+    }
+#endif
 
 extension Sequence {
     func shuffled() -> [Iterator.Element] {
@@ -57,4 +74,4 @@ XCTMain([
     testCase(TestStaticFileServer.allTests.shuffled()),
     testCase(TestTemplateEngine.allTests.shuffled()),
     testCase(TestStack.allTests.shuffled())
-].shuffled())
+    ].shuffled())

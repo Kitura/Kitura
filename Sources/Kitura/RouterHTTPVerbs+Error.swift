@@ -25,7 +25,7 @@ extension Router {
     /// - Parameter handler: A comma delimited set of `RouterHandler` that will be
     ///                     invoked if an error ocurrs.
     @discardableResult
-    public func error(_ handler: @escaping RouterHandler...) -> Router {
+    public func error(_ handler: RouterHandler...) -> Router {
         return routingHelper(.error, pattern: nil, handler: handler)
     }
 

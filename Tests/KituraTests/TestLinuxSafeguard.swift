@@ -14,7 +14,10 @@
  * limitations under the License.
  **/
 
-#if os(OSX)
+// Test disabled on Swift 4 for now due to
+// https://bugs.swift.org/browse/SR-5684
+
+#if os(OSX) && !swift(>=3.2)
     import XCTest
  
     class TestLinuxSafeguard: XCTestCase {

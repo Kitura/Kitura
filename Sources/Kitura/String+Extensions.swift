@@ -18,7 +18,6 @@ import Foundation
 import LoggerAPI
 
 extension String {
-
     /// Parses percent encoded string into query parameters
     var urlDecodedFieldValuePairs: [String : String] {
         var result: [String:String] = [:]
@@ -29,8 +28,14 @@ extension String {
                 continue
             }
 
-            let key = item.substring(to: range.lowerBound)
-            let value = item.substring(from: range.upperBound)
+            #if swift(>=3.2)
+                let key = String(item[..<range.lowerBound])
+                let value = String(item[range.upperBound...])
+            #else
+                let key = item.substring(to: range.lowerBound)
+                let value = item.substring(from: range.upperBound)
+            #endif
+
             let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
             if let decodedValue = valueReplacingPlus.removingPercentEncoding {
                 result[key] = decodedValue
