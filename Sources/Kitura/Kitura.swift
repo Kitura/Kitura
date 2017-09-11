@@ -43,11 +43,11 @@ public class Kitura {
     public class func addHTTPServer(onPort port: Int,
                                     with delegate: ServerDelegate,
                                     withSSL sslConfig: SSLConfig?=nil,
-                                    maxKeepAliveRequests maxRequests: Int = -1) -> HTTPServer {
+                                    keepalive keepAliveState: HTTPServerResponse.KeepAliveState = .unlimited) -> HTTPServer {
         let server = HTTP.createServer()
         server.delegate = delegate
         server.sslConfig = sslConfig?.config
-        server.maxRequests = maxRequests
+        server.keepAliveState = keepAliveState
         httpServersAndPorts.append(server: server, port: port)
         return server
     }
