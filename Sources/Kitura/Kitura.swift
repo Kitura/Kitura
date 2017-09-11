@@ -37,13 +37,13 @@ public class Kitura {
     /// - Parameter onPort: The port to listen on.
     /// - Parameter with: The `ServerDelegate` to use.
     /// - Parameter withSSL: The `sslConfig` to use.
-    /// - Parameter maxKeepAliveRequests: The number of additional requests that may be made per connection. A value of zero disables Keep-Alive. A negative value indicates that unlimited requests, and is the default.
+    /// - Parameter keepAlive: The maximum number of additional requests to permit per Keep-Alive connection. Defaults to `.unlimited`. If set to `.disabled`, Keep-Alive will be not be permitted.
     /// - Returns: The created `HTTPServer`.
     @discardableResult
     public class func addHTTPServer(onPort port: Int,
                                     with delegate: ServerDelegate,
                                     withSSL sslConfig: SSLConfig?=nil,
-                                    keepalive keepAliveState: HTTPServerResponse.KeepAliveState = .unlimited) -> HTTPServer {
+                                    keepAlive keepAliveState: HTTPServerResponse.KeepAliveState = .unlimited) -> HTTPServer {
         let server = HTTP.createServer()
         server.delegate = delegate
         server.sslConfig = sslConfig?.config
