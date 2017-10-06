@@ -34,7 +34,7 @@ extension Router {
     public typealias IdentifierCodableClosure<Id: Identifier, I: Codable, O: Codable> = (Id, I, @escaping CodableResultClosure<O>) throws -> Void
     public typealias CodableClosure<I: Codable,O: Codable> = (I, @escaping CodableResultClosure<O>) throws -> Void    
     public typealias NonCodableClosure = (@escaping ResultClosure) throws -> Void
-   
+
     // DELETE
     public func delete(_ route: String, codableHandler: @escaping NonCodableClosure) {
         delete(route) { request, response, next in        
@@ -47,7 +47,7 @@ extension Router {
             try codableHandler(handler)
         }
     }
-    
+
     // PATCH
     public func patch<Id: Identifier, I: Codable, O: Codable>(_ route: String, codableHandler: @escaping IdentifierCodableClosure<Id, I, O>) {
         patch("\(route)/:id") { request, response, next in
@@ -69,28 +69,35 @@ extension Router {
             }
             try codableHandler(identifier, param, handler)
         }
-    }    
-
+    }
+    
     // POST
 	public func post<I: Codable, O: Codable>(_ route: String, codableHandler: @escaping CodableClosure<I, O>) {
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
-            var data = Data()
-            let _ = try request.read(into: &data)
-            let param = try JSONDecoder().decode(I.self, from: data)
-            let handler: CodableResultClosure<O> = { result in
-                do {
-                   let encoded = try JSONEncoder().encode(result)
-                   response.send(data: encoded)
-                 } catch {
-                     // Http error 422
-                     response.status(.unprocessableEntity)
-                 }
-                 next()
+            do {
+                var data = Data()
+                let _ = try request.read(into: &data)
+                let param = try JSONDecoder().decode(I.self, from: data)
+                let handler: CodableResultClosure<O> = { result in
+                    do {
+                        let encoded = try JSONEncoder().encode(result)
+                        response.status(.created)
+                        response.send(data: encoded)
+                    } catch {
+                        // Http error 422
+                        response.status(.unprocessableEntity)
+                    }
+                    next()
+                }
+                try codableHandler(param, handler)
+            } catch {
+                response.status(.internalServerError)
+                response.send("\(error)")
+                next()
             }
-            try codableHandler(param, handler)
         }
-    }    
+    }
 
     // PUT with Identifier
     public func put<Id: Identifier, I: Codable, O: Codable>(_ route: String, codableHandler: @escaping IdentifierCodableClosure<Id, I, O>) {
