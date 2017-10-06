@@ -21,57 +21,70 @@ import Dispatch
 @testable import Kitura
 @testable import KituraNet
 
+#if swift(>=4.0)
+
 class TestBasicTypeRouter: KituraTest {
     static var allTests: [(String, (TestBasicTypeRouter) -> () throws -> Void)] {
         return [
-            //("testBasicPost", testBasicPost),
+            ("testBasicPost", testBasicPost),
         ]
     }
     
     let router = Router()
     
     struct User: Codable {
-        let id: Int?
+        let id: Int
         let name: String
         init(id: Int, name: String) {
             self.id = id
             self.name = name
-        }
-        
+        }        
     }
     
-    var nextID: Int = 4
     var userStore: [Int: User] = [1: User(id: 1, name: "Mike"), 2: User(id: 2, name: "Chris"), 3: User(id: 3, name: "Ricardo")]
     
     func testBasicPost() {
 
         router.post("/users") { (user: User, respondWith: (User) -> Void) in
-
             print("POST on /users for user \(user)")
-            let id = self.nextID
-            self.nextID += 1
-            self.userStore[id] = user
-            
-            respondWith(User(id: id, name: user.name))
+            // Let's keep the test simple
+            // We just want to test that we can register a handler that 
+            // receives and sends back a Codable instance
+            self.userStore[user.id] = user            
+            respondWith(user)
         }
         performServerTest(router, timeout: 30) { expectation in
-            let userString = "{\"name\": \"David\"}"
-            let userData = userString.data(using: .utf8)!
+            // Let's create a User instance
+            let expectedUser = User(id: 4, name: "David")
+            // Create JSON representation of User instance
+            guard let userData = try? JSONEncoder().encode(expectedUser) else {
+                XCTFail("Could not generate user data from string!")
+                return
+            }
             
             self.performRequest("post", path: "/users", callback: { response in
-                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                if let response = response {
-                    XCTAssertEqual(response.statusCode, HTTPStatusCode.created, "HTTP Status code was \(String(describing: response.statusCode))")
-                
-                    do {
-                        var data = Data()
-                        let length = try response.readAllData(into: &data)
-                        XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
-                        XCTAssertNoThrow(try JSONDecoder().decode(User.self, from: data), "Expected response decodable to User, got \(String(describing: String(data: data, encoding: .utf8)))")
-                    } catch {
-                        XCTFail("Error reading body")
-                    }
+                guard let response = response else {
+                    XCTFail("ERROR!!! ClientRequest response object was nil")
+                    return
+                }               
+               
+                XCTAssertEqual(response.statusCode, HTTPStatusCode.created, "HTTP Status code was \(String(describing: response.statusCode))")
+                var data = Data()
+                guard let length = try? response.readAllData(into: &data) else {
+                    XCTFail("Error reading response length!")
+                    return
                 }
+                
+                XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
+                    guard let user = try? JSONDecoder().decode(User.self, from: data) else {
+                    XCTFail("Could not decode response! Expected response decodable to User, but got \(String(describing: String(data: data, encoding: .utf8)))")
+                    return
+                }
+
+                // Validate the data we got back from the server
+                XCTAssertEqual(user.name, expectedUser.name)
+                XCTAssertEqual(user.id, expectedUser.id)
+                     
                 expectation.fulfill()
             }, requestModifier: { request in
                 request.write(from: userData)
@@ -79,4 +92,6 @@ class TestBasicTypeRouter: KituraTest {
         }
     }
 }
+
+#endif
 
