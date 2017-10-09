@@ -16,7 +16,6 @@
 
 import XCTest
 import Foundation
-import Dispatch
 
 @testable import Kitura
 @testable import KituraNet
@@ -27,8 +26,10 @@ class TestBasicTypeRouter: KituraTest {
     static var allTests: [(String, (TestBasicTypeRouter) -> () throws -> Void)] {
         return [
             ("testBasicPost", testBasicPost),
-            ("testBasicSingleGet", testBasicGet),
+            ("testBasicGet", testBasicGet),
             ("testBasicSingleGet", testBasicSingleGet),
+            ("testBasicDelete", testBasicDelete),
+            ("testBasicSingleDelete", testBasicSingleDelete),
         ]
     }
     
@@ -190,6 +191,63 @@ class TestBasicTypeRouter: KituraTest {
                 // Validate the data we got back from the server
                 XCTAssertEqual(user.id, expectedUser.id)
                 XCTAssertEqual(user.name, expectedUser.name)
+                
+                expectation.fulfill()
+            })
+        }
+    }
+    
+    func testBasicDelete() {
+        
+        router.delete("/users") { (respondWith: (Swift.Error?) -> Void) in
+            self.userStore.removeAll()
+            respondWith(nil)
+        }
+        
+        performServerTest(router, timeout: 30) { expectation in
+            
+            self.performRequest("delete", path: "/users", callback: { response in
+                guard let response = response else {
+                    XCTFail("ERROR!!! ClientRequest response object was nil")
+                    return
+                }
+                
+                XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
+                var data = Data()
+                guard let length = try? response.readAllData(into: &data) else {
+                    XCTFail("Error reading response length!")
+                    return
+                }
+                
+                XCTAssert(length == 0, "Expected zero bytes, received \(String(describing: length)) bytes.")
+                
+                expectation.fulfill()
+            })
+        }
+    }
+    
+    func testBasicSingleDelete() {
+        
+        router.delete("/users") { (id: Item, respondWith: (Swift.Error?) -> Void) in
+            respondWith(nil)
+        }
+        
+        performServerTest(router, timeout: 30) { expectation in
+            
+            self.performRequest("delete", path: "/users/1", callback: { response in
+                guard let response = response else {
+                    XCTFail("ERROR!!! ClientRequest response object was nil")
+                    return
+                }
+                
+                XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
+                var data = Data()
+                guard let length = try? response.readAllData(into: &data) else {
+                    XCTFail("Error reading response length!")
+                    return
+                }
+                
+                XCTAssert(length == 0, "Expected zero bytes, received \(String(describing: length)) bytes.")
                 
                 expectation.fulfill()
             })
