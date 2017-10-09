@@ -30,6 +30,7 @@ class TestBasicTypeRouter: KituraTest {
             ("testBasicSingleGet", testBasicSingleGet),
             ("testBasicDelete", testBasicDelete),
             ("testBasicSingleDelete", testBasicSingleDelete),
+            ("testBasicPut", testBasicPut),
         ]
     }
     
@@ -250,6 +251,52 @@ class TestBasicTypeRouter: KituraTest {
                 XCTAssert(length == 0, "Expected zero bytes, received \(String(describing: length)) bytes.")
                 
                 expectation.fulfill()
+            })
+        }
+    }
+    
+    func testBasicPut() {
+        
+        router.put("/users") { (id: Item, user: User, respondWith: (User) -> Void) in
+            self.userStore[id.id] = user
+            respondWith(user)
+        }
+        
+        performServerTest(router, timeout: 30) { expectation in
+            // Let's create a User instance
+            let expectedUser = User(id: 1, name: "David")
+            // Create JSON representation of User instance
+            guard let userData = try? JSONEncoder().encode(expectedUser) else {
+                XCTFail("Could not generate user data from string!")
+                return
+            }
+            
+            self.performRequest("put", path: "/users/1", callback: { response in
+                guard let response = response else {
+                    XCTFail("ERROR!!! ClientRequest response object was nil")
+                    return
+                }
+                
+                XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
+                var data = Data()
+                guard let length = try? response.readAllData(into: &data) else {
+                    XCTFail("Error reading response length!")
+                    return
+                }
+                
+                XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
+                guard let user = try? JSONDecoder().decode(User.self, from: data) else {
+                    XCTFail("Could not decode response! Expected response decodable to User, but got \(String(describing: String(data: data, encoding: .utf8)))")
+                    return
+                }
+                
+                // Validate the data we got back from the server
+                XCTAssertEqual(user.name, expectedUser.name)
+                XCTAssertEqual(user.id, expectedUser.id)
+                
+                expectation.fulfill()
+            }, requestModifier: { request in
+                request.write(from: userData)
             })
         }
     }
