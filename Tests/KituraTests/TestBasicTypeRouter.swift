@@ -27,10 +27,20 @@ class TestBasicTypeRouter: KituraTest {
     static var allTests: [(String, (TestBasicTypeRouter) -> () throws -> Void)] {
         return [
             ("testBasicPost", testBasicPost),
+            ("testBasicSingleGet", testBasicGet),
+            ("testBasicSingleGet", testBasicSingleGet),
         ]
     }
     
-    let router = Router()
+    //Need to initialise to avoid compiler error
+    var router = Router()
+    var userStore: [Int: User] = [:]
+    
+    //Reset for each test
+    override func setUp() {
+        router = Router()
+        userStore = [1: User(id: 1, name: "Mike"), 2: User(id: 2, name: "Chris"), 3: User(id: 3, name: "Ricardo")]
+    }
     
     struct User: Codable {
         let id: Int
@@ -41,7 +51,16 @@ class TestBasicTypeRouter: KituraTest {
         }        
     }
     
-    var userStore: [Int: User] = [1: User(id: 1, name: "Mike"), 2: User(id: 2, name: "Chris"), 3: User(id: 3, name: "Ricardo")]
+    public struct Item: Identifier {
+        public let id: Int
+        public init(value: String) throws {
+            if let id = Int(value) {
+                self.id = id
+            } else {
+                id = 0
+            }
+        }
+    }
     
     func testBasicPost() {
 
@@ -91,6 +110,92 @@ class TestBasicTypeRouter: KituraTest {
             })
         }
     }
+    
+    func testBasicGet() {
+        router.get("/users") { (respondWith: ([User]) -> Void) in
+            print("GET on /users")
+        
+            respondWith(self.userStore.map({ $0.value }))
+        }
+        performServerTest(router, timeout: 30) { expectation in
+            let expectedUsers = self.userStore.map({ $0.value }) // TODO: Write these out explicitly?
+            
+            self.performRequest("get", path: "/users", callback: { response in
+                guard let response = response else {
+                    XCTFail("ERROR!!! ClientRequest response object was nil")
+                    return
+                }
+                
+                XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
+                var data = Data()
+                guard let length = try? response.readAllData(into: &data) else {
+                    XCTFail("Error reading response length!")
+                    return
+                }
+                
+                XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
+                guard let users = try? JSONDecoder().decode([User].self, from: data) else {
+                    XCTFail("Could not decode response! Expected response decodable to array of Users, but got \(String(describing: String(data: data, encoding: .utf8)))")
+                    return
+                }
+                
+                // Validate the data we got back from the server
+                for (index, user) in users.enumerated() {
+                    XCTAssertEqual(user.id, expectedUsers[index].id)
+                    XCTAssertEqual(user.name, expectedUsers[index].name)
+                }
+                
+                expectation.fulfill()
+            })
+        }
+    }
+    
+    //Need to handle error, see next comment
+    struct NotFoundError: Swift.Error {}
+    
+    func testBasicSingleGet() {
+        router.get("/users") { (id: Item, respondWith: (User) -> Void) in
+            print("GET on /users")
+            guard let user = self.userStore[id.id] else {
+                XCTFail("ERROR!!! Couldn't find user with id \(id.id)")
+                throw NotFoundError() // TODO: This is not sufficient for an async function
+            }
+            respondWith(user)
+        }
+        performServerTest(router, timeout: 30) { expectation in
+            guard let expectedUser = self.userStore[1] else {
+                XCTFail("ERROR!!! Couldn't find user with id 1")
+                return
+            }
+            
+            self.performRequest("get", path: "/users/1", callback: { response in
+                guard let response = response else {
+                    XCTFail("ERROR!!! ClientRequest response object was nil")
+                    return
+                }
+                
+                XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
+                var data = Data()
+                guard let length = try? response.readAllData(into: &data) else {
+                    XCTFail("Error reading response length!")
+                    return
+                }
+                
+                XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
+                guard let user = try? JSONDecoder().decode(User.self, from: data) else {
+                    XCTFail("Could not decode response! Expected response decodable to array of Users, but got \(String(describing: String(data: data, encoding: .utf8)))")
+                    return
+                }
+                
+                // Validate the data we got back from the server
+                XCTAssertEqual(user.id, expectedUser.id)
+                XCTAssertEqual(user.name, expectedUser.name)
+                
+                expectation.fulfill()
+            })
+        }
+    }
+    
 }
 
 #endif
