@@ -31,29 +31,42 @@ class TestBasicTypeRouter: KituraTest {
             ("testBasicDelete", testBasicDelete),
             ("testBasicSingleDelete", testBasicSingleDelete),
             ("testBasicPut", testBasicPut),
+            //("testBasicPatch", testBasicPatch),
         ]
     }
     
     //Need to initialise to avoid compiler error
     var router = Router()
     var userStore: [Int: User] = [:]
-    
+    var optionalUserStore: [Int: OptionalUser] = [:]
     //Reset for each test
     override func setUp() {
         router = Router()
         userStore = [1: User(id: 1, name: "Mike"), 2: User(id: 2, name: "Chris"), 3: User(id: 3, name: "Ricardo")]
+        optionalUserStore = [1: OptionalUser(id: 1, name: "Mike"), 2: OptionalUser(id: 2, name: "Chris"), 3: OptionalUser(id: 3, name: "Ricardo")]
     }
     
     struct User: Codable {
         let id: Int
         let name: String
+        
         init(id: Int, name: String) {
             self.id = id
             self.name = name
         }        
     }
     
-    public struct Item: Identifier {
+    struct OptionalUser: Codable {
+        let id: Int?
+        let name: String?
+        
+        init(id: Int?, name: String?) {
+            self.id = id
+            self.name = name
+        }
+    }
+    
+    struct Item: Identifier {
         public let id: Int
         public init(value: String) throws {
             if let id = Int(value) {
@@ -74,6 +87,7 @@ class TestBasicTypeRouter: KituraTest {
             self.userStore[user.id] = user            
             respondWith(user)
         }
+        
         performServerTest(router, timeout: 30) { expectation in
             // Let's create a User instance
             let expectedUser = User(id: 4, name: "David")
@@ -301,6 +315,53 @@ class TestBasicTypeRouter: KituraTest {
         }
     }
     
+    //TODO: Currently fails, investigation is needed
+//    func testBasicPatch() {
+//
+//        router.patch("/users") { (id: Item, user: OptionalUser, respondWith: (OptionalUser) -> Void) in
+//
+//            self.optionalUserStore[id.id] = user
+//            respondWith(user)
+//        }
+//
+//        performServerTest(router, timeout: 30) { expectation in
+//            // Let's create a User instance
+//            let expectedUser = OptionalUser(id: nil, name: "David")
+//            // Create JSON representation of User instance
+//            guard let userData = try? JSONEncoder().encode(expectedUser) else {
+//                XCTFail("Could not generate user data from string!")
+//                return
+//            }
+//
+//            self.performRequest("patch", path: "/users/2", callback: { response in
+//                guard let response = response else {
+//                    XCTFail("ERROR!!! ClientRequest response object was nil")
+//                    return
+//                }
+//
+//                XCTAssertEqual(response.statusCode, HTTPStatusCode.created, "HTTP Status code was \(String(describing: response.statusCode))")
+//                var data = Data()
+//                guard let length = try? response.readAllData(into: &data) else {
+//                    XCTFail("Error reading response length!")
+//                    return
+//                }
+//
+//                XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
+//                guard let user = try? JSONDecoder().decode(User.self, from: data) else {
+//                    XCTFail("Could not decode response! Expected response decodable to User, but got \(String(describing: String(data: data, encoding: .utf8)))")
+//                    return
+//                }
+//
+//                // Validate the data we got back from the server
+//                XCTAssertEqual(user.name, expectedUser.name)
+//                XCTAssertEqual(user.id, expectedUser.id)
+//
+//                expectation.fulfill()
+//            }, requestModifier: { request in
+//                request.write(from: userData)
+//            })
+//        }
+//    }
 }
 
 #endif
