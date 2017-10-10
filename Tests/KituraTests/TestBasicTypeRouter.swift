@@ -16,7 +16,9 @@
 
 import XCTest
 import Foundation
+#if swift(>=4.0)
 import TypeSafeContracts
+#endif
 
 @testable import Kitura
 @testable import KituraNet
