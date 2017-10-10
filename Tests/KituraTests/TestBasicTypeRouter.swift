@@ -41,12 +41,10 @@ class TestBasicTypeRouter: KituraTest {
     //Need to initialise to avoid compiler error
     var router = Router()
     var userStore: [Int: User] = [:]
-    var optionalUserStore: [Int: OptionalUser] = [:]
     //Reset for each test
     override func setUp() {
         router = Router()
         userStore = [1: User(id: 1, name: "Mike"), 2: User(id: 2, name: "Chris"), 3: User(id: 3, name: "Ricardo")]
-        optionalUserStore = [1: OptionalUser(id: 1, name: "Mike"), 2: OptionalUser(id: 2, name: "Chris"), 3: OptionalUser(id: 3, name: "Ricardo")]
     }
     
     struct User: Codable {
@@ -307,20 +305,27 @@ class TestBasicTypeRouter: KituraTest {
         }
     }
     
-    //TODO: Currently fails, investigation is needed
+    //TODO: Currently fails, investigation is ongoing
 //    func testBasicPatch() {
 //
-//        router.patch("/users") { (id: Item, user: OptionalUser, respondWith: (OptionalUser) -> Void) in
-//
-//            self.optionalUserStore[id.id] = user
-//            respondWith(user)
+//        router.patch("/users") { (id: IntId, patchUser: OptionalUser, respondWith: (User) -> Void) in
+//            guard let existingUser = self.userStore[id.id] else {
+//                throw NotFoundError() // FIXME
+//            }
+//            if let patchUserName = patchUser.name {
+//                let updatedUser = User(id: id.id, name: patchUserName)
+//                self.userStore[id.id] = updatedUser
+//                respondWith(updatedUser)
+//            } else {
+//                respondWith(existingUser)
+//            }
 //        }
 //
 //        performServerTest(router, timeout: 30) { expectation in
 //            // Let's create a User instance
-//            let expectedUser = OptionalUser(id: nil, name: "David")
+//            let patchUser = OptionalUser(id: nil, name: "David")
 //            // Create JSON representation of User instance
-//            guard let userData = try? JSONEncoder().encode(expectedUser) else {
+//            guard let userData = try? JSONEncoder().encode(patchUser) else {
 //                XCTFail("Could not generate user data from string!")
 //                return
 //            }
@@ -331,7 +336,7 @@ class TestBasicTypeRouter: KituraTest {
 //                    return
 //                }
 //
-//                XCTAssertEqual(response.statusCode, HTTPStatusCode.created, "HTTP Status code was \(String(describing: response.statusCode))")
+//                XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
 //                var data = Data()
 //                guard let length = try? response.readAllData(into: &data) else {
 //                    XCTFail("Error reading response length!")
@@ -345,8 +350,8 @@ class TestBasicTypeRouter: KituraTest {
 //                }
 //
 //                // Validate the data we got back from the server
-//                XCTAssertEqual(user.name, expectedUser.name)
-//                XCTAssertEqual(user.id, expectedUser.id)
+//                XCTAssertEqual(user.name, patchUser.name)
+//                XCTAssertEqual(user.id, 2)
 //
 //                expectation.fulfill()
 //            }, requestModifier: { request in
