@@ -39,6 +39,14 @@ extension Router {
     public typealias CodableArrayClosure<O: Codable> = (@escaping CodableArrayResultClosure<O>) throws -> Void
     public typealias IdentifierSimpleCodableClosure<Id: Identifier, O: Codable> = (Id, @escaping CodableResultClosure<O>) throws -> Void
 
+    
+    // CRUD API type safe routing
+    // (URL path and HTTP verb are inferred by the framework)
+    public func register<I: Persistable>(api: I.Type) {
+        api.registerHandlers(router: self)
+        Log.verbose("Registered API: \(api)")
+    }
+    
     // GET
     public func get<O: Codable>(_ route: String, codableHandler: @escaping CodableArrayClosure<O>) {
         get(route) { request, response, next in
@@ -264,5 +272,65 @@ extension Router {
         }
     }
 }
+    
+extension Persistable {
+    static func registerHandlers(router: Router) {
+        // Setup name space based on name of model (eg. User -> user(s))
+        let typeWithType: String = String(describing: type(of: self))
+        let typeName = String(typeWithType.characters.dropLast(5))
+        let single = "/\(typeName.lowercased())"
+        let plural = "\(single)s"
 
+        // Register create
+        router.post("\(plural)") { request, response, next in
+            var data = Data()
+            let _ = try request.read(into: &data)
+            let param = try JSONDecoder().decode(Model.self, from: data)
+            self.create(model: param, respondWith: { result, error in
+                do {
+                    let encoded = try JSONEncoder().encode(result)
+                    response.send(data: encoded)
+                } catch {
+                    response.status(.internalServerError)
+                }
+                next()
+            })
+        }
+        Log.verbose("Registered POST for: \(self)")
+        
+        // Register update
+        router.put("\(plural)/:id") { request, response, next in
+            let id = request.parameters["id"] ?? ""
+            let identifier = try Id(value: id)
+            var data = Data()
+            let _ = try request.read(into: &data)
+            let param = try JSONDecoder().decode(Model.self, from: data)
+            self.update(id: identifier, model: param, respondWith: { result, error in
+                do {
+                    let encoded = try JSONEncoder().encode(result)
+                    response.send(data: encoded)
+                } catch {
+                    response.status(.internalServerError)
+                }
+                next()
+            })
+            
+        }
+        Log.verbose("Registered PUT for: \(self)")
+        
+        // Register read ALL
+        router.get(plural) { request, response, next in
+            self.read(respondWith: { result, error in
+                do {
+                    let encoded = try JSONEncoder().encode(result)
+                    response.send(data: encoded)
+                } catch {
+                    response.status(.internalServerError)
+                }
+                next()
+            })
+        }
+        Log.verbose("Registered GET for: \(self)")
+    }
+}
 #endif
