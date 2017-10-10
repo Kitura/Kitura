@@ -16,6 +16,7 @@
 
 import XCTest
 import Foundation
+import TypeSafeContracts
 
 @testable import Kitura
 @testable import KituraNet
@@ -63,17 +64,6 @@ class TestBasicTypeRouter: KituraTest {
         init(id: Int?, name: String?) {
             self.id = id
             self.name = name
-        }
-    }
-    
-    struct Item: Identifier {
-        public let id: Int
-        public init(value: String) throws {
-            if let id = Int(value) {
-                self.id = id
-            } else {
-                id = 0
-            }
         }
     }
     
@@ -170,7 +160,7 @@ class TestBasicTypeRouter: KituraTest {
     struct NotFoundError: Swift.Error {}
     
     func testBasicSingleGet() {
-        router.get("/users") { (id: Item, respondWith: (User) -> Void) in
+        router.get("/users") { (id: IntId, respondWith: (User) -> Void) in
             print("GET on /users")
             guard let user = self.userStore[id.id] else {
                 XCTFail("ERROR!!! Couldn't find user with id \(id.id)")
@@ -243,7 +233,7 @@ class TestBasicTypeRouter: KituraTest {
     
     func testBasicSingleDelete() {
         
-        router.delete("/users") { (id: Item, respondWith: (Swift.Error?) -> Void) in
+        router.delete("/users") { (id: IntId, respondWith: (Swift.Error?) -> Void) in
             respondWith(nil)
         }
         
@@ -271,7 +261,7 @@ class TestBasicTypeRouter: KituraTest {
     
     func testBasicPut() {
         
-        router.put("/users") { (id: Item, user: User, respondWith: (User) -> Void) in
+        router.put("/users") { (id: IntId, user: User, respondWith: (User) -> Void) in
             self.userStore[id.id] = user
             respondWith(user)
         }

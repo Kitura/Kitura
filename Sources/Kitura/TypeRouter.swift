@@ -16,16 +16,9 @@
 
 import Foundation
 import LoggerAPI
+import TypeSafeContracts
 
 #if swift(>=4.0)
-
-//Protocols - we will move them to a separate repo soon so they can be shared with other swift packages
-public protocol Identifier {
-    init(value: String) throws
-}
-
-// Need to define an Error entity that conforms to the Erro protocol
-//Protocols
 
 // Type-safe router
 // Note: If an exception is thrown from a handler and is bubbled up to the framework,
