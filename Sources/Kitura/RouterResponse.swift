@@ -88,10 +88,12 @@ public class RouterResponse {
 
     private var lifecycle = Lifecycle()
     
+    #if swift(>=4.0)
     private let encoder = JSONEncoder()
+    #endif
 
     // regex used to sanitize javascript identifiers
-    private static let sanitizeJSIdentifierRegex: NSRegularExpression! = {
+    fileprivate static let sanitizeJSIdentifierRegex: NSRegularExpression! = {
         do {
             return try NSRegularExpression(pattern: "[^\\[\\]\\w$.]", options: [])
         } catch { // pattern is a known valid literal, should never throw

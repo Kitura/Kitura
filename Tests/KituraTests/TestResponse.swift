@@ -71,16 +71,14 @@ class TestResponse: KituraTest {
 
     #if swift(>=4.0)
     class SomeJSON: Codable, Equatable {
-        let key: String
-        let value: String
+        let some: String
         
-        init(key: String = "some", value: String = "json") {
-            self.key = key
-            self.value = value
+        init(value: String = "json") {
+            self.some = value
         }
         
         static func ==(lhs: SomeJSON, rhs: SomeJSON) -> Bool {
-            return lhs.key == rhs.key && lhs.value == rhs.value
+            return lhs.some == rhs.some
         }
     }
 
@@ -861,11 +859,11 @@ class TestResponse: KituraTest {
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
                     let body = try response?.readString()
-#if os(Linux)
-                    let expected = "{\"key\":\"some\",\"value\":\"json\"}"
-#else
-                    let expected = "{\"key\":\"some\",\"value\":\"json\"}"
-#endif
+                    #if swift(>=4.0)
+                        let expected = "{\"some\":\"json\"}"
+                    #else
+                        let expected = "{\n  \"some\": \"json\"\n}"
+                    #endif
                     XCTAssertEqual(body, "/**/ testfn(\(expected))")
                     XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/javascript")
                 } catch {
@@ -897,11 +895,11 @@ class TestResponse: KituraTest {
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
                     let body = try response?.readString()
-#if os(Linux)
-                    let expected = "{\"key\":\"some\",\"value\":\"json\"}"
-#else
-                    let expected = "{\"key\":\"some\",\"value\":\"json\"}"
-#endif
+                    #if swift(>=4.0)
+                        let expected = "{\"some\":\"json\"}"
+                    #else
+                        let expected = "{\n  \"some\": \"json\"\n}"
+                    #endif
                     XCTAssertEqual(body, "/**/ testfn(\(expected))")
                     XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/javascript")
                 } catch {
@@ -917,11 +915,12 @@ class TestResponse: KituraTest {
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
                     let body = try response?.readString()
-                    #if os(Linux)
-                        let expected = "{\"key\":\"some\",\"value\":\"json with bad js chars \\u2028 \\u2029\"}"
+                    #if swift(>=4.0)
+                        let expected = "{\"some\":\"json with bad js chars \\u2028 \\u2029\"}"
                     #else
-                        let expected = "{\"key\":\"some\",\"value\":\"json with bad js chars \\u2028 \\u2029\"}"
+                        let expected = "{\n  \"some\": \"json with bad js chars \\u2028 \\u2029\"\n}"
                     #endif
+
                     XCTAssertEqual(body, "/**/ testfn(\(expected))")
                     XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/javascript")
                 } catch {
@@ -1500,7 +1499,7 @@ class TestResponse: KituraTest {
                 #if swift(>=4.0)
                     let json = SomeJSON(value: ("json with bad js chars \u{2028} \u{2029}" as NSString) as String)
                 #else
-                    let json = JSON([ "json with bad js chars \u{2028} \u{2029}" as NSString ])
+                    let json = JSON([ "some": "json with bad js chars \u{2028} \u{2029}" as NSString ])
                 #endif
             #endif
             do {
