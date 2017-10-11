@@ -18,7 +18,7 @@ import Foundation
 import LoggerAPI
 
 #if swift(>=4.0)
-import TypeSafeContracts
+import SafetyContracts
 
 // Type-safe router
 // Note: If an exception is thrown from a handler and is bubbled up to the framework,
