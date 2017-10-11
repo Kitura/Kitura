@@ -30,29 +30,22 @@ import SafetyContracts
 // https://docs.oracle.com/en/cloud/iaas/messaging-cloud/csmes/rest-api-http-status-codes-and-error-messages-reference.html#GUID-AAB1EE32-BE4A-4ACC-BEAC-ABA85EB41919
 extension Router {
     public typealias ResultClosure = (Swift.Error?) -> Void
-    public typealias CodableResultClosure<O: Codable> = (O) -> Void
-    public typealias CodableArrayResultClosure<O: Codable> = ([O]) -> Void
-    public typealias IdentifierCodableClosure<Id: Identifier, I: Codable, O: Codable> = (Id, I, @escaping CodableResultClosure<O>) throws -> Void
-    public typealias CodableClosure<I: Codable, O: Codable> = (I, @escaping CodableResultClosure<O>) throws -> Void    
-    public typealias NonCodableClosure = (@escaping ResultClosure) throws -> Void
-    public typealias IdentifierNonCodableClosure<Id: Identifier> = (Id, @escaping ResultClosure) throws -> Void    
-    public typealias CodableArrayClosure<O: Codable> = (@escaping CodableArrayResultClosure<O>) throws -> Void
-    public typealias IdentifierSimpleCodableClosure<Id: Identifier, O: Codable> = (Id, @escaping CodableResultClosure<O>) throws -> Void
-
-    
-    // CRUD API type safe routing
-    // (URL path and HTTP verb are inferred by the framework)
-    public func register<I: Persistable>(api: I.Type) {
-        api.registerHandlers(router: self)
-        Log.verbose("Registered API: \(api)")
-    }
-    
+    public typealias CodableResultClosure<O: Codable> = (O?, Swift.Error?) -> Void
+    public typealias CodableArrayResultClosure<O: Codable> = ([O]?, Swift.Error?) -> Void
+    public typealias IdentifierCodableClosure<Id: Identifier, I: Codable, O: Codable> = (Id, I, @escaping CodableResultClosure<O>) -> Void
+    public typealias CodableClosure<I: Codable, O: Codable> = (I, @escaping CodableResultClosure<O>) -> Void
+    public typealias NonCodableClosure = (@escaping ResultClosure) -> Void
+    public typealias IdentifierNonCodableClosure<Id: Identifier> = (Id, @escaping ResultClosure) -> Void
+    public typealias CodableArrayClosure<O: Codable> = (@escaping CodableArrayResultClosure<O>) -> Void
+    public typealias IdentifierSimpleCodableClosure<Id: Identifier, O: Codable> = (Id, @escaping CodableResultClosure<O>) -> Void
+       
     // GET
     public func get<O: Codable>(_ route: String, codableHandler: @escaping CodableArrayClosure<O>) {
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request")
-            // Define result handler            
-            let handler: CodableArrayResultClosure<O> = { result in
+            // Define result handler
+            // todo - handle error           
+            let handler: CodableArrayResultClosure<O> = { result, error in
                 do {
                     let encoded = try JSONEncoder().encode(result)
                     response.status(.OK)
@@ -63,13 +56,7 @@ extension Router {
                 }
                 next()
             }
-            // Invoke application handler
-            do { 
-                try codableHandler(handler)
-            } catch {
-                response.status(.internalServerError)
-                next()
-            }            
+            codableHandler(handler)          
         }
     }
 
@@ -79,11 +66,15 @@ extension Router {
             Log.verbose("Received GET (singular) type-safe request")
             do {
                 // Define result handler
-                let handler: CodableResultClosure<O> = { result in
+                let handler: CodableResultClosure<O> = { result, error in
                     do {
-                        let encoded = try JSONEncoder().encode(result)
-                        response.status(.OK)
-                        response.send(data: encoded)
+                        if let _ = error {
+                            response.status(.internalServerError)
+                        } else {
+                            let encoded = try JSONEncoder().encode(result)
+                            response.status(.OK)
+                            response.send(data: encoded)
+                        }
                     } catch {
                          // Http 500 error
                         response.status(.internalServerError)
@@ -93,12 +84,7 @@ extension Router {
                 // Process incoming data from client
                 let id = request.parameters["id"] ?? ""
                 let identifier = try Id(value: id)
-                do { 
-                    try codableHandler(identifier, handler)
-                } catch {
-                    response.status(.internalServerError)
-                    next()
-                }
+                codableHandler(identifier, handler)
             } catch {
                 // Http 422 error
                 response.status(.unprocessableEntity)
@@ -120,13 +106,7 @@ extension Router {
                 }
                 next()
             }
-            // Invoke application handler
-            do { 
-                try codableHandler(handler)
-            } catch {
-                response.status(.internalServerError)
-                next()
-            }
+            codableHandler(handler)
         }
     }
 
@@ -146,13 +126,7 @@ extension Router {
             do {
                 let id = request.parameters["id"] ?? ""
                 let identifier = try Id(value: id)
-                // Invoke application handler
-                do {
-                    try codableHandler(identifier, handler)
-                } catch {
-                    response.status(.internalServerError)
-                    next()
-                }
+                codableHandler(identifier, handler)
             } catch {
                  // Http 422 error
                 response.status(.unprocessableEntity)
@@ -173,11 +147,15 @@ extension Router {
                 let param = try JSONDecoder().decode(I.self, from: data)
                 let identifier = try Id(value: id)
                 // Define handler to process result from application
-                let handler: CodableResultClosure<O> = { result in
+                let handler: CodableResultClosure<O> = { result, error in
                     do {
-                        let encoded = try JSONEncoder().encode(result)
-                        response.status(.OK)
-                        response.send(data: encoded)
+                        if let _ = error {
+                            response.status(.internalServerError)
+                        } else {
+                            let encoded = try JSONEncoder().encode(result)
+                            response.status(.OK)
+                            response.send(data: encoded)
+                        }
                     } catch {
                         // Http 500 error
                         response.status(.internalServerError)
@@ -185,12 +163,7 @@ extension Router {
                     next()
                 }
                 // Invoke application handler
-                do { 
-                    try codableHandler(identifier, param, handler)
-                } catch {
-                    response.status(.internalServerError)
-                    next()
-                }
+                codableHandler(identifier, param, handler)
             } catch {
                 // Http 422 error
                 response.status(.unprocessableEntity)
@@ -208,11 +181,15 @@ extension Router {
                 var data = Data()
                 let _ = try request.read(into: &data)
                 let param = try JSONDecoder().decode(I.self, from: data)
-                let handler: CodableResultClosure<O> = { result in
+                let handler: CodableResultClosure<O> = { result, error in
                     do {
-                        let encoded = try JSONEncoder().encode(result)
-                        response.status(.created)
-                        response.send(data: encoded)
+                        if let _ = error {
+                            response.status(.internalServerError)
+                        } else {
+                            let encoded = try JSONEncoder().encode(result)
+                            response.status(.created)
+                            response.send(data: encoded)
+                        }
                     } catch {
                         // Http 500 error
                         response.status(.internalServerError)
@@ -220,12 +197,7 @@ extension Router {
                     next()
                 }
                 // Invoke application handler
-                do { 
-                    try codableHandler(param, handler)
-                } catch {
-                    response.status(.internalServerError)
-                    next()
-                }
+                codableHandler(param, handler)
             } catch {
                 // Http 400 error
                 //response.status(.badRequest)
@@ -247,11 +219,15 @@ extension Router {
                 let _ = try request.read(into: &data)
                 let param = try JSONDecoder().decode(I.self, from: data)
                 let identifier = try Id(value: id)
-                let handler: CodableResultClosure<O> = { result in
+                let handler: CodableResultClosure<O> = { result, error in
                     do {
-                        let encoded = try JSONEncoder().encode(result)
-                        response.status(.OK)
-                        response.send(data: encoded)
+                        if let _ = error {
+                            response.status(.internalServerError)
+                        } else {
+                            let encoded = try JSONEncoder().encode(result)
+                            response.status(.OK)
+                            response.send(data: encoded)
+                        }
                     } catch {
                         // Http 500 error
                         response.status(.internalServerError)
@@ -259,12 +235,7 @@ extension Router {
                     next()
                 }
                 // Invoke application handler
-                do {
-                    try codableHandler(identifier, param, handler)
-                 } catch {
-                    response.status(.internalServerError)
-                    next()
-                }
+                codableHandler(identifier, param, handler)
             } catch {
                 response.status(.unprocessableEntity)
                 next()
@@ -272,24 +243,34 @@ extension Router {
         }
     }
 }
-    
+
+// I am now wondering if we actually need this...
+extension Router {
+    // CRUD API type safe routing
+    // (URL path and HTTP verb are inferred by the framework)
+    public func register<I: Persistable>(api: I.Type) {
+        api.registerHandlers(router: self)
+        Log.verbose("Registered API: \(api)")
+    }
+}
+
+// Persistable extension
 extension Persistable {
-    static func registerHandlers(router: Router) {
-        // Setup name space based on name of model (eg. User -> user(s))
-        let typeWithType: String = String(describing: type(of: self))
-        let typeName = String(typeWithType.characters.dropLast(5))
-        let single = "/\(typeName.lowercased())"
-        let plural = "\(single)s"
+    static func registerHandlers(router: Router) {      
 
         // Register create
-        router.post("\(plural)") { request, response, next in
+        router.post("\(route)") { request, response, next in
             var data = Data()
             let _ = try request.read(into: &data)
             let param = try JSONDecoder().decode(Model.self, from: data)
             self.create(model: param, respondWith: { result, error in
                 do {
-                    let encoded = try JSONEncoder().encode(result)
-                    response.send(data: encoded)
+                    if let _ = error {
+                         response.status(.internalServerError)
+                    } else {
+                        let encoded = try JSONEncoder().encode(result)
+                        response.send(data: encoded)
+                    }
                 } catch {
                     response.status(.internalServerError)
                 }
@@ -299,7 +280,7 @@ extension Persistable {
         Log.verbose("Registered POST for: \(self)")
         
         // Register update
-        router.put("\(plural)/:id") { request, response, next in
+        router.put("\(route)/:id") { request, response, next in
             let id = request.parameters["id"] ?? ""
             let identifier = try Id(value: id)
             var data = Data()
@@ -307,8 +288,12 @@ extension Persistable {
             let param = try JSONDecoder().decode(Model.self, from: data)
             self.update(id: identifier, model: param, respondWith: { result, error in
                 do {
-                    let encoded = try JSONEncoder().encode(result)
-                    response.send(data: encoded)
+                    if let _ = error {
+                         response.status(.internalServerError)
+                    } else {
+                        let encoded = try JSONEncoder().encode(result)
+                        response.send(data: encoded)
+                    }
                 } catch {
                     response.status(.internalServerError)
                 }
@@ -319,11 +304,15 @@ extension Persistable {
         Log.verbose("Registered PUT for: \(self)")
         
         // Register read ALL
-        router.get(plural) { request, response, next in
+        router.get(route) { request, response, next in
             self.read(respondWith: { result, error in
                 do {
-                    let encoded = try JSONEncoder().encode(result)
-                    response.send(data: encoded)
+                    if let _ = error {
+                        response.status(.internalServerError)
+                    } else {
+                        let encoded = try JSONEncoder().encode(result)
+                        response.send(data: encoded)
+                    }
                 } catch {
                     response.status(.internalServerError)
                 }
@@ -333,13 +322,17 @@ extension Persistable {
         Log.verbose("Registered GET for: \(self)")
         
         // Register read Single
-        router.get("\(plural)/:id") { request, response, next in
+        router.get("\(route)/:id") { request, response, next in
             let id = request.parameters["id"] ?? ""
             let identifier = try Id(value: id)
             self.read(id: identifier, respondWith: { result, error in
                 do {
-                    let encoded = try JSONEncoder().encode(result)
-                    response.send(data: encoded)
+                    if let _ = error {
+                         response.status(.internalServerError)
+                    } else {
+                        let encoded = try JSONEncoder().encode(result)
+                        response.send(data: encoded)
+                    }
                 } catch {
                     response.status(.internalServerError)
                 }
@@ -349,7 +342,7 @@ extension Persistable {
         Log.verbose("Registered single GET for: \(self)")
         
         // Register delete all
-        router.delete(plural) { request, response, next in
+        router.delete(route) { request, response, next in
             self.delete(respondWith: { error in 
                 if let _ = error {
                     response.status(.internalServerError)
@@ -362,7 +355,7 @@ extension Persistable {
         Log.verbose("Registered DELETE for: \(self)")
         
         // Register delete single
-        router.delete("\(plural)/:id") { request, response, next in
+        router.delete("\(route)/:id") { request, response, next in
             let id = request.parameters["id"] ?? ""
             let identifier = try Id(value: id)
             self.delete(id: identifier, respondWith: { error in
@@ -376,5 +369,7 @@ extension Persistable {
         }
         Log.verbose("Registered single DELETE for: \(self)")
     }
+    
 }
+
 #endif

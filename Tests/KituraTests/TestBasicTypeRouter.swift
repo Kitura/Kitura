@@ -38,10 +38,11 @@ class TestBasicTypeRouter: KituraTest {
         ]
     }
     
-    //Need to initialise to avoid compiler error
+    // Need to initialise to avoid compiler error
     var router = Router()
     var userStore: [Int: User] = [:]
-    //Reset for each test
+
+    // Reset for each test
     override func setUp() {
         router = Router()
         userStore = [1: User(id: 1, name: "Mike"), 2: User(id: 2, name: "Chris"), 3: User(id: 3, name: "Ricardo")]
@@ -68,14 +69,13 @@ class TestBasicTypeRouter: KituraTest {
     }
     
     func testBasicPost() {
-
-        router.post("/users") { (user: User, respondWith: (User) -> Void) in
+        router.post("/users") { (user: User, respondWith: (User?, Swift.Error?) -> Void) in
             print("POST on /users for user \(user)")
             // Let's keep the test simple
             // We just want to test that we can register a handler that 
             // receives and sends back a Codable instance
             self.userStore[user.id] = user            
-            respondWith(user)
+            respondWith(user, nil)
         }
         
         performServerTest(router, timeout: 30) { expectation in
@@ -118,11 +118,12 @@ class TestBasicTypeRouter: KituraTest {
     }
     
     func testBasicGet() {
-        router.get("/users") { (respondWith: ([User]) -> Void) in
+        router.get("/users") { (respondWith: ([User]?, Swift.Error?) -> Void) in
             print("GET on /users")
         
-            respondWith(self.userStore.map({ $0.value }))
+            respondWith(self.userStore.map({ $0.value }), nil)
         }
+
         performServerTest(router, timeout: 30) { expectation in
             let expectedUsers = self.userStore.map({ $0.value }) // TODO: Write these out explicitly?
             
@@ -160,14 +161,17 @@ class TestBasicTypeRouter: KituraTest {
     struct NotFoundError: Swift.Error {}
     
     func testBasicSingleGet() {
-        router.get("/users") { (id: IntId, respondWith: (User) -> Void) in
+        router.get("/users") { (id: IntId, respondWith: (User?, Swift.Error?) -> Void) in
             print("GET on /users")
             guard let user = self.userStore[id.id] else {
                 XCTFail("ERROR!!! Couldn't find user with id \(id.id)")
-                throw NotFoundError() // TODO: This is not sufficient for an async function
+                //TODO: Create error instance
+                respondWith(nil, nil)
+                return
             }
-            respondWith(user)
+            respondWith(user, nil)
         }
+
         performServerTest(router, timeout: 30) { expectation in
             guard let expectedUser = self.userStore[1] else {
                 XCTFail("ERROR!!! Couldn't find user with id 1")
@@ -261,9 +265,9 @@ class TestBasicTypeRouter: KituraTest {
     
     func testBasicPut() {
         
-        router.put("/users") { (id: IntId, user: User, respondWith: (User) -> Void) in
+        router.put("/users") { (id: IntId, user: User, respondWith: (User?, Swift.Error?) -> Void) in
             self.userStore[id.id] = user
-            respondWith(user)
+            respondWith(user, nil)
         }
         
         performServerTest(router, timeout: 30) { expectation in
