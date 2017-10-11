@@ -331,6 +331,50 @@ extension Persistable {
             })
         }
         Log.verbose("Registered GET for: \(self)")
+        
+        // Register read Single
+        router.get("\(plural)/:id") { request, response, next in
+            let id = request.parameters["id"] ?? ""
+            let identifier = try Id(value: id)
+            self.read(id: identifier, respondWith: { result, error in
+                do {
+                    let encoded = try JSONEncoder().encode(result)
+                    response.send(data: encoded)
+                } catch {
+                    response.status(.internalServerError)
+                }
+                next()
+            })
+        }
+        Log.verbose("Registered single GET for: \(self)")
+        
+        // Register delete all
+        router.delete(plural) { request, response, next in
+            self.delete(respondWith: { error in 
+                if let _ = error {
+                    response.status(.internalServerError)
+                } else {
+                    response.status(.OK)
+                }
+                next()
+            })
+        }
+        Log.verbose("Registered DELETE for: \(self)")
+        
+        // Register delete single
+        router.delete("\(plural)/:id") { request, response, next in
+            let id = request.parameters["id"] ?? ""
+            let identifier = try Id(value: id)
+            self.delete(id: identifier, respondWith: { error in
+                if let _ = error {
+                    response.status(.internalServerError)
+                } else {
+                    response.status(.OK)
+                }
+                next()
+            })
+        }
+        Log.verbose("Registered single DELETE for: \(self)")
     }
 }
 #endif
