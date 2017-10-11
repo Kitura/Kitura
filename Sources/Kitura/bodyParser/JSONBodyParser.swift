@@ -14,8 +14,17 @@
  * limitations under the License.
  */
 
-import SwiftyJSON
 import Foundation
+
+#if swift(>=4.0)
+class JSONBodyParser: BodyParserProtocol {
+    func parse(_ data: Data) -> ParsedBody? {
+        return .json(data)
+    }
+}
+
+#else
+import SwiftyJSON
 
 class JSONBodyParser: BodyParserProtocol {
     func parse(_ data: Data) -> ParsedBody? {
@@ -26,3 +35,4 @@ class JSONBodyParser: BodyParserProtocol {
         return nil
     }
 }
+#endif

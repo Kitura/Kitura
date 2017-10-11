@@ -15,10 +15,14 @@
  **/
 
 import XCTest
+import Foundation
 
 @testable import Kitura
 @testable import KituraNet
+
+#if !swift(>=4.0)
 import SwiftyJSON
+#endif
 
 #if os(Linux)
     import Foundation
@@ -38,6 +42,11 @@ class TestSubrouter: KituraTest {
             ("testMergeParams", testMergeParams)
         ]
     }
+    
+    #if swift(>=4.0)
+    static let encoder = JSONEncoder()
+    static let decoder = JSONDecoder()
+    #endif
 
     let router = TestSubrouter.setupRouter()
 
@@ -154,7 +163,11 @@ class TestSubrouter: KituraTest {
         }
 
         let handler = { (req: RouterRequest, res: RouterResponse, next: () -> Void) throws in
-            try res.send(json: JSON(req.parameters)).end()
+            #if swift(>=4.0)
+                res.send(json: req.parameters)
+            #else
+                try res.send(json: JSON(req.parameters)).end()
+            #endif
         }
 
         let router = Router()
@@ -165,7 +178,11 @@ class TestSubrouter: KituraTest {
         subsubRouter1.all("/subsub2/passthrough", handler: handler)
 
         router.route("/root2/:root2", mergeParameters: true).all { req, res, _ in
-            try res.send(json: JSON(req.parameters)).end()
+            #if swift(>=4.0)
+                res.send(json: req.parameters)
+            #else
+                try res.send(json: JSON(req.parameters)).end()
+            #endif
         }
 
         performServerTest(router, asyncTasks: { expectation in
@@ -176,11 +193,18 @@ class TestSubrouter: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    let dict = JSON(data: data).dictionaryValue
-
-                    XCTAssertEqual(dict["root1"], nil)
-                    XCTAssertEqual(dict["sub1"]?.stringValue, "456")
-                    XCTAssertEqual(dict["subsub1"]?.stringValue, "789")
+                    #if swift(>=4.0)
+                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                        XCTAssertEqual(dict["root1"], nil)
+                        XCTAssertEqual(dict["sub1"], "456")
+                        XCTAssertEqual(dict["subsub1"], "789")
+                    #else
+                        let dict = JSON(data: data).dictionaryValue
+                        XCTAssertEqual(dict["root1"], nil)
+                        XCTAssertEqual(dict["sub1"]?.stringValue, "456")
+                        XCTAssertEqual(dict["subsub1"]?.stringValue, "789")
+                    #endif
+                    
                 } catch {
                     XCTFail()
                 }
@@ -195,11 +219,18 @@ class TestSubrouter: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    let dict = JSON(data: data).dictionaryValue
+                    #if swift(>=4.0)
+                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                        XCTAssertEqual(dict["root1"], nil)
+                        XCTAssertEqual(dict["sub1"], "456")
+                        XCTAssertEqual(dict["subsub2"], nil)
+                    #else
+                        let dict = JSON(data: data).dictionaryValue
+                        XCTAssertEqual(dict["root1"], nil)
+                        XCTAssertEqual(dict["sub1"]?.stringValue, "456")
+                        XCTAssertEqual(dict["subsub2"], nil)
+                    #endif
 
-                    XCTAssertEqual(dict["root1"], nil)
-                    XCTAssertEqual(dict["sub1"]?.stringValue, "456")
-                    XCTAssertEqual(dict["subsub2"], nil)
                 } catch {
                     XCTFail()
                 }
@@ -214,9 +245,14 @@ class TestSubrouter: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    let dict = JSON(data: data).dictionaryValue
+                    #if swift(>=4.0)
+                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                        XCTAssertEqual(dict["root2"], "123")
+                    #else
+                        let dict = JSON(data: data).dictionaryValue
+                        XCTAssertEqual(dict["root2"]?.stringValue, "123")
+                    #endif
 
-                    XCTAssertEqual(dict["root2"]?.stringValue, "123")
                 } catch {
                     XCTFail()
                 }
