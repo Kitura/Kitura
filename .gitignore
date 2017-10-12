@@ -6,3 +6,4 @@ Packages
 Kitura.xcodeproj
 *.DS_Store
 .build-ubuntu
+Package.resolved
