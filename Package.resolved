@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/IBM-Swift/SafetyContracts.git",
         "state": {
           "branch": null,
-          "revision": "263ef4a0e3c79cf947ac615ccae180581b1d0f32",
-          "version": "0.0.4"
+          "revision": "7649263b1dedb0796269c1783b5637646ec0782e",
+          "version": "0.0.5"
         }
       },
       {
