@@ -38,13 +38,13 @@ extension Router {
     public typealias IdentifierNonCodableClosure<Id: Identifier> = (Id, @escaping ResultClosure) -> Void
     public typealias CodableArrayClosure<O: Codable> = (@escaping CodableArrayResultClosure<O>) -> Void
     public typealias IdentifierSimpleCodableClosure<Id: Identifier, O: Codable> = (Id, @escaping CodableResultClosure<O>) -> Void
-       
+
     // GET
     public func get<O: Codable>(_ route: String, codableHandler: @escaping CodableArrayClosure<O>) {
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request")
             // Define result handler
-            // todo - handle error           
+            // todo - handle error
             let handler: CodableArrayResultClosure<O> = { result, error in
                 do {
                     let encoded = try JSONEncoder().encode(result)
@@ -56,7 +56,7 @@ extension Router {
                 }
                 next()
             }
-            codableHandler(handler)          
+            codableHandler(handler)
         }
     }
 
@@ -100,7 +100,7 @@ extension Router {
             // Define result handler   
             let handler: ResultClosure = { error in
                 if let _ = error {
-                    response.status(.internalServerError)                    
+                    response.status(.internalServerError)
                 } else {
                     response.status(.OK)
                 }
@@ -116,7 +116,7 @@ extension Router {
             Log.verbose("Received DELETE (singular) type-safe request")
             let handler: ResultClosure = { error in
                 if let _ = error {
-                    response.status(.internalServerError)                    
+                    response.status(.internalServerError)
                 } else {
                     response.status(.OK)
                 }
@@ -131,7 +131,7 @@ extension Router {
                  // Http 422 error
                 response.status(.unprocessableEntity)
                 next()
-            }            
+            }
         }
     }
 
@@ -171,9 +171,9 @@ extension Router {
             }
         }
     }
-    
+
     // POST
-	public func post<I: Codable, O: Codable>(_ route: String, codableHandler: @escaping CodableClosure<I, O>) {
+    public func post<I: Codable, O: Codable>(_ route: String, codableHandler: @escaping CodableClosure<I, O>) {
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
             do {
@@ -315,10 +315,9 @@ extension Persistable {
                 }
                 next()
             })
-            
         }
         Log.verbose("Registered PUT for: \(self)")
-        
+
         // Register read ALL
         router.get(route) { request, response, next in
             self.read(respondWith: { result, error in
@@ -336,7 +335,7 @@ extension Persistable {
             })
         }
         Log.verbose("Registered GET for: \(self)")
-        
+
         // Register read Single
         router.get("\(route)/:id") { request, response, next in
             let id = request.parameters["id"] ?? ""
@@ -356,7 +355,7 @@ extension Persistable {
             })
         }
         Log.verbose("Registered single GET for: \(self)")
-        
+
         // Register delete all
         router.delete(route) { request, response, next in
             self.delete(respondWith: { error in 
@@ -369,7 +368,7 @@ extension Persistable {
             })
         }
         Log.verbose("Registered DELETE for: \(self)")
-        
+
         // Register delete single
         router.delete("\(route)/:id") { request, response, next in
             let id = request.parameters["id"] ?? ""
@@ -385,7 +384,6 @@ extension Persistable {
         }
         Log.verbose("Registered single DELETE for: \(self)")
     }
-    
 }
 
 #endif

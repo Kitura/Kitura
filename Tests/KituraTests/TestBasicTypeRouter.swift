@@ -161,10 +161,10 @@ class TestBasicTypeRouter: KituraTest {
     struct NotFoundError: Swift.Error {}
     
     func testBasicSingleGet() {
-        router.get("/users") { (id: IntId, respondWith: (User?, Swift.Error?) -> Void) in
+        router.get("/users") { (id: Int, respondWith: (User?, Swift.Error?) -> Void) in
             print("GET on /users")
-            guard let user = self.userStore[id.id] else {
-                XCTFail("ERROR!!! Couldn't find user with id \(id.id)")
+            guard let user = self.userStore[id] else {
+                XCTFail("ERROR!!! Couldn't find user with id \(id)")
                 //TODO: Create error instance
                 respondWith(nil, nil)
                 return
@@ -237,7 +237,7 @@ class TestBasicTypeRouter: KituraTest {
     
     func testBasicSingleDelete() {
         
-        router.delete("/users") { (id: IntId, respondWith: (Swift.Error?) -> Void) in
+        router.delete("/users") { (id: Int, respondWith: (Swift.Error?) -> Void) in
             respondWith(nil)
         }
         
@@ -265,8 +265,8 @@ class TestBasicTypeRouter: KituraTest {
     
     func testBasicPut() {
         
-        router.put("/users") { (id: IntId, user: User, respondWith: (User?, Swift.Error?) -> Void) in
-            self.userStore[id.id] = user
+        router.put("/users") { (id: Int, user: User, respondWith: (User?, Swift.Error?) -> Void) in
+            self.userStore[id] = user
             respondWith(user, nil)
         }
         
@@ -312,7 +312,7 @@ class TestBasicTypeRouter: KituraTest {
     //TODO: Currently fails, investigation is ongoing
 //    func testBasicPatch() {
 //
-//        router.patch("/users") { (id: IntId, patchUser: OptionalUser, respondWith: (User) -> Void) in
+//        router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User) -> Void) in
 //            guard let existingUser = self.userStore[id.id] else {
 //                throw NotFoundError() // FIXME
 //            }

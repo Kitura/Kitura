@@ -17,69 +17,53 @@
 import XCTest
 import Foundation
 #if swift(>=4.0)
-    import TypeSafeContracts
+    import SafetyContracts
 #endif
 
 @testable import Kitura
 @testable import KituraNet
 
 #if swift(>=4.0)
-extension Int: Identifier {
-    public var value: String {
-        return String(describing: self)
-    }
-    
-    public init(value: String) throws {
-        if let id = Int(value) {
-            self = id
-        } else {
-            throw TypeError.invalidIdentifier
-        }
-    }
-}
-
 var employeeStore: [Int: Employee] = [:]
 struct Employee: Codable {
     let id: Int
 }
-    
+
 extension Employee: Persistable {
     // Create
     static func create(model: Employee, respondWith: @escaping (Employee?, Swift.Error?) -> Void) {
         employeeStore[model.id] = model
         respondWith(model, nil)
     }
-    
-    static func read(respondWith: @escaping ([Model]?, Error?) -> Void) {
+
+    static func read(respondWith: @escaping ([Employee]?, Swift.Error?) -> Void) {
         let employees: [Employee] = employeeStore.map { $0.1 }
-        respondWith(employees)
+        respondWith(employees, nil)
     }
-    
-    static func read(id: Int, respondWith: @escaping (Model?, Error?) -> Void) {
-        
+
+    static func read(id: Int, respondWith: @escaping (Employee?, Swift.Error?) -> Void) {
+
     }
-    
-    static func update(id: Int, model: Model, respondWith: @escaping (Model?, Error?) -> Void) {
+
+    static func update(id: Int, model: Employee, respondWith: @escaping (Employee?, Swift.Error?) -> Void) {
         employeeStore[id] = model
         respondWith(model, nil)
     }
-    
-    static func delete(respondWith: @escaping (Error?) -> Void) {
-        
+
+    static func delete(respondWith: @escaping (Swift.Error?) -> Void) {
+
     }
-    static func delete(id: Int, respondWith: @escaping (Error?) -> Void) {
-        
+    static func delete(id: Int, respondWith: @escaping (Swift.Error?) -> Void) {
+
     }
 }
 
 class TestCRUDTypeRouter: KituraTest {
     static var allTests: [(String, (TestCRUDTypeRouter) -> () throws -> Void)] {
         return [
-            
+
         ]
     }
-
-
 }
 
 #endif
