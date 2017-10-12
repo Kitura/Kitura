@@ -37,7 +37,7 @@ class TestBasicTypeRouter: KituraTest {
             //("testBasicPatch", testBasicPatch),
         ]
     }
-    
+
     // Need to initialise to avoid compiler error
     var router = Router()
     var userStore: [Int: User] = [:]
@@ -47,37 +47,37 @@ class TestBasicTypeRouter: KituraTest {
         router = Router()
         userStore = [1: User(id: 1, name: "Mike"), 2: User(id: 2, name: "Chris"), 3: User(id: 3, name: "Ricardo")]
     }
-    
+
     struct User: Codable {
         let id: Int
         let name: String
-        
+
         init(id: Int, name: String) {
             self.id = id
             self.name = name
-        }        
+        }
     }
-    
+
     struct OptionalUser: Codable {
         let id: Int?
         let name: String?
-        
+
         init(id: Int?, name: String?) {
             self.id = id
             self.name = name
         }
     }
-    
+
     func testBasicPost() {
         router.post("/users") { (user: User, respondWith: (User?, Swift.Error?) -> Void) in
             print("POST on /users for user \(user)")
             // Let's keep the test simple
-            // We just want to test that we can register a handler that 
+            // We just want to test that we can register a handler that
             // receives and sends back a Codable instance
-            self.userStore[user.id] = user            
+            self.userStore[user.id] = user
             respondWith(user, nil)
         }
-        
+
         performServerTest(router, timeout: 30) { expectation in
             // Let's create a User instance
             let expectedUser = User(id: 4, name: "David")
@@ -86,20 +86,20 @@ class TestBasicTypeRouter: KituraTest {
                 XCTFail("Could not generate user data from string!")
                 return
             }
-            
+
             self.performRequest("post", path: "/users", callback: { response in
                 guard let response = response else {
                     XCTFail("ERROR!!! ClientRequest response object was nil")
                     return
-                }               
-               
+                }
+
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.created, "HTTP Status code was \(String(describing: response.statusCode))")
                 var data = Data()
                 guard let length = try? response.readAllData(into: &data) else {
                     XCTFail("Error reading response length!")
                     return
                 }
-                
+
                 XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
                     guard let user = try? JSONDecoder().decode(User.self, from: data) else {
                     XCTFail("Could not decode response! Expected response decodable to User, but got \(String(describing: String(data: data, encoding: .utf8)))")
@@ -109,7 +109,7 @@ class TestBasicTypeRouter: KituraTest {
                 // Validate the data we got back from the server
                 XCTAssertEqual(user.name, expectedUser.name)
                 XCTAssertEqual(user.id, expectedUser.id)
-                     
+
                 expectation.fulfill()
             }, requestModifier: { request in
                 request.headers["Content-Type"] = "application/json"
@@ -117,50 +117,50 @@ class TestBasicTypeRouter: KituraTest {
             })
         }
     }
-    
+
     func testBasicGet() {
         router.get("/users") { (respondWith: ([User]?, Swift.Error?) -> Void) in
             print("GET on /users")
-        
+
             respondWith(self.userStore.map({ $0.value }), nil)
         }
 
         performServerTest(router, timeout: 30) { expectation in
             let expectedUsers = self.userStore.map({ $0.value }) // TODO: Write these out explicitly?
-            
+
             self.performRequest("get", path: "/users", callback: { response in
                 guard let response = response else {
                     XCTFail("ERROR!!! ClientRequest response object was nil")
                     return
                 }
-                
+
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
                 var data = Data()
                 guard let length = try? response.readAllData(into: &data) else {
                     XCTFail("Error reading response length!")
                     return
                 }
-                
+
                 XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
                 guard let users = try? JSONDecoder().decode([User].self, from: data) else {
                     XCTFail("Could not decode response! Expected response decodable to array of Users, but got \(String(describing: String(data: data, encoding: .utf8)))")
                     return
                 }
-                
+
                 // Validate the data we got back from the server
                 for (index, user) in users.enumerated() {
                     XCTAssertEqual(user.id, expectedUsers[index].id)
                     XCTAssertEqual(user.name, expectedUsers[index].name)
                 }
-                
+
                 expectation.fulfill()
             })
         }
     }
-    
+
     //Need to handle error, see next comment
     struct NotFoundError: Swift.Error {}
-    
+
     func testBasicSingleGet() {
         router.get("/users") { (id: Int, respondWith: (User?, Swift.Error?) -> Void) in
             print("GET on /users")
@@ -178,99 +178,99 @@ class TestBasicTypeRouter: KituraTest {
                 XCTFail("ERROR!!! Couldn't find user with id 1")
                 return
             }
-            
+
             self.performRequest("get", path: "/users/1", callback: { response in
                 guard let response = response else {
                     XCTFail("ERROR!!! ClientRequest response object was nil")
                     return
                 }
-                
+
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
                 var data = Data()
                 guard let length = try? response.readAllData(into: &data) else {
                     XCTFail("Error reading response length!")
                     return
                 }
-                
+
                 XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
                 guard let user = try? JSONDecoder().decode(User.self, from: data) else {
                     XCTFail("Could not decode response! Expected response decodable to array of Users, but got \(String(describing: String(data: data, encoding: .utf8)))")
                     return
                 }
-                
+
                 // Validate the data we got back from the server
                 XCTAssertEqual(user.id, expectedUser.id)
                 XCTAssertEqual(user.name, expectedUser.name)
-                
+
                 expectation.fulfill()
             })
         }
     }
-    
+
     func testBasicDelete() {
-        
+
         router.delete("/users") { (respondWith: (Swift.Error?) -> Void) in
             self.userStore.removeAll()
             respondWith(nil)
         }
-        
+
         performServerTest(router, timeout: 30) { expectation in
-            
+
             self.performRequest("delete", path: "/users", callback: { response in
                 guard let response = response else {
                     XCTFail("ERROR!!! ClientRequest response object was nil")
                     return
                 }
-                
+
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
                 var data = Data()
                 guard let length = try? response.readAllData(into: &data) else {
                     XCTFail("Error reading response length!")
                     return
                 }
-                
+
                 XCTAssert(length == 0, "Expected zero bytes, received \(String(describing: length)) bytes.")
-                
+
                 expectation.fulfill()
             })
         }
     }
-    
+
     func testBasicSingleDelete() {
 
         router.delete("/users") { (id: Int, respondWith: (Swift.Error?) -> Void) in
             respondWith(nil)
         }
-        
+
         performServerTest(router, timeout: 30) { expectation in
-            
+
             self.performRequest("delete", path: "/users/1", callback: { response in
                 guard let response = response else {
                     XCTFail("ERROR!!! ClientRequest response object was nil")
                     return
                 }
-                
+
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
                 var data = Data()
                 guard let length = try? response.readAllData(into: &data) else {
                     XCTFail("Error reading response length!")
                     return
                 }
-                
+
                 XCTAssert(length == 0, "Expected zero bytes, received \(String(describing: length)) bytes.")
-                
+
                 expectation.fulfill()
             })
         }
     }
-    
+
     func testBasicPut() {
-        
+
         router.put("/users") { (id: Int, user: User, respondWith: (User?, Swift.Error?) -> Void) in
             self.userStore[id] = user
             respondWith(user, nil)
         }
-        
+
         performServerTest(router, timeout: 30) { expectation in
             // Let's create a User instance
             let expectedUser = User(id: 1, name: "David")
@@ -279,30 +279,30 @@ class TestBasicTypeRouter: KituraTest {
                 XCTFail("Could not generate user data from string!")
                 return
             }
-            
+
             self.performRequest("put", path: "/users/1", callback: { response in
                 guard let response = response else {
                     XCTFail("ERROR!!! ClientRequest response object was nil")
                     return
                 }
-                
+
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
                 var data = Data()
                 guard let length = try? response.readAllData(into: &data) else {
                     XCTFail("Error reading response length!")
                     return
                 }
-                
+
                 XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
                 guard let user = try? JSONDecoder().decode(User.self, from: data) else {
                     XCTFail("Could not decode response! Expected response decodable to User, but got \(String(describing: String(data: data, encoding: .utf8)))")
                     return
                 }
-                
+
                 // Validate the data we got back from the server
                 XCTAssertEqual(user.name, expectedUser.name)
                 XCTAssertEqual(user.id, expectedUser.id)
-                
+
                 expectation.fulfill()
             }, requestModifier: { request in
                 request.headers["Content-Type"] = "application/json"
@@ -310,7 +310,6 @@ class TestBasicTypeRouter: KituraTest {
             })
         }
     }
-    
     //TODO: Currently fails, waiting on PR: https://github.com/IBM-Swift/Kitura-net/pull/224
 //    func testBasicPatch() {
 //
