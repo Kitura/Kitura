@@ -262,8 +262,23 @@ extension Persistable {
         router.post("\(route)") { request, response, next in
             var data = Data()
             let _ = try request.read(into: &data)
+            // TODO: Should we validate the media type here (ie bail with .unsupportedMediaType
+            // if Content-Type is not application/json)?
+            // TODO: Send correct response status code if decode fails (eg invalid JSON, or JSON that
+            // doesn't match the Model) -- .unprocessableEntity
+            
             let param = try JSONDecoder().decode(Model.self, from: data)
             self.create(model: param, respondWith: { result, error in
+                // TODO: Handle error being non-nil
+                if let error = error {
+//                    switch error {
+//                    case NotFoundError: response.status(.notFound)
+//                    default: response.status(.internalServerError)
+//                    }
+//                    Log.error(error.localizedDescription)
+                    next()
+                    return
+                }
                 do {
                     if let _ = error {
                          response.status(.internalServerError)
@@ -272,6 +287,7 @@ extension Persistable {
                         response.send(data: encoded)
                     }
                 } catch {
+                    // TODO: Log error here
                     response.status(.internalServerError)
                 }
                 next()
