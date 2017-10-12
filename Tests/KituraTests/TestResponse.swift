@@ -862,7 +862,11 @@ class TestResponse: KituraTest {
                     #if swift(>=4.0)
                         let expected = "{\"some\":\"json\"}"
                     #else
-                        let expected = "{\n  \"some\": \"json\"\n}"
+                        #if os(Linux)
+                            let expected = "{\n  \"some\": \"json\"\n}"
+                        #else
+                            let expected = "{\n  \"some\" : \"json\"\n}"
+                        #endif
                     #endif
                     XCTAssertEqual(body, "/**/ testfn(\(expected))")
                     XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/javascript")
@@ -898,7 +902,11 @@ class TestResponse: KituraTest {
                     #if swift(>=4.0)
                         let expected = "{\"some\":\"json\"}"
                     #else
-                        let expected = "{\n  \"some\": \"json\"\n}"
+                        #if os(Linux)
+                            let expected = "{\n  \"some\": \"json\"\n}"
+                        #else
+                            let expected = "{\n  \"some\" : \"json\"\n}"
+                        #endif
                     #endif
                     XCTAssertEqual(body, "/**/ testfn(\(expected))")
                     XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/javascript")
@@ -918,7 +926,11 @@ class TestResponse: KituraTest {
                     #if swift(>=4.0)
                         let expected = "{\"some\":\"json with bad js chars \\u2028 \\u2029\"}"
                     #else
-                        let expected = "{\n  \"some\": \"json with bad js chars \\u2028 \\u2029\"\n}"
+                        #if os(Linux)
+                            let expected = "{\n  \"some\": \"json with bad js chars \\u2028 \\u2029\"\n}"
+                        #else
+                            let expected = "{\n  \"some\" : \"json with bad js chars \\u2028 \\u2029\"\n}"
+                        #endif
                     #endif
 
                     XCTAssertEqual(body, "/**/ testfn(\(expected))")
