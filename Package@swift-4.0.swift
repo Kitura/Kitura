@@ -33,7 +33,7 @@ let package = Package(
         .package(url: "https://github.com/IBM-Swift/Kitura-net.git", .upToNextMinor(from: "1.7.0")),
         .package(url: "https://github.com/IBM-Swift/SwiftyJSON.git", .upToNextMajor(from: "17.0.0")),
         .package(url: "https://github.com/IBM-Swift/Kitura-TemplateEngine.git", .upToNextMinor(from: "1.7.0")),
-        .package(url: "https://github.com/IBM-Swift/SafetyContracts.git", .exact("0.0.5"))
+        .package(url: "https://github.com/IBM-Swift/SafetyContracts.git", .exact("0.0.6"))
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
