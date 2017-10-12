@@ -266,8 +266,8 @@ extension Persistable {
             // if Content-Type is not application/json)?
             // TODO: Send correct response status code if decode fails (eg invalid JSON, or JSON that
             // doesn't match the Model) -- .unprocessableEntity
-            
-            let param = try JSONDecoder().decode(Model.self, from: data)
+
+            let param = try JSONDecoder().decode(Self.self, from: data)
             self.create(model: param, respondWith: { result, error in
                 // TODO: Handle error being non-nil
                 if let error = error {
@@ -294,14 +294,14 @@ extension Persistable {
             })
         }
         Log.verbose("Registered POST for: \(self)")
-        
+
         // Register update
         router.put("\(route)/:id") { request, response, next in
             let id = request.parameters["id"] ?? ""
             let identifier = try Id(value: id)
             var data = Data()
             let _ = try request.read(into: &data)
-            let param = try JSONDecoder().decode(Model.self, from: data)
+            let param = try JSONDecoder().decode(Self.self, from: data)
             self.update(id: identifier, model: param, respondWith: { result, error in
                 do {
                     if let _ = error {
