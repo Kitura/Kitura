@@ -63,6 +63,13 @@ extension Employee: Persistable {
         employeeStore[id] = model
         respondWith(model, nil)
     }
+    
+    static func delete(respondWith: @escaping (Error?) -> Void) {
+        
+    }
+    static func delete(id: Int, respondWith: @escaping (Error?) -> Void) {
+        
+    }
 }
 
 class TestCRUDTypeRouter: KituraTest {
