@@ -44,12 +44,15 @@ extension Router {
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request")
             // Define result handler
-            // todo - handle error
             let handler: CodableArrayResultClosure<O> = { result, error in
                 do {
-                    let encoded = try JSONEncoder().encode(result)
-                    response.status(.OK)
-                    response.send(data: encoded)
+                    if let _ = error {
+                        response.status(.internalServerError)
+                    } else {
+                        let encoded = try JSONEncoder().encode(result)
+                        response.status(.OK)
+                        response.send(data: encoded)
+                    }
                 } catch {
                     // Http 500 error
                     response.status(.internalServerError)

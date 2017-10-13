@@ -25,33 +25,35 @@ import Foundation
 
 #if swift(>=4.0)
 var employeeStore: [Int: Employee] = [:]
-    struct Employee: Codable {
-        public let serial: Int
-        public let name: String
-        public init(serial: Int, name: String) {
-            self.serial = serial
-            self.name = name
-        }
-        
-    }
-    
-extension Employee: Persistable, Equatable {
-    
+
+struct Employee: Codable, Equatable {
+    public let serial: Int
+    public let name: String
+    public init(serial: Int, name: String) {
+        self.serial = serial
+        self.name = name
+    }  
+
     static func ==(lhs: Employee, rhs: Employee) -> Bool {
         return (lhs.serial == rhs.serial) && (lhs.name == rhs.name)
-    }
+    } 
+}
     
+extension Employee: Persistable {
+
     // Create
     static func create(model: Employee, respondWith: @escaping (Employee?, Swift.Error?) -> Void) {
         employeeStore[model.serial] = model
         respondWith(model, nil)
     }
     
+    // Read ALL
     static func read(respondWith: @escaping ([Employee]?, Swift.Error?) -> Void) {
         let employees: [Employee] = employeeStore.map { $0.value }
         respondWith(employees, nil)
     }
     
+    // Read single
     static func read(id: Int, respondWith: @escaping (Employee?, Swift.Error?) -> Void) {
         guard let employee = employeeStore[id] else {
             respondWith(nil, RouteHandlerError.notFound)
@@ -60,18 +62,28 @@ extension Employee: Persistable, Equatable {
         respondWith(employee, nil)
     }
     
+    // Update
     static func update(id: Int, model: Employee, respondWith: @escaping (Employee?, Swift.Error?) -> Void) {
+        guard let _ = employeeStore[id] else {
+            respondWith(nil, RouteHandlerError.notFound)
+            return
+        }
         employeeStore[id] = model
         respondWith(model, nil)
     }
     
+    // Delete ALL
     static func delete(respondWith: @escaping (Swift.Error?) -> Void) {
         employeeStore.removeAll()
         respondWith(nil)
     }
     
+    // Delete single
     static func delete(id: Int, respondWith: @escaping (Swift.Error?) -> Void) {
-        employeeStore.removeValue(forKey: id)
+        guard let _ = employeeStore.removeValue(forKey: id) else {
+            respondWith(RouteHandlerError.notFound)
+            return
+        }
         respondWith(nil)
     }
 }
