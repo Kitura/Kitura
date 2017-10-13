@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import SwiftyJSON
 import Foundation
+
+#if !swift(>=4.0)
+import SwiftyJSON
+#endif
 
 // MARK ParsedBody
 
@@ -24,10 +26,6 @@ import Foundation
 /// When a body of a request is parsed the results of the parsing are placed 
 /// in the associated value of the enum case based on Content-Type
 public indirect enum ParsedBody {
-
-    /// If the content type was "application/json" this associated value will 
-    /// contain the body of a JSON object.
-    case json(JSON)
 
     /// If the content type was "application/x-www-form-urlencoded" this 
     /// associated value will contain a representation of the body as a
@@ -44,6 +42,31 @@ public indirect enum ParsedBody {
     /// If the content type was "multipart/form-data" this associated value will
     /// contain an array of parts of multi-part respresentation of the body.
     case multipart([Part])
+    
+    #if swift(>=4.0)
+
+    /// If the content type was "application/json" this associated value will
+    /// contain the body of a JSON object.
+    case json(Data)
+    
+    /// Extract a "JSON" body from the `ParsedBody` enum
+    ///
+    /// - Returns: The parsed body as a JSON object, or nil if the body wasn't in
+    ///           JSON format.
+    public var asJSON: Data? {
+        switch self {
+        case .json(let body):
+            return body
+        default:
+            return nil
+        }
+    }
+    
+    #else
+
+    /// If the content type was "application/json" this associated value will
+    /// contain the body of a JSON object.
+    case json(JSON)
 
     /// Extract a "JSON" body from the `ParsedBody` enum
     ///
@@ -57,6 +80,7 @@ public indirect enum ParsedBody {
             return nil
         }
     }
+    #endif
 
     /// Extract a "multipart" body from the `ParsedBody` enum
     ///

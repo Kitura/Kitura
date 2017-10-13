@@ -16,16 +16,15 @@
 
 import XCTest
 import Foundation
-import SwiftyJSON
 import KituraTemplateEngine
 
 @testable import Kitura
 @testable import KituraNet
 
 #if os(Linux)
-    import Glibc
+import Glibc
 #else
-    import Darwin
+import Darwin
 #endif
 
 class TestTemplateEngine: KituraTest {

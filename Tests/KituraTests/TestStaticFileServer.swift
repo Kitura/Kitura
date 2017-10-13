@@ -16,15 +16,14 @@
 
 import XCTest
 import Foundation
-import SwiftyJSON
 
 @testable import Kitura
 @testable import KituraNet
 
 #if os(Linux)
-    import Glibc
+import Glibc
 #else
-    import Darwin
+import Darwin
 #endif
 
 class TestStaticFileServer: KituraTest {

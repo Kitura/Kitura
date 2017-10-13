@@ -16,15 +16,18 @@
 
 import XCTest
 import Foundation
-import SwiftyJSON
 
 @testable import Kitura
 @testable import KituraNet
 
+#if !swift(>=4.0)
+import SwiftyJSON
+#endif
+
 #if os(Linux)
-    import Glibc
+import Glibc
 #else
-    import Darwin
+import Darwin
 #endif
 
 class TestResponse: KituraTest {
@@ -66,6 +69,24 @@ class TestResponse: KituraTest {
         ]
     }
 
+    #if swift(>=4.0)
+    class SomeJSON: Codable, Equatable {
+        let some: String
+        
+        init(value: String = "json") {
+            self.some = value
+        }
+        
+        static func ==(lhs: SomeJSON, rhs: SomeJSON) -> Bool {
+            return lhs.some == rhs.some
+        }
+    }
+
+    
+    static let encoder = JSONEncoder()
+    static let decoder = JSONDecoder()
+    #endif
+    
     let router = TestResponse.setupRouter()
 
     func testSimpleResponse() {
@@ -203,7 +224,44 @@ class TestResponse: KituraTest {
             }
         }
     }
-
+    
+    #if swift(>=4.0)
+    func testPostJSONRequest() {
+        let jsonToTest = SomeJSON()
+        
+        performServerTest(router) { expectation in
+            self.performRequest("post", path: "/bodytest", callback: { response in
+                guard let response = response else {
+                    XCTFail("ClientRequest response object was nil")
+                    expectation.fulfill()
+                    return
+                }
+                XCTAssertNotNil(response.headers["Date"], "There was No Date header in the response")
+                do {
+                    var body = Data()
+                    guard try response.read(into: &body) > 0  else {
+                        XCTFail("body in response is nil")
+                        expectation.fulfill()
+                        return
+                    }
+                    let returnedJSON = try TestResponse.decoder.decode(SomeJSON.self, from: body)
+                    XCTAssertEqual(returnedJSON, jsonToTest)
+                } catch {
+                    XCTFail("Error reading body")
+                }
+                expectation.fulfill()
+            }, headers: ["Content-Type": "application/json"]) { req in
+                do {
+                    let jsonData = try TestResponse.encoder.encode(jsonToTest)
+                    req.write(from: jsonData)
+                    req.write(from: "\n")
+                } catch {
+                    XCTFail("caught error \(error)")
+                }
+            }
+        }
+    }
+    #else
     func testPostJSONRequest() {
         let jsonToTest = JSON(["foo": "bar"])
 
@@ -238,7 +296,7 @@ class TestResponse: KituraTest {
            }
         }
     }
-
+    #endif
     func testPostRequestWithDoubleBodyParser() {
         performServerTest(router) { expectation in
             self.performRequest("post", path: "/doublebodytest", callback: {response in
@@ -801,11 +859,15 @@ class TestResponse: KituraTest {
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
                     let body = try response?.readString()
-#if os(Linux)
-                    let expected = "{\n  \"some\": \"json\"\n}"
-#else
-                    let expected = "{\n  \"some\" : \"json\"\n}"
-#endif
+                    #if swift(>=4.0)
+                        let expected = "{\"some\":\"json\"}"
+                    #else
+                        #if os(Linux)
+                            let expected = "{\n  \"some\": \"json\"\n}"
+                        #else
+                            let expected = "{\n  \"some\" : \"json\"\n}"
+                        #endif
+                    #endif
                     XCTAssertEqual(body, "/**/ testfn(\(expected))")
                     XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/javascript")
                 } catch {
@@ -837,11 +899,15 @@ class TestResponse: KituraTest {
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
                     let body = try response?.readString()
-#if os(Linux)
-                    let expected = "{\n  \"some\": \"json\"\n}"
-#else
-                    let expected = "{\n  \"some\" : \"json\"\n}"
-#endif
+                    #if swift(>=4.0)
+                        let expected = "{\"some\":\"json\"}"
+                    #else
+                        #if os(Linux)
+                            let expected = "{\n  \"some\": \"json\"\n}"
+                        #else
+                            let expected = "{\n  \"some\" : \"json\"\n}"
+                        #endif
+                    #endif
                     XCTAssertEqual(body, "/**/ testfn(\(expected))")
                     XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/javascript")
                 } catch {
@@ -857,11 +923,16 @@ class TestResponse: KituraTest {
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
                     let body = try response?.readString()
-                    #if os(Linux)
-                        let expected = "{\n  \"some\": \"json with bad js chars \\u2028 \\u2029\"\n}"
+                    #if swift(>=4.0)
+                        let expected = "{\"some\":\"json with bad js chars \\u2028 \\u2029\"}"
                     #else
-                        let expected = "{\n  \"some\" : \"json with bad js chars \\u2028 \\u2029\"\n}"
+                        #if os(Linux)
+                            let expected = "{\n  \"some\": \"json with bad js chars \\u2028 \\u2029\"\n}"
+                        #else
+                            let expected = "{\n  \"some\" : \"json with bad js chars \\u2028 \\u2029\"\n}"
+                        #endif
                     #endif
+
                     XCTAssertEqual(body, "/**/ testfn(\(expected))")
                     XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/javascript")
                 } catch {
@@ -936,6 +1007,7 @@ class TestResponse: KituraTest {
         }
     }
 
+    #if swift(>=4.0)
     func testSend() {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/data", callback: { response in
@@ -952,6 +1024,118 @@ class TestResponse: KituraTest {
             })
         }
 
+        performServerTest(router, asyncTasks: { expectation in
+            self.performRequest("get", path: "/json", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
+                XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/json", "Wrong Content-Type header")
+                do {
+                    var body = Data()
+                    _ = try response?.read(into: &body)
+                    let json = try TestResponse.decoder.decode(SomeJSON.self, from: body)
+                    XCTAssertEqual(SomeJSON(), json)
+                } catch {
+                    XCTFail("Error reading body")
+                }
+                expectation.fulfill()
+            })
+        },
+        { expectation in
+            self.performRequest("get", path: "/jsonDictionary", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
+                XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/json", "Wrong Content-Type header")
+                do {
+                    let json = try response?.readString()
+                    XCTAssertEqual("{\"some\":\"json\"}", json)
+                } catch {
+                    XCTFail("Error reading body. Error=\(error.localizedDescription)")
+                }
+                expectation.fulfill()
+            })
+        },
+        { expectation in
+            self.performRequest("get", path: "/jsonCodableDictionary", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
+                XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/json", "Wrong Content-Type header")
+                do {
+                    var body = Data()
+                    _ = try response?.read(into: &body)
+                    let dict = try TestResponse.decoder.decode([String: SomeJSON].self, from: body)
+                    XCTAssertEqual(["some": SomeJSON()], dict)
+                } catch {
+                    XCTFail("Error reading body. Error=\(error.localizedDescription)")
+                }
+                expectation.fulfill()
+            })
+        },
+        { expectation in
+            self.performRequest("get", path: "/jsonArray", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
+                XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/json", "Wrong Content-Type header")
+                do {
+                    let json = try response?.readString()
+                    XCTAssertEqual("[\n  \"some\",\n  10,\n  \"json\"\n]", json)
+                } catch {
+                    XCTFail("Error reading body. Error=\(error.localizedDescription)")
+                }
+                expectation.fulfill()
+            })
+        },
+        { expectation in
+            self.performRequest("get", path: "/jsonCodableArray", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
+                XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/json", "Wrong Content-Type header")
+                do {
+                    var body = Data()
+                    _ = try response?.read(into: &body)
+                    let json = try TestResponse.decoder.decode([SomeJSON].self, from: body)
+                    XCTAssertEqual([SomeJSON(), SomeJSON()], json)
+                } catch {
+                    XCTFail("Error reading body. Error=\(error.localizedDescription)")
+                }
+                expectation.fulfill()
+            })
+        })
+
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/download", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
+                XCTAssertEqual(response?.headers["Content-Type"]?.first, "text/html", "Wrong Content-Type header")
+                do {
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
+                } catch {
+                    XCTFail("Error reading body. Error=\(error.localizedDescription)")
+                }
+
+                expectation.fulfill()
+            })
+        }
+
+    }
+    
+    #else
+    func testSend() {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/data", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
+                do {
+                    var body = Data()
+                    _ = try response?.read(into: &body)
+                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n".data(using: .utf8)!)
+                } catch {
+                    XCTFail("Error reading body")
+                }
+                expectation.fulfill()
+            })
+        }
+        
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path: "/json", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
@@ -1018,7 +1202,8 @@ class TestResponse: KituraTest {
         }
 
     }
-
+    #endif
+    
     func testSendAfterEnd() {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/send_after_end", callback: { response in
@@ -1182,7 +1367,11 @@ class TestResponse: KituraTest {
             } else if let json = requestBody.asJSON {
                 do {
                     response.headers["Content-Type"] = "application/json; charset=utf-8"
+                    #if swift(>=4.0)
+                    try response.send(data: json).end()
+                    #else
                     try response.send(data: json.rawData()).end()
+                    #endif
                 } catch {
                     XCTFail("caught error: \(error)")
                 }
@@ -1281,7 +1470,12 @@ class TestResponse: KituraTest {
         }
 
         router.get("/jsonp") { _, response, _ in
+            #if swift(>=4.0)
+            let json = SomeJSON()
+            #else
             let json = JSON([ "some": "json" ])
+            #endif
+
             do {
                 do {
                     try response.send(jsonp: json).end()
@@ -1292,7 +1486,11 @@ class TestResponse: KituraTest {
         }
 
         router.get("/jsonp_cb") { _, response, _ in
-            let json = JSON([ "some": "json" ])
+            #if swift(>=4.0)
+                let json = SomeJSON()
+            #else
+                let json = JSON([ "some": "json" ])
+            #endif
             do {
                 do {
                     try response.send(jsonp: json, callbackParameter: "cb").end()
@@ -1303,11 +1501,19 @@ class TestResponse: KituraTest {
         }
 
         router.get("/jsonp_encoded") { _, response, _ in
-#if os(Linux)
-            let json = JSON([ "some": JSON("json with bad js chars \u{2028} \u{2029}") ])
-#else
-            let json = JSON([ "some": JSON("json with bad js chars \u{2028} \u{2029}" as NSString) ])
-#endif
+            #if os(Linux)
+                #if swift(>=4.0)
+                    let json = SomeJSON(value: "json with bad js chars \u{2028} \u{2029}")
+                #else
+                    let json = JSON([ "some": "json with bad js chars \u{2028} \u{2029}" ])
+                #endif
+            #else
+                #if swift(>=4.0)
+                    let json = SomeJSON(value: ("json with bad js chars \u{2028} \u{2029}" as NSString) as String)
+                #else
+                    let json = JSON([ "some": "json with bad js chars \u{2028} \u{2029}" as NSString ])
+                #endif
+            #endif
             do {
                 do {
                     try response.send(jsonp: json).end()
@@ -1348,7 +1554,11 @@ class TestResponse: KituraTest {
 
         router.get("/json") { _, response, next in
             response.headers["Content-Type"] = "application/json"
-            let json = JSON([ "some": "json" ])
+            #if swift(>=4.0)
+                let json = SomeJSON()
+            #else
+                let json = JSON([ "some": "json" ])
+            #endif
             do {
                 try response.send(json: json).end()
             } catch {
@@ -1377,6 +1587,28 @@ class TestResponse: KituraTest {
             next()
         }
 
+        #if swift(>=4.0)
+        router.get("/jsonCodableDictionary") { _, response, next in
+            response.headers["Content-Type"] = "application/json"
+            do {
+                try response.send(json: ["some": SomeJSON()]).end()
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+            }
+            next()
+        }
+
+        router.get("/jsonCodableArray") { _, response, next in
+            response.headers["Content-Type"] = "application/json"
+            do {
+                try response.send(json: [SomeJSON(), SomeJSON()]).end()
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+            }
+            next()
+        }
+        #endif
+
         router.get("/download") { _, response, next in
             do {
                 try response.send(download: "./Tests/KituraTests/TestStaticFileServer/index.html")
@@ -1388,7 +1620,12 @@ class TestResponse: KituraTest {
 
         router.get("/send_after_end") { _, response, next in
             do {
-                let json = JSON([ "some": "json" ])
+                #if swift(>=4.0)
+                    let json = SomeJSON()
+                #else
+                    let json = JSON([ "some": "json" ])
+                #endif
+                
                 try response.send(status: HTTPStatusCode.forbidden).send(data: "<!DOCTYPE html><html><body><b>forbidden</b></body></html>\n\n".data(using: .utf8)!).end()
                 try response.send(status: HTTPStatusCode.OK).end()
                 response.send("string")
@@ -1396,7 +1633,14 @@ class TestResponse: KituraTest {
                 response.send(json: ["some": "json"])
                 response.send(json: ["some", 10, "json"])
                 try response.send(jsonp: json, callbackParameter: "cb").end()
-                try response.send(data: json.rawData())
+
+                #if swift(>=4.0)
+                    let data = try TestResponse.encoder.encode(json)
+                    response.send(data: data)
+                #else
+                    try response.send(data: json.rawData())
+                #endif
+
                 try response.send(fileName: "./Tests/KituraTests/TestStaticFileServer/index.html")
                 try response.send(download: "./Tests/KituraTests/TestStaticFileServer/index.html")
             } catch {}

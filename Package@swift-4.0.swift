@@ -31,7 +31,6 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/IBM-Swift/Kitura-net.git", .upToNextMinor(from: "1.7.0")),
-        .package(url: "https://github.com/IBM-Swift/SwiftyJSON.git", .upToNextMajor(from: "17.0.0")),
         .package(url: "https://github.com/IBM-Swift/Kitura-TemplateEngine.git", .upToNextMinor(from: "1.7.0")),
         .package(url: "https://github.com/IBM-Swift/SafetyContracts.git", .exact("0.0.7"))
     ],
@@ -40,7 +39,7 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
             name: "Kitura",
-            dependencies: ["KituraNet", "SwiftyJSON", "KituraTemplateEngine", "SafetyContracts"]
+            dependencies: ["KituraNet", "KituraTemplateEngine", "SafetyContracts"]
         ),
         .testTarget(
             name: "KituraTests",
