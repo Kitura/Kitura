@@ -270,20 +270,12 @@ extension Persistable {
             let param = try JSONDecoder().decode(Self.self, from: data)
             self.create(model: param, respondWith: { result, error in
                 // TODO: Handle error being non-nil
-                if let error = error {
-//                    switch error {
-//                    case NotFoundError: response.status(.notFound)
-//                    default: response.status(.internalServerError)
-//                    }
-//                    Log.error(error.localizedDescription)
-                    next()
-                    return
-                }
                 do {
                     if let _ = error {
                          response.status(.internalServerError)
                     } else {
                         let encoded = try JSONEncoder().encode(result)
+                        response.status(.created)
                         response.send(data: encoded)
                     }
                 } catch {
