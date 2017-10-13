@@ -112,6 +112,7 @@ class TestBasicTypeRouter: KituraTest {
                      
                 expectation.fulfill()
             }, requestModifier: { request in
+                request.headers["Content-Type"] = "application/json"
                 request.write(from: userData)
             })
         }
@@ -236,7 +237,7 @@ class TestBasicTypeRouter: KituraTest {
     }
     
     func testBasicSingleDelete() {
-        
+
         router.delete("/users") { (id: Int, respondWith: (Swift.Error?) -> Void) in
             respondWith(nil)
         }
@@ -304,6 +305,7 @@ class TestBasicTypeRouter: KituraTest {
                 
                 expectation.fulfill()
             }, requestModifier: { request in
+                request.headers["Content-Type"] = "application/json"
                 request.write(from: userData)
             })
         }

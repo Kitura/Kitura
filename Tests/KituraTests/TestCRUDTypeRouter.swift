@@ -105,11 +105,11 @@ class TestCRUDTypeRouter: KituraTest {
     override func setUp() {
         router = Router()
         router.register(api: Employee.self)
-        employeeStore = [1: Employee(serial: 2345, name: "Mike"), 2: Employee(serial: 3456, name: "Ricardo")]
+        employeeStore = [1: Employee(serial: 1, name: "Mike"), 2: Employee(serial: 2, name: "Ricardo")]
     }
     
     func testCreate() {
-        let expectedEmployee = Employee(serial: 1234, name: "David")
+        let expectedEmployee = Employee(serial: 3, name: "David")
         guard let employeeData = try? JSONEncoder().encode(expectedEmployee) else {
             XCTFail("Could not generate employee data from object!")
             return
@@ -143,6 +143,7 @@ class TestCRUDTypeRouter: KituraTest {
                 
                 expectation.fulfill()
             }, requestModifier: { request in
+                request.headers["Content-Type"] = "application/json"
                 request.write(from: employeeData)
             })
         }
@@ -226,8 +227,8 @@ class TestCRUDTypeRouter: KituraTest {
     
     func testUpdate() {
         performServerTest(router, timeout: 30) { expectation in
-            // Let's create a User instance
-            let expectedEmployee = Employee(serial: 6789, name: "Kye")
+            // Let's create a Employee instance
+            let expectedEmployee = Employee(serial: 1, name: "Kye")
             // Create JSON representation of User instance
             guard let employeeData = try? JSONEncoder().encode(expectedEmployee) else {
                 XCTFail("Could not generate employee data from string!")
@@ -263,6 +264,7 @@ class TestCRUDTypeRouter: KituraTest {
                 
                 expectation.fulfill()
             }, requestModifier: { request in
+                request.headers["Content-Type"] = "application/json"
                 request.write(from: employeeData)
             })
         }
