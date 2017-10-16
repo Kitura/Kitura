@@ -74,6 +74,8 @@ XCTMain([
     testCase(TestStaticFileServer.allTests.shuffled()),
     testCase(TestTemplateEngine.allTests.shuffled()),
     testCase(TestStack.allTests.shuffled()),
+if #if swift(>=4.0)
     testCase(TestBasicTypeRouter.allTests.shuffled()),
     testCase(TestCRUDTypeRouter.allTests.shuffled()),
+#endif
     ].shuffled())
