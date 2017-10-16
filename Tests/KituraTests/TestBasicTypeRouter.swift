@@ -311,25 +311,26 @@ class TestBasicTypeRouter: KituraTest {
         }
     }
     
-    //TODO: Currently fails, investigation is ongoing
+    //TODO: Currently fails, waiting on PR: https://github.com/IBM-Swift/Kitura-net/pull/224
 //    func testBasicPatch() {
 //
-//        router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User) -> Void) in
-//            guard let existingUser = self.userStore[id.id] else {
-//                throw NotFoundError() // FIXME
+//        router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?, Swift.Error?) -> Void) -> Void in
+//            guard let existingUser = self.userStore[id] else {
+//                respondWith(nil, RouteHandlerError.notFound)
+//                return
 //            }
 //            if let patchUserName = patchUser.name {
-//                let updatedUser = User(id: id.id, name: patchUserName)
-//                self.userStore[id.id] = updatedUser
-//                respondWith(updatedUser)
+//                let updatedUser = User(id: id, name: patchUserName)
+//                self.userStore[id] = updatedUser
+//                respondWith(updatedUser, nil)
 //            } else {
-//                respondWith(existingUser)
+//                respondWith(existingUser, nil)
 //            }
 //        }
 //
 //        performServerTest(router, timeout: 30) { expectation in
 //            // Let's create a User instance
-//            let patchUser = OptionalUser(id: nil, name: "David")
+//            let patchUser = User(id: 2, name: "David")
 //            // Create JSON representation of User instance
 //            guard let userData = try? JSONEncoder().encode(patchUser) else {
 //                XCTFail("Could not generate user data from string!")
@@ -361,6 +362,7 @@ class TestBasicTypeRouter: KituraTest {
 //
 //                expectation.fulfill()
 //            }, requestModifier: { request in
+//                request.headers["Content-Type"] = "application/json"
 //                request.write(from: userData)
 //            })
 //        }
