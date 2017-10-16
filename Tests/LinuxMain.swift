@@ -59,6 +59,7 @@ extension Sequence {
     }
 }
 
+#if swift(>=4.0)
 XCTMain([
     testCase(MiscellaneousTests.allTests.shuffled()),
     testCase(TestContentType.allTests.shuffled()),
@@ -74,8 +75,24 @@ XCTMain([
     testCase(TestStaticFileServer.allTests.shuffled()),
     testCase(TestTemplateEngine.allTests.shuffled()),
     testCase(TestStack.allTests.shuffled()),
-#if swift(>=4.0)
     testCase(TestBasicTypeRouter.allTests.shuffled()),
     testCase(TestCRUDTypeRouter.allTests.shuffled()),
-#endif
     ].shuffled())
+#else
+XCTMain([
+    testCase(MiscellaneousTests.allTests.shuffled()),
+    testCase(TestContentType.allTests.shuffled()),
+    testCase(TestCookies.allTests.shuffled()),
+    testCase(TestErrors.allTests.shuffled()),
+    testCase(TestMultiplicity.allTests.shuffled()),
+    testCase(TestRequests.allTests.shuffled()),
+    testCase(TestResponse.allTests.shuffled()),
+    testCase(TestRouteRegex.allTests.shuffled()),
+    testCase(TestRouterHTTPVerbsGenerated.allTests.shuffled()),
+    testCase(TestServer.allTests.shuffled()),
+    testCase(TestSubrouter.allTests.shuffled()),
+    testCase(TestStaticFileServer.allTests.shuffled()),
+    testCase(TestTemplateEngine.allTests.shuffled()),
+    testCase(TestStack.allTests.shuffled()),
+    ].shuffled())
+#endif
