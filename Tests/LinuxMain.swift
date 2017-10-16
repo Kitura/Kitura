@@ -73,5 +73,7 @@ XCTMain([
     testCase(TestSubrouter.allTests.shuffled()),
     testCase(TestStaticFileServer.allTests.shuffled()),
     testCase(TestTemplateEngine.allTests.shuffled()),
-    testCase(TestStack.allTests.shuffled())
+    testCase(TestStack.allTests.shuffled()),
+    testCase(TestBasicTypeRouter.allTests.shuffled()),
+    testCase(TestCRUDTypeRouter.allTests.shuffled()),
     ].shuffled())
