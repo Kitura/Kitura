@@ -42,30 +42,30 @@ struct Employee: Codable, Equatable {
 extension Employee: Persistable {
 
     // Create
-    static func create(model: Employee, respondWith: @escaping (Employee?, Swift.Error?) -> Void) {
+    static func create(model: Employee, respondWith: @escaping (Employee?, ProcessHandlerError?) -> Void) {
         employeeStore[model.serial] = model
         respondWith(model, nil)
     }
 
     // Read ALL
-    static func read(respondWith: @escaping ([Employee]?, Swift.Error?) -> Void) {
+    static func read(respondWith: @escaping ([Employee]?, ProcessHandlerError?) -> Void) {
         let employees: [Employee] = employeeStore.map { $0.value }
         respondWith(employees, nil)
     }
 
     // Read single
-    static func read(id: Int, respondWith: @escaping (Employee?, Swift.Error?) -> Void) {
+    static func read(id: Int, respondWith: @escaping (Employee?, ProcessHandlerError?) -> Void) {
         guard let employee = employeeStore[id] else {
-            respondWith(nil, RouteHandlerError.notFound)
+            respondWith(nil, .notFound)
             return
         }
         respondWith(employee, nil)
     }
 
     // Update
-    static func update(id: Int, model: Employee, respondWith: @escaping (Employee?, Swift.Error?) -> Void) {
+    static func update(id: Int, model: Employee, respondWith: @escaping (Employee?, ProcessHandlerError?) -> Void) {
         guard let _ = employeeStore[id] else {
-            respondWith(nil, RouteHandlerError.notFound)
+            respondWith(nil, .notFound)
             return
         }
         employeeStore[id] = model
@@ -73,15 +73,15 @@ extension Employee: Persistable {
     }
 
     // Delete ALL
-    static func delete(respondWith: @escaping (Swift.Error?) -> Void) {
+    static func delete(respondWith: @escaping (ProcessHandlerError?) -> Void) {
         employeeStore.removeAll()
         respondWith(nil)
     }
 
     // Delete single
-    static func delete(id: Int, respondWith: @escaping (Swift.Error?) -> Void) {
+    static func delete(id: Int, respondWith: @escaping (ProcessHandlerError?) -> Void) {
         guard let _ = employeeStore.removeValue(forKey: id) else {
-            respondWith(RouteHandlerError.notFound)
+            respondWith(.notFound)
             return
         }
         respondWith(nil)
