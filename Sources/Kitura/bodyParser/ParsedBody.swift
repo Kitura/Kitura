@@ -47,13 +47,13 @@ public indirect enum ParsedBody {
 
     /// If the content type was "application/json" this associated value will
     /// contain the body of a JSON object.
-    case json(Data)
+    case json([String: Any])
     
     /// Extract a "JSON" body from the `ParsedBody` enum
     ///
     /// - Returns: The parsed body as a JSON object, or nil if the body wasn't in
     ///           JSON format.
-    public var asJSON: Data? {
+  public var asJSON: [String: Any]? {
         switch self {
         case .json(let body):
             return body
