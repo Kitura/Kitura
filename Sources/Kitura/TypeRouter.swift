@@ -90,7 +90,7 @@ extension Router {
                 let handler: CodableResultClosure<O> = { result, error in
                     do {
                         if let err = error {
-                            let status = HTTPStatusCode(rawValue: err.rawValue) ?? HTTPStatusCode.unknown
+                            let status = self.httpStatusCode(from: err)
                             response.status(status)
                         } else {
                             let encoded = try JSONEncoder().encode(result)
@@ -130,7 +130,7 @@ extension Router {
                 let handler: CodableResultClosure<O> = { result, error in
                     do {
                         if let err = error {
-                            let status = HTTPStatusCode(rawValue: err.rawValue) ?? HTTPStatusCode.unknown
+                            let status = self.httpStatusCode(from: err)
                             response.status(status)
                         } else {
                             let encoded = try JSONEncoder().encode(result)
@@ -174,7 +174,7 @@ extension Router {
                 let handler: CodableResultClosure<O> = { result, error in
                     do {
                         if let err = error {
-                            let status = HTTPStatusCode(rawValue: err.rawValue) ?? HTTPStatusCode.unknown
+                            let status = self.httpStatusCode(from: err)
                             response.status(status)
                         } else {
                             let encoded = try JSONEncoder().encode(result)
@@ -204,7 +204,7 @@ extension Router {
             let handler: CodableArrayResultClosure<O> = { result, error in
                 do {
                     if let err = error {
-                        let status = HTTPStatusCode(rawValue: err.rawValue) ?? HTTPStatusCode.unknown
+                        let status = self.httpStatusCode(from: err)
                         response.status(status)
                     } else {
                         let encoded = try JSONEncoder().encode(result)
@@ -230,7 +230,7 @@ extension Router {
                 let handler: CodableResultClosure<O> = { result, error in
                     do {
                         if let err = error {
-                            let status = HTTPStatusCode(rawValue: err.rawValue) ?? HTTPStatusCode.unknown
+                            let status = self.httpStatusCode(from: err)
                             response.status(status)
                         } else {
                             let encoded = try JSONEncoder().encode(result)
@@ -262,7 +262,7 @@ extension Router {
             // Define result handler   
             let handler: ResultClosure = { error in
                 if let err = error {
-                    let status = HTTPStatusCode(rawValue: err.rawValue) ?? HTTPStatusCode.unknown
+                    let status = self.httpStatusCode(from: err)
                     response.status(status)
                 } else {
                     response.status(.OK)
@@ -279,7 +279,7 @@ extension Router {
             Log.verbose("Received DELETE (singular) type-safe request")
             let handler: ResultClosure = { error in
                 if let err = error {
-                    let status = HTTPStatusCode(rawValue: err.rawValue) ?? HTTPStatusCode.unknown
+                    let status = self.httpStatusCode(from: err)
                     response.status(status)
                 } else {
                     response.status(.OK)
@@ -305,11 +305,15 @@ extension Router {
         }
         return (contentType == "application/json")
     }
+
+    private func httpStatusCode(from error: ProcessHandlerError) -> HTTPStatusCode {
+        let status: HTTPStatusCode = HTTPStatusCode(rawValue: error.rawValue) ?? .unknown
+        return status
+    }
 }
 
-// I am now wondering if we actually need this register meethod as part 
-// of the Router API... the developer can simply call the api.registerHandlers() method
-// and pass the router instance to it...
+// For consistency, we have the register method as an
+// extension to the Router class.
 extension Router {
     // CRUD API type safe routing
     // (URL path and HTTP verb are inferred by the framework)
