@@ -308,61 +308,61 @@ class TestBasicTypeRouter: KituraTest {
         }
     }
     //TODO: Currently fails, waiting on PR: https://github.com/IBM-Swift/Kitura-net/pull/224
-//    func testBasicPatch() {
-//
-//        router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?, ProcessHandlerError?) -> Void) -> Void in
-//            guard let existingUser = self.userStore[id] else {
-//                respondWith(nil, RouteHandlerError.notFound)
-//                return
-//            }
-//            if let patchUserName = patchUser.name {
-//                let updatedUser = User(id: id, name: patchUserName)
-//                self.userStore[id] = updatedUser
-//                respondWith(updatedUser, nil)
-//            } else {
-//                respondWith(existingUser, nil)
-//            }
-//        }
-//
-//        performServerTest(router, timeout: 30) { expectation in
-//            // Let's create a User instance
-//            let patchUser = User(id: 2, name: "David")
-//            // Create JSON representation of User instance
-//            guard let userData = try? JSONEncoder().encode(patchUser) else {
-//                XCTFail("Could not generate user data from string!")
-//                return
-//            }
-//
-//            self.performRequest("patch", path: "/users/2", callback: { response in
-//                guard let response = response else {
-//                    XCTFail("ERROR!!! ClientRequest response object was nil")
-//                    return
-//                }
-//
-//                XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
-//                var data = Data()
-//                guard let length = try? response.readAllData(into: &data) else {
-//                    XCTFail("Error reading response length!")
-//                    return
-//                }
-//
-//                XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
-//                guard let user = try? JSONDecoder().decode(User.self, from: data) else {
-//                    XCTFail("Could not decode response! Expected response decodable to User, but got \(String(describing: String(data: data, encoding: .utf8)))")
-//                    return
-//                }
-//
-//                // Validate the data we got back from the server
-//                XCTAssertEqual(user.name, patchUser.name)
-//                XCTAssertEqual(user.id, 2)
-//
-//                expectation.fulfill()
-//            }, requestModifier: { request in
-//                request.headers["Content-Type"] = "application/json"
-//                request.write(from: userData)
-//            })
-//        }
-//    }
+    func testBasicPatch() {
+
+        router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?, ProcessHandlerError?) -> Void) -> Void in
+            guard let existingUser = self.userStore[id] else {
+                respondWith(nil, .notFound)
+                return
+            }
+            if let patchUserName = patchUser.name {
+                let updatedUser = User(id: id, name: patchUserName)
+                self.userStore[id] = updatedUser
+                respondWith(updatedUser, nil)
+            } else {
+                respondWith(existingUser, nil)
+            }
+        }
+
+        performServerTest(router, timeout: 30) { expectation in
+            // Let's create a User instance
+            let patchUser = User(id: 2, name: "David")
+            // Create JSON representation of User instance
+            guard let userData = try? JSONEncoder().encode(patchUser) else {
+                XCTFail("Could not generate user data from string!")
+                return
+            }
+
+            self.performRequest("patch", path: "/users/2", callback: { response in
+                guard let response = response else {
+                    XCTFail("ERROR!!! ClientRequest response object was nil")
+                    return
+                }
+
+                XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
+                var data = Data()
+                guard let length = try? response.readAllData(into: &data) else {
+                    XCTFail("Error reading response length!")
+                    return
+                }
+
+                XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
+                guard let user = try? JSONDecoder().decode(User.self, from: data) else {
+                    XCTFail("Could not decode response! Expected response decodable to User, but got \(String(describing: String(data: data, encoding: .utf8)))")
+                    return
+                }
+
+                // Validate the data we got back from the server
+                XCTAssertEqual(user.name, patchUser.name)
+                XCTAssertEqual(user.id, 2)
+
+                expectation.fulfill()
+            }, requestModifier: { request in
+                request.headers["Content-Type"] = "application/json"
+                request.write(from: userData)
+            })
+        }
+    }
 }
 
 #endif
