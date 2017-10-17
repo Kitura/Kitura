@@ -41,37 +41,37 @@ extension Router {
     public typealias IdentifierSimpleCodableClosure<Id: Identifier, O: Codable> = (Id, @escaping CodableResultClosure<O>) -> Void
 
     // GET
-    public func get<O: Codable>(_ route: String, codableHandler: @escaping CodableArrayClosure<O>) {
-        getSafely(route, codableHandler: codableHandler)
+    public func get<O: Codable>(_ route: String, handler: @escaping CodableArrayClosure<O>) {
+        getSafely(route, handler: handler)
     }
 
     // GET single element
-    public func get<Id: Identifier, O: Codable>(_ route: String, codableHandler: @escaping IdentifierSimpleCodableClosure<Id, O>) {
-        getSafely(route, codableHandler: codableHandler)
+    public func get<Id: Identifier, O: Codable>(_ route: String, handler: @escaping IdentifierSimpleCodableClosure<Id, O>) {
+        getSafely(route, handler: handler)
     }
 
     // DELETE
-    public func delete(_ route: String, codableHandler: @escaping NonCodableClosure) {
-        deleteSafely(route, codableHandler: codableHandler)
+    public func delete(_ route: String, handler: @escaping NonCodableClosure) {
+        deleteSafely(route, handler: handler)
     }
 
     // DELETE single element
-    public func delete<Id: Identifier>(_ route: String, codableHandler: @escaping IdentifierNonCodableClosure<Id>) {
-        deleteSafely(route, codableHandler: codableHandler)
+    public func delete<Id: Identifier>(_ route: String, handler: @escaping IdentifierNonCodableClosure<Id>) {
+        deleteSafely(route, handler: handler)
     }
 
     // POST
-    public func post<I: Codable, O: Codable>(_ route: String, codableHandler: @escaping CodableClosure<I, O>) {
-        postSafely(route, codableHandler: codableHandler)
+    public func post<I: Codable, O: Codable>(_ route: String, handler: @escaping CodableClosure<I, O>) {
+        postSafely(route, handler: handler)
     }
 
     // PUT with Identifier
-    public func put<Id: Identifier, I: Codable, O: Codable>(_ route: String, codableHandler: @escaping IdentifierCodableClosure<Id, I, O>) {
-        putSafely(route, codableHandler: codableHandler)
+    public func put<Id: Identifier, I: Codable, O: Codable>(_ route: String, handler: @escaping IdentifierCodableClosure<Id, I, O>) {
+        putSafely(route, handler: handler)
     }
 
     // PATCH
-    public func patch<Id: Identifier, I: Codable, O: Codable>(_ route: String, codableHandler: @escaping IdentifierCodableClosure<Id, I, O>) {
+    public func patch<Id: Identifier, I: Codable, O: Codable>(_ route: String, handler: @escaping IdentifierCodableClosure<Id, I, O>) {
         patch("\(route)/:id") { request, response, next in
             Log.verbose("Received PATCH type-safe request")
             guard self.isContentTypeJson(request) else {
@@ -87,7 +87,7 @@ extension Router {
                 let param = try JSONDecoder().decode(I.self, from: data)
                 let identifier = try Id(value: id)
                 // Define handler to process result from application
-                let handler: CodableResultClosure<O> = { result, error in
+                let resultHandler: CodableResultClosure<O> = { result, error in
                     do {
                         if let err = error {
                             let status = self.httpStatusCode(from: err)
@@ -104,7 +104,7 @@ extension Router {
                     next()
                 }
                 // Invoke application handler
-                codableHandler(identifier, param, handler)
+                handler(identifier, param, resultHandler)
             } catch {
                 // Http 422 error
                 response.status(.unprocessableEntity)
@@ -114,7 +114,7 @@ extension Router {
     }
 
      // POST
-    fileprivate func postSafely<I: Codable, O: Codable>(_ route: String, codableHandler: @escaping CodableClosure<I, O>) {
+    fileprivate func postSafely<I: Codable, O: Codable>(_ route: String, handler: @escaping CodableClosure<I, O>) {
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
             guard self.isContentTypeJson(request) else {
@@ -127,7 +127,7 @@ extension Router {
                 var data = Data()
                 let _ = try request.read(into: &data)
                 let param = try JSONDecoder().decode(I.self, from: data)
-                let handler: CodableResultClosure<O> = { result, error in
+                let resultHandler: CodableResultClosure<O> = { result, error in
                     do {
                         if let err = error {
                             let status = self.httpStatusCode(from: err)
@@ -144,7 +144,7 @@ extension Router {
                     next()
                 }
                 // Invoke application handler
-                codableHandler(param, handler)
+                handler(param, resultHandler)
             } catch {
                 // Http 400 error
                 //response.status(.badRequest)
@@ -156,7 +156,7 @@ extension Router {
     }
 
      // PUT with Identifier
-    fileprivate func putSafely<Id: Identifier, I: Codable, O: Codable>(_ route: String, codableHandler: @escaping IdentifierCodableClosure<Id, I, O>) {
+    fileprivate func putSafely<Id: Identifier, I: Codable, O: Codable>(_ route: String, handler: @escaping IdentifierCodableClosure<Id, I, O>) {
         put("\(route)/:id") { request, response, next in
             Log.verbose("Received PUT type-safe request")
              guard self.isContentTypeJson(request) else {
@@ -171,7 +171,7 @@ extension Router {
                 let _ = try request.read(into: &data)
                 let param = try JSONDecoder().decode(I.self, from: data)
                 let identifier = try Id(value: id)
-                let handler: CodableResultClosure<O> = { result, error in
+                let resultHandler: CodableResultClosure<O> = { result, error in
                     do {
                         if let err = error {
                             let status = self.httpStatusCode(from: err)
@@ -188,7 +188,7 @@ extension Router {
                     next()
                 }
                 // Invoke application handler
-                codableHandler(identifier, param, handler)
+                handler(identifier, param, resultHandler)
             } catch {
                 response.status(.unprocessableEntity)
                 next()
@@ -197,11 +197,11 @@ extension Router {
     }
 
     // Get
-    fileprivate func getSafely<O: Codable>(_ route: String, codableHandler: @escaping CodableArrayClosure<O>) {
+    fileprivate func getSafely<O: Codable>(_ route: String, handler: @escaping CodableArrayClosure<O>) {
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request")
             // Define result handler
-            let handler: CodableArrayResultClosure<O> = { result, error in
+            let resultHandler: CodableArrayResultClosure<O> = { result, error in
                 do {
                     if let err = error {
                         let status = self.httpStatusCode(from: err)
@@ -217,17 +217,17 @@ extension Router {
                 }
                 next()
             }
-            codableHandler(handler)
+            handler(resultHandler)
         }
     }
 
      // GET single element
-    fileprivate func getSafely<Id: Identifier, O: Codable>(_ route: String, codableHandler: @escaping IdentifierSimpleCodableClosure<Id, O>) {
+    fileprivate func getSafely<Id: Identifier, O: Codable>(_ route: String, handler: @escaping IdentifierSimpleCodableClosure<Id, O>) {
         get("\(route)/:id") { request, response, next in
             Log.verbose("Received GET (singular) type-safe request")
             do {
                 // Define result handler
-                let handler: CodableResultClosure<O> = { result, error in
+                let resultHandler: CodableResultClosure<O> = { result, error in
                     do {
                         if let err = error {
                             let status = self.httpStatusCode(from: err)
@@ -246,7 +246,7 @@ extension Router {
                 // Process incoming data from client
                 let id = request.parameters["id"] ?? ""
                 let identifier = try Id(value: id)
-                codableHandler(identifier, handler)
+                handler(identifier, resultHandler)
             } catch {
                 // Http 422 error
                 response.status(.unprocessableEntity)
@@ -256,11 +256,11 @@ extension Router {
     }
 
      // DELETE
-    fileprivate func deleteSafely(_ route: String, codableHandler: @escaping NonCodableClosure) {
+    fileprivate func deleteSafely(_ route: String, handler: @escaping NonCodableClosure) {
         delete(route) { request, response, next in
             Log.verbose("Received DELETE (plural) type-safe request")
             // Define result handler   
-            let handler: ResultClosure = { error in
+            let resultHandler: ResultClosure = { error in
                 if let err = error {
                     let status = self.httpStatusCode(from: err)
                     response.status(status)
@@ -269,15 +269,15 @@ extension Router {
                 }
                 next()
             }
-            codableHandler(handler)
+            handler(resultHandler)
         }
     }
 
      // DELETE single element
-    fileprivate func deleteSafely<Id: Identifier>(_ route: String, codableHandler: @escaping IdentifierNonCodableClosure<Id>) {
+    fileprivate func deleteSafely<Id: Identifier>(_ route: String, handler: @escaping IdentifierNonCodableClosure<Id>) {
         delete("\(route)/:id") { request, response, next in
             Log.verbose("Received DELETE (singular) type-safe request")
-            let handler: ResultClosure = { error in
+            let resultHandler: ResultClosure = { error in
                 if let err = error {
                     let status = self.httpStatusCode(from: err)
                     response.status(status)
@@ -290,7 +290,7 @@ extension Router {
             do {
                 let id = request.parameters["id"] ?? ""
                 let identifier = try Id(value: id)
-                codableHandler(identifier, handler)
+                handler(identifier, resultHandler)
             } catch {
                  // Http 422 error
                 response.status(.unprocessableEntity)
@@ -326,27 +326,27 @@ extension Router {
 // Persistable extension
 extension Persistable {
     static func registerHandlers(router: Router) {
-        router.postSafely(route, codableHandler: self.create)
+        router.postSafely(route, handler: self.create)
         Log.verbose("Registered POST for: \(self)")
 
         // Register update
-        router.putSafely(route, codableHandler: self.update)
+        router.putSafely(route, handler: self.update)
         Log.verbose("Registered PUT for: \(self)")
 
         // Register read ALL
-        router.getSafely(route, codableHandler: self.read as Router.CodableArrayClosure)
+        router.getSafely(route, handler: self.read as Router.CodableArrayClosure)
         Log.verbose("Registered GET for: \(self)")
 
         // Register read Single
-        router.getSafely(route, codableHandler: self.read as Router.IdentifierSimpleCodableClosure)
+        router.getSafely(route, handler: self.read as Router.IdentifierSimpleCodableClosure)
         Log.verbose("Registered single GET for: \(self)")
 
         // Register delete all
-        router.deleteSafely(route, codableHandler: self.delete as Router.NonCodableClosure)
+        router.deleteSafely(route, handler: self.delete as Router.NonCodableClosure)
         Log.verbose("Registered DELETE for: \(self)")
 
         // Register delete single
-        router.deleteSafely(route, codableHandler: self.delete as Router.IdentifierNonCodableClosure)
+        router.deleteSafely(route, handler: self.delete as Router.IdentifierNonCodableClosure)
         Log.verbose("Registered single DELETE for: \(self)")
     }
 }
