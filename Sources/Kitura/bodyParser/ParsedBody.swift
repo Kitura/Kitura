@@ -53,7 +53,7 @@ public indirect enum ParsedBody {
     ///
     /// - Returns: The parsed body as a JSON object, or nil if the body wasn't in
     ///           JSON format.
-  public var asJSON: [String: Any]? {
+    public var asJSON: [String: Any]? {
         switch self {
         case .json(let body):
             return body
