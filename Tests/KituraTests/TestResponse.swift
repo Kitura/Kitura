@@ -1368,7 +1368,7 @@ class TestResponse: KituraTest {
                 do {
                     response.headers["Content-Type"] = "application/json; charset=utf-8"
                     #if swift(>=4.0)
-                    response.send(json: json)
+                    try response.send(json: json).end()
                     #else
                     try response.send(data: json.rawData()).end()
                     #endif
