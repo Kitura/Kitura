@@ -16,6 +16,7 @@
 
 import Foundation
 import LoggerAPI
+import KituraNet
 
 #if swift(>=4.0)
 import SafetyContracts
@@ -88,8 +89,9 @@ extension Router {
                 // Define handler to process result from application
                 let handler: CodableResultClosure<O> = { result, error in
                     do {
-                        if let _ = error {
-                            response.status(.internalServerError)
+                        if let err = error {
+                            let status = HTTPStatusCode(rawValue: err.rawValue) ?? HTTPStatusCode.unknown
+                            response.status(status)
                         } else {
                             let encoded = try JSONEncoder().encode(result)
                             response.status(.OK)
@@ -127,8 +129,9 @@ extension Router {
                 let param = try JSONDecoder().decode(I.self, from: data)
                 let handler: CodableResultClosure<O> = { result, error in
                     do {
-                        if let _ = error {
-                            response.status(.internalServerError)
+                        if let err = error {
+                            let status = HTTPStatusCode(rawValue: err.rawValue) ?? HTTPStatusCode.unknown
+                            response.status(status)
                         } else {
                             let encoded = try JSONEncoder().encode(result)
                             response.status(.created)
@@ -170,8 +173,9 @@ extension Router {
                 let identifier = try Id(value: id)
                 let handler: CodableResultClosure<O> = { result, error in
                     do {
-                        if let _ = error {
-                            response.status(.internalServerError)
+                        if let err = error {
+                            let status = HTTPStatusCode(rawValue: err.rawValue) ?? HTTPStatusCode.unknown
+                            response.status(status)
                         } else {
                             let encoded = try JSONEncoder().encode(result)
                             response.status(.OK)
@@ -199,8 +203,9 @@ extension Router {
             // Define result handler
             let handler: CodableArrayResultClosure<O> = { result, error in
                 do {
-                    if let _ = error {
-                        response.status(.internalServerError)
+                    if let err = error {
+                        let status = HTTPStatusCode(rawValue: err.rawValue) ?? HTTPStatusCode.unknown
+                        response.status(status)
                     } else {
                         let encoded = try JSONEncoder().encode(result)
                         response.status(.OK)
@@ -224,8 +229,9 @@ extension Router {
                 // Define result handler
                 let handler: CodableResultClosure<O> = { result, error in
                     do {
-                        if let _ = error {
-                            response.status(.internalServerError)
+                        if let err = error {
+                            let status = HTTPStatusCode(rawValue: err.rawValue) ?? HTTPStatusCode.unknown
+                            response.status(status)
                         } else {
                             let encoded = try JSONEncoder().encode(result)
                             response.status(.OK)
@@ -255,8 +261,9 @@ extension Router {
             Log.verbose("Received DELETE (plural) type-safe request")
             // Define result handler   
             let handler: ResultClosure = { error in
-                if let _ = error {
-                    response.status(.internalServerError)
+                if let err = error {
+                    let status = HTTPStatusCode(rawValue: err.rawValue) ?? HTTPStatusCode.unknown
+                    response.status(status)
                 } else {
                     response.status(.OK)
                 }
@@ -271,8 +278,9 @@ extension Router {
         delete("\(route)/:id") { request, response, next in
             Log.verbose("Received DELETE (singular) type-safe request")
             let handler: ResultClosure = { error in
-                if let _ = error {
-                    response.status(.internalServerError)
+                if let err = error {
+                    let status = HTTPStatusCode(rawValue: err.rawValue) ?? HTTPStatusCode.unknown
+                    response.status(status)
                 } else {
                     response.status(.OK)
                 }
