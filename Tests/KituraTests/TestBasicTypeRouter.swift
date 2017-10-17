@@ -307,7 +307,7 @@ class TestBasicTypeRouter: KituraTest {
             })
         }
     }
-    //TODO: Currently fails, waiting on PR: https://github.com/IBM-Swift/Kitura-net/pull/224
+
     func testBasicPatch() {
 
         router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?, ProcessHandlerError?) -> Void) -> Void in
