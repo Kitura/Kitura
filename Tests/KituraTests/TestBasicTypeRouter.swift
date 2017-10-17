@@ -69,7 +69,7 @@ class TestBasicTypeRouter: KituraTest {
     }
 
     func testBasicPost() {
-        router.post("/users") { (user: User, respondWith: (User?, Swift.Error?) -> Void) in
+        router.post("/users") { (user: User, respondWith: (User?, ProcessHandlerError?) -> Void) in
             print("POST on /users for user \(user)")
             // Let's keep the test simple
             // We just want to test that we can register a handler that
@@ -119,7 +119,7 @@ class TestBasicTypeRouter: KituraTest {
     }
 
     func testBasicGet() {
-        router.get("/users") { (respondWith: ([User]?, Swift.Error?) -> Void) in
+        router.get("/users") { (respondWith: ([User]?, ProcessHandlerError?) -> Void) in
             print("GET on /users")
 
             respondWith(self.userStore.map({ $0.value }), nil)
@@ -158,11 +158,8 @@ class TestBasicTypeRouter: KituraTest {
         }
     }
 
-    //Need to handle error, see next comment
-    struct NotFoundError: Swift.Error {}
-
     func testBasicSingleGet() {
-        router.get("/users") { (id: Int, respondWith: (User?, Swift.Error?) -> Void) in
+        router.get("/users") { (id: Int, respondWith: (User?, ProcessHandlerError?) -> Void) in
             print("GET on /users")
             guard let user = self.userStore[id] else {
                 XCTFail("ERROR!!! Couldn't find user with id \(id)")
@@ -209,7 +206,7 @@ class TestBasicTypeRouter: KituraTest {
 
     func testBasicDelete() {
 
-        router.delete("/users") { (respondWith: (Swift.Error?) -> Void) in
+        router.delete("/users") { (respondWith: (ProcessHandlerError?) -> Void) in
             self.userStore.removeAll()
             respondWith(nil)
         }
@@ -238,7 +235,7 @@ class TestBasicTypeRouter: KituraTest {
 
     func testBasicSingleDelete() {
 
-        router.delete("/users") { (id: Int, respondWith: (Swift.Error?) -> Void) in
+        router.delete("/users") { (id: Int, respondWith: (ProcessHandlerError?) -> Void) in
             respondWith(nil)
         }
 
@@ -266,7 +263,7 @@ class TestBasicTypeRouter: KituraTest {
 
     func testBasicPut() {
 
-        router.put("/users") { (id: Int, user: User, respondWith: (User?, Swift.Error?) -> Void) in
+        router.put("/users") { (id: Int, user: User, respondWith: (User?, ProcessHandlerError?) -> Void) in
             self.userStore[id] = user
             respondWith(user, nil)
         }
@@ -313,7 +310,7 @@ class TestBasicTypeRouter: KituraTest {
     //TODO: Currently fails, waiting on PR: https://github.com/IBM-Swift/Kitura-net/pull/224
 //    func testBasicPatch() {
 //
-//        router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?, Swift.Error?) -> Void) -> Void in
+//        router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?, ProcessHandlerError?) -> Void) -> Void in
 //            guard let existingUser = self.userStore[id] else {
 //                respondWith(nil, RouteHandlerError.notFound)
 //                return

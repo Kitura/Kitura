@@ -29,10 +29,9 @@ import SafetyContracts
 // https://restfulapi.net/http-status-codes/
 // https://docs.oracle.com/en/cloud/iaas/messaging-cloud/csmes/rest-api-http-status-codes-and-error-messages-reference.html#GUID-AAB1EE32-BE4A-4ACC-BEAC-ABA85EB41919
 extension Router {
-    // TODO: Use concrete error type instead of generic Error
-    public typealias ResultClosure = (Swift.Error?) -> Void
-    public typealias CodableResultClosure<O: Codable> = (O?, Swift.Error?) -> Void
-    public typealias CodableArrayResultClosure<O: Codable> = ([O]?, Swift.Error?) -> Void
+    public typealias ResultClosure = (ProcessHandlerError?) -> Void
+    public typealias CodableResultClosure<O: Codable> = (O?, ProcessHandlerError?) -> Void
+    public typealias CodableArrayResultClosure<O: Codable> = ([O]?, ProcessHandlerError?) -> Void
     public typealias IdentifierCodableClosure<Id: Identifier, I: Codable, O: Codable> = (Id, I, @escaping CodableResultClosure<O>) -> Void
     public typealias CodableClosure<I: Codable, O: Codable> = (I, @escaping CodableResultClosure<O>) -> Void
     public typealias NonCodableClosure = (@escaping ResultClosure) -> Void
