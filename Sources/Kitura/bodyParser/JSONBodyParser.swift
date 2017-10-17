@@ -19,7 +19,11 @@ import Foundation
 #if swift(>=4.0)
 class JSONBodyParser: BodyParserProtocol {
     func parse(_ data: Data) -> ParsedBody? {
-        return .json(data)
+        guard let jsonObj = try? JSONSerialization.jsonObject(with: data, options: []),
+            let json = jsonObj as? [String: Any] else {
+            return nil
+      }
+      return .json(json)
     }
 }
 
