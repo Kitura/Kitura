@@ -34,7 +34,7 @@ class TestBasicTypeRouter: KituraTest {
             ("testBasicDelete", testBasicDelete),
             ("testBasicSingleDelete", testBasicSingleDelete),
             ("testBasicPut", testBasicPut),
-            //("testBasicPatch", testBasicPatch),
+            ("testBasicPatch", testBasicPatch),
         ]
     }
 
