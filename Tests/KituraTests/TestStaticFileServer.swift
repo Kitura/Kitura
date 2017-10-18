@@ -256,6 +256,7 @@ class TestStaticFileServer: KituraTest {
         }
     }
 
+    /// TODO: Why "head" request leads to a nil response? Headers cannot be checked
     func disabled_testRangeRequestIsIgnoredOnNonGetMethod() {
         performServerTest(router) { expectation in
             self.performRequest("head", path: "/qwer/index.html", callback: { response in
@@ -270,6 +271,7 @@ class TestStaticFileServer: KituraTest {
         }
     }
 
+    /// Helper function to assert a regex pattern and returns matched groups
     func assertMatch(_ target: String?, _ pattern: String, matchedGroups: inout [String], file: StaticString = #file, line: UInt = #line) {
         guard let regex = try? NSRegularExpression(pattern: pattern, options: [])else {
             return XCTFail("invalid pattern: \(pattern)", file: file, line: line)
@@ -296,23 +298,51 @@ class TestStaticFileServer: KituraTest {
     func testRangeRequestsWithMultipleRanges() {
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                defer {
+                    expectation.fulfill()
+                }
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent)
+
+                // Assert required headers in multipart/bytesranges
                 var capturedGroups: [String] = []
                 XCTAssertEqual(response?.headers["Accept-Ranges"]?.first, "bytes")
                 self.assertMatch(response?.headers["Content-Type"]?.first, "multipart\\/byteranges; boundary=(.+)", matchedGroups: &capturedGroups)
+                XCTAssertFalse(capturedGroups.isEmpty, "No captured groups, body and boundary tests will fail")
+                guard capturedGroups.count > 1 else {
+                    XCTFail("No boundary found in Content-Type header")
+                    return
+                }
+
+                // Assert Content-Range is not present
+                XCTAssertNil(response?.headers["Content-Range"]?.first)
+
+                // Assert body
                 var bodyData = Data()
                 _ = try? response?.readAllData(into: &bodyData)
                 XCTAssertTrue(bodyData.count > 0)
-                XCTAssertFalse(capturedGroups.isEmpty, "No captured groups, body and boundary tests will fail")
-                if capturedGroups.count > 1 {
-                    let bodyParser = MultiPartBodyParser(boundary: capturedGroups[1])
-                    let parsedBody = bodyParser.parse(bodyData)
-                    XCTAssertNotNil(parsedBody)
-                    // Check each part has the right headers and data is of the correct length
+
+                // Assert body structure (Should be same as a regular multipart body)
+                let bodyParser = MultiPartBodyParser(boundary: capturedGroups[1])
+                guard let parsedBody = bodyParser.parse(bodyData) else {
+                    XCTFail("parsedBody must not be nil")
+                    return
                 }
-                //XCTAssertEqual(bodyData.count, 10)
-                expectation.fulfill()
-            }, headers: ["Range": "bytes=0-10,20-30"])
+                switch parsedBody {
+                case .multipart(let parts):
+                    // Assert each part has the required headers and its data is of the desired length
+                    XCTAssertEqual(parts.count, 2)
+                    XCTAssertEqual(parts[0].headers[.contentRange], "Content-Range: bytes 0-10/\(self.indexHtmlCount)")
+                    XCTAssertEqual(parts[0].headers[.type], "Content-Type: text/html")
+                    let data0 = parts[0].body.asText?.data(using: .utf8)
+                    XCTAssertEqual(data0?.count, 10)
+                    XCTAssertEqual(parts[1].headers[.contentRange], "Content-Range: bytes 20-33/\(self.indexHtmlCount)")
+                    XCTAssertEqual(parts[1].headers[.type], "Content-Type: text/html")
+                    let data1 = parts[1].body.asText?.data(using: .utf8)
+                    XCTAssertEqual(data1?.count, 13)
+                default:
+                    XCTFail("Multipart body was expected \(parsedBody)")
+                }
+            }, headers: ["Range": "bytes=0-10,20-33"])
         }
     }
 }

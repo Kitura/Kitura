@@ -199,14 +199,16 @@ extension StaticFileServer {
                 response.headers["Content-Type"] =  "multipart/byteranges; boundary=\(boundary)"
                 var data = Data()
                 ranges.forEach { range in
-                    let fileData = FileServer.read(contentsOfFile: filePath, inRange: ranges[0]) ?? Data()
-                    let partHeader = ("--\(boundary)\n" +
-                    "Content-Type: \(contentType ?? "")\n" +
-                    "Content-Range: bytes \(range.lowerBound)-\(range.upperBound)/\(fileSize)\n\n").data(using: .utf8)!
-                    data.append(partHeader)
+                    let fileData = FileServer.read(contentsOfFile: filePath, inRange: range) ?? Data()
+                    var partHeader = "--\(boundary)\r\n"
+                    partHeader += "Content-Range: bytes \(range.lowerBound)-\(range.upperBound)/\(fileSize)\r\n"
+                    partHeader += (contentType == nil ? "" : "Content-Type: \(contentType!)\r\n")
+                    partHeader += "\r\n"
+                    data.append(partHeader.data(using: .utf8)!)
                     data.append(fileData)
-                    data.append("\n".data(using: .utf8)!)
+                    data.append("\r\n".data(using: .utf8)!)
                 }
+                data.append("--\(boundary)--".data(using: .utf8)!)
                 response.send(data: data)
                 response.statusCode = .partialContent
             }
