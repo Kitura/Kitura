@@ -448,7 +448,7 @@ public class RouterResponse {
 #if swift(>=4.0)
 extension RouterResponse {
     
-    /// Send Codable Object.
+    /// Send Encodable Object.
     ///
     /// - Parameter obj: the Codable object to send.
     /// - Returns: this RouterResponse.
@@ -468,9 +468,9 @@ extension RouterResponse {
         return self
     }
 
-    /// Send JSON.
+    /// Send Encodable Object JSON Convienence Method
     ///
-    /// - Parameter json: the JSON object to send.
+    /// - Parameter json: the Encodable object to send.
     /// - Returns: this RouterResponse.
     @discardableResult
     public func send<T : Encodable>(json: T) -> RouterResponse {

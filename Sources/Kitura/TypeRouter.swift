@@ -86,10 +86,9 @@ extension Router {
             do {
                 // Process incoming data from client
                 let id = request.parameters["id"] ?? ""
-                var data = Data()
-                let _ = try request.read(into: &data)
-                let param = try JSONDecoder().decode(I.self, from: data)
                 let identifier = try Id(value: id)
+                let param = try request.read(as: I.self)
+
                 // Define handler to process result from application
                 let resultHandler: CodableResultClosure<O> = { result, error in
                     do {
@@ -128,9 +127,7 @@ extension Router {
             }
             do {
                 // Process incoming data from client
-                var data = Data()
-                let _ = try request.read(into: &data)
-                let param = try JSONDecoder().decode(I.self, from: data)
+                let param = try request.read(as: I.self)
                 let resultHandler: CodableResultClosure<O> = { result, error in
                     do {
                         if let err = error {
@@ -174,10 +171,9 @@ extension Router {
             do {
                 // Process incoming data from client
                 let id = request.parameters["id"] ?? ""
-                var data = Data()
-                let _ = try request.read(into: &data)
-                let param = try JSONDecoder().decode(I.self, from: data)
                 let identifier = try Id(value: id)
+                let param = try request.read(as: I.self)
+
                 let resultHandler: CodableResultClosure<O> = { result, error in
                     do {
                         if let err = error {
