@@ -218,7 +218,8 @@ extension StaticFileServer {
         static func read(contentsOfFile filePath: String, inRange range: Range<Int>) -> Data? {
             let file = FileHandle(forReadingAtPath: filePath)
             file?.seek(toFileOffset: UInt64(range.lowerBound))
-            let data = file?.readData(ofLength: range.upperBound - range.lowerBound)
+            // range is inclusive to make sure to increate upper bound by 1
+            let data = file?.readData(ofLength: range.upperBound + 1 - range.lowerBound)
             file?.closeFile()
             return data
         }

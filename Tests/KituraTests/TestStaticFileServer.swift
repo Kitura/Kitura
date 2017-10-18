@@ -235,7 +235,7 @@ class TestStaticFileServer: KituraTest {
                 XCTAssertEqual(response?.headers["Accept-Ranges"]?.first, "bytes")
                 var bodyData = Data()
                 _ = try? response?.readAllData(into: &bodyData)
-                XCTAssertEqual(bodyData.count, requestingBytes)
+                XCTAssertEqual(bodyData.count, requestingBytes + 1)
                 expectation.fulfill()
             }, headers: ["Range": "bytes=0-\(requestingBytes)"])
         }
@@ -269,6 +269,52 @@ class TestStaticFileServer: KituraTest {
                 expectation.fulfill()
             }, headers: ["Range": "bytes=0-10"])
         }
+    }
+
+    func testDataIsNotCorrupted() {
+        // Corrupted files will have more bytes or less bytes than required
+        // So we check the file is intact after reconstructing it (after various range requests)
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                XCTAssertNotNil(response)
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
+                XCTAssertNil(response?.headers["Content-Range"]?.first)
+                // Original file:
+                var original = Data()
+                _ = try? response?.readAllData(into: &original)
+
+                self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                    XCTAssertNotNil(response)
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent)
+                    XCTAssertEqual(response?.headers["Content-Range"]?.first, "bytes 0-10/\(self.indexHtmlCount)")
+                    // First 11 bytes
+                    var reconstructed = Data()
+                    _ = try? response?.readAllData(into: &reconstructed)
+
+                    self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                        XCTAssertNotNil(response)
+                        XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent)
+                        XCTAssertEqual(response?.headers["Content-Range"]?.first, "bytes 11-\(self.indexHtmlCount-1)/\(self.indexHtmlCount)")
+                        // 12th bytes and later
+                        var part2 = Data()
+                        _ = try? response?.readAllData(into: &part2)
+
+                        // Reconstruct data
+                        reconstructed.append(part2)
+
+                        // Check both datas are the same
+                        XCTAssertEqual(reconstructed.count, original.count)
+                        if reconstructed.count == original.count {
+                            for i in 0..<original.count {
+                                XCTAssertEqual(reconstructed[i], original[i])
+                            }
+                        }
+                    }, headers: ["Range": "bytes=11-"])
+                }, headers: ["Range": "bytes=0-10"])
+                expectation.fulfill()
+            })
+        }
+
     }
 
     /// Helper function to assert a regex pattern and returns matched groups
@@ -334,11 +380,11 @@ class TestStaticFileServer: KituraTest {
                     XCTAssertEqual(parts[0].headers[.contentRange], "Content-Range: bytes 0-10/\(self.indexHtmlCount)")
                     XCTAssertEqual(parts[0].headers[.type], "Content-Type: text/html")
                     let data0 = parts[0].body.asText?.data(using: .utf8)
-                    XCTAssertEqual(data0?.count, 10)
+                    XCTAssertEqual(data0?.count, 11)
                     XCTAssertEqual(parts[1].headers[.contentRange], "Content-Range: bytes 20-33/\(self.indexHtmlCount)")
                     XCTAssertEqual(parts[1].headers[.type], "Content-Type: text/html")
                     let data1 = parts[1].body.asText?.data(using: .utf8)
-                    XCTAssertEqual(data1?.count, 13)
+                    XCTAssertEqual(data1?.count, 14)
                 default:
                     XCTFail("Multipart body was expected \(parsedBody)")
                 }

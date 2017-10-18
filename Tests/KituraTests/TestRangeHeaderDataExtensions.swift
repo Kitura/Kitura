@@ -46,9 +46,9 @@ class TestRangeHeaderDataExtensions: XCTestCase {
 
     func testPartialDataRead() {
         assertFileExists()
-        let data = StaticFileServer.FileServer.read(contentsOfFile: fileUrl.path, inRange: 0..<5)
+        let data = StaticFileServer.FileServer.read(contentsOfFile: fileUrl.path, inRange: 0..<9)
         XCTAssertNotNil(data)
-        XCTAssertEqual(data?.count, 5)
+        XCTAssertEqual(data?.count, 10)
     }
 
     func testPartialDataReadEntireFile() {
