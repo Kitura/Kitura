@@ -164,7 +164,7 @@ class TestBasicTypeRouter: KituraTest {
             guard let user = self.userStore[id] else {
                 XCTFail("ERROR!!! Couldn't find user with id \(id)")
                 //TODO: Create error instance
-                respondWith(nil, nil)
+                respondWith(nil, .notFound)
                 return
             }
             respondWith(user, nil)
@@ -236,6 +236,10 @@ class TestBasicTypeRouter: KituraTest {
     func testBasicSingleDelete() {
 
         router.delete("/users") { (id: Int, respondWith: (ProcessHandlerError?) -> Void) in
+            guard let _ = self.userStore.removeValue(forKey: id) else {
+                respondWith(.notFound)
+                return
+            }
             respondWith(nil)
         }
 
