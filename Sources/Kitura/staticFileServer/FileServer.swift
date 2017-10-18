@@ -38,11 +38,15 @@ extension StaticFileServer {
         /// A setter for response headers.
         private let responseHeadersSetter: ResponseHeadersSetter?
 
+        /// Whether accepts range requests or not
+        let acceptRanges: Bool
+
         init(servingFilesPath: String, options: StaticFileServer.Options,
              responseHeadersSetter: ResponseHeadersSetter?) {
             self.possibleExtensions = options.possibleExtensions
             self.serveIndexForDirectory = options.serveIndexForDirectory
             self.redirect = options.redirect
+            self.acceptRanges = options.acceptRanges
             self.servingFilesPath = servingFilesPath
             self.responseHeadersSetter = responseHeadersSetter
         }
@@ -82,7 +86,7 @@ extension StaticFileServer {
             return filePath
         }
 
-        func serveFile(_ filePath: String, requestPath: String, response: RouterResponse) {
+        func serveFile(_ filePath: String, requestPath: String, rangeHeader: String?, response: RouterResponse) {
             let fileManager = FileManager()
             var isDirectory = ObjCBool(false)
 
@@ -92,22 +96,22 @@ extension StaticFileServer {
                 #else
                     let isDirectoryBool = isDirectory.boolValue
                 #endif
-                serveExistingFile(filePath, requestPath: requestPath,
+                serveExistingFile(filePath, requestPath: requestPath, rangeHeader: rangeHeader,
                                   isDirectory: isDirectoryBool, response: response)
                 return
             }
 
-            tryToServeWithExtensions(filePath, response: response)
+            tryToServeWithExtensions(filePath, rangeHeader: rangeHeader, response: response)
         }
 
-        private func tryToServeWithExtensions(_ filePath: String, response: RouterResponse) {
+        private func tryToServeWithExtensions(_ filePath: String, rangeHeader: String?, response: RouterResponse) {
             let filePathWithPossibleExtensions = possibleExtensions.map { filePath + "." + $0 }
             for filePathWithExtension in filePathWithPossibleExtensions {
-                serveIfNonDirectoryFile(atPath: filePathWithExtension, response: response)
+                serveIfNonDirectoryFile(atPath: filePathWithExtension, rangeHeader: rangeHeader, response: response)
             }
         }
 
-        private func serveExistingFile(_ filePath: String, requestPath: String, isDirectory: Bool,
+        private func serveExistingFile(_ filePath: String, requestPath: String, rangeHeader: String?, isDirectory: Bool,
                                        response: RouterResponse) {
             if isDirectory {
                 if redirect {
@@ -118,12 +122,12 @@ extension StaticFileServer {
                     }
                 }
             } else {
-                serveNonDirectoryFile(filePath, response: response)
+                serveNonDirectoryFile(filePath, rangeHeader: rangeHeader, response: response)
             }
         }
 
         @discardableResult
-        private func serveIfNonDirectoryFile(atPath path: String, response: RouterResponse) -> Bool {
+        private func serveIfNonDirectoryFile(atPath path: String, rangeHeader: String?, response: RouterResponse) -> Bool {
             var isDirectory = ObjCBool(false)
             if FileManager().fileExists(atPath: path, isDirectory: &isDirectory) {
                 #if os(Linux)
@@ -132,29 +136,40 @@ extension StaticFileServer {
                     let isDirectoryBool = isDirectory.boolValue
                 #endif
                 if !isDirectoryBool {
-                    serveNonDirectoryFile(path, response: response)
+                    serveNonDirectoryFile(path, rangeHeader: rangeHeader, response: response)
                     return true
                 }
             }
             return false
         }
 
-        private func serveNonDirectoryFile(_ filePath: String, response: RouterResponse) {
+        private func serveNonDirectoryFile(_ filePath: String, rangeHeader: String?, response: RouterResponse) {
             if  !isValidFilePath(filePath) {
                 return
             }
 
             do {
                 let fileAttributes = try FileManager().attributesOfItem(atPath: filePath)
+                response.headers["Accept-Ranges"] = acceptRanges ? "bytes" : "none"
                 responseHeadersSetter?.setCustomResponseHeaders(response: response,
                                                                 filePath: filePath,
                                                                 fileAttributes: fileAttributes)
-
-                try response.send(fileName: filePath)
+                if let rangeHeader = rangeHeader,
+                    let fileSize = fileAttributes[FileAttributeKey.size] as? Int,
+                    let rangeHeaderValue = RangeHeader.parse(size: fileSize, headerValue: rangeHeader),
+                    rangeHeaderValue.type == "bytes",
+                    !rangeHeaderValue.ranges.isEmpty {
+                    // Send a partial response
+                    try serveNonDirectoryPartialFile(filePath, fileSize: fileSize, ranges: rangeHeaderValue.ranges, response: response)
+                } else {
+                    // No range request or file has no file size attribute or requested range was invalid.
+                    // Send the entire file
+                    try response.send(fileName: filePath)
+                    response.statusCode = .OK
+                }
             } catch {
-                Log.error("serving file at path \(filePath) error: \(error)")
+                Log.error("serving file at path \(filePath), rangeHeader:\(rangeHeader ?? "nil") error: \(error)")
             }
-            response.statusCode = .OK
         }
 
         private func isValidFilePath(_ filePath: String) -> Bool {
@@ -166,6 +181,44 @@ extension StaticFileServer {
             #else
                 return  absoluteFilePath!.hasPrefix(absoluteBasePath!)
             #endif
+        }
+
+        private func serveNonDirectoryPartialFile(_ filePath: String, fileSize: Int, ranges: [Range<Int>], response: RouterResponse) throws {
+            let contentType =  ContentType.sharedInstance.getContentType(forFileName: filePath)
+            if ranges.count == 1 {
+                let data = FileServer.read(contentsOfFile: filePath, inRange: ranges[0])
+                // Send a single part response
+                response.headers["Content-Type"] =  contentType
+                response.headers["Content-Range"] = "bytes \(ranges[0].lowerBound)-\(ranges[0].upperBound)/\(fileSize)"
+                response.send(data: data ?? Data())
+                response.statusCode = .partialContent
+
+            } else {
+                // Send multi part response
+                let boundary = "KituraBoundary\(UUID().uuidString)" // Maybe a better boundary can be calculated in the future
+                response.headers["Content-Type"] =  "multipart/byteranges; boundary=\(boundary)"
+                var data = Data()
+                ranges.forEach { range in
+                    let fileData = FileServer.read(contentsOfFile: filePath, inRange: ranges[0]) ?? Data()
+                    let partHeader = ("--\(boundary)\n" +
+                    "Content-Type: \(contentType ?? "")\n" +
+                    "Content-Range: bytes \(range.lowerBound)-\(range.upperBound)/\(fileSize)\n\n").data(using: .utf8)!
+                    data.append(partHeader)
+                    data.append(fileData)
+                    data.append("\n".data(using: .utf8)!)
+                }
+                response.send(data: data)
+                response.statusCode = .partialContent
+            }
+        }
+
+        /// Helper function to read bytes (of a given range) of a file into data
+        static func read(contentsOfFile filePath: String, inRange range: Range<Int>) -> Data? {
+            let file = FileHandle(forReadingAtPath: filePath)
+            file?.seek(toFileOffset: UInt64(range.lowerBound))
+            let data = file?.readData(ofLength: range.upperBound - range.lowerBound)
+            file?.closeFile()
+            return data
         }
     }
 }

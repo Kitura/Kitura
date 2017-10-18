@@ -37,7 +37,8 @@ class TestStaticFileServer: KituraTest {
             ("testGetWithSpecialCharactersEncoded", testGetWithSpecialCharactersEncoded),
             ("testGetKituraResource", testGetKituraResource),
             ("testGetMissingKituraResource", testGetMissingKituraResource),
-            ("testAbsolutePathFunction", testAbsolutePathFunction)
+            ("testAbsolutePathFunction", testAbsolutePathFunction),
+            ("testRangeRequests", testRangeRequests)
         ]
     }
 
@@ -159,6 +160,9 @@ class TestStaticFileServer: KituraTest {
         let directoryURL = URL(fileURLWithPath: #file + "/../TestStaticFileServer").standardizedFileURL
         router.all("/asdf", middleware: StaticFileServer(path: directoryURL.path, options:options))
 
+        options = StaticFileServer.Options(possibleExtensions: ["exe", "html"], cacheOptions: cacheOptions, acceptRanges: false)
+        router.all("/tyui", middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options:options, customResponseHeadersSetter: HeaderSetter()))
+
         return router
     }
 
@@ -216,5 +220,99 @@ class TestStaticFileServer: KituraTest {
 
     func testAbsolutePathFunction() {
         XCTAssertEqual(StaticFileServer.ResourcePathHandler.getAbsolutePath(for: "/"), "/", "Absolute path did not resolve to system root")
+    }
+
+    let indexHtmlContents = "<!DOCTYPE html><html><body><b>Index</b></body></html>" // contents of index.html
+    let indexHtmlCount = 54 // index.html file data length
+
+    func testRangeRequests() {
+        let requestingBytes = 10
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                XCTAssertNotNil(response)
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent)
+                XCTAssertEqual(response?.headers["Content-Range"]?.first, "bytes 0-\(requestingBytes)/\(self.indexHtmlCount)")
+                XCTAssertEqual(response?.headers["Accept-Ranges"]?.first, "bytes")
+                var bodyData = Data()
+                _ = try? response?.readAllData(into: &bodyData)
+                XCTAssertEqual(bodyData.count, requestingBytes)
+                expectation.fulfill()
+            }, headers: ["Range": "bytes=0-\(requestingBytes)"])
+        }
+    }
+
+    func testRangeRequestIsIgnoredOnOptionOff() {
+        performServerTest(router) { expectation in
+            // static server for "/tyui" has the range option off
+            self.performRequest("get", path: "/tyui/index.html", callback: { response in
+                XCTAssertNotNil(response)
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
+                var bodyData = Data()
+                _ = try? response?.readAllData(into: &bodyData)
+                XCTAssertEqual(bodyData.count, self.indexHtmlCount)
+                XCTAssertEqual(response?.headers["Accept-Ranges"]?.first, "none")
+                expectation.fulfill()
+            }, headers: ["Range": "bytes=0-10"])
+        }
+    }
+
+    func disabled_testRangeRequestIsIgnoredOnNonGetMethod() {
+        performServerTest(router) { expectation in
+            self.performRequest("head", path: "/qwer/index.html", callback: { response in
+                XCTAssertNotNil(response)
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
+                XCTAssertEqual(response?.headers["Accept-Ranges"]?.first, "bytes")
+                XCTAssertNil(response?.headers["Content-Range"])
+                let bodyString = (try? response?.readString()) as? String
+                XCTAssertEqual(bodyString, self.indexHtmlContents, "Entire file contents are expected")
+                expectation.fulfill()
+            }, headers: ["Range": "bytes=0-10"])
+        }
+    }
+
+    func assertMatch(_ target: String?, _ pattern: String, matchedGroups: inout [String], file: StaticString = #file, line: UInt = #line) {
+        guard let regex = try? NSRegularExpression(pattern: pattern, options: [])else {
+            return XCTFail("invalid pattern: \(pattern)", file: file, line: line)
+        }
+        guard let target = target else {
+            return XCTFail("target string is nil")
+        }
+        let matches = regex.matches(in: target, options: [], range: NSRange(location: 0, length: target.characters.count))
+        if matches.isEmpty {
+            XCTFail("target string didn't match", file: file, line: line)
+        } else {
+            let match = matches.first!
+            let nsstring = (target as NSString)
+            for i in 0..<match.numberOfRanges {
+                #if swift(>=4)
+                    matchedGroups.append(nsstring.substring(with: match.range(at: i)))
+                #else
+                    matchedGroups.append(nsstring.substring(with: match.rangeAt(i)))
+                #endif
+            }
+        }
+    }
+
+    func testRangeRequestsWithMultipleRanges() {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent)
+                var capturedGroups: [String] = []
+                XCTAssertEqual(response?.headers["Accept-Ranges"]?.first, "bytes")
+                self.assertMatch(response?.headers["Content-Type"]?.first, "multipart\\/byteranges; boundary=(.+)", matchedGroups: &capturedGroups)
+                var bodyData = Data()
+                _ = try? response?.readAllData(into: &bodyData)
+                XCTAssertTrue(bodyData.count > 0)
+                XCTAssertFalse(capturedGroups.isEmpty, "No captured groups, body and boundary tests will fail")
+                if capturedGroups.count > 1 {
+                    let bodyParser = MultiPartBodyParser(boundary: capturedGroups[1])
+                    let parsedBody = bodyParser.parse(bodyData)
+                    XCTAssertNotNil(parsedBody)
+                    // Check each part has the right headers and data is of the correct length
+                }
+                //XCTAssertEqual(bodyData.count, 10)
+                expectation.fulfill()
+            }, headers: ["Range": "bytes=0-10,20-30"])
+        }
     }
 }

@@ -49,6 +49,7 @@ public class StaticFileServer: RouterMiddleware {
         let redirect: Bool
         let serveIndexForDirectory: Bool
         let cacheOptions: CacheOptions
+        let acceptRanges: Bool
 
         /// Initialize an Options instance.
         ///
@@ -62,11 +63,12 @@ public class StaticFileServer: RouterMiddleware {
         /// "/" when the requested path is a directory.
         /// - Parameter cacheOptions: cache options for StaticFileServer.
         public init(possibleExtensions: [String] = [], serveIndexForDirectory: Bool = true,
-             redirect: Bool = true, cacheOptions: CacheOptions = CacheOptions()) {
+             redirect: Bool = true, cacheOptions: CacheOptions = CacheOptions(), acceptRanges: Bool = true) {
             self.possibleExtensions = possibleExtensions
             self.serveIndexForDirectory = serveIndexForDirectory
             self.redirect = redirect
             self.cacheOptions = cacheOptions
+            self.acceptRanges = acceptRanges
         }
     }
 
@@ -118,6 +120,12 @@ public class StaticFileServer: RouterMiddleware {
             return
         }
 
-        fileServer.serveFile(filePath, requestPath: requestPath, response: response)
+        var rangeHeaderValue = request.headers["Range"]
+        if !fileServer.acceptRanges || request.serverRequest.method != "GET" {
+            // A server MUST ignore a Range header field received with a request method other than GET.
+            rangeHeaderValue = nil
+        }
+
+        fileServer.serveFile(filePath, requestPath: requestPath, rangeHeader: rangeHeaderValue, response: response)
     }
 }
