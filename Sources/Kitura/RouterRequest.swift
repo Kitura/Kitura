@@ -170,6 +170,7 @@ public class RouterRequest {
         return try serverRequest.read(into: &data)
     }
 
+    #if swift(>=4.0)
     /// Read the body of the request as a Codable object.
     ///
     /// - Parameter type: Codable object to which the body of the request will be converted.
@@ -182,7 +183,7 @@ public class RouterRequest {
         _ = try serverRequest.read(into: &data)
         return try JSONDecoder().decode(type, from: data)
     }
-
+    #endif
 
     /// Read the body of the request as String.
     ///
