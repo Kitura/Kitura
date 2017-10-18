@@ -1554,13 +1554,13 @@ class TestResponse: KituraTest {
 
         router.get("/json") { _, response, next in
             response.headers["Content-Type"] = "application/json"
-            #if swift(>=4.0)
-                let json = SomeJSON()
-            #else
-                let json = JSON([ "some": "json" ])
-            #endif
             do {
-                try response.send(json: json).end()
+                #if swift(>=4.0)
+                    try response.send(SomeJSON()).end()
+                #else
+                    let json = JSON([ "some": "json" ])
+                    try response.send(json: json).end()
+                #endif
             } catch {
                 XCTFail("Error sending response. Error=\(error.localizedDescription)")
             }
