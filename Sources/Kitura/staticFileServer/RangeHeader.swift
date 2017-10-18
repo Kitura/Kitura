@@ -42,7 +42,11 @@ extension RangeHeader {
         // split the range string
         let type = String(headerValue[headerValue.startIndex..<index])
         let startOfRangeString = headerValue.index(index, offsetBy: 1)
-        let rangeStrings = headerValue[startOfRangeString..<headerValue.endIndex].components(separatedBy:",")
+        #if swift(>=3.2)
+            let rangeStrings = String(headerValue[startOfRangeString..<headerValue.endIndex]).components(separatedBy:",")
+        #else
+            let rangeStrings = headerValue.substring(with: startOfRangeString..<headerValue.endIndex]).components(separatedBy:",")
+        #endif
 
         // parse all ranges
         var ranges: [Range<Int>] = []
