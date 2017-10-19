@@ -21,7 +21,7 @@ struct RangeHeader {
     /// type is the left side of `=`
     let type: String
     /// ranges is the right side of `=`
-    let ranges: [Range<Int>]
+    let ranges: [Range<UInt64>]
 }
 
 extension RangeHeader {
@@ -32,7 +32,7 @@ extension RangeHeader {
     /// - Parameter size: the size of the resource
     /// - Parameter headerValue: the stringn to parse
     ///
-    static func parse(size: Int, headerValue: String) -> RangeHeader? {
+    static func parse(size: UInt64, headerValue: String) -> RangeHeader? {
 
         guard let index = headerValue.index(of: "=") else {
             // malformed
@@ -49,7 +49,7 @@ extension RangeHeader {
         #endif
 
         // parse all ranges
-        var ranges: [Range<Int>] = []
+        var ranges: [Range<UInt64>] = []
         rangeStrings.forEach { rangeString in
             var range = rangeString.components(separatedBy: "-")
             guard range.count > 1 else {
@@ -59,15 +59,15 @@ extension RangeHeader {
             let startString = range[0]
             let endString = range[1]
 
-            let start: Int?
-            var end: Int?
+            let start: UInt64?
+            var end: UInt64?
             if !startString.isEmpty && !endString.isEmpty {
                 // nnn-nnn : Read both values
-                start = Int(startString)
-                end = Int(endString)
+                start = UInt64(startString)
+                end = UInt64(endString)
             } else if startString.isEmpty {
                 // -nnn : Read end. Start will be calculated
-                end = Int(endString)
+                end = UInt64(endString)
                 if end == nil {
                     start = nil
                 } else {
@@ -76,7 +76,7 @@ extension RangeHeader {
                 }
             } else {
                 // nnn- : Read start. End will be calculated
-                start = Int(startString)
+                start = UInt64(startString)
                 end = size - 1
             }
 

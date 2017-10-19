@@ -23,7 +23,7 @@ class TestRangeHeaderParser: XCTestCase {
     // Test cases based on from:
     // https://github.com/jshttp/range-parser/blob/master/test/range-parser.js
 
-    func parse(_ size: Int, _ headerValue: String) -> RangeHeader? {
+    func parse(_ size: UInt64, _ headerValue: String) -> RangeHeader? {
         return RangeHeader.parse(size: size, headerValue: headerValue)
     }
 

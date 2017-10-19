@@ -155,7 +155,7 @@ extension StaticFileServer {
                                                                 filePath: filePath,
                                                                 fileAttributes: fileAttributes)
                 if let rangeHeader = rangeHeader,
-                    let fileSize = fileAttributes[FileAttributeKey.size] as? Int,
+                    let fileSize = (fileAttributes[FileAttributeKey.size] as? NSNumber)?.uint64Value,
                     let rangeHeaderValue = RangeHeader.parse(size: fileSize, headerValue: rangeHeader),
                     rangeHeaderValue.type == "bytes",
                     !rangeHeaderValue.ranges.isEmpty {
@@ -183,7 +183,7 @@ extension StaticFileServer {
             #endif
         }
 
-        private func serveNonDirectoryPartialFile(_ filePath: String, fileSize: Int, ranges: [Range<Int>], response: RouterResponse) throws {
+        private func serveNonDirectoryPartialFile(_ filePath: String, fileSize: UInt64, ranges: [Range<UInt64>], response: RouterResponse) throws {
             let contentType =  ContentType.sharedInstance.getContentType(forFileName: filePath)
             if ranges.count == 1 {
                 let data = FileServer.read(contentsOfFile: filePath, inRange: ranges[0])
@@ -215,11 +215,11 @@ extension StaticFileServer {
         }
 
         /// Helper function to read bytes (of a given range) of a file into data
-        static func read(contentsOfFile filePath: String, inRange range: Range<Int>) -> Data? {
+        static func read(contentsOfFile filePath: String, inRange range: Range<UInt64>) -> Data? {
             let file = FileHandle(forReadingAtPath: filePath)
-            file?.seek(toFileOffset: UInt64(range.lowerBound))
+            file?.seek(toFileOffset: range.lowerBound)
             // range is inclusive to make sure to increate upper bound by 1
-            let data = file?.readData(ofLength: range.upperBound + 1 - range.lowerBound)
+            let data = file?.readData(ofLength: range.count + 1)
             file?.closeFile()
             return data
         }
