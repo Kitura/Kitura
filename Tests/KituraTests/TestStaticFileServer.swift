@@ -330,7 +330,7 @@ class TestStaticFileServer: KituraTest {
             XCTFail("target string didn't match", file: file, line: line)
         } else {
             let match = matches.first!
-            let nsstring = (target as NSString)
+            let nsstring = NSString(string: target)
             for i in 0..<match.numberOfRanges {
                 #if swift(>=4)
                     matchedGroups.append(nsstring.substring(with: match.range(at: i)))
