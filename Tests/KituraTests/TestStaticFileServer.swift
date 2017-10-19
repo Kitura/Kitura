@@ -216,4 +216,8 @@ class TestStaticFileServer: KituraTest {
     func testAbsolutePathFunction() {
         XCTAssertEqual(StaticFileServer.ResourcePathHandler.getAbsolutePath(for: "/"), "/", "Absolute path did not resolve to system root")
     }
+
+    func testAbsoluteRootPath() {
+        XCTAssertEqual(StaticFileServer(path: "/").absoluteRootPath, "/", "Absolute root path did not resolve to system root")
+    }
 }
