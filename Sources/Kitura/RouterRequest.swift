@@ -178,7 +178,7 @@ public class RouterRequest {
     /// - Throws: `DecodingError.dataCorrupted` if values requested from the payload are corrupted, or if the given data is not valid JSON.
     /// - Throws: An error if any value throws an error during decoding.
     /// - Returns: The instantiated Codable object
-    public func read<T: Codable>(as type: T.Type) throws -> T {
+    public func read<T: Decodable>(as type: T.Type) throws -> T {
         var data = Data()
         _ = try serverRequest.read(into: &data)
         return try JSONDecoder().decode(type, from: data)
