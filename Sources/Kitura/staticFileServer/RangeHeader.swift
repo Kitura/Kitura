@@ -34,18 +34,19 @@ extension RangeHeader {
     ///
     static func parse(size: UInt64, headerValue: String) -> RangeHeader? {
 
-        guard let index = headerValue.index(of: "=") else {
+        guard let index = headerValue.range(of: "=")?.lowerBound else {
             // malformed
             return nil
         }
 
         // split the range string
-        let type = String(headerValue[headerValue.startIndex..<index])
         let startOfRangeString = headerValue.index(index, offsetBy: 1)
         #if swift(>=3.2)
+            let type = String(headerValue[headerValue.startIndex..<index])
             let rangeStrings = String(headerValue[startOfRangeString..<headerValue.endIndex]).components(separatedBy:",")
         #else
-            let rangeStrings = headerValue.substring(with: startOfRangeString..<headerValue.endIndex]).components(separatedBy:",")
+            let type = headerValue.substring(with: headerValue.startIndex..<index)
+            let rangeStrings = headerValue.substring(with: startOfRangeString..<headerValue.endIndex).components(separatedBy:",")
         #endif
 
         // parse all ranges

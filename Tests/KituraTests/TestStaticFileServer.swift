@@ -314,8 +314,11 @@ class TestStaticFileServer: KituraTest {
                 expectation.fulfill()
             })
         }
-
     }
+
+    #if os(Linux) && !swift(>=3.2)
+    typealias NSTextCheckingResult = TextCheckingResult
+    #endif
 
     /// Helper function to assert a regex pattern and returns matched groups
     func assertMatch(_ target: String?, _ pattern: String, matchedGroups: inout [String], file: StaticString = #file, line: UInt = #line) {
@@ -331,12 +334,15 @@ class TestStaticFileServer: KituraTest {
         } else {
             let match = matches.first!
             let nsstring = NSString(string: target)
-            for i in 0..<match.numberOfRanges {
-                #if swift(>=4)
-                    matchedGroups.append(nsstring.substring(with: match.range(at: i)))
+            for index in 0..<match.numberOfRanges {
+                #if !os(Linux) && !swift(>=3.2)
+                    let range = match.rangeAt(index)
                 #else
-                    matchedGroups.append(nsstring.substring(with: match.rangeAt(i)))
+                    let range = match.range(at: index)
                 #endif
+                if  range.location != NSNotFound  &&  range.location != -1 {
+                    matchedGroups.append(nsstring.substring(with: range))
+                }
             }
         }
     }
