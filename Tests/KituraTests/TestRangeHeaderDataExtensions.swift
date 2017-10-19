@@ -19,8 +19,10 @@ class TestRangeHeaderDataExtensions: XCTestCase {
     override func setUp() {
         super.setUp()
         // Prepare temporary file url
+        var counter = 0
         repeat {
-            fileUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("dataRange\(arc4random()).txt")
+            counter += 1
+            fileUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("dataRange\(counter).txt")
         } while FileManager.default.fileExists(atPath: fileUrl.path)
         // Write temporary file
         try? testData.write(to: fileUrl, atomically: true, encoding: .utf8)
