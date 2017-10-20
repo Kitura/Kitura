@@ -36,7 +36,9 @@ class TestBasicTypeRouter: KituraTest {
             ("testBasicPut", testBasicPut),
             ("testBasicPatch", testBasicPatch),
             ("testRouteParameters", testRouteParameters),
-            ("testCodableBodyParsing", testCodablePutBodyParsing),
+            ("testCodablePutBodyParsing", testCodablePutBodyParsing),
+            ("testCodablePatchBodyParsing", testCodablePatchBodyParsing),
+            ("testCodablePostBodyParsing", testCodablePostBodyParsing),
         ]
     }
 
