@@ -256,7 +256,7 @@ class TestStaticFileServer: KituraTest {
         }
     }
 
-    /// TODO: Why "head" request leads to a nil response? Headers cannot be checked
+    /// Enable this test when ClientRequests work fine with HEAD method
     func disabled_testRangeRequestIsIgnoredOnNonGetMethod() {
         performServerTest(router) { expectation in
             self.performRequest("head", path: "/qwer/index.html", callback: { response in
