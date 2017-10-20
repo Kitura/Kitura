@@ -149,6 +149,8 @@ public class RouterRequest {
     public internal(set) var body: ParsedBody?
 
     internal var handledNamedParameters = Set<String>()
+    
+    internal var hasBodyParserBeenUsed = false
 
     /// Initializes a `RouterRequest` instance
     ///

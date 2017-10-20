@@ -35,6 +35,8 @@ class TestBasicTypeRouter: KituraTest {
             ("testBasicSingleDelete", testBasicSingleDelete),
             ("testBasicPut", testBasicPut),
             ("testBasicPatch", testBasicPatch),
+            ("testRouteParameters", testRouteParameters),
+            ("testCodableBodyParsing", testCodablePutBodyParsing),
         ]
     }
 
@@ -387,6 +389,121 @@ class TestBasicTypeRouter: KituraTest {
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response.statusCode))")
                 
                 expectation.fulfill()
+            })
+        }
+    }
+    
+    func testCodablePutBodyParsing() {
+        router.all(middleware: BodyParser())
+        router.put("/users") { (id: Int, user: User, respondWith: (User?, ProcessHandlerError?) -> Void) in
+            print("POST on /users for user \(user)")
+            // Let's keep the test simple
+            // We just want to test that we can register a handler that
+            // receives and sends back a Codable instance
+            self.userStore[user.id] = user
+            respondWith(user, nil)
+        }
+        
+        performServerTest(router, timeout: 30) { expectation in
+            // Let's create a User instance
+            let expectedUser = User(id: 4, name: "David")
+            // Create JSON representation of User instance
+            guard let userData = try? JSONEncoder().encode(expectedUser) else {
+                XCTFail("Could not generate user data from string!")
+                return
+            }
+            
+            self.performRequest("put", path: "/users/2", callback: { response in
+                guard let response = response else {
+                    XCTFail("ERROR!!! ClientRequest response object was nil")
+                    return
+                }
+                
+                XCTAssertEqual(response.statusCode, HTTPStatusCode.internalServerError, "HTTP Status code was \(String(describing: response.statusCode))")
+                
+                expectation.fulfill()
+            }, requestModifier: { request in
+                request.headers["Content-Type"] = "application/json"
+                request.write(from: userData)
+            })
+        }
+    }
+    
+    func testCodablePatchBodyParsing() {
+        router.all(middleware: BodyParser())
+        
+        router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?, ProcessHandlerError?) -> Void) -> Void in
+            guard let existingUser = self.userStore[id] else {
+                respondWith(nil, .notFound)
+                return
+            }
+            if let patchUserName = patchUser.name {
+                let updatedUser = User(id: id, name: patchUserName)
+                self.userStore[id] = updatedUser
+                respondWith(updatedUser, nil)
+            } else {
+                respondWith(existingUser, nil)
+            }
+        }
+        
+        performServerTest(router, timeout: 30) { expectation in
+            // Let's create a User instance
+            let patchUser = User(id: 2, name: "David")
+            // Create JSON representation of User instance
+            guard let userData = try? JSONEncoder().encode(patchUser) else {
+                XCTFail("Could not generate user data from string!")
+                return
+            }
+            
+            self.performRequest("patch", path: "/users/2", callback: { response in
+                guard let response = response else {
+                    XCTFail("ERROR!!! ClientRequest response object was nil")
+                    return
+                }
+                
+                XCTAssertEqual(response.statusCode, HTTPStatusCode.internalServerError, "HTTP Status code was \(String(describing: response.statusCode))")
+            
+                expectation.fulfill()
+            }, requestModifier: { request in
+                request.headers["Content-Type"] = "application/json"
+                request.write(from: userData)
+            })
+        }
+    }
+    
+    func testCodablePostBodyParsing() {
+        router.all(middleware: BodyParser())
+        
+        router.post("/users") { (user: User, respondWith: (User?, ProcessHandlerError?) -> Void) in
+            print("POST on /users for user \(user)")
+            // Let's keep the test simple
+            // We just want to test that we can register a handler that
+            // receives and sends back a Codable instance
+            self.userStore[user.id] = user
+            respondWith(user, nil)
+        }
+        
+        performServerTest(router, timeout: 30) { expectation in
+            // Let's create a User instance
+            let expectedUser = User(id: 4, name: "David")
+            // Create JSON representation of User instance
+            guard let userData = try? JSONEncoder().encode(expectedUser) else {
+                XCTFail("Could not generate user data from string!")
+                return
+            }
+            
+            self.performRequest("post", path: "/users", callback: { response in
+                guard let response = response else {
+                    XCTFail("ERROR!!! ClientRequest response object was nil")
+                    return
+                }
+                
+                XCTAssertEqual(response.statusCode, HTTPStatusCode.internalServerError, "HTTP Status code was \(String(describing: response.statusCode))")
+                
+                expectation.fulfill()
+            }, requestModifier: { request in
+                request.headers["Content-Type"] = "application/json"
+                request.write(from: userData)
             })
         }
     }
