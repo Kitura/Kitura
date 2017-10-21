@@ -32,7 +32,7 @@ extension RangeHeader {
     /// - Parameter size: the size of the resource
     /// - Parameter headerValue: the stringn to parse
     ///
-    static func parse(size: UInt64, headerValue: String) -> RangeHeader? {
+    static func parse(size: UInt64, headerValue: String, shouldCombine: Bool = true) -> RangeHeader? {
 
         guard let index = headerValue.range(of: "=")?.lowerBound else {
             // malformed
@@ -98,6 +98,66 @@ extension RangeHeader {
             return nil
         }
 
-        return RangeHeader(type: type, ranges: ranges)
+        if shouldCombine {
+            let combinedRanges = RangeHeader.combinedRanges(ranges: ranges)
+            return RangeHeader(type: type, ranges: combinedRanges)
+        } else {
+            return RangeHeader(type: type, ranges: ranges)
+        }
+    }
+}
+
+extension RangeHeader {
+
+
+    /**
+     * Combine overlapping & adjacent ranges.
+     * @private
+     */
+
+    struct IndexedRange {
+        var index: Int
+        var range: Range<UInt64>
+    }
+
+    /// Return an array of combined arrays
+    static func combinedRanges(ranges: [Range<UInt64>]) -> [Range<UInt64>] {
+
+        // map [Range]s to [IndexedRange]s and sort them by range.lowerBound
+        var index = 0
+        var ordered = ranges.map { range in
+                let i = IndexedRange(index: index, range: range)
+                index += 1
+                return i
+            }.sorted { (a: IndexedRange, b: IndexedRange) -> Bool in
+                return a.range.lowerBound < b.range.lowerBound
+            }
+
+        // try to combine them
+        var j = 0
+        for i in 1..<ordered.count {
+            let indexedRange = ordered[i]
+            let currentIndexedRange = ordered[j]
+            if indexedRange.range.lowerBound > (currentIndexedRange.range.upperBound + 1) {
+                // next range
+                j += 1
+                ordered[j] = indexedRange
+            } else if indexedRange.range.upperBound > currentIndexedRange.range.upperBound {
+                // extend range
+                ordered[j] = IndexedRange(
+                    index: min(currentIndexedRange.index, indexedRange.index),
+                    range: currentIndexedRange.range.lowerBound..<indexedRange.range.upperBound)
+            }
+        }
+        ordered = Array(ordered.prefix(j + 1)) // trim ordered array
+
+        // map [IndexedRange]s back to [Range]s but sort them in their original order
+        let combined = ordered.sorted { (a: IndexedRange, b: IndexedRange) -> Bool in
+                return a.index < b.index
+            }.map { indexedRange in
+                return indexedRange.range
+            }
+
+        return combined
     }
 }

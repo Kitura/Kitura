@@ -23,8 +23,8 @@ class TestRangeHeaderParser: XCTestCase {
     // Test cases based on from:
     // https://github.com/jshttp/range-parser/blob/master/test/range-parser.js
 
-    func parse(_ size: UInt64, _ headerValue: String) -> RangeHeader? {
-        return RangeHeader.parse(size: size, headerValue: headerValue)
+    func parse(_ size: UInt64, _ headerValue: String, combine: Bool = false) -> RangeHeader? {
+        return RangeHeader.parse(size: size, headerValue: headerValue, shouldCombine: combine)
     }
 
     func testReturnNilOnMalformedHeader() {
@@ -120,5 +120,22 @@ class TestRangeHeaderParser: XCTestCase {
         XCTAssertEqual(range?.type, "items")
         XCTAssertEqual(range?.ranges.count, 1)
         XCTAssertEqual(range?.ranges[0], 0..<5)
+    }
+
+    func testShouldCombineOverlappingRanges() {
+        let range = parse(150, "bytes=0-4,90-99,5-75,100-199,101-102", combine: true)!
+        XCTAssertEqual(range.type, "bytes")
+        XCTAssertEqual(range.ranges.count, 2)
+        XCTAssertEqual(range.ranges[0], 0..<75)
+        XCTAssertEqual(range.ranges[1], 90..<149)
+    }
+
+    func testShouldCombineOverlappingRangesAndRetainOriginalOrder() {
+        let range = parse(150, "bytes=-1,20-100,0-1,101-120", combine: true)!
+        XCTAssertEqual(range.type, "bytes")
+        XCTAssertEqual(range.ranges.count, 3)
+        XCTAssertEqual(range.ranges[0], 149..<149)
+        XCTAssertEqual(range.ranges[1], 20..<120)
+        XCTAssertEqual(range.ranges[2], 0..<1)
     }
 }
