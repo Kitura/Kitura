@@ -38,7 +38,10 @@ class TestStaticFileServer: KituraTest {
             ("testGetKituraResource", testGetKituraResource),
             ("testGetMissingKituraResource", testGetMissingKituraResource),
             ("testAbsolutePathFunction", testAbsolutePathFunction),
-            ("testRangeRequests", testRangeRequests)
+            ("testRangeRequests", testRangeRequests),
+            ("testRangeRequestIsIgnoredOnOptionOff", testRangeRequestIsIgnoredOnOptionOff),
+            ("testDataIsNotCorrupted", testDataIsNotCorrupted),
+            ("testRangeRequestsWithMultipleRanges", testRangeRequestsWithMultipleRanges)
         ]
     }
 
