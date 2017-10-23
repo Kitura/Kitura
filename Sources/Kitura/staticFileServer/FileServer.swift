@@ -86,7 +86,7 @@ extension StaticFileServer {
             return filePath
         }
 
-        func serveFile(_ filePath: String, requestPath: String, rangeHeader: String?, response: RouterResponse) {
+        func serveFile(_ filePath: String, requestPath: String, response: RouterResponse) {
             let fileManager = FileManager()
             var isDirectory = ObjCBool(false)
 
@@ -96,22 +96,22 @@ extension StaticFileServer {
                 #else
                     let isDirectoryBool = isDirectory.boolValue
                 #endif
-                serveExistingFile(filePath, requestPath: requestPath, rangeHeader: rangeHeader,
+                serveExistingFile(filePath, requestPath: requestPath,
                                   isDirectory: isDirectoryBool, response: response)
                 return
             }
 
-            tryToServeWithExtensions(filePath, rangeHeader: rangeHeader, response: response)
+            tryToServeWithExtensions(filePath, response: response)
         }
 
-        private func tryToServeWithExtensions(_ filePath: String, rangeHeader: String?, response: RouterResponse) {
+        private func tryToServeWithExtensions(_ filePath: String, response: RouterResponse) {
             let filePathWithPossibleExtensions = possibleExtensions.map { filePath + "." + $0 }
             for filePathWithExtension in filePathWithPossibleExtensions {
-                serveIfNonDirectoryFile(atPath: filePathWithExtension, rangeHeader: rangeHeader, response: response)
+                serveIfNonDirectoryFile(atPath: filePathWithExtension, response: response)
             }
         }
 
-        private func serveExistingFile(_ filePath: String, requestPath: String, rangeHeader: String?, isDirectory: Bool,
+        private func serveExistingFile(_ filePath: String, requestPath: String, isDirectory: Bool,
                                        response: RouterResponse) {
             if isDirectory {
                 if redirect {
@@ -122,12 +122,12 @@ extension StaticFileServer {
                     }
                 }
             } else {
-                serveNonDirectoryFile(filePath, rangeHeader: rangeHeader, response: response)
+                serveNonDirectoryFile(filePath, response: response)
             }
         }
 
         @discardableResult
-        private func serveIfNonDirectoryFile(atPath path: String, rangeHeader: String?, response: RouterResponse) -> Bool {
+        private func serveIfNonDirectoryFile(atPath path: String, response: RouterResponse) -> Bool {
             var isDirectory = ObjCBool(false)
             if FileManager().fileExists(atPath: path, isDirectory: &isDirectory) {
                 #if os(Linux)
@@ -136,39 +136,48 @@ extension StaticFileServer {
                     let isDirectoryBool = isDirectory.boolValue
                 #endif
                 if !isDirectoryBool {
-                    serveNonDirectoryFile(path, rangeHeader: rangeHeader, response: response)
+                    serveNonDirectoryFile(path, response: response)
                     return true
                 }
             }
             return false
         }
 
-        private func serveNonDirectoryFile(_ filePath: String, rangeHeader: String?, response: RouterResponse) {
+        private func serveNonDirectoryFile(_ filePath: String, response: RouterResponse) {
             if  !isValidFilePath(filePath) {
                 return
             }
 
             do {
+                // At this point only GET or HEAD are expected
+                let method = response.request.serverRequest.method
                 let fileAttributes = try FileManager().attributesOfItem(atPath: filePath)
                 response.headers["Accept-Ranges"] = acceptRanges ? "bytes" : "none"
                 responseHeadersSetter?.setCustomResponseHeaders(response: response,
                                                                 filePath: filePath,
                                                                 fileAttributes: fileAttributes)
-                if let rangeHeader = rangeHeader,
+                if acceptRanges,
+                    method == "GET", // As per RFC, Only GET request can be Range Request
+                    let rangeHeader = response.request.headers["Range"],
                     let fileSize = (fileAttributes[FileAttributeKey.size] as? NSNumber)?.uint64Value,
                     let rangeHeaderValue = RangeHeader.parse(size: fileSize, headerValue: rangeHeader),
                     rangeHeaderValue.type == "bytes",
                     !rangeHeaderValue.ranges.isEmpty {
                     // Send a partial response
-                    try serveNonDirectoryPartialFile(filePath, fileSize: fileSize, ranges: rangeHeaderValue.ranges, response: response)
+                    serveNonDirectoryPartialFile(filePath, fileSize: fileSize, ranges: rangeHeaderValue.ranges, response: response)
                 } else {
-                    // No range request or file has no file size attribute or requested range was invalid.
-                    // Send the entire file
-                    try response.send(fileName: filePath)
-                    response.statusCode = .OK
+                    // Regular request OR Invalid range request OR or fileSize was not available
+                    if method == "HEAD" {
+                        // Send only headers
+                        _ = response.send(status: .OK)
+                    } else {
+                        // Send the entire file
+                        try response.send(fileName: filePath)
+                        response.statusCode = .OK
+                    }
                 }
             } catch {
-                Log.error("serving file at path \(filePath), rangeHeader:\(rangeHeader ?? "nil") error: \(error)")
+                Log.error("serving file at path \(filePath), error: \(error)")
             }
         }
 
@@ -183,7 +192,7 @@ extension StaticFileServer {
             #endif
         }
 
-        private func serveNonDirectoryPartialFile(_ filePath: String, fileSize: UInt64, ranges: [Range<UInt64>], response: RouterResponse) throws {
+        private func serveNonDirectoryPartialFile(_ filePath: String, fileSize: UInt64, ranges: [Range<UInt64>], response: RouterResponse) {
             let contentType =  ContentType.sharedInstance.getContentType(forFileName: filePath)
             if ranges.count == 1 {
                 let data = FileServer.read(contentsOfFile: filePath, inRange: ranges[0])

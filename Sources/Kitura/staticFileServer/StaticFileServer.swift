@@ -120,12 +120,6 @@ public class StaticFileServer: RouterMiddleware {
             return
         }
 
-        var rangeHeaderValue = request.headers["Range"]
-        if !fileServer.acceptRanges || request.serverRequest.method != "GET" {
-            // A server MUST ignore a Range header field received with a request method other than GET.
-            rangeHeaderValue = nil
-        }
-
-        fileServer.serveFile(filePath, requestPath: requestPath, rangeHeader: rangeHeaderValue, response: response)
+        fileServer.serveFile(filePath, requestPath: requestPath, response: response)
     }
 }
