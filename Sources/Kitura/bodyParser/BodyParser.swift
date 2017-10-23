@@ -23,7 +23,7 @@ import Foundation
 
 /// Router middleware for parsing the body of the request.
 public class BodyParser: RouterMiddleware {
-
+    
     /// Static buffer size (in bytes)
     private static let bufferSize = 2000
 
@@ -122,6 +122,7 @@ public class BodyParser: RouterMiddleware {
     /// - Parameter parser: ((NSData) -> ParsedBody?) store at parserMap
     /// - Returns: the parsed body
     private class func parse(_ message: RouterRequest, parser: BodyParserProtocol) -> ParsedBody? {
+        message.hasBodyParserBeenUsed = true
         do {
             let bodyData = try readBodyData(with: message)
             return parser.parse(bodyData)
@@ -139,7 +140,7 @@ public class BodyParser: RouterMiddleware {
     public class func readBodyData(with reader: RouterRequest) throws -> Data {
         var bodyData = Data()
         var length = 0
-
+        
         repeat {
             length = try reader.read(into: &bodyData)
         } while length != 0

@@ -39,7 +39,7 @@ extension Router {
     public typealias IdentifierNonCodableClosure<Id: Identifier> = (Id, @escaping ResultClosure) -> Void
     public typealias CodableArrayClosure<O: Codable> = (@escaping CodableArrayResultClosure<O>) -> Void
     public typealias IdentifierSimpleCodableClosure<Id: Identifier, O: Codable> = (Id, @escaping CodableResultClosure<O>) -> Void
-
+    
     // GET
     public func get<O: Codable>(_ route: String, handler: @escaping CodableArrayClosure<O>) {
         getSafely(route, handler: handler)
@@ -72,11 +72,19 @@ extension Router {
 
     // PATCH
     public func patch<Id: Identifier, I: Codable, O: Codable>(_ route: String, handler: @escaping IdentifierCodableClosure<Id, I, O>) {
+        if parameterIsPresent(in: route) {
+            return
+        }
         patch("\(route)/:id") { request, response, next in
             Log.verbose("Received PATCH type-safe request")
             guard self.isContentTypeJson(request) else {
                 response.status(.unsupportedMediaType)
                 next()
+                return
+            }
+            guard !request.hasBodyParserBeenUsed else {
+                Log.error("No data in request. Codable routes do not allow the use of a BodyParser.")
+                response.status(.internalServerError)
                 return
             }
             do {
@@ -121,6 +129,11 @@ extension Router {
                 next()
                 return
             }
+            guard !request.hasBodyParserBeenUsed else {
+                Log.error("No data in request. Codable routes do not allow the use of a BodyParser.")
+                response.status(.internalServerError)
+                return
+            }
             do {
                 // Process incoming data from client
                 let param = try request.read(as: I.self)
@@ -154,11 +167,19 @@ extension Router {
 
      // PUT with Identifier
     fileprivate func putSafely<Id: Identifier, I: Codable, O: Codable>(_ route: String, handler: @escaping IdentifierCodableClosure<Id, I, O>) {
+        if parameterIsPresent(in: route) {
+            return
+        }
         put("\(route)/:id") { request, response, next in
             Log.verbose("Received PUT type-safe request")
              guard self.isContentTypeJson(request) else {
                 response.status(.unsupportedMediaType)
                 next()
+                return
+            }
+            guard !request.hasBodyParserBeenUsed else {
+                Log.error("No data in request. Codable routes do not allow the use of a BodyParser.")
+                response.status(.internalServerError)
                 return
             }
             do {
@@ -219,6 +240,9 @@ extension Router {
 
      // GET single element
     fileprivate func getSafely<Id: Identifier, O: Codable>(_ route: String, handler: @escaping IdentifierSimpleCodableClosure<Id, O>) {
+        if parameterIsPresent(in: route) {
+            return
+        }
         get("\(route)/:id") { request, response, next in
             Log.verbose("Received GET (singular) type-safe request")
             do {
@@ -271,6 +295,9 @@ extension Router {
 
      // DELETE single element
     fileprivate func deleteSafely<Id: Identifier>(_ route: String, handler: @escaping IdentifierNonCodableClosure<Id>) {
+        if parameterIsPresent(in: route) {
+            return
+        }
         delete("\(route)/:id") { request, response, next in
             Log.verbose("Received DELETE (singular) type-safe request")
             let resultHandler: ResultClosure = { error in
@@ -295,6 +322,16 @@ extension Router {
         }
     }
 
+    private func parameterIsPresent(in route: String) -> Bool {
+        if route.contains(":") {
+            let paramaterString = route.split(separator: ":", maxSplits: 1, omittingEmptySubsequences: false)
+            let parameter = paramaterString.count > 0 ? paramaterString[1] : ""
+            Log.error("Erroneous path '\(route)', parameter ':\(parameter)' is not allowed. Codable routes do not allow parameters.")
+            return true
+        }
+        return false
+    }
+    
     private func isContentTypeJson(_ request: RouterRequest) -> Bool {
         guard let contentType = request.headers["Content-Type"] else {
             return false
