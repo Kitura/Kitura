@@ -75,14 +75,14 @@ extension Router {
         if parameterIsPresent(in: route) {
             return
         }
-        patch("\(route)/:id") { request, response, next in
+        patch(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PATCH type-safe request")
             guard self.isContentTypeJson(request) else {
                 response.status(.unsupportedMediaType)
                 next()
                 return
             }
-            
+
             do {
                 // Process incoming data from client
                 let id = request.parameters["id"] ?? ""
@@ -174,7 +174,7 @@ extension Router {
         if parameterIsPresent(in: route) {
             return
         }
-        put("\(route)/:id") { request, response, next in
+        put(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PUT type-safe request")
              guard self.isContentTypeJson(request) else {
                 response.status(.unsupportedMediaType)
@@ -248,7 +248,7 @@ extension Router {
         if parameterIsPresent(in: route) {
             return
         }
-        get("\(route)/:id") { request, response, next in
+        get(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received GET (singular) type-safe request")
             do {
                 // Define result handler
@@ -303,7 +303,7 @@ extension Router {
         if parameterIsPresent(in: route) {
             return
         }
-        delete("\(route)/:id") { request, response, next in
+        delete(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received DELETE (singular) type-safe request")
             let resultHandler: ResultClosure = { error in
                 if let err = error {
@@ -336,7 +336,7 @@ extension Router {
         }
         return false
     }
-    
+
     private func isContentTypeJson(_ request: RouterRequest) -> Bool {
         guard let contentType = request.headers["Content-Type"] else {
             return false
@@ -347,6 +347,12 @@ extension Router {
     private func httpStatusCode(from error: ProcessHandlerError) -> HTTPStatusCode {
         let status: HTTPStatusCode = HTTPStatusCode(rawValue: error.rawValue) ?? .unknown
         return status
+    }
+
+    func join(path base: String, with component: String) -> String {
+        let strippedBase = base.hasSuffix("/") ? String(base.dropLast()) : base
+        let strippedComponent = component.hasPrefix("/") ? String(component.dropFirst()) : component
+        return "\(strippedBase)/\(strippedComponent)"
     }
 }
 
