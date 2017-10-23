@@ -109,18 +109,12 @@ extension RangeHeader {
 
 extension RangeHeader {
 
-
-    /**
-     * Combine overlapping & adjacent ranges.
-     * @private
-     */
-
     struct IndexedRange {
         var index: Int
         var range: Range<UInt64>
     }
 
-    /// Return an array of combined arrays
+    /// Return an array of combined ranges (overlapping and adjacent)
     static func combinedRanges(ranges: [Range<UInt64>]) -> [Range<UInt64>] {
 
         // map [Range]s to [IndexedRange]s and sort them by range.lowerBound
@@ -129,8 +123,8 @@ extension RangeHeader {
                 let i = IndexedRange(index: index, range: range)
                 index += 1
                 return i
-            }.sorted { (a: IndexedRange, b: IndexedRange) -> Bool in
-                return a.range.lowerBound < b.range.lowerBound
+            }.sorted { (rangeA: IndexedRange, rangeB: IndexedRange) -> Bool in
+                return rangeA.range.lowerBound < rangeB.range.lowerBound
             }
 
         // try to combine them
@@ -152,8 +146,8 @@ extension RangeHeader {
         ordered = Array(ordered.prefix(j + 1)) // trim ordered array
 
         // map [IndexedRange]s back to [Range]s but sort them in their original order
-        let combined = ordered.sorted { (a: IndexedRange, b: IndexedRange) -> Bool in
-                return a.index < b.index
+        let combined = ordered.sorted { (rangeA: IndexedRange, rangeB: IndexedRange) -> Bool in
+                return rangeA.index < rangeB.index
             }.map { indexedRange in
                 return indexedRange.range
             }
