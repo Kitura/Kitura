@@ -259,16 +259,19 @@ class TestStaticFileServer: KituraTest {
         }
     }
 
-    /// Enable this test when ClientRequests work fine with HEAD method
+    /// Enable this test when ClientRequests work fine with HEAD method.
+    /// See: [Fix parsing of responses to HEAD requests with non-zero Content-Length](https://github.com/IBM-Swift/Kitura-net/pull/225)
     func disabled_testRangeRequestIsIgnoredOnNonGetMethod() {
         performServerTest(router) { expectation in
             self.performRequest("head", path: "/qwer/index.html", callback: { response in
                 XCTAssertNotNil(response)
-                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
                 XCTAssertEqual(response?.headers["Accept-Ranges"]?.first, "bytes")
+                // Range requests should be ignored on non GET method
+                // In this case we expect status code 200, no Content-Range and no body since it is a HEAD request
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
                 XCTAssertNil(response?.headers["Content-Range"])
                 let bodyString = (try? response?.readString()) as? String
-                XCTAssertEqual(bodyString, self.indexHtmlContents, "Entire file contents are expected")
+                XCTAssertNil(bodyString)
                 expectation.fulfill()
             }, headers: ["Range": "bytes=0-10"])
         }
