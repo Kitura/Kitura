@@ -72,54 +72,7 @@ extension Router {
 
     // PATCH
     public func patch<Id: Identifier, I: Codable, O: Codable>(_ route: String, handler: @escaping IdentifierCodableClosure<Id, I, O>) {
-        if parameterIsPresent(in: route) {
-            return
-        }
-        patch("\(route)/:id") { request, response, next in
-            Log.verbose("Received PATCH type-safe request")
-            guard self.isContentTypeJson(request) else {
-                response.status(.unsupportedMediaType)
-                next()
-                return
-            }
-            
-            do {
-                // Process incoming data from client
-                let id = request.parameters["id"] ?? ""
-                var data = Data()
-                let _ = try request.read(into: &data)
-                guard !request.hasBodyParserBeenUsed else {
-                    Log.error("No data in request. Codable routes do not allow the use of a BodyParser.")
-                    response.status(.internalServerError)
-                    return
-                }
-                let param = try JSONDecoder().decode(I.self, from: data)
-                let identifier = try Id(value: id)
-                // Define handler to process result from application
-                let resultHandler: CodableResultClosure<O> = { result, error in
-                    do {
-                        if let err = error {
-                            let status = self.httpStatusCode(from: err)
-                            response.status(status)
-                        } else {
-                            let encoded = try JSONEncoder().encode(result)
-                            response.status(.OK)
-                            response.send(data: encoded)
-                        }
-                    } catch {
-                        // Http 500 error
-                        response.status(.internalServerError)
-                    }
-                    next()
-                }
-                // Invoke application handler
-                handler(identifier, param, resultHandler)
-            } catch {
-                // Http 422 error
-                response.status(.unprocessableEntity)
-                next()
-            }
-        }
+        patchSafely(route, handler: handler)
     }
 
      // POST
@@ -218,6 +171,58 @@ extension Router {
         }
     }
 
+    // PATCH
+    fileprivate func patchSafely<Id: Identifier, I: Codable, O: Codable>(_ route: String, handler: @escaping IdentifierCodableClosure<Id, I, O>) {
+        if parameterIsPresent(in: route) {
+            return
+        }
+        patch("\(route)/:id") { request, response, next in
+            Log.verbose("Received PATCH type-safe request")
+            guard self.isContentTypeJson(request) else {
+                response.status(.unsupportedMediaType)
+                next()
+                return
+            }
+            
+            do {
+                // Process incoming data from client
+                let id = request.parameters["id"] ?? ""
+                var data = Data()
+                let _ = try request.read(into: &data)
+                guard !request.hasBodyParserBeenUsed else {
+                    Log.error("No data in request. Codable routes do not allow the use of a BodyParser.")
+                    response.status(.internalServerError)
+                    return
+                }
+                let param = try JSONDecoder().decode(I.self, from: data)
+                let identifier = try Id(value: id)
+                // Define handler to process result from application
+                let resultHandler: CodableResultClosure<O> = { result, error in
+                    do {
+                        if let err = error {
+                            let status = self.httpStatusCode(from: err)
+                            response.status(status)
+                        } else {
+                            let encoded = try JSONEncoder().encode(result)
+                            response.status(.OK)
+                            response.send(data: encoded)
+                        }
+                    } catch {
+                        // Http 500 error
+                        response.status(.internalServerError)
+                    }
+                    next()
+                }
+                // Invoke application handler
+                handler(identifier, param, resultHandler)
+            } catch {
+                // Http 422 error
+                response.status(.unprocessableEntity)
+                next()
+            }
+        }
+    }
+    
     // Get
     fileprivate func getSafely<O: Codable>(_ route: String, handler: @escaping CodableArrayClosure<O>) {
         get(route) { request, response, next in
