@@ -17,7 +17,7 @@
 import XCTest
 import Foundation
 #if swift(>=4.0)
-import SafetyContracts
+import KituraContracts
 #endif
 
 @testable import Kitura
@@ -73,7 +73,7 @@ class TestBasicTypeRouter: KituraTest {
     }
 
     func testBasicPost() {
-        router.post("/users") { (user: User, respondWith: (User?, ProcessHandlerError?) -> Void) in
+        router.post("/users") { (user: User, respondWith: (User?, RequestError?) -> Void) in
             print("POST on /users for user \(user)")
             // Let's keep the test simple
             // We just want to test that we can register a handler that
@@ -123,7 +123,7 @@ class TestBasicTypeRouter: KituraTest {
     }
 
     func testBasicGet() {
-        router.get("/users") { (respondWith: ([User]?, ProcessHandlerError?) -> Void) in
+        router.get("/users") { (respondWith: ([User]?, RequestError?) -> Void) in
             print("GET on /users")
 
             respondWith(self.userStore.map({ $0.value }), nil)
@@ -163,7 +163,7 @@ class TestBasicTypeRouter: KituraTest {
     }
 
     func testBasicSingleGet() {
-        router.get("/users") { (id: Int, respondWith: (User?, ProcessHandlerError?) -> Void) in
+        router.get("/users") { (id: Int, respondWith: (User?, RequestError?) -> Void) in
             print("GET on /users")
             guard let user = self.userStore[id] else {
                 XCTFail("ERROR!!! Couldn't find user with id \(id)")
@@ -210,7 +210,7 @@ class TestBasicTypeRouter: KituraTest {
 
     func testBasicDelete() {
 
-        router.delete("/users") { (respondWith: (ProcessHandlerError?) -> Void) in
+        router.delete("/users") { (respondWith: (RequestError?) -> Void) in
             self.userStore.removeAll()
             respondWith(nil)
         }
@@ -239,7 +239,7 @@ class TestBasicTypeRouter: KituraTest {
 
     func testBasicSingleDelete() {
 
-        router.delete("/users") { (id: Int, respondWith: (ProcessHandlerError?) -> Void) in
+        router.delete("/users") { (id: Int, respondWith: (RequestError?) -> Void) in
             guard let _ = self.userStore.removeValue(forKey: id) else {
                 respondWith(.notFound)
                 return
@@ -271,7 +271,7 @@ class TestBasicTypeRouter: KituraTest {
 
     func testBasicPut() {
 
-        router.put("/users") { (id: Int, user: User, respondWith: (User?, ProcessHandlerError?) -> Void) in
+        router.put("/users") { (id: Int, user: User, respondWith: (User?, RequestError?) -> Void) in
             self.userStore[id] = user
             respondWith(user, nil)
         }
@@ -318,7 +318,7 @@ class TestBasicTypeRouter: KituraTest {
 
     func testBasicPatch() {
 
-        router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?, ProcessHandlerError?) -> Void) -> Void in
+        router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?, RequestError?) -> Void) -> Void in
             guard let existingUser = self.userStore[id] else {
                 respondWith(nil, .notFound)
                 return
@@ -374,7 +374,7 @@ class TestBasicTypeRouter: KituraTest {
     
     func testRouteParameters() {
         //Add this erroneous route which should not be hit by the test, should log an error but we can't test the log so we checkout for a 404 not found.
-        router.get("/users/:id") { (id: Int, respondWith: (User?, ProcessHandlerError?) -> Void) in
+        router.get("/users/:id") { (id: Int, respondWith: (User?, RequestError?) -> Void) in
             print("GET on /users")
             //Returning an error that's not .notFound so the test will fail in a timely manner if this route is hit
             respondWith(nil, .conflict)
@@ -397,7 +397,7 @@ class TestBasicTypeRouter: KituraTest {
     
     func testCodablePutBodyParsing() {
         router.all(middleware: BodyParser())
-        router.put("/users") { (id: Int, user: User, respondWith: (User?, ProcessHandlerError?) -> Void) in
+        router.put("/users") { (id: Int, user: User, respondWith: (User?, RequestError?) -> Void) in
             print("POST on /users for user \(user)")
             // Let's keep the test simple
             // We just want to test that we can register a handler that
@@ -434,7 +434,7 @@ class TestBasicTypeRouter: KituraTest {
     func testCodablePatchBodyParsing() {
         router.all(middleware: BodyParser())
         
-        router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?, ProcessHandlerError?) -> Void) -> Void in
+        router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?, RequestError?) -> Void) -> Void in
             guard let existingUser = self.userStore[id] else {
                 respondWith(nil, .notFound)
                 return
@@ -476,7 +476,7 @@ class TestBasicTypeRouter: KituraTest {
     func testCodablePostBodyParsing() {
         router.all(middleware: BodyParser())
         
-        router.post("/users") { (user: User, respondWith: (User?, ProcessHandlerError?) -> Void) in
+        router.post("/users") { (user: User, respondWith: (User?, RequestError?) -> Void) in
             print("POST on /users for user \(user)")
             // Let's keep the test simple
             // We just want to test that we can register a handler that

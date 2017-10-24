@@ -17,7 +17,7 @@
 import XCTest
 import Foundation
 #if swift(>=4.0)
-    import SafetyContracts
+    import KituraContracts
 #endif
 
 @testable import Kitura
@@ -42,19 +42,19 @@ struct Employee: Codable, Equatable {
 extension Employee: Persistable {
 
     // Create
-    static func create(model: Employee, respondWith: @escaping (Employee?, ProcessHandlerError?) -> Void) {
+    static func create(model: Employee, respondWith: @escaping (Employee?, RequestError?) -> Void) {
         employeeStore[model.serial] = model
         respondWith(model, nil)
     }
 
     // Read ALL
-    static func read(respondWith: @escaping ([Employee]?, ProcessHandlerError?) -> Void) {
+    static func read(respondWith: @escaping ([Employee]?, RequestError?) -> Void) {
         let employees: [Employee] = employeeStore.map { $0.value }
         respondWith(employees, nil)
     }
 
     // Read single
-    static func read(id: Int, respondWith: @escaping (Employee?, ProcessHandlerError?) -> Void) {
+    static func read(id: Int, respondWith: @escaping (Employee?, RequestError?) -> Void) {
         guard let employee = employeeStore[id] else {
             respondWith(nil, .notFound)
             return
@@ -63,7 +63,7 @@ extension Employee: Persistable {
     }
 
     // Update
-    static func update(id: Int, model: Employee, respondWith: @escaping (Employee?, ProcessHandlerError?) -> Void) {
+    static func update(id: Int, model: Employee, respondWith: @escaping (Employee?, RequestError?) -> Void) {
         guard let _ = employeeStore[id] else {
             respondWith(nil, .notFound)
             return
@@ -73,13 +73,13 @@ extension Employee: Persistable {
     }
 
     // Delete ALL
-    static func delete(respondWith: @escaping (ProcessHandlerError?) -> Void) {
+    static func delete(respondWith: @escaping (RequestError?) -> Void) {
         employeeStore.removeAll()
         respondWith(nil)
     }
 
     // Delete single
-    static func delete(id: Int, respondWith: @escaping (ProcessHandlerError?) -> Void) {
+    static func delete(id: Int, respondWith: @escaping (RequestError?) -> Void) {
         guard let _ = employeeStore.removeValue(forKey: id) else {
             respondWith(.notFound)
             return
