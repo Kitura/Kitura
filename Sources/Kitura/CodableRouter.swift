@@ -21,7 +21,7 @@ import KituraNet
 #if swift(>=4.0)
 import KituraContracts
 
-// Type-safe router
+// Codable router
 // Note: If an exception is thrown from a handler and is bubbled up to the framework,
 // Kitura by default returns a notFound error.
 // A few references on errors
@@ -355,43 +355,41 @@ extension Router {
     }
 }
 
-// For consistency, we have the register method as an
-// extension to the Router class.
-extension Router {
-    // CRUD API type safe routing
-    // (URL path and HTTP verb are inferred by the framework)
-    public func register<I: Persistable>(api: I.Type) {
-        api.registerHandlers(router: self)
-        Log.verbose("Registered API: \(api)")
-    }
-}
+//extension Router {
+//    // CRUD API codable routing
+//    // (URL path and HTTP verb are inferred by the framework)
+//    public func register<I: Persistable>(api: I.Type) {
+//        api.registerHandlers(router: self)
+//        Log.verbose("Registered API: \(api)")
+//    }
+//}
 
 // Persistable extension
-extension Persistable {
-    static func registerHandlers(router: Router) {
-        router.postSafely(route, handler: self.create)
-        Log.verbose("Registered POST for: \(self)")
-
-        // Register update
-        router.putSafely(route, handler: self.update)
-        Log.verbose("Registered PUT for: \(self)")
-
-        // Register read ALL
-        router.getSafely(route, handler: self.read as Router.CodableArrayClosure)
-        Log.verbose("Registered GET for: \(self)")
-
-        // Register read Single
-        router.getSafely(route, handler: self.read as Router.IdentifierSimpleCodableClosure)
-        Log.verbose("Registered single GET for: \(self)")
-
-        // Register delete all
-        router.deleteSafely(route, handler: self.delete as Router.NonCodableClosure)
-        Log.verbose("Registered DELETE for: \(self)")
-
-        // Register delete single
-        router.deleteSafely(route, handler: self.delete as Router.IdentifierNonCodableClosure)
-        Log.verbose("Registered single DELETE for: \(self)")
-    }
-}
+//extension Persistable {
+//    static func registerHandlers(router: Router) {
+//        router.postSafely(route, handler: self.create)
+//        Log.verbose("Registered POST for: \(self)")
+//
+//        // Register update
+//        router.putSafely(route, handler: self.update)
+//        Log.verbose("Registered PUT for: \(self)")
+//
+//        // Register read ALL
+//        router.getSafely(route, handler: self.read as Router.CodableArrayClosure)
+//        Log.verbose("Registered GET for: \(self)")
+//
+//        // Register read Single
+//        router.getSafely(route, handler: self.read as Router.IdentifierSimpleCodableClosure)
+//        Log.verbose("Registered single GET for: \(self)")
+//
+//        // Register delete all
+//        router.deleteSafely(route, handler: self.delete as Router.NonCodableClosure)
+//        Log.verbose("Registered DELETE for: \(self)")
+//
+//        // Register delete single
+//        router.deleteSafely(route, handler: self.delete as Router.IdentifierNonCodableClosure)
+//        Log.verbose("Registered single DELETE for: \(self)")
+//    }
+//}
 
 #endif
