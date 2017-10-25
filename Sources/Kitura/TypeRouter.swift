@@ -19,7 +19,7 @@ import LoggerAPI
 import KituraNet
 
 #if swift(>=4.0)
-import SafetyContracts
+import KituraContracts
 
 // Type-safe router
 // Note: If an exception is thrown from a handler and is bubbled up to the framework,
@@ -30,9 +30,9 @@ import SafetyContracts
 // https://restfulapi.net/http-status-codes/
 // https://docs.oracle.com/en/cloud/iaas/messaging-cloud/csmes/rest-api-http-status-codes-and-error-messages-reference.html#GUID-AAB1EE32-BE4A-4ACC-BEAC-ABA85EB41919
 extension Router {
-    public typealias ResultClosure = (ProcessHandlerError?) -> Void
-    public typealias CodableResultClosure<O: Codable> = (O?, ProcessHandlerError?) -> Void
-    public typealias CodableArrayResultClosure<O: Codable> = ([O]?, ProcessHandlerError?) -> Void
+    public typealias ResultClosure = (RequestError?) -> Void
+    public typealias CodableResultClosure<O: Codable> = (O?, RequestError?) -> Void
+    public typealias CodableArrayResultClosure<O: Codable> = ([O]?, RequestError?) -> Void
     public typealias IdentifierCodableClosure<Id: Identifier, I: Codable, O: Codable> = (Id, I, @escaping CodableResultClosure<O>) -> Void
     public typealias CodableClosure<I: Codable, O: Codable> = (I, @escaping CodableResultClosure<O>) -> Void
     public typealias NonCodableClosure = (@escaping ResultClosure) -> Void
@@ -346,7 +346,7 @@ extension Router {
         return (contentType == "application/json")
     }
 
-    private func httpStatusCode(from error: ProcessHandlerError) -> HTTPStatusCode {
+    private func httpStatusCode(from error: RequestError) -> HTTPStatusCode {
         let status: HTTPStatusCode = HTTPStatusCode(rawValue: error.rawValue) ?? .unknown
         return status
     }
