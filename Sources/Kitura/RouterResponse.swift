@@ -447,44 +447,34 @@ public class RouterResponse {
 
 #if swift(>=4.0)
 extension RouterResponse {
-    /// Send JSON.
+    
+    /// Send Encodable Object.
     ///
-    /// - Parameter json: the JSON object to send.
+    /// - Parameter obj: the Codable object to send.
     /// - Returns: this RouterResponse.
     @discardableResult
-    public func send<T : Encodable>(json: T) -> RouterResponse {
+    public func send<T : Encodable>(_ obj: T) -> RouterResponse {
         guard !state.invokedEnd else {
-            Log.warning("RouterResponse send(json:) invoked after end() for \(self.request.urlURL)")
+            Log.warning("RouterResponse send(_ obj:) invoked after end() for \(self.request.urlURL)")
             return self
         }
         do {
             headers.setType("json")
-            send(data: try encoder.encode(json))
+            send(data: try encoder.encode(obj))
         } catch {
-            Log.warning("Failed to convert JSON for sending: \(error.localizedDescription)")
+            Log.warning("Failed to encode Codable object for sending: \(error.localizedDescription)")
         }
         
         return self
     }
-    
-    /// Send JSON.
+
+    /// Send Encodable Object JSON Convienence Method
     ///
-    /// - Parameter json: The Dictionary to send in JSON format as a hash.
+    /// - Parameter json: the Encodable object to send.
     /// - Returns: this RouterResponse.
     @discardableResult
-    public func send<T : Encodable>(json: [String: T]) -> RouterResponse {
-        guard !state.invokedEnd else {
-            Log.warning("RouterResponse send(json:) invoked after end() for \(self.request.urlURL)")
-            return self
-        }
-        do {
-            headers.setType("json")
-            send(data: try encoder.encode(json))
-        } catch {
-            Log.warning("Failed to convert JSON for sending: \(error.localizedDescription)")
-        }
-        
-        return self
+    public func send<T : Encodable>(json: T) -> RouterResponse {
+        return send(json)
     }
     
     /// Send JSON with JSONP callback.
