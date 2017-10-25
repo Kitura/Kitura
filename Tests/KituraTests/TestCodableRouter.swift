@@ -25,8 +25,8 @@ import KituraContracts
 
 #if swift(>=4.0)
 
-class TestBasicTypeRouter: KituraTest {
-    static var allTests: [(String, (TestBasicTypeRouter) -> () throws -> Void)] {
+class TestCodableRouter: KituraTest {
+    static var allTests: [(String, (TestCodableRouter) -> () throws -> Void)] {
         return [
             ("testBasicPost", testBasicPost),
             ("testBasicGet", testBasicGet),
@@ -75,17 +75,12 @@ class TestBasicTypeRouter: KituraTest {
     func testBasicPost() {
         router.post("/users") { (user: User, respondWith: (User?, RequestError?) -> Void) in
             print("POST on /users for user \(user)")
-            // Let's keep the test simple
-            // We just want to test that we can register a handler that
-            // receives and sends back a Codable instance
             self.userStore[user.id] = user
             respondWith(user, nil)
         }
 
         performServerTest(router, timeout: 30) { expectation in
-            // Let's create a User instance
             let expectedUser = User(id: 4, name: "David")
-            // Create JSON representation of User instance
             guard let userData = try? JSONEncoder().encode(expectedUser) else {
                 XCTFail("Could not generate user data from string!")
                 return
