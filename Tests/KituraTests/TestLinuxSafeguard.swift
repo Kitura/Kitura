@@ -16,7 +16,9 @@
 
 // Test disabled on Swift 4 for now due to
 // https://bugs.swift.org/browse/SR-5684
-#if os(OSX)
+// We will need to renable this once the bug is addressed in Swift
+// TODO: Enable this test case (see above)
+#if os(OSX) && !swift(>=4.0)
     import XCTest
 
     class TestLinuxSafeguard: XCTestCase {
