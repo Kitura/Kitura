@@ -16,14 +16,10 @@
 
 import XCTest
 import Foundation
-#if swift(>=4.0)
 import KituraContracts
-#endif
 
 @testable import Kitura
 @testable import KituraNet
-
-#if swift(>=4.0)
 
 class TestCodableRouter: KituraTest {
     static var allTests: [(String, (TestCodableRouter) -> () throws -> Void)] {
@@ -366,7 +362,7 @@ class TestCodableRouter: KituraTest {
             })
         }
     }
-    
+
     func testRouteParameters() {
         //Add this erroneous route which should not be hit by the test, should log an error but we can't test the log so we checkout for a 404 not found.
         router.get("/users/:id") { (id: Int, respondWith: (User?, RequestError?) -> Void) in
@@ -374,22 +370,22 @@ class TestCodableRouter: KituraTest {
             //Returning an error that's not .notFound so the test will fail in a timely manner if this route is hit
             respondWith(nil, .conflict)
         }
-        
+
         performServerTest(router, timeout: 30) { expectation in
-            
+
             self.performRequest("get", path: "/users/1", callback: { response in
                 guard let response = response else {
                     XCTFail("ERROR!!! ClientRequest response object was nil")
                     return
                 }
-                
+
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response.statusCode))")
-                
+
                 expectation.fulfill()
             })
         }
     }
-    
+
     func testCodablePutBodyParsing() {
         router.all(middleware: BodyParser())
         router.put("/users") { (id: Int, user: User, respondWith: (User?, RequestError?) -> Void) in
@@ -400,7 +396,7 @@ class TestCodableRouter: KituraTest {
             self.userStore[user.id] = user
             respondWith(user, nil)
         }
-        
+
         performServerTest(router, timeout: 30) { expectation in
             // Let's create a User instance
             let expectedUser = User(id: 4, name: "David")
@@ -409,15 +405,15 @@ class TestCodableRouter: KituraTest {
                 XCTFail("Could not generate user data from string!")
                 return
             }
-            
+
             self.performRequest("put", path: "/users/2", callback: { response in
                 guard let response = response else {
                     XCTFail("ERROR!!! ClientRequest response object was nil")
                     return
                 }
-                
+
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.internalServerError, "HTTP Status code was \(String(describing: response.statusCode))")
-                
+
                 expectation.fulfill()
             }, requestModifier: { request in
                 request.headers["Content-Type"] = "application/json"
@@ -425,10 +421,10 @@ class TestCodableRouter: KituraTest {
             })
         }
     }
-    
+
     func testCodablePatchBodyParsing() {
         router.all(middleware: BodyParser())
-        
+
         router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?, RequestError?) -> Void) -> Void in
             guard let existingUser = self.userStore[id] else {
                 respondWith(nil, .notFound)
@@ -442,7 +438,7 @@ class TestCodableRouter: KituraTest {
                 respondWith(existingUser, nil)
             }
         }
-        
+
         performServerTest(router, timeout: 30) { expectation in
             // Let's create a User instance
             let patchUser = User(id: 2, name: "David")
@@ -451,15 +447,15 @@ class TestCodableRouter: KituraTest {
                 XCTFail("Could not generate user data from string!")
                 return
             }
-            
+
             self.performRequest("patch", path: "/users/2", callback: { response in
                 guard let response = response else {
                     XCTFail("ERROR!!! ClientRequest response object was nil")
                     return
                 }
-                
+
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.internalServerError, "HTTP Status code was \(String(describing: response.statusCode))")
-            
+
                 expectation.fulfill()
             }, requestModifier: { request in
                 request.headers["Content-Type"] = "application/json"
@@ -467,10 +463,10 @@ class TestCodableRouter: KituraTest {
             })
         }
     }
-    
+
     func testCodablePostBodyParsing() {
         router.all(middleware: BodyParser())
-        
+
         router.post("/users") { (user: User, respondWith: (User?, RequestError?) -> Void) in
             print("POST on /users for user \(user)")
             // Let's keep the test simple
@@ -479,7 +475,7 @@ class TestCodableRouter: KituraTest {
             self.userStore[user.id] = user
             respondWith(user, nil)
         }
-        
+
         performServerTest(router, timeout: 30) { expectation in
             // Let's create a User instance
             let expectedUser = User(id: 4, name: "David")
@@ -488,15 +484,15 @@ class TestCodableRouter: KituraTest {
                 XCTFail("Could not generate user data from string!")
                 return
             }
-            
+
             self.performRequest("post", path: "/users", callback: { response in
                 guard let response = response else {
                     XCTFail("ERROR!!! ClientRequest response object was nil")
                     return
                 }
-                
+
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.internalServerError, "HTTP Status code was \(String(describing: response.statusCode))")
-                
+
                 expectation.fulfill()
             }, requestModifier: { request in
                 request.headers["Content-Type"] = "application/json"
@@ -505,6 +501,3 @@ class TestCodableRouter: KituraTest {
         }
     }
 }
-
-#endif
-

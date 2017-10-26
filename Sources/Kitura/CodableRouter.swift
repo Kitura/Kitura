@@ -17,8 +17,6 @@
 import Foundation
 import LoggerAPI
 import KituraNet
-
-#if swift(>=4.0)
 import KituraContracts
 
 // Codable router
@@ -39,7 +37,7 @@ extension Router {
     public typealias IdentifierNonCodableClosure<Id: Identifier> = (Id, @escaping ResultClosure) -> Void
     public typealias CodableArrayClosure<O: Codable> = (@escaping CodableArrayResultClosure<O>) -> Void
     public typealias IdentifierSimpleCodableClosure<Id: Identifier, O: Codable> = (Id, @escaping CodableResultClosure<O>) -> Void
-    
+
     // GET
     public func get<O: Codable>(_ route: String, handler: @escaping CodableArrayClosure<O>) {
         getSafely(route, handler: handler)
@@ -219,7 +217,7 @@ extension Router {
             }
         }
     }
-    
+
     // Get
     fileprivate func getSafely<O: Codable>(_ route: String, handler: @escaping CodableArrayClosure<O>) {
         get(route) { request, response, next in
@@ -286,7 +284,7 @@ extension Router {
     fileprivate func deleteSafely(_ route: String, handler: @escaping NonCodableClosure) {
         delete(route) { request, response, next in
             Log.verbose("Received DELETE (plural) type-safe request")
-            // Define result handler   
+            // Define result handler
             let resultHandler: ResultClosure = { error in
                 if let err = error {
                     let status = self.httpStatusCode(from: err)
@@ -338,7 +336,7 @@ extension Router {
         }
         return false
     }
-    
+
     private func isContentTypeJson(_ request: RouterRequest) -> Bool {
         guard let contentType = request.headers["Content-Type"] else {
             return false
@@ -388,5 +386,3 @@ extension Router {
 //        Log.verbose("Registered single DELETE for: \(self)")
 //    }
 //}
-
-#endif

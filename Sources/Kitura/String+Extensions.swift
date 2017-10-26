@@ -28,13 +28,8 @@ extension String {
                 continue
             }
 
-            #if swift(>=3.2)
-                let key = String(item[..<range.lowerBound])
-                let value = String(item[range.upperBound...])
-            #else
-                let key = item.substring(to: range.lowerBound)
-                let value = item.substring(from: range.upperBound)
-            #endif
+            let key = String(item[..<range.lowerBound])
+            let value = String(item[range.upperBound...])
 
             let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
             if let decodedValue = valueReplacingPlus.removingPercentEncoding {

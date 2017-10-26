@@ -16,9 +16,6 @@
 
 import Foundation
 import XCTest
-#if !swift(>=4.0)
-import SwiftyJSON
-#endif
 
 @testable import Kitura
 @testable import KituraNet
@@ -37,11 +34,7 @@ fileprivate let makeHandler = { (messageToSend: String) in
         if parameters.isEmpty {
             try res.send(messageToSend).end()
         } else {
-            #if swift(>=4.0)
-                try res.send(json: parameters).end()
-            #else
-                try res.send(json: JSON(parameters)).end()
-            #endif
+            try res.send(json: parameters).end()
         }
     }
 }
@@ -67,22 +60,13 @@ class TestRouteRegex: KituraTest {
             ("testCustomMatchesWithModifiers", testCustomMatchesWithModifiers)
         ]
     }
-    
-    #if swift(>=4.0)
+
     static let encoder = JSONEncoder()
     static let decoder = JSONDecoder()
-    #endif
 
     func testBuildRegexFromPattern() {
-        #if os(Linux)
-            #if swift(>=3.1)
-                var regex: NSRegularExpression?
-            #else
-                var regex: RegularExpression?
-            #endif
-        #else
-            var regex: NSRegularExpression?
-        #endif
+        var regex: NSRegularExpression?
+
         var isSimpleString = false
         var strings: [String]?
         var path: String
@@ -343,13 +327,8 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], id)
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, id)
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], id)
 
                 } catch {
                     XCTFail("\(error)")
@@ -371,13 +350,9 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], id)
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, id)
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], id)
+
                 } catch {
                     XCTFail("Unable to read response body")
                 }
@@ -398,13 +373,9 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], String(mountpath.characters.dropFirst()))
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, String(mountpath.characters.dropFirst()))
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], String(mountpath.characters.dropFirst()))
+
                 } catch {
                     XCTFail("Unable to read response body")
                 }
@@ -444,13 +415,9 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], id)
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, id)
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], id)
+
                 } catch {
                     XCTFail("Unable to read response body")
                 }
@@ -484,13 +451,9 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], id)
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, id)
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], id)
+
                 } catch {
                     XCTFail("Unable to read response body")
                 }
@@ -524,13 +487,9 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], id)
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, id)
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], id)
+
                 } catch {
                     XCTFail("Unable to read response body")
                 }
@@ -545,13 +504,9 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], "123/abc/456")
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, "123/abc/456")
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], "123/abc/456")
+
                 } catch {
                     XCTFail("Unable to read response body")
                 }
@@ -585,13 +540,9 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], id)
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, id)
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], id)
+
                 } catch {
                     XCTFail("Unable to read response body")
                 }
@@ -606,13 +557,9 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], "123/abc/456")
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, "123/abc/456")
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], "123/abc/456")
+
                 } catch {
                     XCTFail("Unable to read response body")
                 }
@@ -641,13 +588,9 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], id)
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, id)
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], id)
+
                 } catch {
                     XCTFail("Unable to read response body")
                 }
@@ -662,13 +605,9 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], "123/abc/456")
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, "123/abc/456")
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], "123/abc/456")
+
                 } catch {
                     XCTFail("Unable to read response body")
                 }
@@ -695,13 +634,9 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], id)
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, id)
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], id)
+
                 } catch {
                     XCTFail("Unable to read response body")
                 }
@@ -716,13 +651,9 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], "123/abc/456")
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, "123/abc/456")
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], "123/abc/456")
+
                 } catch {
                     XCTFail("Unable to read response body")
                 }
@@ -747,13 +678,9 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], id)
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, id)
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], id)
+
                 } catch {
                     XCTFail("Unable to read response body")
                 }
@@ -780,13 +707,9 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], id)
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, id)
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], id)
+
                 } catch {
                     XCTFail("Unable to read response body")
                 }
@@ -832,13 +755,9 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], id)
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, id)
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], id)
+
                 } catch {
                     XCTFail("Unable to read response body")
                 }
@@ -878,13 +797,9 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], id)
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, id)
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], id)
+
                 } catch {
                     XCTFail("Unable to read response body")
                 }
@@ -924,13 +839,9 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], id)
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, id)
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], id)
+
                 } catch {
                     XCTFail("Unable to read response body")
                 }
@@ -945,13 +856,9 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], "123/456/789")
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, "123/456/789")
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], "123/456/789")
+
                 } catch {
                     XCTFail("Unable to read response body")
                 }
@@ -991,13 +898,9 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], id)
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, id)
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], id)
+
                 } catch {
                     XCTFail("Unable to read response body")
                 }
@@ -1012,13 +915,9 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], "123/456/789")
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, "123/456/789")
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], "123/456/789")
+
                 } catch {
                     XCTFail("Unable to read response body")
                 }
@@ -1053,13 +952,9 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], id)
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, id)
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], id)
+
                 } catch {
                     XCTFail("Unable to read response body")
                 }
@@ -1074,13 +969,9 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], "123/456/789")
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, "123/456/789")
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], "123/456/789")
+
                 } catch {
                     XCTFail("Unable to read response body")
                 }
@@ -1113,13 +1004,9 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], id)
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, id)
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], id)
+
                 } catch {
                     XCTFail("Unable to read response body")
                 }
@@ -1134,13 +1021,9 @@ class TestRouteRegex: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    #if swift(>=4.0)
-                        let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                        XCTAssertEqual(dict["id"], "123/456/789")
-                    #else
-                        let dict = JSON(data: data).dictionaryValue
-                        XCTAssertEqual(dict["id"]?.stringValue, "123/456/789")
-                    #endif
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["id"], "123/456/789")
+
                 } catch {
                     XCTFail("Unable to read response body")
                 }

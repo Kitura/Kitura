@@ -16,7 +16,6 @@
 
 import Foundation
 
-#if swift(>=4.0)
 class JSONBodyParser: BodyParserProtocol {
     func parse(_ data: Data) -> ParsedBody? {
         guard let jsonObj = try? JSONSerialization.jsonObject(with: data, options: []),
@@ -26,17 +25,3 @@ class JSONBodyParser: BodyParserProtocol {
       return .json(json)
     }
 }
-
-#else
-import SwiftyJSON
-
-class JSONBodyParser: BodyParserProtocol {
-    func parse(_ data: Data) -> ParsedBody? {
-        let json = JSON(data: data)
-        if json != JSON.null {
-            return .json(json)
-        }
-        return nil
-    }
-}
-#endif

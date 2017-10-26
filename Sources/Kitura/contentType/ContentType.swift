@@ -86,11 +86,7 @@ public class ContentType {
             extRange = lastPathElemRange
         }
 
-        #if swift(>=3.2)
-            return getContentType(forExtension: String(fileName[extRange]))
-        #else
-            return getContentType(forExtension: fileName.substring(with: extRange))
-        #endif
+        return getContentType(forExtension: String(fileName[extRange]))
     }
 
     /// Check if the message content type matches the type descriptor.
