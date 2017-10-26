@@ -40,12 +40,12 @@ public indirect enum ParsedBody {
     case multipart([Part])
 
     /// If the content type was "application/json" this associated value will
-    /// contain the body of a JSON object.
+    /// contain the body of a [String: Any] json dictionary object.
     case json([String: Any])
 
     /// Extract a "JSON" body from the `ParsedBody` enum
     ///
-    /// - Returns: The parsed body as a JSON object, or nil if the body wasn't in
+    /// - Returns: The parsed body as a [String: Any] object, or nil if the body wasn't in
     ///           JSON format.
     public var asJSON: [String: Any]? {
         switch self {
