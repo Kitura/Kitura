@@ -32,9 +32,11 @@ import KituraContracts
 extension Router {
     public typealias ResultClosure = (RequestError?) -> Void
     public typealias CodableResultClosure<O: Codable> = (O?, RequestError?) -> Void
+    public typealias IdentifierCodableResultClosure<Id: Identifier, O: Codable> = (Id?, O?, RequestError?) -> Void
     public typealias CodableArrayResultClosure<O: Codable> = ([O]?, RequestError?) -> Void
     public typealias IdentifierCodableClosure<Id: Identifier, I: Codable, O: Codable> = (Id, I, @escaping CodableResultClosure<O>) -> Void
     public typealias CodableClosure<I: Codable, O: Codable> = (I, @escaping CodableResultClosure<O>) -> Void
+    public typealias CodableIdentifierClosure<I: Codable, Id: Identifier, O: Codable> = (I, @escaping IdentifierCodableResultClosure<Id, O>) -> Void
     public typealias NonCodableClosure = (@escaping ResultClosure) -> Void
     public typealias IdentifierNonCodableClosure<Id: Identifier> = (Id, @escaping ResultClosure) -> Void
     public typealias CodableArrayClosure<O: Codable> = (@escaping CodableArrayResultClosure<O>) -> Void
@@ -60,9 +62,14 @@ extension Router {
         deleteSafely(route, handler: handler)
     }
 
-    // POST
+    // POST with embedded id
     public func post<I: Codable, O: Codable>(_ route: String, handler: @escaping CodableClosure<I, O>) {
         postSafely(route, handler: handler)
+    }
+    
+    // POST with explicit id
+    public func post<I: Codable, Id: Identifier, O: Codable>(_ route: String, handler: @escaping CodableIdentifierClosure<I, Id, O>) {
+        postSafelyWithId(route, handler: handler)
     }
 
     // PUT with Identifier
@@ -102,6 +109,54 @@ extension Router {
                         } else {
                             let encoded = try JSONEncoder().encode(result)
                             response.status(.created)
+                            response.send(data: encoded)
+                        }
+                    } catch {
+                        // Http 500 error
+                        response.status(.internalServerError)
+                    }
+                    next()
+                }
+                // Invoke application handler
+                handler(param, resultHandler)
+            } catch {
+                // Http 400 error
+                //response.status(.badRequest)
+                // Http 422 error
+                response.status(.unprocessableEntity)
+                next()
+            }
+        }
+    }
+    
+    // POST
+    fileprivate func postSafelyWithId<I: Codable, Id: Identifier, O: Codable>(_ route: String, handler: @escaping CodableIdentifierClosure<I, Id, O>) {
+        post(route) { request, response, next in
+            Log.verbose("Received POST type-safe request")
+            guard self.isContentTypeJson(request) else {
+                response.status(.unsupportedMediaType)
+                next()
+                return
+            }
+            guard !request.hasBodyParserBeenUsed else {
+                Log.error("No data in request. Codable routes do not allow the use of a BodyParser.")
+                response.status(.internalServerError)
+                return
+            }
+            do {
+                // Process incoming data from client
+                let param = try request.read(as: I.self)
+                
+                // Define handler to process result from application
+                let resultHandler: IdentifierCodableResultClosure<Id, O> = { id, result, error in
+                    do {
+                        if let err = error {
+                            let status = self.httpStatusCode(from: err)
+                            response.status(status)
+                        } else {
+                            let encoded = try JSONEncoder().encode(result)
+                            response.status(.created)
+                            response.headers["Location"] = String(id!.value)
                             response.send(data: encoded)
                         }
                     } catch {

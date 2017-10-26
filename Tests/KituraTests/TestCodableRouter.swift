@@ -29,6 +29,7 @@ class TestCodableRouter: KituraTest {
     static var allTests: [(String, (TestCodableRouter) -> () throws -> Void)] {
         return [
             ("testBasicPost", testBasicPost),
+            ("testBasicPostIdentifier", testBasicPostIdentifier),
             ("testBasicGet", testBasicGet),
             ("testBasicSingleGet", testBasicSingleGet),
             ("testBasicDelete", testBasicDelete),
@@ -109,6 +110,57 @@ class TestCodableRouter: KituraTest {
                 XCTAssertEqual(user.name, expectedUser.name)
                 XCTAssertEqual(user.id, expectedUser.id)
 
+                expectation.fulfill()
+            }, requestModifier: { request in
+                request.headers["Content-Type"] = "application/json"
+                request.write(from: userData)
+            })
+        }
+    }
+    
+    func testBasicPostIdentifier() {
+        router.post("/users") { (user: User, respondWith: (Int?, User?, RequestError?) -> Void) in
+            print("POST on /users for user \(user)")
+            self.userStore[user.id] = user
+            respondWith(user.id, user, nil)
+        }
+        
+        performServerTest(router, timeout: 30) { expectation in
+            let expectedUser = User(id: 4, name: "David")
+            guard let userData = try? JSONEncoder().encode(expectedUser) else {
+                XCTFail("Could not generate user data from string!")
+                return
+            }
+            
+            self.performRequest("post", path: "/users", callback: { response in
+                guard let response = response else {
+                    XCTFail("ERROR!!! ClientRequest response object was nil")
+                    return
+                }
+                
+                XCTAssertEqual(response.statusCode, HTTPStatusCode.created, "HTTP Status code was \(String(describing: response.statusCode))")
+                var data = Data()
+                guard let length = try? response.readAllData(into: &data) else {
+                    XCTFail("Error reading response length!")
+                    return
+                }
+                
+                XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
+                guard let user = try? JSONDecoder().decode(User.self, from: data) else {
+                    XCTFail("Could not decode response! Expected response decodable to User, but got \(String(describing: String(data: data, encoding: .utf8)))")
+                    return
+                }
+                
+                guard let location = response.headers["Location"] else {
+                    XCTFail("Could not find Location header. Expected Location header to be set to the created User id.")
+                    return
+                }
+                XCTAssertEqual(location[0], String(expectedUser.id))
+                
+                // Validate the data we got back from the server
+                XCTAssertEqual(user.name, expectedUser.name)
+                XCTAssertEqual(user.id, expectedUser.id)
+                
                 expectation.fulfill()
             }, requestModifier: { request in
                 request.headers["Content-Type"] = "application/json"
