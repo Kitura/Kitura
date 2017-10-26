@@ -295,12 +295,7 @@ extension Router : RouterMiddleware {
             }
 
             let index = urlPath.index(urlPath.startIndex, offsetBy: mountpath.characters.count)
-
-            #if swift(>=3.2)
-                request.parsedURLPath.path = String(urlPath[index...])
-            #else
-                request.parsedURLPath.path = urlPath.substring(from: index)
-            #endif
+            request.parsedURLPath.path = String(urlPath[index...])
         }
 
         response.push(router: self)
@@ -372,11 +367,7 @@ extension Router : ServerDelegate {
         }
 
         if  urlPath.hasPrefix(kituraResourcePrefix) {
-            #if swift(>=3.2)
-                let resource = String(urlPath[kituraResourcePrefix.endIndex...])
-            #else
-                let resource = urlPath.substring(from: kituraResourcePrefix.endIndex)
-            #endif
+            let resource = String(urlPath[kituraResourcePrefix.endIndex...])
             fileResourceServer.sendIfFound(resource: resource, usingResponse: response)
         } else {
             let looper = RouterElementWalker(elements: self.elements,

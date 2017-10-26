@@ -23,7 +23,7 @@ import Foundation
 
 /// Router middleware for parsing the body of the request.
 public class BodyParser: RouterMiddleware {
-    
+
     /// Static buffer size (in bytes)
     private static let bufferSize = 2000
 
@@ -79,11 +79,7 @@ public class BodyParser: RouterMiddleware {
         // "application/x-www-form-urlencoded"
         var contentTypeWithoutParameters = contentType
         if let parameterStart = contentTypeWithoutParameters.range(of: ";") {
-            #if swift(>=3.2)
-                contentTypeWithoutParameters = String(contentType[..<parameterStart.lowerBound])
-            #else
-                contentTypeWithoutParameters = contentType.substring(to: parameterStart.lowerBound)
-            #endif
+            contentTypeWithoutParameters = String(contentType[..<parameterStart.lowerBound])
         }
         if let parser = parserMap[contentTypeWithoutParameters] {
             return parser
@@ -94,16 +90,12 @@ public class BodyParser: RouterMiddleware {
                 return nil
             }
 
-            #if swift(>=3.2)
-                #if os(Linux)
-                    // https://bugs.swift.org/browse/SR-5727
-                    // ETA post-4.0
-                    var boundary = String(contentType[boundryIndex.upperBound...]).replacingOccurrences(of: "\"", with: "")
-                #else
-                    var boundary = contentType[boundryIndex.upperBound...].replacingOccurrences(of: "\"", with: "")
-                #endif
+            #if os(Linux)
+                // https://bugs.swift.org/browse/SR-5727
+                // ETA post-4.0
+                var boundary = String(contentType[boundryIndex.upperBound...]).replacingOccurrences(of: "\"", with: "")
             #else
-                var boundary = contentType.substring(from: boundryIndex.upperBound).replacingOccurrences(of: "\"", with: "")
+                var boundary = contentType[boundryIndex.upperBound...].replacingOccurrences(of: "\"", with: "")
             #endif
 
             // remove any trailing parameters - as per RFC 2046 section 5.1.1., a semicolon cannot be part of a boundary
@@ -140,7 +132,7 @@ public class BodyParser: RouterMiddleware {
     public class func readBodyData(with reader: RouterRequest) throws -> Data {
         var bodyData = Data()
         var length = 0
-        
+
         repeat {
             length = try reader.read(into: &bodyData)
         } while length != 0

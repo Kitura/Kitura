@@ -75,10 +75,6 @@ public class PrintLogger: Logger {
             return path
         }
 
-        #if swift(>=3.2)
-            return String(path[range.upperBound...])
-        #else
-            return path.substring(from: range.upperBound)
-        #endif
+        return String(path[range.upperBound...])
     }
 }

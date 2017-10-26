@@ -16,79 +16,80 @@
 
 // Test disabled on Swift 4 for now due to
 // https://bugs.swift.org/browse/SR-5684
-
-#if os(OSX) && !swift(>=3.2)
+// We will need to renable this once the bug is addressed in Swift
+// TODO: Enable this test case (see above)
+#if os(OSX) && !swift(>=4.0)
     import XCTest
- 
+
     class TestLinuxSafeguard: XCTestCase {
         func testVerifyLinuxTestCount() {
             var linuxCount: Int
             var darwinCount: Int
- 
+
             // MiscellaneousTests
             linuxCount = MiscellaneousTests.allTests.count
-            darwinCount = Int(MiscellaneousTests.defaultTestSuite().testCaseCount)
+            darwinCount = Int(MiscellaneousTests.defaultTestSuite.testCaseCount)
             XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from MiscellaneousTests.allTests")
- 
+
             // TestContentType
             linuxCount = TestContentType.allTests.count
-            darwinCount = Int(TestContentType.defaultTestSuite().testCaseCount)
+            darwinCount = Int(TestContentType.defaultTestSuite.testCaseCount)
             XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestContentType.allTests")
 
             // TestCookies
             linuxCount = TestCookies.allTests.count
-            darwinCount = Int(TestCookies.defaultTestSuite().testCaseCount)
+            darwinCount = Int(TestCookies.defaultTestSuite.testCaseCount)
             XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestCookies.allTests")
 
             // TestErrors
             linuxCount = TestErrors.allTests.count
-            darwinCount = Int(TestErrors.defaultTestSuite().testCaseCount)
+            darwinCount = Int(TestErrors.defaultTestSuite.testCaseCount)
             XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestErrors.allTests")
 
             // TestMultiplicity
             linuxCount = TestMultiplicity.allTests.count
-            darwinCount = Int(TestMultiplicity.defaultTestSuite().testCaseCount)
+            darwinCount = Int(TestMultiplicity.defaultTestSuite.testCaseCount)
             XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestMultiplicity.allTests")
 
             // TestRequests
             linuxCount = TestRequests.allTests.count
-            darwinCount = Int(TestRequests.defaultTestSuite().testCaseCount)
+            darwinCount = Int(TestRequests.defaultTestSuite.testCaseCount)
             XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestRequests.allTests")
 
             // TestResponse
             linuxCount = TestResponse.allTests.count
-            darwinCount = Int(TestResponse.defaultTestSuite().testCaseCount)
+            darwinCount = Int(TestResponse.defaultTestSuite.testCaseCount)
             XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestResponse.allTests")
 
             // TestRouteRegex
             linuxCount = TestRouteRegex.allTests.count
-            darwinCount = Int(TestRouteRegex.defaultTestSuite().testCaseCount)
+            darwinCount = Int(TestRouteRegex.defaultTestSuite.testCaseCount)
             XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestRouteRegex.allTests")
- 
+
             // TestRouterHTTPVerbsGenerated
             linuxCount = TestRouterHTTPVerbsGenerated.allTests.count
-            darwinCount = Int(TestRouterHTTPVerbsGenerated.defaultTestSuite().testCaseCount)
+            darwinCount = Int(TestRouterHTTPVerbsGenerated.defaultTestSuite.testCaseCount)
             XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestRouterHTTPVerbsGenerated.allTests")
- 
+
             // TestServer
             linuxCount = TestServer.allTests.count
-            darwinCount = Int(TestServer.defaultTestSuite().testCaseCount)
+            darwinCount = Int(TestServer.defaultTestSuite.testCaseCount)
             XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestServer.allTests")
- 
+
             // TestStaticFileServer
             linuxCount = TestStaticFileServer.allTests.count
-            darwinCount = Int(TestStaticFileServer.defaultTestSuite().testCaseCount)
+            darwinCount = Int(TestStaticFileServer.defaultTestSuite.testCaseCount)
             XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestStaticFileServer.allTests")
- 
+
             // TestSubrouter
             linuxCount = TestSubrouter.allTests.count
-            darwinCount = Int(TestSubrouter.defaultTestSuite().testCaseCount)
+            darwinCount = Int(TestSubrouter.defaultTestSuite.testCaseCount)
             XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestSubrouter.allTests")
 
             // TestTemplateEngine
             linuxCount = TestTemplateEngine.allTests.count
-            darwinCount = Int(TestTemplateEngine.defaultTestSuite().testCaseCount)
+            darwinCount = Int(TestTemplateEngine.defaultTestSuite.testCaseCount)
             XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestTemplateEngine.allTests")
         }
     }
-#endif
+  #endif

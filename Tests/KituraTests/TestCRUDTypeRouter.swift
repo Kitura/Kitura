@@ -16,14 +16,11 @@
 //
 //import XCTest
 //import Foundation
-//#if swift(>=4.0)
-//    import KituraContracts
-//#endif
+//import KituraContracts
 //
 //@testable import Kitura
 //@testable import KituraNet
 //
-//#if swift(>=4.0)
 //var employeeStore: [Int: Employee] = [:]
 //
 //struct Employee: Codable, Equatable {
@@ -312,7 +309,4 @@
 //    }
 //
 //}
-//
-//#endif
-//
 //

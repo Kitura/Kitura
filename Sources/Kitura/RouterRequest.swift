@@ -149,7 +149,7 @@ public class RouterRequest {
     public internal(set) var body: ParsedBody?
 
     internal var handledNamedParameters = Set<String>()
-    
+
     internal var hasBodyParserBeenUsed = false
 
     /// Initializes a `RouterRequest` instance
@@ -172,7 +172,6 @@ public class RouterRequest {
         return try serverRequest.read(into: &data)
     }
 
-    #if swift(>=4.0)
     /// Read the body of the request as a Codable object.
     ///
     /// - Parameter type: Codable object to which the body of the request will be converted.
@@ -185,7 +184,6 @@ public class RouterRequest {
         _ = try serverRequest.read(into: &data)
         return try JSONDecoder().decode(type, from: data)
     }
-    #endif
 
     /// Read the body of the request as String.
     ///
@@ -262,19 +260,14 @@ private class Cookies {
             return nil
         }
 
-        #if swift(>=3.2)
-            #if os(Linux)
-                // https://bugs.swift.org/browse/SR-5727
-                // ETA post-4.0
-                let name = String(cookie[..<range.lowerBound]).trimmingCharacters(in: .whitespaces)
-                var value = String(cookie[range.upperBound...]).trimmingCharacters(in: .whitespaces)
-            #else
-                let name = cookie[..<range.lowerBound].trimmingCharacters(in: .whitespaces)
-                var value = cookie[range.upperBound...].trimmingCharacters(in: .whitespaces)
-            #endif
+        #if os(Linux)
+            // https://bugs.swift.org/browse/SR-5727
+            // ETA post-4.0
+            let name = String(cookie[..<range.lowerBound]).trimmingCharacters(in: .whitespaces)
+            var value = String(cookie[range.upperBound...]).trimmingCharacters(in: .whitespaces)
         #else
-            let name = cookie.substring(to: range.lowerBound).trimmingCharacters(in: .whitespaces)
-            var value = cookie.substring(from: range.upperBound).trimmingCharacters(in: .whitespaces)
+            let name = cookie[..<range.lowerBound].trimmingCharacters(in: .whitespaces)
+            var value = cookie[range.upperBound...].trimmingCharacters(in: .whitespaces)
         #endif
 
         let chars = value.characters
