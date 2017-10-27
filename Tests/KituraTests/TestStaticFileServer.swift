@@ -36,7 +36,8 @@ class TestStaticFileServer: KituraTest {
             ("testGetWithSpecialCharactersEncoded", testGetWithSpecialCharactersEncoded),
             ("testGetKituraResource", testGetKituraResource),
             ("testGetMissingKituraResource", testGetMissingKituraResource),
-            ("testAbsolutePathFunction", testAbsolutePathFunction)
+            ("testAbsolutePathFunction", testAbsolutePathFunction),
+            ("testAbsoluteRootPath", testAbsoluteRootPath)
         ]
     }
 
