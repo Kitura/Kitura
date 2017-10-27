@@ -16,7 +16,6 @@
 
 import XCTest
 import Foundation
-import SwiftyJSON
 
 @testable import Kitura
 @testable import KituraNet

@@ -15,10 +15,10 @@
  **/
 
 import XCTest
+import Foundation
 
 @testable import Kitura
 @testable import KituraNet
-import SwiftyJSON
 
 #if os(Linux)
     import Foundation
@@ -38,6 +38,9 @@ class TestSubrouter: KituraTest {
             ("testMergeParams", testMergeParams)
         ]
     }
+
+    static let encoder = JSONEncoder()
+    static let decoder = JSONDecoder()
 
     let router = TestSubrouter.setupRouter()
 
@@ -153,8 +156,8 @@ class TestSubrouter: KituraTest {
             next()
         }
 
-        let handler = { (req: RouterRequest, res: RouterResponse, next: () -> Void) throws in
-            try res.send(json: JSON(req.parameters)).end()
+        let handler: RouterHandler = { (req: RouterRequest, res: RouterResponse, next: () -> Void) throws in
+            res.send(json: req.parameters)
         }
 
         let router = Router()
@@ -165,7 +168,7 @@ class TestSubrouter: KituraTest {
         subsubRouter1.all("/subsub2/passthrough", handler: handler)
 
         router.route("/root2/:root2", mergeParameters: true).all { req, res, _ in
-            try res.send(json: JSON(req.parameters)).end()
+            res.send(json: req.parameters)
         }
 
         performServerTest(router, asyncTasks: { expectation in
@@ -176,11 +179,11 @@ class TestSubrouter: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    let dict = JSON(data: data).dictionaryValue
-
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
                     XCTAssertEqual(dict["root1"], nil)
-                    XCTAssertEqual(dict["sub1"]?.stringValue, "456")
-                    XCTAssertEqual(dict["subsub1"]?.stringValue, "789")
+                    XCTAssertEqual(dict["sub1"], "456")
+                    XCTAssertEqual(dict["subsub1"], "789")
+
                 } catch {
                     XCTFail()
                 }
@@ -195,11 +198,11 @@ class TestSubrouter: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    let dict = JSON(data: data).dictionaryValue
-
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
                     XCTAssertEqual(dict["root1"], nil)
-                    XCTAssertEqual(dict["sub1"]?.stringValue, "456")
+                    XCTAssertEqual(dict["sub1"], "456")
                     XCTAssertEqual(dict["subsub2"], nil)
+
                 } catch {
                     XCTFail()
                 }
@@ -214,9 +217,9 @@ class TestSubrouter: KituraTest {
 
                 do {
                     try response?.readAllData(into: &data)
-                    let dict = JSON(data: data).dictionaryValue
+                    let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
+                    XCTAssertEqual(dict["root2"], "123")
 
-                    XCTAssertEqual(dict["root2"]?.stringValue, "123")
                 } catch {
                     XCTFail()
                 }

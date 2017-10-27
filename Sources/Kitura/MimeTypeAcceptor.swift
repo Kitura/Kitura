@@ -130,11 +130,7 @@ extension RouterRequest {
             if headerType.hasSuffix("/*") {
                 let index = headerType.index(headerType.endIndex, offsetBy: -1)
 
-                #if swift(>=3.2)
-                    let headerTypePrefix = String(headerType[..<index]) // strip the trailing *
-                #else
-                    let headerTypePrefix = headerType.substring(to: index) // strip the trailing *
-                #endif
+                let headerTypePrefix = String(headerType[..<index]) // strip the trailing *
 
                 if mimeType.hasPrefix(headerTypePrefix) {
                     // type/* match, e.g. mimeType: text/html matches headerType: text/*

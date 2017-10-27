@@ -89,7 +89,7 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a class="nav-group-name-link" href="../Enums.html">Enums</a>
+            <a class="nav-group-name-link" href="../Enums.html">Enumerations</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Enums/JSONPError.html">JSONPError</a>
@@ -117,7 +117,7 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a class="nav-group-name-link" href="../Structs.html">Structs</a>
+            <a class="nav-group-name-link" href="../Structs.html">Structures</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/HTTPVersion.html">HTTPVersion</a>
@@ -137,19 +137,19 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a class="nav-group-name-link" href="../Typealiases.html">Typealiases</a>
+            <a class="nav-group-name-link" href="../Typealiases.html">Type Aliases</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura16LifecycleHandler">LifecycleHandler</a>
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura16LifecycleHandlera">LifecycleHandler</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a>
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura13RouterHandlera">RouterHandler</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura22RouterParameterHandler">RouterParameterHandler</a>
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura22RouterParameterHandlera">RouterParameterHandler</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura17WrittenDataFilter">WrittenDataFilter</a>
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura17WrittenDataFiltera">WrittenDataFilter</a>
               </li>
             </ul>
           </li>
@@ -178,9 +178,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:ZFC6Kitura6Kitura13addHTTPServerFT6onPortSi4withP9KituraNet14ServerDelegate_7withSSLGSqVS_9SSLConfig__CS1_10HTTPServer"></a>
-                    <a name="//apple_ref/swift/Method/addHTTPServer(onPort:with:withSSL:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:ZFC6Kitura6Kitura13addHTTPServerFT6onPortSi4withP9KituraNet14ServerDelegate_7withSSLGSqVS_9SSLConfig__CS1_10HTTPServer">addHTTPServer(onPort:with:withSSL:)</a>
+                    <a name="/s:6KituraAAC13addHTTPServer0A3Net0C0CSi6onPort_AD14ServerDelegate_p4withAA9SSLConfigVSg0I3SSLAD14KeepAliveStateO04keepM0Sb05allowF5ReusetFZ"></a>
+                    <a name="//apple_ref/swift/Method/addHTTPServer(onPort:with:withSSL:keepAlive:allowPortReuse:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6KituraAAC13addHTTPServer0A3Net0C0CSi6onPort_AD14ServerDelegate_p4withAA9SSLConfigVSg0I3SSLAD14KeepAliveStateO04keepM0Sb05allowF5ReusetFZ">addHTTPServer(onPort:with:withSSL:keepAlive:allowPortReuse:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -198,7 +198,11 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kd">func</span> <span class="nf">addHTTPServer</span><span class="p">(</span><span class="n">onPort</span> <span class="nv">port</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">with</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt">ServerDelegate</span><span class="p">,</span> <span class="n">withSSL</span> <span class="nv">sslConfig</span><span class="p">:</span> <span class="kt"><a href="../Structs/SSLConfig.html">SSLConfig</a></span><span class="p">?</span><span class="o">=</span><span class="kc">nil</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">HTTPServer</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kd">func</span> <span class="nf">addHTTPServer</span><span class="p">(</span><span class="n">onPort</span> <span class="nv">port</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span>
+                                    <span class="n">with</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt">ServerDelegate</span><span class="p">,</span>
+                                    <span class="n">withSSL</span> <span class="nv">sslConfig</span><span class="p">:</span> <span class="kt"><a href="../Structs/SSLConfig.html">SSLConfig</a></span><span class="p">?</span><span class="o">=</span><span class="kc">nil</span><span class="p">,</span>
+                                    <span class="n">keepAlive</span> <span class="nv">keepAliveState</span><span class="p">:</span> <span class="kt">KeepAliveState</span> <span class="o">=</span> <span class="o">.</span><span class="n">unlimited</span><span class="p">,</span>
+                                    <span class="nv">allowPortReuse</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">HTTPServer</span></code></pre>
 
                         </div>
                       </div>
@@ -215,7 +219,6 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
                               <td>
                                 <div>
                                   <p>The port to listen on.</p>
-
                                 </div>
                               </td>
                             </tr>
@@ -228,7 +231,6 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
                               <td>
                                 <div>
                                   <p>The <code>ServerDelegate</code> to use.</p>
-
                                 </div>
                               </td>
                             </tr>
@@ -241,7 +243,30 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
                               <td>
                                 <div>
                                   <p>The <code>sslConfig</code> to use.</p>
-
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>keepAlive</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The maximum number of additional requests to permit per Keep-Alive connection. Defaults to <code>.unlimited</code>. If set to <code>.disabled</code>, Keep-Alive will be not be permitted.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>allowPortReuse</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Determines whether the listener port may be shared with other Kitura instances (<code>SO_REUSEPORT</code>). Defaults to <code>false</code>. If the specified port is already in use by another listener that has not allowed sharing, the server will fail to start.</p>
                                 </div>
                               </td>
                             </tr>
@@ -251,7 +276,6 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
                       <div>
                         <h4>Return Value</h4>
                         <p>The created <code>HTTPServer</code>.</p>
-
                       </div>
                     </section>
                   </div>
@@ -259,9 +283,9 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:ZFC6Kitura6Kitura16addFastCGIServerFT6onPortSi4withP9KituraNet14ServerDelegate__CS1_13FastCGIServer"></a>
-                    <a name="//apple_ref/swift/Method/addFastCGIServer(onPort:with:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:ZFC6Kitura6Kitura16addFastCGIServerFT6onPortSi4withP9KituraNet14ServerDelegate__CS1_13FastCGIServer">addFastCGIServer(onPort:with:)</a>
+                    <a name="/s:6KituraAAC16addFastCGIServer0A3Net0cD0CSi6onPort_AD14ServerDelegate_p4withSb05allowG5ReusetFZ"></a>
+                    <a name="//apple_ref/swift/Method/addFastCGIServer(onPort:with:allowPortReuse:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6KituraAAC16addFastCGIServer0A3Net0cD0CSi6onPort_AD14ServerDelegate_p4withSb05allowG5ReusetFZ">addFastCGIServer(onPort:with:allowPortReuse:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -279,7 +303,9 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kd">func</span> <span class="nf">addFastCGIServer</span><span class="p">(</span><span class="n">onPort</span> <span class="nv">port</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">with</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt">ServerDelegate</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">FastCGIServer</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kd">func</span> <span class="nf">addFastCGIServer</span><span class="p">(</span><span class="n">onPort</span> <span class="nv">port</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span>
+                                       <span class="n">with</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt">ServerDelegate</span><span class="p">,</span>
+                                       <span class="nv">allowPortReuse</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">FastCGIServer</span></code></pre>
 
                         </div>
                       </div>
@@ -296,7 +322,6 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
                               <td>
                                 <div>
                                   <p>The port to listen on.</p>
-
                                 </div>
                               </td>
                             </tr>
@@ -309,7 +334,18 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
                               <td>
                                 <div>
                                   <p>The <code>ServerDelegate</code> to use.</p>
-
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>allowPortReuse</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Determines whether the listener port may be shared with other Kitura instances (<code>SO_REUSEPORT</code>). Defaults to <code>false</code>. If the specified port is already in use by another listener that has not allowed sharing, the server will fail to start.</p>
                                 </div>
                               </td>
                             </tr>
@@ -319,7 +355,6 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
                       <div>
                         <h4>Return Value</h4>
                         <p>The created <code>FastCGIServer</code>.</p>
-
                       </div>
                     </section>
                   </div>
@@ -327,9 +362,9 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:ZFC6Kitura6Kitura3runFT_T_"></a>
+                    <a name="/s:6KituraAAC3runyyFZ"></a>
                     <a name="//apple_ref/swift/Method/run()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:ZFC6Kitura6Kitura3runFT_T_">run()</a>
+                    <a class="token" href="#/s:6KituraAAC3runyyFZ">run()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -340,7 +375,6 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
                         <p>Start the Kitura framework.</p>
 
 <p>Make all registered servers start listening on their port.</p>
-
 <div class="aside aside-note">
     <p class="aside-title">Note</p>
     This function never returns - it should be the last call in your main.swift
@@ -362,9 +396,9 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:ZFC6Kitura6Kitura5startFT_T_"></a>
+                    <a name="/s:6KituraAAC5startyyFZ"></a>
                     <a name="//apple_ref/swift/Method/start()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:ZFC6Kitura6Kitura5startFT_T_">start()</a>
+                    <a class="token" href="#/s:6KituraAAC5startyyFZ">start()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -391,9 +425,9 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:ZFC6Kitura6Kitura4stopFT10unregisterSb_T_"></a>
+                    <a name="/s:6KituraAAC4stopySb10unregister_tFZ"></a>
                     <a name="//apple_ref/swift/Method/stop(unregister:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:ZFC6Kitura6Kitura4stopFT10unregisterSb_T_">stop(unregister:)</a>
+                    <a class="token" href="#/s:6KituraAAC4stopySb10unregister_tFZ">stop(unregister:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -427,7 +461,6 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
                               <td>
                                 <div>
                                   <p>If servers should be unregistered after stopped (default true).</p>
-
                                 </div>
                               </td>
                             </tr>
@@ -445,8 +478,8 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-04-20)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.5</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-10-27)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

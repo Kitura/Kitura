@@ -1,5 +1,5 @@
 /*
- * Copyright IBM Corporation 2016
+ * Copyright IBM Corporation 2016,2017
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,6 +70,8 @@ public class StaticFileServer: RouterMiddleware {
         }
     }
 
+    public let absoluteRootPath: String
+
     let fileServer: FileServer
 
     /// Initializes a `StaticFileServer` instance.
@@ -81,7 +83,7 @@ public class StaticFileServer: RouterMiddleware {
     /// the headers of the response.
     public init(path: String = "./public", options: Options = Options(),
                  customResponseHeadersSetter: ResponseHeadersSetter? = nil) {
-        let path = StaticFileServer.ResourcePathHandler.getAbsolutePath(for: path)
+        absoluteRootPath = StaticFileServer.ResourcePathHandler.getAbsolutePath(for: path)
 
         let cacheOptions = options.cacheOptions
         let cacheRelatedHeadersSetter =
@@ -92,7 +94,7 @@ public class StaticFileServer: RouterMiddleware {
         let responseHeadersSetter = CompositeRelatedHeadersSetter(setters: cacheRelatedHeadersSetter,
                                                                   customResponseHeadersSetter)
 
-        fileServer = FileServer(servingFilesPath: path, options: options,
+        fileServer = FileServer(servingFilesPath: absoluteRootPath, options: options,
                                 responseHeadersSetter: responseHeadersSetter)
     }
 

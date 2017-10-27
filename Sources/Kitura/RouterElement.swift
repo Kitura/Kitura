@@ -30,7 +30,7 @@ class RouterElement {
 
     /// The regular expression
     private var regex: NSRegularExpression?
-    
+
     /// The pattern is a simple string
     private var isSimpleString = false
 
@@ -96,7 +96,7 @@ class RouterElement {
                 next()
                 return
         }
-        
+
         // Check and see if the pattern is just a simple string
         guard !isSimpleString else {
             performSimpleMatch(path: path, request: request, response: response, next: next)
@@ -131,7 +131,7 @@ class RouterElement {
             self.processHelper(request: request, response: response, next: next)
         }
     }
-    
+
     /// Perform a simple match
     ///
     /// - Parameter path: the path being matched
@@ -140,11 +140,11 @@ class RouterElement {
     /// - Parameter next: the closure for the next execution block
     private func performSimpleMatch(path: String, request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
         guard let pattern = pattern else { return }
-        
+
         let pathToMatch = path.isEmpty ? "/" : path
         var matched: Bool
         let matchedPath: String
-        
+
         if allowPartialMatch {
             matched = pathToMatch.hasPrefix(pattern)
             if matched && pattern != "/" {
@@ -159,7 +159,7 @@ class RouterElement {
             matched = pathToMatch == pattern
             matchedPath = matched ? pathToMatch : ""
         }
-        
+
         if matched {
             request.matchedPath = matchedPath
             request.allowPartialMatch = allowPartialMatch
@@ -182,10 +182,6 @@ class RouterElement {
         looper.next()
     }
 
-    #if os(Linux) && !swift(>=3.2)
-    typealias NSTextCheckingResult = TextCheckingResult
-    #endif
-
     /// Update the request parameters
     ///
     /// - Parameter match: the regular expression result
@@ -195,11 +191,7 @@ class RouterElement {
 
         if let keys = keys {
             for index in 0..<keys.count {
-                #if !os(Linux) && !swift(>=3.2)
-                    let matchRange = match.rangeAt(index + 1)
-                #else
-                    let matchRange = match.range(at: index+1)
-                #endif
+                let matchRange = match.range(at: index+1)
 
                 if  matchRange.location != NSNotFound  &&  matchRange.location != -1  {
                     var parameter = urlPath.substring(with: matchRange)
