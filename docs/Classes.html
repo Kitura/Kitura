@@ -88,7 +88,7 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a class="nav-group-name-link" href="Enums.html">Enums</a>
+            <a class="nav-group-name-link" href="Enums.html">Enumerations</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Enums/JSONPError.html">JSONPError</a>
@@ -116,7 +116,7 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a class="nav-group-name-link" href="Structs.html">Structs</a>
+            <a class="nav-group-name-link" href="Structs.html">Structures</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/HTTPVersion.html">HTTPVersion</a>
@@ -136,19 +136,19 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a class="nav-group-name-link" href="Typealiases.html">Typealiases</a>
+            <a class="nav-group-name-link" href="Typealiases.html">Type Aliases</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura16LifecycleHandler">LifecycleHandler</a>
+                <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura16LifecycleHandlera">LifecycleHandler</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a>
+                <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura13RouterHandlera">RouterHandler</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura22RouterParameterHandler">RouterParameterHandler</a>
+                <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura22RouterParameterHandlera">RouterParameterHandler</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura17WrittenDataFilter">WrittenDataFilter</a>
+                <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura17WrittenDataFiltera">WrittenDataFilter</a>
               </li>
             </ul>
           </li>
@@ -171,9 +171,50 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:C6Kitura6Kitura"></a>
+                    <a name="/s:6Kitura6RouterC"></a>
+                    <a name="//apple_ref/swift/Class/Router" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC">Router</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The <code>Router</code> class provides the external interface for the routing of requests to
+the appropriate code for handling. This includes:</p>
+
+<ul>
+<li>Routing requests to closures with the signature of <code><a href="Typealiases.html#/s:6Kitura13RouterHandlera">RouterHandler</a></code></li>
+<li>Routing requests to the handle function of classes that implement the
+<code><a href="Protocols/RouterMiddleware.html">RouterMiddleware</a></code> protocol.</li>
+<li>Routing the request to a template engine to generate the appropriate output.</li>
+<li>Serving the landing page when someone makes an HTTP request with a path of slash (/).</li>
+</ul>
+
+                        <a href="Classes/Router.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6KituraAAC"></a>
                     <a name="//apple_ref/swift/Class/Kitura" class="dashAnchor"></a>
-                    <a class="token" href="#/s:C6Kitura6Kitura">Kitura</a>
+                    <a class="token" href="#/s:6KituraAAC">Kitura</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -203,50 +244,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:C6Kitura6Router"></a>
-                    <a name="//apple_ref/swift/Class/Router" class="dashAnchor"></a>
-                    <a class="token" href="#/s:C6Kitura6Router">Router</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The <code>Router</code> class provides the external interface for the routing of requests to
-the appropriate code for handling. This includes:</p>
-
-<ul>
-<li>Routing requests to closures with the signature of <code><a href="Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code></li>
-<li>Routing requests to the handle function of classes that implement the
-<code><a href="Protocols/RouterMiddleware.html">RouterMiddleware</a></code> protocol.</li>
-<li>Routing the request to a template engine to generate the appropriate output.</li>
-<li>Serving the landing page when someone makes an HTTP request with a path of slash (/).</li>
-</ul>
-
-                        <a href="Classes/Router.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:C6Kitura10RouteRegex"></a>
+                    <a name="/s:6Kitura10RouteRegexC"></a>
                     <a name="//apple_ref/swift/Class/RouteRegex" class="dashAnchor"></a>
-                    <a class="token" href="#/s:C6Kitura10RouteRegex">RouteRegex</a>
+                    <a class="token" href="#/s:6Kitura10RouteRegexC">RouteRegex</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -283,9 +283,9 @@ the appropriate code for handling. This includes:</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:C6Kitura25RouterMiddlewareGenerator"></a>
+                    <a name="/s:6Kitura25RouterMiddlewareGeneratorC"></a>
                     <a name="//apple_ref/swift/Class/RouterMiddlewareGenerator" class="dashAnchor"></a>
-                    <a class="token" href="#/s:C6Kitura25RouterMiddlewareGenerator">RouterMiddlewareGenerator</a>
+                    <a class="token" href="#/s:6Kitura25RouterMiddlewareGeneratorC">RouterMiddlewareGenerator</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -293,7 +293,7 @@ the appropriate code for handling. This includes:</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Create an on the fly <code><a href="Protocols/RouterMiddleware.html">RouterMiddleware</a></code> from a <code><a href="Typealiases.html#/s:6Kitura13RouterHandler">RouterHandler</a></code> closure.</p>
+                        <p>Create an on the fly <code><a href="Protocols/RouterMiddleware.html">RouterMiddleware</a></code> from a <code><a href="Typealiases.html#/s:6Kitura13RouterHandlera">RouterHandler</a></code> closure.</p>
 
                         <a href="Classes/RouterMiddlewareGenerator.html" class="slightly-smaller">See more</a>
                       </div>
@@ -322,9 +322,9 @@ the appropriate code for handling. This includes:</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:C6Kitura13RouterRequest"></a>
+                    <a name="/s:6Kitura13RouterRequestC"></a>
                     <a name="//apple_ref/swift/Class/RouterRequest" class="dashAnchor"></a>
-                    <a class="token" href="#/s:C6Kitura13RouterRequest">RouterRequest</a>
+                    <a class="token" href="#/s:6Kitura13RouterRequestC">RouterRequest</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -361,9 +361,9 @@ the appropriate code for handling. This includes:</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:C6Kitura14RouterResponse"></a>
+                    <a name="/s:6Kitura14RouterResponseC"></a>
                     <a name="//apple_ref/swift/Class/RouterResponse" class="dashAnchor"></a>
-                    <a class="token" href="#/s:C6Kitura14RouterResponse">RouterResponse</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC">RouterResponse</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -400,9 +400,9 @@ the appropriate code for handling. This includes:</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:C6Kitura10BodyParser"></a>
+                    <a name="/s:6Kitura10BodyParserC"></a>
                     <a name="//apple_ref/swift/Class/BodyParser" class="dashAnchor"></a>
-                    <a class="token" href="#/s:C6Kitura10BodyParser">BodyParser</a>
+                    <a class="token" href="#/s:6Kitura10BodyParserC">BodyParser</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -439,9 +439,9 @@ the appropriate code for handling. This includes:</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:C6Kitura11ContentType"></a>
+                    <a name="/s:6Kitura11ContentTypeC"></a>
                     <a name="//apple_ref/swift/Class/ContentType" class="dashAnchor"></a>
-                    <a class="token" href="#/s:C6Kitura11ContentType">ContentType</a>
+                    <a class="token" href="#/s:6Kitura11ContentTypeC">ContentType</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -479,9 +479,9 @@ or to determine if it&rsquo;s an acceptable value.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:C6Kitura16StaticFileServer"></a>
+                    <a name="/s:6Kitura16StaticFileServerC"></a>
                     <a name="//apple_ref/swift/Class/StaticFileServer" class="dashAnchor"></a>
-                    <a class="token" href="#/s:C6Kitura16StaticFileServer">StaticFileServer</a>
+                    <a class="token" href="#/s:6Kitura16StaticFileServerC">StaticFileServer</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -512,8 +512,8 @@ or to determine if it&rsquo;s an acceptable value.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-04-20)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.5</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-10-27)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

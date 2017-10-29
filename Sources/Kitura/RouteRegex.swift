@@ -53,11 +53,11 @@ public class RouteRegex {
         guard let pattern = fromPattern else {
             return (nil, false, nil)
         }
-        
+
         // Check and see if the pattern is a simple string (no captures and not a regular expression)
         if pattern.rangeOfCharacter(from: complexRouteCharacters) == nil {
             return (nil, true, nil)
-        } 
+        }
 
         var regexStr = "^"
         var keys = [String]()
@@ -133,12 +133,7 @@ public class RouteRegex {
                 extract(fromPath: nsPath, with: keyMatch, at: 3, to: &matchExp)
                 extract(fromPath: nsPath, with: keyMatch, at: 4, to: &plusQuestStar)
 
-                #if !os(Linux) && !swift(>=3.2)
-                    let keyMatchRange = keyMatch.rangeAt(2)
-                #else
-                    let keyMatchRange = keyMatch.range(at: 2)
-                #endif
-
+                let keyMatchRange = keyMatch.range(at: 2)
                 keys.append(nsPath.substring(with: keyMatchRange))
                 matched = true
             } else if let nonKeyMatch = nonKeyRegex.firstMatch(in: path, options: [], range: range) {
@@ -155,17 +150,9 @@ public class RouteRegex {
             return (matched, prefix, matchExp, plusQuestStar)
     }
 
-    #if os(Linux) && !swift(>=3.2)
-    typealias NSTextCheckingResult = TextCheckingResult
-    #endif
-
     func extract(fromPath path: NSString, with match: NSTextCheckingResult, at index: Int,
                  to string: inout String) {
-        #if !os(Linux) && !swift(>=3.2)
-            let range = match.rangeAt(index)
-        #else
-            let range = match.range(at: index)
-        #endif
+        let range = match.range(at: index)
 
         if  range.location != NSNotFound  &&  range.location != -1 {
             string = path.substring(with: range)

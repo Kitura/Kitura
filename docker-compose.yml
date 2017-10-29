@@ -1,5 +1,5 @@
 test:
-  image: ibmcom/swift-ubuntu
+  image: ibmcom/swift-ubuntu:4.0
   volumes:
-    - ./:/test/
-  command: bash -c "make clean -C /test && make -C /test && make test -C /test"
+    - ./:/Kitura
+  command: bash -c "cd /Kitura && swift package  --build-path .build-ubuntu clean && swift build  --build-path .build-ubuntu && swift test  --build-path .build-ubuntu"

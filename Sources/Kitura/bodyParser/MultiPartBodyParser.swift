@@ -95,11 +95,7 @@ class MultiPartBodyParser: BodyParserProtocol {
     // returns true if it was header line
     private func handleHeaderLine(_ line: String, part: inout Part) {
         if let labelRange = getLabelRange(of: "content-type:", in: line) {
-            #if swift(>=3.2)
-                part.type = String(line[line.index(after: labelRange.upperBound)...])
-            #else
-                part.type = line.substring(from: line.index(after: labelRange.upperBound))
-            #endif
+            part.type = String(line[line.index(after: labelRange.upperBound)...])
             part.headers[.type] = line
             return
         }
@@ -109,20 +105,12 @@ class MultiPartBodyParser: BodyParserProtocol {
             if let nameRange = line.range(of: "name=", options: caseInsensitiveSearch, range: labelRange.upperBound..<line.endIndex) {
                 let valueStartIndex = line.index(after: nameRange.upperBound)
                 let valueEndIndex = line.range(of: "\"", range: valueStartIndex..<line.endIndex)
-                #if swift(>=3.2)
-                    part.name = String(line[valueStartIndex..<(valueEndIndex?.lowerBound ?? line.endIndex)])
-                #else
-                    part.name = line.substring(with: valueStartIndex..<(valueEndIndex?.lowerBound ?? line.endIndex))
-                #endif
+                part.name = String(line[valueStartIndex..<(valueEndIndex?.lowerBound ?? line.endIndex)])
             }
             if let filenameRange = line.range(of: "filename=", options: caseInsensitiveSearch, range: labelRange.upperBound..<line.endIndex) {
                 let valueStartIndex = line.index(after: filenameRange.upperBound)
                 let valueEndIndex = line.range(of: "\"", range: valueStartIndex..<line.endIndex)
-                #if swift(>=3.2)
-                    part.filename = String(line[valueStartIndex..<(valueEndIndex?.lowerBound ?? line.endIndex)])
-                #else
-                    part.filename = line.substring(with: valueStartIndex..<(valueEndIndex?.lowerBound ?? line.endIndex))
-                #endif
+                part.filename = String(line[valueStartIndex..<(valueEndIndex?.lowerBound ?? line.endIndex)])
             }
             part.headers[.disposition] = line
             return

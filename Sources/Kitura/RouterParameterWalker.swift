@@ -36,13 +36,9 @@ class RouterParameterWalker {
             return
         }
 
-        #if swift(>=3.2)
-            let filtered = request.parameters.filter { (key, _) in
-                self.parameterHandlers.keys.contains(key) && !request.handledNamedParameters.contains(key)
-                }.map { ($0, $1) }
-        #else
-            let filtered = request.parameters.filter { (key, _) in self.parameterHandlers.keys.contains(key) && !request.handledNamedParameters.contains(key) }
-        #endif
+        let filtered = request.parameters.filter { (key, _) in
+            self.parameterHandlers.keys.contains(key) && !request.handledNamedParameters.contains(key)
+            }.map { ($0, $1) }
 
         self.handle(filtered: filtered, request: request, response: response, with: callback)
     }

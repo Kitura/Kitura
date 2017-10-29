@@ -20,10 +20,6 @@ import LoggerAPI
 import Foundation
 import Dispatch
 
-#if os(Linux) && !swift(>=3.1)
-    typealias NSRegularExpression = RegularExpression
-#endif
-
 // MARK Kitura
 
 /// A set of helper functions to make it easier to create, start, and stop Kitura based servers.
@@ -38,16 +34,19 @@ public class Kitura {
     /// - Parameter with: The `ServerDelegate` to use.
     /// - Parameter withSSL: The `sslConfig` to use.
     /// - Parameter keepAlive: The maximum number of additional requests to permit per Keep-Alive connection. Defaults to `.unlimited`. If set to `.disabled`, Keep-Alive will be not be permitted.
+    /// - Parameter allowPortReuse: Determines whether the listener port may be shared with other Kitura instances (`SO_REUSEPORT`). Defaults to `false`. If the specified port is already in use by another listener that has not allowed sharing, the server will fail to start.
     /// - Returns: The created `HTTPServer`.
     @discardableResult
     public class func addHTTPServer(onPort port: Int,
                                     with delegate: ServerDelegate,
                                     withSSL sslConfig: SSLConfig?=nil,
-                                    keepAlive keepAliveState: KeepAliveState = .unlimited) -> HTTPServer {
+                                    keepAlive keepAliveState: KeepAliveState = .unlimited,
+                                    allowPortReuse: Bool = false) -> HTTPServer {
         let server = HTTP.createServer()
         server.delegate = delegate
         server.sslConfig = sslConfig?.config
         server.keepAliveState = keepAliveState
+        server.allowPortReuse = allowPortReuse
         httpServersAndPorts.append((server: server, port: port))
         return server
     }
@@ -59,11 +58,15 @@ public class Kitura {
     ///
     /// - Parameter onPort: The port to listen on.
     /// - Parameter with: The `ServerDelegate` to use.
+    /// - Parameter allowPortReuse: Determines whether the listener port may be shared with other Kitura instances (`SO_REUSEPORT`). Defaults to `false`. If the specified port is already in use by another listener that has not allowed sharing, the server will fail to start.
     /// - Returns: The created `FastCGIServer`.
     @discardableResult
-    public class func addFastCGIServer(onPort port: Int, with delegate: ServerDelegate) -> FastCGIServer {
+    public class func addFastCGIServer(onPort port: Int,
+                                       with delegate: ServerDelegate,
+                                       allowPortReuse: Bool = false) -> FastCGIServer {
         let server = FastCGI.createServer()
         server.delegate = delegate
+        server.allowPortReuse = allowPortReuse
         fastCGIServersAndPorts.append((server: server, port: port))
         return server
     }

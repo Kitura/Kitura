@@ -15,10 +15,8 @@
  */
 
 import KituraNet
-import SwiftyJSON
 import KituraTemplateEngine
 import LoggerAPI
-
 import Foundation
 
 
@@ -86,8 +84,10 @@ public class RouterResponse {
 
     private var lifecycle = Lifecycle()
 
+    private let encoder = JSONEncoder()
+
     // regex used to sanitize javascript identifiers
-    private static let sanitizeJSIdentifierRegex: NSRegularExpression! = {
+    fileprivate static let sanitizeJSIdentifierRegex: NSRegularExpression! = {
         do {
             return try NSRegularExpression(pattern: "[^\\[\\]\\w$.]", options: [])
         } catch { // pattern is a known valid literal, should never throw
@@ -259,32 +259,7 @@ public class RouterResponse {
         return self
     }
 
-    /// Send JSON.
-    ///
-    /// - Parameter json: the JSON object to send.
-    /// - Returns: this RouterResponse.
-    @discardableResult
-    public func send(json: JSON) -> RouterResponse {
-        guard !state.invokedEnd else {
-            Log.warning("RouterResponse send(json:) invoked after end() for \(self.request.urlURL)")
-            return self
-        }
-        do {
-            let jsonData = try json.rawData(options:.prettyPrinted)
-            headers.setType("json")
-            send(data: jsonData)
-        } catch {
-            Log.warning("Failed to convert JSON for sending: \(error.localizedDescription)")
-        }
-
-        return self
-    }
-
-    #if os(Linux)
-        typealias JSONSerializationType = LclJSONSerialization
-    #else
-        typealias JSONSerializationType = JSONSerialization
-    #endif
+    typealias JSONSerializationType = JSONSerialization
 
     /// Send JSON.
     ///
@@ -325,55 +300,6 @@ public class RouterResponse {
             Log.warning("Failed to convert JSON for sending: \(error.localizedDescription)")
         }
 
-        return self
-    }
-
-    /// Send JSON with JSONP callback.
-    ///
-    /// - Parameter json: the JSON object to send.
-    /// - Parameter callbackParameter: the name of the URL query
-    /// parameter whose value contains the JSONP callback function.
-    ///
-    /// - Throws: `JSONPError.invalidCallbackName` if the the callback
-    /// query parameter of the request URL is missing or its value is
-    /// empty or contains invalid characters (the set of valid characters
-    /// is the alphanumeric characters and `[]$._`).
-    /// - Returns: this RouterResponse.
-    public func send(jsonp: JSON, callbackParameter: String = "callback") throws -> RouterResponse {
-        guard !state.invokedEnd else {
-            Log.warning("RouterResponse send(jsonp:) invoked after end() for \(self.request.urlURL)")
-            return self
-        }
-        func sanitizeJSIdentifier(_ ident: String) -> String {
-            return RouterResponse.sanitizeJSIdentifierRegex.stringByReplacingMatches(in: ident, options: [],
-                                    range: NSRange(location: 0, length: ident.utf16.count), withTemplate: "")
-        }
-        func validJsonpCallbackName(_ name: String?) -> String? {
-            if let name = name {
-                if name.characters.count > 0 && name == sanitizeJSIdentifier(name) {
-                    return name
-                }
-            }
-            return nil
-        }
-        func jsonToJS(_ json: String) -> String {
-            // Translate JSON characters that are invalid in javascript
-            return json.replacingOccurrences(of: "\u{2028}", with: "\\u2028")
-                       .replacingOccurrences(of: "\u{2029}", with: "\\u2029")
-        }
-
-        let jsonStr = jsonp.description
-        let taintedJSCallbackName = request.queryParameters[callbackParameter]
-        if let jsCallbackName = validJsonpCallbackName(taintedJSCallbackName) {
-            headers.setType("js")
-            // Set header "X-Content-Type-Options: nosniff" and prefix body with
-            // "/**/ " as security mitigation for Flash vulnerability
-            // CVE-2014-4671, CVE-2014-5333 "Abusing JSONP with Rosetta Flash"
-            headers["X-Content-Type-Options"] = "nosniff"
-            send("/**/ " + jsCallbackName + "(" + jsonToJS(jsonStr) + ")")
-        } else {
-            throw JSONPError.invalidCallbackName(name: taintedJSCallbackName)
-        }
         return self
     }
 
@@ -510,6 +436,89 @@ public class RouterResponse {
         } else {
             try status(.notAcceptable).end()
         }
+    }
+}
+
+extension RouterResponse {
+
+    /// Send Encodable Object.
+    ///
+    /// - Parameter obj: the Codable object to send.
+    /// - Returns: this RouterResponse.
+    @discardableResult
+    public func send<T : Encodable>(_ obj: T) -> RouterResponse {
+        guard !state.invokedEnd else {
+            Log.warning("RouterResponse send(_ obj:) invoked after end() for \(self.request.urlURL)")
+            return self
+        }
+        do {
+            headers.setType("json")
+            send(data: try encoder.encode(obj))
+        } catch {
+            Log.warning("Failed to encode Codable object for sending: \(error.localizedDescription)")
+        }
+
+        return self
+    }
+
+    /// Send Encodable Object JSON Convienence Method
+    ///
+    /// - Parameter json: the Encodable object to send.
+    /// - Returns: this RouterResponse.
+    @discardableResult
+    public func send<T : Encodable>(json: T) -> RouterResponse {
+        return send(json)
+    }
+
+    /// Send JSON with JSONP callback.
+    ///
+    /// - Parameter json: the JSON object to send.
+    /// - Parameter callbackParameter: the name of the URL query
+    /// parameter whose value contains the JSONP callback function.
+    ///
+    /// - Throws: `JSONPError.invalidCallbackName` if the the callback
+    /// query parameter of the request URL is missing or its value is
+    /// empty or contains invalid characters (the set of valid characters
+    /// is the alphanumeric characters and `[]$._`).
+    /// - Returns: this RouterResponse.
+    public func send<T : Encodable>(jsonp: T, callbackParameter: String = "callback") throws -> RouterResponse {
+        guard !state.invokedEnd else {
+            Log.warning("RouterResponse send(jsonp:) invoked after end() for \(self.request.urlURL)")
+            return self
+        }
+        func sanitizeJSIdentifier(_ ident: String) -> String {
+            return RouterResponse.sanitizeJSIdentifierRegex.stringByReplacingMatches(in: ident, options: [],
+                                                                                     range: NSRange(location: 0, length: ident.utf16.count), withTemplate: "")
+        }
+        func validJsonpCallbackName(_ name: String?) -> String? {
+            if let name = name {
+                if name.characters.count > 0 && name == sanitizeJSIdentifier(name) {
+                    return name
+                }
+            }
+            return nil
+        }
+        func jsonToJS(_ json: String) -> String {
+            // Translate JSON characters that are invalid in javascript
+            return json.replacingOccurrences(of: "\u{2028}", with: "\\u2028")
+                .replacingOccurrences(of: "\u{2029}", with: "\\u2029")
+        }
+
+        let jsonStr = String(data: try encoder.encode(jsonp), encoding: .utf8)!
+
+        let taintedJSCallbackName = request.queryParameters[callbackParameter]
+
+        if let jsCallbackName = validJsonpCallbackName(taintedJSCallbackName) {
+            headers.setType("js")
+            // Set header "X-Content-Type-Options: nosniff" and prefix body with
+            // "/**/ " as security mitigation for Flash vulnerability
+            // CVE-2014-4671, CVE-2014-5333 "Abusing JSONP with Rosetta Flash"
+            headers["X-Content-Type-Options"] = "nosniff"
+            send("/**/ " + jsCallbackName + "(" + jsonToJS(jsonStr) + ")")
+        } else {
+            throw JSONPError.invalidCallbackName(name: taintedJSCallbackName)
+        }
+        return self
     }
 }
 

@@ -70,6 +70,9 @@ class KituraTest: XCTestCase {
             self.useSSL = false
             doPerformServerTest(router: router, timeout: timeout, line: line, asyncTasks: asyncTasks)
         }
+        
+        // Call setUp to start at a known state (ideally, this should have been written as a separate test)
+        setUp()
 
         if sslOption != SSLOption.httpOnly {
             self.port = KituraTest.httpsPort

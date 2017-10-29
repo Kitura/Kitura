@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-import SwiftyJSON
 import Foundation
 
 class JSONBodyParser: BodyParserProtocol {
     func parse(_ data: Data) -> ParsedBody? {
-        let json = JSON(data: data)
-        if json != JSON.null {
-            return .json(json)
-        }
-        return nil
+        guard let jsonObj = try? JSONSerialization.jsonObject(with: data, options: []),
+            let json = jsonObj as? [String: Any] else {
+            return nil
+      }
+      return .json(json)
     }
 }

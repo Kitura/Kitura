@@ -60,7 +60,7 @@ extension StaticFileServer {
                 let size = fileAttributes[FileAttributeKey.size] as? NSNumber
 
                 if let date = date, let size = size {
-                    #if swift(>=3.2) && !os(Linux)
+                    #if !os(Linux)
                         // https://bugs.swift.org/browse/SR-5850
                         let sizeHex = String(Int(truncating: size), radix: 16, uppercase: false)
                     #else
