@@ -1,4 +1,4 @@
-## Setup a Virtual Machine on Bluemix that uses Swift
+## Setup a Virtual Machine on IBM Cloud that uses Swift
 
 **THIS DOCUMENT IS WORK IN PROGRESS. PLEASE IGNORE FOR NOW!**
 
@@ -10,7 +10,7 @@
 
     Leave this terminal window open - you will come back to it later. Details on https://www.eu-gb.bluemix.net/docs/virtualmachines/vm_index.html#vm_ssh_key
 
-2. Sign into Bluemix.
+2. Sign into IBM Cloud.
 
     *Note: as of 2/1/2015 the US South region is having problems running VMs, and it is recommended switch to the UK region before attempting to create a VM instance.*
 
