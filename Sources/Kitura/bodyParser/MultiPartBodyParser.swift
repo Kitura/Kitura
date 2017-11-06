@@ -125,6 +125,11 @@ class MultiPartBodyParser: BodyParserProtocol {
             return
         }
 
+        if let _ = getLabelRange(of: "content-range:", in: line) {
+            part.headers[.contentRange] = line
+            return
+        }
+
         // custom headers could be handed here
     }
 

@@ -37,7 +37,11 @@ class TestStaticFileServer: KituraTest {
             ("testGetKituraResource", testGetKituraResource),
             ("testGetMissingKituraResource", testGetMissingKituraResource),
             ("testAbsolutePathFunction", testAbsolutePathFunction),
-            ("testAbsoluteRootPath", testAbsoluteRootPath)
+            ("testAbsoluteRootPath", testAbsoluteRootPath),
+            ("testRangeRequests", testRangeRequests),
+            ("testRangeRequestIsIgnoredOnOptionOff", testRangeRequestIsIgnoredOnOptionOff),
+            ("testDataIsNotCorrupted", testDataIsNotCorrupted),
+            ("testRangeRequestsWithMultipleRanges", testRangeRequestsWithMultipleRanges)
         ]
     }
 
@@ -159,6 +163,9 @@ class TestStaticFileServer: KituraTest {
         let directoryURL = URL(fileURLWithPath: #file + "/../TestStaticFileServer").standardizedFileURL
         router.all("/asdf", middleware: StaticFileServer(path: directoryURL.path, options:options))
 
+        options = StaticFileServer.Options(possibleExtensions: ["exe", "html"], cacheOptions: cacheOptions, acceptRanges: false)
+        router.all("/tyui", middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options:options, customResponseHeadersSetter: HeaderSetter()))
+
         return router
     }
 
@@ -220,5 +227,184 @@ class TestStaticFileServer: KituraTest {
 
     func testAbsoluteRootPath() {
         XCTAssertEqual(StaticFileServer(path: "/").absoluteRootPath, "/", "Absolute root path did not resolve to system root")
+    }
+
+    let indexHtmlContents = "<!DOCTYPE html><html><body><b>Index</b></body></html>" // contents of index.html
+    let indexHtmlCount = 54 // index.html file data length
+
+    func testRangeRequests() {
+        let requestingBytes = 10
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                XCTAssertNotNil(response)
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent)
+                XCTAssertEqual(response?.headers["Content-Range"]?.first, "bytes 0-\(requestingBytes)/\(self.indexHtmlCount)")
+                XCTAssertEqual(response?.headers["Accept-Ranges"]?.first, "bytes")
+                var bodyData = Data()
+                _ = try? response?.readAllData(into: &bodyData)
+                XCTAssertEqual(bodyData.count, requestingBytes + 1)
+                expectation.fulfill()
+            }, headers: ["Range": "bytes=0-\(requestingBytes)"])
+        }
+    }
+
+    func testRangeRequestIsIgnoredOnOptionOff() {
+        performServerTest(router) { expectation in
+            // static server for "/tyui" has the range option off
+            self.performRequest("get", path: "/tyui/index.html", callback: { response in
+                XCTAssertNotNil(response)
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
+                var bodyData = Data()
+                _ = try? response?.readAllData(into: &bodyData)
+                XCTAssertEqual(bodyData.count, self.indexHtmlCount)
+                XCTAssertEqual(response?.headers["Accept-Ranges"]?.first, "none")
+                expectation.fulfill()
+            }, headers: ["Range": "bytes=0-10"])
+        }
+    }
+
+    /// Enable this test when ClientRequests work fine with HEAD method.
+    /// See: [Fix parsing of responses to HEAD requests with non-zero Content-Length](https://github.com/IBM-Swift/Kitura-net/pull/225)
+    func disabled_testRangeRequestIsIgnoredOnNonGetMethod() {
+        performServerTest(router) { expectation in
+            self.performRequest("head", path: "/qwer/index.html", callback: { response in
+                XCTAssertNotNil(response)
+                XCTAssertEqual(response?.headers["Accept-Ranges"]?.first, "bytes")
+                // Range requests should be ignored on non GET method
+                // In this case we expect status code 200, no Content-Range and no body since it is a HEAD request
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
+                XCTAssertNil(response?.headers["Content-Range"])
+                let bodyString = (try? response?.readString()) as? String
+                XCTAssertNil(bodyString)
+                expectation.fulfill()
+            }, headers: ["Range": "bytes=0-10"])
+        }
+    }
+
+    func testDataIsNotCorrupted() {
+        // Corrupted files will have more bytes or less bytes than required
+        // So we check the file is intact after reconstructing it (after various range requests)
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                XCTAssertNotNil(response)
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
+                XCTAssertNil(response?.headers["Content-Range"]?.first)
+                // Original file:
+                var original = Data()
+                _ = try? response?.readAllData(into: &original)
+
+                self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                    XCTAssertNotNil(response)
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent)
+                    XCTAssertEqual(response?.headers["Content-Range"]?.first, "bytes 0-10/\(self.indexHtmlCount)")
+                    // First 11 bytes
+                    var reconstructed = Data()
+                    _ = try? response?.readAllData(into: &reconstructed)
+
+                    self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                        XCTAssertNotNil(response)
+                        XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent)
+                        XCTAssertEqual(response?.headers["Content-Range"]?.first, "bytes 11-\(self.indexHtmlCount-1)/\(self.indexHtmlCount)")
+                        // 12th bytes and later
+                        var part2 = Data()
+                        _ = try? response?.readAllData(into: &part2)
+
+                        // Reconstruct data
+                        reconstructed.append(part2)
+
+                        // Check both datas are the same
+                        XCTAssertEqual(reconstructed.count, original.count)
+                        if reconstructed.count == original.count {
+                            for i in 0..<original.count {
+                                XCTAssertEqual(reconstructed[i], original[i])
+                            }
+                        }
+                    }, headers: ["Range": "bytes=11-"])
+                }, headers: ["Range": "bytes=0-10"])
+                expectation.fulfill()
+            })
+        }
+    }
+
+    #if os(Linux) && !swift(>=3.2)
+    typealias NSTextCheckingResult = TextCheckingResult
+    #endif
+
+    /// Helper function to assert a regex pattern and returns matched groups
+    func assertMatch(_ target: String?, _ pattern: String, matchedGroups: inout [String], file: StaticString = #file, line: UInt = #line) {
+        guard let regex = try? NSRegularExpression(pattern: pattern, options: [])else {
+            return XCTFail("invalid pattern: \(pattern)", file: file, line: line)
+        }
+        guard let target = target else {
+            return XCTFail("target string is nil")
+        }
+        let matches = regex.matches(in: target, options: [], range: NSRange(location: 0, length: target.characters.count))
+        if matches.isEmpty {
+            XCTFail("target string didn't match", file: file, line: line)
+        } else {
+            let match = matches.first!
+            let nsstring = NSString(string: target)
+            for index in 0..<match.numberOfRanges {
+                #if !os(Linux) && !swift(>=3.2)
+                    let range = match.rangeAt(index)
+                #else
+                    let range = match.range(at: index)
+                #endif
+                if  range.location != NSNotFound  &&  range.location != -1 {
+                    matchedGroups.append(nsstring.substring(with: range))
+                }
+            }
+        }
+    }
+
+    func testRangeRequestsWithMultipleRanges() {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                defer {
+                    expectation.fulfill()
+                }
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent)
+
+                // Assert required headers in multipart/bytesranges
+                var capturedGroups: [String] = []
+                XCTAssertEqual(response?.headers["Accept-Ranges"]?.first, "bytes")
+                self.assertMatch(response?.headers["Content-Type"]?.first, "multipart\\/byteranges; boundary=(.+)", matchedGroups: &capturedGroups)
+                XCTAssertFalse(capturedGroups.isEmpty, "No captured groups, body and boundary tests will fail")
+                guard capturedGroups.count > 1 else {
+                    XCTFail("No boundary found in Content-Type header")
+                    return
+                }
+
+                // Assert Content-Range is not present
+                XCTAssertNil(response?.headers["Content-Range"]?.first)
+
+                // Assert body
+                var bodyData = Data()
+                _ = try? response?.readAllData(into: &bodyData)
+                XCTAssertTrue(bodyData.count > 0)
+
+                // Assert body structure (Should be same as a regular multipart body)
+                let bodyParser = MultiPartBodyParser(boundary: capturedGroups[1])
+                guard let parsedBody = bodyParser.parse(bodyData) else {
+                    XCTFail("parsedBody must not be nil")
+                    return
+                }
+                switch parsedBody {
+                case .multipart(let parts):
+                    // Assert each part has the required headers and its data is of the desired length
+                    XCTAssertEqual(parts.count, 2)
+                    XCTAssertEqual(parts[0].headers[.contentRange], "Content-Range: bytes 0-10/\(self.indexHtmlCount)")
+                    XCTAssertEqual(parts[0].headers[.type], "Content-Type: text/html")
+                    let data0 = parts[0].body.asText?.data(using: .utf8)
+                    XCTAssertEqual(data0?.count, 11)
+                    XCTAssertEqual(parts[1].headers[.contentRange], "Content-Range: bytes 20-33/\(self.indexHtmlCount)")
+                    XCTAssertEqual(parts[1].headers[.type], "Content-Type: text/html")
+                    let data1 = parts[1].body.asText?.data(using: .utf8)
+                    XCTAssertEqual(data1?.count, 14)
+                default:
+                    XCTFail("Multipart body was expected \(parsedBody)")
+                }
+            }, headers: ["Range": "bytes=0-10,20-33"])
+        }
     }
 }

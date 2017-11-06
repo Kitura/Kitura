@@ -38,11 +38,15 @@ extension StaticFileServer {
         /// A setter for response headers.
         private let responseHeadersSetter: ResponseHeadersSetter?
 
+        /// Whether accepts range requests or not
+        let acceptRanges: Bool
+
         init(servingFilesPath: String, options: StaticFileServer.Options,
              responseHeadersSetter: ResponseHeadersSetter?) {
             self.possibleExtensions = options.possibleExtensions
             self.serveIndexForDirectory = options.serveIndexForDirectory
             self.redirect = options.redirect
+            self.acceptRanges = options.acceptRanges
             self.servingFilesPath = servingFilesPath
             self.responseHeadersSetter = responseHeadersSetter
         }
@@ -145,16 +149,36 @@ extension StaticFileServer {
             }
 
             do {
+                // At this point only GET or HEAD are expected
+                let method = response.request.serverRequest.method
                 let fileAttributes = try FileManager().attributesOfItem(atPath: filePath)
+                response.headers["Accept-Ranges"] = acceptRanges ? "bytes" : "none"
                 responseHeadersSetter?.setCustomResponseHeaders(response: response,
                                                                 filePath: filePath,
                                                                 fileAttributes: fileAttributes)
-
-                try response.send(fileName: filePath)
+                if acceptRanges,
+                    method == "GET", // As per RFC, Only GET request can be Range Request
+                    let rangeHeader = response.request.headers["Range"],
+                    let fileSize = (fileAttributes[FileAttributeKey.size] as? NSNumber)?.uint64Value,
+                    let rangeHeaderValue = RangeHeader.parse(size: fileSize, headerValue: rangeHeader),
+                    rangeHeaderValue.type == "bytes",
+                    !rangeHeaderValue.ranges.isEmpty {
+                    // Send a partial response
+                    serveNonDirectoryPartialFile(filePath, fileSize: fileSize, ranges: rangeHeaderValue.ranges, response: response)
+                } else {
+                    // Regular request OR Invalid range request OR or fileSize was not available
+                    if method == "HEAD" {
+                        // Send only headers
+                        _ = response.send(status: .OK)
+                    } else {
+                        // Send the entire file
+                        try response.send(fileName: filePath)
+                        response.statusCode = .OK
+                    }
+                }
             } catch {
-                Log.error("serving file at path \(filePath) error: \(error)")
+                Log.error("serving file at path \(filePath), error: \(error)")
             }
-            response.statusCode = .OK
         }
 
         private func isValidFilePath(_ filePath: String) -> Bool {
@@ -166,6 +190,47 @@ extension StaticFileServer {
             #else
                 return  absoluteFilePath!.hasPrefix(absoluteBasePath!)
             #endif
+        }
+
+        private func serveNonDirectoryPartialFile(_ filePath: String, fileSize: UInt64, ranges: [Range<UInt64>], response: RouterResponse) {
+            let contentType =  ContentType.sharedInstance.getContentType(forFileName: filePath)
+            if ranges.count == 1 {
+                let data = FileServer.read(contentsOfFile: filePath, inRange: ranges[0])
+                // Send a single part response
+                response.headers["Content-Type"] =  contentType
+                response.headers["Content-Range"] = "bytes \(ranges[0].lowerBound)-\(ranges[0].upperBound)/\(fileSize)"
+                response.send(data: data ?? Data())
+                response.statusCode = .partialContent
+
+            } else {
+                // Send multi part response
+                let boundary = "KituraBoundary\(UUID().uuidString)" // Maybe a better boundary can be calculated in the future
+                response.headers["Content-Type"] =  "multipart/byteranges; boundary=\(boundary)"
+                var data = Data()
+                ranges.forEach { range in
+                    let fileData = FileServer.read(contentsOfFile: filePath, inRange: range) ?? Data()
+                    var partHeader = "--\(boundary)\r\n"
+                    partHeader += "Content-Range: bytes \(range.lowerBound)-\(range.upperBound)/\(fileSize)\r\n"
+                    partHeader += (contentType == nil ? "" : "Content-Type: \(contentType!)\r\n")
+                    partHeader += "\r\n"
+                    data.append(partHeader.data(using: .utf8)!)
+                    data.append(fileData)
+                    data.append("\r\n".data(using: .utf8)!)
+                }
+                data.append("--\(boundary)--".data(using: .utf8)!)
+                response.send(data: data)
+                response.statusCode = .partialContent
+            }
+        }
+
+        /// Helper function to read bytes (of a given range) of a file into data
+        static func read(contentsOfFile filePath: String, inRange range: Range<UInt64>) -> Data? {
+            let file = FileHandle(forReadingAtPath: filePath)
+            file?.seek(toFileOffset: range.lowerBound)
+            // range is inclusive to make sure to increate upper bound by 1
+            let data = file?.readData(ofLength: range.count + 1)
+            file?.closeFile()
+            return data
         }
     }
 }

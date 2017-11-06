@@ -49,6 +49,7 @@ public class StaticFileServer: RouterMiddleware {
         let redirect: Bool
         let serveIndexForDirectory: Bool
         let cacheOptions: CacheOptions
+        let acceptRanges: Bool
 
         /// Initialize an Options instance.
         ///
@@ -62,11 +63,12 @@ public class StaticFileServer: RouterMiddleware {
         /// "/" when the requested path is a directory.
         /// - Parameter cacheOptions: cache options for StaticFileServer.
         public init(possibleExtensions: [String] = [], serveIndexForDirectory: Bool = true,
-             redirect: Bool = true, cacheOptions: CacheOptions = CacheOptions()) {
+             redirect: Bool = true, cacheOptions: CacheOptions = CacheOptions(), acceptRanges: Bool = true) {
             self.possibleExtensions = possibleExtensions
             self.serveIndexForDirectory = serveIndexForDirectory
             self.redirect = redirect
             self.cacheOptions = cacheOptions
+            self.acceptRanges = acceptRanges
         }
     }
 
