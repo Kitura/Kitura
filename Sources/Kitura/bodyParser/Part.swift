@@ -37,17 +37,19 @@ public struct Part {
     /// The contents of the part.
     public internal(set) var body: ParsedBody = .raw(Data())
 
-    /// Possible header types that can be found in a part of multi-part form
-    /// body.
+    /// Possible header types that can be found in a part of multi-part body.
     public enum HeaderType {
 
-        /// A Content-Disposition header.
+        /// A Content-Disposition header (multipart/form-data bodies).
         case disposition
 
-        /// A Content-Type header.
+        /// A Content-Type header (multipart/form-data bodies).
         case type
 
-        /// A Content-Transfer-Encoding header.
+        /// A Content-Transfer-Encoding header (multipart/form-data bodies).
         case transferEncoding
+
+        /// A Content-Range header (multipart/byteranges bodies).
+        case contentRange
     }
 }
