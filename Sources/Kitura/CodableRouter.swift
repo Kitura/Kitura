@@ -507,7 +507,7 @@ extension Router {
         guard let contentType = request.headers["Content-Type"] else {
             return false
         }
-        return (contentType == "application/json")
+        return (contentType.hasPrefix("application/json"))
     }
 
     private func httpStatusCode(from error: RequestError) -> HTTPStatusCode {
