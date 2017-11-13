@@ -24,7 +24,17 @@ struct RangeHeader {
     let ranges: [Range<UInt64>]
 }
 
+
 extension RangeHeader {
+
+    /// Possible errors thrown by RangeHeader.parse function
+    enum Error: Swift.Error {
+        /// Happens when none of the ranges in Range header was not satisfiable as per RFC 7233 (Section 4.4)
+        case notSatisfiable
+        /// Could not be parsed. Bad sintax
+        case malformed
+    }
+
 
     /// Parse a range header string into a RangeHeader structure.
     /// Implementation based on: [jshttp/range-parser](https://github.com/jshttp/range-parser)
@@ -32,11 +42,11 @@ extension RangeHeader {
     /// - Parameter size: the size of the resource
     /// - Parameter headerValue: the stringn to parse
     ///
-    static func parse(size: UInt64, headerValue: String, shouldCombine: Bool = true) -> RangeHeader? {
+    static func parse(size: UInt64, headerValue: String, shouldCombine: Bool = true) throws -> RangeHeader {
 
         guard let index = headerValue.range(of: "=")?.lowerBound else {
             // malformed
-            return nil
+            throw RangeHeader.Error.malformed
         }
 
         // split the range string
@@ -95,7 +105,7 @@ extension RangeHeader {
 
         guard !ranges.isEmpty else {
             // unsatisifiable
-            return nil
+            throw RangeHeader.Error.notSatisfiable
         }
 
         if shouldCombine {

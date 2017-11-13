@@ -24,23 +24,34 @@ class TestRangeHeaderParser: XCTestCase {
     // https://github.com/jshttp/range-parser/blob/master/test/range-parser.js
 
     func parse(_ size: UInt64, _ headerValue: String, combine: Bool = false) -> RangeHeader? {
-        return RangeHeader.parse(size: size, headerValue: headerValue, shouldCombine: combine)
+        return try? RangeHeader.parse(size: size, headerValue: headerValue, shouldCombine: combine)
+    }
+
+    func assertParseError(_ size: UInt64, _ headerValue: String, error: RangeHeader.Error, combine: Bool = false , file: StaticString = #file, line: UInt = #line) {
+        do {
+            let r = try RangeHeader.parse(size: size, headerValue: headerValue, shouldCombine: combine)
+            XCTFail("Unexpected range. RangeHeader.Error was expected. \(r)", file: file, line: line)
+        } catch (let e as RangeHeader.Error) {
+            XCTAssertEqual(e, error, file: file, line: line)
+        } catch (let e) {
+            XCTFail("Unexpected error. RangeHeader.Error was expected. \(e.localizedDescription)", file: file, line: line)
+        }
     }
 
     func testReturnNilOnMalformedHeader() {
-        XCTAssertNil(parse(200, "malformed"))
+        assertParseError(200, "malformed", error: .malformed)
     }
 
     func testReturnNilOnInvalidRanges() {
-        XCTAssertNil(parse(200, "bytes=500-20"))
-        XCTAssertNil(parse(200, "bytes=500-999"))
-        XCTAssertNil(parse(200, "bytes=500-999,1000-1499"))
+        assertParseError(200, "bytes=500-20", error: .notSatisfiable)
+        assertParseError(200, "bytes=500-999", error: .notSatisfiable)
+        assertParseError(200, "bytes=500-999,1000-1499", error: .notSatisfiable)
     }
 
     func testReturnNilOnInvalidNonDigitsRanges() {
-        XCTAssertNil(parse(200, "bytes=xyz"))
-        XCTAssertNil(parse(200, "bytes=xyz-"))
-        XCTAssertNil(parse(200, "bytes=-xyz"))
+        assertParseError(200, "bytes=xyz", error: .notSatisfiable)
+        assertParseError(200, "bytes=xyz-", error: .notSatisfiable)
+        assertParseError(200, "bytes=-xyz", error: .notSatisfiable)
     }
 
     func testParseString() {

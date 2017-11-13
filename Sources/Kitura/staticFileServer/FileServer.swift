@@ -160,7 +160,7 @@ extension StaticFileServer {
                     method == "GET", // As per RFC, Only GET request can be Range Request
                     let rangeHeader = response.request.headers["Range"],
                     let fileSize = (fileAttributes[FileAttributeKey.size] as? NSNumber)?.uint64Value,
-                    let rangeHeaderValue = RangeHeader.parse(size: fileSize, headerValue: rangeHeader),
+                    let rangeHeaderValue = try? RangeHeader.parse(size: fileSize, headerValue: rangeHeader),
                     rangeHeaderValue.type == "bytes",
                     !rangeHeaderValue.ranges.isEmpty {
                     // Send a partial response
