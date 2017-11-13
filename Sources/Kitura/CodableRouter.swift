@@ -26,22 +26,22 @@ extension Router {
     // MARK: Codable Routing
     
     /**
-     Setup a CodableArrayClosure on the provided route which will be invoked when a request comes to the server.
+     Setup a SimpleCodableClosure on the provided route which will be invoked when a request comes to the server.
      
      ### Usage Example: ###
      ````
      //User is a struct object that conforms to Codable
      router.get("/users") { (respondWith: ([User]?, RequestError?) -> Void) in
-     
+
         ...
 
         respondWith(users, nil)
      }
      ````
      - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
-     - Parameter handler: A CodableArrayClosure that gets invoked when a request comes to the server.
+     - Parameter handler: A SimpleCodableClosure that gets invoked when a request comes to the server.
      */
-    public func get<O: Codable>(_ route: String, handler: @escaping CodableArrayClosure<O>) {
+    public func get<O: Codable>(_ route: String, handler: @escaping SimpleCodableClosure<O>) {
         getSafely(route, handler: handler)
     }
 
@@ -52,9 +52,9 @@ extension Router {
      ````
      //User is a struct object that conforms to Codable
      router.get("/users") { (id: Int, respondWith: (User?, RequestError?) -> Void) in
-     
+
         ...
-     
+
         respondWith(user, nil)
      }
      ````
@@ -385,11 +385,11 @@ extension Router {
     }
 
     // Get
-    fileprivate func getSafely<O: Codable>(_ route: String, handler: @escaping CodableArrayClosure<O>) {
+    fileprivate func getSafely<O: Codable>(_ route: String, handler: @escaping SimpleCodableClosure<O>) {
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request")
             // Define result handler
-            let resultHandler: CodableArrayResultClosure<O> = { result, error in
+            let resultHandler: CodableResultClosure<O> = { result, error in
                 do {
                     if let err = error {
                         let status = self.httpStatusCode(from: err)

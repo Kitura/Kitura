@@ -27,6 +27,7 @@ class TestCodableRouter: KituraTest {
             ("testBasicPost", testBasicPost),
             ("testBasicPostIdentifier", testBasicPostIdentifier),
             ("testBasicGet", testBasicGet),
+            ("testBasicGetArray", testBasicGetArray),
             ("testBasicSingleGet", testBasicSingleGet),
             ("testBasicDelete", testBasicDelete),
             ("testBasicSingleDelete", testBasicSingleDelete),
@@ -68,6 +69,13 @@ class TestCodableRouter: KituraTest {
         init(id: Int?, name: String?) {
             self.id = id
             self.name = name
+        }
+    }
+
+    struct Status: Codable {
+        let description: String
+        init(_ desc: String) {
+            description = desc
         }
     }
 
@@ -168,6 +176,42 @@ class TestCodableRouter: KituraTest {
     }
 
     func testBasicGet() {
+        router.get("/status") { (respondWith: (Status?, RequestError?) -> Void) in
+            print("GET on /status")
+
+            respondWith(Status("GOOD"), nil)
+        }
+
+        performServerTest(router, timeout: 30) { expectation in
+            let expectedStatus = Status("GOOD")
+
+            self.performRequest("get", path: "/status", callback: { response in
+                guard let response = response else {
+                    XCTFail("ERROR!!! ClientRequest response object was nil")
+                    return
+                }
+
+                XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
+                var data = Data()
+                guard let length = try? response.readAllData(into: &data) else {
+                    XCTFail("Error reading response length!")
+                    return
+                }
+
+                XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
+                guard let status = try? JSONDecoder().decode(Status.self, from: data) else {
+                    XCTFail("Could not decode response! Expected response decodable to a Status object, but got \(String(describing: String(data: data, encoding: .utf8)))")
+                    return
+                }
+                // Validate the data we got back from the server
+                XCTAssertEqual(status.description, expectedStatus.description)
+
+                expectation.fulfill()
+            })
+        }
+    }
+
+    func testBasicGetArray() {
         router.get("/users") { (respondWith: ([User]?, RequestError?) -> Void) in
             print("GET on /users")
 
