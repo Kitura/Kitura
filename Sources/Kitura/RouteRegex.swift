@@ -124,7 +124,7 @@ public class RouteRegex {
                 return (true, prefix, ".*", plusQuestStar)
             }
 
-            let range = NSRange(location: 0, length: path.characters.count)
+            let range = NSRange(location: 0, length: path.count)
             let nsPath = NSString(string: path)           // Needed for substring
 
             if let keyMatch = keyRegex.firstMatch(in: path, options: [], range: range) {

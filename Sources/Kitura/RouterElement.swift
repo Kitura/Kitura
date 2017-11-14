@@ -116,7 +116,7 @@ class RouterElement {
         // The pattern is a regular expression that needs to be checked
         let nsPath = NSString(string: path)
 
-        guard let match = regex.firstMatch(in: path, options: [], range: NSRange(location: 0, length: path.characters.count)) else {
+        guard let match = regex.firstMatch(in: path, options: [], range: NSRange(location: 0, length: path.count)) else {
             next()
             return
         }
@@ -148,8 +148,8 @@ class RouterElement {
         if allowPartialMatch {
             matched = pathToMatch.hasPrefix(pattern)
             if matched && pattern != "/" {
-                let patternCount = pattern.characters.count
-                if pathToMatch.characters.count > patternCount {
+                let patternCount = pattern.count
+                if pathToMatch.count > patternCount {
                     matched = pathToMatch[pathToMatch.index(pathToMatch.startIndex, offsetBy: patternCount)] == "/"
                 }
             }
