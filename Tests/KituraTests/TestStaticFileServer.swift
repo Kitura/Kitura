@@ -40,6 +40,7 @@ class TestStaticFileServer: KituraTest {
             ("testAbsoluteRootPath", testAbsoluteRootPath),
             ("testRangeRequests", testRangeRequests),
             ("testRangeRequestIsIgnoredOnOptionOff", testRangeRequestIsIgnoredOnOptionOff),
+            ("testRangeRequestIsIgnoredOnNonGetMethod", testRangeRequestIsIgnoredOnNonGetMethod),
             ("testDataIsNotCorrupted", testDataIsNotCorrupted),
             ("testRangeRequestsWithMultipleRanges", testRangeRequestsWithMultipleRanges)
         ]
@@ -263,9 +264,7 @@ class TestStaticFileServer: KituraTest {
         }
     }
 
-    /// Enable this test when ClientRequests work fine with HEAD method.
-    /// See: [Fix parsing of responses to HEAD requests with non-zero Content-Length](https://github.com/IBM-Swift/Kitura-net/pull/225)
-    func disabled_testRangeRequestIsIgnoredOnNonGetMethod() {
+    func testRangeRequestIsIgnoredOnNonGetMethod() {
         performServerTest(router) { expectation in
             self.performRequest("head", path: "/qwer/index.html", callback: { response in
                 XCTAssertNotNil(response)

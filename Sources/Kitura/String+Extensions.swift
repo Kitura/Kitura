@@ -33,7 +33,11 @@ extension String {
 
             let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
             if let decodedValue = valueReplacingPlus.removingPercentEncoding {
-                result[key] = decodedValue
+                if let value = result[key] {
+                    result[key] = "\(value),\(decodedValue)"
+                } else {
+                    result[key] = decodedValue
+                }
             } else {
                 Log.warning("Unable to decode query parameter \(key)")
                 result[key] = valueReplacingPlus

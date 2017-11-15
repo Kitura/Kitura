@@ -110,7 +110,7 @@ class TestCodableRouter: KituraTest {
 
                 expectation.fulfill()
             }, requestModifier: { request in
-                request.headers["Content-Type"] = "application/json"
+                request.headers["Content-Type"] = "application/json; charset=utf-8"
                 request.write(from: userData)
             })
         }
@@ -161,7 +161,7 @@ class TestCodableRouter: KituraTest {
                 
                 expectation.fulfill()
             }, requestModifier: { request in
-                request.headers["Content-Type"] = "application/json"
+                request.headers["Content-Type"] = "application/json; charset=utf-8"
                 request.write(from: userData)
             })
         }
@@ -354,7 +354,7 @@ class TestCodableRouter: KituraTest {
 
                 expectation.fulfill()
             }, requestModifier: { request in
-                request.headers["Content-Type"] = "application/json"
+                request.headers["Content-Type"] = "application/json; charset=utf-8"
                 request.write(from: userData)
             })
         }
@@ -410,7 +410,7 @@ class TestCodableRouter: KituraTest {
 
                 expectation.fulfill()
             }, requestModifier: { request in
-                request.headers["Content-Type"] = "application/json"
+                request.headers["Content-Type"] = "application/json; charset=utf-8"
                 request.write(from: userData)
             })
         }
@@ -495,7 +495,7 @@ class TestCodableRouter: KituraTest {
 
                 expectation.fulfill()
             }, requestModifier: { request in
-                request.headers["Content-Type"] = "application/json"
+                request.headers["Content-Type"] = "application/json; charset=utf-8"
                 request.write(from: userData)
             })
         }
@@ -537,7 +537,7 @@ class TestCodableRouter: KituraTest {
 
                 expectation.fulfill()
             }, requestModifier: { request in
-                request.headers["Content-Type"] = "application/json"
+                request.headers["Content-Type"] = "application/json; charset=utf-8"
                 request.write(from: userData)
             })
         }
@@ -574,7 +574,7 @@ class TestCodableRouter: KituraTest {
 
                 expectation.fulfill()
             }, requestModifier: { request in
-                request.headers["Content-Type"] = "application/json"
+                request.headers["Content-Type"] = "application/json; charset=utf-8"
                 request.write(from: userData)
             })
         }
