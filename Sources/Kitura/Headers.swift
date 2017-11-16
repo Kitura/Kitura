@@ -143,7 +143,7 @@ extension Headers {
             return
         }
 
-        let filePaths = filePath.characters.split {$0 == "/"}.map(String.init)
+        let filePaths = filePath.split {$0 == "/"}.map(String.init)
         guard let fileName = filePaths.last else {
             return
         }

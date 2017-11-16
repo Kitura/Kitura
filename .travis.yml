@@ -25,9 +25,9 @@ matrix:
       dist: trusty
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=ubuntu:16.04 SWIFT_SNAPSHOT=4.0
+      env: DOCKER_IMAGE=ubuntu:16.04
     - os: osx
-      osx_image: xcode9
+      osx_image: xcode9.1
       sudo: required
 
 script:

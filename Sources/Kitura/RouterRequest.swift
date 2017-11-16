@@ -204,7 +204,7 @@ public class RouterRequest {
             return nil
         }
 
-        let headerValues = acceptHeaderValue.characters.split(separator: ",").map(String.init)
+        let headerValues = acceptHeaderValue.split(separator: ",").map(String.init)
         // special header value that matches all types
         let matchAllPattern: String
         if header.caseInsensitiveCompare("Accept") == .orderedSame {
@@ -270,7 +270,7 @@ private class Cookies {
             var value = cookie[range.upperBound...].trimmingCharacters(in: .whitespaces)
         #endif
 
-        let chars = value.characters
+        let chars = value
         if chars.count >= 2 && chars.first == "\"" && chars.last == "\"" {
             // unquote value
             value.remove(at: value.startIndex)
