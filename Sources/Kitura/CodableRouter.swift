@@ -26,7 +26,7 @@ extension Router {
     // MARK: Codable Routing
 
     /**
-     Setup a SimpleCodableClosure on the provided route which will be invoked when a request comes to the server.
+     Setup a CodableArrayClosure on the provided route which will be invoked when a request comes to the server.
 
      ### Usage Example: ###
      ````
@@ -36,6 +36,26 @@ extension Router {
         ...
 
         respondWith(users, nil)
+     }
+     ````
+     - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
+     - Parameter handler: A CodableArrayClosure that gets invoked when a request comes to the server.
+     */
+    public func get<O: Codable>(_ route: String, handler: @escaping CodableArrayClosure<O>) {
+        getSafely(route, handler: handler)
+    }
+
+    /**
+     Setup a SimpleCodableClosure on the provided route which will be invoked when a request comes to the server.
+
+     ### Usage Example: ###
+     ````
+     //Status is a struct object that conforms to Codable
+     router.get("/status") { (respondWith: (Status?, RequestError?) -> Void) in
+
+        ...
+
+        respondWith(status, nil)
      }
      ````
      - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
