@@ -58,7 +58,7 @@ extension StaticFileServer {
             }
             var matchedPath = request.matchedPath
             if matchedPath.hasSuffix("*") {
-                matchedPath = String(matchedPath.characters.dropLast())
+                matchedPath = String(matchedPath.dropLast())
             }
             if !matchedPath.hasSuffix("/") {
                 matchedPath += "/"
@@ -66,7 +66,7 @@ extension StaticFileServer {
 
             if requestPath.hasPrefix(matchedPath) {
                 filePath += "/"
-                let url = String(requestPath.characters.dropFirst(matchedPath.characters.count))
+                let url = String(requestPath.dropFirst(matchedPath.count))
                 if let decodedURL = url.removingPercentEncoding {
                     filePath += decodedURL
                 } else {

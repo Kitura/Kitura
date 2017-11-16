@@ -28,7 +28,7 @@ extension StaticFileServer {
         static func getAbsolutePath(for path: String) -> String {
             var path = path
             if path.hasSuffix(separator) && path != separator {
-                path = String(path.characters.dropLast())
+                path = String(path.dropLast())
             }
 
             // If we received a path with a tilde (~) in the front, expand it.
@@ -69,7 +69,7 @@ extension StaticFileServer {
             let currentFilePath = #file
 
             var pathComponents =
-                currentFilePath.characters.split(separator: separatorCharacter).map(String.init)
+                currentFilePath.split(separator: separatorCharacter).map(String.init)
             let numberOfComponentsFromKituraRepositoryDirectoryToThisFile = 4
 
             guard pathComponents.count >= numberOfComponentsFromKituraRepositoryDirectoryToThisFile else {

@@ -74,13 +74,13 @@ public class ContentType {
 
         let backwards = String.CompareOptions.backwards
         if let lastSlash = fileName.range(of: "/", options: backwards) {
-            lastPathElemRange = fileName.index(after: lastSlash.lowerBound)..<fileName.characters.endIndex
+            lastPathElemRange = fileName.index(after: lastSlash.lowerBound)..<fileName.endIndex
         } else {
-            lastPathElemRange = fileName.characters.startIndex..<fileName.characters.endIndex
+            lastPathElemRange = fileName.startIndex..<fileName.endIndex
         }
 
         if let lastDot = fileName.range(of: ".", options: backwards, range: lastPathElemRange) {
-            extRange = fileName.index(after: lastDot.lowerBound)..<fileName.characters.endIndex
+            extRange = fileName.index(after: lastDot.lowerBound)..<fileName.endIndex
         } else {
             // No "extension", use the entire last path element as the "extension"
             extRange = lastPathElemRange
