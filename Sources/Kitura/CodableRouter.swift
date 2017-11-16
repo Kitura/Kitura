@@ -404,7 +404,7 @@ extension Router {
         }
     }
 
-    // Get
+    // Get single
     fileprivate func getSafely<O: Codable>(_ route: String, handler: @escaping SimpleCodableClosure<O>) {
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request")
@@ -429,7 +429,32 @@ extension Router {
         }
     }
 
-     // GET single element
+    // Get array
+    fileprivate func getSafely<O: Codable>(_ route: String, handler: @escaping CodableArrayClosure<O>) {
+        get(route) { request, response, next in
+            Log.verbose("Received GET (plural) type-safe request")
+            // Define result handler
+            let resultHandler: CodableArrayResultClosure<O> = { result, error in
+                do {
+                    if let err = error {
+                        let status = self.httpStatusCode(from: err)
+                        response.status(status)
+                    } else {
+                        let encoded = try JSONEncoder().encode(result)
+                        response.status(.OK)
+                        response.send(data: encoded)
+                    }
+                } catch {
+                    // Http 500 error
+                    response.status(.internalServerError)
+                }
+                next()
+            }
+            handler(resultHandler)
+        }
+    }
+
+    // GET single identified element
     fileprivate func getSafely<Id: Identifier, O: Codable>(_ route: String, handler: @escaping IdentifierSimpleCodableClosure<Id, O>) {
         if parameterIsPresent(in: route) {
             return
