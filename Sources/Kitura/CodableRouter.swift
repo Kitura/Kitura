@@ -22,17 +22,17 @@ import KituraContracts
 // Codable router
 
 extension Router {
-    
+
     // MARK: Codable Routing
-    
+
     /**
      Setup a CodableArrayClosure on the provided route which will be invoked when a request comes to the server.
-     
+
      ### Usage Example: ###
      ````
      //User is a struct object that conforms to Codable
      router.get("/users") { (respondWith: ([User]?, RequestError?) -> Void) in
-     
+
         ...
 
         respondWith(users, nil)
@@ -46,15 +46,35 @@ extension Router {
     }
 
     /**
+     Setup a SimpleCodableClosure on the provided route which will be invoked when a request comes to the server.
+
+     ### Usage Example: ###
+     ````
+     //Status is a struct object that conforms to Codable
+     router.get("/status") { (respondWith: (Status?, RequestError?) -> Void) in
+
+        ...
+
+        respondWith(status, nil)
+     }
+     ````
+     - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
+     - Parameter handler: A SimpleCodableClosure that gets invoked when a request comes to the server.
+     */
+    public func get<O: Codable>(_ route: String, handler: @escaping SimpleCodableClosure<O>) {
+        getSafely(route, handler: handler)
+    }
+
+    /**
      Setup a IdentifierSimpleCodableClosure on the provided route which will be invoked when a request comes to the server.
-     
+
      ### Usage Example: ###
      ````
      //User is a struct object that conforms to Codable
      router.get("/users") { (id: Int, respondWith: (User?, RequestError?) -> Void) in
-     
+
         ...
-     
+
         respondWith(user, nil)
      }
      ````
@@ -67,13 +87,13 @@ extension Router {
 
     /**
      Setup a NonCodableClosure on the provided route which will be invoked when a request comes to the server.
-     
+
      ### Usage Example: ###
      ````
      router.delete("/users") { (respondWith: (RequestError?) -> Void) in
-     
+
         ...
-     
+
         respondWith(nil)
      }
      ````
@@ -86,13 +106,13 @@ extension Router {
 
     /**
      Setup a IdentifierNonCodableClosure on the provided route which will be invoked when a request comes to the server.
-     
+
      ### Usage Example: ###
      ````
      router.delete("/users") { (id: Int, respondWith: (RequestError?) -> Void) in
-     
+
         ...
-     
+
         respondWith(nil)
      }
      ````
@@ -102,18 +122,18 @@ extension Router {
     public func delete<Id: Identifier>(_ route: String, handler: @escaping IdentifierNonCodableClosure<Id>) {
         deleteSafely(route, handler: handler)
     }
-    
+
     /**
      Setup a CodableClosure on the provided route which will be invoked when a POST request comes to the server.
      In this scenario, the ID (i.e. unique identifier) is a field in the Codable instance.
-          
+
      ### Usage Example: ###
      ````
      //User is a struct object that conforms to Codable
      router.post("/users") { (user: User, respondWith: (User?, RequestError?) -> Void) in
-     
+
         ...
-     
+
         respondWith(user, nil)
      }
      ````
@@ -123,19 +143,19 @@ extension Router {
     public func post<I: Codable, O: Codable>(_ route: String, handler: @escaping CodableClosure<I, O>) {
         postSafely(route, handler: handler)
     }
-    
+
     /**
      Setup a CodableIdentifierClosure on the provided route which will be invoked when a POST request comes to the server.
      In this scenario, the ID (i.e. unique identifier) for the Codable instance is a separate field (which is sent back to the client
      in the location HTTP header).
-          
+
      ### Usage Example: ###
      ````
      //User is a struct object that conforms to Codable
      router.post("/users") { (user: User, respondWith: (Int?, User?, RequestError?) -> Void) in
-          
+
         ...
-     
+
         respondWith(id, user, nil)
      }
      ````
@@ -148,14 +168,14 @@ extension Router {
 
     /**
      Setup a IdentifierCodableClosure on the provided route which will be invoked when a request comes to the server.
-     
+
      ### Usage Example: ###
      ````
      //User is a struct object that conforms to Codable
      router.put("/users") { (id: Int, user: User, respondWith: (User?, RequestError?) -> Void) in
-     
+
         ...
-     
+
         respondWith(user, nil)
      }
      ````
@@ -168,15 +188,15 @@ extension Router {
 
     /**
      Setup a IdentifierCodableClosure on the provided route which will be invoked when a request comes to the server.
-     
+
      ### Usage Example: ###
      ````
      //User is a struct object that conforms to Codable
      //OptionalUser is a struct object that conforms to Codable where all properties are optional
      router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?, RequestError?) -> Void) -> Void in
-     
+
         ...
-     
+
         respondWith(user, nil)
      }
      ````
@@ -233,7 +253,7 @@ extension Router {
             }
         }
     }
-    
+
     // POST
     fileprivate func postSafelyWithId<I: Codable, Id: Identifier, O: Codable>(_ route: String, handler: @escaping CodableIdentifierClosure<I, Id, O>) {
         post(route) { request, response, next in
@@ -251,7 +271,7 @@ extension Router {
             do {
                 // Process incoming data from client
                 let param = try request.read(as: I.self)
-                
+
                 // Define handler to process result from application
                 let resultHandler: IdentifierCodableResultClosure<Id, O> = { id, result, error in
                     do {
@@ -264,7 +284,7 @@ extension Router {
                                 response.status(.internalServerError)
                                 next()
                                 return
-                            }                            
+                            }
                             let encoded = try JSONEncoder().encode(result)
                             response.status(.created)
                             response.headers["Location"] = String(id.value)
@@ -384,7 +404,32 @@ extension Router {
         }
     }
 
-    // Get
+    // Get single
+    fileprivate func getSafely<O: Codable>(_ route: String, handler: @escaping SimpleCodableClosure<O>) {
+        get(route) { request, response, next in
+            Log.verbose("Received GET (single no-identifier) type-safe request")
+            // Define result handler
+            let resultHandler: CodableResultClosure<O> = { result, error in
+                do {
+                    if let err = error {
+                        let status = self.httpStatusCode(from: err)
+                        response.status(status)
+                    } else {
+                        let encoded = try JSONEncoder().encode(result)
+                        response.status(.OK)
+                        response.send(data: encoded)
+                    }
+                } catch {
+                    // Http 500 error
+                    response.status(.internalServerError)
+                }
+                next()
+            }
+            handler(resultHandler)
+        }
+    }
+
+    // Get array
     fileprivate func getSafely<O: Codable>(_ route: String, handler: @escaping CodableArrayClosure<O>) {
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request")
@@ -409,13 +454,13 @@ extension Router {
         }
     }
 
-     // GET single element
+    // GET single identified element
     fileprivate func getSafely<Id: Identifier, O: Codable>(_ route: String, handler: @escaping IdentifierSimpleCodableClosure<Id, O>) {
         if parameterIsPresent(in: route) {
             return
         }
         get(join(path: route, with: ":id")) { request, response, next in
-            Log.verbose("Received GET (singular) type-safe request")
+            Log.verbose("Received GET (singular with identifier) type-safe request")
             do {
                 // Define result handler
                 let resultHandler: CodableResultClosure<O> = { result, error in
