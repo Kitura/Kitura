@@ -1238,7 +1238,7 @@ class TestResponse: KituraTest {
 
         router.post("/bodytesthardway") { request, response, next in
             let body = try request.readString()
-            response.status(.OK).send("Read \(body?.characters.count ?? 0) bytes")
+            response.status(.OK).send("Read \(body?.count ?? 0) bytes")
             next()
         }
 

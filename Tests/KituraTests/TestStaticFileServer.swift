@@ -337,7 +337,7 @@ class TestStaticFileServer: KituraTest {
         guard let target = target else {
             return XCTFail("target string is nil")
         }
-        let matches = regex.matches(in: target, options: [], range: NSRange(location: 0, length: target.characters.count))
+        let matches = regex.matches(in: target, options: [], range: NSRange(location: 0, length: target.count))
         if matches.isEmpty {
             XCTFail("target string didn't match", file: file, line: line)
         } else {
