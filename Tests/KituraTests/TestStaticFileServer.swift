@@ -42,7 +42,10 @@ class TestStaticFileServer: KituraTest {
             ("testRangeRequestIsIgnoredOnOptionOff", testRangeRequestIsIgnoredOnOptionOff),
             ("testRangeRequestIsIgnoredOnNonGetMethod", testRangeRequestIsIgnoredOnNonGetMethod),
             ("testDataIsNotCorrupted", testDataIsNotCorrupted),
-            ("testRangeRequestsWithMultipleRanges", testRangeRequestsWithMultipleRanges)
+            ("testRangeRequestsWithMultipleRanges", testRangeRequestsWithMultipleRanges),
+            ("testRangeRequestWithNotSatisfiableRange", testRangeRequestWithNotSatisfiableRange),
+            ("testRangeRequestWithSintacticallyInvalidRange", testRangeRequestWithSintacticallyInvalidRange),
+            ("testRangeRequestsWithLargeLastBytePos", testRangeRequestsWithLargeLastBytePos)
         ]
     }
 
@@ -241,11 +244,28 @@ class TestStaticFileServer: KituraTest {
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent)
                 XCTAssertEqual(response?.headers["Content-Range"]?.first, "bytes 0-\(requestingBytes)/\(self.indexHtmlCount)")
                 XCTAssertEqual(response?.headers["Accept-Ranges"]?.first, "bytes")
+                XCTAssertEqual(response?.headers["Content-Length"]?.first, "11")
                 var bodyData = Data()
                 _ = try? response?.readAllData(into: &bodyData)
                 XCTAssertEqual(bodyData.count, requestingBytes + 1)
                 expectation.fulfill()
             }, headers: ["Range": "bytes=0-\(requestingBytes)"])
+        }
+    }
+
+    func testRangeRequestsWithLargeLastBytePos() {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                XCTAssertNotNil(response)
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent)
+                XCTAssertEqual(response?.headers["Content-Range"]?.first, "bytes 2-53/54")
+                XCTAssertEqual(response?.headers["Accept-Ranges"]?.first, "bytes")
+                XCTAssertEqual(response?.headers["Content-Length"]?.first, "52")
+                var bodyData = Data()
+                _ = try? response?.readAllData(into: &bodyData)
+                XCTAssertEqual(bodyData.count, 52)
+                expectation.fulfill()
+            }, headers: ["Range": "bytes=2-100"])
         }
     }
 
@@ -404,6 +424,32 @@ class TestStaticFileServer: KituraTest {
                     XCTFail("Multipart body was expected \(parsedBody)")
                 }
             }, headers: ["Range": "bytes=0-10,20-33"])
+        }
+    }
+
+    func testRangeRequestWithNotSatisfiableRange() {
+        /// when the first- byte-pos of the range is greater than the current length
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                XCTAssertNotNil(response)
+                XCTAssertEqual(response?.headers["Accept-Ranges"]?.first, "bytes")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.requestedRangeNotSatisfiable)
+                XCTAssertEqual(response?.headers["Content-Range"]?.first, "bytes */54")
+                expectation.fulfill()
+            }, headers: ["Range": "bytes=54-55"])
+        }
+    }
+
+    func testRangeRequestWithSintacticallyInvalidRange() {
+        /// when the first- byte-pos of the range is greater than the current length
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                XCTAssertNotNil(response)
+                XCTAssertEqual(response?.headers["Accept-Ranges"]?.first, "bytes")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
+                XCTAssertNil(response?.headers["Content-Range"]?.first)
+                expectation.fulfill()
+            }, headers: ["Range": "asdf"])
         }
     }
 }

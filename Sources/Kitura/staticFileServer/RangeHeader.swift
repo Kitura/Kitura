@@ -35,6 +35,15 @@ extension RangeHeader {
         case malformed
     }
 
+    /// Check if header is a byte range header
+    static func isBytesRangeHeader(_ rangeHeaderValue: String) -> Bool {
+        /// Regular expression for identifying a bytes Range header.
+        let bytesRangePattern = "^ *bytes="
+        let regex = try! NSRegularExpression(pattern: bytesRangePattern, options: [])
+        let matches = regex.matches(in: rangeHeaderValue, options: [], range: NSRange(location: 0, length: rangeHeaderValue.count))
+        return !matches.isEmpty
+    }
+
 
     /// Parse a range header string into a RangeHeader structure.
     /// Implementation based on: [jshttp/range-parser](https://github.com/jshttp/range-parser)

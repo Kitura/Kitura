@@ -149,24 +149,32 @@ extension StaticFileServer {
             }
 
             do {
+                let fileAttributes = try FileManager().attributesOfItem(atPath: filePath)
+
                 // At this point only GET or HEAD are expected
                 let method = response.request.serverRequest.method
-                let fileAttributes = try FileManager().attributesOfItem(atPath: filePath)
                 response.headers["Accept-Ranges"] = acceptRanges ? "bytes" : "none"
                 responseHeadersSetter?.setCustomResponseHeaders(response: response,
                                                                 filePath: filePath,
                                                                 fileAttributes: fileAttributes)
+                // Check headers to see if it is a Range request
                 if acceptRanges,
                     method == "GET", // As per RFC, Only GET request can be Range Request
                     let rangeHeader = response.request.headers["Range"],
-                    let fileSize = (fileAttributes[FileAttributeKey.size] as? NSNumber)?.uint64Value,
-                    let rangeHeaderValue = try? RangeHeader.parse(size: fileSize, headerValue: rangeHeader),
-                    rangeHeaderValue.type == "bytes",
-                    !rangeHeaderValue.ranges.isEmpty {
-                    // Send a partial response
-                    serveNonDirectoryPartialFile(filePath, fileSize: fileSize, ranges: rangeHeaderValue.ranges, response: response)
+                    RangeHeader.isBytesRangeHeader(rangeHeader),
+                    let fileSize = (fileAttributes[FileAttributeKey.size] as? NSNumber)?.uint64Value {
+                    // At this point it looks like the client requested a Range Request
+                    if let rangeHeaderValue = try? RangeHeader.parse(size: fileSize, headerValue: rangeHeader),
+                        rangeHeaderValue.type == "bytes",
+                        !rangeHeaderValue.ranges.isEmpty {
+                        // Send a partial response
+                        serveNonDirectoryPartialFile(filePath, fileSize: fileSize, ranges: rangeHeaderValue.ranges, response: response)
+                    } else {
+                        // Send not satisfiable response
+                        serveNotSatisfiable(filePath, fileSize: fileSize, response: response)
+                    }
                 } else {
-                    // Regular request OR Invalid range request OR or fileSize was not available
+                    // Regular request OR Syntactically invalid range request OR fileSize was not available
                     if method == "HEAD" {
                         // Send only headers
                         _ = response.send(status: .OK)
@@ -190,6 +198,11 @@ extension StaticFileServer {
             #else
                 return  absoluteFilePath!.hasPrefix(absoluteBasePath!)
             #endif
+        }
+
+        private func serveNotSatisfiable(_ filePath: String, fileSize: UInt64, response: RouterResponse) {
+            response.headers["Content-Range"] = "bytes */\(fileSize)"
+            _ = response.send(status: .requestedRangeNotSatisfiable)
         }
 
         private func serveNonDirectoryPartialFile(_ filePath: String, fileSize: UInt64, ranges: [Range<UInt64>], response: RouterResponse) {

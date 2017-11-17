@@ -38,6 +38,14 @@ class TestRangeHeaderParser: XCTestCase {
         }
     }
 
+    func testIsBytesRangeHeader() {
+        XCTAssertTrue(RangeHeader.isBytesRangeHeader("bytes=0-3"))
+        XCTAssertTrue(RangeHeader.isBytesRangeHeader("bytes=0-"))
+        XCTAssertTrue(RangeHeader.isBytesRangeHeader("bytes=-3"))
+        XCTAssertFalse(RangeHeader.isBytesRangeHeader("bytes"))
+        XCTAssertFalse(RangeHeader.isBytesRangeHeader("items=30-50"))
+    }
+
     func testReturnNilOnMalformedHeader() {
         assertParseError(200, "malformed", error: .malformed)
     }
