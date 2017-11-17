@@ -407,7 +407,7 @@ extension Router {
     // Get single
     fileprivate func getSafely<O: Codable>(_ route: String, handler: @escaping SimpleCodableClosure<O>) {
         get(route) { request, response, next in
-            Log.verbose("Received GET (plural) type-safe request")
+            Log.verbose("Received GET (single no-identifier) type-safe request")
             // Define result handler
             let resultHandler: CodableResultClosure<O> = { result, error in
                 do {
@@ -460,7 +460,7 @@ extension Router {
             return
         }
         get(join(path: route, with: ":id")) { request, response, next in
-            Log.verbose("Received GET (singular) type-safe request")
+            Log.verbose("Received GET (singular with identifier) type-safe request")
             do {
                 // Define result handler
                 let resultHandler: CodableResultClosure<O> = { result, error in
