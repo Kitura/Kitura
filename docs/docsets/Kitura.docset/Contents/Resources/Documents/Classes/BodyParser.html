@@ -166,7 +166,7 @@
 
               </div>
               </div>
-            <p>The BodyParser parses the body of the request prior to sending it to the handler routine. It reads the <a href="https://ibm-swift.github.io/Kitura/Classes/ContentType.html">ContentType</a> of the message and populate the RouterRequest body field with a <a href="https://ibm-swift.github.io/Kitura/Enums/ParsedBody.html">ParsedBody</a> enumeration (e.g. json, raw, text, urlEncoded). In order for the BodyParser to be used it must first be registered with any routes that are interested in the ParsedBody payload. The example below registers all routes to the BodyParser middleware.</p>
+            <p>The BodyParser parses the body of the request prior to sending it to the handler. It reads the <a href="https://ibm-swift.github.io/Kitura/Classes/ContentType.html">ContentType</a> of the message and populates the RouterRequest body field with a <a href="https://ibm-swift.github.io/Kitura/Enums/ParsedBody.html">ParsedBody</a> enumeration (e.g. json, raw, text, urlEncoded). In order for the BodyParser to be used it must first be registered with any routes that are interested in the ParsedBody payload. The example below registers all routes to the BodyParser middleware.</p>
 
             <pre class="highlight"><code><span class="kd">router</span> <span class="kd">.all</span><span class="p">(</span><span class="n">"/*"</span>, <span class="nv">middleware</span><span class="p">:</span> <span class="kt">BodyParser()</span><span class="p">)</span></code></pre>
 
