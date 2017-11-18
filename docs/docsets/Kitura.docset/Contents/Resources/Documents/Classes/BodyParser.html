@@ -164,10 +164,10 @@
                 <div class="language">
                   <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">BodyParser</span><span class="p">:</span> <span class="kt"><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></span></code></pre>
 
-                </div>
               </div>
-            <p>Router middleware for parsing the body of the request.</p>
-
+              </div>
+            <p>The BodyParser parses the body of the request prior to sending it to the handler routine.</p>
+            <p>It will read the <a href="https://ibm-swift.github.io/Kitura/Classes/ContentType.html">ContentType</a> of the message and populate the RouterRequest body field with a ParsedBody enumeration (e.g. json, raw, text). In versions of Kitura prior to 1.7.x.x the BodyParser had to be registered to routes that wanted to use its payload information. Later versions of Kitura have this registered on all routes by default</p>
           </div>
         </section>
 
