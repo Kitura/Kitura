@@ -89,7 +89,7 @@ class TestRouteRegex: KituraTest {
         (regex, isSimpleString, strings) = RouteRegex.sharedInstance.buildRegex(fromPattern: "/test/:id", allowPartialMatch: true)
         path = "/test/123/hello/world"
         XCTAssertNotNil(regex)
-        range = regex!.rangeOfFirstMatch(in: path, options: [], range: NSMakeRange(0, path.characters.count))
+        range = regex!.rangeOfFirstMatch(in: path, options: [], range: NSMakeRange(0, path.count))
 
         XCTAssertEqual(regex!.pattern, "^/test/(?:([^/]+?))(?:/(?=$))?(?=/|$)")
         XCTAssertFalse(isSimpleString)
@@ -374,7 +374,7 @@ class TestRouteRegex: KituraTest {
                 do {
                     try response?.readAllData(into: &data)
                     let dict = try TestRouteRegex.decoder.decode([String: String].self, from: data)
-                    XCTAssertEqual(dict["id"], String(mountpath.characters.dropFirst()))
+                    XCTAssertEqual(dict["id"], String(mountpath.dropFirst()))
 
                 } catch {
                     XCTFail("Unable to read response body")
