@@ -24,14 +24,13 @@ struct RangeHeader {
     let ranges: [Range<UInt64>]
 }
 
-
 extension RangeHeader {
 
     /// Possible errors thrown by RangeHeader.parse function
     enum Error: Swift.Error {
         /// Happens when none of the ranges in Range header was not satisfiable as per RFC 7233 (Section 4.4)
         case notSatisfiable
-        /// Could not be parsed. Bad sintax
+        /// Could not be parsed. Bad syntax
         case malformed
     }
 
@@ -43,7 +42,6 @@ extension RangeHeader {
         let matches = regex.matches(in: rangeHeaderValue, options: [], range: NSRange(location: 0, length: rangeHeaderValue.count))
         return !matches.isEmpty
     }
-
 
     /// Parse a range header string into a RangeHeader structure.
     /// Implementation based on: [jshttp/range-parser](https://github.com/jshttp/range-parser)

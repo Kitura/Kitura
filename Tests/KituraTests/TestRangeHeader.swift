@@ -20,6 +20,28 @@ import XCTest
 
 class TestRangeHeaderParser: XCTestCase {
 
+    static var allTests: [(String, (TestRangeHeaderParser) -> () throws -> Void)] {
+        return [
+            ("testIsBytesRangeHeader", testIsBytesRangeHeader),
+            ("testReturnNilOnMalformedHeader", testReturnNilOnMalformedHeader),
+            ("testReturnNilOnInvalidRanges", testReturnNilOnInvalidRanges),
+            ("testReturnNilOnInvalidNonDigitsRanges", testReturnNilOnInvalidNonDigitsRanges),
+            ("testParseString", testParseString),
+            ("testShouldCapEndAtSize", testShouldCapEndAtSize),
+            ("testShouldParseNormalString", testShouldParseNormalString),
+            ("testShouldParseStringWithOnlyEnd", testShouldParseStringWithOnlyEnd),
+            ("testShouldParseStringWithOnlyStart", testShouldParseStringWithOnlyStart),
+            ("testShouldParseWithStartBytesEqualtToZero", testShouldParseWithStartBytesEqualtToZero),
+            ("testShouldParseStringWithBytesEqualZeroZero", testShouldParseStringWithBytesEqualZeroZero),
+            ("testShouldParseStringAskingForLastByte", testShouldParseStringAskingForLastByte),
+            ("testShouldParseStringWithMultipleRanges", testShouldParseStringWithMultipleRanges),
+            ("testShouldParseStringWithSomeInvalidRanges", testShouldParseStringWithSomeInvalidRanges),
+            ("testShouldParseNonBytesRange", testShouldParseNonBytesRange),
+            ("testShouldCombineOverlappingRanges", testShouldCombineOverlappingRanges),
+            ("testShouldCombineOverlappingRangesAndRetainOriginalOrder", testShouldCombineOverlappingRangesAndRetainOriginalOrder),
+        ]
+    }
+
     // Test cases based on from:
     // https://github.com/jshttp/range-parser/blob/master/test/range-parser.js
 

@@ -39,13 +39,17 @@ class TestStaticFileServer: KituraTest {
             ("testAbsolutePathFunction", testAbsolutePathFunction),
             ("testAbsoluteRootPath", testAbsoluteRootPath),
             ("testRangeRequests", testRangeRequests),
+            ("testRangeRequestsWithLargeLastBytePos", testRangeRequestsWithLargeLastBytePos),
             ("testRangeRequestIsIgnoredOnOptionOff", testRangeRequestIsIgnoredOnOptionOff),
             ("testRangeRequestIsIgnoredOnNonGetMethod", testRangeRequestIsIgnoredOnNonGetMethod),
             ("testDataIsNotCorrupted", testDataIsNotCorrupted),
             ("testRangeRequestsWithMultipleRanges", testRangeRequestsWithMultipleRanges),
             ("testRangeRequestWithNotSatisfiableRange", testRangeRequestWithNotSatisfiableRange),
             ("testRangeRequestWithSintacticallyInvalidRange", testRangeRequestWithSintacticallyInvalidRange),
-            ("testRangeRequestsWithLargeLastBytePos", testRangeRequestsWithLargeLastBytePos)
+            ("testRangeRequestWithIfRangeHeaderWithETag", testRangeRequestWithIfRangeHeaderWithETag),
+            ("testRangeRequestWithIfRangeHeaderWithOldETag", testRangeRequestWithIfRangeHeaderWithOldETag),
+            ("testRangeRequestWithIfRangeHeaderAsLastModified", testRangeRequestWithIfRangeHeaderAsLastModified),
+            ("testRangeRequestWithIfRangeHeaderAsOldLastModified", testRangeRequestWithIfRangeHeaderAsOldLastModified),
         ]
     }
 
@@ -441,7 +445,6 @@ class TestStaticFileServer: KituraTest {
     }
 
     func testRangeRequestWithSintacticallyInvalidRange() {
-        /// when the first- byte-pos of the range is greater than the current length
         performServerTest(router) { expectation in
             self.performRequest("get", path: "/qwer/index.html", callback: { response in
                 XCTAssertNotNil(response)
@@ -515,7 +518,7 @@ class TestStaticFileServer: KituraTest {
     func testRangeRequestWithIfRangeHeaderAsOldLastModified() {
         // Range request with If-Range with etag
         performServerTest(router) { expectation in
-            // if last-modified is NOT the same then the entire file should be server (200)
+            // if Last-Modified is NOT the same then the entire file (200) should be served
             self.performRequest("get", path: "/qwer/index.html", callback: { response in
                 XCTAssertNotNil(response)
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
