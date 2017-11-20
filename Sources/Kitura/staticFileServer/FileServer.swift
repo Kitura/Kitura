@@ -152,7 +152,8 @@ extension StaticFileServer {
                 let fileAttributes = try FileManager().attributesOfItem(atPath: filePath)
 
                 // At this point only GET or HEAD are expected
-                let method = response.request.serverRequest.method
+                let request = response.request
+                let method = request.serverRequest.method
                 response.headers["Accept-Ranges"] = acceptRanges ? "bytes" : "none"
                 responseHeadersSetter?.setCustomResponseHeaders(response: response,
                                                                 filePath: filePath,
@@ -160,15 +161,22 @@ extension StaticFileServer {
                 // Check headers to see if it is a Range request
                 if acceptRanges,
                     method == "GET", // As per RFC, Only GET request can be Range Request
-                    let rangeHeader = response.request.headers["Range"],
+                    let rangeHeader = request.headers["Range"],
                     RangeHeader.isBytesRangeHeader(rangeHeader),
                     let fileSize = (fileAttributes[FileAttributeKey.size] as? NSNumber)?.uint64Value {
                     // At this point it looks like the client requested a Range Request
                     if let rangeHeaderValue = try? RangeHeader.parse(size: fileSize, headerValue: rangeHeader),
                         rangeHeaderValue.type == "bytes",
                         !rangeHeaderValue.ranges.isEmpty {
-                        // Send a partial response
-                        serveNonDirectoryPartialFile(filePath, fileSize: fileSize, ranges: rangeHeaderValue.ranges, response: response)
+                        // At this point range is valid and server is able to serve it
+                        if ifRangeHeaderShouldPreventPartialReponse(requestHeaders: request.headers, fileAttributes: fileAttributes) {
+                            // If-Range header prevented a partial response. Send the entire file
+                            try response.send(fileName: filePath)
+                            response.statusCode = .OK
+                        } else {
+                            // Send a partial response
+                            serveNonDirectoryPartialFile(filePath, fileSize: fileSize, ranges: rangeHeaderValue.ranges, response: response)
+                        }
                     } else {
                         // Send not satisfiable response
                         serveNotSatisfiable(filePath, fileSize: fileSize, response: response)
@@ -234,6 +242,38 @@ extension StaticFileServer {
                 response.send(data: data)
                 response.statusCode = .partialContent
             }
+        }
+
+
+        private func ifRangeHeaderShouldPreventPartialReponse(requestHeaders headers: Headers, fileAttributes: [FileAttributeKey : Any]) -> Bool {
+            // If-Range is optional
+            guard let ifRange = headers["If-Range"], !ifRange.isEmpty else {
+                return false
+            }
+            // If-Range can be one of two values: ETag or Last-Modified but not both.
+            // If-Range as ETag
+            if (ifRange.contains("\"")) {
+                if let etag = CacheRelatedHeadersSetter.calculateETag(from: fileAttributes),
+                    !etag.isEmpty,
+                    ifRange.contains(etag) {
+                    return false
+                }
+                return true
+            }
+            // If-Range as Last-Modified
+            if let ifRangeLastModified = FileServer.date(from: ifRange),
+                let lastModified = fileAttributes[FileAttributeKey.modificationDate] as? Date,
+                lastModified > ifRangeLastModified {
+                return true
+            }
+            return false
+        }
+
+        /// Helper function to convert http date Strings into Date
+        static func date(from httpDate: String) -> Date? {
+            let df = DateFormatter()
+            df.dateFormat = "EEE',' dd' 'MMM' 'yyyy HH':'mm':'ss zzz"
+            return df.date(from:httpDate)
         }
 
         /// Helper function to read bytes (of a given range) of a file into data
