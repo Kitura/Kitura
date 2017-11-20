@@ -339,7 +339,7 @@ that match the extension it supports.</p>
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">add</span><span class="p">(</span><span class="nv">templateEngine</span><span class="p">:</span> <span class="kt">TemplateEngine</span><span class="p">,</span> <span class="n">forFileExtensions</span> <span class="nv">fileExtensions</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
-                    <span class="nv">useDefaultFileExtension</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span></code></pre>
+                <span class="nv">useDefaultFileExtension</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -752,6 +752,73 @@ router.get("/users") { (respondWith: ([User]?, RequestError?) -&gt; Void) in
                               <td>
                                 <div>
                                   <p>A CodableArrayClosure that gets invoked when a request comes to the server.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC3getySS_yyxSg_0A9Contracts12RequestErrorVSgtcc7handlerts9DecodableRzs9EncodableRzlF"></a>
+                    <a name="//apple_ref/swift/Method/get(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC3getySS_yyxSg_0A9Contracts12RequestErrorVSgtcc7handlerts9DecodableRzs9EncodableRzlF">get(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Setup a SimpleCodableClosure on the provided route which will be invoked when a request comes to the server.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight plaintext"><code>//Status is a struct object that conforms to Codable
+router.get("/status") { (respondWith: (Status?, RequestError?) -&gt; Void) in
+
+   ...
+
+   respondWith(status, nil)
+}
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="k">get</span><span class="o">&lt;</span><span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">SimpleCodableClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A String specifying the pattern that needs to be matched, in order for the handler to be invoked.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A SimpleCodableClosure that gets invoked when a request comes to the server.</p>
                                 </div>
                               </td>
                             </tr>
@@ -9286,8 +9353,8 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-10-27)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-11-18)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>
