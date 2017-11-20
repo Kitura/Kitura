@@ -14,6 +14,7 @@
  * limitations under the License.
  **/
 
+import LoggerAPI
 import Foundation
 
 /// Struct that represents a Range Header defined in RFC7233.
@@ -38,7 +39,14 @@ extension RangeHeader {
     static func isBytesRangeHeader(_ rangeHeaderValue: String) -> Bool {
         /// Regular expression for identifying a bytes Range header.
         let bytesRangePattern = "^ *bytes="
-        let regex = try! NSRegularExpression(pattern: bytesRangePattern, options: [])
+
+        let regex: NSRegularExpression
+        do {
+            regex = try NSRegularExpression(pattern: bytesRangePattern, options: [])
+        } catch {
+            Log.error("Failed to create regular expressions used to check byte Range headers")
+            exit(1)
+        }
         let matches = regex.matches(in: rangeHeaderValue, options: [], range: NSRange(location: 0, length: rangeHeaderValue.count))
         return !matches.isEmpty
     }
