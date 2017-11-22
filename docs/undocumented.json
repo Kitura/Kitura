@@ -9,7 +9,7 @@
     },
     {
       "file": "/Users/andrewlees/git/Kitura/Sources/Kitura/RouterResponse.swift",
-      "line": 353,
+      "line": 363,
       "symbol": "RouterResponse.render(_:context:options:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"

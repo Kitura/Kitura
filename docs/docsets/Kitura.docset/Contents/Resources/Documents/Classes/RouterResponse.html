@@ -166,7 +166,16 @@
 
                 </div>
               </div>
-            <p>Router response that the server sends as a reply to <code><a href="../Classes/RouterRequest.html">RouterRequest</a></code>.</p>
+            <p>The RouterResponse class is used to define and work with responses from the Router. It contains and allows access to the http response code (e.g. 404 not found) and, if they exist, the http headers and body of the router response.
+ ### Usage Example: ###</p>
+<pre class="highlight plaintext"><code> router.get("/route/:p1") { _, response, next in
+ ...
+ let httpStatusCode = response.statusCode
+ ...
+ }
+</code></pre>
+
+<p>In this example response is an object of Class <code>RouterResponse</code>, which is used to determine the router http status code response to a get request.</p>
 
           </div>
         </section>

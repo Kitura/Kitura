@@ -332,7 +332,7 @@ the appropriate code for handling. This includes:</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The Router request class is used to define and work with incoming requests to the Router. It contains and allows access to the request http Headers and Body as well as other information such as the hostname and port of the request. you can Also check if passed in types are acceptable based on the request’s header field</p>
+                        <p>The RouterRequest class is used to define and work with incoming requests to the Router. It contains and allows access to the request http Headers and Body as well as other information such as the hostname and port of the request. You can also check if passed in types are acceptable based on the request’s header field.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight plaintext"><code> router.post("/route/:p1") { request, _, next in
     ...
@@ -380,7 +380,16 @@ the appropriate code for handling. This includes:</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Router response that the server sends as a reply to <code><a href="Classes/RouterRequest.html">RouterRequest</a></code>.</p>
+                        <p>The RouterResponse class is used to define and work with responses from the Router. It contains and allows access to the http response code (e.g. 404 not found) and, if they exist, the http headers and body of the router response.
+ ### Usage Example: ###</p>
+<pre class="highlight plaintext"><code> router.get("/route/:p1") { _, response, next in
+ ...
+ let httpStatusCode = response.statusCode
+ ...
+ }
+</code></pre>
+
+<p>In this example response is an object of Class <code>RouterResponse</code>, which is used to determine the router http status code response to a get request.</p>
 
                         <a href="Classes/RouterResponse.html" class="slightly-smaller">See more</a>
                       </div>
