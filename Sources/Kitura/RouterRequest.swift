@@ -22,7 +22,17 @@ import Foundation
 
 // MARK: RouterRequest
 
-/// Router request.
+/** The Router request class is used to define and work with incoming requests to the Router. It contains and allows access to the request http Headers and Body as well as other information such as the hostname and port of the request. you can Also check if passed in types are acceptable based on the request’s header field
+### Usage Example: ###
+````
+ router.post("/route/:p1") { request, _, next in
+    ...
+     let body = try request.read(as: Input.self)
+    ...
+}
+````
+ In this example request is an object of Class `RouterRequest`, which is used by the server to read the "Codable" type `Input` from the post request so that it can be used later.
+*/
 public class RouterRequest {
 
     /// The server request.
