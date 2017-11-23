@@ -27,14 +27,12 @@ public class StaticFileServer: RouterMiddleware {
         let maxAgeCacheControlHeader: Int
         let generateETag: Bool
 
-        /// Initialize a CacheOptions instance.
-        ///
-        /// - Parameter addLastModifiedHeader: an indication whether to set
-        /// "Last-Modified" header in the response.
-        /// - Parameter maxAgeCacheControlHeader: a max-age in milliseconds for
-        /// "max-age" value in "Cache-Control" header in the response
-        /// - Parameter generateETag: an indication whether to set "Etag"
-        /// header in the response.
+        /**
+        Initialize a CacheOptions instance.
+        - Parameter addLastModifiedHeader: an indication whether to set "Last-Modified" header in the response.
+        - Parameter maxAgeCacheControlHeader: a max-age in milliseconds for "max-age" value in "Cache-Control" header in the response
+        - Parameter generateETag: an indication whether to set "Etag" header in the response.
+        */
         public init(addLastModifiedHeader: Bool = true, maxAgeCacheControlHeader: Int = 0,
              generateETag: Bool = true) {
             self.addLastModifiedHeader = addLastModifiedHeader

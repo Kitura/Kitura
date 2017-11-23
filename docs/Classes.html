@@ -294,6 +294,15 @@ the appropriate code for handling. This includes:</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Create an on the fly <code><a href="Protocols/RouterMiddleware.html">RouterMiddleware</a></code> from a <code><a href="Typealiases.html#/s:6Kitura13RouterHandlera">RouterHandler</a></code> closure.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight plaintext"><code>let middleware = RouterMiddlewareGenerator { _, response, next in
+    response.status(HTTPStatusCode.OK).send("Hello World\n")
+    next()
+}
+router.all("/hello", middleware: middleware)
+</code></pre>
+
+<p>In this example we have made <q>middleware</q> which follows the <code><a href="Protocols/RouterMiddleware.html">RouterMiddleware</a></code> protocol. <q>middleware</q> will return the HTTPStatusCode .Ok with the body <q>Hello World</q>. This middleware is then assigned to a router for the route /hello.</p>
 
                         <a href="Classes/RouterMiddlewareGenerator.html" class="slightly-smaller">See more</a>
                       </div>
@@ -332,16 +341,16 @@ the appropriate code for handling. This includes:</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The RouterRequest class is used to define and work with incoming requests to the Router. It contains and allows access to the request http Headers and Body as well as other information such as the hostname and port of the request. You can also check if passed in types are acceptable based on the request’s header field.</p>
+                        <p>The RouterRequest class is used to define and work with incoming requests to the Router. It contains and allows access to the request HTTP Headers and Body as well as other information such as the hostname and port of the request. You can also check if passed in types are acceptable based on the request’s header field.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight plaintext"><code> router.post("/route/:p1") { request, _, next in
     ...
-     let body = try request.read(as: Input.self)
+     let body = try request.read(as: InputType)
     ...
 }
 </code></pre>
 
-<p>In this example request is an object of Class <code>RouterRequest</code>, which is used by the server to read the <q>Codable</q> type <code>Input</code> from the post request so that it can be used later.</p>
+<p>In this example <q>request</q> is an instance of the class <q>RouterRequest</q>, which is used by the server to read the Body of <q>Codable</q> type <q>InputType</q>, from the post request so that it can be used later.</p>
 
                         <a href="Classes/RouterRequest.html" class="slightly-smaller">See more</a>
                       </div>
@@ -380,16 +389,16 @@ the appropriate code for handling. This includes:</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The RouterResponse class is used to define and work with responses from the Router. It contains and allows access to the http response code (e.g. 404 not found) and, if they exist, the http headers and body of the router response.
+                        <p>The RouterResponse class is used to define and work with responses from the Router. It contains and allows access to the HTTP response code (e.g. 404 not found) and, if they exist, the HTTP Headers and Body of the router response.
  ### Usage Example: ###</p>
 <pre class="highlight plaintext"><code> router.get("/route/:p1") { _, response, next in
- ...
- let httpStatusCode = response.statusCode
- ...
+     ...
+     let httpStatusCode = response.statusCode
+     ...
  }
 </code></pre>
 
-<p>In this example response is an object of Class <code>RouterResponse</code>, which is used to determine the router http status code response to a get request.</p>
+<p>In this example <q>response</q> is an instance of the class <q>RouterResponse</q>, which is used to determine the router HTTP status code response to a get request.</p>
 
                         <a href="Classes/RouterResponse.html" class="slightly-smaller">See more</a>
                       </div>
@@ -472,8 +481,16 @@ the appropriate code for handling. This includes:</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A set of APIs to work with Content-Type headers, whether to generate the value
-or to determine if it&rsquo;s an acceptable value.</p>
+                        <p>A set of APIs to work with Content-Type headers, whether to generate the value or to determine if it&rsquo;s an acceptable value.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight plaintext"><code>````
+let contentType = ContentType.sharedInstance
+let result = contentType.getContentType(forFileName: "foo.png")
+print(result) // "image/png"
+````
+</code></pre>
+
+<p>In this example, we initialise a <q>ContentType</q> instance called <q>contentType</q>. we then use <q>contentType</q> get the Content type of <q>foo.png</q> which is identified as an <q>image/png</q></p>
 
                         <a href="Classes/ContentType.html" class="slightly-smaller">See more</a>
                       </div>
@@ -535,7 +552,7 @@ or to determine if it&rsquo;s an acceptable value.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-11-22)</p>
+      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-11-23)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
