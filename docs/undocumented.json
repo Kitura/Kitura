@@ -15,20 +15,6 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/andrewlees/git/Kitura/Sources/Kitura/SSLConfig.swift",
-      "line": 21,
-      "symbol": "SSLConfig",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/andrewlees/git/Kitura/Sources/Kitura/SSLConfig.swift",
-      "line": 25,
-      "symbol": "SSLConfig.config",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/andrewlees/git/Kitura/Sources/Kitura/staticFileServer/StaticFileServer.swift",
       "line": 73,
       "symbol": "StaticFileServer.absoluteRootPath",

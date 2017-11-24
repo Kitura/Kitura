@@ -17,8 +17,14 @@
 import Foundation
 import KituraNet
 
-/// The struct containing the HTTP headers and implements the headers APIs for the
-/// `RouterRequest` and `RouterResponse` classes.
+/**
+The struct containing the HTTP headers and implements the headers APIs for the `RouterRequest` and `RouterResponse` classes.
+### Usage Example: ###
+````
+let headers = Headers(headers: serverRequest.headers)
+````
+In this example, we create the instance "headers" of the class "Headers" by reading the headers from serverRequest, which is an instance of the class `RouterRequest`.
+*/
 public struct Headers {
 
     /// The header storage

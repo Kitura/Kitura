@@ -22,7 +22,7 @@
         <a class="header-link" href="index.html">
           Kitura Docs
         </a>
-         (98% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -181,9 +181,13 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The version of HTTP protocol.</p>
+                        <p>The version of HTTP protocol.
+HTTP uses a <q>major.minor</q> numbering scheme to indicate versions of the protocol.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight plaintext"><code>httpVersion = HTTPVersion(major: serverRequest.httpVersionMajor, minor: serverRequest.httpVersionMinor)
+</code></pre>
 
-<p>HTTP uses a <q>major.minor</q> numbering scheme to indicate versions of the protocol.</p>
+<p>In this example a <q>HTTPVersion</q> is intialised from the values taken from httpVersionMajor and httpVersionMinor fields in <q>serverRequest</q>, which is a <code><a href="Classes/RouterRequest.html">RouterRequest</a></code> instance.</p>
 
                         <a href="Structs/HTTPVersion.html" class="slightly-smaller">See more</a>
                       </div>
@@ -215,8 +219,12 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The struct containing the HTTP headers and implements the headers APIs for the
-<code><a href="Classes/RouterRequest.html">RouterRequest</a></code> and <code><a href="Classes/RouterResponse.html">RouterResponse</a></code> classes.</p>
+                        <p>The struct containing the HTTP headers and implements the headers APIs for the <code><a href="Classes/RouterRequest.html">RouterRequest</a></code> and <code><a href="Classes/RouterResponse.html">RouterResponse</a></code> classes.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight plaintext"><code>let headers = Headers(headers: serverRequest.headers)
+</code></pre>
+
+<p>In this example, we create the instance <q>headers</q> of the class <q>Headers</q> by reading the headers from serverRequest, which is an instance of the class <code><a href="Classes/RouterRequest.html">RouterRequest</a></code>.</p>
 
                         <a href="Structs/Headers.html" class="slightly-smaller">See more</a>
                       </div>
@@ -255,9 +263,25 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>A struct which allows the creation of an SSLService Configuation using either a <q>CA Certificate file</q>, a <q>CA Certificate directory</q> or a <q>Certificate Chain File</q>.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight plaintext"><code>let sslConfigDir = URL(fileURLWithPath: #file).appendingPathComponent("../SSLConfig")
+let certificatePath = sslConfigDir.appendingPathComponent("certificate.pem").standardized.path
+let keyPath = sslConfigDir.appendingPathComponent("key.pem").standardized.path
+let sslConfig = SSLConfig(withCACertificateDirectory: nil, usingCertificateFile: certificatePath, withKeyFile: keyPath, usingSelfSignedCerts: true)
+</code></pre>
+
+<p>In this example, an instance of <q>SSLConfig</q> is initialised using existing certificate and key files.</p>
 
                         <a href="Structs/SSLConfig.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">SSLConfig</span></code></pre>
+
+                        </div>
                       </div>
                     </section>
                   </div>
@@ -280,6 +304,17 @@
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>A part of a parsed multi-part form body.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight plaintext"><code>router.post("/example") { request, response, next in
+    let body = request.body
+    let parts = body.asMultiPart
+    for part in parts {
+        response.send("\(part.name) \(part.filename) \(part.body) ")
+    }
+}
+</code></pre>
+
+<p>In this example, the request body is parsed and split into multiple parts. We then iterate through each Part in all the parts and the server responds with the name, filename and body taken from the part.</p>
 
                         <a href="Structs/Part.html" class="slightly-smaller">See more</a>
                       </div>
@@ -302,7 +337,7 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-11-23)</p>
+      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-11-24)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

@@ -18,8 +18,21 @@ import Foundation
 
 // MARK ResponseHeadersSetter
 
-/// A protocol for providing a custom method for setting
-/// the headers of the response of static file serving middleware.
+/**
+A protocol for providing a custom method for setting the headers of the response of static file serving middleware.
+### Usage Example: ###
+````
+class FileServer {
+    private let responseHeadersSetter: ResponseHeadersSetter?
+    init(servingFilesPath: String, options: StaticFileServer.Options, responseHeadersSetter: ResponseHeadersSetter?) {
+        ...
+        self.responseHeadersSetter = responseHeadersSetter
+    }
+    ...
+ }
+ ````
+ In this example, when the `FileServer` is initialised, you can provide a custom responseHeadersSetter obeying the "ResponseHeadersSetter" protocol, which will then be used by the server.
+*/
 public protocol ResponseHeadersSetter {
 
     /// Set the headers of the response
