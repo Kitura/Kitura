@@ -166,10 +166,12 @@
 
                 </div>
               </div>
-            <p>The result of parsing the body of the request.</p>
+            <p>The result of parsing the body of the request. When a body of a request is parsed the results of the parsing are placed in the associated value of the enum case based on Content-Type</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight plaintext"><code>func parse(_ data: Data) -&gt; ParsedBody? {
+</code></pre>
 
-<p>When a body of a request is parsed the results of the parsing are placed
-in the associated value of the enum case based on Content-Type</p>
+<p>in this example, there is a function <q>parse</q> which takes in data and return an optional of type <q>ParsedBody</q>.</p>
 
           </div>
         </section>

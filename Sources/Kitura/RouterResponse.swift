@@ -22,7 +22,7 @@ import Foundation
 
 // MARK: RouterResponse
 
-/** The RouterResponse class is used to define and work with responses from the Router. It contains and allows access to the HTTP response code (e.g. 404 not found) and, if they exist, the HTTP Headers and Body of the router response.
+/** The RouterResponse class is used to define and work with responses from the Router. It contains and allows access to the HTTP response code (e.g. 404 not found) and, if they exist, the HTTP `Headers` and Body of the router response.
  ### Usage Example: ###
  ````
  router.get("/route/:p1") { _, response, next in

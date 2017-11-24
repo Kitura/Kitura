@@ -14,10 +14,17 @@
  * limitations under the License.
  */
 
-/// An enum to describe the HTTP method (Get, Post, Put, Delete, etc) of an HTTP
-/// request. In general they match the actual HTTP methods by the same name. There
-/// are two special ones, used by `Router` when building up the set of mappings
-/// between paths and handlers or middleware. They are:
+/**
+An enum to describe the HTTP method (Get, Post, Put, Delete, etc) of an HTTP
+request. In general they match the actual HTTP methods by the same name. ERROR and UNKNOWN
+are two special ones, used by `Router` when building up the set of mappings
+between paths and handlers or middleware.
+### Usage Example: ###
+````
+method = RouterMethod(fromRawValue: serverRequest.method)
+````
+ In this example the serverRequest method is used to create "method" a "RouterMethod" instance
+*/
 public enum RouterMethod: String {
     /// Signifies that the particular path mapping is not dependent on the HTTP method
     case all = "ALL"

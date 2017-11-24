@@ -167,8 +167,18 @@
                 </div>
               </div>
             <p>Possible parameters of Link HTTP header.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight plaintext"><code>public mutating func addLink(_ link: String, linkParameters: [LinkParameter: String]) {
+   var headerValue = "&lt;\(link)&gt;"
+   for (linkParamer, value) in linkParameters {
+       headerValue += "; \(linkParamer.rawValue)=\"\(value)\""
+   }
+   self.append("Link", value: headerValue)
+}
+</code></pre>
 
-<p>See <a href="https://tools.ietf.org/html/rfc5988">RFC 5988</a> for more details.</p>
+<p>Above is an example function to add a link to a HTTP <code>Header</code> where the user must specify a LinkParameter from the enum to be added.
+See <a href="https://tools.ietf.org/html/rfc5988">RFC 5988</a> for more details.</p>
 
           </div>
         </section>

@@ -18,7 +18,13 @@ import Foundation
 
 // MARK JSONPError
 
-/// An error that can be thrown while handling JSONP.
+/** An error that can be thrown while handling JSONP.
+### Usage Example: ###
+````
+ throw JSONPError.invalidCallbackName(name: taintedJSCallbackName)
+````
+ Here a JSONPError is thrown including the "taintedJSCallbackName" which caused it to error.
+*/
 public enum JSONPError: Swift.Error {
 
     /// The error thrown if the callback query parameter is invalid.

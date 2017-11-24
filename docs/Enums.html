@@ -182,6 +182,11 @@
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>An error that can be thrown while handling JSONP.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight plaintext"><code> throw JSONPError.invalidCallbackName(name: taintedJSCallbackName)
+</code></pre>
+
+<p>Here a JSONPError is thrown including the <q>taintedJSCallbackName</q> which caused it to error.</p>
 
                         <a href="Enums/JSONPError.html" class="slightly-smaller">See more</a>
                       </div>
@@ -214,8 +219,18 @@
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Possible parameters of Link HTTP header.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight plaintext"><code>public mutating func addLink(_ link: String, linkParameters: [LinkParameter: String]) {
+   var headerValue = "&lt;\(link)&gt;"
+   for (linkParamer, value) in linkParameters {
+       headerValue += "; \(linkParamer.rawValue)=\"\(value)\""
+   }
+   self.append("Link", value: headerValue)
+}
+</code></pre>
 
-<p>See <a href="https://tools.ietf.org/html/rfc5988">RFC 5988</a> for more details.</p>
+<p>Above is an example function to add a link to a HTTP <code>Header</code> where the user must specify a LinkParameter from the enum to be added.
+See <a href="https://tools.ietf.org/html/rfc5988">RFC 5988</a> for more details.</p>
 
                         <a href="Enums/LinkParameter.html" class="slightly-smaller">See more</a>
                       </div>
@@ -248,9 +263,14 @@
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>An enum to describe the HTTP method (Get, Post, Put, Delete, etc) of an HTTP
-request. In general they match the actual HTTP methods by the same name. There
+request. In general they match the actual HTTP methods by the same name. ERROR and UNKNOWN
 are two special ones, used by <code><a href="Classes/Router.html">Router</a></code> when building up the set of mappings
-between paths and handlers or middleware. They are:</p>
+between paths and handlers or middleware.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight plaintext"><code>method = RouterMethod(fromRawValue: serverRequest.method)
+</code></pre>
+
+<p>In this example the serverRequest method is used to create <q>method</q> a <q>RouterMethod</q> instance</p>
 
                         <a href="Enums/RouterMethod.html" class="slightly-smaller">See more</a>
                       </div>
@@ -282,10 +302,12 @@ between paths and handlers or middleware. They are:</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The result of parsing the body of the request.</p>
+                        <p>The result of parsing the body of the request. When a body of a request is parsed the results of the parsing are placed in the associated value of the enum case based on Content-Type</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight plaintext"><code>func parse(_ data: Data) -&gt; ParsedBody? {
+</code></pre>
 
-<p>When a body of a request is parsed the results of the parsing are placed
-in the associated value of the enum case based on Content-Type</p>
+<p>in this example, there is a function <q>parse</q> which takes in data and return an optional of type <q>ParsedBody</q>.</p>
 
                         <a href="Enums/ParsedBody.html" class="slightly-smaller">See more</a>
                       </div>

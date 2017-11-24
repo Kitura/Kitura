@@ -167,9 +167,14 @@
                 </div>
               </div>
             <p>An enum to describe the HTTP method (Get, Post, Put, Delete, etc) of an HTTP
-request. In general they match the actual HTTP methods by the same name. There
+request. In general they match the actual HTTP methods by the same name. ERROR and UNKNOWN
 are two special ones, used by <code><a href="../Classes/Router.html">Router</a></code> when building up the set of mappings
-between paths and handlers or middleware. They are:</p>
+between paths and handlers or middleware.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight plaintext"><code>method = RouterMethod(fromRawValue: serverRequest.method)
+</code></pre>
+
+<p>In this example the serverRequest method is used to create <q>method</q> a <q>RouterMethod</q> instance</p>
 
           </div>
         </section>

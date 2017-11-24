@@ -302,7 +302,7 @@ the appropriate code for handling. This includes:</p>
 router.all("/hello", middleware: middleware)
 </code></pre>
 
-<p>In this example we have made <q>middleware</q> which follows the <code><a href="Protocols/RouterMiddleware.html">RouterMiddleware</a></code> protocol. <q>middleware</q> will return the HTTPStatusCode .Ok with the body <q>Hello World</q>. This middleware is then assigned to a router for the route /hello.</p>
+<p>In this example we have made <q>middleware</q> which follows the <code><a href="Protocols/RouterMiddleware.html">RouterMiddleware</a></code> protocol. <q>middleware</q> will return the HTTPStatusCode .OK with the body <q>Hello World</q>. This middleware is then assigned to a router for the route /hello.</p>
 
                         <a href="Classes/RouterMiddlewareGenerator.html" class="slightly-smaller">See more</a>
                       </div>
@@ -341,7 +341,7 @@ router.all("/hello", middleware: middleware)
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The RouterRequest class is used to define and work with incoming requests to the Router. It contains and allows access to the request HTTP Headers and Body as well as other information such as the hostname and port of the request. You can also check if passed in types are acceptable based on the request’s header field.</p>
+                        <p>The RouterRequest class is used to define and work with incoming requests to the Router. It contains and allows access to the request HTTP <code><a href="Structs/Headers.html">Headers</a></code> and Body as well as other information such as the hostname and port of the request. You can also check if passed in types are acceptable based on the request’s header field.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight plaintext"><code> router.post("/route/:p1") { request, _, next in
     ...
@@ -389,7 +389,7 @@ router.all("/hello", middleware: middleware)
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The RouterResponse class is used to define and work with responses from the Router. It contains and allows access to the HTTP response code (e.g. 404 not found) and, if they exist, the HTTP Headers and Body of the router response.
+                        <p>The RouterResponse class is used to define and work with responses from the Router. It contains and allows access to the HTTP response code (e.g. 404 not found) and, if they exist, the HTTP <code><a href="Structs/Headers.html">Headers</a></code> and Body of the router response.
  ### Usage Example: ###</p>
 <pre class="highlight plaintext"><code> router.get("/route/:p1") { _, response, next in
      ...
