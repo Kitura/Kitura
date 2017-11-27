@@ -16,7 +16,7 @@
     },
     {
       "file": "/Users/andrewlees/git/Kitura/Sources/Kitura/staticFileServer/StaticFileServer.swift",
-      "line": 73,
+      "line": 101,
       "symbol": "StaticFileServer.absoluteRootPath",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"

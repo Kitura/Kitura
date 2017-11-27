@@ -23,7 +23,7 @@ HTTP uses a "major.minor" numbering scheme to indicate versions of the protocol.
 ````
 httpVersion = HTTPVersion(major: serverRequest.httpVersionMajor, minor: serverRequest.httpVersionMinor)
 ````
- In this example a "HTTPVersion" is intialised from the values taken from httpVersionMajor and httpVersionMinor fields in "serverRequest", which is a `RouterRequest` instance.
+ In this example a "HTTPVersion" is initialised from the values taken from httpVersionMajor and httpVersionMinor fields in "serverRequest", which is a `RouterRequest` instance.
 */
 public struct HTTPVersion {
 

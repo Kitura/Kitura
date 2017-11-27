@@ -19,7 +19,7 @@ import SSLService
 // MARK: SSLConfig
 
 /**
-A struct which allows the creation of an SSLService Configuation using either a "CA Certificate file", a "CA Certificate directory" or a "Certificate Chain File".
+A struct which allows the creation of an SSLService Configuration using either a "CA Certificate file", a "CA Certificate directory" or a "Certificate Chain File".
 ### Usage Example: ###
 ````
 let sslConfigDir = URL(fileURLWithPath: #file).appendingPathComponent("../SSLConfig")
@@ -27,7 +27,7 @@ let certificatePath = sslConfigDir.appendingPathComponent("certificate.pem").sta
 let keyPath = sslConfigDir.appendingPathComponent("key.pem").standardized.path
 let sslConfig = SSLConfig(withCACertificateDirectory: nil, usingCertificateFile: certificatePath, withKeyFile: keyPath, usingSelfSignedCerts: true)
 ````
-In this example, an instance of "SSLConfig" is initialised using existing certificate and key files.
+In this example, an instance of "SSLConfig" is initialised by providing the paths to an existing certificate file and the corresponding key file.
 */
 public struct SSLConfig {
 
