@@ -168,11 +168,11 @@
               </div>
             <p>The RouterResponse class is used to define and work with responses from the Router. It contains and allows access to the HTTP response code (e.g. 404 not found) and, if they exist, the HTTP <code><a href="../Structs/Headers.html">Headers</a></code> and Body of the router response.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>router.get("/route/:p1") { _, response, next in
-    ...
-    let httpStatusCode = response.statusCode
-    ...
-}
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/route/:p1"</span><span class="p">)</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
+    <span class="o">...</span>
+    <span class="k">let</span> <span class="nv">httpStatusCode</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">statusCode</span>
+    <span class="o">...</span>
+<span class="p">}</span>
 </code></pre>
 
 <p>In this example <q>response</q> is an instance of the class <q>RouterResponse</q>, which is used to determine the router HTTP status code response to a get request.</p>

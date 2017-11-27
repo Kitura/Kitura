@@ -168,7 +168,7 @@
               </div>
             <p>Cache configuration options for <code><a href="../../Classes/StaticFileServer.html">StaticFileServer</a></code>.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code> let cacheOptions = StaticFileServer.CacheOptions(addLastModifiedHeader: false, generateETag: false)
+<pre class="highlight swift"><code> <span class="k">let</span> <span class="nv">cacheOptions</span> <span class="o">=</span> <span class="kt">StaticFileServer</span><span class="o">.</span><span class="kt">CacheOptions</span><span class="p">(</span><span class="nv">addLastModifiedHeader</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">generateETag</span><span class="p">:</span> <span class="kc">false</span><span class="p">)</span>
 </code></pre>
 
 <p>In this example, we initialise some <q>cacheOptions</q> for a static file server. Since <q>maxAgeCacheControlHeader</q> is not defined it will default to 0.</p>

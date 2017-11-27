@@ -25,7 +25,7 @@ import Dispatch
 /**
 A set of helper functions to make it easier to create, start, and stop Kitura based servers.
 ### Usage Example: ###
-````
+```swift
 let router = Router()
 let port: Int = 8080
 public func run() throws{
@@ -33,8 +33,8 @@ public func run() throws{
     Kitura.addHTTPServer(onPort: port, with: router)
     Kitura.run()
 }
+```
 In this example, we create a run function inside a server Application.swift file, which will create a Kitura server on the specified port, using the given router and then run the created server.
-````
 */
 public class Kitura {
 

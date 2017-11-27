@@ -168,13 +168,13 @@
               </div>
             <p>Possible parameters of Link HTTP header.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>public mutating func addLink(_ link: String, linkParameters: [LinkParameter: String]) {
-   var headerValue = "&lt;\(link)&gt;"
-   for (linkParamer, value) in linkParameters {
-       headerValue += "; \(linkParamer.rawValue)=\"\(value)\""
-   }
-   self.append("Link", value: headerValue)
-}
+<pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">addLink</span><span class="p">(</span><span class="n">_</span> <span class="nv">link</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">linkParameters</span><span class="p">:</span> <span class="p">[</span><span class="kt">LinkParameter</span><span class="p">:</span> <span class="kt">String</span><span class="p">])</span> <span class="p">{</span>
+   <span class="k">var</span> <span class="nv">headerValue</span> <span class="o">=</span> <span class="s">"&lt;</span><span class="se">\(</span><span class="n">link</span><span class="se">)</span><span class="s">&gt;"</span>
+   <span class="k">for</span> <span class="p">(</span><span class="n">linkParamer</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="k">in</span> <span class="n">linkParameters</span> <span class="p">{</span>
+       <span class="n">headerValue</span> <span class="o">+=</span> <span class="s">"; </span><span class="se">\(</span><span class="n">linkParamer</span><span class="o">.</span><span class="n">rawValue</span><span class="se">)</span><span class="s">=</span><span class="se">\"\(</span><span class="n">value</span><span class="se">)\"</span><span class="s">"</span>
+   <span class="p">}</span>
+   <span class="k">self</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="s">"Link"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="n">headerValue</span><span class="p">)</span>
+<span class="p">}</span>
 </code></pre>
 
 <p>Above is an example function to add a link to a HTTP <code>Header</code> where the user must specify a LinkParameter from the enum to be added.

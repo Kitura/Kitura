@@ -171,7 +171,7 @@ request. In general they match the actual HTTP methods by the same name. ERROR a
 are two special ones, used by <code><a href="../Classes/Router.html">Router</a></code> when building up the set of mappings
 between paths and handlers or middleware.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>method = RouterMethod(fromRawValue: serverRequest.method)
+<pre class="highlight swift"><code><span class="n">method</span> <span class="o">=</span> <span class="kt">RouterMethod</span><span class="p">(</span><span class="nv">fromRawValue</span><span class="p">:</span> <span class="n">serverRequest</span><span class="o">.</span><span class="n">method</span><span class="p">)</span>
 </code></pre>
 
 <p>In this example the serverRequest method is used to create <q>method</q> a <q>RouterMethod</q> instance</p>

@@ -184,7 +184,7 @@
                         <p>The version of HTTP protocol.
 HTTP uses a <q>major.minor</q> numbering scheme to indicate versions of the protocol.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>httpVersion = HTTPVersion(major: serverRequest.httpVersionMajor, minor: serverRequest.httpVersionMinor)
+<pre class="highlight swift"><code><span class="n">httpVersion</span> <span class="o">=</span> <span class="kt">HTTPVersion</span><span class="p">(</span><span class="nv">major</span><span class="p">:</span> <span class="n">serverRequest</span><span class="o">.</span><span class="n">httpVersionMajor</span><span class="p">,</span> <span class="nv">minor</span><span class="p">:</span> <span class="n">serverRequest</span><span class="o">.</span><span class="n">httpVersionMinor</span><span class="p">)</span>
 </code></pre>
 
 <p>In this example a <q>HTTPVersion</q> is initialised from the values taken from httpVersionMajor and httpVersionMinor fields in <q>serverRequest</q>, which is a <code><a href="Classes/RouterRequest.html">RouterRequest</a></code> instance.</p>
@@ -221,7 +221,7 @@ HTTP uses a <q>major.minor</q> numbering scheme to indicate versions of the prot
                       <div class="abstract">
                         <p>The struct containing the HTTP headers and implements the headers APIs for the <code><a href="Classes/RouterRequest.html">RouterRequest</a></code> and <code><a href="Classes/RouterResponse.html">RouterResponse</a></code> classes.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>let headers = Headers(headers: serverRequest.headers)
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">headers</span> <span class="o">=</span> <span class="kt">Headers</span><span class="p">(</span><span class="nv">headers</span><span class="p">:</span> <span class="n">serverRequest</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
 </code></pre>
 
 <p>In this example, we create the instance <q>headers</q> of the class <q>Headers</q> by reading the headers from serverRequest, which is an instance of the class <code><a href="Classes/RouterRequest.html">RouterRequest</a></code>.</p>
@@ -265,10 +265,10 @@ HTTP uses a <q>major.minor</q> numbering scheme to indicate versions of the prot
                       <div class="abstract">
                         <p>A struct which allows the creation of an SSLService Configuration using either a <q>CA Certificate file</q>, a <q>CA Certificate directory</q> or a <q>Certificate Chain File</q>.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>let sslConfigDir = URL(fileURLWithPath: #file).appendingPathComponent("../SSLConfig")
-let certificatePath = sslConfigDir.appendingPathComponent("certificate.pem").standardized.path
-let keyPath = sslConfigDir.appendingPathComponent("key.pem").standardized.path
-let sslConfig = SSLConfig(withCACertificateDirectory: nil, usingCertificateFile: certificatePath, withKeyFile: keyPath, usingSelfSignedCerts: true)
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">sslConfigDir</span> <span class="o">=</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">fileURLWithPath</span><span class="p">:</span> <span class="err">#</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="nf">appendingPathComponent</span><span class="p">(</span><span class="s">"../SSLConfig"</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">certificatePath</span> <span class="o">=</span> <span class="n">sslConfigDir</span><span class="o">.</span><span class="nf">appendingPathComponent</span><span class="p">(</span><span class="s">"certificate.pem"</span><span class="p">)</span><span class="o">.</span><span class="n">standardized</span><span class="o">.</span><span class="n">path</span>
+<span class="k">let</span> <span class="nv">keyPath</span> <span class="o">=</span> <span class="n">sslConfigDir</span><span class="o">.</span><span class="nf">appendingPathComponent</span><span class="p">(</span><span class="s">"key.pem"</span><span class="p">)</span><span class="o">.</span><span class="n">standardized</span><span class="o">.</span><span class="n">path</span>
+<span class="k">let</span> <span class="nv">sslConfig</span> <span class="o">=</span> <span class="kt">SSLConfig</span><span class="p">(</span><span class="nv">withCACertificateDirectory</span><span class="p">:</span> <span class="kc">nil</span><span class="p">,</span> <span class="nv">usingCertificateFile</span><span class="p">:</span> <span class="n">certificatePath</span><span class="p">,</span> <span class="nv">withKeyFile</span><span class="p">:</span> <span class="n">keyPath</span><span class="p">,</span> <span class="nv">usingSelfSignedCerts</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
 </code></pre>
 
 <p>In this example, an instance of <q>SSLConfig</q> is initialised by providing the paths to an existing certificate file and the corresponding key file.</p>
@@ -305,13 +305,13 @@ let sslConfig = SSLConfig(withCACertificateDirectory: nil, usingCertificateFile:
                       <div class="abstract">
                         <p>A part of a parsed multi-part form body.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>router.post("/example") { request, response, next in
-    let body = request.body
-    let parts = body.asMultiPart
-    for part in parts {
-        response.send("\(part.name) \(part.filename) \(part.body) ")
-    }
-}
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="s">"/example"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
+    <span class="k">let</span> <span class="nv">body</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">body</span>
+    <span class="k">let</span> <span class="nv">parts</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">asMultiPart</span>
+    <span class="k">for</span> <span class="n">part</span> <span class="k">in</span> <span class="n">parts</span> <span class="p">{</span>
+        <span class="n">response</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"</span><span class="se">\(</span><span class="n">part</span><span class="o">.</span><span class="n">name</span><span class="se">)</span><span class="s"> </span><span class="se">\(</span><span class="n">part</span><span class="o">.</span><span class="n">filename</span><span class="se">)</span><span class="s"> </span><span class="se">\(</span><span class="n">part</span><span class="o">.</span><span class="n">body</span><span class="se">)</span><span class="s"> "</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </code></pre>
 
 <p>In this example, the request body is parsed and split into multiple parts. We then iterate through each Part in all the parts and the server responds with the name, filename and body taken from the part.</p>

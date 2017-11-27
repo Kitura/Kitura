@@ -168,11 +168,11 @@
               </div>
             <p>The RouterRequest class is used to define and work with incoming requests to the Router. It contains and allows access to the request HTTP <code><a href="../Structs/Headers.html">Headers</a></code> and Body as well as other information such as the hostname and port of the request. You can also check if passed in types are acceptable based on the request’s header field.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code> router.post("/route/:p1") { request, _, next in
-    ...
-     let body = try request.read(as: InputType)
-    ...
-}
+<pre class="highlight swift"><code> <span class="n">router</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="s">"/route/:p1"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
+    <span class="o">...</span>
+     <span class="k">let</span> <span class="nv">body</span> <span class="o">=</span> <span class="k">try</span> <span class="n">request</span><span class="o">.</span><span class="nf">read</span><span class="p">(</span><span class="nv">as</span><span class="p">:</span> <span class="kt">InputType</span><span class="p">)</span>
+    <span class="o">...</span>
+<span class="p">}</span>
 </code></pre>
 
 <p>In this example <q>request</q> is an instance of the class <q>RouterRequest</q>, which is used by the server to read the Body of <q>Codable</q> type <q>InputType</q>, from the post request so that it can be used later.</p>

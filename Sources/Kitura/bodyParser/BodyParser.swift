@@ -22,10 +22,12 @@ import Foundation
 // MARK: BodyParser
 
 /// The BodyParser parses the body of the request prior to sending it to the handler. It reads the Content-Type of the message header and populates the `RouterRequest` body field with a `ParsedBody` enumeration (e.g. json, raw, text, urlEncoded)
-/// In order for the BodyParser to be used it must first be registered with any routes that are interested in the ParsedBody payload. The example below registers all routes to the BodyParser middleware.
+/// In order for the BodyParser to be used it must first be registered with any routes that are interested in the ParsedBody payload.
+///### Usage Example: ###
 ///```swift
 ///   router.all("/*", middleware: BodyParser())
 ///```
+/// In this example, all routes to the BodyParser middleware are registered.
 /// __Note__: When using Codable Routing in Kitura 2.x the BodyParser should not be registered to any codable routes (doing so will display an error).
 public class BodyParser: RouterMiddleware {
 

@@ -168,7 +168,7 @@
               </div>
             <p>The struct containing the HTTP headers and implements the headers APIs for the <code><a href="../Classes/RouterRequest.html">RouterRequest</a></code> and <code><a href="../Classes/RouterResponse.html">RouterResponse</a></code> classes.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>let headers = Headers(headers: serverRequest.headers)
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">headers</span> <span class="o">=</span> <span class="kt">Headers</span><span class="p">(</span><span class="nv">headers</span><span class="p">:</span> <span class="n">serverRequest</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
 </code></pre>
 
 <p>In this example, we create the instance <q>headers</q> of the class <q>Headers</q> by reading the headers from serverRequest, which is an instance of the class <code><a href="../Classes/RouterRequest.html">RouterRequest</a></code>.</p>

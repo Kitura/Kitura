@@ -169,7 +169,7 @@
             <p>The version of HTTP protocol.
 HTTP uses a <q>major.minor</q> numbering scheme to indicate versions of the protocol.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>httpVersion = HTTPVersion(major: serverRequest.httpVersionMajor, minor: serverRequest.httpVersionMinor)
+<pre class="highlight swift"><code><span class="n">httpVersion</span> <span class="o">=</span> <span class="kt">HTTPVersion</span><span class="p">(</span><span class="nv">major</span><span class="p">:</span> <span class="n">serverRequest</span><span class="o">.</span><span class="n">httpVersionMajor</span><span class="p">,</span> <span class="nv">minor</span><span class="p">:</span> <span class="n">serverRequest</span><span class="o">.</span><span class="n">httpVersionMinor</span><span class="p">)</span>
 </code></pre>
 
 <p>In this example a <q>HTTPVersion</q> is initialised from the values taken from httpVersionMajor and httpVersionMinor fields in <q>serverRequest</q>, which is a <code><a href="../Classes/RouterRequest.html">RouterRequest</a></code> instance.</p>

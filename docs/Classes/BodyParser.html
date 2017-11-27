@@ -167,11 +167,13 @@
                 </div>
               </div>
             <p>The BodyParser parses the body of the request prior to sending it to the handler. It reads the Content-Type of the message header and populates the <code><a href="../Classes/RouterRequest.html">RouterRequest</a></code> body field with a <code><a href="../Enums/ParsedBody.html">ParsedBody</a></code> enumeration (e.g. json, raw, text, urlEncoded)
- In order for the BodyParser to be used it must first be registered with any routes that are interested in the ParsedBody payload. The example below registers all routes to the BodyParser middleware.</p>
+ In order for the BodyParser to be used it must first be registered with any routes that are interested in the ParsedBody payload.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight swift"><code>   <span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/*"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="kt">BodyParser</span><span class="p">())</span>
 </code></pre>
 
-<p><strong>Note</strong>: When using Codable Routing in Kitura 2.x the BodyParser should not be registered to any codable routes (doing so will display an error).</p>
+<p>In this example, all routes to the BodyParser middleware are registered.
+ <strong>Note</strong>: When using Codable Routing in Kitura 2.x the BodyParser should not be registered to any codable routes (doing so will display an error).</p>
 
           </div>
         </section>

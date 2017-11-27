@@ -20,9 +20,9 @@
 The version of HTTP protocol.
 HTTP uses a "major.minor" numbering scheme to indicate versions of the protocol.
 ### Usage Example: ###
-````
+```swift
 httpVersion = HTTPVersion(major: serverRequest.httpVersionMajor, minor: serverRequest.httpVersionMinor)
-````
+```
  In this example a "HTTPVersion" is initialised from the values taken from httpVersionMajor and httpVersionMinor fields in "serverRequest", which is a `RouterRequest` instance.
 */
 public struct HTTPVersion {

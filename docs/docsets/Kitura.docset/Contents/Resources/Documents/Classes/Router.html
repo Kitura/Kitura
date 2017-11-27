@@ -709,13 +709,13 @@ This can make it easier to handle values of provided parameter name.</p>
                       <div class="abstract">
                         <p>Setup a CodableArrayClosure on the provided route which will be invoked when a request comes to the server.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>//User is a struct object that conforms to Codable
-router.get("/users") { (respondWith: ([User]?, RequestError?) -&gt; Void) in
+<pre class="highlight swift"><code><span class="c1">//User is a struct object that conforms to Codable</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/users"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">respondWith</span><span class="p">:</span> <span class="p">([</span><span class="kt">User</span><span class="p">]?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
 
-   ...
+   <span class="o">...</span>
 
-   respondWith(users, nil)
-}
+   <span class="nf">respondWith</span><span class="p">(</span><span class="n">users</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
 </code></pre>
 
                       </div>
@@ -776,13 +776,13 @@ router.get("/users") { (respondWith: ([User]?, RequestError?) -&gt; Void) in
                       <div class="abstract">
                         <p>Setup a SimpleCodableClosure on the provided route which will be invoked when a request comes to the server.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>//Status is a struct object that conforms to Codable
-router.get("/status") { (respondWith: (Status?, RequestError?) -&gt; Void) in
+<pre class="highlight swift"><code><span class="c1">//Status is a struct object that conforms to Codable</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/status"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">Status</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
 
-   ...
+   <span class="o">...</span>
 
-   respondWith(status, nil)
-}
+   <span class="nf">respondWith</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
 </code></pre>
 
                       </div>
@@ -843,13 +843,13 @@ router.get("/status") { (respondWith: (Status?, RequestError?) -&gt; Void) in
                       <div class="abstract">
                         <p>Setup a IdentifierSimpleCodableClosure on the provided route which will be invoked when a request comes to the server.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>//User is a struct object that conforms to Codable
-router.get("/users") { (id: Int, respondWith: (User?, RequestError?) -&gt; Void) in
+<pre class="highlight swift"><code><span class="c1">//User is a struct object that conforms to Codable</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/users"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">User</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
 
-   ...
+   <span class="o">...</span>
 
-   respondWith(user, nil)
-}
+   <span class="nf">respondWith</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
 </code></pre>
 
                       </div>
@@ -910,12 +910,12 @@ router.get("/users") { (id: Int, respondWith: (User?, RequestError?) -&gt; Void)
                       <div class="abstract">
                         <p>Setup a NonCodableClosure on the provided route which will be invoked when a request comes to the server.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>router.delete("/users") { (respondWith: (RequestError?) -&gt; Void) in
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">delete</span><span class="p">(</span><span class="s">"/users"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
 
-   ...
+   <span class="o">...</span>
 
-   respondWith(nil)
-}
+   <span class="nf">respondWith</span><span class="p">(</span><span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
 </code></pre>
 
                       </div>
@@ -976,12 +976,12 @@ router.get("/users") { (id: Int, respondWith: (User?, RequestError?) -&gt; Void)
                       <div class="abstract">
                         <p>Setup a IdentifierNonCodableClosure on the provided route which will be invoked when a request comes to the server.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>router.delete("/users") { (id: Int, respondWith: (RequestError?) -&gt; Void) in
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">delete</span><span class="p">(</span><span class="s">"/users"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
 
-   ...
+   <span class="o">...</span>
 
-   respondWith(nil)
-}
+   <span class="nf">respondWith</span><span class="p">(</span><span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
 </code></pre>
 
                       </div>
@@ -1043,13 +1043,13 @@ router.get("/users") { (id: Int, respondWith: (User?, RequestError?) -&gt; Void)
                         <p>Setup a CodableClosure on the provided route which will be invoked when a POST request comes to the server.
 In this scenario, the ID (i.e. unique identifier) is a field in the Codable instance.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>//User is a struct object that conforms to Codable
-router.post("/users") { (user: User, respondWith: (User?, RequestError?) -&gt; Void) in
+<pre class="highlight swift"><code><span class="c1">//User is a struct object that conforms to Codable</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="s">"/users"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">user</span><span class="p">:</span> <span class="kt">User</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">User</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
 
-   ...
+   <span class="o">...</span>
 
-   respondWith(user, nil)
-}
+   <span class="nf">respondWith</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
 </code></pre>
 
                       </div>
@@ -1112,13 +1112,13 @@ router.post("/users") { (user: User, respondWith: (User?, RequestError?) -&gt; V
 In this scenario, the ID (i.e. unique identifier) for the Codable instance is a separate field (which is sent back to the client
 in the location HTTP header).</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>//User is a struct object that conforms to Codable
-router.post("/users") { (user: User, respondWith: (Int?, User?, RequestError?) -&gt; Void) in
+<pre class="highlight swift"><code><span class="c1">//User is a struct object that conforms to Codable</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="s">"/users"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">user</span><span class="p">:</span> <span class="kt">User</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">Int</span><span class="p">?,</span> <span class="kt">User</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
 
-   ...
+   <span class="o">...</span>
 
-   respondWith(id, user, nil)
-}
+   <span class="nf">respondWith</span><span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
 </code></pre>
 
                       </div>
@@ -1179,13 +1179,13 @@ router.post("/users") { (user: User, respondWith: (Int?, User?, RequestError?) -
                       <div class="abstract">
                         <p>Setup a IdentifierCodableClosure on the provided route which will be invoked when a request comes to the server.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>//User is a struct object that conforms to Codable
-router.put("/users") { (id: Int, user: User, respondWith: (User?, RequestError?) -&gt; Void) in
+<pre class="highlight swift"><code><span class="c1">//User is a struct object that conforms to Codable</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">put</span><span class="p">(</span><span class="s">"/users"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">user</span><span class="p">:</span> <span class="kt">User</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">User</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
 
-   ...
+   <span class="o">...</span>
 
-   respondWith(user, nil)
-}
+   <span class="nf">respondWith</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
 </code></pre>
 
                       </div>
@@ -1246,14 +1246,14 @@ router.put("/users") { (id: Int, user: User, respondWith: (User?, RequestError?)
                       <div class="abstract">
                         <p>Setup a IdentifierCodableClosure on the provided route which will be invoked when a request comes to the server.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>//User is a struct object that conforms to Codable
-//OptionalUser is a struct object that conforms to Codable where all properties are optional
-router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?, RequestError?) -&gt; Void) -&gt; Void in
+<pre class="highlight swift"><code><span class="c1">//User is a struct object that conforms to Codable</span>
+<span class="c1">//OptionalUser is a struct object that conforms to Codable where all properties are optional</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">patch</span><span class="p">(</span><span class="s">"/users"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">patchUser</span><span class="p">:</span> <span class="kt">OptionalUser</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">User</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span> <span class="k">in</span>
 
-   ...
+   <span class="o">...</span>
 
-   respondWith(user, nil)
-}
+   <span class="nf">respondWith</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
 </code></pre>
 
                       </div>

@@ -183,7 +183,7 @@
                       <div class="abstract">
                         <p>An error that can be thrown while handling JSONP.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code> throw JSONPError.invalidCallbackName(name: taintedJSCallbackName)
+<pre class="highlight swift"><code> <span class="k">throw</span> <span class="kt">JSONPError</span><span class="o">.</span><span class="nf">invalidCallbackName</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="n">taintedJSCallbackName</span><span class="p">)</span>
 </code></pre>
 
 <p>Here a JSONPError is thrown including the <q>taintedJSCallbackName</q> which caused it to error.</p>
@@ -220,13 +220,13 @@
                       <div class="abstract">
                         <p>Possible parameters of Link HTTP header.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>public mutating func addLink(_ link: String, linkParameters: [LinkParameter: String]) {
-   var headerValue = "&lt;\(link)&gt;"
-   for (linkParamer, value) in linkParameters {
-       headerValue += "; \(linkParamer.rawValue)=\"\(value)\""
-   }
-   self.append("Link", value: headerValue)
-}
+<pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">addLink</span><span class="p">(</span><span class="n">_</span> <span class="nv">link</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">linkParameters</span><span class="p">:</span> <span class="p">[</span><span class="kt">LinkParameter</span><span class="p">:</span> <span class="kt">String</span><span class="p">])</span> <span class="p">{</span>
+   <span class="k">var</span> <span class="nv">headerValue</span> <span class="o">=</span> <span class="s">"&lt;</span><span class="se">\(</span><span class="n">link</span><span class="se">)</span><span class="s">&gt;"</span>
+   <span class="k">for</span> <span class="p">(</span><span class="n">linkParamer</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="k">in</span> <span class="n">linkParameters</span> <span class="p">{</span>
+       <span class="n">headerValue</span> <span class="o">+=</span> <span class="s">"; </span><span class="se">\(</span><span class="n">linkParamer</span><span class="o">.</span><span class="n">rawValue</span><span class="se">)</span><span class="s">=</span><span class="se">\"\(</span><span class="n">value</span><span class="se">)\"</span><span class="s">"</span>
+   <span class="p">}</span>
+   <span class="k">self</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="s">"Link"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="n">headerValue</span><span class="p">)</span>
+<span class="p">}</span>
 </code></pre>
 
 <p>Above is an example function to add a link to a HTTP <code>Header</code> where the user must specify a LinkParameter from the enum to be added.
@@ -267,7 +267,7 @@ request. In general they match the actual HTTP methods by the same name. ERROR a
 are two special ones, used by <code><a href="Classes/Router.html">Router</a></code> when building up the set of mappings
 between paths and handlers or middleware.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>method = RouterMethod(fromRawValue: serverRequest.method)
+<pre class="highlight swift"><code><span class="n">method</span> <span class="o">=</span> <span class="kt">RouterMethod</span><span class="p">(</span><span class="nv">fromRawValue</span><span class="p">:</span> <span class="n">serverRequest</span><span class="o">.</span><span class="n">method</span><span class="p">)</span>
 </code></pre>
 
 <p>In this example the serverRequest method is used to create <q>method</q> a <q>RouterMethod</q> instance</p>
@@ -304,7 +304,7 @@ between paths and handlers or middleware.</p>
                       <div class="abstract">
                         <p>The result of parsing the body of the request. When a body of a request is parsed the results of the parsing are placed in the associated value of the enum case based on Content-Type</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>func parse(_ data: Data) -&gt; ParsedBody? {
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">parse</span><span class="p">(</span><span class="n">_</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">ParsedBody</span><span class="p">?</span> <span class="p">{</span>
 </code></pre>
 
 <p>in this example, there is a function <q>parse</q> which takes in data and return an optional of type <q>ParsedBody</q>.</p>

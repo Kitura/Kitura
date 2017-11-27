@@ -168,11 +168,11 @@
               </div>
             <p>Create an on the fly <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> from a <code><a href="../Typealiases.html#/s:6Kitura13RouterHandlera">RouterHandler</a></code> closure.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>let middleware = RouterMiddlewareGenerator { _, response, next in
-    response.status(HTTPStatusCode.OK).send("Hello World\n")
-    next()
-}
-router.all("/hello", middleware: middleware)
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">middleware</span> <span class="o">=</span> <span class="kt">RouterMiddlewareGenerator</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
+    <span class="n">response</span><span class="o">.</span><span class="nf">status</span><span class="p">(</span><span class="kt">HTTPStatusCode</span><span class="o">.</span><span class="kt">OK</span><span class="p">)</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"Hello World</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+    <span class="nf">next</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/hello"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="n">middleware</span><span class="p">)</span>
 </code></pre>
 
 <p>In this example we have made <q>middleware</q> which follows the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> protocol. <q>middleware</q> will return the HTTPStatusCode .OK with the body <q>Hello World</q>. This middleware is then assigned to a router for the route /hello.</p>

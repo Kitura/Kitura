@@ -168,15 +168,16 @@
               </div>
             <p>A set of helper functions to make it easier to create, start, and stop Kitura based servers.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>let router = Router()
-let port: Int = 8080
-public func run() throws{
-    ...
-    Kitura.addHTTPServer(onPort: port, with: router)
-    Kitura.run()
-}
-In this example, we create a run function inside a server Application.swift file, which will create a Kitura server on the specified port, using the given router and then run the created server.
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">port</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">8080</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">run</span><span class="p">()</span> <span class="k">throws</span><span class="p">{</span>
+    <span class="o">...</span>
+    <span class="kt">Kitura</span><span class="o">.</span><span class="nf">addHTTPServer</span><span class="p">(</span><span class="nv">onPort</span><span class="p">:</span> <span class="n">port</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="n">router</span><span class="p">)</span>
+    <span class="kt">Kitura</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
+<span class="p">}</span>
 </code></pre>
+
+<p>In this example, we create a run function inside a server Application.swift file, which will create a Kitura server on the specified port, using the given router and then run the created server.</p>
 
           </div>
         </section>

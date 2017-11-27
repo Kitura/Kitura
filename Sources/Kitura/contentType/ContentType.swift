@@ -21,11 +21,11 @@ import LoggerAPI
 
 /** A set of APIs to work with Content-Type headers, whether to generate the value or to determine if it's an acceptable value.
 ### Usage Example: ###
-    ````
+    ```swift
     let contentType = ContentType.sharedInstance
     let result = contentType.getContentType(forFileName: "foo.png")
     print(result) // "image/png"
-    ````
+    ```
  In this example, we initialise a "ContentType" instance called "contentType". we then use "contentType" get the Content type of "foo.png" which is identified as an "image/png"
  */
 public class ContentType {
@@ -65,11 +65,11 @@ public class ContentType {
      /**
      Get the content type for the given file extension.
      ### Usage Example: ###
-     ````
+     ```swift
      let contentType = ContentType.sharedInstance
      let result = contentType.getContentType(forExtension: "js")
      print(result) // "application/javascript"
-     ````
+     ```
      - Parameter forExtension: the file extension.
      - Returns: an Optional String for the content type.
      */
@@ -80,11 +80,11 @@ public class ContentType {
      /**
      Get the content type for the given file based on its extension.
      ### Usage Example: ###
-     ````
+     ```swift
      let contentType = ContentType.sharedInstance
      let result = contentType.getContentType(forFileName: "test.html")
      print(result) // "text/html"
-     ````
+     ```
      - Parameter forFileName: the file name.
      - Returns: an Optional String for the content type.
      */
@@ -112,11 +112,11 @@ public class ContentType {
      /**
      Check if the message content type matches the type descriptor.
      ### Usage Example: ###
-     ````
+     ```swift
      let contentType = ContentType.sharedInstance
      var result = contentType.isContentType("application/json", ofType: "json")
      print(result) // True
-     ````
+     ```
      - Parameter messageContentType: the content type.
      - Parameter ofType: the description of the type.
      - Returns: true if the types matched.

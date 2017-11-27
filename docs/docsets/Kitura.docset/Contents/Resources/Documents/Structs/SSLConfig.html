@@ -168,10 +168,10 @@
               </div>
             <p>A struct which allows the creation of an SSLService Configuration using either a <q>CA Certificate file</q>, a <q>CA Certificate directory</q> or a <q>Certificate Chain File</q>.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>let sslConfigDir = URL(fileURLWithPath: #file).appendingPathComponent("../SSLConfig")
-let certificatePath = sslConfigDir.appendingPathComponent("certificate.pem").standardized.path
-let keyPath = sslConfigDir.appendingPathComponent("key.pem").standardized.path
-let sslConfig = SSLConfig(withCACertificateDirectory: nil, usingCertificateFile: certificatePath, withKeyFile: keyPath, usingSelfSignedCerts: true)
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">sslConfigDir</span> <span class="o">=</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">fileURLWithPath</span><span class="p">:</span> <span class="err">#</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="nf">appendingPathComponent</span><span class="p">(</span><span class="s">"../SSLConfig"</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">certificatePath</span> <span class="o">=</span> <span class="n">sslConfigDir</span><span class="o">.</span><span class="nf">appendingPathComponent</span><span class="p">(</span><span class="s">"certificate.pem"</span><span class="p">)</span><span class="o">.</span><span class="n">standardized</span><span class="o">.</span><span class="n">path</span>
+<span class="k">let</span> <span class="nv">keyPath</span> <span class="o">=</span> <span class="n">sslConfigDir</span><span class="o">.</span><span class="nf">appendingPathComponent</span><span class="p">(</span><span class="s">"key.pem"</span><span class="p">)</span><span class="o">.</span><span class="n">standardized</span><span class="o">.</span><span class="n">path</span>
+<span class="k">let</span> <span class="nv">sslConfig</span> <span class="o">=</span> <span class="kt">SSLConfig</span><span class="p">(</span><span class="nv">withCACertificateDirectory</span><span class="p">:</span> <span class="kc">nil</span><span class="p">,</span> <span class="nv">usingCertificateFile</span><span class="p">:</span> <span class="n">certificatePath</span><span class="p">,</span> <span class="nv">withKeyFile</span><span class="p">:</span> <span class="n">keyPath</span><span class="p">,</span> <span class="nv">usingSelfSignedCerts</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
 </code></pre>
 
 <p>In this example, an instance of <q>SSLConfig</q> is initialised by providing the paths to an existing certificate file and the corresponding key file.</p>

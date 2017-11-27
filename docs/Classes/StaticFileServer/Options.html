@@ -168,8 +168,8 @@
               </div>
             <p>Configuration options for <code><a href="../../Classes/StaticFileServer.html">StaticFileServer</a></code>.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>cacheOptions = StaticFileServer.CacheOptions(addLastModifiedHeader: false, generateETag: false)
-options = StaticFileServer.Options(serveIndexForDirectory: false, cacheOptions: cacheOptions)
+<pre class="highlight swift"><code><span class="n">cacheOptions</span> <span class="o">=</span> <span class="kt">StaticFileServer</span><span class="o">.</span><span class="kt">CacheOptions</span><span class="p">(</span><span class="nv">addLastModifiedHeader</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">generateETag</span><span class="p">:</span> <span class="kc">false</span><span class="p">)</span>
+<span class="n">options</span> <span class="o">=</span> <span class="kt">StaticFileServer</span><span class="o">.</span><span class="kt">Options</span><span class="p">(</span><span class="nv">serveIndexForDirectory</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">cacheOptions</span><span class="p">:</span> <span class="n">cacheOptions</span><span class="p">)</span>
 </code></pre>
 
 <p>In this example, we initialise some <code>cacheOptions</code> for a static file server and then use them to create some <q>options</q> for a static file server. Since <q>acceptRanges</q> and <q>redirect</q> are not defined, they will default to true and <q>possibleExtensions</q> will default to an empty array.</p>

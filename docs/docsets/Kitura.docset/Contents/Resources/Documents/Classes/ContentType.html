@@ -168,11 +168,11 @@
               </div>
             <p>A set of APIs to work with Content-Type headers, whether to generate the value or to determine if it&rsquo;s an acceptable value.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>````
+<pre class="highlight plaintext"><code>```swift
 let contentType = ContentType.sharedInstance
 let result = contentType.getContentType(forFileName: "foo.png")
 print(result) // "image/png"
-````
+```
 </code></pre>
 
 <p>In this example, we initialise a <q>ContentType</q> instance called <q>contentType</q>. we then use <q>contentType</q> get the Content type of <q>foo.png</q> which is identified as an <q>image/png</q></p>
@@ -226,9 +226,9 @@ print(result) // "image/png"
                       <div class="abstract">
                         <p>Get the content type for the given file extension.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>let contentType = ContentType.sharedInstance
-let result = contentType.getContentType(forExtension: "js")
-print(result) // "application/javascript"
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">contentType</span> <span class="o">=</span> <span class="kt">ContentType</span><span class="o">.</span><span class="n">sharedInstance</span>
+<span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="n">contentType</span><span class="o">.</span><span class="nf">getContentType</span><span class="p">(</span><span class="nv">forExtension</span><span class="p">:</span> <span class="s">"js"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="c1">// "application/javascript"</span>
 </code></pre>
 
                       </div>
@@ -281,9 +281,9 @@ print(result) // "application/javascript"
                       <div class="abstract">
                         <p>Get the content type for the given file based on its extension.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>let contentType = ContentType.sharedInstance
-let result = contentType.getContentType(forFileName: "test.html")
-print(result) // "text/html"
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">contentType</span> <span class="o">=</span> <span class="kt">ContentType</span><span class="o">.</span><span class="n">sharedInstance</span>
+<span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="n">contentType</span><span class="o">.</span><span class="nf">getContentType</span><span class="p">(</span><span class="nv">forFileName</span><span class="p">:</span> <span class="s">"test.html"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="c1">// "text/html"</span>
 </code></pre>
 
                       </div>
@@ -336,9 +336,9 @@ print(result) // "text/html"
                       <div class="abstract">
                         <p>Check if the message content type matches the type descriptor.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>let contentType = ContentType.sharedInstance
-var result = contentType.isContentType("application/json", ofType: "json")
-print(result) // True
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">contentType</span> <span class="o">=</span> <span class="kt">ContentType</span><span class="o">.</span><span class="n">sharedInstance</span>
+<span class="k">var</span> <span class="nv">result</span> <span class="o">=</span> <span class="n">contentType</span><span class="o">.</span><span class="nf">isContentType</span><span class="p">(</span><span class="s">"application/json"</span><span class="p">,</span> <span class="nv">ofType</span><span class="p">:</span> <span class="s">"json"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="c1">// True</span>
 </code></pre>
 
                       </div>

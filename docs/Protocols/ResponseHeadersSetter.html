@@ -168,14 +168,14 @@
               </div>
             <p>A protocol for providing a custom method for setting the headers of the response of static file serving middleware.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>class FileServer {
-    private let responseHeadersSetter: ResponseHeadersSetter?
-    init(servingFilesPath: String, options: StaticFileServer.Options, responseHeadersSetter: ResponseHeadersSetter?) {
-        ...
-        self.responseHeadersSetter = responseHeadersSetter
-    }
-    ...
- }
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">FileServer</span> <span class="p">{</span>
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">responseHeadersSetter</span><span class="p">:</span> <span class="kt">ResponseHeadersSetter</span><span class="p">?</span>
+    <span class="nf">init</span><span class="p">(</span><span class="nv">servingFilesPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">options</span><span class="p">:</span> <span class="kt">StaticFileServer</span><span class="o">.</span><span class="kt">Options</span><span class="p">,</span> <span class="nv">responseHeadersSetter</span><span class="p">:</span> <span class="kt">ResponseHeadersSetter</span><span class="p">?)</span> <span class="p">{</span>
+        <span class="o">...</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">responseHeadersSetter</span> <span class="o">=</span> <span class="n">responseHeadersSetter</span>
+    <span class="p">}</span>
+    <span class="o">...</span>
+ <span class="p">}</span>
 </code></pre>
 
 <p>In this example, when the <code>FileServer</code> is initialised, you can provide a custom responseHeadersSetter obeying the <q>ResponseHeadersSetter</q> protocol, which will then be used by the server.</p>

@@ -24,13 +24,13 @@ import Foundation
 
 /** The RouterResponse class is used to define and work with responses from the Router. It contains and allows access to the HTTP response code (e.g. 404 not found) and, if they exist, the HTTP `Headers` and Body of the router response.
 ### Usage Example: ###
-````
+```swift
 router.get("/route/:p1") { _, response, next in
     ...
     let httpStatusCode = response.statusCode
     ...
 }
-````
+```
 In this example "response" is an instance of the class "RouterResponse", which is used to determine the router HTTP status code response to a get request.
  */
 public class RouterResponse {
