@@ -21,7 +21,7 @@ import Foundation
 
 // MARK: BodyParser
 
-/// The BodyParser parses the body of the request prior to sending it to the handler. It reads the Content-Type of the message header and populates the `RouterRequest` body field with a `ParsedBody` enumeration (e.g. json, raw, text, urlEncoded)
+/// The `BodyParser` parses the body of the request prior to sending it to the handler. It reads the Content-Type of the message header and populates the `RouterRequest` body field with a `ParsedBody` enumeration (e.g. json, raw, text, urlEncoded)
 /// In order for the BodyParser to be used it must first be registered with any routes that are interested in the ParsedBody payload.
 ///### Usage Example: ###
 ///```swift
@@ -46,9 +46,9 @@ public class BodyParser: RouterMiddleware {
 
     /// Handle the request, i.e. parse the body of the request.
     ///
-    /// - Parameter request: the router request.
-    /// - Parameter response: the router response.
-    /// - Parameter next: the closure for the next execution block.
+    /// - Parameter request: The router request.
+    /// - Parameter response: The router response.
+    /// - Parameter next: The closure for the next execution block.
     public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws {
         guard request.body == nil else {
             return next() // the body was already parsed
@@ -65,9 +65,9 @@ public class BodyParser: RouterMiddleware {
 
     /// Parse the body of the incoming message.
     ///
-    /// - Parameter message: message coming from the socket.
-    /// - Parameter contentType: the content type as a String.
-    /// - Returns: the parsed body.
+    /// - Parameter message: Message coming from the socket.
+    /// - Parameter contentType: The content type as a String.
+    /// - Returns: The parsed body.
     public class func parse(_ message: RouterRequest, contentType: String?) -> ParsedBody? {
         guard let contentType = contentType else {
             return nil
@@ -117,9 +117,9 @@ public class BodyParser: RouterMiddleware {
 
     /// Read incoming message for Parse
     ///
-    /// - Parameter message: message coming from the socket
+    /// - Parameter message: Message coming from the socket
     /// - Parameter parser: ((NSData) -> ParsedBody?) store at parserMap
-    /// - Returns: the parsed body
+    /// - Returns: The parsed body
     private class func parse(_ message: RouterRequest, parser: BodyParserProtocol) -> ParsedBody? {
         message.hasBodyParserBeenUsed = true
         do {
@@ -133,9 +133,9 @@ public class BodyParser: RouterMiddleware {
 
     /// Read the body data of the request.
     ///
-    /// - Parameter with: the socket reader.
+    /// - Parameter with: The socket reader.
     /// - Throws: Socket.Error if an error occurred while reading from a socket.
-    /// - Returns: data for the body.
+    /// - Returns: Data for the body.
     public class func readBodyData(with reader: RouterRequest) throws -> Data {
         var bodyData = Data()
         var length = 0

@@ -8,13 +8,6 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/andrewlees/git/Kitura/Sources/Kitura/RouterResponse.swift",
-      "line": 363,
-      "symbol": "RouterResponse.render(_:context:options:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/andrewlees/git/Kitura/Sources/Kitura/staticFileServer/StaticFileServer.swift",
       "line": 101,
       "symbol": "StaticFileServer.absoluteRootPath",

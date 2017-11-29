@@ -313,7 +313,7 @@ the appropriate code for handling. This includes:</p>
 <span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/hello"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="n">middleware</span><span class="p">)</span>
 </code></pre>
 
-<p>In this example we have made <q>middleware</q> which follows the <code><a href="Protocols/RouterMiddleware.html">RouterMiddleware</a></code> protocol. <q>middleware</q> will return the HTTPStatusCode .OK with the body <q>Hello World</q>. This middleware is then assigned to a router for the route /hello.</p>
+<p>In this example we have made <q>middleware</q> which follows the <code><a href="Protocols/RouterMiddleware.html">RouterMiddleware</a></code> protocol. <q>middleware</q> will return the HTTPStatusCode .OK with the body <q>Hello World</q>. This middleware is then assigned to a router for the route <q>/hello</q>.</p>
 
                         <a href="Classes/RouterMiddlewareGenerator.html" class="slightly-smaller">See more</a>
                       </div>
@@ -352,7 +352,7 @@ the appropriate code for handling. This includes:</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The RouterRequest class is used to define and work with incoming requests to the Router. It contains and allows access to the request HTTP <code><a href="Structs/Headers.html">Headers</a></code> and Body as well as other information such as the hostname and port of the request. You can also check if passed in types are acceptable based on the request’s header field.</p>
+                        <p>The RouterRequest class is used to define and work with incoming requests to the Router. It contains and allows access to the request HTTP <code><a href="Structs/Headers.html">Headers</a></code> and Body as well as other information such as the <code>hostname</code> and <code>port</code> of the request. You can also check if passed in types are acceptable based on the request’s header field.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight swift"><code> <span class="n">router</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="s">"/route/:p1"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
     <span class="o">...</span>
@@ -409,7 +409,7 @@ the appropriate code for handling. This includes:</p>
 <span class="p">}</span>
 </code></pre>
 
-<p>In this example <q>response</q> is an instance of the class <q>RouterResponse</q>, which is used to determine the router HTTP status code response to a get request.</p>
+<p>In this example <q>response</q> is an instance of the class <code>RouterResponse</code>, which is used to determine the router HTTP status code response to a get request.</p>
 
                         <a href="Classes/RouterResponse.html" class="slightly-smaller">See more</a>
                       </div>
@@ -448,7 +448,7 @@ the appropriate code for handling. This includes:</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The BodyParser parses the body of the request prior to sending it to the handler. It reads the Content-Type of the message header and populates the <code><a href="Classes/RouterRequest.html">RouterRequest</a></code> body field with a <code><a href="Enums/ParsedBody.html">ParsedBody</a></code> enumeration (e.g. json, raw, text, urlEncoded)
+                        <p>The <code>BodyParser</code> parses the body of the request prior to sending it to the handler. It reads the Content-Type of the message header and populates the <code><a href="Classes/RouterRequest.html">RouterRequest</a></code> body field with a <code><a href="Enums/ParsedBody.html">ParsedBody</a></code> enumeration (e.g. json, raw, text, urlEncoded)
  In order for the BodyParser to be used it must first be registered with any routes that are interested in the ParsedBody payload.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight swift"><code>   <span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/*"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="kt">BodyParser</span><span class="p">())</span>
@@ -494,14 +494,14 @@ the appropriate code for handling. This includes:</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The ContentType class provides functions to determine the MIME content type for a given file extension. The user can pass in a complete file name e.g. <q>foo.png</q> or just the file extension e.g. <q>png</q>, or they can pass in both a MIME content type and a file extension and query whether the they match.</p>
+                        <p>The <code>ContentType</code> class provides functions to determine the MIME content type for a given file extension. The user can pass in a complete file name e.g. <q>foo.png</q> or just the file extension e.g. <q>png</q>, or they can pass in both a MIME content type and a file extension and query whether the they match.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">contentType</span> <span class="o">=</span> <span class="kt">ContentType</span><span class="o">.</span><span class="n">sharedInstance</span>
 <span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="n">contentType</span><span class="o">.</span><span class="nf">getContentType</span><span class="p">(</span><span class="nv">forFileName</span><span class="p">:</span> <span class="s">"foo.png"</span><span class="p">)</span>
 <span class="nf">print</span><span class="p">(</span><span class="kt">String</span><span class="p">(</span><span class="nv">describing</span><span class="p">:</span> <span class="n">result</span><span class="p">))</span> <span class="c1">// "image/png"</span>
 </code></pre>
 
-<p><q>In this example, we initialise a ContentType instance called contentType, we then use this instance to obtain the MIME content type of the file</q>foo.png<q>, which is identified as</q>image/png&quot;.</p>
+<p>In this example, we initialise a <code>ContentType</code> instance called <q>contentType</q>, we then use this instance to obtain the MIME content type of the file <q>foo.png</q>, which is identified as <q>image/png</q>.</p>
 
                         <a href="Classes/ContentType.html" class="slightly-smaller">See more</a>
                       </div>

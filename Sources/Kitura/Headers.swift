@@ -111,7 +111,7 @@ extension Headers {
 
     /// Sets the Location HTTP header
     ///
-    /// - Parameter path: the path to set into the header or the special reserved word "back".
+    /// - Parameter path: The path to set into the header or the special reserved word "back".
     public mutating func setLocation(_ path: String) {
         var p = path
         if  p == "back" {
@@ -163,7 +163,7 @@ extension Headers {
 
     /// Adds a link with specified parameters to Link HTTP header
     ///
-    /// - Parameter link: link value
+    /// - Parameter link: Link value
     /// - Parameter linkParameters: The link parameters (according to RFC 5988) with their values
     public mutating func addLink(_ link: String, linkParameters: [LinkParameter: String]) {
         var headerValue = "<\(link)>"

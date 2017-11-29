@@ -22,7 +22,7 @@ import Foundation
 
 // MARK: RouterRequest
 
-/** The RouterRequest class is used to define and work with incoming requests to the Router. It contains and allows access to the request HTTP `Headers` and Body as well as other information such as the hostname and port of the request. You can also check if passed in types are acceptable based on the request’s header field.
+/** The RouterRequest class is used to define and work with incoming requests to the Router. It contains and allows access to the request HTTP `Headers` and Body as well as other information such as the `hostname` and `port` of the request. You can also check if passed in types are acceptable based on the request’s header field.
 ### Usage Example: ###
 ```swift
  router.post("/route/:p1") { request, _, next in
@@ -34,6 +34,7 @@ import Foundation
  In this example "request" is an instance of the class "RouterRequest", which is used by the server to read the Body of "Codable" type "InputType", from the post request so that it can be used later.
 */
 public class RouterRequest {
+    // MARK: Request Information
 
     /// The server request.
     let serverRequest: ServerRequest
@@ -88,7 +89,7 @@ public class RouterRequest {
 
     /// The method of the request.
     public let method: RouterMethod
-
+    // MARK: URL Information
     private var _parsedURL: URLParser?
     internal let parsedURLPath: URLParser
 
@@ -132,7 +133,7 @@ public class RouterRequest {
 
     /// The URL from the request
     public var urlURL: URL { return serverRequest.urlURL }
-
+    // MARK: Request Components
     /// List of HTTP headers with simple String values.
     public let headers: Headers
 
@@ -164,7 +165,7 @@ public class RouterRequest {
 
     /// Initializes a `RouterRequest` instance
     ///
-    /// - Parameter request: the server request
+    /// - Parameter request: The server request
     init(request: ServerRequest) {
         serverRequest = request
         parsedURLPath = URLParser(url: request.url, isConnect: false)
@@ -172,12 +173,13 @@ public class RouterRequest {
         method = RouterMethod(fromRawValue: serverRequest.method)
         headers = Headers(headers: serverRequest.headers)
     }
+    // MARK: Read Body
 
     /// Read the body of the request as Data.
     ///
     /// - Parameter into: Data object in which the body of the request is returned.
     /// - Throws: Socket.Error if an error occurred while reading from a socket.
-    /// - Returns: the number of bytes read.
+    /// - Returns: The number of bytes read.
     public func read(into data: inout Data) throws -> Int {
         return try serverRequest.read(into: &data)
     }
@@ -198,17 +200,18 @@ public class RouterRequest {
     /// Read the body of the request as String.
     ///
     /// - Throws: Socket.Error if an error occurred while reading from a socket.
-    /// - Returns: the String with the request body.
+    /// - Returns: The String with the request body.
     public func readString() throws -> String? {
         return try serverRequest.readString()
     }
+    // MARK: Check Acceptable
 
     /// Check if passed in types are acceptable based on the request's header field
     /// specified in the first parameter.
     ///
-    /// - Parameter header: name of request's header field to be checked.
-    /// - Parameter types: array of content/mime type strings.
-    /// - Returns: most acceptable type or nil if there are none.
+    /// - Parameter header: Name of request's header field to be checked.
+    /// - Parameter types: Array of content/mime type strings.
+    /// - Returns: Most acceptable type or nil if there are none.
     public func accepts(header: String = "Accept", types: [String]) -> String? {
         guard let acceptHeaderValue = headers[header] else {
             return nil
@@ -228,9 +231,9 @@ public class RouterRequest {
     /// Check if passed in types are acceptable based on the request's header field
     /// specified in the first parameter.
     ///
-    /// - Parameter header: name of request's header field to be checked.
-    /// - Parameter types: content/mime type strings.
-    /// - Returns: most acceptable type or nil if there are none.
+    /// - Parameter header: Name of request's header field to be checked.
+    /// - Parameter types: Content/mime type strings.
+    /// - Returns: Most acceptable type or nil if there are none.
     public func accepts(header: String = "Accept", types: String...) -> String? {
         return accepts(header:header, types: types)
     }
@@ -238,9 +241,9 @@ public class RouterRequest {
     /// Check if passed in types are acceptable based on the request's header field
     /// specified in the first parameter.
     ///
-    /// - Parameter header: name of request's header field to be checked.
-    /// - Parameter type: content/mime type string.
-    /// - Returns: most acceptable type or nil if there are none.
+    /// - Parameter header: Name of request's header field to be checked.
+    /// - Parameter type: Content/mime type string.
+    /// - Returns: Most acceptable type or nil if there are none.
     public func accepts(header: String = "Accept", type: String) -> String? {
         return accepts(header:header, types: [type])
     }

@@ -27,7 +27,7 @@
  }
  router.all("/hello", middleware: middleware)
  ```
- In this example we have made "middleware" which follows the `RouterMiddleware` protocol. "middleware" will return the HTTPStatusCode .OK with the body "Hello World". This middleware is then assigned to a router for the route /hello.
+ In this example we have made "middleware" which follows the `RouterMiddleware` protocol. "middleware" will return the HTTPStatusCode .OK with the body "Hello World". This middleware is then assigned to a router for the route "/hello".
  */
 public class RouterMiddlewareGenerator: RouterMiddleware {
 

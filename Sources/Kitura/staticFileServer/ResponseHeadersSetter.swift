@@ -37,9 +37,9 @@ public protocol ResponseHeadersSetter {
 
     /// Set the headers of the response
     ///
-    /// - Parameter response: the router response
-    /// - Parameter filePath: the path of the file being served
-    /// - Parameter fileAttributes: an array of attributes of the file being served
+    /// - Parameter response: The router response
+    /// - Parameter filePath: The path of the file being served
+    /// - Parameter fileAttributes: An array of attributes of the file being served
     func setCustomResponseHeaders(response: RouterResponse, filePath: String, fileAttributes: [FileAttributeKey : Any])
 
 }
