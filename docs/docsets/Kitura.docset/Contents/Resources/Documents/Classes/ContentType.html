@@ -166,16 +166,14 @@
 
                 </div>
               </div>
-            <p>A set of APIs to work with Content-Type headers, whether to generate the value or to determine if it&rsquo;s an acceptable value.</p>
+            <p>The ContentType class provides functions to determine the MIME content type for a given file extension. The user can pass in a complete file name e.g. <q>foo.png</q> or just the file extension e.g. <q>png</q>, or they can pass in both a MIME content type and a file extension and query whether the they match.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight plaintext"><code>```swift
-let contentType = ContentType.sharedInstance
-let result = contentType.getContentType(forFileName: "foo.png")
-print(result) // "image/png"
-```
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">contentType</span> <span class="o">=</span> <span class="kt">ContentType</span><span class="o">.</span><span class="n">sharedInstance</span>
+<span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="n">contentType</span><span class="o">.</span><span class="nf">getContentType</span><span class="p">(</span><span class="nv">forFileName</span><span class="p">:</span> <span class="s">"foo.png"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="kt">String</span><span class="p">(</span><span class="nv">describing</span><span class="p">:</span> <span class="n">result</span><span class="p">))</span> <span class="c1">// "image/png"</span>
 </code></pre>
 
-<p>In this example, we initialise a <q>ContentType</q> instance called <q>contentType</q>. we then use <q>contentType</q> get the Content type of <q>foo.png</q> which is identified as an <q>image/png</q></p>
+<p><q>In this example, we initialise a ContentType instance called contentType, we then use this instance to obtain the MIME content type of the file</q>foo.png<q>, which is identified as</q>image/png&quot;.</p>
 
           </div>
         </section>
@@ -228,7 +226,7 @@ print(result) // "image/png"
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">contentType</span> <span class="o">=</span> <span class="kt">ContentType</span><span class="o">.</span><span class="n">sharedInstance</span>
 <span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="n">contentType</span><span class="o">.</span><span class="nf">getContentType</span><span class="p">(</span><span class="nv">forExtension</span><span class="p">:</span> <span class="s">"js"</span><span class="p">)</span>
-<span class="nf">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="c1">// "application/javascript"</span>
+<span class="nf">print</span><span class="p">(</span><span class="kt">String</span><span class="p">(</span><span class="nv">describing</span><span class="p">:</span> <span class="n">result</span><span class="p">))</span> <span class="c1">// "application/javascript"</span>
 </code></pre>
 
                       </div>
@@ -283,7 +281,7 @@ print(result) // "image/png"
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">contentType</span> <span class="o">=</span> <span class="kt">ContentType</span><span class="o">.</span><span class="n">sharedInstance</span>
 <span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="n">contentType</span><span class="o">.</span><span class="nf">getContentType</span><span class="p">(</span><span class="nv">forFileName</span><span class="p">:</span> <span class="s">"test.html"</span><span class="p">)</span>
-<span class="nf">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="c1">// "text/html"</span>
+<span class="nf">print</span><span class="p">(</span><span class="kt">String</span><span class="p">(</span><span class="nv">describing</span><span class="p">:</span> <span class="n">result</span><span class="p">))</span> <span class="c1">// "text/html"</span>
 </code></pre>
 
                       </div>
@@ -338,7 +336,7 @@ print(result) // "image/png"
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">contentType</span> <span class="o">=</span> <span class="kt">ContentType</span><span class="o">.</span><span class="n">sharedInstance</span>
 <span class="k">var</span> <span class="nv">result</span> <span class="o">=</span> <span class="n">contentType</span><span class="o">.</span><span class="nf">isContentType</span><span class="p">(</span><span class="s">"application/json"</span><span class="p">,</span> <span class="nv">ofType</span><span class="p">:</span> <span class="s">"json"</span><span class="p">)</span>
-<span class="nf">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="c1">// True</span>
+<span class="nf">print</span><span class="p">(</span><span class="kt">String</span><span class="p">(</span><span class="nv">describing</span><span class="p">:</span> <span class="n">result</span><span class="p">))</span> <span class="c1">// True</span>
 </code></pre>
 
                       </div>
@@ -396,7 +394,7 @@ print(result) // "image/png"
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-11-27)</p>
+      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-11-29)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

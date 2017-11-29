@@ -19,19 +19,21 @@ import LoggerAPI
 
 // MARK: ContentType
 
-/** A set of APIs to work with Content-Type headers, whether to generate the value or to determine if it's an acceptable value.
+/**
+The ContentType class provides functions to determine the MIME content type for a given file extension. The user can pass in a complete file name e.g. "foo.png" or just the file extension e.g. "png", or they can pass in both a MIME content type and a file extension and query whether the they match.
 ### Usage Example: ###
-    ```swift
-    let contentType = ContentType.sharedInstance
-    let result = contentType.getContentType(forFileName: "foo.png")
-    print(result) // "image/png"
-    ```
- In this example, we initialise a "ContentType" instance called "contentType". we then use "contentType" get the Content type of "foo.png" which is identified as an "image/png"
+```swift
+let contentType = ContentType.sharedInstance
+let result = contentType.getContentType(forFileName: "foo.png")
+print(String(describing: result)) // "image/png"
+```
+"In this example, we initialise a ContentType instance called contentType, we then use this instance to obtain the MIME content type of the file "foo.png", which is identified as "image/png".
  */
 public class ContentType {
 
     /// A dictionary of extensions to MIME type descriptions
     private var extToContentType = [String:String]()
+    
 
     /// Shared singleton instance.
     public static let sharedInstance = ContentType()
@@ -43,7 +45,6 @@ public class ContentType {
             Log.error("Error parsing \(contentTypesString)")
             return
         }
-
         let jsonParseOptions = JSONSerialization.ReadingOptions.mutableContainers
         let parsedObject = try? JSONSerialization.jsonObject(with: contentTypesData!,
                                                              options: jsonParseOptions)
@@ -68,7 +69,7 @@ public class ContentType {
      ```swift
      let contentType = ContentType.sharedInstance
      let result = contentType.getContentType(forExtension: "js")
-     print(result) // "application/javascript"
+     print(String(describing: result)) // "application/javascript"
      ```
      - Parameter forExtension: the file extension.
      - Returns: an Optional String for the content type.
@@ -83,7 +84,7 @@ public class ContentType {
      ```swift
      let contentType = ContentType.sharedInstance
      let result = contentType.getContentType(forFileName: "test.html")
-     print(result) // "text/html"
+     print(String(describing: result)) // "text/html"
      ```
      - Parameter forFileName: the file name.
      - Returns: an Optional String for the content type.
@@ -115,7 +116,7 @@ public class ContentType {
      ```swift
      let contentType = ContentType.sharedInstance
      var result = contentType.isContentType("application/json", ofType: "json")
-     print(result) // True
+     print(String(describing: result)) // True
      ```
      - Parameter messageContentType: the content type.
      - Parameter ofType: the description of the type.
