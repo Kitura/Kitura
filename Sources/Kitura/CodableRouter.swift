@@ -86,7 +86,7 @@ extension Router {
     }
 
     /**
-     Setup a (QueryParameter, CodableArrayResultClosure) -> Void on the provided route which will be invoked when a request comes to the server.
+     Setup a (Query, CodableArrayResultClosure) -> Void on the provided route which will be invoked when a request comes to the server.
 
      ### Usage Example: ###
      ````
@@ -158,7 +158,7 @@ extension Router {
      }
      ````
      - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
-     - Parameter handler: A (QueryParameter, ResultClosure) -> Void that gets invoked when a request comes to the server.
+     - Parameter handler: A (Query, ResultClosure) -> Void that gets invoked when a request comes to the server.
      */
     public func delete<Q: Query>(_ route: String, handler: @escaping (Q, @escaping ResultClosure) -> Void) {
         deleteSafely(route, handler: handler)
