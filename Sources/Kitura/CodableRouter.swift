@@ -267,18 +267,12 @@ extension Router {
 
                 // Define handler to process result from application
                 let resultHandler: CodableResultClosure<O> = { result, error in
-                    do {
-                        if let err = error {
-                            let status = self.httpStatusCode(from: err)
-                            response.status(status)
-                        } else {
-                            let encoded = try JSONEncoder().encode(result)
-                            response.status(.created)
-                            response.send(data: encoded)
-                        }
-                    } catch {
-                        // Http 500 error
-                        response.status(.internalServerError)
+                    if let err = error {
+                        let status = self.httpStatusCode(from: err)
+                        response.status(status)
+                    } else {
+                        response.status(.created)
+                        response.send(result)
                     }
                     next()
                 }
@@ -314,25 +308,19 @@ extension Router {
 
                 // Define handler to process result from application
                 let resultHandler: IdentifierCodableResultClosure<Id, O> = { id, result, error in
-                    do {
-                        if let err = error {
-                            let status = self.httpStatusCode(from: err)
-                            response.status(status)
-                        } else {
-                            guard let id = id else {
-                                Log.error("No id (unique identifier) value provided.")
-                                response.status(.internalServerError)
-                                next()
-                                return
-                            }
-                            let encoded = try JSONEncoder().encode(result)
-                            response.status(.created)
-                            response.headers["Location"] = String(id.value)
-                            response.send(data: encoded)
+                    if let err = error {
+                        let status = self.httpStatusCode(from: err)
+                        response.status(status)
+                    } else {
+                        guard let id = id else {
+                            Log.error("No id (unique identifier) value provided.")
+                            response.status(.internalServerError)
+                            next()
+                            return
                         }
-                    } catch {
-                        // Http 500 error
-                        response.status(.internalServerError)
+                        response.status(.created)
+                        response.headers["Location"] = String(id.value)
+                        response.send(result)
                     }
                     next()
                 }
@@ -370,18 +358,12 @@ extension Router {
                 let param = try request.read(as: I.self)
 
                 let resultHandler: CodableResultClosure<O> = { result, error in
-                    do {
-                        if let err = error {
-                            let status = self.httpStatusCode(from: err)
-                            response.status(status)
-                        } else {
-                            let encoded = try JSONEncoder().encode(result)
-                            response.status(.OK)
-                            response.send(data: encoded)
-                        }
-                    } catch {
-                        // Http 500 error
-                        response.status(.internalServerError)
+                    if let err = error {
+                        let status = self.httpStatusCode(from: err)
+                        response.status(status)
+                    } else {
+                        response.status(.OK)
+                        response.send(result)
                     }
                     next()
                 }
@@ -419,18 +401,12 @@ extension Router {
 
                 // Define handler to process result from application
                 let resultHandler: CodableResultClosure<O> = { result, error in
-                    do {
-                        if let err = error {
-                            let status = self.httpStatusCode(from: err)
-                            response.status(status)
-                        } else {
-                            let encoded = try JSONEncoder().encode(result)
-                            response.status(.OK)
-                            response.send(data: encoded)
-                        }
-                    } catch {
-                        // Http 500 error
-                        response.status(.internalServerError)
+                    if let err = error {
+                        let status = self.httpStatusCode(from: err)
+                        response.status(status)
+                    } else {
+                        response.status(.OK)
+                        response.send(result)
                     }
                     next()
                 }
@@ -450,18 +426,12 @@ extension Router {
             Log.verbose("Received GET (single no-identifier) type-safe request")
             // Define result handler
             let resultHandler: CodableResultClosure<O> = { result, error in
-                do {
-                    if let err = error {
-                        let status = self.httpStatusCode(from: err)
-                        response.status(status)
-                    } else {
-                        let encoded = try JSONEncoder().encode(result)
-                        response.status(.OK)
-                        response.send(data: encoded)
-                    }
-                } catch {
-                    // Http 500 error
-                    response.status(.internalServerError)
+                if let err = error {
+                    let status = self.httpStatusCode(from: err)
+                    response.status(status)
+                } else {
+                    response.status(.OK)
+                    response.send(result)
                 }
                 next()
             }
@@ -475,18 +445,12 @@ extension Router {
             Log.verbose("Received GET (plural) type-safe request")
             // Define result handler
             let resultHandler: CodableArrayResultClosure<O> = { result, error in
-                do {
-                    if let err = error {
-                        let status = self.httpStatusCode(from: err)
-                        response.status(status)
-                    } else {
-                        let encoded = try JSONEncoder().encode(result)
-                        response.status(.OK)
-                        response.send(data: encoded)
-                    }
-                } catch {
-                    // Http 500 error
-                    response.status(.internalServerError)
+                if let err = error {
+                    let status = self.httpStatusCode(from: err)
+                    response.status(status)
+                } else {
+                    response.status(.OK)
+                    response.send(result)
                 }
                 next()
             }
@@ -500,18 +464,12 @@ extension Router {
             Log.verbose("Received GET (plural) type-safe request with Query Parameters")
             // Define result handler
             let resultHandler: CodableArrayResultClosure<O> = { result, error in
-                do {
-                    if let err = error {
-                        let status = self.httpStatusCode(from: err)
-                        response.status(status)
-                    } else {
-                        let encoded = try JSONEncoder().encode(result)
-                        response.status(.OK)
-                        response.send(data: encoded)
-                    }
-                } catch {
-                    // Http 500 error
-                    response.status(.internalServerError)
+                if let err = error {
+                    let status = self.httpStatusCode(from: err)
+                    response.status(status)
+                } else {
+                    response.status(.OK)
+                    response.send(result)
                 }
                 next()
             }
@@ -537,18 +495,12 @@ extension Router {
             do {
                 // Define result handler
                 let resultHandler: CodableResultClosure<O> = { result, error in
-                    do {
-                        if let err = error {
-                            let status = self.httpStatusCode(from: err)
-                            response.status(status)
-                        } else {
-                            let encoded = try JSONEncoder().encode(result)
-                            response.status(.OK)
-                            response.send(data: encoded)
-                        }
-                    } catch {
-                         // Http 500 error
-                        response.status(.internalServerError)
+                    if let err = error {
+                        let status = self.httpStatusCode(from: err)
+                        response.status(status)
+                    } else {
+                        response.status(.OK)
+                        response.send(result)
                     }
                     next()
                 }

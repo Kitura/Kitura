@@ -455,7 +455,12 @@ extension RouterResponse {
             headers.setType("json")
             send(data: try encoder.encode(obj))
         } catch {
+            // Todo: Discuss proper error handling.
+            // This method and the below one were originally swallowing the encoding error, instead
+            // of passing it onto the developer. An alternative would be to throw here or pass optional
+            // status parameters that the user could leverage. For the moment, this provides a non api breaking change.
             Log.warning("Failed to encode Codable object for sending: \(error.localizedDescription)")
+            status(.internalServerError)
         }
 
         return self

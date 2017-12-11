@@ -130,6 +130,7 @@ class TestCodableRouter: KituraTest {
                     return
                 }
 
+                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.created, "HTTP Status code was \(String(describing: response.statusCode))")
                 var data = Data()
                 guard let length = try? response.readAllData(into: &data) else {
@@ -175,6 +176,7 @@ class TestCodableRouter: KituraTest {
                     return
                 }
 
+                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.created, "HTTP Status code was \(String(describing: response.statusCode))")
                 var data = Data()
                 guard let length = try? response.readAllData(into: &data) else {
@@ -222,6 +224,7 @@ class TestCodableRouter: KituraTest {
                     return
                 }
 
+                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
                 var data = Data()
                 guard let length = try? response.readAllData(into: &data) else {
@@ -258,6 +261,7 @@ class TestCodableRouter: KituraTest {
                     return
                 }
 
+                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
                 var data = Data()
                 guard let length = try? response.readAllData(into: &data) else {
@@ -305,6 +309,7 @@ class TestCodableRouter: KituraTest {
                     return
                 }
 
+                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
                 var data = Data()
                 guard let length = try? response.readAllData(into: &data) else {
@@ -410,6 +415,7 @@ class TestCodableRouter: KituraTest {
                     return
                 }
 
+                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
                 var data = Data()
                 guard let length = try? response.readAllData(into: &data) else {
@@ -466,6 +472,7 @@ class TestCodableRouter: KituraTest {
                     return
                 }
 
+                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
                 var data = Data()
                 guard let length = try? response.readAllData(into: &data) else {
@@ -693,6 +700,7 @@ class TestCodableRouter: KituraTest {
                     return
                 }
                 XCTAssertEqual(myQuery, [expectedQuery])
+                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
                 expectation.fulfill()
             })
