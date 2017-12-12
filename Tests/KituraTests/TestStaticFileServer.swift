@@ -39,10 +39,17 @@ class TestStaticFileServer: KituraTest {
             ("testAbsolutePathFunction", testAbsolutePathFunction),
             ("testAbsoluteRootPath", testAbsoluteRootPath),
             ("testRangeRequests", testRangeRequests),
+            ("testRangeRequestsWithLargeLastBytePos", testRangeRequestsWithLargeLastBytePos),
             ("testRangeRequestIsIgnoredOnOptionOff", testRangeRequestIsIgnoredOnOptionOff),
             ("testRangeRequestIsIgnoredOnNonGetMethod", testRangeRequestIsIgnoredOnNonGetMethod),
             ("testDataIsNotCorrupted", testDataIsNotCorrupted),
-            ("testRangeRequestsWithMultipleRanges", testRangeRequestsWithMultipleRanges)
+            ("testRangeRequestsWithMultipleRanges", testRangeRequestsWithMultipleRanges),
+            ("testRangeRequestWithNotSatisfiableRange", testRangeRequestWithNotSatisfiableRange),
+            ("testRangeRequestWithSintacticallyInvalidRange", testRangeRequestWithSintacticallyInvalidRange),
+            ("testRangeRequestWithIfRangeHeaderWithETag", testRangeRequestWithIfRangeHeaderWithETag),
+            ("testRangeRequestWithIfRangeHeaderWithOldETag", testRangeRequestWithIfRangeHeaderWithOldETag),
+            ("testRangeRequestWithIfRangeHeaderAsLastModified", testRangeRequestWithIfRangeHeaderAsLastModified),
+            ("testRangeRequestWithIfRangeHeaderAsOldLastModified", testRangeRequestWithIfRangeHeaderAsOldLastModified),
         ]
     }
 
@@ -241,11 +248,28 @@ class TestStaticFileServer: KituraTest {
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent)
                 XCTAssertEqual(response?.headers["Content-Range"]?.first, "bytes 0-\(requestingBytes)/\(self.indexHtmlCount)")
                 XCTAssertEqual(response?.headers["Accept-Ranges"]?.first, "bytes")
+                XCTAssertEqual(response?.headers["Content-Length"]?.first, "11")
                 var bodyData = Data()
                 _ = try? response?.readAllData(into: &bodyData)
                 XCTAssertEqual(bodyData.count, requestingBytes + 1)
                 expectation.fulfill()
             }, headers: ["Range": "bytes=0-\(requestingBytes)"])
+        }
+    }
+
+    func testRangeRequestsWithLargeLastBytePos() {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                XCTAssertNotNil(response)
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent)
+                XCTAssertEqual(response?.headers["Content-Range"]?.first, "bytes 2-53/54")
+                XCTAssertEqual(response?.headers["Accept-Ranges"]?.first, "bytes")
+                XCTAssertEqual(response?.headers["Content-Length"]?.first, "52")
+                var bodyData = Data()
+                _ = try? response?.readAllData(into: &bodyData)
+                XCTAssertEqual(bodyData.count, 52)
+                expectation.fulfill()
+            }, headers: ["Range": "bytes=2-100"])
         }
     }
 
@@ -404,6 +428,103 @@ class TestStaticFileServer: KituraTest {
                     XCTFail("Multipart body was expected \(parsedBody)")
                 }
             }, headers: ["Range": "bytes=0-10,20-33"])
+        }
+    }
+
+    func testRangeRequestWithNotSatisfiableRange() {
+        /// when the first- byte-pos of the range is greater than the current length
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                XCTAssertNotNil(response)
+                XCTAssertEqual(response?.headers["Accept-Ranges"]?.first, "bytes")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.requestedRangeNotSatisfiable)
+                XCTAssertEqual(response?.headers["Content-Range"]?.first, "bytes */54")
+                expectation.fulfill()
+            }, headers: ["Range": "bytes=54-55"])
+        }
+    }
+
+    func testRangeRequestWithSintacticallyInvalidRange() {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                XCTAssertNotNil(response)
+                XCTAssertEqual(response?.headers["Accept-Ranges"]?.first, "bytes")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
+                XCTAssertNil(response?.headers["Content-Range"]?.first)
+                expectation.fulfill()
+            }, headers: ["Range": "asdf"])
+        }
+    }
+
+    func testRangeRequestWithIfRangeHeaderWithETag() {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                XCTAssertNotNil(response)
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
+                XCTAssertNotNil(response?.headers["Last-Modified"]?.first)
+                XCTAssertNotNil(response?.headers["eTag"]?.first)
+                let eTag = response!.headers["eTag"]!.first!
+
+                // if ETag is the same then partial content (206) should be served
+                self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                    XCTAssertNotNil(response)
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent)
+                    XCTAssertEqual(response?.headers["Content-Range"]?.first, "bytes 0-10/\(self.indexHtmlCount)")
+                    var data = Data()
+                    _ = try? response?.readAllData(into: &data)
+                    XCTAssertEqual(data.count, 11)
+                }, headers: ["Range": "bytes=0-10", "If-Range": "\(eTag)"])
+                expectation.fulfill()
+            })
+        }
+    }
+
+    func testRangeRequestWithIfRangeHeaderWithOldETag() {
+        performServerTest(router) { expectation in
+            // if ETag is NOT the same then the entire file (200) should be served
+            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                XCTAssertNotNil(response)
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
+                XCTAssertNil(response?.headers["Content-Range"]?.first
+                )
+            }, headers: ["Range": "bytes=0-10", "If-Range": "\"old-etag\""])
+            expectation.fulfill()
+        }
+    }
+
+    func testRangeRequestWithIfRangeHeaderAsLastModified() {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                XCTAssertNotNil(response)
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
+                XCTAssertNotNil(response?.headers["Last-Modified"]?.first)
+                XCTAssertNotNil(response?.headers["eTag"]?.first)
+                let lastModified = response!.headers["Last-Modified"]!.first!
+
+                // if Last-Modified is the same then partial content (206) should be served
+                self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                    XCTAssertNotNil(response)
+                    XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent)
+                    XCTAssertEqual(response?.headers["Content-Range"]?.first, "bytes 0-10/\(self.indexHtmlCount)")
+                    var data = Data()
+                    _ = try? response?.readAllData(into: &data)
+                    XCTAssertEqual(data.count, 11)
+                }, headers: ["Range": "bytes=0-10", "If-Range": "\(lastModified)"])
+                expectation.fulfill()
+            })
+        }
+    }
+
+    func testRangeRequestWithIfRangeHeaderAsOldLastModified() {
+        // Range request with If-Range with etag
+        performServerTest(router) { expectation in
+            // if Last-Modified is NOT the same then the entire file (200) should be served
+            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                XCTAssertNotNil(response)
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
+                XCTAssertNil(response?.headers["Content-Range"]?.first)
+            }, headers: ["Range": "bytes=0-10", "If-Range": "Wed, 01 Jan 2000 00:00:00 GMT"])
+            expectation.fulfill()
         }
     }
 }

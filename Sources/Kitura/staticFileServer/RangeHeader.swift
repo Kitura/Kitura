@@ -14,6 +14,7 @@
  * limitations under the License.
  **/
 
+import LoggerAPI
 import Foundation
 
 /// Struct that represents a Range Header defined in RFC7233.
@@ -26,17 +27,41 @@ struct RangeHeader {
 
 extension RangeHeader {
 
+    /// Possible errors thrown by RangeHeader.parse function
+    enum Error: Swift.Error {
+        /// Happens when none of the ranges in Range header was not satisfiable as per RFC 7233 (Section 4.4)
+        case notSatisfiable
+        /// Could not be parsed. Bad syntax
+        case malformed
+    }
+
+    /// Check if header is a byte range header
+    static func isBytesRangeHeader(_ rangeHeaderValue: String) -> Bool {
+        /// Regular expression for identifying a bytes Range header.
+        let bytesRangePattern = "^ *bytes="
+
+        let regex: NSRegularExpression
+        do {
+            regex = try NSRegularExpression(pattern: bytesRangePattern, options: [])
+        } catch {
+            Log.error("Failed to create regular expressions used to check byte Range headers")
+            exit(1)
+        }
+        let matches = regex.matches(in: rangeHeaderValue, options: [], range: NSRange(location: 0, length: rangeHeaderValue.count))
+        return !matches.isEmpty
+    }
+
     /// Parse a range header string into a RangeHeader structure.
     /// Implementation based on: [jshttp/range-parser](https://github.com/jshttp/range-parser)
     ///
     /// - Parameter size: the size of the resource
     /// - Parameter headerValue: the stringn to parse
     ///
-    static func parse(size: UInt64, headerValue: String, shouldCombine: Bool = true) -> RangeHeader? {
+    static func parse(size: UInt64, headerValue: String, shouldCombine: Bool = true) throws -> RangeHeader {
 
         guard let index = headerValue.range(of: "=")?.lowerBound else {
             // malformed
-            return nil
+            throw RangeHeader.Error.malformed
         }
 
         // split the range string
@@ -95,7 +120,7 @@ extension RangeHeader {
 
         guard !ranges.isEmpty else {
             // unsatisifiable
-            return nil
+            throw RangeHeader.Error.notSatisfiable
         }
 
         if shouldCombine {
