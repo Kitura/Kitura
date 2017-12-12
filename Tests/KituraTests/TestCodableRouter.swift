@@ -311,7 +311,7 @@ class TestCodableRouter: KituraTest {
                     return
                 }
 
-                XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
+                XCTAssertEqual(response.statusCode, HTTPStatusCode.noContent, "HTTP Status code was \(String(describing: response.statusCode))")
                 var data = Data()
                 guard let length = try? response.readAllData(into: &data) else {
                     XCTFail("Error reading response length!")
@@ -343,7 +343,7 @@ class TestCodableRouter: KituraTest {
                     return
                 }
 
-                XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
+                XCTAssertEqual(response.statusCode, HTTPStatusCode.noContent, "HTTP Status code was \(String(describing: response.statusCode))")
                 var data = Data()
                 guard let length = try? response.readAllData(into: &data) else {
                     XCTFail("Error reading response length!")
