@@ -271,6 +271,9 @@ extension Router {
                         if let err = error {
                             let status = self.httpStatusCode(from: err)
                             response.status(status)
+                            if let bodyDataGenerator = err.bodyDataGenerator {
+                                response.send(data: try bodyDataGenerator(.json))
+                            }
                         } else {
                             let encoded = try JSONEncoder().encode(result)
                             response.status(.created)
@@ -320,6 +323,9 @@ extension Router {
                         if let err = error {
                             let status = self.httpStatusCode(from: err)
                             response.status(status)
+                            if let bodyDataGenerator = err.bodyDataGenerator {
+                                response.send(data: try bodyDataGenerator(.json))
+                            }
                         } else {
                             guard let id = id else {
                                 Log.error("No id (unique identifier) value provided.")
@@ -377,6 +383,9 @@ extension Router {
                         if let err = error {
                             let status = self.httpStatusCode(from: err)
                             response.status(status)
+                            if let bodyDataGenerator = err.bodyDataGenerator {
+                                response.send(data: try bodyDataGenerator(.json))
+                            }
                         } else {
                             let encoded = try JSONEncoder().encode(result)
                             response.status(.OK)
@@ -427,6 +436,9 @@ extension Router {
                         if let err = error {
                             let status = self.httpStatusCode(from: err)
                             response.status(status)
+                            if let bodyDataGenerator = err.bodyDataGenerator {
+                                response.send(data: try bodyDataGenerator(.json))
+                            }
                         } else {
                             let encoded = try JSONEncoder().encode(result)
                             response.status(.OK)
@@ -459,6 +471,9 @@ extension Router {
                     if let err = error {
                         let status = self.httpStatusCode(from: err)
                         response.status(status)
+                        if let bodyDataGenerator = err.bodyDataGenerator {
+                            response.send(data: try bodyDataGenerator(.json))
+                        }
                     } else {
                         let encoded = try JSONEncoder().encode(result)
                         response.status(.OK)
@@ -485,6 +500,9 @@ extension Router {
                     if let err = error {
                         let status = self.httpStatusCode(from: err)
                         response.status(status)
+                        if let bodyDataGenerator = err.bodyDataGenerator {
+                            response.send(data: try bodyDataGenerator(.json))
+                        }
                     } else {
                         let encoded = try JSONEncoder().encode(result)
                         response.status(.OK)
@@ -549,6 +567,9 @@ extension Router {
                         if let err = error {
                             let status = self.httpStatusCode(from: err)
                             response.status(status)
+                            if let bodyDataGenerator = err.bodyDataGenerator {
+                                response.send(data: try bodyDataGenerator(.json))
+                            }
                         } else {
                             let encoded = try JSONEncoder().encode(result)
                             response.status(.OK)
@@ -582,6 +603,13 @@ extension Router {
                 if let err = error {
                     let status = self.httpStatusCode(from: err)
                     response.status(status)
+                    if let bodyDataGenerator = err.bodyDataGenerator {
+                        do {
+                            response.send(data: try bodyDataGenerator(.json))
+                        } catch {
+                            response.status(.internalServerError)
+                        }
+                    }
                 } else {
                     response.status(.noContent)
                 }
@@ -602,6 +630,13 @@ extension Router {
                 if let err = error {
                     let status = self.httpStatusCode(from: err)
                     response.status(status)
+                    if let bodyDataGenerator = err.bodyDataGenerator {
+                        do {
+                            response.send(data: try bodyDataGenerator(.json))
+                        } catch {
+                            response.status(.internalServerError)
+                        }
+                    }
                 } else {
                     response.status(.noContent)
                 }
