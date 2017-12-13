@@ -20,6 +20,7 @@
  Create an on the fly `RouterMiddleware` from a `RouterHandler` closure.
  
  ### Usage Example: ###
+  In this example "middleware" has been made, which follows the `RouterMiddleware` protocol. "middleware" will return the HTTPStatusCode .OK with the body "Hello World". This middleware is then assigned to a router for the route "/hello".
  ```swift
  let middleware = RouterMiddlewareGenerator { _, response, next in
      response.status(HTTPStatusCode.OK).send("Hello World\n")
@@ -27,7 +28,6 @@
  }
  router.all("/hello", middleware: middleware)
  ```
- In this example we have made "middleware" which follows the `RouterMiddleware` protocol. "middleware" will return the HTTPStatusCode .OK with the body "Hello World". This middleware is then assigned to a router for the route "/hello".
  */
 public class RouterMiddlewareGenerator: RouterMiddleware {
 

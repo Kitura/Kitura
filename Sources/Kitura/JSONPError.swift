@@ -20,10 +20,10 @@ import Foundation
 
 /** An error that can be thrown while handling JSONP.
 ### Usage Example: ###
+ In this example, a JSONPError is thrown including the "taintedJSCallbackName" which caused it to error.
 ```swift
  throw JSONPError.invalidCallbackName(name: taintedJSCallbackName)
 ```
- Here a JSONPError is thrown including the "taintedJSCallbackName" which caused it to error.
 */
 public enum JSONPError: Swift.Error {
 

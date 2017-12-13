@@ -21,6 +21,7 @@ import Foundation
 /**
 A part of a parsed multi-part form body.
 ### Usage Example: ###
+In this example, the request body is parsed and split into multiple parts. The parts are then iterated through and for each `Part` the server responds with its name, filename and body.
 ```swift
 router.post("/example") { request, response, next in
     let body = request.body
@@ -30,7 +31,6 @@ router.post("/example") { request, response, next in
     }
 }
 ```
-In this example, the request body is parsed and split into multiple parts. We then iterate through each Part in all the parts and the server responds with the name, filename and body taken from the part.
 */
 public struct Part {
 
@@ -52,10 +52,10 @@ public struct Part {
 
     /** Possible header types that can be found in a part of multi-part body.
     ### Usage Example: ###
+    In this example an instance on the `Part` class called part has the .disposition value of its headers field set to equal "inline".
     ```swift
     part.headers[.disposition] = "inline"
     ```
-    In this example an instance on the `Part` class called part has the .disposition value of its headers field set to equal "inline".
     */
     public enum HeaderType {
 

@@ -168,6 +168,8 @@
               </div>
             <p>A router middleware that serves static files from a given path.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, a function to create and setup a router using a StaticFileServer is created. The <code>CacheOptions</code> and <code>Options</code> are set up and then used as parameters for defining router.all.</p>
 <pre class="highlight swift"><code><span class="kd">static</span> <span class="kd">func</span> <span class="nf">setupRouter</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Router</span> <span class="p">{</span>
     <span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
     <span class="k">let</span> <span class="nv">cacheOptions</span> <span class="o">=</span> <span class="kt">StaticFileServer</span><span class="o">.</span><span class="kt">CacheOptions</span><span class="p">(</span><span class="nv">maxAgeCacheControlHeader</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span>
@@ -176,8 +178,6 @@
     <span class="k">return</span> <span class="n">router</span>
 <span class="p">}</span>
 </code></pre>
-
-<p>In this example, We make a function to create and setup a router using a StaticFileServer. We set up the <code>CacheOptions</code> and <code>Options</code> and then use them as parameters for defining router.all.</p>
 
           </div>
         </section>
@@ -201,10 +201,10 @@
                       <div class="abstract">
                         <p>Cache configuration options for <code><a href="../Classes/StaticFileServer.html">StaticFileServer</a></code>.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight plaintext"><code> In this example, "cacheOptions" are initialised for a static file server. Since "maxAgeCacheControlHeader" is not defined it will default to 0.
+</code></pre>
 <pre class="highlight swift"><code> <span class="k">let</span> <span class="nv">cacheOptions</span> <span class="o">=</span> <span class="kt">StaticFileServer</span><span class="o">.</span><span class="kt">CacheOptions</span><span class="p">(</span><span class="nv">addLastModifiedHeader</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">generateETag</span><span class="p">:</span> <span class="kc">false</span><span class="p">)</span>
 </code></pre>
-
-<p>In this example, we initialise some <q>cacheOptions</q> for a static file server. Since <q>maxAgeCacheControlHeader</q> is not defined it will default to 0.</p>
 
                         <a href="../Classes/StaticFileServer/CacheOptions.html" class="slightly-smaller">See more</a>
                       </div>
@@ -234,11 +234,11 @@
                       <div class="abstract">
                         <p>Configuration options for <code><a href="../Classes/StaticFileServer.html">StaticFileServer</a></code>.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, <code>cacheOptions</code> are initialised for a static file server and then used to create <q>options</q> for a static file server. Since <q>acceptRanges</q> and <q>redirect</q> are not defined, they will default to true and <q>possibleExtensions</q> will default to an empty array.</p>
 <pre class="highlight swift"><code><span class="n">cacheOptions</span> <span class="o">=</span> <span class="kt">StaticFileServer</span><span class="o">.</span><span class="kt">CacheOptions</span><span class="p">(</span><span class="nv">addLastModifiedHeader</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">generateETag</span><span class="p">:</span> <span class="kc">false</span><span class="p">)</span>
 <span class="n">options</span> <span class="o">=</span> <span class="kt">StaticFileServer</span><span class="o">.</span><span class="kt">Options</span><span class="p">(</span><span class="nv">serveIndexForDirectory</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">cacheOptions</span><span class="p">:</span> <span class="n">cacheOptions</span><span class="p">)</span>
 </code></pre>
-
-<p>In this example, we initialise some <code>cacheOptions</code> for a static file server and then use them to create some <q>options</q> for a static file server. Since <q>acceptRanges</q> and <q>redirect</q> are not defined, they will default to true and <q>possibleExtensions</q> will default to an empty array.</p>
 
                         <a href="../Classes/StaticFileServer/Options.html" class="slightly-smaller">See more</a>
                       </div>
@@ -431,7 +431,7 @@ the headers of the response.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-11-29)</p>
+      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-12-13)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

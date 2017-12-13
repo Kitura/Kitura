@@ -19,6 +19,7 @@
 /**
 Defines the protocol which all Kitura compliant middleware must implement. Middleware are class or struct based request handlers. They are often generic in nature and not tied to a specific request.
 ### Usage Example: ###
+ In this example, when the `RouterElement` is initialised, an object called "routerMiddleware" is provided which obeys the "RouterMiddleware" protocol. This can then be used by the router.
 ```swift
 class RouterElement {
     private let middlewares: [RouterMiddleware]
@@ -29,7 +30,6 @@ class RouterElement {
     ...
 }
 ```
- In this example, when the `RouterElement` is initialised, you can provide custom routerMiddleware obeying the "RouterMiddleware" protocol, which will then be used by the router.
  */
 public protocol RouterMiddleware {
 

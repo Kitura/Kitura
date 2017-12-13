@@ -20,10 +20,10 @@ request. In general they match the actual HTTP methods by the same name. ERROR a
 are two special ones, used by `Router` when building up the set of mappings
 between paths and handlers or middleware.
 ### Usage Example: ###
+ In this example, the `serverRequest` method is used to create a `RouterMethod` instance called "method".
 ```swift
 method = RouterMethod(fromRawValue: serverRequest.method)
 ```
- In this example the serverRequest method is used to create "method" a "RouterMethod" instance
 */
 public enum RouterMethod: String {
     /// Signifies that the particular path mapping is not dependent on the HTTP method

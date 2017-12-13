@@ -20,10 +20,10 @@ import KituraNet
 /**
 The struct containing the HTTP headers and implements the headers APIs for the `RouterRequest` and `RouterResponse` classes.
 ### Usage Example: ###
+In this example, an instance of the class `Headers` is created called "headers", by reading the headers from an instance of `RouterRequest` called "serverRequest".
 ```swift
 let headers = Headers(headers: serverRequest.headers)
 ```
-In this example, we create the instance "headers" of the class "Headers" by reading the headers from serverRequest, which is an instance of the class `RouterRequest`.
 */
 public struct Headers {
 

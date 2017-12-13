@@ -20,14 +20,14 @@ import LoggerAPI
 // MARK: ContentType
 
 /**
-The `ContentType` class provides functions to determine the MIME content type for a given file extension. The user can pass in a complete file name e.g. "foo.png" or just the file extension e.g. "png", or they can pass in both a MIME content type and a file extension and query whether the they match.
+The `ContentType` class provides functions to determine the MIME content type for a given file extension. The user can pass in a complete file name e.g. "foo.png" or just the file extension e.g. "png", or they can pass in both a MIME content type and a file extension and query whether they match.
 ### Usage Example: ###
+ In this example, a `ContentType` instance is initialised called contentType. This instance is then used to obtain the MIME content type of the file "foo.png", which is identified as "image/png".
 ```swift
 let contentType = ContentType.sharedInstance
 let result = contentType.getContentType(forFileName: "foo.png")
 print(String(describing: result)) // "image/png"
 ```
-In this example, we initialise a `ContentType` instance called "contentType", we then use this instance to obtain the MIME content type of the file "foo.png", which is identified as "image/png".
  */
 public class ContentType {
 

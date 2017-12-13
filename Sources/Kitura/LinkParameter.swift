@@ -17,6 +17,8 @@
 // MARK LinkParameter
 
 /** Possible parameters of Link HTTP header.
+In this example, a function to add a link to a HTTP `Header` where the user must specify a LinkParameter from the enum to be added.
+ See [RFC 5988](https://tools.ietf.org/html/rfc5988) for more details.
 ### Usage Example: ###
 ```swift
 public mutating func addLink(_ link: String, linkParameters: [LinkParameter: String]) {
@@ -27,8 +29,6 @@ public mutating func addLink(_ link: String, linkParameters: [LinkParameter: Str
    self.append("Link", value: headerValue)
 }
 ```
-Above is an example function to add a link to a HTTP `Header` where the user must specify a LinkParameter from the enum to be added.
-See [RFC 5988](https://tools.ietf.org/html/rfc5988) for more details.
 */
 public enum LinkParameter: String {
 

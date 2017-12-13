@@ -21,6 +21,7 @@ import Foundation
 /**
 A protocol for providing a custom method for setting the headers of the response of static file serving middleware.
 ### Usage Example: ###
+ In this example, when the `FileServer` is initialised, a custom object called "responseHeadersSetter" is provided, which obeys the "ResponseHeadersSetter" protocol. This can then be used by the server.
 ```swift
 class FileServer {
     private let responseHeadersSetter: ResponseHeadersSetter?
@@ -31,7 +32,6 @@ class FileServer {
     ...
  }
  ```
- In this example, when the `FileServer` is initialised, you can provide a custom responseHeadersSetter obeying the "ResponseHeadersSetter" protocol, which will then be used by the server.
 */
 public protocol ResponseHeadersSetter {
 

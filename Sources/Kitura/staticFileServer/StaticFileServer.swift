@@ -21,6 +21,7 @@ import Foundation
 /**
 A router middleware that serves static files from a given path.
 ### Usage Example: ###
+ In this example, a function to create and setup a router using a StaticFileServer is created. The `CacheOptions` and `Options` are set up and then used as parameters for defining router.all.
 ```swift
 static func setupRouter() -> Router {
     let router = Router()
@@ -30,17 +31,16 @@ static func setupRouter() -> Router {
     return router
 }
 ```
-In this example, We make a function to create and setup a router using a StaticFileServer. We set up the `CacheOptions` and `Options` and then use them as parameters for defining router.all.
 */
 public class StaticFileServer: RouterMiddleware {
 
     /**
     Cache configuration options for `StaticFileServer`.
     ### Usage Example: ###
+         In this example, "cacheOptions" are initialised for a static file server. Since "maxAgeCacheControlHeader" is not defined it will default to 0.
     ```swift
      let cacheOptions = StaticFileServer.CacheOptions(addLastModifiedHeader: false, generateETag: false)
     ```
-    In this example, we initialise some "cacheOptions" for a static file server. Since "maxAgeCacheControlHeader" is not defined it will default to 0.
     */
     public struct CacheOptions {
         let addLastModifiedHeader: Bool
@@ -64,11 +64,11 @@ public class StaticFileServer: RouterMiddleware {
     /**
     Configuration options for `StaticFileServer`.
     ### Usage Example: ###
+    In this example, `cacheOptions` are initialised for a static file server and then used to create "options" for a static file server. Since "acceptRanges" and "redirect" are not defined, they will default to true and "possibleExtensions" will default to an empty array.
     ```swift
     cacheOptions = StaticFileServer.CacheOptions(addLastModifiedHeader: false, generateETag: false)
     options = StaticFileServer.Options(serveIndexForDirectory: false, cacheOptions: cacheOptions)
     ```
-    In this example, we initialise some `cacheOptions` for a static file server and then use them to create some "options" for a static file server. Since "acceptRanges" and "redirect" are not defined, they will default to true and "possibleExtensions" will default to an empty array.
     */
     public struct Options {
         let possibleExtensions: [String]

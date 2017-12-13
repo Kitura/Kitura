@@ -183,10 +183,10 @@
                       <div class="abstract">
                         <p>An error that can be thrown while handling JSONP.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, a JSONPError is thrown including the <q>taintedJSCallbackName</q> which caused it to error.</p>
 <pre class="highlight swift"><code> <span class="k">throw</span> <span class="kt">JSONPError</span><span class="o">.</span><span class="nf">invalidCallbackName</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="n">taintedJSCallbackName</span><span class="p">)</span>
 </code></pre>
-
-<p>Here a JSONPError is thrown including the <q>taintedJSCallbackName</q> which caused it to error.</p>
 
                         <a href="Enums/JSONPError.html" class="slightly-smaller">See more</a>
                       </div>
@@ -218,7 +218,9 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Possible parameters of Link HTTP header.</p>
+                        <p>Possible parameters of Link HTTP header.
+In this example, a function to add a link to a HTTP <code>Header</code> where the user must specify a LinkParameter from the enum to be added.
+ See <a href="https://tools.ietf.org/html/rfc5988">RFC 5988</a> for more details.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">addLink</span><span class="p">(</span><span class="n">_</span> <span class="nv">link</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">linkParameters</span><span class="p">:</span> <span class="p">[</span><span class="kt">LinkParameter</span><span class="p">:</span> <span class="kt">String</span><span class="p">])</span> <span class="p">{</span>
    <span class="k">var</span> <span class="nv">headerValue</span> <span class="o">=</span> <span class="s">"&lt;</span><span class="se">\(</span><span class="n">link</span><span class="se">)</span><span class="s">&gt;"</span>
@@ -228,9 +230,6 @@
    <span class="k">self</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="s">"Link"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="n">headerValue</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre>
-
-<p>Above is an example function to add a link to a HTTP <code>Header</code> where the user must specify a LinkParameter from the enum to be added.
-See <a href="https://tools.ietf.org/html/rfc5988">RFC 5988</a> for more details.</p>
 
                         <a href="Enums/LinkParameter.html" class="slightly-smaller">See more</a>
                       </div>
@@ -267,10 +266,10 @@ request. In general they match the actual HTTP methods by the same name. ERROR a
 are two special ones, used by <code><a href="Classes/Router.html">Router</a></code> when building up the set of mappings
 between paths and handlers or middleware.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, the <code>serverRequest</code> method is used to create a <code>RouterMethod</code> instance called <q>method</q>.</p>
 <pre class="highlight swift"><code><span class="n">method</span> <span class="o">=</span> <span class="kt">RouterMethod</span><span class="p">(</span><span class="nv">fromRawValue</span><span class="p">:</span> <span class="n">serverRequest</span><span class="o">.</span><span class="n">method</span><span class="p">)</span>
 </code></pre>
-
-<p>In this example the serverRequest method is used to create <q>method</q> a <q>RouterMethod</q> instance</p>
 
                         <a href="Enums/RouterMethod.html" class="slightly-smaller">See more</a>
                       </div>
@@ -304,10 +303,12 @@ between paths and handlers or middleware.</p>
                       <div class="abstract">
                         <p>The result of parsing the body of the request. When a body of a request is parsed the results of the parsing are placed in the associated value of the enum case based on Content-Type</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">parse</span><span class="p">(</span><span class="n">_</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">ParsedBody</span><span class="p">?</span> <span class="p">{</span>
-</code></pre>
 
-<p>in this example, there is a function <q>parse</q> which takes in data and return an optional of type <q>ParsedBody</q>.</p>
+<p>In this example, there is a function <q>parse</q> which takes in data and return an optional of type <q>ParsedBody</q>.</p>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">parse</span><span class="p">(</span><span class="n">_</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">ParsedBody</span><span class="p">?</span> <span class="p">{</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+</code></pre>
 
                         <a href="Enums/ParsedBody.html" class="slightly-smaller">See more</a>
                       </div>
@@ -330,7 +331,7 @@ between paths and handlers or middleware.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-11-29)</p>
+      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-12-13)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
