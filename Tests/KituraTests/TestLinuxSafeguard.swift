@@ -81,6 +81,11 @@
             darwinCount = Int(TestStaticFileServer.defaultTestSuite.testCaseCount)
             XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestStaticFileServer.allTests")
 
+            // TestRangeHeader
+            linuxCount = TestRangeHeaderParser.allTests.count
+            darwinCount = Int(TestRangeHeaderParser.defaultTestSuite.testCaseCount)
+            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestRangeHeaderParser.allTests")
+
             // TestSubrouter
             linuxCount = TestSubrouter.allTests.count
             darwinCount = Int(TestSubrouter.defaultTestSuite.testCaseCount)

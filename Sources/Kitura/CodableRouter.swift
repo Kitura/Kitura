@@ -526,7 +526,7 @@ extension Router {
                     let status = self.httpStatusCode(from: err)
                     response.status(status)
                 } else {
-                    response.status(.OK)
+                    response.status(.noContent)
                 }
                 next()
             }
@@ -546,7 +546,7 @@ extension Router {
                     let status = self.httpStatusCode(from: err)
                     response.status(status)
                 } else {
-                    response.status(.OK)
+                    response.status(.noContent)
                 }
                 next()
             }

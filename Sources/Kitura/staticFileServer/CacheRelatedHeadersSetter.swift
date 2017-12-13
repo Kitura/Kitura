@@ -55,27 +55,31 @@ extension StaticFileServer {
 
         private func addETag(response: RouterResponse,
                              fileAttributes: [FileAttributeKey : Any]) {
-            if generateETag {
-                let date = fileAttributes[FileAttributeKey.modificationDate] as? Date
-                let size = fileAttributes[FileAttributeKey.size] as? NSNumber
-
-                if let date = date, let size = size {
-                    #if !os(Linux)
-                        // https://bugs.swift.org/browse/SR-5850
-                        let sizeHex = String(Int(truncating: size), radix: 16, uppercase: false)
-                    #else
-                        let sizeHex = String(Int(size), radix: 16, uppercase: false)
-                    #endif
-
-                    let timeHex = String(Int(date.timeIntervalSince1970), radix: 16, uppercase: false)
-                    let etag = "W/\"\(sizeHex)-\(timeHex)\""
-                    response.headers["Etag"] = etag
-                }
+            if generateETag,
+                let etag = CacheRelatedHeadersSetter.calculateETag(from: fileAttributes) {
+                response.headers["Etag"] = etag
             }
         }
 
         private func setMaxAge(response: RouterResponse) {
             response.headers["Cache-Control"] = "max-age=\(maxAgeCacheControlHeader)"
+        }
+
+        static func calculateETag(from fileAttributes: [FileAttributeKey : Any]) -> String? {
+            guard let date = fileAttributes[FileAttributeKey.modificationDate] as? Date,
+                let size = fileAttributes[FileAttributeKey.size] as? NSNumber else {
+                return nil
+            }
+            #if !os(Linux)
+                // https://bugs.swift.org/browse/SR-5850
+                let sizeHex = String(Int(truncating: size), radix: 16, uppercase: false)
+            #else
+                let sizeHex = String(Int(size), radix: 16, uppercase: false)
+            #endif
+
+            let timeHex = String(Int(date.timeIntervalSince1970), radix: 16, uppercase: false)
+            let etag = "W/\"\(sizeHex)-\(timeHex)\""
+            return etag
         }
     }
 }
