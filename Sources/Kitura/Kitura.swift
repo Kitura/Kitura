@@ -22,7 +22,20 @@ import Dispatch
 
 // MARK Kitura
 
-/// A set of helper functions to make it easier to create, start, and stop Kitura based servers.
+/**
+ A set of helper functions to make it easier to create, start, and stop Kitura based servers.
+ ### Usage Example: ###
+ In this example, we create a function called run, inside a server `Application.swift` file, which will create a Kitura server on the specified port, using the given router and then run the created server. This function would then be the last call in your `main.swift` file.
+ ```swift
+ let router = Router()
+ let port: Int = 8080
+ public func run() throws{
+ ...
+ Kitura.addHTTPServer(onPort: port, with: router)
+ Kitura.run()
+ }
+ ```
+ */
 public class Kitura {
 
     /// Add an HTTPServer on a port with a delegate.
@@ -30,6 +43,10 @@ public class Kitura {
     /// The server is only registered with the framework, it does not start listening
     /// on the port until Kitura.run() or Kitura.start() is called.
     ///
+    ///### Usage Example: ###
+    ///```swift
+    /// Kitura.addHTTPServer(onPort: port, with: router)
+    ///```
     /// - Parameter onPort: The port to listen on.
     /// - Parameter with: The `ServerDelegate` to use.
     /// - Parameter withSSL: The `sslConfig` to use.
@@ -56,6 +73,10 @@ public class Kitura {
     /// The server is only registered with the framework, it does not start listening
     /// on the port until Kitura.run() or Kitura.start() is called.
     ///
+    ///### Usage Example: ###
+    ///```swift
+    /// Kitura.addFastCGIServer(onPort: port, with: router)
+    ///```
     /// - Parameter onPort: The port to listen on.
     /// - Parameter with: The `ServerDelegate` to use.
     /// - Parameter allowPortReuse: Determines whether the listener port may be shared with other Kitura instances (`SO_REUSEPORT`). Defaults to `false`. If the specified port is already in use by another listener that has not allowed sharing, the server will fail to start.
@@ -73,18 +94,25 @@ public class Kitura {
 
     /// Start the Kitura framework.
     ///
+    ///### Usage Example: ###
     /// Make all registered servers start listening on their port.
-    ///
-    /// - note: This function never returns - it should be the last call in your main.swift
+    ///```swift
+    /// Kitura.run()
+    ///```
+    /// - note: This function never returns - it should be the last call in your `main.swift`
     public class func run() {
         Log.verbose("Starting Kitura framework...")
         start()
         ListenerGroup.waitForListeners()
     }
 
-    /// Start all registered servers and return
+    /// Start all registered servers and return.
     ///
+    ///### Usage Example: ###
     /// Make all registered servers start listening on their port.
+    ///```swift
+    /// Kitura.start()
+    ///```
     public class func start() {
         for (server, port) in httpServersAndPorts {
             Log.verbose("Starting an HTTP Server on port \(port)...")
@@ -104,11 +132,15 @@ public class Kitura {
         }
     }
 
-    /// Stop all registered servers
+    /// Stop all registered servers.
     ///
+    ///### Usage Example: ###
     /// Make all registered servers stop listening on their port.
+    ///```swift
+    /// Kitura.stop()
+    ///```
     ///
-    /// - Parameter unregister: If servers should be unregistered after stopped (default true).
+    /// - Parameter unregister: If servers should be unregistered after they are stopped (default true).
     public class func stop(unregister: Bool = true) {
         for (server, port) in httpServersAndPorts {
             Log.verbose("Stopping HTTP Server on port \(port)...")
