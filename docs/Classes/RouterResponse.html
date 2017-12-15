@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (97% documented)
+         (98% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -57,19 +57,10 @@
                 <a class="nav-group-task-link" href="../Classes/BodyParser.html">BodyParser</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/Coder.html">Coder</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ContentType.html">ContentType</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/Kitura.html">Kitura</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/QueryDecoder.html">QueryDecoder</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/QueryEncoder.html">QueryEncoder</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/RouteRegex.html">RouteRegex</a>
@@ -111,14 +102,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Enums/RouterMethod.html">RouterMethod</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
-            <a class="nav-group-name-link" href="../Extensions.html">Extensions</a>
-            <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Extensions/String.html">String</a>
               </li>
             </ul>
           </li>
@@ -496,9 +479,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura14RouterResponseC4sendACSayypG4json_tF"></a>
+                    <a name="/s:6Kitura14RouterResponseC4sendACSayypG4json_tKF"></a>
                     <a name="//apple_ref/swift/Method/send(json:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendACSayypG4json_tF">send(json:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendACSayypG4json_tKF">send(json:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -507,13 +490,18 @@
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Send JSON.</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    if the the object could not be encoded using the JSONSerializationType
+
+</div>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">json</span><span class="p">:</span> <span class="p">[</span><span class="kt">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">json</span><span class="p">:</span> <span class="p">[</span><span class="kt">Any</span><span class="p">])</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
 
                         </div>
                       </div>
@@ -546,9 +534,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura14RouterResponseC4sendACs10DictionaryVySSypG4json_tF"></a>
+                    <a name="/s:6Kitura14RouterResponseC4sendACs10DictionaryVySSypG4json_tKF"></a>
                     <a name="//apple_ref/swift/Method/send(json:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendACs10DictionaryVySSypG4json_tF">send(json:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendACs10DictionaryVySSypG4json_tKF">send(json:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -557,13 +545,18 @@
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Send JSON.</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    if the the object could not be encoded using the JSONSerializationType
+
+</div>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">json</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">json</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">Any</span><span class="p">])</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
 
                         </div>
                       </div>
@@ -970,9 +963,9 @@ The Content-Type response header is set when a callback is selected.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura14RouterResponseC4sendACxs9EncodableRzlF"></a>
+                    <a name="/s:6Kitura14RouterResponseC4sendACxKs9EncodableRzlF"></a>
                     <a name="//apple_ref/swift/Method/send(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendACxs9EncodableRzlF">send(_:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendACxKs9EncodableRzlF">send(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -981,13 +974,18 @@ The Content-Type response header is set when a callback is selected.</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Send Encodable Object.</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    if the the object could not be encoded using the JSONEncoder
+
+</div>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">send</span><span class="o">&lt;</span><span class="kt">T</span> <span class="p">:</span> <span class="kt">Encodable</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">obj</span><span class="p">:</span> <span class="kt">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">send</span><span class="o">&lt;</span><span class="kt">T</span> <span class="p">:</span> <span class="kt">Encodable</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">obj</span><span class="p">:</span> <span class="kt">T</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
 
                         </div>
                       </div>
@@ -1020,9 +1018,9 @@ The Content-Type response header is set when a callback is selected.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura14RouterResponseC4sendACx4json_ts9EncodableRzlF"></a>
+                    <a name="/s:6Kitura14RouterResponseC4sendACx4json_tKs9EncodableRzlF"></a>
                     <a name="//apple_ref/swift/Method/send(json:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendACx4json_ts9EncodableRzlF">send(json:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendACx4json_tKs9EncodableRzlF">send(json:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1031,13 +1029,18 @@ The Content-Type response header is set when a callback is selected.</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Send Encodable Object JSON Convienence Method</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    if the the object could not be encoded using the JSONEncoder
+
+</div>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">send</span><span class="o">&lt;</span><span class="kt">T</span> <span class="p">:</span> <span class="kt">Encodable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">json</span><span class="p">:</span> <span class="kt">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">send</span><span class="o">&lt;</span><span class="kt">T</span> <span class="p">:</span> <span class="kt">Encodable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">json</span><span class="p">:</span> <span class="kt">T</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
 
                         </div>
                       </div>
@@ -1146,7 +1149,7 @@ parameter whose value contains the JSONP callback function.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-12-08)</p>
+      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-12-15)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
