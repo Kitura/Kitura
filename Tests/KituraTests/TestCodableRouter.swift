@@ -680,7 +680,7 @@ class TestCodableRouter: KituraTest {
             respondWith([query], nil)
         }
 
-        performServerTest(router, timeout: 20) { expectation in
+        performServerTest(router, timeout: 20, asyncTasks: { expectation in
             self.performRequest("get", path: "/query\(queryStr)", callback: { response in
                 guard let response = response else {
                     XCTFail("ERROR!!! ClientRequest response object was nil")
@@ -704,7 +704,16 @@ class TestCodableRouter: KituraTest {
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
                 expectation.fulfill()
             })
-        }
+        }, { expectation in
+            self.performRequest("get", path: "/query?param=badRequest", callback: { response in
+                guard let response = response else {
+                    XCTFail("ERROR!!! ClientRequest response object was nil")
+                    return
+                }
+                XCTAssertEqual(response.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(String(describing: response.statusCode))")
+                expectation.fulfill()
+            })
+        })
     }
 
     func testCodableDeleteQueryParameters() {
@@ -725,7 +734,7 @@ class TestCodableRouter: KituraTest {
             respondWith(nil)
         }
 
-        performServerTest(router, timeout: 20) { expectation in
+        performServerTest(router, timeout: 20, asyncTasks: { expectation in
             self.performRequest("delete", path: "/query\(queryStr)", callback: { response in
                 guard let response = response else {
                     XCTFail("ERROR!!! ClientRequest response object was nil")
@@ -734,6 +743,15 @@ class TestCodableRouter: KituraTest {
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
                 expectation.fulfill()
             })
-        }
+        },{ expectation in
+            self.performRequest("delete", path: "/query?param=badRequest", callback: { response in
+                guard let response = response else {
+                    XCTFail("ERROR!!! ClientRequest response object was nil")
+                    return
+                }
+                XCTAssertEqual(response.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(String(describing: response.statusCode))")
+                expectation.fulfill()
+            })
+        })
     }
 }

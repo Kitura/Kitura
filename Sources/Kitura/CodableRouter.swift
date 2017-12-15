@@ -267,14 +267,20 @@ extension Router {
 
                 // Define handler to process result from application
                 let resultHandler: CodableResultClosure<O> = { result, error in
-                    if let err = error {
-                        let status = self.httpStatusCode(from: err)
-                        response.status(status)
-                    } else {
-                        response.status(.created)
-                        response.send(result)
+                    do {
+                        if let err = error {
+                            let status = self.httpStatusCode(from: err)
+                            response.status(status)
+                        } else {
+                            response.status(.created)
+                            try response.send(result)
+                        }
+                    } catch {
+                        // Http 500 error
+                        response.status(.internalServerError)
                     }
                     next()
+                    
                 }
                 // Invoke application handler
                 handler(param, resultHandler)
@@ -308,19 +314,24 @@ extension Router {
 
                 // Define handler to process result from application
                 let resultHandler: IdentifierCodableResultClosure<Id, O> = { id, result, error in
-                    if let err = error {
-                        let status = self.httpStatusCode(from: err)
-                        response.status(status)
-                    } else {
-                        guard let id = id else {
-                            Log.error("No id (unique identifier) value provided.")
-                            response.status(.internalServerError)
-                            next()
-                            return
+                    do {
+                        if let err = error {
+                            let status = self.httpStatusCode(from: err)
+                            response.status(status)
+                        } else {
+                            guard let id = id else {
+                                Log.error("No id (unique identifier) value provided.")
+                                response.status(.internalServerError)
+                                next()
+                                return
+                            }
+                            response.status(.created)
+                            response.headers["Location"] = String(id.value)
+                            try response.send(result)
                         }
-                        response.status(.created)
-                        response.headers["Location"] = String(id.value)
-                        response.send(result)
+                    } catch {
+                        // Http 500 error
+                        response.status(.internalServerError)
                     }
                     next()
                 }
@@ -358,12 +369,17 @@ extension Router {
                 let param = try request.read(as: I.self)
 
                 let resultHandler: CodableResultClosure<O> = { result, error in
-                    if let err = error {
-                        let status = self.httpStatusCode(from: err)
-                        response.status(status)
-                    } else {
-                        response.status(.OK)
-                        response.send(result)
+                    do {
+                        if let err = error {
+                            let status = self.httpStatusCode(from: err)
+                            response.status(status)
+                        } else {
+                            response.status(.OK)
+                            try response.send(result)
+                        }
+                    } catch {
+                        // Http 500 error
+                        response.status(.internalServerError)
                     }
                     next()
                 }
@@ -401,12 +417,17 @@ extension Router {
 
                 // Define handler to process result from application
                 let resultHandler: CodableResultClosure<O> = { result, error in
-                    if let err = error {
-                        let status = self.httpStatusCode(from: err)
-                        response.status(status)
-                    } else {
-                        response.status(.OK)
-                        response.send(result)
+                    do {
+                        if let err = error {
+                            let status = self.httpStatusCode(from: err)
+                            response.status(status)
+                        } else {
+                            response.status(.OK)
+                            try response.send(result)
+                        }
+                    } catch {
+                        // Http 500 error
+                        response.status(.internalServerError)
                     }
                     next()
                 }
@@ -426,12 +447,17 @@ extension Router {
             Log.verbose("Received GET (single no-identifier) type-safe request")
             // Define result handler
             let resultHandler: CodableResultClosure<O> = { result, error in
-                if let err = error {
-                    let status = self.httpStatusCode(from: err)
-                    response.status(status)
-                } else {
-                    response.status(.OK)
-                    response.send(result)
+                do {
+                    if let err = error {
+                        let status = self.httpStatusCode(from: err)
+                        response.status(status)
+                    } else {
+                        response.status(.OK)
+                        try response.send(result)
+                    }
+                } catch {
+                    // Http 500 error
+                    response.status(.internalServerError)
                 }
                 next()
             }
@@ -445,12 +471,17 @@ extension Router {
             Log.verbose("Received GET (plural) type-safe request")
             // Define result handler
             let resultHandler: CodableArrayResultClosure<O> = { result, error in
-                if let err = error {
-                    let status = self.httpStatusCode(from: err)
-                    response.status(status)
-                } else {
-                    response.status(.OK)
-                    response.send(result)
+                do {
+                    if let err = error {
+                        let status = self.httpStatusCode(from: err)
+                        response.status(status)
+                    } else {
+                        response.status(.OK)
+                        try response.send(result)
+                    }
+                } catch {
+                    // Http 500 error
+                    response.status(.internalServerError)
                 }
                 next()
             }
@@ -464,12 +495,17 @@ extension Router {
             Log.verbose("Received GET (plural) type-safe request with Query Parameters")
             // Define result handler
             let resultHandler: CodableArrayResultClosure<O> = { result, error in
-                if let err = error {
-                    let status = self.httpStatusCode(from: err)
-                    response.status(status)
-                } else {
-                    response.status(.OK)
-                    response.send(result)
+                do {
+                    if let err = error {
+                        let status = self.httpStatusCode(from: err)
+                        response.status(status)
+                    } else {
+                        response.status(.OK)
+                        try response.send(result)
+                    }
+                } catch {
+                    // Http 500 error
+                    response.status(.internalServerError)
                 }
                 next()
             }
@@ -478,8 +514,8 @@ extension Router {
                 let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
                 handler(query, resultHandler)
             } catch {
-                // Http 422 error
-                response.status(.unprocessableEntity)
+                // Http 400 error
+                response.status(.badRequest)
                 next()
             }
         }
@@ -495,12 +531,17 @@ extension Router {
             do {
                 // Define result handler
                 let resultHandler: CodableResultClosure<O> = { result, error in
-                    if let err = error {
-                        let status = self.httpStatusCode(from: err)
-                        response.status(status)
-                    } else {
-                        response.status(.OK)
-                        response.send(result)
+                    do {
+                        if let err = error {
+                            let status = self.httpStatusCode(from: err)
+                            response.status(status)
+                        } else {
+                            response.status(.OK)
+                            try response.send(result)
+                        }
+                    } catch {
+                        // Http 500 error
+                        response.status(.internalServerError)
                     }
                     next()
                 }
@@ -582,8 +623,8 @@ extension Router {
                 let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
                 handler(query, resultHandler)
             } catch {
-                // Http 422 error
-                response.status(.unprocessableEntity)
+                // Http 400 error
+                response.status(.badRequest)
                 next()
             }
         }

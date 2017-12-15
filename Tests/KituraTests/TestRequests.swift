@@ -116,52 +116,6 @@ class TestRequests: KituraTest {
         })
     }
 
-    func testQueryParameterConverter() {
-        let fm = DateFormatter()
-        fm.locale = Locale(identifier: "en_US_POSIX")
-        fm.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-        fm.timeZone = TimeZone(secondsFromGMT: 0)
-
-        let d1 = fm.string(from: Date())
-        let d2 = fm.string(from: Date())
-        let d3 = fm.string(from: Date())
-
-        let params = [
-                        "str": "string",
-                        "int": "1",
-                        "uint": "2",
-                        "double": "3.0",
-                        "float": "4.0",
-                        "bool": "true",
-                        "date": d1,
-                        "strArray": "string1,string2,string3",
-                        "intArray": "1,2,3",
-                        "uintArray": "1,2,3",
-                        "doubleArray": "1.0,2.0,3.0",
-                        "floatArray": "1.0,2.0,3.0",
-                        "boolArray": "true,false,true",
-                        "dateArray": "\(d1),\(d2),\(d3)"
-                     ]
-
-        /// Assert object string -> T conversion
-        XCTAssertEqual(params["str"]?.string, "string")
-        XCTAssertEqual(params["int"]?.int, Int(1))
-        XCTAssertEqual(params["uint"]?.uInt, UInt(2))
-        XCTAssertEqual(params["double"]?.double, Double(3.0))
-        XCTAssertEqual(params["float"]?.float, Float(4.0))
-        XCTAssertEqual(params["bool"]?.boolean, true)
-        XCTAssertEqual(params["date"]?.date(fm), fm.date(from: d1))
-
-        /// Assert object array string -> [T] conversion
-        XCTAssertEqual(params["strArray"]!.stringArray, ["string1", "string2", "string3"])
-        XCTAssertEqual(params["intArray"]!.intArray!, [Int(1), Int(2), Int(3)])
-        XCTAssertEqual(params["uintArray"]!.uIntArray!, [UInt(1), UInt(2), UInt(3)])
-        XCTAssertEqual(params["doubleArray"]!.doubleArray!, [Double(1), Double(2), Double(3)])
-        XCTAssertEqual(params["floatArray"]!.floatArray!, [Float(1), Float(2), Float(3)])
-        XCTAssertEqual(params["boolArray"]!.booleanArray!, [true, false, true])
-        XCTAssertEqual(params["dateArray"]!.dateArray(fm)!, [fm.date(from: d1)!, fm.date(from: d2)!, fm.date(from: d3)!])
-    }
-
     private func runMiddlewareTest(path: String) {
         // swiftlint:disable nesting
         class CustomMiddleware: RouterMiddleware {
