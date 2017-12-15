@@ -560,10 +560,390 @@ extension Router {
         return status
     }
 
+    private func httpStatusCode<E>(from error: RequestErrorWithBody<E>) -> HTTPStatusCode {
+        let status: HTTPStatusCode = HTTPStatusCode(rawValue: error.rawValue) ?? .unknown
+        return status
+    }
+
     internal func join(path base: String, with component: String) -> String {
         let strippedBase = base.hasSuffix("/") ? String(base.dropLast()) : base
         let strippedComponent = component.hasPrefix("/") ? String(component.dropFirst()) : component
         return "\(strippedBase)/\(strippedComponent)"
+    }
+}
+
+public typealias ResultClosureWithErrorBody<E: Codable> = (RequestErrorWithBody<E>?) -> Void
+public typealias CodableResultClosureWithErrorBody<O: Codable, E: Codable> = (O?, RequestErrorWithBody<E>?) -> Void
+public typealias CodableArrayResultClosureWithErrorBody<O: Codable, E: Codable> = ([O]?, RequestErrorWithBody<E>?) -> Void
+public typealias IdentifierCodableResultClosureWithErrorBody<Id: Identifier, O: Codable, E: Codable> = (Id?, O?, RequestErrorWithBody<E>?) -> Void
+
+public typealias IdentifierCodableClosureWithErrorBody<Id: Identifier, I: Codable, O: Codable, E: Codable> = (Id, I, @escaping CodableResultClosureWithErrorBody<O, E>) -> Void
+public typealias CodableClosureWithErrorBody<I: Codable, O: Codable, E: Codable> = (I, @escaping CodableResultClosureWithErrorBody<O, E>) -> Void
+public typealias CodableIdentifierClosureWithErrorBody<I: Codable, Id: Identifier, O: Codable, E: Codable> = (I, @escaping IdentifierCodableResultClosureWithErrorBody<Id, O, E>) -> Void
+public typealias NonCodableClosureWithErrorBody<E: Codable> = (@escaping ResultClosureWithErrorBody<E>) -> Void
+public typealias IdentifierNonCodableClosureWithErrorBody<Id: Identifier, E: Codable> = (Id, @escaping ResultClosureWithErrorBody<E>) -> Void
+public typealias CodableArrayClosureWithErrorBody<O: Codable, E: Codable> = (@escaping CodableArrayResultClosureWithErrorBody<O, E>) -> Void
+public typealias SimpleCodableClosureWithErrorBody<O: Codable, E: Codable> = (@escaping CodableResultClosureWithErrorBody<O, E>) -> Void
+public typealias IdentifierSimpleCodableClosureWithErrorBody<Id: Identifier, O: Codable, E: Codable> = (Id, @escaping CodableResultClosureWithErrorBody<O, E>) -> Void
+
+extension Router {
+    public func get<O: Codable, E>(_ route: String, handler: @escaping CodableArrayClosureWithErrorBody<O, E>) {
+        get(route) { request, response, next in
+            Log.verbose("Received GET (plural) type-safe request")
+            // Define result handler
+            let resultHandler: CodableArrayResultClosureWithErrorBody<O, E> = { result, error in
+                do {
+                    if let err = error {
+                        let status = self.httpStatusCode(from: err)
+                        response.status(status)
+                        // TODO: Use response.send()
+                        let encoded = try JSONEncoder().encode(err.body)
+                        response.send(data: encoded)
+                    } else {
+                        let encoded = try JSONEncoder().encode(result)
+                        response.status(.OK)
+                        response.send(data: encoded)
+                    }
+                } catch {
+                    // Http 500 error
+                    response.status(.internalServerError)
+                }
+                next()
+            }
+            handler(resultHandler)
+        }
+    }
+
+    public func get<O: Codable, E>(_ route: String, handler: @escaping SimpleCodableClosureWithErrorBody<O, E>) {
+        get(route) { request, response, next in
+            Log.verbose("Received GET (single no-identifier) type-safe request with codable error")
+            // Define result handler
+            let resultHandler: CodableResultClosureWithErrorBody<O, E> = { result, error in
+                do {
+                    if let err = error {
+                        let status = self.httpStatusCode(from: err)
+                        response.status(status)
+                        // TODO: Use response.send()
+                        let encoded = try JSONEncoder().encode(err.body)
+                        response.send(data: encoded)
+                    } else {
+                        response.status(.OK)
+                        // TODO: Use response.send()
+                        let encoded = try JSONEncoder().encode(result)
+                        response.send(data: encoded)
+                    }
+                } catch {
+                    // Http 500 error
+                    response.status(.internalServerError)
+                }
+                next()
+            }
+            handler(resultHandler)
+        }
+    }
+
+    public func get<Id: Identifier, O: Codable, E>(_ route: String, handler: @escaping IdentifierSimpleCodableClosureWithErrorBody<Id, O, E>) {
+        if parameterIsPresent(in: route) {
+            return
+        }
+        get(join(path: route, with: ":id")) { request, response, next in
+            Log.verbose("Received GET (singular with identifier) type-safe request")
+            do {
+                // Define result handler
+                let resultHandler: CodableResultClosureWithErrorBody<O, E> = { result, error in
+                    do {
+                        if let err = error {
+                            let status = self.httpStatusCode(from: err)
+                            response.status(status)
+                            // TODO: Use response.send()
+                            let encoded = try JSONEncoder().encode(err.body)
+                            response.send(data: encoded)
+                        } else {
+                            let encoded = try JSONEncoder().encode(result)
+                            response.status(.OK)
+                            response.send(data: encoded)
+                        }
+                    } catch {
+                         // Http 500 error
+                        response.status(.internalServerError)
+                    }
+                    next()
+                }
+                // Process incoming data from client
+                let id = request.parameters["id"] ?? ""
+                let identifier = try Id(value: id)
+                handler(identifier, resultHandler)
+            } catch {
+                // Http 422 error
+                response.status(.unprocessableEntity)
+                next()
+            }
+        }
+    }
+
+    public func delete<E>(_ route: String, handler: @escaping NonCodableClosureWithErrorBody<E>) {
+        delete(route) { request, response, next in
+            Log.verbose("Received DELETE (plural) type-safe request")
+            // Define result handler
+            let resultHandler: ResultClosureWithErrorBody<E> = { error in
+                if let err = error {
+                    let status = self.httpStatusCode(from: err)
+                    response.status(status)
+                    do {
+                        // TODO: Use response.send()
+                        let encoded = try JSONEncoder().encode(err.body)
+                        response.send(data: encoded)
+                    } catch {
+                        response.status(.internalServerError)
+                    }
+                } else {
+                    response.status(.noContent)
+                }
+                next()
+            }
+            handler(resultHandler)
+        }
+    }
+
+    public func delete<Id: Identifier, E>(_ route: String, handler: @escaping IdentifierNonCodableClosureWithErrorBody<Id, E>) {
+        if parameterIsPresent(in: route) {
+            return
+        }
+        delete(join(path: route, with: ":id")) { request, response, next in
+            Log.verbose("Received DELETE (singular) type-safe request")
+            let resultHandler: ResultClosureWithErrorBody<E> = { error in
+                if let err = error {
+                    let status = self.httpStatusCode(from: err)
+                    response.status(status)
+                    do {
+                        // TODO: Use response.send()
+                        let encoded = try JSONEncoder().encode(err.body)
+                        response.send(data: encoded)
+                    } catch {
+                        response.status(.internalServerError)
+                    }
+                } else {
+                    response.status(.noContent)
+                }
+                next()
+            }
+            // Process incoming data from client
+            do {
+                let id = request.parameters["id"] ?? ""
+                let identifier = try Id(value: id)
+                handler(identifier, resultHandler)
+            } catch {
+                 // Http 422 error
+                response.status(.unprocessableEntity)
+                next()
+            }
+        }
+    }
+
+    public func post<I: Codable, O: Codable, E>(_ route: String, handler: @escaping CodableClosureWithErrorBody<I, O, E>) {
+        post(route) { request, response, next in
+            Log.verbose("Received POST type-safe request")
+            guard self.isContentTypeJson(request) else {
+                response.status(.unsupportedMediaType)
+                next()
+                return
+            }
+            guard !request.hasBodyParserBeenUsed else {
+                Log.error("No data in request. Codable routes do not allow the use of a BodyParser.")
+                response.status(.internalServerError)
+                return
+            }
+            do {
+                // Process incoming data from client
+                let param = try request.read(as: I.self)
+
+                // Define handler to process result from application
+                let resultHandler: CodableResultClosureWithErrorBody<O, E> = { result, error in
+                    do {
+                        if let err = error {
+                            let status = self.httpStatusCode(from: err)
+                            response.status(status)
+                            // TODO: Use response.send()
+                            let encoded = try JSONEncoder().encode(err.body)
+                            response.send(data: encoded)
+                        } else {
+                            response.status(.created)
+                            // TODO: Use response.send()
+                            let encoded = try JSONEncoder().encode(result)
+                            response.send(data: encoded)
+                        }
+                    } catch {
+                        // Http 500 error
+                        response.status(.internalServerError)
+                    }
+                    next()
+                }
+                // Invoke application handler
+                handler(param, resultHandler)
+            } catch {
+                // Http 400 error
+                //response.status(.badRequest)
+                // Http 422 error
+                response.status(.unprocessableEntity)
+                next()
+            }
+        }
+    }
+
+    public func post<I: Codable, Id: Identifier, O: Codable, E>(_ route: String, handler: @escaping CodableIdentifierClosureWithErrorBody<I, Id, O, E>) {
+        post(route) { request, response, next in
+            Log.verbose("Received POST type-safe request")
+            guard self.isContentTypeJson(request) else {
+                response.status(.unsupportedMediaType)
+                next()
+                return
+            }
+            guard !request.hasBodyParserBeenUsed else {
+                Log.error("No data in request. Codable routes do not allow the use of a BodyParser.")
+                response.status(.internalServerError)
+                return
+            }
+            do {
+                // Process incoming data from client
+                let param = try request.read(as: I.self)
+
+                // Define handler to process result from application
+                let resultHandler: IdentifierCodableResultClosureWithErrorBody<Id, O, E> = { id, result, error in
+                    do {
+                        if let err = error {
+                            let status = self.httpStatusCode(from: err)
+                            response.status(status)
+                            // TODO: Use response.send()
+                            let encoded = try JSONEncoder().encode(err.body)
+                            response.send(data: encoded)
+                        } else {
+                            guard let id = id else {
+                                Log.error("No id (unique identifier) value provided.")
+                                response.status(.internalServerError)
+                                next()
+                                return
+                            }
+                            let encoded = try JSONEncoder().encode(result)
+                            response.status(.created)
+                            response.headers["Location"] = String(id.value)
+                            response.send(data: encoded)
+                        }
+                    } catch {
+                        // Http 500 error
+                        response.status(.internalServerError)
+                    }
+                    next()
+                }
+                // Invoke application handler
+                handler(param, resultHandler)
+            } catch {
+                // Http 422 error
+                response.status(.unprocessableEntity)
+                next()
+            }
+        }
+    }
+
+    public func put<Id: Identifier, I: Codable, O: Codable, E>(_ route: String, handler: @escaping IdentifierCodableClosureWithErrorBody<Id, I, O, E>) {
+        if parameterIsPresent(in: route) {
+            return
+        }
+        put(join(path: route, with: ":id")) { request, response, next in
+            Log.verbose("Received PUT type-safe request")
+             guard self.isContentTypeJson(request) else {
+                response.status(.unsupportedMediaType)
+                next()
+                return
+            }
+            guard !request.hasBodyParserBeenUsed else {
+                Log.error("No data in request. Codable routes do not allow the use of a BodyParser.")
+                response.status(.internalServerError)
+                return
+            }
+            do {
+                // Process incoming data from client
+                let id = request.parameters["id"] ?? ""
+                let identifier = try Id(value: id)
+                let param = try request.read(as: I.self)
+
+                let resultHandler: CodableResultClosureWithErrorBody<O, E> = { result, error in
+                    do {
+                        if let err = error {
+                            let status = self.httpStatusCode(from: err)
+                            response.status(status)
+                            // TODO: Use response.send()
+                            let encoded = try JSONEncoder().encode(err.body)
+                            response.send(data: encoded)
+                        } else {
+                            let encoded = try JSONEncoder().encode(result)
+                            response.status(.OK)
+                            response.send(data: encoded)
+                        }
+                    } catch {
+                        // Http 500 error
+                        response.status(.internalServerError)
+                    }
+                    next()
+                }
+                // Invoke application handler
+                handler(identifier, param, resultHandler)
+            } catch {
+                response.status(.unprocessableEntity)
+                next()
+            }
+        }
+    }
+
+    public func patch<Id: Identifier, I: Codable, O: Codable, E>(_ route: String, handler: @escaping IdentifierCodableClosureWithErrorBody<Id, I, O, E>) {
+        if parameterIsPresent(in: route) {
+            return
+        }
+        patch(join(path: route, with: ":id")) { request, response, next in
+            Log.verbose("Received PATCH type-safe request")
+            guard self.isContentTypeJson(request) else {
+                response.status(.unsupportedMediaType)
+                next()
+                return
+            }
+            guard !request.hasBodyParserBeenUsed else {
+                Log.error("No data in request. Codable routes do not allow the use of a BodyParser.")
+                response.status(.internalServerError)
+                return
+            }
+            do {
+                // Process incoming data from client
+                let id = request.parameters["id"] ?? ""
+                let identifier = try Id(value: id)
+                let param = try request.read(as: I.self)
+
+                // Define handler to process result from application
+                let resultHandler: CodableResultClosureWithErrorBody<O, E> = { result, error in
+                    do {
+                        if let err = error {
+                            let status = self.httpStatusCode(from: err)
+                            response.status(status)
+                            // TODO: Use response.send()
+                            let encoded = try JSONEncoder().encode(err.body)
+                            response.send(data: encoded)
+                        } else {
+                            let encoded = try JSONEncoder().encode(result)
+                            response.status(.OK)
+                            response.send(data: encoded)
+                        }
+                    } catch {
+                        // Http 500 error
+                        response.status(.internalServerError)
+                    }
+                    next()
+                }
+                // Invoke application handler
+                handler(identifier, param, resultHandler)
+            } catch {
+                // Http 422 error
+                response.status(.unprocessableEntity)
+                next()
+            }
+        }
     }
 }
 
