@@ -65,6 +65,9 @@ class RouterMiddlewareWalker {
                 try middlewares[middlewareIndex].handle(request: request, response: response, next: closure)
             } catch {
                 response.error = error
+                
+                // print error logs before the callback
+                print(error)
                 self.next()
             }
 
