@@ -29,7 +29,7 @@ extension Router {
      Setup a CodableArrayClosure on the provided route which will be invoked when a request comes to the server.
 
      ### Usage Example: ###
-     ````
+     ```swift
      //User is a struct object that conforms to Codable
      router.get("/users") { (respondWith: ([User]?, RequestError?) -> Void) in
 
@@ -37,7 +37,7 @@ extension Router {
 
         respondWith(users, nil)
      }
-     ````
+     ```
      - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
      - Parameter handler: A CodableArrayClosure that gets invoked when a request comes to the server.
      */
@@ -49,7 +49,7 @@ extension Router {
      Setup a SimpleCodableClosure on the provided route which will be invoked when a request comes to the server.
 
      ### Usage Example: ###
-     ````
+     ```swift
      //Status is a struct object that conforms to Codable
      router.get("/status") { (respondWith: (Status?, RequestError?) -> Void) in
 
@@ -57,7 +57,7 @@ extension Router {
 
         respondWith(status, nil)
      }
-     ````
+     ```
      - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
      - Parameter handler: A SimpleCodableClosure that gets invoked when a request comes to the server.
      */
@@ -69,7 +69,7 @@ extension Router {
      Setup a IdentifierSimpleCodableClosure on the provided route which will be invoked when a request comes to the server.
 
      ### Usage Example: ###
-     ````
+     ```swift
      //User is a struct object that conforms to Codable
      router.get("/users") { (id: Int, respondWith: (User?, RequestError?) -> Void) in
 
@@ -77,7 +77,7 @@ extension Router {
 
         respondWith(user, nil)
      }
-     ````
+     ```
      - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
      - Parameter handler: An IdentifierSimpleCodableClosure that gets invoked when a request comes to the server.
      */
@@ -89,14 +89,14 @@ extension Router {
      Setup a NonCodableClosure on the provided route which will be invoked when a request comes to the server.
 
      ### Usage Example: ###
-     ````
+     ```swift
      router.delete("/users") { (respondWith: (RequestError?) -> Void) in
 
         ...
 
         respondWith(nil)
      }
-     ````
+     ```
      - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
      - Parameter handler: An NonCodableClosure that gets invoked when a request comes to the server.
      */
@@ -108,14 +108,14 @@ extension Router {
      Setup a IdentifierNonCodableClosure on the provided route which will be invoked when a request comes to the server.
 
      ### Usage Example: ###
-     ````
+     ```swift
      router.delete("/users") { (id: Int, respondWith: (RequestError?) -> Void) in
 
         ...
 
         respondWith(nil)
      }
-     ````
+     ```
      - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
      - Parameter handler: An IdentifierNonCodableClosure that gets invoked when a request comes to the server.
      */
@@ -128,7 +128,7 @@ extension Router {
      In this scenario, the ID (i.e. unique identifier) is a field in the Codable instance.
 
      ### Usage Example: ###
-     ````
+     ```swift
      //User is a struct object that conforms to Codable
      router.post("/users") { (user: User, respondWith: (User?, RequestError?) -> Void) in
 
@@ -136,7 +136,7 @@ extension Router {
 
         respondWith(user, nil)
      }
-     ````
+     ```
      - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
      - Parameter handler: A Codable closure that gets invoked when a request comes to the server.
     */
@@ -150,7 +150,7 @@ extension Router {
      in the location HTTP header).
 
      ### Usage Example: ###
-     ````
+     ```swift
      //User is a struct object that conforms to Codable
      router.post("/users") { (user: User, respondWith: (Int?, User?, RequestError?) -> Void) in
 
@@ -158,7 +158,7 @@ extension Router {
 
         respondWith(id, user, nil)
      }
-     ````
+     ```
      - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
      - Parameter handler: A Codable closure that gets invoked when a request comes to the server.
     */
@@ -170,7 +170,7 @@ extension Router {
      Setup a IdentifierCodableClosure on the provided route which will be invoked when a request comes to the server.
 
      ### Usage Example: ###
-     ````
+     ```swift
      //User is a struct object that conforms to Codable
      router.put("/users") { (id: Int, user: User, respondWith: (User?, RequestError?) -> Void) in
 
@@ -178,7 +178,7 @@ extension Router {
 
         respondWith(user, nil)
      }
-     ````
+     ```
      - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
      - Parameter handler: An Identifier Codable closure that gets invoked when a request comes to the server.
      */
@@ -190,7 +190,7 @@ extension Router {
      Setup a IdentifierCodableClosure on the provided route which will be invoked when a request comes to the server.
 
      ### Usage Example: ###
-     ````
+     ```swift
      //User is a struct object that conforms to Codable
      //OptionalUser is a struct object that conforms to Codable where all properties are optional
      router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?, RequestError?) -> Void) -> Void in
@@ -199,7 +199,7 @@ extension Router {
 
         respondWith(user, nil)
      }
-     ````
+     ```
      - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
      - Parameter handler: An Identifier Codable closure that gets invoked when a request comes to the server.
      */

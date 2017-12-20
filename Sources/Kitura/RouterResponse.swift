@@ -22,7 +22,17 @@ import Foundation
 
 // MARK: RouterResponse
 
-/// Router response that the server sends as a reply to `RouterRequest`.
+/** The RouterResponse class is used to define and work with responses from the Router. It contains and allows access to the HTTP response code (e.g. 404 not found) and, if they exist, the HTTP `Headers` and Body of the router response.
+### Usage Example: ###
+In this example "response" is an instance of the class `RouterResponse`, which is used to determine the router HTTP status code response to a get request.
+```swift
+router.get("/route/:p1") { _, response, next in
+    ...
+    let httpStatusCode = response.statusCode
+    ...
+}
+```
+ */
 public class RouterResponse {
 
     struct State {
@@ -95,6 +105,7 @@ public class RouterResponse {
             return nil
         }
     }()
+    // MARK: RouterResponse Variables
 
     /// Set of cookies to return with the response.
     public var cookies = [String: HTTPCookie]()
@@ -145,6 +156,8 @@ public class RouterResponse {
             }
         }
     }
+
+    // MARK: End Response
 
     /// End the response.
     ///
@@ -197,6 +210,8 @@ public class RouterResponse {
         response.headers.append("Set-Cookie", value: cookieStrings)
     }
 
+    // MARK: Send Information
+
     /// Send a string.
     ///
     /// - Parameter str: the string to send.
@@ -220,8 +235,8 @@ public class RouterResponse {
 
     /// Send data.
     ///
-    /// - Parameter data: the data to send.
-    /// - Returns: this RouterResponse.
+    /// - Parameter data: The data to send.
+    /// - Returns: This RouterResponse.
     @discardableResult
     public func send(data: Data) -> RouterResponse {
         guard !state.invokedEnd else {
@@ -235,9 +250,9 @@ public class RouterResponse {
 
     /// Send a file.
     ///
-    /// - Parameter fileName: the name of the file to send.
+    /// - Parameter fileName: The name of the file to send.
     /// - Throws: An error in the Cocoa domain, if the file cannot be read.
-    /// - Returns: this RouterResponse.
+    /// - Returns: This RouterResponse.
     ///
     /// - Note: Sets the Content-Type header based on the "extension" of the file.
     ///       If the fileName is relative, it is relative to the current directory.
@@ -261,10 +276,10 @@ public class RouterResponse {
 
     typealias JSONSerializationType = JSONSerialization
 
-    /// Send JSON.
+    /// Send JSON array.
     ///
     /// - Parameter json: The array to send in JSON format.
-    /// - Returns: this RouterResponse.
+    /// - Returns: This RouterResponse.
     @discardableResult
     public func send(json: [Any]) -> RouterResponse {
         guard !state.invokedEnd else {
@@ -282,10 +297,10 @@ public class RouterResponse {
         return self
     }
 
-    /// Send JSON.
+    /// Send JSON dictionary.
     ///
     /// - Parameter json: The Dictionary to send in JSON format as a hash.
-    /// - Returns: this RouterResponse.
+    /// - Returns: This RouterResponse.
     @discardableResult
     public func send(json: [String: Any]) -> RouterResponse {
         guard !state.invokedEnd else {
@@ -302,21 +317,11 @@ public class RouterResponse {
 
         return self
     }
-
-    /// Set the status code.
-    ///
-    /// - Parameter status: the HTTP status code object.
-    /// - Returns: this RouterResponse.
-    @discardableResult
-    public func status(_ status: HTTPStatusCode) -> RouterResponse {
-        response.statusCode = status
-        return self
-    }
-
+    
     /// Send the HTTP status code.
     ///
-    /// - Parameter status: the HTTP status code.
-    /// - Returns: this RouterResponse.
+    /// - Parameter status: The HTTP status code.
+    /// - Returns: This RouterResponse.
     public func send(status: HTTPStatusCode) -> RouterResponse {
         guard !state.invokedEnd else {
             Log.warning("RouterResponse send(status:) invoked after end() for \(self.request.urlURL)")
@@ -327,66 +332,9 @@ public class RouterResponse {
         return self
     }
 
-    /// Redirect to path with status code.
-    ///
-    /// - Parameter: the path for the redirect.
-    /// - Parameter: the status code for the redirect.
-    /// - Throws: Socket.Error if an error occurred while writing to a socket.
-    /// - Returns: this RouterResponse.
-    @discardableResult
-    public func redirect(_ path: String, status: HTTPStatusCode = .movedTemporarily) throws -> RouterResponse {
-        headers.setLocation(path)
-        try self.status(status).end()
-        return self
-    }
-
-    /// Render a resource using Router's template engine.
-    ///
-    /// - Parameter resource: the resource name without extension.
-    /// - Parameter context: a dictionary of local variables of the resource.
-    /// - Parameter options: rendering options, specific per template engine
-    /// - Throws: TemplatingError if no file extension was specified or there is no template engine defined for the extension.
-    /// - Returns: this RouterResponse.
-    ///
-    // influenced by http://expressjs.com/en/4x/api.html#app.render
-    @discardableResult
-    public func render(_ resource: String, context: [String:Any],
-                       options: RenderingOptions = NullRenderingOptions()) throws -> RouterResponse {
-        guard let router = getRouterThatCanRender(resource: resource) else {
-            throw TemplatingError.noTemplateEngineForExtension(extension: "")
-        }
-        let renderedResource = try router.render(template: resource, context: context, options: options)
-        return send(renderedResource)
-    }
-
-    private func getRouterThatCanRender(resource: String) -> Router? {
-        var routerStackToTraverse = routerStack
-
-        while routerStackToTraverse.topItem != nil {
-            let router = routerStackToTraverse.pop()
-
-            if router.getTemplateEngine(template: resource) != nil {
-                return router
-            }
-        }
-        return nil
-    }
-
-    /// Push router into router stack
-    ///
-    /// - Parameter: router - router to push
-    func push(router: Router) {
-        routerStack.push(router)
-    }
-
-    /// Pop router from router stack
-    func popRouter() {
-        let _ = routerStack.pop()
-    }
-
     /// Set headers and attach file for downloading.
     ///
-    /// - Parameter download: the file to download.
+    /// - Parameter download: The file to download.
     /// - Throws: An error in the Cocoa domain, if the file cannot be read.
     public func send(download: String) throws {
         guard !state.invokedEnd else {
@@ -396,27 +344,40 @@ public class RouterResponse {
         try send(fileName: StaticFileServer.ResourcePathHandler.getAbsolutePath(for: download))
         headers.addAttachment(for: download)
     }
+    
+    // MARK: Change RouterRequest
 
-    /// Set the pre-flush lifecycle handler and return the previous one.
+    /// Redirect to path with status code.
     ///
-    /// - Parameter newOnEndInvoked: The new pre-flush lifecycle handler.
-    /// - Returns: The old pre-flush lifecycle handler.
-    public func setOnEndInvoked(_ newOnEndInvoked: @escaping LifecycleHandler) -> LifecycleHandler {
-        let oldOnEndInvoked = lifecycle.onEndInvoked
-        lifecycle.onEndInvoked = newOnEndInvoked
-        return oldOnEndInvoked
+    /// - Parameter: The path for the redirect.
+    /// - Parameter: The status code for the redirect.
+    /// - Throws: Socket.Error if an error occurred while writing to a socket.
+    /// - Returns: This RouterResponse.
+    @discardableResult
+    public func redirect(_ path: String, status: HTTPStatusCode = .movedTemporarily) throws -> RouterResponse {
+        headers.setLocation(path)
+        try self.status(status).end()
+        return self
     }
 
-    /// Set the written data filter and return the previous one.
+    // influenced by http://expressjs.com/en/4x/api.html#app.render
+    /// Render a resource using Router's template engine.
     ///
-    /// - Parameter newWrittenDataFilter: The new written data filter.
-    /// - Returns: The old written data filter.
-    public func setWrittenDataFilter(_ newWrittenDataFilter: @escaping WrittenDataFilter) -> WrittenDataFilter {
-        let oldWrittenDataFilter = lifecycle.writtenDataFilter
-        lifecycle.writtenDataFilter = newWrittenDataFilter
-        return oldWrittenDataFilter
+    /// - Parameter resource: The resource name without extension.
+    /// - Parameter context: A dictionary of local variables of the resource.
+    /// - Parameter options: Rendering options, specific per template engine
+    /// - Throws: TemplatingError if no file extension was specified or there is no template engine defined for the extension.
+    /// - Returns: This RouterResponse.
+    @discardableResult
+    public func render(_ resource: String, context: [String:Any],
+                       options: RenderingOptions = NullRenderingOptions()) throws -> RouterResponse {
+        guard let router = getRouterThatCanRender(resource: resource) else {
+            throw TemplatingError.noTemplateEngineForExtension(extension: "")
+        }
+        let renderedResource = try router.render(template: resource, context: context, options: options)
+        return send(renderedResource)
     }
-
+    
     /// Perform content-negotiation on the Accept HTTP header on the request, when present.
     ///
     /// Uses request.accepts() to select a handler for the request, based on the acceptable types ordered by their
@@ -437,14 +398,72 @@ public class RouterResponse {
             try status(.notAcceptable).end()
         }
     }
+
+    private func getRouterThatCanRender(resource: String) -> Router? {
+        var routerStackToTraverse = routerStack
+
+        while routerStackToTraverse.topItem != nil {
+            let router = routerStackToTraverse.pop()
+
+            if router.getTemplateEngine(template: resource) != nil {
+                return router
+            }
+        }
+        return nil
+    }
+
+    /// Push router into router stack
+    ///
+    /// - Parameter: router - Router to push
+    func push(router: Router) {
+        routerStack.push(router)
+    }
+
+    /// Pop router from router stack
+    func popRouter() {
+        let _ = routerStack.pop()
+    }
+    // MARK: Set RouterResponse Components
+
+    /// Set the status code.
+    ///
+    /// - Parameter status: The HTTP status code object.
+    /// - Returns: This RouterResponse.
+    @discardableResult
+    public func status(_ status: HTTPStatusCode) -> RouterResponse {
+        response.statusCode = status
+        return self
+    }
+    
+    /// Set the pre-flush lifecycle handler and return the previous one.
+    ///
+    /// - Parameter newOnEndInvoked: The new pre-flush lifecycle handler.
+    /// - Returns: The old pre-flush lifecycle handler.
+    public func setOnEndInvoked(_ newOnEndInvoked: @escaping LifecycleHandler) -> LifecycleHandler {
+        let oldOnEndInvoked = lifecycle.onEndInvoked
+        lifecycle.onEndInvoked = newOnEndInvoked
+        return oldOnEndInvoked
+    }
+
+    /// Set the written data filter and return the previous one.
+    ///
+    /// - Parameter newWrittenDataFilter: The new written data filter.
+    /// - Returns: The old written data filter.
+    public func setWrittenDataFilter(_ newWrittenDataFilter: @escaping WrittenDataFilter) -> WrittenDataFilter {
+        let oldWrittenDataFilter = lifecycle.writtenDataFilter
+        lifecycle.writtenDataFilter = newWrittenDataFilter
+        return oldWrittenDataFilter
+    }
 }
 
 extension RouterResponse {
 
+    // MARK: Send Encodable Object
+
     /// Send Encodable Object.
     ///
-    /// - Parameter obj: the Codable object to send.
-    /// - Returns: this RouterResponse.
+    /// - Parameter obj: The Codable object to send.
+    /// - Returns: This RouterResponse.
     @discardableResult
     public func send<T : Encodable>(_ obj: T) -> RouterResponse {
         guard !state.invokedEnd else {
@@ -463,24 +482,24 @@ extension RouterResponse {
 
     /// Send Encodable Object JSON Convienence Method
     ///
-    /// - Parameter json: the Encodable object to send.
-    /// - Returns: this RouterResponse.
+    /// - Parameter json: The Encodable object to send.
+    /// - Returns: This RouterResponse.
     @discardableResult
     public func send<T : Encodable>(json: T) -> RouterResponse {
         return send(json)
     }
 
-    /// Send JSON with JSONP callback.
+    /// Send Encodable Object JSON with JSONP callback.
     ///
-    /// - Parameter json: the JSON object to send.
-    /// - Parameter callbackParameter: the name of the URL query
+    /// - Parameter json: The JSON object to send.
+    /// - Parameter callbackParameter: The name of the URL query
     /// parameter whose value contains the JSONP callback function.
     ///
     /// - Throws: `JSONPError.invalidCallbackName` if the the callback
     /// query parameter of the request URL is missing or its value is
     /// empty or contains invalid characters (the set of valid characters
     /// is the alphanumeric characters and `[]$._`).
-    /// - Returns: this RouterResponse.
+    /// - Returns: This RouterResponse.
     public func send<T : Encodable>(jsonp: T, callbackParameter: String = "callback") throws -> RouterResponse {
         guard !state.invokedEnd else {
             Log.warning("RouterResponse send(jsonp:) invoked after end() for \(self.request.urlURL)")

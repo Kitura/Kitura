@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (98% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -167,6 +167,17 @@
                 </div>
               </div>
             <p>A router middleware that serves static files from a given path.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, a function to create and setup a router using a StaticFileServer is created. The <code>CacheOptions</code> and <code>Options</code> are set up and then used as parameters for defining router.all.</p>
+<pre class="highlight swift"><code><span class="kd">static</span> <span class="kd">func</span> <span class="nf">setupRouter</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Router</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+    <span class="k">let</span> <span class="nv">cacheOptions</span> <span class="o">=</span> <span class="kt">StaticFileServer</span><span class="o">.</span><span class="kt">CacheOptions</span><span class="p">(</span><span class="nv">maxAgeCacheControlHeader</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">let</span> <span class="nv">options</span> <span class="o">=</span> <span class="kt">StaticFileServer</span><span class="o">.</span><span class="kt">Options</span><span class="p">(</span><span class="nv">possibleExtensions</span><span class="p">:</span> <span class="p">[</span><span class="s">"exe"</span><span class="p">,</span> <span class="s">"html"</span><span class="p">],</span> <span class="nv">cacheOptions</span><span class="p">:</span> <span class="n">cacheOptions</span><span class="p">)</span>
+    <span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/example"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="kt">StaticFileServer</span><span class="p">(</span><span class="nv">path</span><span class="p">:</span> <span class="s">"/StaticFileServer/path"</span><span class="p">,</span> <span class="nv">options</span><span class="p">:</span><span class="n">options</span><span class="p">,</span> <span class="nv">customResponseHeadersSetter</span><span class="p">:</span> <span class="kt">HeaderSetter</span><span class="p">()))</span>
+    <span class="k">return</span> <span class="n">router</span>
+<span class="p">}</span>
+</code></pre>
 
           </div>
         </section>
@@ -188,7 +199,12 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Cache configuration options for StaticFileServer.</p>
+                        <p>Cache configuration options for <code><a href="../Classes/StaticFileServer.html">StaticFileServer</a></code>.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight plaintext"><code> In this example, "cacheOptions" are initialised for a static file server. Since "maxAgeCacheControlHeader" is not defined it will default to 0.
+</code></pre>
+<pre class="highlight swift"><code> <span class="k">let</span> <span class="nv">cacheOptions</span> <span class="o">=</span> <span class="kt">StaticFileServer</span><span class="o">.</span><span class="kt">CacheOptions</span><span class="p">(</span><span class="nv">addLastModifiedHeader</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">generateETag</span><span class="p">:</span> <span class="kc">false</span><span class="p">)</span>
+</code></pre>
 
                         <a href="../Classes/StaticFileServer/CacheOptions.html" class="slightly-smaller">See more</a>
                       </div>
@@ -216,7 +232,13 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Configuration options for StaticFileServer.</p>
+                        <p>Configuration options for <code><a href="../Classes/StaticFileServer.html">StaticFileServer</a></code>.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, <code>cacheOptions</code> are initialised for a static file server and then used to create <q>options</q> for a static file server. Since <q>acceptRanges</q> and <q>redirect</q> are not defined, they will default to true and <q>possibleExtensions</q> will default to an empty array.</p>
+<pre class="highlight swift"><code><span class="n">cacheOptions</span> <span class="o">=</span> <span class="kt">StaticFileServer</span><span class="o">.</span><span class="kt">CacheOptions</span><span class="p">(</span><span class="nv">addLastModifiedHeader</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">generateETag</span><span class="p">:</span> <span class="kc">false</span><span class="p">)</span>
+<span class="n">options</span> <span class="o">=</span> <span class="kt">StaticFileServer</span><span class="o">.</span><span class="kt">Options</span><span class="p">(</span><span class="nv">serveIndexForDirectory</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">cacheOptions</span><span class="p">:</span> <span class="n">cacheOptions</span><span class="p">)</span>
+</code></pre>
 
                         <a href="../Classes/StaticFileServer/Options.html" class="slightly-smaller">See more</a>
                       </div>
@@ -251,7 +273,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">absoluteRootPath</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">StaticFileServer</span><span class="p">:</span> <span class="kt"><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></span></code></pre>
 
                         </div>
                       </div>
@@ -279,7 +301,7 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">path</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">"./public"</span><span class="p">,</span> <span class="nv">options</span><span class="p">:</span> <span class="kt"><a href="../Classes/StaticFileServer/Options.html">Options</a></span> <span class="o">=</span> <span class="kt"><a href="../Classes/StaticFileServer/Options.html">Options</a></span><span class="p">(),</span>
-             <span class="nv">customResponseHeadersSetter</span><span class="p">:</span> <span class="kt"><a href="../Protocols/ResponseHeadersSetter.html">ResponseHeadersSetter</a></span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span></code></pre>
+                 <span class="nv">customResponseHeadersSetter</span><span class="p">:</span> <span class="kt"><a href="../Protocols/ResponseHeadersSetter.html">ResponseHeadersSetter</a></span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -295,7 +317,7 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>a root directory for file serving.</p>
+                                  <p>A root directory for file serving.</p>
                                 </div>
                               </td>
                             </tr>
@@ -307,7 +329,7 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>configuration options for StaticFileServer.</p>
+                                  <p>Configuration options for StaticFileServer.</p>
                                 </div>
                               </td>
                             </tr>
@@ -319,7 +341,7 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>an object of a class that
+                                  <p>An object of a class that
 implements <code><a href="../Protocols/ResponseHeadersSetter.html">ResponseHeadersSetter</a></code> protocol providing a custom method to set
 the headers of the response.</p>
                                 </div>
@@ -367,7 +389,7 @@ the headers of the response.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the router request.</p>
+                                  <p>The router request.</p>
                                 </div>
                               </td>
                             </tr>
@@ -379,7 +401,7 @@ the headers of the response.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the router response.</p>
+                                  <p>The router response.</p>
                                 </div>
                               </td>
                             </tr>
@@ -391,7 +413,7 @@ the headers of the response.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the closure for the next execution block.</p>
+                                  <p>The closure for the next execution block.</p>
                                 </div>
                               </td>
                             </tr>
@@ -409,8 +431,8 @@ the headers of the response.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-11-18)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-12-13)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

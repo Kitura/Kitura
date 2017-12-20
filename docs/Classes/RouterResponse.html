@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (98% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -166,7 +166,16 @@
 
                 </div>
               </div>
-            <p>Router response that the server sends as a reply to <code><a href="../Classes/RouterRequest.html">RouterRequest</a></code>.</p>
+            <p>The RouterResponse class is used to define and work with responses from the Router. It contains and allows access to the HTTP response code (e.g. 404 not found) and, if they exist, the HTTP <code><a href="../Structs/Headers.html">Headers</a></code> and Body of the router response.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example <q>response</q> is an instance of the class <code>RouterResponse</code>, which is used to determine the router HTTP status code response to a get request.</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/route/:p1"</span><span class="p">)</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
+    <span class="o">...</span>
+    <span class="k">let</span> <span class="nv">httpStatusCode</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">statusCode</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+</code></pre>
 
           </div>
         </section>
@@ -174,6 +183,13 @@
         <section class="section">
           <div class="section-content">
             <div class="task-group">
+              <div class="task-name-container">
+                <a name="/RouterResponse%20Variables"></a>
+                <a name="//apple_ref/swift/Section/RouterResponse Variables" class="dashAnchor"></a>
+                <a href="#/RouterResponse%20Variables">
+                  <h3 class="section-name">RouterResponse Variables</h3>
+                </a>
+              </div>
               <ul class="item-container">
                 <li class="item">
                   <div>
@@ -283,6 +299,17 @@
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/End%20Response"></a>
+                <a name="//apple_ref/swift/Section/End Response" class="dashAnchor"></a>
+                <a href="#/End%20Response">
+                  <h3 class="section-name">End Response</h3>
+                </a>
+              </div>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -315,6 +342,17 @@
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Send%20Information"></a>
+                <a name="//apple_ref/swift/Section/Send Information" class="dashAnchor"></a>
+                <a href="#/Send%20Information">
+                  <h3 class="section-name">Send Information</h3>
+                </a>
+              </div>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -401,7 +439,7 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>the data to send.</p>
+                                  <p>The data to send.</p>
                                 </div>
                               </td>
                             </tr>
@@ -410,7 +448,7 @@
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
+                        <p>This RouterResponse.</p>
                       </div>
                     </section>
                   </div>
@@ -462,7 +500,7 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>the name of the file to send.</p>
+                                  <p>The name of the file to send.</p>
                                 </div>
                               </td>
                             </tr>
@@ -471,7 +509,7 @@
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
+                        <p>This RouterResponse.</p>
                       </div>
                     </section>
                   </div>
@@ -489,7 +527,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Send JSON.</p>
+                        <p>Send JSON array.</p>
 
                       </div>
                       <div class="declaration">
@@ -521,7 +559,7 @@
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
+                        <p>This RouterResponse.</p>
                       </div>
                     </section>
                   </div>
@@ -539,7 +577,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Send JSON.</p>
+                        <p>Send JSON dictionary.</p>
 
                       </div>
                       <div class="declaration">
@@ -571,57 +609,7 @@
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura14RouterResponseC6statusAC0A3Net14HTTPStatusCodeOF"></a>
-                    <a name="//apple_ref/swift/Method/status(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC6statusAC0A3Net14HTTPStatusCodeOF">status(_:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Set the status code.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">status</span><span class="p">(</span><span class="n">_</span> <span class="nv">status</span><span class="p">:</span> <span class="kt">HTTPStatusCode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>status</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>the HTTP status code object.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div>
-                        <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
+                        <p>This RouterResponse.</p>
                       </div>
                     </section>
                   </div>
@@ -662,7 +650,7 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>the HTTP status code.</p>
+                                  <p>The HTTP status code.</p>
                                 </div>
                               </td>
                             </tr>
@@ -671,71 +659,7 @@
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura14RouterResponseC8redirectACSS_0A3Net14HTTPStatusCodeO6statustKF"></a>
-                    <a name="//apple_ref/swift/Method/redirect(_:status:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC8redirectACSS_0A3Net14HTTPStatusCodeO6statustKF">redirect(_:status:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Redirect to path with status code.</p>
-<div class="aside aside-throws">
-    <p class="aside-title">Throws</p>
-    Socket.Error if an error occurred while writing to a socket.
-
-</div>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">redirect</span><span class="p">(</span><span class="n">_</span> <span class="nv">path</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">status</span><span class="p">:</span> <span class="kt">HTTPStatusCode</span> <span class="o">=</span> <span class="o">.</span><span class="n">movedTemporarily</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura14RouterResponseC6renderACSS_s10DictionaryVySSypG7context0A14TemplateEngine16RenderingOptions_p7optionstKF"></a>
-                    <a name="//apple_ref/swift/Method/render(_:context:options:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC6renderACSS_s10DictionaryVySSypG7context0A14TemplateEngine16RenderingOptions_p7optionstKF">render(_:context:options:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">render</span><span class="p">(</span><span class="n">_</span> <span class="nv">resource</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">context</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span><span class="kt">Any</span><span class="p">],</span>
-                   <span class="nv">options</span><span class="p">:</span> <span class="kt">RenderingOptions</span> <span class="o">=</span> <span class="kt">NullRenderingOptions</span><span class="p">())</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
-
-                        </div>
+                        <p>This RouterResponse.</p>
                       </div>
                     </section>
                   </div>
@@ -781,12 +705,256 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>the file to download.</p>
+                                  <p>The file to download.</p>
                                 </div>
                               </td>
                             </tr>
                           </tbody>
                         </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Change%20RouterRequest"></a>
+                <a name="//apple_ref/swift/Section/Change RouterRequest" class="dashAnchor"></a>
+                <a href="#/Change%20RouterRequest">
+                  <h3 class="section-name">Change RouterRequest</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura14RouterResponseC8redirectACSS_0A3Net14HTTPStatusCodeO6statustKF"></a>
+                    <a name="//apple_ref/swift/Method/redirect(_:status:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC8redirectACSS_0A3Net14HTTPStatusCodeO6statustKF">redirect(_:status:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Redirect to path with status code.</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    Socket.Error if an error occurred while writing to a socket.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">redirect</span><span class="p">(</span><span class="n">_</span> <span class="nv">path</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">status</span><span class="p">:</span> <span class="kt">HTTPStatusCode</span> <span class="o">=</span> <span class="o">.</span><span class="n">movedTemporarily</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>This RouterResponse.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura14RouterResponseC6renderACSS_s10DictionaryVySSypG7context0A14TemplateEngine16RenderingOptions_p7optionstKF"></a>
+                    <a name="//apple_ref/swift/Method/render(_:context:options:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC6renderACSS_s10DictionaryVySSypG7context0A14TemplateEngine16RenderingOptions_p7optionstKF">render(_:context:options:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Render a resource using Router&rsquo;s template engine.</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    TemplatingError if no file extension was specified or there is no template engine defined for the extension.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">render</span><span class="p">(</span><span class="n">_</span> <span class="nv">resource</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">context</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span><span class="kt">Any</span><span class="p">],</span>
+                       <span class="nv">options</span><span class="p">:</span> <span class="kt">RenderingOptions</span> <span class="o">=</span> <span class="kt">NullRenderingOptions</span><span class="p">())</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>resource</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The resource name without extension.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>context</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A dictionary of local variables of the resource.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>options</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Rendering options, specific per template engine</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>This RouterResponse.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura14RouterResponseC6formatys10DictionaryVySSyAA0B7RequestC_ACtcG9callbacks_tKF"></a>
+                    <a name="//apple_ref/swift/Method/format(callbacks:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC6formatys10DictionaryVySSyAA0B7RequestC_ACtcG9callbacks_tKF">format(callbacks:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Perform content-negotiation on the Accept HTTP header on the request, when present.</p>
+
+<p>Uses request.accepts() to select a handler for the request, based on the acceptable types ordered by their
+quality values. If the header is not specified, the default callback is invoked. When no match is found,
+the server invokes the default callback if exists, or responds with 406 “Not Acceptable”.
+The Content-Type response header is set when a callback is selected.</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    Socket.Error if an error occurred while writing to a socket.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">format</span><span class="p">(</span><span class="nv">callbacks</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="p">((</span><span class="kt"><a href="../Classes/RouterRequest.html">RouterRequest</a></span><span class="p">,</span> <span class="kt">RouterResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)])</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>callbacks</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>a dictionary that maps content types to handlers.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Set%20RouterResponse%20Components"></a>
+                <a name="//apple_ref/swift/Section/Set RouterResponse Components" class="dashAnchor"></a>
+                <a href="#/Set%20RouterResponse%20Components">
+                  <h3 class="section-name">Set RouterResponse Components</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura14RouterResponseC6statusAC0A3Net14HTTPStatusCodeOF"></a>
+                    <a name="//apple_ref/swift/Method/status(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC6statusAC0A3Net14HTTPStatusCodeOF">status(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Set the status code.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">status</span><span class="p">(</span><span class="n">_</span> <span class="nv">status</span><span class="p">:</span> <span class="kt">HTTPStatusCode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>status</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The HTTP status code object.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>This RouterResponse.</p>
                       </div>
                     </section>
                   </div>
@@ -891,65 +1059,16 @@
                     </section>
                   </div>
                 </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura14RouterResponseC6formatys10DictionaryVySSyAA0B7RequestC_ACtcG9callbacks_tKF"></a>
-                    <a name="//apple_ref/swift/Method/format(callbacks:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC6formatys10DictionaryVySSyAA0B7RequestC_ACtcG9callbacks_tKF">format(callbacks:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Perform content-negotiation on the Accept HTTP header on the request, when present.</p>
-
-<p>Uses request.accepts() to select a handler for the request, based on the acceptable types ordered by their
-quality values. If the header is not specified, the default callback is invoked. When no match is found,
-the server invokes the default callback if exists, or responds with 406 “Not Acceptable”.
-The Content-Type response header is set when a callback is selected.</p>
-<div class="aside aside-throws">
-    <p class="aside-title">Throws</p>
-    Socket.Error if an error occurred while writing to a socket.
-
-</div>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">format</span><span class="p">(</span><span class="nv">callbacks</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="p">((</span><span class="kt"><a href="../Classes/RouterRequest.html">RouterRequest</a></span><span class="p">,</span> <span class="kt">RouterResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)])</span> <span class="k">throws</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>callbacks</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>a dictionary that maps content types to handlers.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </section>
-                  </div>
-                </li>
               </ul>
             </div>
             <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Send%20Encodable%20Object"></a>
+                <a name="//apple_ref/swift/Section/Send Encodable Object" class="dashAnchor"></a>
+                <a href="#/Send%20Encodable%20Object">
+                  <h3 class="section-name">Send Encodable Object</h3>
+                </a>
+              </div>
               <ul class="item-container">
                 <li class="item">
                   <div>
@@ -987,7 +1106,7 @@ The Content-Type response header is set when a callback is selected.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the Codable object to send.</p>
+                                  <p>The Codable object to send.</p>
                                 </div>
                               </td>
                             </tr>
@@ -996,7 +1115,7 @@ The Content-Type response header is set when a callback is selected.</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
+                        <p>This RouterResponse.</p>
                       </div>
                     </section>
                   </div>
@@ -1037,7 +1156,7 @@ The Content-Type response header is set when a callback is selected.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the Encodable object to send.</p>
+                                  <p>The Encodable object to send.</p>
                                 </div>
                               </td>
                             </tr>
@@ -1046,7 +1165,7 @@ The Content-Type response header is set when a callback is selected.</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
+                        <p>This RouterResponse.</p>
                       </div>
                     </section>
                   </div>
@@ -1064,7 +1183,7 @@ The Content-Type response header is set when a callback is selected.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Send JSON with JSONP callback.</p>
+                        <p>Send Encodable Object JSON with JSONP callback.</p>
 <div class="aside aside-throws">
     <p class="aside-title">Throws</p>
     <p><code><a href="../Enums/JSONPError.html#/s:6Kitura10JSONPErrorO19invalidCallbackNameACSSSg4name_tcACmF">JSONPError.invalidCallbackName</a></code> if the the callback
@@ -1095,7 +1214,7 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the JSON object to send.</p>
+                                  <p>The JSON object to send.</p>
                                 </div>
                               </td>
                             </tr>
@@ -1107,7 +1226,7 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the name of the URL query
+                                  <p>The name of the URL query
 parameter whose value contains the JSONP callback function.</p>
                                 </div>
                               </td>
@@ -1117,7 +1236,7 @@ parameter whose value contains the JSONP callback function.</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
+                        <p>This RouterResponse.</p>
                       </div>
                     </section>
                   </div>
@@ -1130,8 +1249,8 @@ parameter whose value contains the JSONP callback function.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-11-18)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-12-13)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

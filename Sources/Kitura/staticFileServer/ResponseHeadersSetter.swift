@@ -18,15 +18,28 @@ import Foundation
 
 // MARK ResponseHeadersSetter
 
-/// A protocol for providing a custom method for setting
-/// the headers of the response of static file serving middleware.
+/**
+A protocol for providing a custom method for setting the headers of the response of static file serving middleware.
+### Usage Example: ###
+ In this example, when the `FileServer` is initialised, a custom object called "responseHeadersSetter" is provided, which obeys the "ResponseHeadersSetter" protocol. This can then be used by the server.
+```swift
+class FileServer {
+    private let responseHeadersSetter: ResponseHeadersSetter?
+    init(servingFilesPath: String, options: StaticFileServer.Options, responseHeadersSetter: ResponseHeadersSetter?) {
+        ...
+        self.responseHeadersSetter = responseHeadersSetter
+    }
+    ...
+ }
+ ```
+*/
 public protocol ResponseHeadersSetter {
 
     /// Set the headers of the response
     ///
-    /// - Parameter response: the router response
-    /// - Parameter filePath: the path of the file being served
-    /// - Parameter fileAttributes: an array of attributes of the file being served
+    /// - Parameter response: The router response
+    /// - Parameter filePath: The path of the file being served
+    /// - Parameter fileAttributes: An array of attributes of the file being served
     func setCustomResponseHeaders(response: RouterResponse, filePath: String, fileAttributes: [FileAttributeKey : Any])
 
 }

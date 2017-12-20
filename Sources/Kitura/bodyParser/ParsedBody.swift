@@ -17,10 +17,16 @@ import Foundation
 
 // MARK ParsedBody
 
-/// The result of parsing the body of the request.
-///
-/// When a body of a request is parsed the results of the parsing are placed
-/// in the associated value of the enum case based on Content-Type
+/**
+The result of parsing the body of the request. When a body of a request is parsed the results of the parsing are placed in the associated value of the enum case based on Content-Type
+### Usage Example: ###
+In this example, there is a function "parse" which takes in data and return an optional of type "ParsedBody".
+ ```swift
+func parse(_ data: Data) -> ParsedBody? {
+    ...
+}
+ ```
+*/
 public indirect enum ParsedBody {
 
     /// If the content type was "application/x-www-form-urlencoded" this

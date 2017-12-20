@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (98% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -166,7 +166,16 @@
 
                 </div>
               </div>
-            <p>Router request.</p>
+            <p>The RouterRequest class is used to define and work with incoming requests to the Router. It contains and allows access to the request HTTP <code><a href="../Structs/Headers.html">Headers</a></code> and Body as well as other information such as the <code>hostname</code> and <code>port</code> of the request. You can also check if passed in types are acceptable based on the request’s header field.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example <q>request</q> is an instance of the class <code>RouterRequest</code>. It is used by the server to read the Body of the request as type <q>InputType</q>, which must be Codable, from the post request, so that it can be used later.</p>
+<pre class="highlight swift"><code> <span class="n">router</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="s">"/route/:p1"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
+    <span class="o">...</span>
+     <span class="k">let</span> <span class="nv">body</span> <span class="o">=</span> <span class="k">try</span> <span class="n">request</span><span class="o">.</span><span class="nf">read</span><span class="p">(</span><span class="nv">as</span><span class="p">:</span> <span class="kt">InputType</span><span class="p">)</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+</code></pre>
 
           </div>
         </section>
@@ -174,6 +183,13 @@
         <section class="section">
           <div class="section-content">
             <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Request%20Information"></a>
+                <a name="//apple_ref/swift/Section/Request Information" class="dashAnchor"></a>
+                <a href="#/Request%20Information">
+                  <h3 class="section-name">Request Information</h3>
+                </a>
+              </div>
               <ul class="item-container">
                 <li class="item">
                   <div>
@@ -337,6 +353,17 @@
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/URL%20Information"></a>
+                <a name="//apple_ref/swift/Section/URL Information" class="dashAnchor"></a>
+                <a href="#/URL%20Information">
+                  <h3 class="section-name">URL Information</h3>
+                </a>
+              </div>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -529,6 +556,17 @@ URLComponents has a memory leak on linux as of swift 3.0.1. Use &lsquo;urlURL&rs
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Request%20Components"></a>
+                <a name="//apple_ref/swift/Section/Request Components" class="dashAnchor"></a>
+                <a href="#/Request%20Components">
+                  <h3 class="section-name">Request Components</h3>
+                </a>
+              </div>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -718,6 +756,17 @@ URLComponents has a memory leak on linux as of swift 3.0.1. Use &lsquo;urlURL&rs
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Read%20Body"></a>
+                <a name="//apple_ref/swift/Section/Read Body" class="dashAnchor"></a>
+                <a href="#/Read%20Body">
+                  <h3 class="section-name">Read Body</h3>
+                </a>
+              </div>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -768,7 +817,7 @@ URLComponents has a memory leak on linux as of swift 3.0.1. Use &lsquo;urlURL&rs
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>the number of bytes read.</p>
+                        <p>The number of bytes read.</p>
                       </div>
                     </section>
                   </div>
@@ -869,11 +918,22 @@ URLComponents has a memory leak on linux as of swift 3.0.1. Use &lsquo;urlURL&rs
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>the String with the request body.</p>
+                        <p>The String with the request body.</p>
                       </div>
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Check%20Acceptable"></a>
+                <a name="//apple_ref/swift/Section/Check Acceptable" class="dashAnchor"></a>
+                <a href="#/Check%20Acceptable">
+                  <h3 class="section-name">Check Acceptable</h3>
+                </a>
+              </div>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -911,7 +971,7 @@ specified in the first parameter.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>name of request&rsquo;s header field to be checked.</p>
+                                  <p>Name of request&rsquo;s header field to be checked.</p>
                                 </div>
                               </td>
                             </tr>
@@ -923,7 +983,7 @@ specified in the first parameter.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>array of content/mime type strings.</p>
+                                  <p>Array of content/mime type strings.</p>
                                 </div>
                               </td>
                             </tr>
@@ -932,7 +992,7 @@ specified in the first parameter.</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>most acceptable type or nil if there are none.</p>
+                        <p>Most acceptable type or nil if there are none.</p>
                       </div>
                     </section>
                   </div>
@@ -974,7 +1034,7 @@ specified in the first parameter.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>name of request&rsquo;s header field to be checked.</p>
+                                  <p>Name of request&rsquo;s header field to be checked.</p>
                                 </div>
                               </td>
                             </tr>
@@ -986,7 +1046,7 @@ specified in the first parameter.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>content/mime type strings.</p>
+                                  <p>Content/mime type strings.</p>
                                 </div>
                               </td>
                             </tr>
@@ -995,7 +1055,7 @@ specified in the first parameter.</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>most acceptable type or nil if there are none.</p>
+                        <p>Most acceptable type or nil if there are none.</p>
                       </div>
                     </section>
                   </div>
@@ -1037,7 +1097,7 @@ specified in the first parameter.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>name of request&rsquo;s header field to be checked.</p>
+                                  <p>Name of request&rsquo;s header field to be checked.</p>
                                 </div>
                               </td>
                             </tr>
@@ -1049,7 +1109,7 @@ specified in the first parameter.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>content/mime type string.</p>
+                                  <p>Content/mime type string.</p>
                                 </div>
                               </td>
                             </tr>
@@ -1058,7 +1118,7 @@ specified in the first parameter.</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>most acceptable type or nil if there are none.</p>
+                        <p>Most acceptable type or nil if there are none.</p>
                       </div>
                     </section>
                   </div>
@@ -1071,8 +1131,8 @@ specified in the first parameter.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-11-18)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-12-13)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

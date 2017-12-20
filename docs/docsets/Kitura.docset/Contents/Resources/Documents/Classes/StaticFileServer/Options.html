@@ -23,7 +23,7 @@
         <a class="header-link" href="../../index.html">
           Kitura Docs
         </a>
-         (98% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -166,7 +166,13 @@
 
                 </div>
               </div>
-            <p>Configuration options for StaticFileServer.</p>
+            <p>Configuration options for <code><a href="../../Classes/StaticFileServer.html">StaticFileServer</a></code>.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, <code>cacheOptions</code> are initialised for a static file server and then used to create <q>options</q> for a static file server. Since <q>acceptRanges</q> and <q>redirect</q> are not defined, they will default to true and <q>possibleExtensions</q> will default to an empty array.</p>
+<pre class="highlight swift"><code><span class="n">cacheOptions</span> <span class="o">=</span> <span class="kt">StaticFileServer</span><span class="o">.</span><span class="kt">CacheOptions</span><span class="p">(</span><span class="nv">addLastModifiedHeader</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">generateETag</span><span class="p">:</span> <span class="kc">false</span><span class="p">)</span>
+<span class="n">options</span> <span class="o">=</span> <span class="kt">StaticFileServer</span><span class="o">.</span><span class="kt">Options</span><span class="p">(</span><span class="nv">serveIndexForDirectory</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">cacheOptions</span><span class="p">:</span> <span class="n">cacheOptions</span><span class="p">)</span>
+</code></pre>
 
           </div>
         </section>
@@ -196,7 +202,7 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">possibleExtensions</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span> <span class="nv">serveIndexForDirectory</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
-     <span class="nv">redirect</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="nv">cacheOptions</span><span class="p">:</span> <span class="kt"><a href="../../Classes/StaticFileServer/CacheOptions.html">CacheOptions</a></span> <span class="o">=</span> <span class="kt"><a href="../../Classes/StaticFileServer/CacheOptions.html">CacheOptions</a></span><span class="p">(),</span> <span class="nv">acceptRanges</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span></code></pre>
+             <span class="nv">redirect</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="nv">cacheOptions</span><span class="p">:</span> <span class="kt"><a href="../../Classes/StaticFileServer/CacheOptions.html">CacheOptions</a></span> <span class="o">=</span> <span class="kt"><a href="../../Classes/StaticFileServer/CacheOptions.html">CacheOptions</a></span><span class="p">(),</span> <span class="nv">acceptRanges</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -212,7 +218,7 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>an array of file extensions to be added
+                                  <p>An array of file extensions to be added
 to the file name in case the file was not found. The extensions are 
 added in the order they appear in the array, and a new search is 
 performed.</p>
@@ -227,7 +233,7 @@ performed.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>an indication whether to serve
+                                  <p>An indication whether to serve
 <q>index.html</q> file the requested path is a directory.</p>
                                 </div>
                               </td>
@@ -240,7 +246,7 @@ performed.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>an indication whether to redirect to trailing
+                                  <p>An indication whether to redirect to trailing
 <q>/</q> when the requested path is a directory.</p>
                                 </div>
                               </td>
@@ -253,7 +259,7 @@ performed.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>cache options for StaticFileServer.</p>
+                                  <p>Cache options for StaticFileServer.</p>
                                 </div>
                               </td>
                             </tr>
@@ -271,8 +277,8 @@ performed.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-11-18)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-12-13)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

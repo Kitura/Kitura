@@ -21,6 +21,7 @@ import Foundation
 // MARK RouteRegex
 
 /// A set of helper functions for router path matching using regular expression.
+
 public class RouteRegex {
     /// A shared instance of RouteRegex.
     public static let sharedInstance = RouteRegex()
@@ -44,11 +45,9 @@ public class RouteRegex {
     }
 
     /// Builds a regular expression from a String pattern
-    ///
     /// - Parameter pattern: Optional string
     /// - Parameter allowPartialMatch: True if a partial match is allowed. Defaults to false.
-    /// - Returns: A tuple of the compiled `NSRegularExpression?`, a bool as to whether or not
-    ///            this is a simple String compare, and array of keys
+    /// - Returns: A tuple of the compiled `NSRegularExpression?`, a bool as to whether or not this is a simple String compare, and an array of keys
     internal func buildRegex(fromPattern: String?, allowPartialMatch: Bool = false) -> (NSRegularExpression?, Bool, [String]?) {
         guard let pattern = fromPattern else {
             return (nil, false, nil)

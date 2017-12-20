@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (98% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -166,8 +166,11 @@
 
                 </div>
               </div>
-            <p>The BodyParser parses the body of the request prior to sending it to the handler. It reads the Content-Type of the message header and populates the <code><a href="../Classes/RouterRequest.html">RouterRequest</a></code> body field with a <code><a href="../Enums/ParsedBody.html">ParsedBody</a></code> enumeration (e.g. json, raw, text, urlEncoded)
- In order for the BodyParser to be used it must first be registered with any routes that are interested in the ParsedBody payload. The example below registers all routes to the BodyParser middleware.</p>
+            <p>The <code>BodyParser</code> parses the body of the request prior to sending it to the handler. It reads the Content-Type of the message header and populates the <code><a href="../Classes/RouterRequest.html">RouterRequest</a></code> body field with a <code><a href="../Enums/ParsedBody.html">ParsedBody</a></code> enumeration (e.g. json, raw, text, urlEncoded).
+ In order for the BodyParser to be used it must first be registered with any routes that are interested in the ParsedBody payload.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, all routes to the BodyParser middleware are registered to the <code>BodyParser</code> middleware.</p>
 <pre class="highlight swift"><code>   <span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/*"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="kt">BodyParser</span><span class="p">())</span>
 </code></pre>
 
@@ -194,7 +197,10 @@
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Initializes a BodyParser instance.
-Needed since default initalizer is internal.</p>
+ Needed since default initalizer is internal.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code> <span class="k">let</span> <span class="nv">middleware</span> <span class="o">=</span> <span class="kt">BodyParser</span><span class="p">()</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
@@ -222,6 +228,11 @@ Needed since default initalizer is internal.</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Handle the request, i.e. parse the body of the request.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, the <code>BodyParser</code> middleware handle function is called. This will take the <code><a href="../Classes/RouterRequest.html">RouterRequest</a></code> instance called <q>request</q>, parse the request body and continue to the next closure block.</p>
+<pre class="highlight swift"><code>    <span class="k">try</span> <span class="n">middleware</span><span class="o">.</span><span class="nf">handle</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="n">request</span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="n">response</span><span class="p">,</span> <span class="nv">next</span><span class="p">:</span> <span class="n">closure</span><span class="p">)</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
@@ -244,7 +255,7 @@ Needed since default initalizer is internal.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the router request.</p>
+                                  <p>The router request.</p>
                                 </div>
                               </td>
                             </tr>
@@ -256,7 +267,7 @@ Needed since default initalizer is internal.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the router response.</p>
+                                  <p>The router response.</p>
                                 </div>
                               </td>
                             </tr>
@@ -268,7 +279,7 @@ Needed since default initalizer is internal.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the closure for the next execution block.</p>
+                                  <p>The closure for the next execution block.</p>
                                 </div>
                               </td>
                             </tr>
@@ -292,6 +303,11 @@ Needed since default initalizer is internal.</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Parse the body of the incoming message.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, The request body is parsed using the parse function to be of type <q>contentType</q>.</p>
+<pre class="highlight swift"><code><span class="n">request</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="kt">BodyParser</span><span class="o">.</span><span class="nf">parse</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="nv">contentType</span><span class="p">:</span> <span class="n">contentType</span><span class="p">)</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
@@ -314,7 +330,7 @@ Needed since default initalizer is internal.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>message coming from the socket.</p>
+                                  <p>Message coming from the socket.</p>
                                 </div>
                               </td>
                             </tr>
@@ -326,7 +342,7 @@ Needed since default initalizer is internal.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the content type as a String.</p>
+                                  <p>The content type as a String.</p>
                                 </div>
                               </td>
                             </tr>
@@ -335,7 +351,7 @@ Needed since default initalizer is internal.</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>the parsed body.</p>
+                        <p>The parsed body.</p>
                       </div>
                     </section>
                   </div>
@@ -354,6 +370,11 @@ Needed since default initalizer is internal.</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Read the body data of the request.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, The request body is read into the bodyData constant using an instance of<code><a href="../Classes/RouterRequest.html">RouterRequest</a></code> called <q>request</q>.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">bodyData</span> <span class="o">=</span> <span class="k">try</span> <span class="nf">readBodyData</span><span class="p">(</span><span class="nv">with</span><span class="p">:</span> <span class="n">request</span><span class="p">)</span>
+</code></pre>
 <div class="aside aside-throws">
     <p class="aside-title">Throws</p>
     Socket.Error if an error occurred while reading from a socket.
@@ -381,7 +402,7 @@ Needed since default initalizer is internal.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the socket reader.</p>
+                                  <p>The socket reader.</p>
                                 </div>
                               </td>
                             </tr>
@@ -390,7 +411,7 @@ Needed since default initalizer is internal.</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>data for the body.</p>
+                        <p>The body data associated with the request.</p>
                       </div>
                     </section>
                   </div>
@@ -403,8 +424,8 @@ Needed since default initalizer is internal.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-11-18)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-12-13)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

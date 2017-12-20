@@ -22,7 +22,7 @@
         <a class="header-link" href="index.html">
           Kitura Docs
         </a>
-         (98% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -223,6 +223,17 @@ the appropriate code for handling. This includes:</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>A set of helper functions to make it easier to create, start, and stop Kitura based servers.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, we create a function called run, inside a server <code>Application.swift</code> file, which will create a Kitura server on the specified port, using the given router and then run the created server. This function would then be the last call in your <code>main.swift</code> file.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">port</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">8080</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">run</span><span class="p">()</span> <span class="k">throws</span><span class="p">{</span>
+    <span class="o">...</span>
+    <span class="kt">Kitura</span><span class="o">.</span><span class="nf">addHTTPServer</span><span class="p">(</span><span class="nv">onPort</span><span class="p">:</span> <span class="n">port</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="n">router</span><span class="p">)</span>
+    <span class="kt">Kitura</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre>
 
                         <a href="Classes/Kitura.html" class="slightly-smaller">See more</a>
                       </div>
@@ -294,6 +305,15 @@ the appropriate code for handling. This includes:</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Create an on the fly <code><a href="Protocols/RouterMiddleware.html">RouterMiddleware</a></code> from a <code><a href="Typealiases.html#/s:6Kitura13RouterHandlera">RouterHandler</a></code> closure.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example <q>middleware</q> has been made, which follows the <code><a href="Protocols/RouterMiddleware.html">RouterMiddleware</a></code> protocol. <q>middleware</q> will return the HTTPStatusCode .OK with the body <q>Hello World</q>. This middleware is then assigned to a router for the route <q>/hello</q>.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">middleware</span> <span class="o">=</span> <span class="kt">RouterMiddlewareGenerator</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
+    <span class="n">response</span><span class="o">.</span><span class="nf">status</span><span class="p">(</span><span class="kt">HTTPStatusCode</span><span class="o">.</span><span class="kt">OK</span><span class="p">)</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"Hello World</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+    <span class="nf">next</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/hello"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="n">middleware</span><span class="p">)</span>
+</code></pre>
 
                         <a href="Classes/RouterMiddlewareGenerator.html" class="slightly-smaller">See more</a>
                       </div>
@@ -332,7 +352,16 @@ the appropriate code for handling. This includes:</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Router request.</p>
+                        <p>The RouterRequest class is used to define and work with incoming requests to the Router. It contains and allows access to the request HTTP <code><a href="Structs/Headers.html">Headers</a></code> and Body as well as other information such as the <code>hostname</code> and <code>port</code> of the request. You can also check if passed in types are acceptable based on the request’s header field.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example <q>request</q> is an instance of the class <code>RouterRequest</code>. It is used by the server to read the Body of the request as type <q>InputType</q>, which must be Codable, from the post request, so that it can be used later.</p>
+<pre class="highlight swift"><code> <span class="n">router</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="s">"/route/:p1"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
+    <span class="o">...</span>
+     <span class="k">let</span> <span class="nv">body</span> <span class="o">=</span> <span class="k">try</span> <span class="n">request</span><span class="o">.</span><span class="nf">read</span><span class="p">(</span><span class="nv">as</span><span class="p">:</span> <span class="kt">InputType</span><span class="p">)</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+</code></pre>
 
                         <a href="Classes/RouterRequest.html" class="slightly-smaller">See more</a>
                       </div>
@@ -371,7 +400,16 @@ the appropriate code for handling. This includes:</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Router response that the server sends as a reply to <code><a href="Classes/RouterRequest.html">RouterRequest</a></code>.</p>
+                        <p>The RouterResponse class is used to define and work with responses from the Router. It contains and allows access to the HTTP response code (e.g. 404 not found) and, if they exist, the HTTP <code><a href="Structs/Headers.html">Headers</a></code> and Body of the router response.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example <q>response</q> is an instance of the class <code>RouterResponse</code>, which is used to determine the router HTTP status code response to a get request.</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/route/:p1"</span><span class="p">)</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
+    <span class="o">...</span>
+    <span class="k">let</span> <span class="nv">httpStatusCode</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">statusCode</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+</code></pre>
 
                         <a href="Classes/RouterResponse.html" class="slightly-smaller">See more</a>
                       </div>
@@ -410,8 +448,11 @@ the appropriate code for handling. This includes:</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The BodyParser parses the body of the request prior to sending it to the handler. It reads the Content-Type of the message header and populates the <code><a href="Classes/RouterRequest.html">RouterRequest</a></code> body field with a <code><a href="Enums/ParsedBody.html">ParsedBody</a></code> enumeration (e.g. json, raw, text, urlEncoded)
- In order for the BodyParser to be used it must first be registered with any routes that are interested in the ParsedBody payload. The example below registers all routes to the BodyParser middleware.</p>
+                        <p>The <code>BodyParser</code> parses the body of the request prior to sending it to the handler. It reads the Content-Type of the message header and populates the <code><a href="Classes/RouterRequest.html">RouterRequest</a></code> body field with a <code><a href="Enums/ParsedBody.html">ParsedBody</a></code> enumeration (e.g. json, raw, text, urlEncoded).
+ In order for the BodyParser to be used it must first be registered with any routes that are interested in the ParsedBody payload.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, all routes to the BodyParser middleware are registered to the <code>BodyParser</code> middleware.</p>
 <pre class="highlight swift"><code>   <span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/*"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="kt">BodyParser</span><span class="p">())</span>
 </code></pre>
 
@@ -454,8 +495,14 @@ the appropriate code for handling. This includes:</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A set of APIs to work with Content-Type headers, whether to generate the value
-or to determine if it&rsquo;s an acceptable value.</p>
+                        <p>The <code>ContentType</code> class provides functions to determine the MIME content type for a given file extension. The user can pass in a complete file name e.g. <q>foo.png</q> or just the file extension e.g. <q>png</q>, or they can pass in both a MIME content type and a file extension and query whether they match.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, a <code>ContentType</code> instance is initialised called contentType. This instance is then used to obtain the MIME content type of the file <q>foo.png</q>, which is identified as <q>image/png</q>.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">contentType</span> <span class="o">=</span> <span class="kt">ContentType</span><span class="o">.</span><span class="n">sharedInstance</span>
+<span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="n">contentType</span><span class="o">.</span><span class="nf">getContentType</span><span class="p">(</span><span class="nv">forFileName</span><span class="p">:</span> <span class="s">"foo.png"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="kt">String</span><span class="p">(</span><span class="nv">describing</span><span class="p">:</span> <span class="n">result</span><span class="p">))</span> <span class="c1">// "image/png"</span>
+</code></pre>
 
                         <a href="Classes/ContentType.html" class="slightly-smaller">See more</a>
                       </div>
@@ -495,6 +542,17 @@ or to determine if it&rsquo;s an acceptable value.</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>A router middleware that serves static files from a given path.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, a function to create and setup a router using a StaticFileServer is created. The <code>CacheOptions</code> and <code>Options</code> are set up and then used as parameters for defining router.all.</p>
+<pre class="highlight swift"><code><span class="kd">static</span> <span class="kd">func</span> <span class="nf">setupRouter</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Router</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+    <span class="k">let</span> <span class="nv">cacheOptions</span> <span class="o">=</span> <span class="kt">StaticFileServer</span><span class="o">.</span><span class="kt">CacheOptions</span><span class="p">(</span><span class="nv">maxAgeCacheControlHeader</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">let</span> <span class="nv">options</span> <span class="o">=</span> <span class="kt">StaticFileServer</span><span class="o">.</span><span class="kt">Options</span><span class="p">(</span><span class="nv">possibleExtensions</span><span class="p">:</span> <span class="p">[</span><span class="s">"exe"</span><span class="p">,</span> <span class="s">"html"</span><span class="p">],</span> <span class="nv">cacheOptions</span><span class="p">:</span> <span class="n">cacheOptions</span><span class="p">)</span>
+    <span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/example"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="kt">StaticFileServer</span><span class="p">(</span><span class="nv">path</span><span class="p">:</span> <span class="s">"/StaticFileServer/path"</span><span class="p">,</span> <span class="nv">options</span><span class="p">:</span><span class="n">options</span><span class="p">,</span> <span class="nv">customResponseHeadersSetter</span><span class="p">:</span> <span class="kt">HeaderSetter</span><span class="p">()))</span>
+    <span class="k">return</span> <span class="n">router</span>
+<span class="p">}</span>
+</code></pre>
 
                         <a href="Classes/StaticFileServer.html" class="slightly-smaller">See more</a>
                       </div>
@@ -517,8 +575,8 @@ or to determine if it&rsquo;s an acceptable value.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-11-18)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-12-13)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

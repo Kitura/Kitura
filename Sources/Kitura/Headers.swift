@@ -17,8 +17,14 @@
 import Foundation
 import KituraNet
 
-/// The struct containing the HTTP headers and implements the headers APIs for the
-/// `RouterRequest` and `RouterResponse` classes.
+/**
+The struct containing the HTTP headers and implements the headers APIs for the `RouterRequest` and `RouterResponse` classes.
+### Usage Example: ###
+In this example, an instance of the class `Headers` is created called "headers", by reading the headers from an instance of `RouterRequest` called "serverRequest".
+```swift
+let headers = Headers(headers: serverRequest.headers)
+```
+*/
 public struct Headers {
 
     /// The header storage
@@ -105,7 +111,7 @@ extension Headers {
 
     /// Sets the Location HTTP header
     ///
-    /// - Parameter path: the path to set into the header or the special reserved word "back".
+    /// - Parameter path: The path to set into the header or the special reserved word "back".
     public mutating func setLocation(_ path: String) {
         var p = path
         if  p == "back" {
@@ -157,7 +163,7 @@ extension Headers {
 
     /// Adds a link with specified parameters to Link HTTP header
     ///
-    /// - Parameter link: link value
+    /// - Parameter link: Link value
     /// - Parameter linkParameters: The link parameters (according to RFC 5988) with their values
     public mutating func addLink(_ link: String, linkParameters: [LinkParameter: String]) {
         var headerValue = "<\(link)>"

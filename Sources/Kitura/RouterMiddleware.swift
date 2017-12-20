@@ -16,10 +16,21 @@
 
 // MARK: RouterMiddleware protocol
 
-/// Defines the protocol which all Kitura compliant middleware must implement.
-///
-/// Middleware are class or struct based request handlers. They are often generic
-/// in nature and not tied to a specific request.
+/**
+Defines the protocol which all Kitura compliant middleware must implement. Middleware are class or struct based request handlers. They are often generic in nature and not tied to a specific request.
+### Usage Example: ###
+ In this example, when the `RouterElement` is initialised, an object called "routerMiddleware" is provided which obeys the "RouterMiddleware" protocol. This can then be used by the router.
+```swift
+class RouterElement {
+    private let middlewares: [RouterMiddleware]
+    init(method: RouterMethod, pattern: String?, middleware: [RouterMiddleware], allowPartialMatch: Bool = true, mergeParameters: Bool = false) {
+        ...
+        self.middlewares = middleware
+    }
+    ...
+}
+```
+ */
 public protocol RouterMiddleware {
 
     /// Handle an incoming HTTP request.

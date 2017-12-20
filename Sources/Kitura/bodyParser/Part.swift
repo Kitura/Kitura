@@ -18,7 +18,20 @@ import Foundation
 
 // MARK Part
 
-/// A part of a parsed multi-part form body.
+/**
+A part of a parsed multi-part form body.
+### Usage Example: ###
+In this example, the request body is parsed and split into multiple parts. The parts are then iterated through and for each `Part` the server responds with its name, filename and body.
+```swift
+router.post("/example") { request, response, next in
+    let body = request.body
+    let parts = body.asMultiPart
+    for part in parts {
+        response.send("\(part.name) \(part.filename) \(part.body) ")
+    }
+}
+```
+*/
 public struct Part {
 
     /// The name attribute of the part.
@@ -37,7 +50,13 @@ public struct Part {
     /// The contents of the part.
     public internal(set) var body: ParsedBody = .raw(Data())
 
-    /// Possible header types that can be found in a part of multi-part body.
+    /** Possible header types that can be found in a part of multi-part body.
+    ### Usage Example: ###
+    In this example an instance on the `Part` class called part has the .disposition value of its headers field set to equal "inline".
+    ```swift
+    part.headers[.disposition] = "inline"
+    ```
+    */
     public enum HeaderType {
 
         /// A Content-Disposition header (multipart/form-data bodies).

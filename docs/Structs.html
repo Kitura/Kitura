@@ -22,7 +22,7 @@
         <a class="header-link" href="index.html">
           Kitura Docs
         </a>
-         (98% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -181,9 +181,13 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The version of HTTP protocol.</p>
+                        <p>The version of HTTP protocol.
+HTTP uses a <q>major.minor</q> numbering scheme to indicate versions of the protocol.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
 
-<p>HTTP uses a <q>major.minor</q> numbering scheme to indicate versions of the protocol.</p>
+<p>In this example, a <code>HTTPVersion</code> is initialised from the values taken from httpVersionMajor and httpVersionMinor fields in the <code><a href="Classes/RouterRequest.html">RouterRequest</a></code> instance called <q>serverRequest</q>.</p>
+<pre class="highlight swift"><code><span class="n">httpVersion</span> <span class="o">=</span> <span class="kt">HTTPVersion</span><span class="p">(</span><span class="nv">major</span><span class="p">:</span> <span class="n">serverRequest</span><span class="o">.</span><span class="n">httpVersionMajor</span><span class="p">,</span> <span class="nv">minor</span><span class="p">:</span> <span class="n">serverRequest</span><span class="o">.</span><span class="n">httpVersionMinor</span><span class="p">)</span>
+</code></pre>
 
                         <a href="Structs/HTTPVersion.html" class="slightly-smaller">See more</a>
                       </div>
@@ -215,8 +219,12 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The struct containing the HTTP headers and implements the headers APIs for the
-<code><a href="Classes/RouterRequest.html">RouterRequest</a></code> and <code><a href="Classes/RouterResponse.html">RouterResponse</a></code> classes.</p>
+                        <p>The struct containing the HTTP headers and implements the headers APIs for the <code><a href="Classes/RouterRequest.html">RouterRequest</a></code> and <code><a href="Classes/RouterResponse.html">RouterResponse</a></code> classes.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, an instance of the class <code>Headers</code> is created called <q>headers</q>, by reading the headers from an instance of <code><a href="Classes/RouterRequest.html">RouterRequest</a></code> called <q>serverRequest</q>.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">headers</span> <span class="o">=</span> <span class="kt">Headers</span><span class="p">(</span><span class="nv">headers</span><span class="p">:</span> <span class="n">serverRequest</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+</code></pre>
 
                         <a href="Structs/Headers.html" class="slightly-smaller">See more</a>
                       </div>
@@ -255,7 +263,15 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>A struct which allows the creation of an SSLService Configuration using either a <q>CA Certificate file</q>, a <q>CA Certificate directory</q> or a <q>Certificate Chain File</q>.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, an instance of <q>SSLConfig</q> is initialised by providing the paths to an existing certificate file and the corresponding key file.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">sslConfigDir</span> <span class="o">=</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">fileURLWithPath</span><span class="p">:</span> <span class="err">#</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="nf">appendingPathComponent</span><span class="p">(</span><span class="s">"../SSLConfig"</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">certificatePath</span> <span class="o">=</span> <span class="n">sslConfigDir</span><span class="o">.</span><span class="nf">appendingPathComponent</span><span class="p">(</span><span class="s">"certificate.pem"</span><span class="p">)</span><span class="o">.</span><span class="n">standardized</span><span class="o">.</span><span class="n">path</span>
+<span class="k">let</span> <span class="nv">keyPath</span> <span class="o">=</span> <span class="n">sslConfigDir</span><span class="o">.</span><span class="nf">appendingPathComponent</span><span class="p">(</span><span class="s">"key.pem"</span><span class="p">)</span><span class="o">.</span><span class="n">standardized</span><span class="o">.</span><span class="n">path</span>
+<span class="k">let</span> <span class="nv">sslConfig</span> <span class="o">=</span> <span class="kt">SSLConfig</span><span class="p">(</span><span class="nv">withCACertificateDirectory</span><span class="p">:</span> <span class="kc">nil</span><span class="p">,</span> <span class="nv">usingCertificateFile</span><span class="p">:</span> <span class="n">certificatePath</span><span class="p">,</span> <span class="nv">withKeyFile</span><span class="p">:</span> <span class="n">keyPath</span><span class="p">,</span> <span class="nv">usingSelfSignedCerts</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
+</code></pre>
 
                         <a href="Structs/SSLConfig.html" class="slightly-smaller">See more</a>
                       </div>
@@ -288,6 +304,17 @@
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>A part of a parsed multi-part form body.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, the request body is parsed and split into multiple parts. The parts are then iterated through and for each <code>Part</code> the server responds with its name, filename and body.</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="s">"/example"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
+    <span class="k">let</span> <span class="nv">body</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">body</span>
+    <span class="k">let</span> <span class="nv">parts</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">asMultiPart</span>
+    <span class="k">for</span> <span class="n">part</span> <span class="k">in</span> <span class="n">parts</span> <span class="p">{</span>
+        <span class="n">response</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"</span><span class="se">\(</span><span class="n">part</span><span class="o">.</span><span class="n">name</span><span class="se">)</span><span class="s"> </span><span class="se">\(</span><span class="n">part</span><span class="o">.</span><span class="n">filename</span><span class="se">)</span><span class="s"> </span><span class="se">\(</span><span class="n">part</span><span class="o">.</span><span class="n">body</span><span class="se">)</span><span class="s"> "</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
 
                         <a href="Structs/Part.html" class="slightly-smaller">See more</a>
                       </div>
@@ -310,8 +337,8 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-11-18)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-12-13)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>
