@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import LoggerAPI
+
 // MARK: RouterMiddlewareWalker
 
 class RouterMiddlewareWalker {
