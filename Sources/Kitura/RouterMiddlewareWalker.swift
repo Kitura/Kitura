@@ -69,7 +69,7 @@ class RouterMiddlewareWalker {
                 response.error = error
                 
                 // print error logs before the callback
-                Log.error(error)
+                Log.error("\(error)")
                 self.next()
             }
 
