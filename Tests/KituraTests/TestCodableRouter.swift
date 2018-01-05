@@ -81,7 +81,7 @@ class TestCodableRouter: KituraTest {
         }
     }
 
-    struct MyQuery: Query, Equatable {
+    struct MyQuery: QueryParams, Equatable {
         public let intField: Int
         public let optionalIntField: Int?
         public let stringField: String

@@ -86,7 +86,7 @@ extension Router {
     }
 
     /**
-     Setup a (Query, CodableArrayResultClosure) -> Void on the provided route which will be invoked when a request comes to the server.
+     Setup a (QueryParams, CodableArrayResultClosure) -> Void on the provided route which will be invoked when a request comes to the server.
 
      ### Usage Example: ###
      ````
@@ -100,9 +100,9 @@ extension Router {
      }
      ````
      - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
-     - Parameter handler: A (Query, CodableArrayResultClosure) -> Void that gets invoked when a request comes to the server.
+     - Parameter handler: A (QueryParams, CodableArrayResultClosure) -> Void that gets invoked when a request comes to the server.
      */
-    public func get<Q: Query, O: Codable>(_ route: String, handler: @escaping (Q, @escaping CodableArrayResultClosure<O>) -> Void) {
+    public func get<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q, @escaping CodableArrayResultClosure<O>) -> Void) {
         getSafely(route, handler: handler)
     }
 
@@ -145,7 +145,7 @@ extension Router {
     }
 
     /**
-     Setup a (Query, ResultClosure) -> Void on the provided route which will be invoked when a request comes to the server.
+     Setup a (QueryParams, ResultClosure) -> Void on the provided route which will be invoked when a request comes to the server.
 
      ### Usage Example: ###
      ````
@@ -158,9 +158,9 @@ extension Router {
      }
      ````
      - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
-     - Parameter handler: A (Query, ResultClosure) -> Void that gets invoked when a request comes to the server.
+     - Parameter handler: A (QueryParams, ResultClosure) -> Void that gets invoked when a request comes to the server.
      */
-    public func delete<Q: Query>(_ route: String, handler: @escaping (Q, @escaping ResultClosure) -> Void) {
+    public func delete<Q: QueryParams>(_ route: String, handler: @escaping (Q, @escaping ResultClosure) -> Void) {
         deleteSafely(route, handler: handler)
     }
     /**
@@ -280,7 +280,7 @@ extension Router {
                         response.status(.internalServerError)
                     }
                     next()
-                    
+
                 }
                 // Invoke application handler
                 handler(param, resultHandler)
@@ -490,7 +490,7 @@ extension Router {
     }
 
     // Get w/Query Parameters
-    fileprivate func getSafely<Q: Query, O: Codable>(_ route: String, handler: @escaping (Q, @escaping CodableArrayResultClosure<O>) -> Void) {
+    fileprivate func getSafely<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q, @escaping CodableArrayResultClosure<O>) -> Void) {
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with Query Parameters")
             // Define result handler
