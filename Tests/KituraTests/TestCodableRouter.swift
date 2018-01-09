@@ -39,6 +39,8 @@ class TestCodableRouter: KituraTest {
             ("testCodablePutBodyParsing", testCodablePutBodyParsing),
             ("testCodablePatchBodyParsing", testCodablePatchBodyParsing),
             ("testCodablePostBodyParsing", testCodablePostBodyParsing),
+            ("testCodableGetQueryParameters", testCodableGetQueryParameters),
+            ("testCodableDeleteQueryParameters", testCodableDeleteQueryParameters)
         ]
     }
 
@@ -79,6 +81,35 @@ class TestCodableRouter: KituraTest {
         }
     }
 
+    struct MyQuery: QueryParams, Equatable {
+        public let intField: Int
+        public let optionalIntField: Int?
+        public let stringField: String
+        public let intArray: [Int]
+        public let dateField: Date
+        public let optionalDateField: Date?
+        public let nested: Nested
+
+        public static func ==(lhs: MyQuery, rhs: MyQuery) -> Bool {
+            return  lhs.intField == rhs.intField &&
+                lhs.optionalIntField == rhs.optionalIntField &&
+                lhs.stringField == rhs.stringField &&
+                lhs.intArray == rhs.intArray &&
+                lhs.dateField.timeIntervalSince1970 == rhs.dateField.timeIntervalSince1970 &&
+                lhs.optionalDateField?.timeIntervalSince1970 == rhs.optionalDateField?.timeIntervalSince1970 &&
+                lhs.nested == rhs.nested
+        }
+    }
+
+    struct Nested: Codable, Equatable {
+        public let nestedIntField: Int
+        public let nestedStringField: String
+
+        public static func ==(lhs: Nested, rhs: Nested) -> Bool {
+            return lhs.nestedIntField == rhs.nestedIntField && lhs.nestedStringField == rhs.nestedStringField
+        }
+    }
+
     func testBasicPost() {
         router.post("/users") { (user: User, respondWith: (User?, RequestError?) -> Void) in
             print("POST on /users for user \(user)")
@@ -99,6 +130,7 @@ class TestCodableRouter: KituraTest {
                     return
                 }
 
+                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.created, "HTTP Status code was \(String(describing: response.statusCode))")
                 var data = Data()
                 guard let length = try? response.readAllData(into: &data) else {
@@ -123,50 +155,51 @@ class TestCodableRouter: KituraTest {
             })
         }
     }
-    
+
     func testBasicPostIdentifier() {
         router.post("/users") { (user: User, respondWith: (Int?, User?, RequestError?) -> Void) in
             print("POST on /users for user \(user)")
             self.userStore[user.id] = user
             respondWith(user.id, user, nil)
         }
-        
+
         performServerTest(router, timeout: 30) { expectation in
             let expectedUser = User(id: 4, name: "David")
             guard let userData = try? JSONEncoder().encode(expectedUser) else {
                 XCTFail("Could not generate user data from string!")
                 return
             }
-            
+
             self.performRequest("post", path: "/users", callback: { response in
                 guard let response = response else {
                     XCTFail("ERROR!!! ClientRequest response object was nil")
                     return
                 }
-                
+
+                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.created, "HTTP Status code was \(String(describing: response.statusCode))")
                 var data = Data()
                 guard let length = try? response.readAllData(into: &data) else {
                     XCTFail("Error reading response length!")
                     return
                 }
-                
+
                 XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
                 guard let user = try? JSONDecoder().decode(User.self, from: data) else {
                     XCTFail("Could not decode response! Expected response decodable to User, but got \(String(describing: String(data: data, encoding: .utf8)))")
                     return
                 }
-                
+
                 guard let location = response.headers["Location"] else {
                     XCTFail("Could not find Location header. Expected Location header to be set to the created User id.")
                     return
                 }
                 XCTAssertEqual(location[0], String(expectedUser.id))
-                
+
                 // Validate the data we got back from the server
                 XCTAssertEqual(user.name, expectedUser.name)
                 XCTAssertEqual(user.id, expectedUser.id)
-                
+
                 expectation.fulfill()
             }, requestModifier: { request in
                 request.headers["Content-Type"] = "application/json; charset=utf-8"
@@ -191,6 +224,7 @@ class TestCodableRouter: KituraTest {
                     return
                 }
 
+                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
                 var data = Data()
                 guard let length = try? response.readAllData(into: &data) else {
@@ -227,6 +261,7 @@ class TestCodableRouter: KituraTest {
                     return
                 }
 
+                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
                 var data = Data()
                 guard let length = try? response.readAllData(into: &data) else {
@@ -274,6 +309,7 @@ class TestCodableRouter: KituraTest {
                     return
                 }
 
+                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
                 var data = Data()
                 guard let length = try? response.readAllData(into: &data) else {
@@ -379,6 +415,7 @@ class TestCodableRouter: KituraTest {
                     return
                 }
 
+                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
                 var data = Data()
                 guard let length = try? response.readAllData(into: &data) else {
@@ -435,6 +472,7 @@ class TestCodableRouter: KituraTest {
                     return
                 }
 
+                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
                 var data = Data()
                 guard let length = try? response.readAllData(into: &data) else {
@@ -622,5 +660,98 @@ class TestCodableRouter: KituraTest {
                 request.write(from: userData)
             })
         }
+    }
+
+    func testCodableGetQueryParameters() {
+
+        /// Currently the milliseconds are cut off by our date formatter
+        /// This synchronizes it for testing with the codable route
+        let date: Date = Coder().dateFormatter.date(from: Coder().dateFormatter.string(from: Date()))!
+
+        let expectedQuery = MyQuery(intField: 23, optionalIntField: 282, stringField: "a string", intArray: [1, 2, 3], dateField: date, optionalDateField: date, nested: Nested(nestedIntField: 333, nestedStringField: "nested string"))
+
+        guard let queryStr: String = try? QueryEncoder().encode(expectedQuery) else {
+            XCTFail("ERROR!!! Could not encode query object to string")
+            return
+        }
+
+        router.get("/query") { (query: MyQuery, respondWith: ([MyQuery]?, RequestError?) -> Void) in
+            XCTAssertEqual(query, expectedQuery)
+            respondWith([query], nil)
+        }
+
+        performServerTest(router, timeout: 20, asyncTasks: { expectation in
+            self.performRequest("get", path: "/query\(queryStr)", callback: { response in
+                guard let response = response else {
+                    XCTFail("ERROR!!! ClientRequest response object was nil")
+                    return
+                }
+
+                var data = Data()
+                guard let length = try? response.readAllData(into: &data) else {
+                    XCTFail("Error reading response length!")
+                    return
+                }
+
+                XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
+
+                guard let myQuery = try? JSONDecoder().decode([MyQuery].self, from: data) else {
+                    XCTFail("Could not decode response! Expected response decodable to MyQuery, but got \(String(describing: String(data: data, encoding: .utf8)))")
+                    return
+                }
+                XCTAssertEqual(myQuery, [expectedQuery])
+                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
+                XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
+                expectation.fulfill()
+            })
+        }, { expectation in
+            self.performRequest("get", path: "/query?param=badRequest", callback: { response in
+                guard let response = response else {
+                    XCTFail("ERROR!!! ClientRequest response object was nil")
+                    return
+                }
+                XCTAssertEqual(response.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(String(describing: response.statusCode))")
+                expectation.fulfill()
+            })
+        })
+    }
+
+    func testCodableDeleteQueryParameters() {
+
+        /// Currently the milliseconds are cut off by our date formatter
+        /// This synchronizes it for testing with the codable route
+        let date: Date = Coder().dateFormatter.date(from: Coder().dateFormatter.string(from: Date()))!
+
+        let expectedQuery = MyQuery(intField: 23, optionalIntField: 282, stringField: "a string", intArray: [1, 2, 3], dateField: date, optionalDateField: date, nested: Nested(nestedIntField: 333, nestedStringField: "nested string"))
+
+        guard let queryStr: String = try? QueryEncoder().encode(expectedQuery) else {
+            XCTFail("ERROR!!! Could not encode query object to string")
+            return
+        }
+
+        router.delete("/query") { (query: MyQuery, respondWith: (RequestError?) -> Void) in
+            XCTAssertEqual(query, expectedQuery)
+            respondWith(nil)
+        }
+
+        performServerTest(router, timeout: 20, asyncTasks: { expectation in
+            self.performRequest("delete", path: "/query\(queryStr)", callback: { response in
+                guard let response = response else {
+                    XCTFail("ERROR!!! ClientRequest response object was nil")
+                    return
+                }
+                XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
+                expectation.fulfill()
+            })
+        },{ expectation in
+            self.performRequest("delete", path: "/query?param=badRequest", callback: { response in
+                guard let response = response else {
+                    XCTFail("ERROR!!! ClientRequest response object was nil")
+                    return
+                }
+                XCTAssertEqual(response.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(String(describing: response.statusCode))")
+                expectation.fulfill()
+            })
+        })
     }
 }
