@@ -4,34 +4,37 @@ Before you open an issue, please check if a similar issue already exists or has 
 
 
 
+
 **When submitting a new issue, please include the following information:**
 
 - [ ] Short but descriptive title.
 
 - [ ] Steps on reproducing the behaviour.
 
-
 - [ ] The behaviour you expected.
-
 
 - [ ] The behaviour you experienced.
 
+- [ ] Additional context or information, if it's relevant, especially if the issue is isolated to certain environments or scenarios.
 
 - [ ] Xcode and Swift version you are using.
 
-
 - [ ] Platform your targeting (Linux, MacOS, iOS).
-
 
 - [ ] Submit 🎉
 
 
 
-**If your requesting a new feature, please follow these guidelines:**
+
+
+**If you're requesting a new feature, please follow these guidelines:**
 
 - [ ] Short but descriptive title.
+
 - [ ] Describe the problem your trying to solve.
+
 - [ ] A suggested solution, if you have one.
+
 - [ ] Submit 🎉
 
 
