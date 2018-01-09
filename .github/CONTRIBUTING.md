@@ -1,34 +1,28 @@
-# Contributing to Kitura
+This document contains information and guidlines about contributing to the Kitura project. Please ensure you give this document a read before making any Contributions.
 
-We welcome contributions, and request you follow these guidelines.
+## Asking Questions
 
- - [Raising issues](#raising-issues)
- - [Contributor License Agreement](#contributor-license-agreement)
- - [Coding Standards](#coding-standards)
+If you have any questions from general Swift enquiries to questions about issues or anything in between, feel free to post in our Slack Channel! [Click here](http://swift-at-ibm-slack.mybluemix.net/) to be sign up to the Channel and join the discussion. Feel free to comment on existing issues as well, or raise new ones should you discover something new.
 
+We also check [dW](https://developer.ibm.com/answers/smart-spaces/213/swift.htmlindex.html) and [Stack Overflow](https://www.stackoverflow.com) frequently, just ensure you tag your answer with the project name (i.e. Kitura or KituraKit).
 
-## Raising issues
+## Reporting Issues
 
-Please raise any bug reports on the issue tracker. Be sure to
-search the list to see if your issue has already been raised.
+See the [issue template](ISSUE_TEMPLATE.md).
 
-A good bug report is one that make it easy for us to understand what you were
-trying to do and what went wrong. Provide as much context as possible so we can try to recreate the issue.
+## Coding Style
 
-### Contributor License Agreement
+Contributions should follow the established coding style and conventions for this project,
+which are loosely based on [GitHub's Swift Style Guide](https://github.com/github/swift-style-guide).
 
-In order for us to accept pull-requests, the contributor must first complete
-a Contributor License Agreement (CLA). Please see our [CLA repo](http://github.com/IBM-Swift/CLA) for more information.
+## Pull Requests
 
-This clarifies the intellectual property license granted with any contribution. It is for your protection as a
-Contributor as well as the protection of IBM and its customers; it does not
-change your rights to use your own Contributions for any other purpose.
+Issues that would be a good starting point for someone new to GitHub will have the label "Good Starting Point". If there aren't any tagged issues, post in Slack and the team would be happy to help you get started on an issue.
 
-### Coding standards
+ When opening a new PR, please follow the [PR template](PULL_REQUEST_TEMPLATE.md).
 
-Please ensure you follow [the Kitura coding standards](https://github.com/IBM-Swift/Kitura/blob/master/Documentation/CodeConventions.md)
+### Additional Resources
 
-Please note:
+* [GitHub Help - Homepage](https://help.github.com)
+* [Creating a Pull Request - GitHub Help](https://help.github.com/articles/creating-a-pull-request/)
 
- - all files must have the Apache license in the header.
- - all PRs must have passing builds for all operating systems.

@@ -15,6 +15,6 @@
 ## Checklist:
 <!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
 <!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
-- [ ] I have submitted a [CLA form](https://github.com/IBM-Swift/CLA)
+- [ ] You have agreed to the CLA (if this is your first PR, a bot will comment on the PR once it is opened. Simply follow the link.)
 - [ ] If applicable, I have updated the documentation accordingly.
 - [ ] If applicable, I have added tests to cover my changes.
