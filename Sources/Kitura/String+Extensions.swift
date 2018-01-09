@@ -17,7 +17,9 @@
 import Foundation
 import LoggerAPI
 
+/// String Utils
 extension String {
+
     /// Parses percent encoded string into query parameters
     var urlDecodedFieldValuePairs: [String : String] {
         var result: [String:String] = [:]

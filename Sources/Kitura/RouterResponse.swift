@@ -265,19 +265,17 @@ public class RouterResponse {
     ///
     /// - Parameter json: The array to send in JSON format.
     /// - Returns: this RouterResponse.
+    /// - Throws: if the the object could not be encoded using the JSONSerializationType
     @discardableResult
-    public func send(json: [Any]) -> RouterResponse {
+    public func send(json: [Any]) throws -> RouterResponse {
         guard !state.invokedEnd else {
             Log.warning("RouterResponse send(json:) invoked after end() for \(self.request.urlURL)")
             return self
         }
-        do {
-            let jsonData = try JSONSerializationType.data(withJSONObject: json, options:.prettyPrinted)
-            headers.setType("json")
-            send(data: jsonData)
-        } catch {
-            Log.warning("Failed to convert JSON for sending: \(error.localizedDescription)")
-        }
+
+        let jsonData = try JSONSerializationType.data(withJSONObject: json, options:.prettyPrinted)
+        headers.setType("json")
+        send(data: jsonData)
 
         return self
     }
@@ -286,19 +284,17 @@ public class RouterResponse {
     ///
     /// - Parameter json: The Dictionary to send in JSON format as a hash.
     /// - Returns: this RouterResponse.
+    /// - Throws: if the the object could not be encoded using the JSONSerializationType
     @discardableResult
-    public func send(json: [String: Any]) -> RouterResponse {
+    public func send(json: [String: Any]) throws -> RouterResponse {
         guard !state.invokedEnd else {
             Log.warning("RouterResponse send(json:) invoked after end() for \(self.request.urlURL)")
             return self
         }
-        do {
-            let jsonData = try JSONSerializationType.data(withJSONObject: json, options:.prettyPrinted)
-            headers.setType("json")
-            send(data: jsonData)
-        } catch {
-            Log.warning("Failed to convert JSON for sending: \(error.localizedDescription)")
-        }
+
+        let jsonData = try JSONSerializationType.data(withJSONObject: json, options:.prettyPrinted)
+        headers.setType("json")
+        send(data: jsonData)
 
         return self
     }
@@ -445,18 +441,16 @@ extension RouterResponse {
     ///
     /// - Parameter obj: the Codable object to send.
     /// - Returns: this RouterResponse.
+    /// - Throws: if the the object could not be encoded using the JSONEncoder
     @discardableResult
-    public func send<T : Encodable>(_ obj: T) -> RouterResponse {
+    public func send<T : Encodable>(_ obj: T) throws -> RouterResponse {
         guard !state.invokedEnd else {
             Log.warning("RouterResponse send(_ obj:) invoked after end() for \(self.request.urlURL)")
             return self
         }
-        do {
-            headers.setType("json")
-            send(data: try encoder.encode(obj))
-        } catch {
-            Log.warning("Failed to encode Codable object for sending: \(error.localizedDescription)")
-        }
+
+        headers.setType("json")
+        send(data: try encoder.encode(obj))
 
         return self
     }
@@ -465,9 +459,10 @@ extension RouterResponse {
     ///
     /// - Parameter json: the Encodable object to send.
     /// - Returns: this RouterResponse.
+    /// - Throws: if the the object could not be encoded using the JSONEncoder
     @discardableResult
-    public func send<T : Encodable>(json: T) -> RouterResponse {
-        return send(json)
+    public func send<T : Encodable>(json: T) throws -> RouterResponse {
+        return try send(json)
     }
 
     /// Send JSON with JSONP callback.
