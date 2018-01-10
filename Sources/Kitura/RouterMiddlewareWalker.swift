@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import LoggerAPI
+
 // MARK: RouterMiddlewareWalker
 
 class RouterMiddlewareWalker {
@@ -65,6 +67,9 @@ class RouterMiddlewareWalker {
                 try middlewares[middlewareIndex].handle(request: request, response: response, next: closure)
             } catch {
                 response.error = error
+                
+                // print error logs before the callback
+                Log.error("\(error)")
                 self.next()
             }
 
