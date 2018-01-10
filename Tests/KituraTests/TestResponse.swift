@@ -1449,9 +1449,9 @@ class TestResponse: KituraTest {
                 try response.send(status: HTTPStatusCode.forbidden).send(data: "<!DOCTYPE html><html><body><b>forbidden</b></body></html>\n\n".data(using: .utf8)!).end()
                 try response.send(status: HTTPStatusCode.OK).end()
                 response.send("string")
-                response.send(json: json)
-                response.send(json: ["some": "json"])
-                response.send(json: ["some", 10, "json"])
+                try response.send(json: json)
+                try response.send(json: ["some": "json"])
+                try response.send(json: ["some", 10, "json"])
                 try response.send(jsonp: json, callbackParameter: "cb").end()
 
                 let data = try TestResponse.encoder.encode(json)
