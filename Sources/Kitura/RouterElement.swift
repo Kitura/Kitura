@@ -81,10 +81,14 @@ class RouterElement {
 
     /// Process
     ///
-    /// - Parameter request: the request
-    /// - Parameter response: the response
-    /// - Parameter parameterWalker: the walker for the list of parameter handlers
-    /// - Parameter next: the callback
+    /// - Parameter request: The `RouterRequest` object used to work with the incoming
+    ///                     HTTP request.
+    /// - Parameter response: The `RouterResponse` object used to respond to the
+    ///                     HTTP request.
+    /// - Parameter parameterWalker: The `RouterParameterWalker` for the list of parameter
+    ///                             handlers.
+    /// - Parameter next: The closure called to invoke to the next handler or middleware
+    ///                     asociated with the request.
     func process(request: RouterRequest, response: RouterResponse, parameterWalker: RouterParameterWalker, next: @escaping () -> Void) {
         guard let path = request.parsedURLPath.path else {
             Log.error("Failed to process request (path is nil)")
@@ -134,10 +138,13 @@ class RouterElement {
 
     /// Perform a simple match
     ///
-    /// - Parameter path: the path being matched
-    /// - Parameter request: the request
-    /// - Parameter response: the router response
-    /// - Parameter next: the closure for the next execution block
+    /// - Parameter path: The path being matched.
+    /// - Parameter request: The RouterRequest object used to work with the incoming
+    ///                         HTTP request.
+    /// - Parameter response: The RouterResponse object used to respond to the
+    ///                         HTTP request.
+    /// - Parameter next: The closure called to invoke to the next handler or middleware
+    ///                     asociated with the request.
     private func performSimpleMatch(path: String, request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
         guard let pattern = pattern else { return }
 

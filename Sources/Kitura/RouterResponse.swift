@@ -336,6 +336,7 @@ public class RouterResponse {
         return self
     }
 
+    // influenced by http://expressjs.com/en/4x/api.html#app.render
     /// Render a resource using Router's template engine.
     ///
     /// - Parameter resource: the resource name without extension.
@@ -343,8 +344,6 @@ public class RouterResponse {
     /// - Parameter options: rendering options, specific per template engine
     /// - Throws: TemplatingError if no file extension was specified or there is no template engine defined for the extension.
     /// - Returns: this RouterResponse.
-    ///
-    // influenced by http://expressjs.com/en/4x/api.html#app.render
     @discardableResult
     public func render(_ resource: String, context: [String:Any],
                        options: RenderingOptions = NullRenderingOptions()) throws -> RouterResponse {

@@ -33,12 +33,12 @@ public class RouterMiddlewareGenerator: RouterMiddleware {
     /// Implementation of RouterMiddleware protocol. A simple wrapper around the closure
     /// that will handle the request.
     ///
-    /// - Parameter request: The `RouterRequest` object that is used to work with
-    ///                     the incoming request.
-    /// - Parameter response: The `RouterResponse` object used to send responses
-    ///                      to the HTTP request.
-    /// - Parameter next: The closure to invoke to cause the router to inspect the
-    ///                  path in the list of paths.
+    /// - Parameter request: The `RouterRequest` object used to work with the incoming
+    ///                     HTTP request.
+    /// - Parameter response: The `RouterResponse` object used to respond to the
+    ///                     HTTP request.
+    /// - Parameter next: The closure called to invoke to the next handler or middleware
+    ///                     asociated with the request.
     public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws {
         try innerHandler(request, response, next)
     }

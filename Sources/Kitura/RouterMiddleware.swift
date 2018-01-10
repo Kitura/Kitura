@@ -24,12 +24,12 @@ public protocol RouterMiddleware {
 
     /// Handle an incoming HTTP request.
     ///
-    /// - Parameter request: The `RouterRequest` object used to get information
-    ///                     about the HTTP request.
+    /// - Parameter request: The `RouterRequest` object used to work with the incoming
+    ///                     HTTP request.
     /// - Parameter response: The `RouterResponse` object used to respond to the
-    ///                       HTTP request
-    /// - Parameter next: The closure to invoke to enable the Router to check for
-    ///                  other handlers or middleware to work with this request.
+    ///                     HTTP request.
+    /// - Parameter next: The closure called to invoke to the next handler or middleware
+    ///                     asociated with the request.
     ///
     /// - Throws: Any `ErrorType`. If an error is thrown, processing of the request
     ///          is stopped, the error handlers, if any are defined, will be invoked,
