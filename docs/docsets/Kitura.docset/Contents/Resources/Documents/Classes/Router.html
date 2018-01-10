@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (98% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -166,16 +166,37 @@
 
                 </div>
               </div>
-            <p>The <code>Router</code> class provides the external interface for the routing of requests to
-the appropriate code for handling. This includes:</p>
+            <p><code>Router</code> provides the external interface for routing requests to
+the appropriate code to handle them. This includes:</p>
 
 <ul>
-<li>Routing requests to closures with the signature of <code><a href="../Typealiases.html#/s:6Kitura13RouterHandlera">RouterHandler</a></code></li>
+<li>Routing requests to closures of type <code><a href="../Typealiases.html#/s:6Kitura13RouterHandlera">RouterHandler</a></code></li>
 <li>Routing requests to the handle function of classes that implement the
 <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> protocol.</li>
-<li>Routing the request to a template engine to generate the appropriate output.</li>
+<li>Routing requests to a template engine to generate the appropriate output.</li>
 <li>Serving the landing page when someone makes an HTTP request with a path of slash (/).</li>
 </ul>
+
+<p>When initialising a <code>Router</code>, <code>mergeParameters</code> allows you to control whether
+the router will be able to access parameters matched in its parent router. For instance, in the example below
+if <code>mergeParameters</code> is set to <code>true</code>, <code>GET /Hello/Alex</code> will return <q>Hello Alex</q>, but if set to <code>false</code>
+the <code>greeting</code> parameter will not be accessible and it will return just <q>Alex</q>.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">userRouter</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">(</span><span class="nv">mergeParameters</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
+
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/:greeting"</span><span class="p">)</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">_</span> <span class="k">in</span>
+  <span class="k">let</span> <span class="nv">greeting</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s">"greeting"</span><span class="p">]</span> <span class="p">??</span> <span class="s">""</span>
+  <span class="k">try</span> <span class="n">response</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"</span><span class="se">\(</span><span class="n">greeting</span><span class="se">)</span><span class="s">"</span><span class="p">)</span><span class="o">.</span><span class="nf">end</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="n">userRouter</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/:user"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">_</span> <span class="k">in</span>
+  <span class="k">let</span> <span class="nv">user</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s">"user"</span><span class="p">]</span> <span class="p">??</span> <span class="s">""</span>
+  <span class="k">let</span> <span class="nv">greeting</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s">"greeting"</span><span class="p">]</span> <span class="p">??</span> <span class="s">""</span>
+  <span class="k">try</span> <span class="n">response</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"</span><span class="se">\(</span><span class="n">greeting</span><span class="se">)</span><span class="s"> </span><span class="se">\(</span><span class="n">user</span><span class="se">)</span><span class="s">"</span><span class="p">)</span><span class="o">.</span><span class="nf">end</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="n">helloRouter</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/:greeting"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="n">userRouter</span><span class="p">)</span>
+</code></pre>
 
           </div>
         </section>
@@ -197,8 +218,14 @@ the appropriate code for handling. This includes:</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The root directory for templates that will be automatically handed over to an
-appropriate templating engine for content generation.</p>
+                        <p>The root directory where template files shoule be placed in order to be automatically handed
+over to an appropriate templating engine for content generation. Defaults to <q>./Views/</q>.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>Changing the directory where template files will be placed:</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="n">router</span><span class="o">.</span><span class="n">viewsPath</span> <span class="o">=</span> <span class="s">"./myViews/"</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
@@ -225,7 +252,11 @@ appropriate templating engine for content generation.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Initialize a <code>Router</code> instance</p>
+                        <p>Initialize a <code>Router</code> instance. The optional <code>mergeParameters</code> parameter allows you to control whether
+the router will be able to access parameters matched in its parent router.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code> <span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
@@ -248,8 +279,8 @@ appropriate templating engine for content generation.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>Specify if this router should have access to path parameters
-matched in its parent router. Defaults to <code>false</code>.</p>
+                                  <p>Optional parameter to specify if the router should be able to access parameters
+                            from its parent router. Defaults to <code>false</code> if not specified.</p>
                                 </div>
                               </td>
                             </tr>
@@ -273,53 +304,6 @@ matched in its parent router. Defaults to <code>false</code>.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC10setDefaulty0A14TemplateEngine0eF0_pSg08templateF0_tF"></a>
-                    <a name="//apple_ref/swift/Method/setDefault(templateEngine:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC10setDefaulty0A14TemplateEngine0eF0_pSg08templateF0_tF">setDefault(templateEngine:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Sets the default templating engine to be used when the extension of a file in the
-<code><a href="../Classes/Router.html#/s:6Kitura6RouterC9viewsPathSSv">viewsPath</a></code> doesn&rsquo;t match the extension of one of the registered templating engines.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setDefault</span><span class="p">(</span><span class="nv">templateEngine</span><span class="p">:</span> <span class="kt">TemplateEngine</span><span class="p">?)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>templateEngine</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The new default templating engine</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
                     <a name="/s:6Kitura6RouterC3addy0A14TemplateEngine0dE0_p08templateE0_SaySSG17forFileExtensionsSb010useDefaultH9ExtensiontF"></a>
                     <a name="//apple_ref/swift/Method/add(templateEngine:forFileExtensions:useDefaultFileExtension:)" class="dashAnchor"></a>
                     <a class="token" href="#/s:6Kitura6RouterC3addy0A14TemplateEngine0dE0_p08templateE0_SaySSG17forFileExtensionsSb010useDefaultH9ExtensiontF">add(templateEngine:forFileExtensions:useDefaultFileExtension:)</a>
@@ -332,6 +316,10 @@ matched in its parent router. Defaults to <code>false</code>.</p>
                       <div class="abstract">
                         <p>Register a templating engine. The templating engine will handle files in the <code><a href="../Classes/Router.html#/s:6Kitura6RouterC9viewsPathSSv">viewsPath</a></code>
 that match the extension it supports.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code> <span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">add</span><span class="p">(</span><span class="nv">templateEngine</span><span class="p">:</span> <span class="kt">MyTemplateEngine</span><span class="p">())</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
@@ -339,7 +327,7 @@ that match the extension it supports.</p>
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">add</span><span class="p">(</span><span class="nv">templateEngine</span><span class="p">:</span> <span class="kt">TemplateEngine</span><span class="p">,</span> <span class="n">forFileExtensions</span> <span class="nv">fileExtensions</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
-                    <span class="nv">useDefaultFileExtension</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span></code></pre>
+                <span class="nv">useDefaultFileExtension</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -379,8 +367,59 @@ that match the extension it supports.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>flag to specify if the default file extension of the
-template engine should be used</p>
+                                  <p>The flag to specify if the default file extension of the
+template engine should be used. Defaults to <code>true</code> if not specified.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC10setDefaulty0A14TemplateEngine0eF0_pSg08templateF0_tF"></a>
+                    <a name="//apple_ref/swift/Method/setDefault(templateEngine:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC10setDefaulty0A14TemplateEngine0eF0_pSg08templateF0_tF">setDefault(templateEngine:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets the default templating engine to be used when the extension of a file in the
+<code><a href="../Classes/Router.html#/s:6Kitura6RouterC9viewsPathSSv">viewsPath</a></code> doesn&rsquo;t match the extension of one of the registered templating engines.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code> <span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">setDefault</span><span class="p">(</span><span class="nv">templateEngine</span><span class="p">:</span> <span class="kt">MyTemplateEngine</span><span class="p">())</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setDefault</span><span class="p">(</span><span class="nv">templateEngine</span><span class="p">:</span> <span class="kt">TemplateEngine</span><span class="p">?)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>templateEngine</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The templating engine to set as default.</p>
                                 </div>
                               </td>
                             </tr>
@@ -414,10 +453,17 @@ template engine should be used</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Setup a <q>sub router</q> to handle requests. This can make it easier to
-build a server that serves a large set of paths, by breaking it up
-in to <q>sub router</q> where each sub router is mapped to it&rsquo;s own root
-path and handles all of the mappings of paths below that.</p>
+                        <p>Set up a <q>sub router</q> to handle requests. Chaining a route handler onto another router an make it easier to
+build a server that serves a large set of paths. Each sub router handles all of the path mappings below its
+parent&rsquo;s route path.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">parent</span> <span class="o">=</span> <span class="n">router</span><span class="o">.</span><span class="nf">route</span><span class="p">(</span><span class="s">"/parent"</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">child</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/child"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
+    <span class="c1">//This will be called when a GET request is made to /parent/child.</span>
+    <span class="c1">//If allowPartialMatch was set to false, this would not be called.</span>
+<span class="p">}</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
@@ -453,7 +499,7 @@ path and handles all of the mappings of paths below that.</p>
                               <td>
                                 <div>
                                   <p>Specify if this router should have access to path parameters
-matched in its parent router. Defaults to <code>false</code>.</p>
+matched in its parent router. Defaults to <code>false</code> if not specified.</p>
                                 </div>
                               </td>
                             </tr>
@@ -465,8 +511,7 @@ matched in its parent router. Defaults to <code>false</code>.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>A Bool that indicates whether or not a partial match of
-the path by the pattern is sufficient.</p>
+                                  <p>Specify if the sub router allows a match when additional paths are added. In the example above, the <code>GET</code> request to <code>parent/child</code> would only succeed if <code>allowPartialMatch</code> is set to <code>true</code>. Defaults to <code>true</code> if not specified.</p>
                                 </div>
                               </td>
                             </tr>
@@ -475,7 +520,7 @@ the path by the pattern is sufficient.</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>The created sub router.</p>
+                        <p>The sub router which has been created.</p>
                       </div>
                     </section>
                   </div>
@@ -504,8 +549,28 @@ the path by the pattern is sufficient.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Setup a  handler for specific name of request parameters.
-This can make it easier to handle values of provided parameter name.</p>
+                        <p>Set up handlers for a named request parameter. This can make it easier to handle
+multiple routes requiring the same parameter which needs to be handled in a certain way.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">parameter</span><span class="p">(</span><span class="s">"id"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
+    <span class="k">if</span> <span class="k">let</span> <span class="nv">_</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="n">param</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">//Id is an integer, continue</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+        <span class="c1">//Id is not an integer, error</span>
+        <span class="k">try</span> <span class="n">response</span><span class="o">.</span><span class="nf">status</span><span class="p">(</span><span class="o">.</span><span class="n">badRequest</span><span class="p">)</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"ID is not an integer"</span><span class="p">)</span><span class="o">.</span><span class="nf">end</span><span class="p">()</span>
+    <span class="p">}</span>
+    <span class="nf">next</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/item/:id"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">_</span> <span class="k">in</span>
+    <span class="c1">//This will only be reached if the id parameter is an integer</span>
+<span class="p">}</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/user/:id"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">_</span> <span class="k">in</span>
+    <span class="c1">//This will only be reached if the id parameter is an integer</span>
+<span class="p">}</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
@@ -528,7 +593,7 @@ This can make it easier to handle values of provided parameter name.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>A single parameter name to be handled</p>
+                                  <p>The single parameter name to be handled.</p>
                                 </div>
                               </td>
                             </tr>
@@ -540,8 +605,8 @@ This can make it easier to handle values of provided parameter name.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura22RouterParameterHandlera">RouterParameterHandler</a></code>s that will be
-                invoked when request parses a parameter with specified name.</p>
+                                  <p>The comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura22RouterParameterHandlera">RouterParameterHandler</a></code> instances that will be
+                invoked when request parses a parameter with the specified name.</p>
                                 </div>
                               </td>
                             </tr>
@@ -550,7 +615,7 @@ This can make it easier to handle values of provided parameter name.</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>Current router instance</p>
+                        <p>The current router instance.</p>
                       </div>
                     </section>
                   </div>
@@ -568,8 +633,25 @@ This can make it easier to handle values of provided parameter name.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Setup a  handler for specific name of request parameters.
-This can make it easier to handle values of provided parameter name.</p>
+                        <p>Set up handlers for a number of named request parameters. This can make it easier to handle
+multiple routes requiring similar parameters which need to be handled in a certain way.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">parameter</span><span class="p">([</span><span class="s">"id"</span><span class="p">,</span> <span class="s">"num"</span><span class="p">])</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
+    <span class="k">if</span> <span class="k">let</span> <span class="nv">_</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="n">param</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">//Parameter is an integer, continue</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+        <span class="c1">//Parameter is not an integer, error</span>
+        <span class="k">try</span> <span class="n">response</span><span class="o">.</span><span class="nf">status</span><span class="p">(</span><span class="o">.</span><span class="n">badRequest</span><span class="p">)</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"</span><span class="se">\(</span><span class="n">param</span><span class="se">)</span><span class="s"> is not an integer"</span><span class="p">)</span><span class="o">.</span><span class="nf">end</span><span class="p">()</span>
+    <span class="p">}</span>
+    <span class="nf">next</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/item/:id/:num"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">_</span> <span class="k">in</span>
+    <span class="c1">//This will only be reached if the id and num parameters are integers.</span>
+<span class="p">}</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
@@ -592,7 +674,7 @@ This can make it easier to handle values of provided parameter name.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>The array of parameter names that will be used to invoke handlers</p>
+                                  <p>The array of parameter names to be handled.</p>
                                 </div>
                               </td>
                             </tr>
@@ -604,8 +686,8 @@ This can make it easier to handle values of provided parameter name.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>A comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura22RouterParameterHandlera">RouterParameterHandler</a></code>s that will be
-                invoked when request parses a parameter with specified name.</p>
+                                  <p>The comma delimited set of <code><a href="../Typealiases.html#/s:6Kitura22RouterParameterHandlera">RouterParameterHandler</a></code> instances that will be
+                invoked when request parses a parameter with the specified name.</p>
                                 </div>
                               </td>
                             </tr>
@@ -614,7 +696,7 @@ This can make it easier to handle values of provided parameter name.</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>Current router instance</p>
+                        <p>The current router instance.</p>
                       </div>
                     </section>
                   </div>
@@ -632,8 +714,32 @@ This can make it easier to handle values of provided parameter name.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Setup a  handler for specific name of request parameters.
-This can make it easier to handle values of provided parameter name.</p>
+                        <p>Set up handlers for a number of named request parameters. This can make it easier to handle
+multiple routes requiring similar parameters which need to be handled in a certain way.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="kd">func</span> <span class="nf">handleInt</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">RouterRequest</span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt">RouterResponse</span><span class="p">,</span> <span class="nv">param</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">next</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="k">let</span> <span class="nv">_</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="n">param</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">//Parameter is an integer, continue</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+        <span class="c1">//Parameter is not an integer, error</span>
+        <span class="k">try</span> <span class="n">response</span><span class="o">.</span><span class="nf">status</span><span class="p">(</span><span class="o">.</span><span class="n">badRequest</span><span class="p">)</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"</span><span class="se">\(</span><span class="n">param</span><span class="se">)</span><span class="s"> is not an integer"</span><span class="p">)</span><span class="o">.</span><span class="nf">end</span><span class="p">()</span>
+    <span class="p">}</span>
+    <span class="nf">next</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">handleItem</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">RouterRequest</span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt">RouterResponse</span><span class="p">,</span> <span class="nv">param</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">next</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">itemId</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="n">param</span><span class="p">)</span> <span class="c1">//This will only be reached if id is an integer</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+
+<span class="n">router</span><span class="o">.</span><span class="nf">parameter</span><span class="p">([</span><span class="s">"id"</span><span class="p">],</span> <span class="nv">handlers</span><span class="p">:</span> <span class="p">[</span><span class="n">handleInt</span><span class="p">,</span> <span class="n">handleItem</span><span class="p">]</span> <span class="p">)</span>
+
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/item/:id/) { request, response, _ in
+    ...
+}
+</span></code></pre>
 
                       </div>
                       <div class="declaration">
@@ -656,7 +762,7 @@ This can make it easier to handle values of provided parameter name.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>The array of parameter names that will be used to invoke handlers</p>
+                                  <p>The array of parameter names to be handled.</p>
                                 </div>
                               </td>
                             </tr>
@@ -668,8 +774,9 @@ This can make it easier to handle values of provided parameter name.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>The array of <code><a href="../Typealiases.html#/s:6Kitura22RouterParameterHandlera">RouterParameterHandler</a></code>s that will be
-                invoked when request parses a parameter with specified name.</p>
+                                  <p>The array of <code><a href="../Typealiases.html#/s:6Kitura22RouterParameterHandlera">RouterParameterHandler</a></code> instances that will be
+                invoked when request parses a parameter with the specified name.
+                The handlers are executed in the order they are supplied.</p>
                                 </div>
                               </td>
                             </tr>
@@ -678,7 +785,7 @@ This can make it easier to handle values of provided parameter name.</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>Current router instance</p>
+                        <p>The current router instance.</p>
                       </div>
                     </section>
                   </div>
@@ -898,9 +1005,9 @@ router.get("/users") { (id: Int, respondWith: (User?, RequestError?) -&gt; Void)
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC3getySS_yx_ySayq_GSg_0A9Contracts12RequestErrorVSgtctc7handlertAG11QueryParamsRzs9DecodableR_s9EncodableR_r0_lF"></a>
+                    <a name="/s:6Kitura6RouterC3getySS_yx_ySayq_GSg_0A9Contracts12RequestErrorVSgtctc7handlerts9DecodableR_s9EncodableR_r0_lF"></a>
                     <a name="//apple_ref/swift/Method/get(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC3getySS_yx_ySayq_GSg_0A9Contracts12RequestErrorVSgtctc7handlertAG11QueryParamsRzs9DecodableR_s9EncodableR_r0_lF">get(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC3getySS_yx_ySayq_GSg_0A9Contracts12RequestErrorVSgtctc7handlerts9DecodableR_s9EncodableR_r0_lF">get(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1098,9 +1205,9 @@ router.get("/query") { (query: MyQuery, respondWith: ([User]?, RequestError?) -&
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC6deleteySS_yx_y0A9Contracts12RequestErrorVSgctc7handlertAE11QueryParamsRzlF"></a>
+                    <a name="/s:6Kitura6RouterC6deleteySS_yx_y0A9Contracts12RequestErrorVSgctc7handlertlF"></a>
                     <a name="//apple_ref/swift/Method/delete(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC6deleteySS_yx_y0A9Contracts12RequestErrorVSgctc7handlertAE11QueryParamsRzlF">delete(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC6deleteySS_yx_y0A9Contracts12RequestErrorVSgctc7handlertlF">delete(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1458,7 +1565,14 @@ router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?,
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Handle an HTTP request as a middleware. Used for sub routing.</p>
+                        <p>Handle an HTTP request as a middleware. Used internally in <code>Router</code> to allow for sub routing.</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    Any <code>ErrorType</code>. If an error is thrown, processing of the request
+     is stopped, the error handlers, if any are defined, will be invoked,
+     and the user will get a response with a status code of 500.
+
+</div>
 
                       </div>
                       <div class="declaration">
@@ -1481,8 +1595,8 @@ router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?,
                               </td>
                               <td>
                                 <div>
-                                  <p>The <code><a href="../Classes/RouterRequest.html">RouterRequest</a></code> object that is used to work with
-                the incoming request.</p>
+                                  <p>The <code><a href="../Classes/RouterRequest.html">RouterRequest</a></code> object used to work with the incoming
+                HTTP request.</p>
                                 </div>
                               </td>
                             </tr>
@@ -1494,8 +1608,8 @@ router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?,
                               </td>
                               <td>
                                 <div>
-                                  <p>The <code><a href="../Classes/RouterResponse.html">RouterResponse</a></code> object used to send responses
-                 to the HTTP request.</p>
+                                  <p>The <code><a href="../Classes/RouterResponse.html">RouterResponse</a></code> object used to respond to the
+                HTTP request.</p>
                                 </div>
                               </td>
                             </tr>
@@ -1507,8 +1621,8 @@ router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?,
                               </td>
                               <td>
                                 <div>
-                                  <p>The closure to invoke to cause the router to inspect the
-             path in the list of paths.</p>
+                                  <p>The closure called to invoke to the next handler or middleware
+                asociated with the request.</p>
                                 </div>
                               </td>
                             </tr>
@@ -1521,6 +1635,13 @@ router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?,
               </ul>
             </div>
             <div class="task-group">
+              <div class="task-name-container">
+                <a name="/HTTPServerDelegate%20extensions"></a>
+                <a name="//apple_ref/swift/Section/HTTPServerDelegate extensions" class="dashAnchor"></a>
+                <a href="#/HTTPServerDelegate%20extensions">
+                  <h3 class="section-name">HTTPServerDelegate extensions</h3>
+                </a>
+              </div>
               <ul class="item-container">
                 <li class="item">
                   <div>
@@ -1535,7 +1656,7 @@ router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?,
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Handle the HTTP request</p>
+                        <p>Handle new incoming requests to the server.</p>
 
                       </div>
                       <div class="declaration">
@@ -9488,8 +9609,8 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-01-04)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-01-10)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>
