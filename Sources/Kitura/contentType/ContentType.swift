@@ -26,7 +26,8 @@ import LoggerAPI
  ```swift
  let contentType = ContentType.sharedInstance
  let result = contentType.getContentType(forFileName: "foo.png")
- print(String(describing: result)) // "image/png"
+ print(String(describing: result))
+ // Prints Options("image/png")
  ```
  */
 public class ContentType {
@@ -70,7 +71,8 @@ public class ContentType {
      ```swift
      let contentType = ContentType.sharedInstance
      let result = contentType.getContentType(forExtension: "js")
-     print(String(describing: result)) // "application/javascript"
+     print(String(describing: result))
+     //Prints Optional("application/javascript")
      ```
      - Parameter forExtension: The file extension.
      - Returns: An Optional String for the content type.
@@ -85,7 +87,8 @@ public class ContentType {
      ```swift
      let contentType = ContentType.sharedInstance
      let result = contentType.getContentType(forFileName: "test.html")
-     print(String(describing: result)) // "text/html"
+     print(String(describing: result))
+     //Prints Optional("text/html")
      ```
      - Parameter forFileName: The file name.
      - Returns: An Optional String for the content type.
@@ -117,7 +120,8 @@ public class ContentType {
      ```swift
      let contentType = ContentType.sharedInstance
      var result = contentType.isContentType("application/json", ofType: "json")
-     print(String(describing: result)) // True
+     print(String(describing: result))
+     //Prints true
      ```
      - Parameter messageContentType: The content type.
      - Parameter ofType: The description of the type.

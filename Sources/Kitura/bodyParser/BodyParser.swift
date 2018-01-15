@@ -48,13 +48,7 @@ public class BodyParser: RouterMiddleware {
     ///```
     public init() {}
 
-    /// Handle the request, i.e. parse the body of the request.
-    ///
-    ///### Usage Example: ###
-    /// In this example, the `BodyParser` middleware handle function is called. This will take the `RouterRequest` instance called "request", parse the request body and continue to the next closure block.
-    ///```swift
-    ///    try middleware.handle(request: request, response: response, next: closure)
-    ///```
+    /// This function is called by the Kitura `Router` when an incoming request matches the route provided when the BodyParser was registered with the `Router`. It performs the parsing of the body content using parse(_:contentType). We don't expect a user to call this function directly.
     /// - Parameter request: The router request.
     /// - Parameter response: The router response.
     /// - Parameter next: The closure for the next execution block.
@@ -72,10 +66,10 @@ public class BodyParser: RouterMiddleware {
         next()
     }
 
-    /// Parse the body of the incoming message.
+    /// This function is called by the Kitura `Router` when an incoming request matches the route provided when the BodyParser was registered with the `Router`. The middleware.handle(...) function will parse the body content of an incoming request using this function. A user can call this function directly but ordinarily won't need to.
     ///
     ///### Usage Example: ###
-    ///In this example, The request body is parsed using the parse function to be of type "contentType".
+    ///In this example, the body of the request is parsed to be of the passed in contentType.
     ///```swift
     ///request.body = BodyParser.parse(request, contentType: contentType)
     ///```
@@ -153,7 +147,7 @@ public class BodyParser: RouterMiddleware {
 
     /// Read the body data of the request.
     ///### Usage Example: ###
-    ///In this example, The request body is read into the bodyData constant using an instance of`RouterRequest` called "request".
+    ///In this example, the body of the request is read into a constant (called bodyData) using an instance of `RouterRequest` (called request).
     ///```swift
     ///let bodyData = try readBodyData(with: request)
     ///```
