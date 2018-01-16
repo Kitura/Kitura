@@ -174,7 +174,7 @@
 <pre class="highlight swift"><code>   <span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/*"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="kt">BodyParser</span><span class="p">())</span>
 </code></pre>
 
-<p><strong>Note</strong>: When using Codable Routing in Kitura 2.x the BodyParser should not be registered to any codable routes (doing so will display an error).</p>
+<p><strong>Note</strong>: When using Codable Routing in Kitura 2.x the BodyParser should not be registered to any codable routes (doing so will log the following error <q>No data in request. Codable routes do not allow the use of a BodyParser.</q> and the route handler will not be executed).</p>
 
           </div>
         </section>
