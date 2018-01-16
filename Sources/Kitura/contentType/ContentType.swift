@@ -27,7 +27,7 @@ import LoggerAPI
  let contentType = ContentType.sharedInstance
  let result = contentType.getContentType(forFileName: "foo.png")
  print(String(describing: result))
- // Prints Options("image/png")
+ // Prints Optional("image/png")
  ```
  */
 public class ContentType {

@@ -28,7 +28,7 @@ import Foundation
 ///```swift
 ///   router.all("/*", middleware: BodyParser())
 ///```
-/// __Note__: When using Codable Routing in Kitura 2.x the BodyParser should not be registered to any codable routes (doing so will display an error).
+/// __Note__: When using Codable Routing in Kitura 2.x the BodyParser should not be registered to any codable routes (doing so will log the following error "No data in request. Codable routes do not allow the use of a BodyParser." and the route handler will not be executed).
 public class BodyParser: RouterMiddleware {
 
     /// Static buffer size (in bytes)
@@ -48,7 +48,7 @@ public class BodyParser: RouterMiddleware {
     ///```
     public init() {}
 
-    /// This function is called by the Kitura `Router` when an incoming request matches the route provided when the BodyParser was registered with the `Router`. It performs the parsing of the body content using parse(_:contentType). We don't expect a user to call this function directly.
+    /// This function is called by the Kitura `Router` when an incoming request matches the route provided when the BodyParser was registered with the `Router`. It performs the parsing of the body content using `parse(_:contentType)`. We don't expect a user to call this function directly.
     /// - Parameter request: The router request.
     /// - Parameter response: The router response.
     /// - Parameter next: The closure for the next execution block.
@@ -66,7 +66,7 @@ public class BodyParser: RouterMiddleware {
         next()
     }
 
-    /// This function is called by the Kitura `Router` when an incoming request matches the route provided when the BodyParser was registered with the `Router`. The middleware.handle(...) function will parse the body content of an incoming request using this function. A user can call this function directly but ordinarily won't need to.
+    /// This function is called by the Kitura `Router` when an incoming request matches the route provided when the BodyParser was registered with the `Router`. The `middleware.handle(...)` function will parse the body content of an incoming request using this function. A user can call this function directly but ordinarily won't need to.
     ///
     ///### Usage Example: ###
     ///In this example, the body of the request is parsed to be of the passed in contentType.

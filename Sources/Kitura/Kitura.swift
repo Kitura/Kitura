@@ -41,7 +41,7 @@ public class Kitura {
     /// Add an HTTPServer on a port with a delegate.
     ///
     /// The server is only registered with the framework, it does not start listening
-    /// on the port until Kitura.run() or Kitura.start() are called.
+    /// on the port until `Kitura.run()` or `Kitura.start()` are called.
     ///
     ///### Usage Example: ###
     ///```swift
@@ -71,7 +71,7 @@ public class Kitura {
     /// Add a FastCGIServer on a port with a delegate.
     ///
     /// The server is only registered with the framework, it does not start listening
-    /// on the port until Kitura.run() or Kitura.start() are called.
+    /// on the port until `Kitura.run()` or `Kitura.start()` are called.
     ///
     ///### Usage Example: ###
     ///```swift
