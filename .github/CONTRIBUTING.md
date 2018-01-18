@@ -22,7 +22,7 @@ To get started on contributing to Kitura, you will need to:
 
 **Tip:** If you are on macOS, Xcode can be a great way to work on Kitura. You'll need to open a Terminal window, and then navigate to the root of the Kitura git project. Then, type the following command into Terminal:
 
-   `$ swift package generate-xcode-proj`
+   `$ swift package generate-xcodeproj`
 
 This will generate an Xcode Project, simply open the .xcodeproj file with:
 
