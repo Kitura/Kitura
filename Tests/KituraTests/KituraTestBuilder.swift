@@ -223,6 +223,7 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
                     try request.invoker() { response in
                         guard let response = response else {
                             XCTFail("Expected response object")
+                            expectation.fulfill()
                             return
                         }
                         for assertion in request.assertions {
