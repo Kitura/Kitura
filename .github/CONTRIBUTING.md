@@ -1,29 +1,26 @@
-This document contains information and guidlines about contributing to the Kitura project. Please ensure you give this document a read before making any Contributions. For any help, contact us on Slack!
+This document contains information and guidlines about contributing to the Kitura project. Please ensure you give this document a read before making any Contributions. For any help, contact us on Slack.
 
-## Asking Questions
+## Getting Started
 
-If you have any questions from general Swift enquiries to questions about issues or anything in between, feel free to post in our Slack Channel! [Click here](http://swift-at-ibm-slack.mybluemix.net/) to be sign up to the Channel and join the discussion. Feel free to comment on existing issues as well, or raise new ones should you discover something new.
+To get started on contributing to Kitura, you will need to:
 
-We also check [dW Answers](https://developer.ibm.com/answers/smart-spaces/213/swift.htmlindex.html) and [Stack Overflow](https://www.stackoverflow.com) frequently, just ensure you tag your answer with the project name (i.e. Kitura or KituraKit).
+1. Fork this repository to your account and then pull down to your machine.
 
-## Reporting Issues
+   `$ git clone https://github.com/YOUR_GITHUB_ID/Kitura`
 
-See the [issue template](ISSUE_TEMPLATE.md). For any help reporting an issue, feel free to post in the Slack channel.
+2. Make a change, usually by tackling an issue.
 
-## Coding Style
-
-Contributions should follow the established coding style and conventions for this project,
-which are loosely based on [GitHub's Swift Style Guide](https://github.com/github/swift-style-guide). If opening a PR, try to follow the coding style of the file your working in, and make sure to comment any code that is particularly complex.
+3. Open a Pull Request - TODO: Add to this section, not complete.
 
 ## Pull Requests
 
-Issues that would be a good starting point for someone new to GitHub will have the label "Good Starting Point". If there aren't any tagged issues, post in Slack and the team would be happy to help you get started on an issue.
+Issues that would be a good place to start for someone new to GitHub will have the label "Good First Issue". If there aren't any tagged issues, post in Slack and the team would be happy to help you get started.
 
  When opening a new PR, please follow the [PR template](PULL_REQUEST_TEMPLATE.md).
 
 To start working on an issue, pick one from [here](https://github.com/IBM-Swift/Kitura/issues) and do the following:
 
-1. Fork the repository to your own account, and create a branch for the issue your working on. A good branch name could be as simple as issue.ISSUENUMBER or it can be more descriptive if you like.
+1. Fork the repository to your own account, and create a branch for the issue you're working on. A good branch name could be as simple as issue.ISSUENUMBER or it can be more descriptive if you like.
 
 2. Work on the issue. This part is harder to write a guide for but some general tips are:
 
@@ -37,13 +34,22 @@ To start working on an issue, pick one from [here](https://github.com/IBM-Swift/
 
 5. Keep an eye on your inbox - we may request clarification or ask for changes if there's a problem.
 
-   ​
+## Coding Style
+
+Contributions should follow the established coding style and conventions for this project,
+which are loosely based on [GitHub's Swift Style Guide](https://github.com/github/swift-style-guide). If opening a PR, try to follow the coding style of the file you're working in, and make sure to comment any code that is particularly complex.
+
+## Asking Questions
+
+If you have any questions from general Swift enquiries to questions about issues or anything in between, feel free to post in our Slack Channel. [Click here](http://swift-at-ibm-slack.mybluemix.net/) to be sign up to the Channel and join the discussion. Feel free to comment on existing issues as well, or raise new ones should you discover something new.
+
+We also check [dW Answers](https://developer.ibm.com/answers/smart-spaces/213/swift.htmlindex.html) and [Stack Overflow](https://www.stackoverflow.com) frequently, just ensure you tag your answer with the project name (i.e. Kitura or KituraKit).
+
+## Reporting Issues
+
+See the [issue template](ISSUE_TEMPLATE.md). For any help reporting an issue, feel free to post in the Slack channel.
 
 ### Additional Resources
 
 * [GitHub Help - Homepage](https://help.github.com)
 * [Creating a Pull Request - GitHub Help](https://help.github.com/articles/creating-a-pull-request/)
-
----
-
-*Some of the ideas and wording for the statements above were based on work by the Alamofire, Docker, Linux and Watson Developer Cloud communities. We commend them for their efforts to facilitate collaboration in their projects*
