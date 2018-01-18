@@ -1,4 +1,13 @@
-This document contains information and guidlines about contributing to the Kitura project. Please ensure you give this document a read before making any Contributions. For any help, contact us on Slack.
+# Contributing to Kitura
+
+We welcome contributions to the Kitura project, and request you follow these guidelines.
+
+ - [Reporting issues](#reporting-issues)
+ - [Pull Requests](#pull-requests)
+ - [Coding Standards](#coding-style)
+ - [Contributor License Agreement](#contributor-license-agreement)
+
+---
 
 ## Getting Started
 
@@ -8,9 +17,22 @@ To get started on contributing to Kitura, you will need to:
 
    `$ git clone https://github.com/YOUR_GITHUB_ID/Kitura`
 
-2. Make a change, usually by tackling an issue.
 
-3. Open a Pull Request - TODO: Add to this section, not complete.
+2. Make a change, usually by tackling an issue. 
+
+**Tip:** If you are on macOS, Xcode can be a great way to work on Kitura. You'll need to open a Terminal window, and then navigate to the root of the Kitura git project. Then, type the following command into Terminal:
+
+   `$ swift package generate-xcode-proj`
+
+This will generate an Xcode Project, simply open the .xcodeproj file with:
+
+   `$ open *.xcodeproj`
+
+Unfortunately, Xcode is macOS only, and Linux will need to use a different text editor or IDE.
+
+3. Ensure all tests pass with your changes by running `swift test`. If there is any new funtionality introduced by your change, new test case(s) may be required. If you need any help writing test cases, contact us on slack.
+
+4. If they all pass, open a Pull Request following the guidelines below.
 
 ## Pull Requests
 
@@ -39,6 +61,12 @@ To start working on an issue, pick one from [here](https://github.com/IBM-Swift/
 Contributions should follow the established coding style and conventions for this project,
 which are loosely based on [GitHub's Swift Style Guide](https://github.com/github/swift-style-guide). If opening a PR, try to follow the coding style of the file you're working in, and make sure to comment any code that is particularly complex.
 
+## Contributor License Agreement
+
+In order for us to merge any of your changes into Kitura, you will need to have signed the Contributor License Agreement. When you open up a Pull Request, a bot will comment a few seconds later with a link to the CLA. 
+
+When its signed, you don't need to resign unless the document changes in the future, in which case the bot will comment again.
+
 ## Asking Questions
 
 If you have any questions from general Swift enquiries to questions about issues or anything in between, feel free to post in our Slack Channel. [Click here](http://swift-at-ibm-slack.mybluemix.net/) to be sign up to the Channel and join the discussion. Feel free to comment on existing issues as well, or raise new ones should you discover something new.
@@ -48,6 +76,8 @@ We also check [dW Answers](https://developer.ibm.com/answers/smart-spaces/213/sw
 ## Reporting Issues
 
 See the [issue template](ISSUE_TEMPLATE.md). For any help reporting an issue, feel free to post in the Slack channel.
+
+---
 
 ### Additional Resources
 
