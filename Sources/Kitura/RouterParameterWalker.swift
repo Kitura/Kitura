@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 
-/// A [type alias](https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/Declarations.html#//apple_ref/doc/uid/TP40014097-CH34-ID361) declaraion to describe a handler for named parameters when using `Router.parameter(...)`. The example below shows two ways to use it, both as a function named `handler` to handle the "id" parameter and as a closure to handle the "name" parameter.
+/// A [type alias](https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/Declarations.html#//apple_ref/doc/uid/TP40014097-CH34-ID361) declaration to describe a handler for named parameters when using `Router.parameter(...)`. The example below shows two ways to use it, both as a function named `handler` to handle the "id" parameter and as a closure to handle the "name" parameter.
 /// ### Usage Example: ###
 /// ```swift
 /// let router = Router()
 /// func handler(request: RouterRequest, response: RouterResponse, param: String, next: @escaping () -> Void) throws -> Void {
 ///     //Code to handle id parameter here
+///     next()
 /// }
 /// router.parameter("id", handler: handler)
 ///
-/// router.parameter("name") { request, response, next in
+/// router.parameter("name") { request, response, param, next in
 ///     //Code to handle name parameter here
+///     next()
 /// }
 /// router.get("/item/:id") { request, response, next in
 ///     //This will be reached after the id parameter is handled by `handler`
 /// }
-/// router.get("/item/:name") { request, response, next in
+/// router.get("/user/:name") { request, response, next in
 ///     //This will be reached after the name parameter is handled by the closure above
 /// }
 /// ```
@@ -38,8 +40,8 @@
 /// - Parameter response: The `RouterResponse` object used to respond to the
 ///                     HTTP request.
 /// - Parameter param: The named parameter to be handled.
-/// - Parameter next: The closure called to invoke to the next handler or middleware
-///                     asociated with the request.
+/// - Parameter next: The closure called to invoke the next handler or middleware
+///                     associated with the request.
 
 
 public typealias RouterParameterHandler = (RouterRequest, RouterResponse, String, @escaping () -> Void) throws -> Void

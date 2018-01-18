@@ -38,7 +38,7 @@ import KituraTemplateEngine
 /// let router = Router()
 /// let userRouter = Router(mergeParameters: true)
 ///
-/// router.get("/:greeting") request, response, _ in
+/// router.get("/:greeting") { request, response, _ in
 ///   let greeting = request.parameters["greeting"] ?? ""
 ///   try response.send("\(greeting)").end()
 /// }
@@ -49,7 +49,7 @@ import KituraTemplateEngine
 ///   try response.send("\(greeting) \(user)").end()
 /// }
 ///
-/// helloRouter.all("/:greeting", middleware: userRouter)
+/// router.all("/:greeting", middleware: userRouter)
 /// ```
 public class Router {
 
@@ -62,10 +62,11 @@ public class Router {
     /// Default template engine extension
     private var defaultEngineFileExtension: String?
 
-    /// The root directory where template files shoule be placed in order to be automatically handed
-    /// over to an appropriate templating engine for content generation. Defaults to "./Views/".
+    /// The root directory where template files should be placed in order to be automatically handed
+    /// over to an appropriate templating engine for content generation. The directory should sit at the
+    /// same level as the project's "Sources" directory. Defaults to "./Views/".
     /// ### Usage Example: ###
-    /// Changing the directory where template files will be placed:
+    /// The example below changes the directory where template files should be placed to be "./myViews/"
     /// ```swift
     /// let router = Router()
     /// router.viewsPath = "./myViews/"
@@ -126,11 +127,12 @@ public class Router {
     // MARK: Template Engine
 
     /// Register a templating engine. The templating engine will handle files in the `viewsPath`
-    /// that match the extension it supports.
+    /// that match the file extension it supports.
     /// ### Usage Example: ###
     /// ```swift
-    ///  let router = Router()
+    /// let router = Router()
     /// router.add(templateEngine: MyTemplateEngine())
+    /// router.add(templateEngine: MyOtherTemplateEngine(), forFileExtensions: ["html"], useDefaultFileExtension: false)
     /// ```
     /// - Parameter templateEngine: The templating engine to register.
     /// - Parameter forFileExtensions: The extensions of the files to apply the template engine on.
@@ -151,7 +153,7 @@ public class Router {
     /// `viewsPath` doesn't match the extension of one of the registered templating engines.
     /// ### Usage Example: ###
     /// ```swift
-    ///  let router = Router()
+    /// let router = Router()
     /// router.setDefault(templateEngine: MyTemplateEngine())
     /// ```
     /// - Parameter templateEngine: The templating engine to set as default.
@@ -241,16 +243,16 @@ public class Router {
     }
     // MARK: Sub router
     
-    /// Set up a "sub router" to handle requests. Chaining a route handler onto another router an make it easier to
+    /// Set up a "sub router" to handle requests. Chaining a route handler onto another router can make it easier to
     /// build a server that serves a large set of paths. Each sub router handles all of the path mappings below its
     /// parent's route path.
     /// ### Usage Example: ###
+    /// The example below shows how the route `/parent/child' can be defined using a sub router.
     /// ```swift
     /// let router = Router()
     /// let parent = router.route("/parent")
-    /// let child = parent.get("/child") { request, response, next in
-    ///     //This will be called when a GET request is made to /parent/child.
-    ///     //If allowPartialMatch was set to false, this would not be called.
+    /// parent.get("/child") { request, response, next in
+    ///     // If allowPartialMatch was set to false, this would not be called.
     /// }
     /// ```
     /// - Parameter route: The path to bind the sub router to.
@@ -272,15 +274,15 @@ public class Router {
     /// ### Usage Example: ###
     /// ```swift
     /// let router = Router()
-    /// router.parameter("id") { request, response, next in
+    /// router.parameter("id") { request, response, param, next in
     ///     if let _ = Int(param) {
     ///         //Id is an integer, continue
+    ///         next()
     ///     }
     ///     else {
     ///         //Id is not an integer, error
     ///         try response.status(.badRequest).send("ID is not an integer").end()
     ///     }
-    ///     next()
     /// }
     ///
     /// router.get("/item/:id") { request, response, _ in
@@ -305,15 +307,15 @@ public class Router {
     /// ### Usage Example: ###
     /// ```swift
     /// let router = Router()
-    /// router.parameter(["id", "num"]) { request, response, next in
+    /// router.parameter(["id", "num"]) { request, response, param, next in
     ///     if let _ = Int(param) {
     ///         //Parameter is an integer, continue
+    ///         next()
     ///     }
     ///     else {
     ///         //Parameter is not an integer, error
     ///         try response.status(.badRequest).send("\(param) is not an integer").end()
     ///     }
-    ///     next()
     /// }
     ///
     /// router.get("/item/:id/:num") { request, response, _ in
@@ -351,9 +353,9 @@ public class Router {
     ///     ...
     /// }
     ///
-    /// router.parameter(["id"], handlers: [handleInt, handleItem] )
+    /// router.parameter(["id"], handlers: [handleInt, handleItem])
     ///
-    /// router.get("/item/:id/) { request, response, _ in
+    /// router.get("/item/:id/") { request, response, _ in
     ///     ...
     /// }
     /// ```
@@ -387,8 +389,8 @@ extension Router : RouterMiddleware {
     ///                     HTTP request.
     /// - Parameter response: The `RouterResponse` object used to respond to the
     ///                     HTTP request.
-    /// - Parameter next: The closure called to invoke to the next handler or middleware
-    ///                     asociated with the request.
+    /// - Parameter next: The closure called to invoke the next handler or middleware
+    ///                     associated with the request.
     /// - Throws: Any `ErrorType`. If an error is thrown, processing of the request
     ///          is stopped, the error handlers, if any are defined, will be invoked,
     ///          and the user will get a response with a status code of 500.
@@ -475,8 +477,8 @@ extension Router : ServerDelegate {
     ///                     HTTP request.
     /// - Parameter response: The `RouterResponse` object used to respond to the
     ///                     HTTP request.
-    /// - Parameter next: The closure called to invoke to the next handler or middleware
-    ///                     asociated with the request.
+    /// - Parameter next: The closure called to invoke the next handler or middleware
+    ///                     associated with the request.
     fileprivate func process(request: RouterRequest, response: RouterResponse, callback: @escaping () -> Void) {
         guard let urlPath = request.parsedURLPath.path else {
             Log.error("request.parsedURLPath.path is nil. Failed to process request")

@@ -28,8 +28,8 @@ public protocol RouterMiddleware {
     ///                     HTTP request.
     /// - Parameter response: The `RouterResponse` object used to respond to the
     ///                     HTTP request.
-    /// - Parameter next: The closure called to invoke to the next handler or middleware
-    ///                     asociated with the request.
+    /// - Parameter next: The closure called to invoke the next handler or middleware
+    ///                     associated with the request.
     ///
     /// - Throws: Any `ErrorType`. If an error is thrown, processing of the request
     ///          is stopped, the error handlers, if any are defined, will be invoked,
