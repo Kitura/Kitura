@@ -249,6 +249,33 @@ class TestRequests: KituraTest {
         })
     }
 
+    func testMultipleParameterHandlers() {
+        let router = Router()
+
+        router.parameter(["id"], handlers: [
+            { request, response, value, next in
+                request.userInfo["handler1"] = true
+                next()
+            },
+            { request, response, value, next in
+                request.userInfo["handler2"] = true
+                next()
+        }])
+
+        router.get("/item/:id") { request, response, next in
+            response.status(.OK)
+            XCTAssertEqual(request.userInfo["handler1"] as? Bool ?? false, true)
+            XCTAssertEqual(request.userInfo["handler2"] as? Bool ?? false, true)
+            next()
+        }
+
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "item/1000", callback: { response in
+                expectation.fulfill()
+            })
+        }
+    }
+
     func testParameterExit() {
         let router = Router()
 
