@@ -249,7 +249,7 @@ class TestRequests: KituraTest {
         })
     }
 
-    func testMultipleParameterHandlers() {
+    func testOneParameterMultipleHandlers() {
         let router = Router()
 
         router.parameter(["id"], handlers: [
@@ -274,6 +274,54 @@ class TestRequests: KituraTest {
                 expectation.fulfill()
             })
         }
+    }
+
+    func testMultipleParametersMultipleHandlers() {
+        let router = Router()
+
+        router.parameter(["id"], handlers: [
+            { request, response, value, next in
+                request.userInfo["handler1"] = true
+                next()
+            },
+            { request, response, value, next in
+                request.userInfo["handler2"] = true
+                next()
+            }])
+
+        router.parameter(["name"], handlers: [
+            { request, response, value, next in
+                request.userInfo["handler3"] = true
+                next()
+            },
+            { request, response, value, next in
+                request.userInfo["handler4"] = true
+                next()
+            }])
+
+        router.get("/item/:id") { request, response, next in
+            response.status(.OK)
+            XCTAssertEqual(request.userInfo["handler1"] as? Bool ?? false, true)
+            XCTAssertEqual(request.userInfo["handler2"] as? Bool ?? false, true)
+            next()
+        }
+
+        router.get("/user/:name") { request, response, next in
+            response.status(.OK)
+            XCTAssertEqual(request.userInfo["handler3"] as? Bool ?? false, true)
+            XCTAssertEqual(request.userInfo["handler4"] as? Bool ?? false, true)
+            next()
+        }
+
+        performServerTest(router, asyncTasks: { expectation in
+            self.performRequest("get", path: "item/1000", callback: { response in
+                expectation.fulfill()
+            })
+        } , { expectation in
+            self.performRequest("get", path: "user/bob", callback: { response in
+                expectation.fulfill()
+            })
+        })
     }
 
     func testParameterExit() {
