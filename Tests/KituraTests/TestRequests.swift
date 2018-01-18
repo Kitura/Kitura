@@ -264,8 +264,8 @@ class TestRequests: KituraTest {
 
         router.get("/item/:id") { request, response, next in
             response.status(.OK)
-            XCTAssertEqual(request.userInfo["handler1"] as? Bool ?? false, true)
-            XCTAssertEqual(request.userInfo["handler2"] as? Bool ?? false, true)
+            XCTAssertTrue(request.userInfo["handler1"] as? Bool ?? false)
+            XCTAssertTrue(request.userInfo["handler2"] as? Bool ?? false)
             next()
         }
 
@@ -301,15 +301,19 @@ class TestRequests: KituraTest {
 
         router.get("/item/:id") { request, response, next in
             response.status(.OK)
-            XCTAssertEqual(request.userInfo["handler1"] as? Bool ?? false, true)
-            XCTAssertEqual(request.userInfo["handler2"] as? Bool ?? false, true)
+            XCTAssertTrue(request.userInfo["handler1"] as? Bool ?? false)
+            XCTAssertTrue(request.userInfo["handler2"] as? Bool ?? false)
+            XCTAssertNil(request.userInfo["handler3"])
+            XCTAssertNil(request.userInfo["handler4"])
             next()
         }
 
         router.get("/user/:name") { request, response, next in
             response.status(.OK)
-            XCTAssertEqual(request.userInfo["handler3"] as? Bool ?? false, true)
-            XCTAssertEqual(request.userInfo["handler4"] as? Bool ?? false, true)
+            XCTAssertTrue(request.userInfo["handler3"] as? Bool ?? false)
+            XCTAssertTrue(request.userInfo["handler4"] as? Bool ?? false)
+            XCTAssertNil(request.userInfo["handler1"])
+            XCTAssertNil(request.userInfo["handler2"])
             next()
         }
 
