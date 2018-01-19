@@ -184,7 +184,7 @@ the <code>greeting</code> parameter will not be accessible and it will return ju
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
 <span class="k">let</span> <span class="nv">userRouter</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">(</span><span class="nv">mergeParameters</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
 
-<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/:greeting"</span><span class="p">)</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">_</span> <span class="k">in</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/:greeting"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">_</span> <span class="k">in</span>
   <span class="k">let</span> <span class="nv">greeting</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s">"greeting"</span><span class="p">]</span> <span class="p">??</span> <span class="s">""</span>
   <span class="k">try</span> <span class="n">response</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"</span><span class="se">\(</span><span class="n">greeting</span><span class="se">)</span><span class="s">"</span><span class="p">)</span><span class="o">.</span><span class="nf">end</span><span class="p">()</span>
 <span class="p">}</span>
@@ -195,7 +195,7 @@ the <code>greeting</code> parameter will not be accessible and it will return ju
   <span class="k">try</span> <span class="n">response</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"</span><span class="se">\(</span><span class="n">greeting</span><span class="se">)</span><span class="s"> </span><span class="se">\(</span><span class="n">user</span><span class="se">)</span><span class="s">"</span><span class="p">)</span><span class="o">.</span><span class="nf">end</span><span class="p">()</span>
 <span class="p">}</span>
 
-<span class="n">helloRouter</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/:greeting"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="n">userRouter</span><span class="p">)</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/:greeting"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="n">userRouter</span><span class="p">)</span>
 </code></pre>
 
           </div>
@@ -218,11 +218,12 @@ the <code>greeting</code> parameter will not be accessible and it will return ju
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The root directory where template files shoule be placed in order to be automatically handed
-over to an appropriate templating engine for content generation. Defaults to <q>./Views/</q>.</p>
+                        <p>The root directory where template files should be placed in order to be automatically handed
+over to an appropriate templating engine for content generation. The directory should sit at the
+same level as the project&rsquo;s <q>Sources</q> directory. Defaults to <q>./Views/</q>.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 
-<p>Changing the directory where template files will be placed:</p>
+<p>The example below changes the directory where template files should be placed to be <q>./myViews/</q></p>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
 <span class="n">router</span><span class="o">.</span><span class="n">viewsPath</span> <span class="o">=</span> <span class="s">"./myViews/"</span>
 </code></pre>
@@ -315,10 +316,11 @@ the router will be able to access parameters matched in its parent router.</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Register a templating engine. The templating engine will handle files in the <code><a href="../Classes/Router.html#/s:6Kitura6RouterC9viewsPathSSv">viewsPath</a></code>
-that match the extension it supports.</p>
+that match the file extension it supports.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight swift"><code> <span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
 <span class="n">router</span><span class="o">.</span><span class="nf">add</span><span class="p">(</span><span class="nv">templateEngine</span><span class="p">:</span> <span class="kt">MyTemplateEngine</span><span class="p">())</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">add</span><span class="p">(</span><span class="nv">templateEngine</span><span class="p">:</span> <span class="kt">MyOtherTemplateEngine</span><span class="p">(),</span> <span class="nv">forFileExtensions</span><span class="p">:</span> <span class="p">[</span><span class="s">"html"</span><span class="p">],</span> <span class="nv">useDefaultFileExtension</span><span class="p">:</span> <span class="kc">false</span><span class="p">)</span>
 </code></pre>
 
                       </div>
@@ -394,7 +396,7 @@ template engine should be used. Defaults to <code>true</code> if not specified.<
                         <p>Sets the default templating engine to be used when the extension of a file in the
 <code><a href="../Classes/Router.html#/s:6Kitura6RouterC9viewsPathSSv">viewsPath</a></code> doesn&rsquo;t match the extension of one of the registered templating engines.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight swift"><code> <span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
 <span class="n">router</span><span class="o">.</span><span class="nf">setDefault</span><span class="p">(</span><span class="nv">templateEngine</span><span class="p">:</span> <span class="kt">MyTemplateEngine</span><span class="p">())</span>
 </code></pre>
 
@@ -453,15 +455,16 @@ template engine should be used. Defaults to <code>true</code> if not specified.<
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Set up a <q>sub router</q> to handle requests. Chaining a route handler onto another router an make it easier to
+                        <p>Set up a <q>sub router</q> to handle requests. Chaining a route handler onto another router can make it easier to
 build a server that serves a large set of paths. Each sub router handles all of the path mappings below its
 parent&rsquo;s route path.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>The example below shows how the route `/parent/child&rsquo; can be defined using a sub router.</p>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
 <span class="k">let</span> <span class="nv">parent</span> <span class="o">=</span> <span class="n">router</span><span class="o">.</span><span class="nf">route</span><span class="p">(</span><span class="s">"/parent"</span><span class="p">)</span>
-<span class="k">let</span> <span class="nv">child</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/child"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
-    <span class="c1">//This will be called when a GET request is made to /parent/child.</span>
-    <span class="c1">//If allowPartialMatch was set to false, this would not be called.</span>
+<span class="n">parent</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/child"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
+    <span class="c1">// If allowPartialMatch was set to false, this would not be called.</span>
 <span class="p">}</span>
 </code></pre>
 
@@ -553,15 +556,15 @@ matched in its parent router. Defaults to <code>false</code> if not specified.</
 multiple routes requiring the same parameter which needs to be handled in a certain way.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
-<span class="n">router</span><span class="o">.</span><span class="nf">parameter</span><span class="p">(</span><span class="s">"id"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">parameter</span><span class="p">(</span><span class="s">"id"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
     <span class="k">if</span> <span class="k">let</span> <span class="nv">_</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="n">param</span><span class="p">)</span> <span class="p">{</span>
         <span class="c1">//Id is an integer, continue</span>
+        <span class="nf">next</span><span class="p">()</span>
     <span class="p">}</span>
     <span class="k">else</span> <span class="p">{</span>
         <span class="c1">//Id is not an integer, error</span>
         <span class="k">try</span> <span class="n">response</span><span class="o">.</span><span class="nf">status</span><span class="p">(</span><span class="o">.</span><span class="n">badRequest</span><span class="p">)</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"ID is not an integer"</span><span class="p">)</span><span class="o">.</span><span class="nf">end</span><span class="p">()</span>
     <span class="p">}</span>
-    <span class="nf">next</span><span class="p">()</span>
 <span class="p">}</span>
 
 <span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/item/:id"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">_</span> <span class="k">in</span>
@@ -637,15 +640,15 @@ multiple routes requiring the same parameter which needs to be handled in a cert
 multiple routes requiring similar parameters which need to be handled in a certain way.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
-<span class="n">router</span><span class="o">.</span><span class="nf">parameter</span><span class="p">([</span><span class="s">"id"</span><span class="p">,</span> <span class="s">"num"</span><span class="p">])</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">parameter</span><span class="p">([</span><span class="s">"id"</span><span class="p">,</span> <span class="s">"num"</span><span class="p">])</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
     <span class="k">if</span> <span class="k">let</span> <span class="nv">_</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="n">param</span><span class="p">)</span> <span class="p">{</span>
         <span class="c1">//Parameter is an integer, continue</span>
+        <span class="nf">next</span><span class="p">()</span>
     <span class="p">}</span>
     <span class="k">else</span> <span class="p">{</span>
         <span class="c1">//Parameter is not an integer, error</span>
         <span class="k">try</span> <span class="n">response</span><span class="o">.</span><span class="nf">status</span><span class="p">(</span><span class="o">.</span><span class="n">badRequest</span><span class="p">)</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"</span><span class="se">\(</span><span class="n">param</span><span class="se">)</span><span class="s"> is not an integer"</span><span class="p">)</span><span class="o">.</span><span class="nf">end</span><span class="p">()</span>
     <span class="p">}</span>
-    <span class="nf">next</span><span class="p">()</span>
 <span class="p">}</span>
 
 <span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/item/:id/:num"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">_</span> <span class="k">in</span>
@@ -734,12 +737,12 @@ multiple routes requiring similar parameters which need to be handled in a certa
     <span class="o">...</span>
 <span class="p">}</span>
 
-<span class="n">router</span><span class="o">.</span><span class="nf">parameter</span><span class="p">([</span><span class="s">"id"</span><span class="p">],</span> <span class="nv">handlers</span><span class="p">:</span> <span class="p">[</span><span class="n">handleInt</span><span class="p">,</span> <span class="n">handleItem</span><span class="p">]</span> <span class="p">)</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">parameter</span><span class="p">([</span><span class="s">"id"</span><span class="p">],</span> <span class="nv">handlers</span><span class="p">:</span> <span class="p">[</span><span class="n">handleInt</span><span class="p">,</span> <span class="n">handleItem</span><span class="p">])</span>
 
-<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/item/:id/) { request, response, _ in
-    ...
-}
-</span></code></pre>
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/item/:id/"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">_</span> <span class="k">in</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
@@ -1621,8 +1624,8 @@ router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?,
                               </td>
                               <td>
                                 <div>
-                                  <p>The closure called to invoke to the next handler or middleware
-                asociated with the request.</p>
+                                  <p>The closure called to invoke the next handler or middleware
+                associated with the request.</p>
                                 </div>
                               </td>
                             </tr>
@@ -9609,7 +9612,7 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-01-10)</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-01-19)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
