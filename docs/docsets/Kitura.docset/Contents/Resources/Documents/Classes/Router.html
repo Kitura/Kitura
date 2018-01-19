@@ -514,7 +514,7 @@ matched in its parent router. Defaults to <code>false</code> if not specified.</
                               </td>
                               <td>
                                 <div>
-                                  <p>Specify if the sub router allows a match when additional paths are added. In the example above, the <code>GET</code> request to <code>parent/child</code> would only succeed if <code>allowPartialMatch</code> is set to <code>true</code>. Defaults to <code>true</code> if not specified.</p>
+                                  <p>Specify if the sub router allows a match when additional paths are added. In the example above, the <code>GET</code> request to <code>/parent/child</code> would only succeed if <code>allowPartialMatch</code> is set to <code>true</code>. Defaults to <code>true</code> if not specified.</p>
                                 </div>
                               </td>
                             </tr>
@@ -558,20 +558,20 @@ multiple routes requiring the same parameter which needs to be handled in a cert
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
 <span class="n">router</span><span class="o">.</span><span class="nf">parameter</span><span class="p">(</span><span class="s">"id"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
     <span class="k">if</span> <span class="k">let</span> <span class="nv">_</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="n">param</span><span class="p">)</span> <span class="p">{</span>
-        <span class="c1">//Id is an integer, continue</span>
+        <span class="c1">// Id is an integer, continue</span>
         <span class="nf">next</span><span class="p">()</span>
     <span class="p">}</span>
     <span class="k">else</span> <span class="p">{</span>
-        <span class="c1">//Id is not an integer, error</span>
+        <span class="c1">// Id is not an integer, error</span>
         <span class="k">try</span> <span class="n">response</span><span class="o">.</span><span class="nf">status</span><span class="p">(</span><span class="o">.</span><span class="n">badRequest</span><span class="p">)</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"ID is not an integer"</span><span class="p">)</span><span class="o">.</span><span class="nf">end</span><span class="p">()</span>
     <span class="p">}</span>
 <span class="p">}</span>
 
 <span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/item/:id"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">_</span> <span class="k">in</span>
-    <span class="c1">//This will only be reached if the id parameter is an integer</span>
+    <span class="c1">// This will only be reached if the id parameter is an integer</span>
 <span class="p">}</span>
 <span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/user/:id"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">_</span> <span class="k">in</span>
-    <span class="c1">//This will only be reached if the id parameter is an integer</span>
+    <span class="c1">// This will only be reached if the id parameter is an integer</span>
 <span class="p">}</span>
 </code></pre>
 
@@ -642,17 +642,17 @@ multiple routes requiring similar parameters which need to be handled in a certa
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
 <span class="n">router</span><span class="o">.</span><span class="nf">parameter</span><span class="p">([</span><span class="s">"id"</span><span class="p">,</span> <span class="s">"num"</span><span class="p">])</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
     <span class="k">if</span> <span class="k">let</span> <span class="nv">_</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="n">param</span><span class="p">)</span> <span class="p">{</span>
-        <span class="c1">//Parameter is an integer, continue</span>
+        <span class="c1">// Parameter is an integer, continue</span>
         <span class="nf">next</span><span class="p">()</span>
     <span class="p">}</span>
     <span class="k">else</span> <span class="p">{</span>
-        <span class="c1">//Parameter is not an integer, error</span>
+        <span class="c1">// Parameter is not an integer, error</span>
         <span class="k">try</span> <span class="n">response</span><span class="o">.</span><span class="nf">status</span><span class="p">(</span><span class="o">.</span><span class="n">badRequest</span><span class="p">)</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"</span><span class="se">\(</span><span class="n">param</span><span class="se">)</span><span class="s"> is not an integer"</span><span class="p">)</span><span class="o">.</span><span class="nf">end</span><span class="p">()</span>
     <span class="p">}</span>
 <span class="p">}</span>
 
 <span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/item/:id/:num"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">_</span> <span class="k">in</span>
-    <span class="c1">//This will only be reached if the id and num parameters are integers.</span>
+    <span class="c1">// This will only be reached if the id and num parameters are integers.</span>
 <span class="p">}</span>
 </code></pre>
 
@@ -723,10 +723,10 @@ multiple routes requiring similar parameters which need to be handled in a certa
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
 <span class="kd">func</span> <span class="nf">handleInt</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">RouterRequest</span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt">RouterResponse</span><span class="p">,</span> <span class="nv">param</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">next</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span> <span class="p">{</span>
     <span class="k">if</span> <span class="k">let</span> <span class="nv">_</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="n">param</span><span class="p">)</span> <span class="p">{</span>
-        <span class="c1">//Parameter is an integer, continue</span>
+        <span class="c1">// Parameter is an integer, continue</span>
     <span class="p">}</span>
     <span class="k">else</span> <span class="p">{</span>
-        <span class="c1">//Parameter is not an integer, error</span>
+        <span class="c1">// Parameter is not an integer, error</span>
         <span class="k">try</span> <span class="n">response</span><span class="o">.</span><span class="nf">status</span><span class="p">(</span><span class="o">.</span><span class="n">badRequest</span><span class="p">)</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"</span><span class="se">\(</span><span class="n">param</span><span class="se">)</span><span class="s"> is not an integer"</span><span class="p">)</span><span class="o">.</span><span class="nf">end</span><span class="p">()</span>
     <span class="p">}</span>
     <span class="nf">next</span><span class="p">()</span>
@@ -1683,7 +1683,7 @@ router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?,
                               <td>
                                 <div>
                                   <p>The <code>ServerRequest</code> object used to work with the incoming
-                HTTP request at the Kitura-net API level.</p>
+                HTTP request at the <a href="http://ibm-swift.github.io/Kitura-net/">Kitura-net</a> API level.</p>
                                 </div>
                               </td>
                             </tr>
@@ -1696,7 +1696,7 @@ router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?,
                               <td>
                                 <div>
                                   <p>The <code>ServerResponse</code> object used to send responses to the
-                 HTTP request at the Kitura-net API level.</p>
+                 HTTP request at the <a href="http://ibm-swift.github.io/Kitura-net/">Kitura-net</a> API level.</p>
                                 </div>
                               </td>
                             </tr>

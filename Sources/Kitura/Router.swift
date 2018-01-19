@@ -258,7 +258,7 @@ public class Router {
     /// - Parameter route: The path to bind the sub router to.
     /// - Parameter mergeParameters: Specify if this router should have access to path parameters
     /// matched in its parent router. Defaults to `false` if not specified.
-    /// - Parameter allowPartialMatch: Specify if the sub router allows a match when additional paths are added. In the example above, the `GET` request to `parent/child` would only succeed if `allowPartialMatch` is set to `true`. Defaults to `true` if not specified.
+    /// - Parameter allowPartialMatch: Specify if the sub router allows a match when additional paths are added. In the example above, the `GET` request to `/parent/child` would only succeed if `allowPartialMatch` is set to `true`. Defaults to `true` if not specified.
     /// - Returns: The sub router which has been created.
     public func route(_ route: String, mergeParameters: Bool = false, allowPartialMatch: Bool = true) -> Router {
         let subrouter = Router(mergeParameters: mergeParameters)
@@ -276,20 +276,20 @@ public class Router {
     /// let router = Router()
     /// router.parameter("id") { request, response, param, next in
     ///     if let _ = Int(param) {
-    ///         //Id is an integer, continue
+    ///         // Id is an integer, continue
     ///         next()
     ///     }
     ///     else {
-    ///         //Id is not an integer, error
+    ///         // Id is not an integer, error
     ///         try response.status(.badRequest).send("ID is not an integer").end()
     ///     }
     /// }
     ///
     /// router.get("/item/:id") { request, response, _ in
-    ///     //This will only be reached if the id parameter is an integer
+    ///     // This will only be reached if the id parameter is an integer
     /// }
     /// router.get("/user/:id") { request, response, _ in
-    ///     //This will only be reached if the id parameter is an integer
+    ///     // This will only be reached if the id parameter is an integer
     /// }
     /// ```
     ///
@@ -309,17 +309,17 @@ public class Router {
     /// let router = Router()
     /// router.parameter(["id", "num"]) { request, response, param, next in
     ///     if let _ = Int(param) {
-    ///         //Parameter is an integer, continue
+    ///         // Parameter is an integer, continue
     ///         next()
     ///     }
     ///     else {
-    ///         //Parameter is not an integer, error
+    ///         // Parameter is not an integer, error
     ///         try response.status(.badRequest).send("\(param) is not an integer").end()
     ///     }
     /// }
     ///
     /// router.get("/item/:id/:num") { request, response, _ in
-    ///     //This will only be reached if the id and num parameters are integers.
+    ///     // This will only be reached if the id and num parameters are integers.
     /// }
     /// ```
     ///
@@ -339,10 +339,10 @@ public class Router {
     /// let router = Router()
     /// func handleInt(request: RouterRequest, response: RouterResponse, param: String, next: @escaping () -> Void) throws -> Void {
     ///     if let _ = Int(param) {
-    ///         //Parameter is an integer, continue
+    ///         // Parameter is an integer, continue
     ///     }
     ///     else {
-    ///         //Parameter is not an integer, error
+    ///         // Parameter is not an integer, error
     ///         try response.status(.badRequest).send("\(param) is not an integer").end()
     ///     }
     ///     next()
@@ -432,9 +432,9 @@ extension Router : ServerDelegate {
     /// Handle new incoming requests to the server.
     ///
     /// - Parameter request: The `ServerRequest` object used to work with the incoming
-    ///                     HTTP request at the Kitura-net API level.
+    ///                     HTTP request at the [Kitura-net](http://ibm-swift.github.io/Kitura-net/) API level.
     /// - Parameter response: The `ServerResponse` object used to send responses to the
-    ///                      HTTP request at the Kitura-net API level.
+    ///                      HTTP request at the [Kitura-net](http://ibm-swift.github.io/Kitura-net/) API level.
     public func handle(request: ServerRequest, response: ServerResponse) {
         let routeReq = RouterRequest(request: request)
         //TODO fix the stack
