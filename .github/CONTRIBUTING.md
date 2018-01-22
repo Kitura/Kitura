@@ -4,11 +4,14 @@ This document contains information and guidlines about making contributions. For
 
 We love contributions to the Kitura project, but request you follow the guidelines below.
 
+ - [Getting Started](#getting-started)
  - [Pull Requests](#pull-requests)
  - [Coding Style](#coding-style)
  - [Contributor License Agreement](#contributor-license-agreement)
  - [Asking Questions](#asking-questions)
  - [Reporting issues](#reporting-issues)
+ - [Additional Resources](#additional-resources)
+
 
 ## Getting Started
 
