@@ -16,6 +16,8 @@ We love contributions to the Kitura project, but request you follow the guidelin
 
 Please ensure you follow [the Kitura coding standards](https://github.com/IBM-Swift/Kitura/blob/master/Documentation/CodeConventions.md). This keeps the source code tidy, and allows [Swift Lint]((https://github.com/realm/SwiftLint)) to work with the project.
 
+**If you are new:** We have created the label ["good starting issue"](https://github.com/IBM-Swift/Kitura/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) to help new members of the community get involved with Kitura quickly and effectively. These issues include documentation changes, test cases, minor bug fixes, logging, renaming and refactoring.
+
 To get started, you will need to open a Terminal and:
 
 1. Fork this repo and clone it onto your machine.
@@ -23,11 +25,9 @@ To get started, you will need to open a Terminal and:
    `$ git clone https://github.com/YOUR_GITHUB_ID/Kitura`
 
 
-2. Make changes to code, usually by tackling an issue. A list of issues can be found at [here](https://github.com/IBM-Swift/Kitura/issues). If you are new to Swift or software development, look for issues labelled ["good starting issue"](https://github.com/IBM-Swift/Kitura/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
+2. Make changes to code, usually by tackling an issue. A list of issues can be found at [here](https://github.com/IBM-Swift/Kitura/issues). If you are new to Swift or software development, look for issues labelled ["good starting issue"](https://github.com/IBM-Swift/Kitura/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
 
    If there aren't any tagged issues, post in [Slack](http://swift-at-ibm-slack.mybluemix.net/) and the team would be happy to help you get started.
-
-   **About good starting issues:** We have created this label to help new members of the community get involved with Kitura quickly and effectively. These issues include documentation changes, test cases, minor bug fixes, logging, renaming and refactoring.
 
    **Tip:** If you are on macOS, Xcode can be a great way to work on Kitura. You can download the latest Xcode [here](https://itunes.apple.com/us/app/xcode/id497799835?ls=1&mt=12). You'll need to open a Terminal window, and navigate to the root of the Kitura project you cloned. Then, type the following command into Terminal:
 
