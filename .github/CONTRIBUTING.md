@@ -40,7 +40,7 @@ To get started, you will need to open a Terminal and:
 
    *Note: Xcode is macOS only, Linux users will need to use a different editor.*
 
-3. All source code submitted requires an Apache License header at the top of the file. A Github Gist of this text can be found [here](https://gist.github.com/SwiftDevOps/141437c6861f88c959d0731bc3b16bee), just copy and paste it at the top of any new files your submitting.
+3. All source code submitted requires an Apache License header at the top of the file. A Github Gist of this text can be found [here](https://gist.github.com/SwiftDevOps/141437c6861f88c959d0731bc3b16bee), just copy and paste it at the top of any new files you're submitting.
 
 4. Ensure all tests pass with your changes by running `swift test` in Terminal. If there is any new functionality introduced by your changes, new test case(s) may be required. If you need any help writing tests, contact us on [Slack](http://swift-at-ibm-slack.mybluemix.net/).
 
