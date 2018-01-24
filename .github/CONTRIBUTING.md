@@ -1,6 +1,6 @@
 # Contributing to Kitura
 
-This document contains information and guidlines about making contributions. For help, contact us on [Slack](http://swift-at-ibm-slack.mybluemix.net/).
+This document contains information and guidelines about making contributions. For help, contact us on [Slack](http://swift-at-ibm-slack.mybluemix.net/).
 
 We love contributions to the Kitura project, but request you follow the guidelines below.
 
@@ -37,22 +37,25 @@ To get started, you will need to open a Terminal and:
 
    *Note: Xcode is macOS only, Linux users will need to use a different editor.*
 
+3. All source code submitted requires an Apache License header at the top of the file. A Github Gist of this text can be found [here](https://gist.github.com/SwiftDevOps/141437c6861f88c959d0731bc3b16bee), just copy and paste it at the top of any new files your submitting.
 
-3. Ensure all tests pass with your changes by running `swift test` in Terminal. If there is any new funtionality introduced by your change, new test case(s) may be required. If you need any help writing tests, contact us on [Slack](http://swift-at-ibm-slack.mybluemix.net/).
-4. If they all pass, open a Pull Request following the guidelines below.
+4. Ensure all tests pass with your changes by running `swift test` in Terminal. If there is any new functionality introduced by your changes, new test case(s) may be required. If you need any help writing tests, contact us on [Slack](http://swift-at-ibm-slack.mybluemix.net/).
+
+5. If they all pass, open a Pull Request following the guidelines below.
+
 
 ## Pull Requests
 
 **Note about tests:** When opening a Pull Request, please run the tests for your OS with `swift test`.  Kitura is a cross platform web framework that uses Continuous Integration. You may see mentions of Travis CI in your PR and it's comments. Travis is an external service we use that is automatically called on every PR, and runs the test cases on macOS and Linux to ensure every code change is cross plaform compatible.
 
-To open a new Pull Request, the GitHub website provides the simplest experience for new users. Go to your fork of the repo and clickt the New pull request button. You will be presented with a page featuring base fork: and base:, then an arrow, and then head fork: compare:. Make sure compare: has **your branch** with your changes selected and base: has **master** selected. When you are ready to open the PR, lick the green button at the top called Create pull request.
+To open a new Pull Request, the GitHub website provides the simplest experience for new users. Go to your fork of the repo and click the New pull request button. You will be presented with a page featuring base fork: and base:, then an arrow, and then head fork: compare:. Make sure compare: has **your branch** with your changes selected and base: has **master** selected. When you are ready to open the PR, click the green button at the top called Create pull request.
 
 If this is your first PR, a bot will comment with a link to the CLA which must be signed before we can merge in your changes.
 
 When opening a PR, please:
 
 1. Create minimal differences and do not reformat the code. If you feel the codes structure needs changing, open a separate PR.
-2. Check for unneccessary white space using `git diff --check` before you commit your code.
+2. Check for unnecessary white space using `git diff --check` before you commit your code.
 3. Ensure you follow the coding standards for the Kitura project, [linked here](https://github.com/IBM-Swift/Kitura/blob/master/Documentation/CodeConventions.md).
 
 ## Coding Style
@@ -68,7 +71,7 @@ In order for us to merge any of your changes into Kitura, you need to sign the C
 
 ## Asking Questions
 
-If you have any questions, feel free to post in our [Slack](http://swift-at-ibm-slack.mybluemix.net/) Channel. Feel free to comment on existing issues, or raise new ones if you discover something new.
+If you have any questions, feel free to post in our [Slack](http://swift-at-ibm-slack.mybluemix.net/) Channel. Comment on existing issues, or raise new ones if you discover something new too.
 
 We also check [dW Answers](https://developer.ibm.com/answers/smart-spaces/213/swift.htmlindex.html) and [Stack Overflow](https://www.stackoverflow.com), just tag your answer with the project name (i.e. Kitura or Kitura-net).
 
