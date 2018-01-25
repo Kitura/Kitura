@@ -272,8 +272,10 @@ extension Router {
                             let status = self.httpStatusCode(from: err)
                             response.status(status)
                         } else {
+                            let encoded = try JSONEncoder().encode(result)
                             response.status(.created)
-                            try response.send(result)
+                            response.headers.setType("json")
+                            response.send(data: encoded)
                         }
                     } catch {
                         // Http 500 error
@@ -325,9 +327,11 @@ extension Router {
                                 next()
                                 return
                             }
+                            let encoded = try JSONEncoder().encode(result)
                             response.status(.created)
                             response.headers["Location"] = String(id.value)
-                            try response.send(result)
+                            response.headers.setType("json")
+                            response.send(data: encoded)
                         }
                     } catch {
                         // Http 500 error
@@ -374,8 +378,10 @@ extension Router {
                             let status = self.httpStatusCode(from: err)
                             response.status(status)
                         } else {
+                            let encoded = try JSONEncoder().encode(result)
                             response.status(.OK)
-                            try response.send(result)
+                            response.headers.setType("json")
+                            response.send(data: encoded)
                         }
                     } catch {
                         // Http 500 error
@@ -422,8 +428,10 @@ extension Router {
                             let status = self.httpStatusCode(from: err)
                             response.status(status)
                         } else {
+                            let encoded = try JSONEncoder().encode(result)
                             response.status(.OK)
-                            try response.send(result)
+                            response.headers.setType("json")
+                            response.send(data: encoded)
                         }
                     } catch {
                         // Http 500 error
@@ -452,8 +460,10 @@ extension Router {
                         let status = self.httpStatusCode(from: err)
                         response.status(status)
                     } else {
+                        let encoded = try JSONEncoder().encode(result)
                         response.status(.OK)
-                        try response.send(result)
+                        response.headers.setType("json")
+                        response.send(data: encoded)
                     }
                 } catch {
                     // Http 500 error
@@ -476,8 +486,10 @@ extension Router {
                         let status = self.httpStatusCode(from: err)
                         response.status(status)
                     } else {
+                        let encoded = try JSONEncoder().encode(result)
                         response.status(.OK)
-                        try response.send(result)
+                        response.headers.setType("json")
+                        response.send(data: encoded)
                     }
                 } catch {
                     // Http 500 error
@@ -500,8 +512,10 @@ extension Router {
                         let status = self.httpStatusCode(from: err)
                         response.status(status)
                     } else {
+                        let encoded = try JSONEncoder().encode(result)
                         response.status(.OK)
-                        try response.send(result)
+                        response.headers.setType("json")
+                        response.send(data: encoded)
                     }
                 } catch {
                     // Http 500 error
@@ -536,8 +550,10 @@ extension Router {
                             let status = self.httpStatusCode(from: err)
                             response.status(status)
                         } else {
+                            let encoded = try JSONEncoder().encode(result)
                             response.status(.OK)
-                            try response.send(result)
+                            response.headers.setType("json")
+                            response.send(data: encoded)
                         }
                     } catch {
                         // Http 500 error
