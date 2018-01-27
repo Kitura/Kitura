@@ -157,7 +157,7 @@ class TestSubrouter: KituraTest {
         }
 
         let handler: RouterHandler = { (req: RouterRequest, res: RouterResponse, next: () -> Void) throws in
-            try res.send(json: req.parameters)
+            res.send(json: req.parameters)
         }
 
         let router = Router()
@@ -168,7 +168,7 @@ class TestSubrouter: KituraTest {
         subsubRouter1.all("/subsub2/passthrough", handler: handler)
 
         router.route("/root2/:root2", mergeParameters: true).all { req, res, _ in
-            try res.send(json: req.parameters)
+            res.send(json: req.parameters)
         }
 
         performServerTest(router, asyncTasks: { expectation in
