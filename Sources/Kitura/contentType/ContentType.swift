@@ -19,8 +19,17 @@ import LoggerAPI
 
 // MARK: ContentType
 
-/// A set of APIs to work with Content-Type headers, whether to generate the value
-/// or to determine if it's an acceptable value.
+/**
+ The `ContentType` class provides functions to determine the MIME content type for a given file extension. The user can pass in a complete file name e.g. "foo.png" or just the file extension e.g. "png", or they can pass in both a MIME content type and a file extension and query whether they match.
+ ### Usage Example: ###
+ In this example, a `ContentType` instance is initialised called contentType. This instance is then used to obtain the MIME content type of the file "foo.png", which is identified as "image/png".
+ ```swift
+ let contentType = ContentType.sharedInstance
+ let result = contentType.getContentType(forFileName: "foo.png")
+ print(String(describing: result))
+ // Prints Optional("image/png")
+ ```
+ */
 public class ContentType {
 
     /// A dictionary of extensions to MIME type descriptions
@@ -56,18 +65,34 @@ public class ContentType {
         }
     }
 
-    /// Get the content type for the given file extension.
-    ///
-    /// - Parameter forExtension: the file extension.
-    /// - Returns: an Optional String for the content type.
+    /**
+     Get the content type for the given file extension.
+     ### Usage Example: ###
+     ```swift
+     let contentType = ContentType.sharedInstance
+     let result = contentType.getContentType(forExtension: "js")
+     print(String(describing: result))
+     //Prints Optional("application/javascript")
+     ```
+     - Parameter forExtension: The file extension.
+     - Returns: An Optional String for the content type.
+     */
     public func getContentType(forExtension ext: String) -> String? {
         return extToContentType[ext]
     }
 
-    /// Get the content type for the given file based on its extension.
-    ///
-    /// - Parameter forFileName: the file name.
-    /// - Returns: an Optional String for the content type.
+    /**
+     Get the content type for the given file based on its extension.
+     ### Usage Example: ###
+     ```swift
+     let contentType = ContentType.sharedInstance
+     let result = contentType.getContentType(forFileName: "test.html")
+     print(String(describing: result))
+     //Prints Optional("text/html")
+     ```
+     - Parameter forFileName: The file name.
+     - Returns: An Optional String for the content type.
+     */
     public func getContentType(forFileName fileName: String) -> String? {
         let lastPathElemRange: Range<String.Index>
         let extRange: Range<String.Index>
@@ -89,11 +114,19 @@ public class ContentType {
         return getContentType(forExtension: String(fileName[extRange]))
     }
 
-    /// Check if the message content type matches the type descriptor.
-    ///
-    /// - Parameter messageContentType: the content type.
-    /// - Parameter ofType: the description of the type.
-    /// - Returns: true if the types matched.
+    /**
+     Check if the message content type matches the type descriptor.
+     ### Usage Example: ###
+     ```swift
+     let contentType = ContentType.sharedInstance
+     var result = contentType.isContentType("application/json", ofType: "json")
+     print(String(describing: result))
+     //Prints true
+     ```
+     - Parameter messageContentType: The content type.
+     - Parameter ofType: The description of the type.
+     - Returns: True if the types matched.
+     */
     public func isContentType(_ messageContentType: String, ofType typeDescriptor: String) -> Bool {
 
         let type = typeDescriptor.lowercased()
