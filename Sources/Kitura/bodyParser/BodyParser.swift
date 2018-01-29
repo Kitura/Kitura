@@ -21,12 +21,14 @@ import Foundation
 
 // MARK: BodyParser
 
-/// The BodyParser parses the body of the request prior to sending it to the handler. It reads the Content-Type of the message header and populates the `RouterRequest` body field with a `ParsedBody` enumeration (e.g. json, raw, text, urlEncoded)
-/// In order for the BodyParser to be used it must first be registered with any routes that are interested in the ParsedBody payload. The example below registers all routes to the BodyParser middleware.
+/// The `BodyParser` parses the body of the request prior to sending it to the handler. It reads the Content-Type of the message header and populates the `RouterRequest` body field with a `ParsedBody` enumeration (e.g. json, raw, text, urlEncoded).
+/// In order for the BodyParser to be used it must first be registered with any routes that are interested in the ParsedBody payload.
+///### Usage Example: ###
+/// In this example, all routes to the BodyParser middleware are registered to the `BodyParser` middleware.
 ///```swift
 ///   router.all("/*", middleware: BodyParser())
 ///```
-/// __Note__: When using Codable Routing in Kitura 2.x the BodyParser should not be registered to any codable routes (doing so will display an error).
+/// __Note__: When using Codable Routing in Kitura 2.x the BodyParser should not be registered to any codable routes (doing so will log the following error "No data in request. Codable routes do not allow the use of a BodyParser." and the route handler will not be executed).
 public class BodyParser: RouterMiddleware {
 
     /// Static buffer size (in bytes)
@@ -40,13 +42,16 @@ public class BodyParser: RouterMiddleware {
 
     /// Initializes a BodyParser instance.
     /// Needed since default initalizer is internal.
+    ///### Usage Example: ###
+    ///```swift
+    /// let middleware = BodyParser()
+    ///```
     public init() {}
 
-    /// Handle the request, i.e. parse the body of the request.
-    ///
-    /// - Parameter request: the router request.
-    /// - Parameter response: the router response.
-    /// - Parameter next: the closure for the next execution block.
+    /// This function is called by the Kitura `Router` when an incoming request matches the route provided when the BodyParser was registered with the `Router`. It performs the parsing of the body content using `parse(_:contentType)`. We don't expect a user to call this function directly.
+    /// - Parameter request: The router request.
+    /// - Parameter response: The router response.
+    /// - Parameter next: The closure for the next execution block.
     public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws {
         guard request.body == nil else {
             return next() // the body was already parsed
@@ -61,11 +66,17 @@ public class BodyParser: RouterMiddleware {
         next()
     }
 
-    /// Parse the body of the incoming message.
+    /// This function is called by the Kitura `Router` when an incoming request matches the route provided when the BodyParser was registered with the `Router`. The `middleware.handle(...)` function will parse the body content of an incoming request using this function. A user can call this function directly but ordinarily won't need to.
     ///
-    /// - Parameter message: message coming from the socket.
-    /// - Parameter contentType: the content type as a String.
-    /// - Returns: the parsed body.
+    ///### Usage Example: ###
+    ///In this example, the body of the request is parsed to be of the passed in contentType.
+    ///```swift
+    ///request.body = BodyParser.parse(request, contentType: contentType)
+    ///```
+    ///
+    /// - Parameter message: Message coming from the socket.
+    /// - Parameter contentType: The content type as a String.
+    /// - Returns: The parsed body.
     public class func parse(_ message: RouterRequest, contentType: String?) -> ParsedBody? {
         guard let contentType = contentType else {
             return nil
@@ -113,11 +124,16 @@ public class BodyParser: RouterMiddleware {
         }
     }
 
-    /// Read incoming message for Parse
+    /// Read incoming message for Parse.
     ///
-    /// - Parameter message: message coming from the socket
+    ///### Usage Example: ###
+    ///In this example, the request body is parsed using a parser which complies to `BodyParserProtocol`.
+    ///```swift
+    ///request.body = BodyParser.parse(request, parser: bodyParser)
+    ///```
+    /// - Parameter message: Message coming from the socket
     /// - Parameter parser: ((NSData) -> ParsedBody?) store at parserMap
-    /// - Returns: the parsed body
+    /// - Returns: The parsed body
     private class func parse(_ message: RouterRequest, parser: BodyParserProtocol) -> ParsedBody? {
         message.hasBodyParserBeenUsed = true
         do {
@@ -130,10 +146,14 @@ public class BodyParser: RouterMiddleware {
     }
 
     /// Read the body data of the request.
-    ///
-    /// - Parameter with: the socket reader.
+    ///### Usage Example: ###
+    ///In this example, the body of the request is read into a constant (called bodyData) using an instance of `RouterRequest` (called request).
+    ///```swift
+    ///let bodyData = try readBodyData(with: request)
+    ///```
+    /// - Parameter with: The socket reader.
     /// - Throws: Socket.Error if an error occurred while reading from a socket.
-    /// - Returns: data for the body.
+    /// - Returns: The body data associated with the request.
     public class func readBodyData(with reader: RouterRequest) throws -> Data {
         var bodyData = Data()
         var length = 0

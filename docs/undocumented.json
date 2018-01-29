@@ -1,40 +1,40 @@
 {
   "warnings": [
     {
-      "file": "/Users/AaronLiberatore/Documents/Kitura/Sources/Kitura/RouterParameterWalker.swift",
+      "file": "/Users/andrewlees/git/Kitura/Sources/Kitura/RouterParameterWalker.swift",
       "line": 17,
       "symbol": "RouterParameterHandler",
       "symbol_kind": "source.lang.swift.decl.typealias",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/AaronLiberatore/Documents/Kitura/Sources/Kitura/RouterResponse.swift",
+      "file": "/Users/andrewlees/git/Kitura/Sources/Kitura/RouterResponse.swift",
       "line": 349,
       "symbol": "RouterResponse.render(_:context:options:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/AaronLiberatore/Documents/Kitura/Sources/Kitura/SSLConfig.swift",
+      "file": "/Users/andrewlees/git/Kitura/Sources/Kitura/SSLConfig.swift",
       "line": 21,
       "symbol": "SSLConfig",
       "symbol_kind": "source.lang.swift.decl.struct",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/AaronLiberatore/Documents/Kitura/Sources/Kitura/SSLConfig.swift",
+      "file": "/Users/andrewlees/git/Kitura/Sources/Kitura/SSLConfig.swift",
       "line": 25,
       "symbol": "SSLConfig.config",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/AaronLiberatore/Documents/Kitura/Sources/Kitura/staticFileServer/StaticFileServer.swift",
+      "file": "/Users/andrewlees/git/Kitura/Sources/Kitura/staticFileServer/StaticFileServer.swift",
       "line": 75,
       "symbol": "StaticFileServer.absoluteRootPath",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     }
   ],
-  "source_directory": "/Users/AaronLiberatore/Documents/Kitura"
+  "source_directory": "/Users/andrewlees/git/Kitura"
 }

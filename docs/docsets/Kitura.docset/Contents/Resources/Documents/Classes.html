@@ -223,6 +223,17 @@ the appropriate code for handling. This includes:</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>A set of helper functions to make it easier to create, start, and stop Kitura based servers.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, a function called run is created, inside a server <code>Application.swift</code> file. This will create a Kitura server on the specified port, using the given router and run this created server. This <code>Application.run</code> function would then be called in your <code>main.swift</code> file as a non-returning function to initilize your Kitura server.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">port</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">8080</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">run</span><span class="p">()</span> <span class="k">throws</span><span class="p">{</span>
+<span class="o">...</span>
+   <span class="kt">Kitura</span><span class="o">.</span><span class="nf">addHTTPServer</span><span class="p">(</span><span class="nv">onPort</span><span class="p">:</span> <span class="n">port</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="n">router</span><span class="p">)</span>
+   <span class="kt">Kitura</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre>
 
                         <a href="Classes/Kitura.html" class="slightly-smaller">See more</a>
                       </div>
@@ -410,12 +421,15 @@ the appropriate code for handling. This includes:</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The BodyParser parses the body of the request prior to sending it to the handler. It reads the Content-Type of the message header and populates the <code><a href="Classes/RouterRequest.html">RouterRequest</a></code> body field with a <code><a href="Enums/ParsedBody.html">ParsedBody</a></code> enumeration (e.g. json, raw, text, urlEncoded)
- In order for the BodyParser to be used it must first be registered with any routes that are interested in the ParsedBody payload. The example below registers all routes to the BodyParser middleware.</p>
+                        <p>The <code>BodyParser</code> parses the body of the request prior to sending it to the handler. It reads the Content-Type of the message header and populates the <code><a href="Classes/RouterRequest.html">RouterRequest</a></code> body field with a <code><a href="Enums/ParsedBody.html">ParsedBody</a></code> enumeration (e.g. json, raw, text, urlEncoded).
+ In order for the BodyParser to be used it must first be registered with any routes that are interested in the ParsedBody payload.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, all routes to the BodyParser middleware are registered to the <code>BodyParser</code> middleware.</p>
 <pre class="highlight swift"><code>   <span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/*"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="kt">BodyParser</span><span class="p">())</span>
 </code></pre>
 
-<p><strong>Note</strong>: When using Codable Routing in Kitura 2.x the BodyParser should not be registered to any codable routes (doing so will display an error).</p>
+<p><strong>Note</strong>: When using Codable Routing in Kitura 2.x the BodyParser should not be registered to any codable routes (doing so will log the following error <q>No data in request. Codable routes do not allow the use of a BodyParser.</q> and the route handler will not be executed).</p>
 
                         <a href="Classes/BodyParser.html" class="slightly-smaller">See more</a>
                       </div>
@@ -454,8 +468,15 @@ the appropriate code for handling. This includes:</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A set of APIs to work with Content-Type headers, whether to generate the value
-or to determine if it&rsquo;s an acceptable value.</p>
+                        <p>The <code>ContentType</code> class provides functions to determine the MIME content type for a given file extension. The user can pass in a complete file name e.g. <q>foo.png</q> or just the file extension e.g. <q>png</q>, or they can pass in both a MIME content type and a file extension and query whether they match.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, a <code>ContentType</code> instance is initialised called contentType. This instance is then used to obtain the MIME content type of the file <q>foo.png</q>, which is identified as <q>image/png</q>.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">contentType</span> <span class="o">=</span> <span class="kt">ContentType</span><span class="o">.</span><span class="n">sharedInstance</span>
+<span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="n">contentType</span><span class="o">.</span><span class="nf">getContentType</span><span class="p">(</span><span class="nv">forFileName</span><span class="p">:</span> <span class="s">"foo.png"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="kt">String</span><span class="p">(</span><span class="nv">describing</span><span class="p">:</span> <span class="n">result</span><span class="p">))</span>
+<span class="c1">// Prints Optional("image/png")</span>
+</code></pre>
 
                         <a href="Classes/ContentType.html" class="slightly-smaller">See more</a>
                       </div>
@@ -517,7 +538,7 @@ or to determine if it&rsquo;s an acceptable value.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-01-04)</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-01-16)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

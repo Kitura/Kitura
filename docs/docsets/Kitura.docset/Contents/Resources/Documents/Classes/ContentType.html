@@ -166,8 +166,15 @@
 
                 </div>
               </div>
-            <p>A set of APIs to work with Content-Type headers, whether to generate the value
-or to determine if it&rsquo;s an acceptable value.</p>
+            <p>The <code>ContentType</code> class provides functions to determine the MIME content type for a given file extension. The user can pass in a complete file name e.g. <q>foo.png</q> or just the file extension e.g. <q>png</q>, or they can pass in both a MIME content type and a file extension and query whether they match.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, a <code>ContentType</code> instance is initialised called contentType. This instance is then used to obtain the MIME content type of the file <q>foo.png</q>, which is identified as <q>image/png</q>.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">contentType</span> <span class="o">=</span> <span class="kt">ContentType</span><span class="o">.</span><span class="n">sharedInstance</span>
+<span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="n">contentType</span><span class="o">.</span><span class="nf">getContentType</span><span class="p">(</span><span class="nv">forFileName</span><span class="p">:</span> <span class="s">"foo.png"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="kt">String</span><span class="p">(</span><span class="nv">describing</span><span class="p">:</span> <span class="n">result</span><span class="p">))</span>
+<span class="c1">// Prints Optional("image/png")</span>
+</code></pre>
 
           </div>
         </section>
@@ -217,6 +224,12 @@ or to determine if it&rsquo;s an acceptable value.</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Get the content type for the given file extension.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">contentType</span> <span class="o">=</span> <span class="kt">ContentType</span><span class="o">.</span><span class="n">sharedInstance</span>
+<span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="n">contentType</span><span class="o">.</span><span class="nf">getContentType</span><span class="p">(</span><span class="nv">forExtension</span><span class="p">:</span> <span class="s">"js"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="kt">String</span><span class="p">(</span><span class="nv">describing</span><span class="p">:</span> <span class="n">result</span><span class="p">))</span>
+<span class="c1">//Prints Optional("application/javascript")</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
@@ -239,7 +252,7 @@ or to determine if it&rsquo;s an acceptable value.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the file extension.</p>
+                                  <p>The file extension.</p>
                                 </div>
                               </td>
                             </tr>
@@ -248,7 +261,7 @@ or to determine if it&rsquo;s an acceptable value.</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>an Optional String for the content type.</p>
+                        <p>An Optional String for the content type.</p>
                       </div>
                     </section>
                   </div>
@@ -267,6 +280,12 @@ or to determine if it&rsquo;s an acceptable value.</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Get the content type for the given file based on its extension.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">contentType</span> <span class="o">=</span> <span class="kt">ContentType</span><span class="o">.</span><span class="n">sharedInstance</span>
+<span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="n">contentType</span><span class="o">.</span><span class="nf">getContentType</span><span class="p">(</span><span class="nv">forFileName</span><span class="p">:</span> <span class="s">"test.html"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="kt">String</span><span class="p">(</span><span class="nv">describing</span><span class="p">:</span> <span class="n">result</span><span class="p">))</span>
+<span class="c1">//Prints Optional("text/html")</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
@@ -289,7 +308,7 @@ or to determine if it&rsquo;s an acceptable value.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the file name.</p>
+                                  <p>The file name.</p>
                                 </div>
                               </td>
                             </tr>
@@ -298,7 +317,7 @@ or to determine if it&rsquo;s an acceptable value.</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>an Optional String for the content type.</p>
+                        <p>An Optional String for the content type.</p>
                       </div>
                     </section>
                   </div>
@@ -317,6 +336,12 @@ or to determine if it&rsquo;s an acceptable value.</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Check if the message content type matches the type descriptor.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">contentType</span> <span class="o">=</span> <span class="kt">ContentType</span><span class="o">.</span><span class="n">sharedInstance</span>
+<span class="k">var</span> <span class="nv">result</span> <span class="o">=</span> <span class="n">contentType</span><span class="o">.</span><span class="nf">isContentType</span><span class="p">(</span><span class="s">"application/json"</span><span class="p">,</span> <span class="nv">ofType</span><span class="p">:</span> <span class="s">"json"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="kt">String</span><span class="p">(</span><span class="nv">describing</span><span class="p">:</span> <span class="n">result</span><span class="p">))</span>
+<span class="c1">//Prints true</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
@@ -339,7 +364,7 @@ or to determine if it&rsquo;s an acceptable value.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the content type.</p>
+                                  <p>The content type.</p>
                                 </div>
                               </td>
                             </tr>
@@ -351,7 +376,7 @@ or to determine if it&rsquo;s an acceptable value.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the description of the type.</p>
+                                  <p>The description of the type.</p>
                                 </div>
                               </td>
                             </tr>
@@ -360,7 +385,7 @@ or to determine if it&rsquo;s an acceptable value.</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>true if the types matched.</p>
+                        <p>True if the types matched.</p>
                       </div>
                     </section>
                   </div>
@@ -373,7 +398,7 @@ or to determine if it&rsquo;s an acceptable value.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-01-04)</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-01-16)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

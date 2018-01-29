@@ -167,6 +167,17 @@
                 </div>
               </div>
             <p>A set of helper functions to make it easier to create, start, and stop Kitura based servers.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, a function called run is created, inside a server <code>Application.swift</code> file. This will create a Kitura server on the specified port, using the given router and run this created server. This <code>Application.run</code> function would then be called in your <code>main.swift</code> file as a non-returning function to initilize your Kitura server.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">port</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">8080</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">run</span><span class="p">()</span> <span class="k">throws</span><span class="p">{</span>
+<span class="o">...</span>
+   <span class="kt">Kitura</span><span class="o">.</span><span class="nf">addHTTPServer</span><span class="p">(</span><span class="nv">onPort</span><span class="p">:</span> <span class="n">port</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="n">router</span><span class="p">)</span>
+   <span class="kt">Kitura</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre>
 
           </div>
         </section>
@@ -191,7 +202,10 @@
                         <p>Add an HTTPServer on a port with a delegate.</p>
 
 <p>The server is only registered with the framework, it does not start listening
-on the port until Kitura.run() or Kitura.start() is called.</p>
+ on the port until <code><a href="../Classes/Kitura.html#/s:6KituraAAC3runyyFZ">Kitura.run()</a></code> or <code><a href="../Classes/Kitura.html#/s:6KituraAAC5startyyFZ">Kitura.start()</a></code> are called.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code> <span class="kt">Kitura</span><span class="o">.</span><span class="nf">addHTTPServer</span><span class="p">(</span><span class="nv">onPort</span><span class="p">:</span> <span class="n">port</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="n">router</span><span class="p">)</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
@@ -254,7 +268,7 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>The maximum number of additional requests to permit per Keep-Alive connection. Defaults to <code>.unlimited</code>. If set to <code>.disabled</code>, Keep-Alive will be not be permitted.</p>
+                                  <p>The maximum number of additional requests to permit per Keep-Alive connection. Defaults to <code>.unlimited</code>. If set to <code>.disabled</code>, Keep-Alive will not be permitted.</p>
                                 </div>
                               </td>
                             </tr>
@@ -296,7 +310,10 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
                         <p>Add a FastCGIServer on a port with a delegate.</p>
 
 <p>The server is only registered with the framework, it does not start listening
-on the port until Kitura.run() or Kitura.start() is called.</p>
+ on the port until <code><a href="../Classes/Kitura.html#/s:6KituraAAC3runyyFZ">Kitura.run()</a></code> or <code><a href="../Classes/Kitura.html#/s:6KituraAAC5startyyFZ">Kitura.start()</a></code> are called.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code> <span class="kt">Kitura</span><span class="o">.</span><span class="nf">addFastCGIServer</span><span class="p">(</span><span class="nv">onPort</span><span class="p">:</span> <span class="n">port</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="n">router</span><span class="p">)</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
@@ -373,11 +390,14 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Start the Kitura framework.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
 
 <p>Make all registered servers start listening on their port.</p>
+<pre class="highlight swift"><code> <span class="kt">Kitura</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
+</code></pre>
 <div class="aside aside-note">
     <p class="aside-title">Note</p>
-    This function never returns - it should be the last call in your main.swift
+    This function never returns - it should be the last call in your <code>main.swift</code> file.
 
 </div>
 
@@ -406,9 +426,12 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Start all registered servers and return</p>
+                        <p>Start all registered servers and return.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
 
 <p>Make all registered servers start listening on their port.</p>
+<pre class="highlight swift"><code> <span class="kt">Kitura</span><span class="o">.</span><span class="nf">start</span><span class="p">()</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
@@ -435,9 +458,12 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Stop all registered servers</p>
+                        <p>Stop all registered servers.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
 
 <p>Make all registered servers stop listening on their port.</p>
+<pre class="highlight swift"><code> <span class="kt">Kitura</span><span class="o">.</span><span class="nf">stop</span><span class="p">()</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
@@ -460,7 +486,7 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>If servers should be unregistered after stopped (default true).</p>
+                                  <p>If servers should be unregistered after they are stopped (default true).</p>
                                 </div>
                               </td>
                             </tr>
@@ -478,7 +504,7 @@ on the port until Kitura.run() or Kitura.start() is called.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-01-04)</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-01-16)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
