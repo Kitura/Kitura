@@ -120,6 +120,9 @@
             <a class="nav-group-name-link" href="../Structs.html">Structures</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/CodableHelpers.html">CodableHelpers</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/HTTPVersion.html">HTTPVersion</a>
               </li>
               <li class="nav-group-task">
@@ -162,7 +165,7 @@
             <h1>ParsedBody</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">indirect</span> <span class="kd">enum</span> <span class="kt">ParsedBody</span></code></pre>
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">indirect</span> <span class="kd">enum</span> <span class="kt">ParsedBody</span></code></pre>
 
                 </div>
               </div>
@@ -200,7 +203,7 @@ dictionary of key-value pairs.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">urlEncoded</span><span class="p">([</span><span class="kt">String</span><span class="p">:</span><span class="kt">String</span><span class="p">])</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="nf">urlEncoded</span><span class="p">([</span><span class="kt">String</span><span class="p">:</span><span class="kt">String</span><span class="p">])</span></code></pre>
 
                         </div>
                       </div>
@@ -232,7 +235,7 @@ representation of the body as a String.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">text</span><span class="p">(</span><span class="kt">String</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="nf">text</span><span class="p">(</span><span class="kt">String</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -263,7 +266,7 @@ representation of the body as a String.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">raw</span><span class="p">(</span><span class="kt">Data</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="nf">raw</span><span class="p">(</span><span class="kt">Data</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -295,7 +298,7 @@ contain an array of parts of multi-part respresentation of the body.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">multipart</span><span class="p">([</span><span class="kt"><a href="../Structs/Part.html">Part</a></span><span class="p">])</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="nf">multipart</span><span class="p">([</span><span class="kt"><a href="../Structs/Part.html">Part</a></span><span class="p">])</span></code></pre>
 
                         </div>
                       </div>
@@ -327,7 +330,7 @@ contain the body of a [String: Any] json dictionary object.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">json</span><span class="p">([</span><span class="kt">String</span><span class="p">:</span> <span class="kt">Any</span><span class="p">])</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="nf">json</span><span class="p">([</span><span class="kt">String</span><span class="p">:</span> <span class="kt">Any</span><span class="p">])</span></code></pre>
 
                         </div>
                       </div>
@@ -358,7 +361,7 @@ contain the body of a [String: Any] json dictionary object.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">asJSON</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">Any</span><span class="p">]?</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">asJSON</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">Any</span><span class="p">]?</span></code></pre>
 
                         </div>
                       </div>
@@ -390,7 +393,7 @@ contain the body of a [String: Any] json dictionary object.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">asMultiPart</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Structs/Part.html">Part</a></span><span class="p">]?</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">asMultiPart</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Structs/Part.html">Part</a></span><span class="p">]?</span></code></pre>
 
                         </div>
                       </div>
@@ -422,7 +425,7 @@ contain the body of a [String: Any] json dictionary object.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">asText</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">asText</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
 
                         </div>
                       </div>
@@ -453,7 +456,7 @@ contain the body of a [String: Any] json dictionary object.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">asURLEncoded</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span><span class="kt">String</span><span class="p">]?</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">asURLEncoded</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span><span class="kt">String</span><span class="p">]?</span></code></pre>
 
                         </div>
                       </div>
@@ -473,8 +476,8 @@ contain the body of a [String: Any] json dictionary object.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-02-28)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-03-13)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

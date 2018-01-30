@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
+import Foundation
 import KituraNet
 import Socket
 import LoggerAPI
-
-import Foundation
+import KituraContracts
 
 // MARK: RouterRequest
 
@@ -161,6 +161,14 @@ public class RouterRequest {
         httpVersion = HTTPVersion(major: serverRequest.httpVersionMajor ?? 1, minor: serverRequest.httpVersionMinor ?? 1)
         method = RouterMethod(fromRawValue: serverRequest.method)
         headers = Headers(headers: serverRequest.headers)
+    }
+
+    /// Convert query parameters into a QueryParam type
+    ///
+    /// - Parameter type: The QueryParam type describing the expected query parameters
+    /// - Returns: The route's Query parameters as a QueryParam object
+    public func getQueryParameters<T: QueryParams>(as type: T.Type) -> T? {
+        return try? QueryDecoder(dictionary: self.queryParameters).decode(type)
     }
 
     /// Read the body of the request as Data.

@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>CodableHelpers Structure Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+    <a name="//apple_ref/swift/Struct/CodableHelpers" class="dashAnchor"></a>
+
+    <a title="CodableHelpers Structure Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+          Kitura Docs
+        </a>
+         (99% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/IBM-Swift/Kitura/">
+            <img class="header-icon" src="../img/gh.png"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html">Kitura Reference</a>
+      <img class="carat" src="../img/carat.png" />
+      CodableHelpers Structure Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/BodyParser.html">BodyParser</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ContentType.html">ContentType</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/Kitura.html">Kitura</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/RouteRegex.html">RouteRegex</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/Router.html">Router</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/RouterMiddlewareGenerator.html">RouterMiddlewareGenerator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/RouterRequest.html">RouterRequest</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/RouterResponse.html">RouterResponse</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/StaticFileServer.html">StaticFileServer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/StaticFileServer/CacheOptions.html">– CacheOptions</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/StaticFileServer/Options.html">– Options</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/JSONPError.html">JSONPError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/LinkParameter.html">LinkParameter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/ParsedBody.html">ParsedBody</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/RouterMethod.html">RouterMethod</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ResponseHeadersSetter.html">ResponseHeadersSetter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/RouterMiddleware.html">RouterMiddleware</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/CodableHelpers.html">CodableHelpers</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/HTTPVersion.html">HTTPVersion</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Headers.html">Headers</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Part.html">Part</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Part/HeaderType.html">– HeaderType</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SSLConfig.html">SSLConfig</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Typealiases.html">Type Aliases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura16LifecycleHandlera">LifecycleHandler</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura13RouterHandlera">RouterHandler</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura22RouterParameterHandlera">RouterParameterHandler</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura17WrittenDataFiltera">WrittenDataFilter</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content">
+            <h1>CodableHelpers</h1>
+            <p>Undocumented</p>
+
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura14CodableHelpersV17isContentTypeJSONSbAA13RouterRequestCFZ"></a>
+                    <a name="//apple_ref/swift/Method/isContentTypeJSON(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14CodableHelpersV17isContentTypeJSONSbAA13RouterRequestCFZ">isContentTypeJSON(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Check if the given request has content type JSON</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">isContentTypeJSON</span><span class="p">(</span><span class="n">_</span> <span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterRequest.html">RouterRequest</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>request</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The RouterRequest to check</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>True if the content type of the request is application/json, false otherwise</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura14CodableHelpersV14httpStatusCode0A3Net010HTTPStatusF0O0A9Contracts12RequestErrorV4from_tFZ"></a>
+                    <a name="//apple_ref/swift/Method/httpStatusCode(from:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14CodableHelpersV14httpStatusCode0A3Net010HTTPStatusF0O0A9Contracts12RequestErrorV4from_tFZ">httpStatusCode(from:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get the HTTPStatusCode corresponding to the provided RequestError</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">httpStatusCode</span><span class="p">(</span><span class="n">from</span> <span class="nv">error</span><span class="p">:</span> <span class="kt">RequestError</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">HTTPStatusCode</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>from</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The RequestError to map to a HTTPStatusCode</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>A HTTPStatusCode corresponding to the RequestError http code
+        if valid, or HTTPStatusCode.unknown otherwise</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura14CodableHelpersV22constructResultHandlery0A9Contracts12RequestErrorVSgcAA14RouterResponseC8response_yyc10completiontFZ"></a>
+                    <a name="//apple_ref/swift/Method/constructResultHandler(response:completion:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14CodableHelpersV22constructResultHandlery0A9Contracts12RequestErrorVSgcAA14RouterResponseC8response_yyc10completiontFZ">constructResultHandler(response:completion:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Create a closure that can be called by a codable route handler that
+ provides only an optional <code>RequestError</code></p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    <p>This function is intended for use by the codable router or extensions
+     thereof. It will create a closure that can be passed to the registered
+     route handler.</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">constructResultHandler</span><span class="p">(</span><span class="nv">response</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterResponse.html">RouterResponse</a></span><span class="p">,</span> <span class="nv">completion</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">ResultClosure</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>response</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code><a href="../Classes/RouterResponse.html">RouterResponse</a></code> to which the codable response error and
+                   status code will be written</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completion</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The completion to be called after the when the returned
+                     closure completes execution.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The closure to pass to the codable route handler. The closure takes one argument
+        <code>(RequestError?)</code>.
+        If the argument is <code>nil</code> then the response will be considered successful, otherwise
+        it will be considered failed.</p>
+<pre class="highlight plaintext"><code>    If successful, the HTTP status code will be set to `HTTPStatusCode.noContent` and no
+    body will be sent.
+
+    If failed, the HTTP status code used for the response wll be set to either the
+    `httpCode` of the `RequestError`, if that is a valid HTTP status code, or
+    `HTTPStatusCode.unknown` otherwise. If the `RequestError` has a codable `body` then
+    it will be encoded and sent as the body of the response.
+</code></pre>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura14CodableHelpersV25constructOutResultHandleryxSg_0A9Contracts12RequestErrorVSgtc0A3Net14HTTPStatusCodeO13successStatus_AA14RouterResponseC8responseyyc10completionts9DecodableRzs9EncodableRzlFZ"></a>
+                    <a name="//apple_ref/swift/Method/constructOutResultHandler(successStatus:response:completion:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14CodableHelpersV25constructOutResultHandleryxSg_0A9Contracts12RequestErrorVSgtc0A3Net14HTTPStatusCodeO13successStatus_AA14RouterResponseC8responseyyc10completionts9DecodableRzs9EncodableRzlFZ">constructOutResultHandler(successStatus:response:completion:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Create a closure that can be called by a codable route handler that
+ provides an optional <code>Codable</code> body and an optional <code>RequestError</code></p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    <p>This function is intended for use by the codable router or extensions
+     thereof. It will create a closure that can be passed to the registered
+     route handler.</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="n">constructOutResultHandler</span><span class="o">&lt;</span><span class="kt">OutputType</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">successStatus</span><span class="p">:</span> <span class="kt">HTTPStatusCode</span> <span class="o">=</span> <span class="o">.</span><span class="kt">OK</span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterResponse.html">RouterResponse</a></span><span class="p">,</span> <span class="nv">completion</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">CodableResultClosure</span><span class="o">&lt;</span><span class="kt">OutputType</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>successStatus</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code>HTTPStatusCode</code> to use for a successful response (see below)</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>response</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code><a href="../Classes/RouterResponse.html">RouterResponse</a></code> to which the codable response body (or codable
+                   error) and status code will be written</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completion</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The completion to be called after the when the returned
+                     closure completes execution.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The closure to pass to the codable route handler. The closure takes two arguments
+        <code>(OutputType?, RequestError?)</code>.
+        If the second (error) argument is <code>nil</code> then the first (body) argument should be non-<code>nil</code>
+        and the response will be considered successful. If the second (error) argument is non-<code>nil</code>
+        then the first argument is ignore and the response is considered failed.</p>
+<pre class="highlight plaintext"><code>    If successful, the HTTP status code will be set to `successStatus` and the first argument
+    will be encoded and sent as the body of the response.
+
+    If failed, the HTTP status code used for the response wll be set to either the
+    `httpCode` of the `RequestError`, if that is a valid HTTP status code, or
+    `HTTPStatusCode.unknown` otherwise. If the `RequestError` has a codable `body` then
+    it will be encoded and sent as the body of the response.
+</code></pre>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura14CodableHelpersV30constructIdentOutResultHandleryxSg_q_Sg0A9Contracts12RequestErrorVSgtc0A3Net14HTTPStatusCodeO13successStatus_AA14RouterResponseC8responseyyc10completiontAG10IdentifierRzs9DecodableR_s9EncodableR_r0_lFZ"></a>
+                    <a name="//apple_ref/swift/Method/constructIdentOutResultHandler(successStatus:response:completion:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14CodableHelpersV30constructIdentOutResultHandleryxSg_q_Sg0A9Contracts12RequestErrorVSgtc0A3Net14HTTPStatusCodeO13successStatus_AA14RouterResponseC8responseyyc10completiontAG10IdentifierRzs9DecodableR_s9EncodableR_r0_lFZ">constructIdentOutResultHandler(successStatus:response:completion:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Create a closure that can be called by a codable route handler that
+ provides an optional <code>Identifier</code> id, optional <code>Codable</code> body and an optional <code>RequestError</code></p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    <p>This function is intended for use by the codable router or extensions
+     thereof. It will create a closure that can be passed to the registered
+     route handler.</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="n">constructIdentOutResultHandler</span><span class="o">&lt;</span><span class="kt">IdType</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">OutputType</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">successStatus</span><span class="p">:</span> <span class="kt">HTTPStatusCode</span> <span class="o">=</span> <span class="o">.</span><span class="kt">OK</span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterResponse.html">RouterResponse</a></span><span class="p">,</span> <span class="nv">completion</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">IdentifierCodableResultClosure</span><span class="o">&lt;</span><span class="kt">IdType</span><span class="p">,</span> <span class="kt">OutputType</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>successStatus</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code>HTTPStatusCode</code> to use for a successful response (see below)</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>response</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code><a href="../Classes/RouterResponse.html">RouterResponse</a></code> to which the id, codable response body (or codable
+                   error) and status code will be written</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completion</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The completion to be called after the when the returned
+                     closure completes execution.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The closure to pass to the codable route handler. The closure takes three arguments
+        <code>(IdType?, OutputType?, RequestError?)</code>.
+        If the third (error) argument is <code>nil</code> then the first (id) and second (body) arguments
+        should both be non-<code>nil</code> and the response will be considered successful. If the third
+        (error) argument is non-<code>nil</code> then the first and second arguments are ignored and the
+        response is considered failed.</p>
+<pre class="highlight plaintext"><code>    If successful, the HTTP status code will be set to `successStatus`, the first argument
+    will be encoded and sent as the body of the response, and the `Location` header of the
+    response will be set to the id (by converting it to a `String` using its `value` property).
+
+    If failed, the HTTP status code used for the response wll be set to either the
+    `httpCode` of the `RequestError`, if that is a valid HTTP status code, or
+    `HTTPStatusCode.unknown` otherwise. If the `RequestError` has a codable `body` then
+    it will be encoded and sent as the body of the response.
+</code></pre>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura14CodableHelpersV04readB19OrSetResponseStatusxSgxm_AA13RouterRequestC4fromAA0iG0C8responsets9DecodableRzs9EncodableRzlFZ"></a>
+                    <a name="//apple_ref/swift/Method/readCodableOrSetResponseStatus(_:from:response:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14CodableHelpersV04readB19OrSetResponseStatusxSgxm_AA13RouterRequestC4fromAA0iG0C8responsets9DecodableRzs9EncodableRzlFZ">readCodableOrSetResponseStatus(_:from:response:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Read data from the request body and decode as the given <code>InputType</code>, setting an error
+ status on the given response in the case of failure.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    <p>This function is intended for use by the codable router or extensions
+     thereof. It will read the codable input object from the request that can be passed
+     to a codable route handler.</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="n">readCodableOrSetResponseStatus</span><span class="o">&lt;</span><span class="kt">InputType</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">inputCodableType</span><span class="p">:</span> <span class="kt">InputType</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="n">from</span> <span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterRequest.html">RouterRequest</a></span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterResponse.html">RouterResponse</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">InputType</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>inputCodableType</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code>InputType.Type</code> (a concrete type complying to <code>Codable</code>)
+                           to use to represent the decoded body data.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>request</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code><a href="../Classes/RouterRequest.html">RouterRequest</a></code> from which to read the body data.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>response</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code><a href="../Classes/RouterResponse.html">RouterResponse</a></code> on which to set any error HTTP status codes in
+                   cases where reading or decoding the data fails.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>An instance of <code>InputType</code> representing the decoded body data.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura14CodableHelpersV26parseIdOrSetResponseStatusxSgxm_AA13RouterRequestC4fromAA0jH0C8responset0A9Contracts10IdentifierRzlFZ"></a>
+                    <a name="//apple_ref/swift/Method/parseIdOrSetResponseStatus(_:from:response:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14CodableHelpersV26parseIdOrSetResponseStatusxSgxm_AA13RouterRequestC4fromAA0jH0C8responset0A9Contracts10IdentifierRzlFZ">parseIdOrSetResponseStatus(_:from:response:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Read an id from the request URL, setting an error status on the given response in the case of failure.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    <p>This function is intended for use by the codable router or extensions
+     thereof. It will read and id from the request that can be passed
+     to a codable route handler.</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="n">parseIdOrSetResponseStatus</span><span class="o">&lt;</span><span class="kt">IdType</span><span class="p">:</span> <span class="kt">Identifier</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">idType</span><span class="p">:</span> <span class="kt">IdType</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="n">from</span> <span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterRequest.html">RouterRequest</a></span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterResponse.html">RouterResponse</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">IdType</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>idType</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code>IdType.Type</code> (a concrete type complying to <code>Identifier</code>) to use
+                 to represent the id.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>request</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code><a href="../Classes/RouterRequest.html">RouterRequest</a></code> from which to read the URL.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>response</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code><a href="../Classes/RouterResponse.html">RouterResponse</a></code> on which to set any error HTTP status codes in
+                   cases where reading or decoding the data fails.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>An instance of <code>IdType</code> representing the id.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-03-13)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
+  </body>
+</div>
+</html>
