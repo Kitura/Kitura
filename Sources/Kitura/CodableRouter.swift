@@ -273,6 +273,7 @@ extension Router {
                             let status = self.httpStatusCode(from: err)
                             response.status(status)
                             if let bodyData = err.bodyData {
+                                response.headers.setType("json")
                                 response.send(data: try bodyData(.json))
                             }
                         } else {
@@ -326,6 +327,7 @@ extension Router {
                             let status = self.httpStatusCode(from: err)
                             response.status(status)
                             if let bodyData = err.bodyData {
+                                response.headers.setType("json")
                                 response.send(data: try bodyData(.json))
                             }
                         } else {
@@ -387,6 +389,7 @@ extension Router {
                             let status = self.httpStatusCode(from: err)
                             response.status(status)
                             if let bodyData = err.bodyData {
+                                response.headers.setType("json")
                                 response.send(data: try bodyData(.json))
                             }
                         } else {
@@ -441,6 +444,7 @@ extension Router {
                             let status = self.httpStatusCode(from: err)
                             response.status(status)
                             if let bodyData = err.bodyData {
+                                response.headers.setType("json")
                                 response.send(data: try bodyData(.json))
                             }
                         } else {
@@ -476,6 +480,7 @@ extension Router {
                         let status = self.httpStatusCode(from: err)
                         response.status(status)
                         if let bodyData = err.bodyData {
+                            response.headers.setType("json")
                             response.send(data: try bodyData(.json))
                         }
                     } else {
@@ -505,6 +510,7 @@ extension Router {
                         let status = self.httpStatusCode(from: err)
                         response.status(status)
                         if let bodyData = err.bodyData {
+                            response.headers.setType("json")
                             response.send(data: try bodyData(.json))
                         }
                     } else {
@@ -572,6 +578,7 @@ extension Router {
                             let status = self.httpStatusCode(from: err)
                             response.status(status)
                             if let bodyData = err.bodyData {
+                                response.headers.setType("json")
                                 response.send(data: try bodyData(.json))
                             }
                         } else {
@@ -609,6 +616,7 @@ extension Router {
                     response.status(status)
                     if let bodyData = err.bodyData {
                         do {
+                            response.headers.setType("json")
                             response.send(data: try bodyData(.json))
                         } catch {
                             response.status(.internalServerError)
@@ -636,6 +644,7 @@ extension Router {
                     response.status(status)
                     if let bodyData = err.bodyData {
                         do {
+                            response.headers.setType("json")
                             response.send(data: try bodyData(.json))
                         } catch {
                             response.status(.internalServerError)
