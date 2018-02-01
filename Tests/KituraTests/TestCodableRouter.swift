@@ -35,6 +35,7 @@ class TestCodableRouter: KituraTest {
             ("testBasicPatch", testBasicPatch),
             ("testJoinPath", testJoinPath),
             ("testRouteWithTrailingSlash", testRouteWithTrailingSlash),
+            ("testErrorOverridesBody", testErrorOverridesBody),
             ("testRouteParameters", testRouteParameters),
             ("testCodableRoutesWithBodyParsingFail", testCodableRoutesWithBodyParsingFail),
             ("testCodableGetQueryParameters", testCodableGetQueryParameters),
@@ -477,6 +478,21 @@ class TestCodableRouter: KituraTest {
             .request("put", path: "/status/1", data: status).hasStatus(.OK).hasContentType(withPrefix: "application/json").hasData(status)
             .request("patch", path: "/status/1", data: status).hasStatus(.OK).hasContentType(withPrefix: "application/json").hasData(status)
             .request("delete", path: "/status/1").hasStatus(.noContent).hasNoData()
+            .run()
+    }
+
+    func testErrorOverridesBody() {
+        let status = Status("This should not be sent")
+        router.get("/status") { (id: Int, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, .internalServerError) }
+        router.post("/status") { (status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, .internalServerError) }
+        router.put("/status") { (id: Int, status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, .internalServerError) }
+        router.patch("/status") { (id: Int, status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, .internalServerError) }
+
+        buildServerTest(router, timeout: 30)
+            .request("get", path: "/status/1").hasStatus(.internalServerError).hasNoData()
+            .request("post", path: "/status", data: status).hasStatus(.internalServerError).hasNoData()
+            .request("put", path: "/status/1", data: status).hasStatus(.internalServerError).hasNoData()
+            .request("patch", path: "/status/1", data: status).hasStatus(.internalServerError).hasNoData()
             .run()
     }
 
