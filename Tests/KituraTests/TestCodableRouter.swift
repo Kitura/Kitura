@@ -143,7 +143,7 @@ class TestCodableRouter: KituraTest {
         }
         router.post("/bodyerror/users") { (user: User, respondWith: (User?, RequestError?) -> Void) in
             print("POST on /bodyerror/users for user \(user)")
-            respondWith(user, RequestError(.conflict, body: Conflict(on: "id")))
+            respondWith(nil, RequestError(.conflict, body: Conflict(on: "id")))
         }
 
         let user = User(id: 4, name: "David")
@@ -155,6 +155,7 @@ class TestCodableRouter: KituraTest {
 
             .request("post", path: "/error/users", data: user)
             .hasStatus(.conflict)
+            .hasNoData()
 
             .request("post", path: "/bodyerror/users", data: user)
             .hasStatus(.conflict)
@@ -188,6 +189,7 @@ class TestCodableRouter: KituraTest {
 
             .request("post", path: "/error/users", data: user)
             .hasStatus(.conflict)
+            .hasNoData()
 
             .request("post", path: "/bodyerror/users", data: user)
             .hasStatus(.conflict)
@@ -219,6 +221,7 @@ class TestCodableRouter: KituraTest {
 
             .request("get", path: "/error/status")
             .hasStatus(.serviceUnavailable)
+            .hasNoData()
 
             .request("get", path: "/bodyerror/status")
             .hasStatus(.serviceUnavailable)
