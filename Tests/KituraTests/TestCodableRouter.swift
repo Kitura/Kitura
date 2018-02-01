@@ -483,16 +483,55 @@ class TestCodableRouter: KituraTest {
 
     func testErrorOverridesBody() {
         let status = Status("This should not be sent")
-        router.get("/status") { (id: Int, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, .internalServerError) }
-        router.post("/status") { (status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, .internalServerError) }
-        router.put("/status") { (id: Int, status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, .internalServerError) }
-        router.patch("/status") { (id: Int, status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, .internalServerError) }
+        router.get("/status") { (id: Int, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, .conflict) }
+        router.post("/status") { (status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, .conflict) }
+        router.put("/status") { (id: Int, status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, .conflict) }
+        router.patch("/status") { (id: Int, status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, .conflict) }
+
+        let conflict = Conflict(on: "life")
+        let bodyError = RequestError(.conflict, body: conflict)
+        router.get("/bodyerror/status") { (id: Int, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, bodyError) }
+        router.post("/bodyerror/status") { (status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, bodyError) }
+        router.put("/bodyerror/status") { (id: Int, status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, bodyError) }
+        router.patch("/bodyerror/status") { (id: Int, status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, bodyError) }
 
         buildServerTest(router, timeout: 30)
-            .request("get", path: "/status/1").hasStatus(.internalServerError).hasNoData()
-            .request("post", path: "/status", data: status).hasStatus(.internalServerError).hasNoData()
-            .request("put", path: "/status/1", data: status).hasStatus(.internalServerError).hasNoData()
-            .request("patch", path: "/status/1", data: status).hasStatus(.internalServerError).hasNoData()
+            .request("get", path: "/status/1")
+            .hasStatus(.conflict)
+            .hasNoData()
+
+            .request("post", path: "/status", data: status)
+            .hasStatus(.conflict)
+            .hasNoData()
+
+            .request("put", path: "/status/1", data: status)
+            .hasStatus(.conflict)
+            .hasNoData()
+
+            .request("patch", path: "/status/1", data: status)
+            .hasStatus(.conflict)
+            .hasNoData()
+
+            .request("get", path: "/bodyerror/status/1")
+            .hasStatus(.conflict)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(conflict)
+
+            .request("post", path: "/bodyerror/status", data: status)
+            .hasStatus(.conflict)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(conflict)
+
+            .request("put", path: "/bodyerror/status/1", data: status)
+            .hasStatus(.conflict)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(conflict)
+
+            .request("patch", path: "/bodyerror/status/1", data: status)
+            .hasStatus(.conflict)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(conflict)
+
             .run()
     }
 
