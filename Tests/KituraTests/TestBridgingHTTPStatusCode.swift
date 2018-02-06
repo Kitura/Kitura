@@ -25,6 +25,11 @@ import Glibc
 import Darwin
 #endif
 
+// This file does not import KituraNet and is relying on the typealias of
+// HTTPStatusCode. This test is a simple response test to check that referring
+// to HTTPStatusCode builds and runs without error. Other existing tests
+// that import KituraNet should be sufficient to show that the typealias does not
+// interfere in that case.
 class TestBridgingHTTPStatusCode: KituraTest {
 
     static var allTests: [(String, (TestBridgingHTTPStatusCode) -> () throws -> Void)] {
