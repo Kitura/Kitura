@@ -268,12 +268,13 @@ extension Router {
                 // Define handler to process result from application
                 let resultHandler: CodableResultClosure<O> = { result, error in
                     do {
+                        var status = HTTPStatusCode.created
                         if let err = error {
-                            let status = self.httpStatusCode(from: err)
-                            response.status(status)
-                        } else {
+                            status = self.httpStatusCode(from: err)
+                        }
+                        response.status(status)
+                        if HTTPStatusCode.successRange.contains(status) {
                             let encoded = try JSONEncoder().encode(result)
-                            response.status(.created)
                             response.headers.setType("json")
                             response.send(data: encoded)
                         }
@@ -317,10 +318,12 @@ extension Router {
                 // Define handler to process result from application
                 let resultHandler: IdentifierCodableResultClosure<Id, O> = { id, result, error in
                     do {
+                        var status = HTTPStatusCode.created
                         if let err = error {
-                            let status = self.httpStatusCode(from: err)
-                            response.status(status)
-                        } else {
+                            status = self.httpStatusCode(from: err)
+                        }
+                        response.status(status)
+                        if HTTPStatusCode.successRange.contains(status) {
                             guard let id = id else {
                                 Log.error("No id (unique identifier) value provided.")
                                 response.status(.internalServerError)
@@ -328,7 +331,6 @@ extension Router {
                                 return
                             }
                             let encoded = try JSONEncoder().encode(result)
-                            response.status(.created)
                             response.headers["Location"] = String(id.value)
                             response.headers.setType("json")
                             response.send(data: encoded)
