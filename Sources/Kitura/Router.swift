@@ -183,20 +183,16 @@ public class Router {
         let fileExtension: String
         let resourceWithExtension: String
 
-        guard let resourceExtension = URL(string: template)?.pathExtension else {
+        guard let url = URL(string: template) else {
             return (fileExtension: nil, resourceWithExtension: template)
         }
 
-        if resourceExtension.isEmpty {
+        if url.pathExtension.isEmpty {
             fileExtension = defaultEngineFileExtension ?? ""
-  
-            guard let urlWithExtension = URL(string: template)?.appendingPathExtension(fileExtension) else {
-                return (fileExtension: fileExtension, resourceWithExtension: template)
-            }
             
-            resourceWithExtension = urlWithExtension.absoluteString
+            resourceWithExtension = url.appendingPathExtension(fileExtension).absoluteString
         } else {
-            fileExtension = resourceExtension
+            fileExtension = url.pathExtension
             resourceWithExtension = template
         }
 
