@@ -183,18 +183,16 @@ public class Router {
         let fileExtension: String
         let resourceWithExtension: String
 
-        guard let resourceExtension = URL(string: template)?.pathExtension else {
+        guard let url = URL(string: template) else {
             return (fileExtension: nil, resourceWithExtension: template)
         }
 
-        if resourceExtension.isEmpty {
+        if url.pathExtension.isEmpty {
             fileExtension = defaultEngineFileExtension ?? ""
-            // swiftlint:disable todo
-            //TODO: Use stringByAppendingPathExtension once issue https://bugs.swift.org/browse/SR-999 is resolved
-            // swiftlint:enable todo
-            resourceWithExtension = template + "." + fileExtension
+            
+            resourceWithExtension = url.appendingPathExtension(fileExtension).absoluteString
         } else {
-            fileExtension = resourceExtension
+            fileExtension = url.pathExtension
             resourceWithExtension = template
         }
 
