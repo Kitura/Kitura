@@ -22,7 +22,7 @@
         <a class="header-link" href="index.html">
           Kitura Docs
         </a>
-         (99% documented)
+         (98% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -205,8 +205,8 @@ when routing HTTP requests to closure.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>The <code><a href="Classes/RouterRequest.html">RouterRequest</a></code> object used to work with the incoming
-                HTTP request.</p>
+                                  <p>The <code><a href="Classes/RouterRequest.html">RouterRequest</a></code> object that is used to work with
+                the incoming request.</p>
                                 </div>
                               </td>
                             </tr>
@@ -218,8 +218,8 @@ when routing HTTP requests to closure.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>The <code><a href="Classes/RouterResponse.html">RouterResponse</a></code> object used to respond to the
-                HTTP request.</p>
+                                  <p>The <code><a href="Classes/RouterResponse.html">RouterResponse</a></code> object used to send responses
+                 to the HTTP request.</p>
                                 </div>
                               </td>
                             </tr>
@@ -231,8 +231,8 @@ when routing HTTP requests to closure.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>The closure called to invoke the next handler or middleware
-                associated with the request.</p>
+                                  <p>The closure to invoke to cause the router to inspect the
+             path in the list of paths.</p>
                                 </div>
                               </td>
                             </tr>
@@ -259,93 +259,8 @@ when routing HTTP requests to closure.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A <a href="https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/Declarations.html#//apple_ref/doc/uid/TP40014097-CH34-ID361">type alias</a> declaration to describe a handler for named parameters when using <code><a href="Classes/Router.html#/s:6Kitura6RouterC9parameterACSS_SayyAA0B7RequestC_AA0B8ResponseCSSyyctKcG7handlerdtF">Router.parameter(...)</a></code>. The example below shows two ways to use it, both as a function named <code>handler</code> to handle the <q>id</q> parameter and as a closure to handle the <q>name</q> parameter.</p>
-<h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
-<span class="kd">func</span> <span class="nf">handler</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">RouterRequest</span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt">RouterResponse</span><span class="p">,</span> <span class="nv">param</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">next</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span> <span class="p">{</span>
-    <span class="c1">//Code to handle id parameter here</span>
-    <span class="nf">next</span><span class="p">()</span>
-<span class="p">}</span>
-<span class="n">router</span><span class="o">.</span><span class="nf">parameter</span><span class="p">(</span><span class="s">"id"</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="n">handler</span><span class="p">)</span>
+                        <p>Undocumented</p>
 
-<span class="n">router</span><span class="o">.</span><span class="nf">parameter</span><span class="p">(</span><span class="s">"name"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
-    <span class="c1">//Code to handle name parameter here</span>
-    <span class="nf">next</span><span class="p">()</span>
-<span class="p">}</span>
-<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/item/:id"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
-    <span class="c1">//This will be reached after the id parameter is handled by `handler`</span>
-<span class="p">}</span>
-<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/user/:name"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
-    <span class="c1">//This will be reached after the name parameter is handled by the closure above</span>
-<span class="p">}</span>
-</code></pre>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">RouterParameterHandler</span> <span class="o">=</span> <span class="p">(</span><span class="kt"><a href="Classes/RouterRequest.html">RouterRequest</a></span><span class="p">,</span> <span class="kt"><a href="Classes/RouterResponse.html">RouterResponse</a></span><span class="p">,</span> <span class="kt">String</span><span class="p">,</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>request</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The <code><a href="Classes/RouterRequest.html">RouterRequest</a></code> object used to work with the incoming
-                HTTP request.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>response</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The <code><a href="Classes/RouterResponse.html">RouterResponse</a></code> object used to respond to the
-                HTTP request.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>param</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The named parameter to be handled.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>next</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The closure called to invoke the next handler or middleware
-                associated with the request.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
                       </div>
                     </section>
                   </div>
@@ -423,8 +338,8 @@ when routing HTTP requests to closure.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-01-19)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-01-16)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>
