@@ -83,7 +83,7 @@ class RouterParameterWalker {
         }
 
         var parameters = filtered
-        let (key, value) = parameters.remove(at: parameters.startIndex)
+        let (key, value) = parameters[0]
 
         if !request.handledNamedParameters.contains(key),
             (self.parameterHandlers[key]?.count ?? 0) > 0,
@@ -99,6 +99,7 @@ class RouterParameterWalker {
         } else {
             request.handledNamedParameters.insert(key)
             self.parameterHandlers[key] = nil
+            parameters.remove(at: parameters.startIndex)
             self.handle(filtered: parameters, request: request, response: response, with: callback)
         }
     }
