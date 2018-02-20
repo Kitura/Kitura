@@ -86,6 +86,25 @@ extension Router {
     }
 
     /**
+     Setup a IdentifierCodableArrayClosure on the provided route which will be invoked when a request comes to the server.
+     ### Usage Example: ###
+     ````
+     //User is a struct object that conforms to Codable
+     router.get("/users") { (respondWith: ([(Int, User)]?, RequestError?) -> Void) in
+     
+        ...
+     
+        respondWith([(Int, User)], nil)
+     }
+     ````
+     - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
+     - Parameter handler: A IdentifierCodableArrayClosure that gets invoked when a request comes to the server.
+     */
+    public func get<Id: Identifier, O: Codable>(_ route: String, handler: @escaping IdentifierCodableArrayClosure<Id, O>) {
+        getSafely(route, handler: handler)
+    }
+    
+    /**
      Setup a (QueryParams, CodableArrayResultClosure) -> Void on the provided route which will be invoked when a request comes to the server.
 
      ### Usage Example: ###
@@ -321,7 +340,34 @@ extension Router {
             handler(CodableHelpers.constructOutResultHandler(response: response, completion: next))
         }
     }
-
+    
+    // Get array of (Id, Codable) tuples
+    fileprivate func getSafely<Id: Identifier, O: Codable>(_ route: String, handler: @escaping IdentifierCodableArrayClosure<Id, O>) {
+        get(route) { request, response, next in
+            Log.verbose("Received GET (plural with identifier) type-safe request")
+            // Define result handler
+            let resultHandler: IdentifierCodableArrayResultClosure<Id, O> = { result, error in
+                do {
+                    if let err = error {
+                        let status = self.httpStatusCode(from: err)
+                        response.status(status)
+                    } else if let result = result {
+                        let entries = result.map({ [$0.value: $1] })
+                        let encoded = try JSONEncoder().encode(entries)
+                        response.status(.OK)
+                        response.headers.setType("json")
+                        response.send(data: encoded)
+                    }
+                } catch {
+                    // Http 500 error
+                    response.status(.internalServerError)
+                }
+                next()
+            }
+            handler(resultHandler)
+        }
+    }
+    
     // Get w/Query Parameters
     fileprivate func getSafely<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q, @escaping CodableArrayResultClosure<O>) -> Void) {
         get(route) { request, response, next in

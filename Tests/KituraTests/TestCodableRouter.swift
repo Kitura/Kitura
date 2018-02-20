@@ -29,6 +29,7 @@ class TestCodableRouter: KituraTest {
             ("testBasicGetSingleton", testBasicGetSingleton),
             ("testBasicGetArray", testBasicGetArray),
             ("testBasicGetSingle", testBasicGetSingle),
+            ("testBasicGetIdentifiersArray", testBasicGetIdentifiersArray),
             ("testBasicDelete", testBasicDelete),
             ("testBasicDeleteSingle", testBasicDeleteSingle),
             ("testBasicPut", testBasicPut),
@@ -264,6 +265,48 @@ class TestCodableRouter: KituraTest {
             .run()
     }
 
+    func testBasicGetIdentifiersArray() {
+        router.get("/users") { (respondWith: ([(Int, User)]?, RequestError?) -> Void) in
+            print("GET on /users")
+            var storeTuple = [(Int, User)]()
+            self.userStore.forEach { storeTuple.append(($0.0, $0.1)) }
+            respondWith(storeTuple, nil)
+        }
+        
+        performServerTest(router, timeout: 30) { expectation in
+            let expectedUsers = self.userStore
+            
+            self.performRequest("get", path: "/users", callback: { response in
+                guard let response = response else {
+                    XCTFail("ERROR!!! ClientRequest response object was nil")
+                    return
+                }
+                
+                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
+                XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
+                var data = Data()
+                guard let length = try? response.readAllData(into: &data) else {
+                    XCTFail("Error reading response length!")
+                    return
+                }
+                
+                XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
+                guard let users = try? JSONDecoder().decode([Int: User].self, from: data) else {
+                    XCTFail("Could not decode response! Expected response decodable to array of Users, but got \(String(describing: String(data: data, encoding: .utf8)))")
+                    return
+                }
+                
+                // Validate the data we got back from the server
+                for (index, user) in users {
+                    XCTAssertEqual(user.id, expectedUsers[index]?.id)
+                    XCTAssertEqual(user.name, expectedUsers[index]?.name)
+                }
+                
+                expectation.fulfill()
+            })
+        }
+    }
+    
     func testBasicGetSingle() {
         router.get("/users") { (id: Int, respondWith: (User?, RequestError?) -> Void) in
             print("GET on /users/\(id)")
