@@ -102,9 +102,12 @@ public class StaticFileServer: RouterMiddleware {
 
     /// Handle the request - serve static file.
     ///
-    /// - Parameter request: the router request.
-    /// - Parameter response: the router response.
-    /// - Parameter next: the closure for the next execution block.
+    /// - Parameter request: The `RouterRequest` object used to work with the incoming
+    ///                     HTTP request.
+    /// - Parameter response: The `RouterResponse` object used to respond to the
+    ///                     HTTP request.
+    /// - Parameter next: The closure called to invoke the next handler or middleware
+    ///                     associated with the request.
     public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
         defer {
             next()
