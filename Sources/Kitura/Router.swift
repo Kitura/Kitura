@@ -21,14 +21,36 @@ import KituraTemplateEngine
 
 // MARK Router
 
-/// The `Router` class provides the external interface for the routing of requests to
-/// the appropriate code for handling. This includes:
+/// `Router` provides the external interface for routing requests to
+/// the appropriate code to handle them. This includes:
 ///
-///   - Routing requests to closures with the signature of `RouterHandler`
+///   - Routing requests to closures of type `RouterHandler`
 ///   - Routing requests to the handle function of classes that implement the
 ///    `RouterMiddleware` protocol.
-///   - Routing the request to a template engine to generate the appropriate output.
+///   - Routing requests to a template engine to generate the appropriate output.
 ///   - Serving the landing page when someone makes an HTTP request with a path of slash (/).
+///
+/// When initialising a `Router`, `mergeParameters` allows you to control whether
+/// the router will be able to access parameters matched in its parent router. For instance, in the example below
+/// if `mergeParameters` is set to `true`, `GET /Hello/Alex` will return "Hello Alex", but if set to `false`
+/// the `greeting` parameter will not be accessible and it will return just " Alex".
+/// ```swift
+/// let router = Router()
+/// let userRouter = Router(mergeParameters: true)
+///
+/// router.get("/:greeting") { request, response, _ in
+///   let greeting = request.parameters["greeting"] ?? ""
+///   try response.send("\(greeting)").end()
+/// }
+///
+/// userRouter.get("/:user") { request, response, _ in
+///   let user = request.parameters["user"] ?? ""
+///   let greeting = request.parameters["greeting"] ?? ""
+///   try response.send("\(greeting) \(user)").end()
+/// }
+///
+/// router.all("/:greeting", middleware: userRouter)
+/// ```
 public class Router {
 
     /// Contains the list of routing elements
@@ -40,8 +62,15 @@ public class Router {
     /// Default template engine extension
     private var defaultEngineFileExtension: String?
 
-    /// The root directory for templates that will be automatically handed over to an
-    /// appropriate templating engine for content generation.
+    /// The root directory where template files should be placed in order to be automatically handed
+    /// over to an appropriate templating engine for content generation. The directory should sit at the
+    /// same level as the project's "Sources" directory. Defaults to "./Views/".
+    /// ### Usage Example: ###
+    /// The example below changes the directory where template files should be placed to be "./myViews/"
+    /// ```swift
+    /// let router = Router()
+    /// router.viewsPath = "./myViews/"
+    /// ```
     public var viewsPath = "./Views/" {
         didSet {
             for (_, templateEngine) in templateEngines {
@@ -64,10 +93,14 @@ public class Router {
     /// and used to handle request's url parameters.
     fileprivate var parameterHandlers = [String : [RouterParameterHandler]]()
 
-    /// Initialize a `Router` instance
-    ///
-    /// - Parameter mergeParameters: Specify if this router should have access to path parameters
-    /// matched in its parent router. Defaults to `false`.
+    /// Initialize a `Router` instance. The optional `mergeParameters` parameter allows you to control whether
+    /// the router will be able to access parameters matched in its parent router.
+    /// ### Usage Example: ###
+    /// ```swift
+    ///  let router = Router()
+    /// ```
+    /// - Parameter mergeParameters: Optional parameter to specify if the router should be able to access parameters
+    ///                                 from its parent router. Defaults to `false` if not specified.
     public init(mergeParameters: Bool = false) {
         self.mergeParameters = mergeParameters
 
@@ -93,26 +126,18 @@ public class Router {
 
     // MARK: Template Engine
 
-    /// Sets the default templating engine to be used when the extension of a file in the
-    /// `viewsPath` doesn't match the extension of one of the registered templating engines.
-    ///
-    /// - Parameter templateEngine: The new default templating engine
-    public func setDefault(templateEngine: TemplateEngine?) {
-        if let templateEngine = templateEngine {
-            defaultEngineFileExtension = templateEngine.fileExtension
-            add(templateEngine: templateEngine)
-            return
-        }
-        defaultEngineFileExtension = nil
-    }
-
     /// Register a templating engine. The templating engine will handle files in the `viewsPath`
-    /// that match the extension it supports.
-    ///
+    /// that match the file extension it supports.
+    /// ### Usage Example: ###
+    /// ```swift
+    /// let router = Router()
+    /// router.add(templateEngine: MyTemplateEngine())
+    /// router.add(templateEngine: MyOtherTemplateEngine(), forFileExtensions: ["html"], useDefaultFileExtension: false)
+    /// ```
     /// - Parameter templateEngine: The templating engine to register.
     /// - Parameter forFileExtensions: The extensions of the files to apply the template engine on.
-    /// - Parameter useDefaultFileExtension: flag to specify if the default file extension of the
-    ///   template engine should be used
+    /// - Parameter useDefaultFileExtension: The flag to specify if the default file extension of the
+    ///   template engine should be used. Defaults to `true` if not specified.
     public func add(templateEngine: TemplateEngine, forFileExtensions fileExtensions: [String] = [],
                     useDefaultFileExtension: Bool = true) {
         if useDefaultFileExtension {
@@ -123,6 +148,23 @@ public class Router {
         }
         setRootPaths(forTemplateEngine: templateEngine)
     }
+    
+    /// Sets the default templating engine to be used when the extension of a file in the
+    /// `viewsPath` doesn't match the extension of one of the registered templating engines.
+    /// ### Usage Example: ###
+    /// ```swift
+    /// let router = Router()
+    /// router.setDefault(templateEngine: MyTemplateEngine())
+    /// ```
+    /// - Parameter templateEngine: The templating engine to set as default.
+    public func setDefault(templateEngine: TemplateEngine?) {
+        if let templateEngine = templateEngine {
+            defaultEngineFileExtension = templateEngine.fileExtension
+            add(templateEngine: templateEngine)
+            return
+        }
+        defaultEngineFileExtension = nil
+    }
 
     private func setRootPaths(forTemplateEngine templateEngine: TemplateEngine) {
         let absoluteViewsPath = StaticFileServer.ResourcePathHandler.getAbsolutePath(for: viewsPath)
@@ -130,7 +172,6 @@ public class Router {
     }
 
     /// Render a template using a context
-    ///
     /// - Parameter template: The path to the template file to be rendered.
     /// - Parameter context: A Dictionary of variables to be used by the
     ///                     template engine while rendering the template.
@@ -183,36 +224,40 @@ public class Router {
         let fileExtension: String
         let resourceWithExtension: String
 
-        guard let resourceExtension = URL(string: template)?.pathExtension else {
+        guard let url = URL(string: template) else {
             return (fileExtension: nil, resourceWithExtension: template)
         }
 
-        if resourceExtension.isEmpty {
+        if url.pathExtension.isEmpty {
             fileExtension = defaultEngineFileExtension ?? ""
-            // swiftlint:disable todo
-            //TODO: Use stringByAppendingPathExtension once issue https://bugs.swift.org/browse/SR-999 is resolved
-            // swiftlint:enable todo
-            resourceWithExtension = template + "." + fileExtension
+            
+            resourceWithExtension = url.appendingPathExtension(fileExtension).absoluteString
         } else {
-            fileExtension = resourceExtension
+            fileExtension = url.pathExtension
             resourceWithExtension = template
         }
 
         return (fileExtension: fileExtension, resourceWithExtension: resourceWithExtension)
     }
     // MARK: Sub router
-
-    /// Setup a "sub router" to handle requests. This can make it easier to
-    /// build a server that serves a large set of paths, by breaking it up
-    /// in to "sub router" where each sub router is mapped to it's own root
-    /// path and handles all of the mappings of paths below that.
-    ///
+    
+    /// Set up a "sub router" to handle requests. Chaining a route handler onto another router can make it easier to
+    /// build a server that serves a large set of paths. Each sub router handles all of the path mappings below its
+    /// parent's route path.
+    /// ### Usage Example: ###
+    /// The example below shows how the route `/parent/child' can be defined using a sub router.
+    /// ```swift
+    /// let router = Router()
+    /// let parent = router.route("/parent")
+    /// parent.get("/child") { request, response, next in
+    ///     // If allowPartialMatch was set to false, this would not be called.
+    /// }
+    /// ```
     /// - Parameter route: The path to bind the sub router to.
     /// - Parameter mergeParameters: Specify if this router should have access to path parameters
-    /// matched in its parent router. Defaults to `false`.
-    /// - Parameter allowPartialMatch: A Bool that indicates whether or not a partial match of
-    /// the path by the pattern is sufficient.
-    /// - Returns: The created sub router.
+    /// matched in its parent router. Defaults to `false` if not specified.
+    /// - Parameter allowPartialMatch: Specify if the sub router allows a match when additional paths are added. In the example above, the `GET` request to `/parent/child` would only succeed if `allowPartialMatch` is set to `true`. Defaults to `true` if not specified.
+    /// - Returns: The sub router which has been created.
     public func route(_ route: String, mergeParameters: Bool = false, allowPartialMatch: Bool = true) -> Router {
         let subrouter = Router(mergeParameters: mergeParameters)
         subrouter.parameterHandlers = self.parameterHandlers
@@ -222,37 +267,102 @@ public class Router {
 
     // MARK: Parameter handling
 
-    /// Setup a  handler for specific name of request parameters.
-    /// This can make it easier to handle values of provided parameter name.
+    /// Set up handlers for a named request parameter. This can make it easier to handle
+    /// multiple routes requiring the same parameter which needs to be handled in a certain way.
+    /// ### Usage Example: ###
+    /// ```swift
+    /// let router = Router()
+    /// router.parameter("id") { request, response, param, next in
+    ///     if let _ = Int(param) {
+    ///         // Id is an integer, continue
+    ///         next()
+    ///     }
+    ///     else {
+    ///         // Id is not an integer, error
+    ///         try response.status(.badRequest).send("ID is not an integer").end()
+    ///     }
+    /// }
     ///
-    /// - Parameter name: A single parameter name to be handled
-    /// - Parameter handler: A comma delimited set of `RouterParameterHandler`s that will be
-    ///                     invoked when request parses a parameter with specified name.
-    /// - Returns: Current router instance
+    /// router.get("/item/:id") { request, response, _ in
+    ///     // This will only be reached if the id parameter is an integer
+    /// }
+    /// router.get("/user/:id") { request, response, _ in
+    ///     // This will only be reached if the id parameter is an integer
+    /// }
+    /// ```
+    ///
+    /// - Parameter name: The single parameter name to be handled.
+    /// - Parameter handler: The comma delimited set of `RouterParameterHandler` instances that will be
+    ///                     invoked when request parses a parameter with the specified name.
+    /// - Returns: The current router instance.
     @discardableResult
     public func parameter(_ name: String, handler: RouterParameterHandler...) -> Router {
         return self.parameter([name], handlers: handler)
     }
 
-    /// Setup a  handler for specific name of request parameters.
-    /// This can make it easier to handle values of provided parameter name.
+    /// Set up handlers for a number of named request parameters. This can make it easier to handle
+    /// multiple routes requiring similar parameters which need to be handled in a certain way.
+    /// ### Usage Example: ###
+    /// ```swift
+    /// let router = Router()
+    /// router.parameter(["id", "num"]) { request, response, param, next in
+    ///     if let _ = Int(param) {
+    ///         // Parameter is an integer, continue
+    ///         next()
+    ///     }
+    ///     else {
+    ///         // Parameter is not an integer, error
+    ///         try response.status(.badRequest).send("\(param) is not an integer").end()
+    ///     }
+    /// }
     ///
-    /// - Parameter names: The array of parameter names that will be used to invoke handlers
-    /// - Parameter handler: A comma delimited set of `RouterParameterHandler`s that will be
-    ///                     invoked when request parses a parameter with specified name.
-    /// - Returns: Current router instance
+    /// router.get("/item/:id/:num") { request, response, _ in
+    ///     // This will only be reached if the id and num parameters are integers.
+    /// }
+    /// ```
+    ///
+    /// - Parameter names: The array of parameter names to be handled.
+    /// - Parameter handler: The comma delimited set of `RouterParameterHandler` instances that will be
+    ///                     invoked when request parses a parameter with the specified name.
+    /// - Returns: The current router instance.
     @discardableResult
     public func parameter(_ names: [String], handler: RouterParameterHandler...) -> Router {
         return self.parameter(names, handlers: handler)
     }
 
-    /// Setup a  handler for specific name of request parameters.
-    /// This can make it easier to handle values of provided parameter name.
+    /// Set up handlers for a number of named request parameters. This can make it easier to handle
+    /// multiple routes requiring similar parameters which need to be handled in a certain way.
+    /// ### Usage Example: ###
+    /// ```swift
+    /// let router = Router()
+    /// func handleInt(request: RouterRequest, response: RouterResponse, param: String, next: @escaping () -> Void) throws -> Void {
+    ///     if let _ = Int(param) {
+    ///         // Parameter is an integer, continue
+    ///     }
+    ///     else {
+    ///         // Parameter is not an integer, error
+    ///         try response.status(.badRequest).send("\(param) is not an integer").end()
+    ///     }
+    ///     next()
+    /// }
     ///
-    /// - Parameter names: The array of parameter names that will be used to invoke handlers
-    /// - Parameter handlers: The array of `RouterParameterHandler`s that will be
-    ///                     invoked when request parses a parameter with specified name.
-    /// - Returns: Current router instance
+    /// func handleItem(request: RouterRequest, response: RouterResponse, param: String, next: @escaping () -> Void) throws -> Void {
+    ///     let itemId = Int(param) //This will only be reached if id is an integer
+    ///     ...
+    /// }
+    ///
+    /// router.parameter(["id"], handlers: [handleInt, handleItem])
+    ///
+    /// router.get("/item/:id/") { request, response, _ in
+    ///     ...
+    /// }
+    /// ```
+    ///
+    /// - Parameter names: The array of parameter names to be handled.
+    /// - Parameter handlers: The array of `RouterParameterHandler` instances that will be
+    ///                     invoked when request parses a parameter with the specified name.
+    ///                     The handlers are executed in the order they are supplied.
+    /// - Returns: The current router instance.
     @discardableResult
     public func parameter(_ names: [String], handlers: [RouterParameterHandler]) -> Router {
         for name in names {
@@ -271,14 +381,17 @@ extension Router : RouterMiddleware {
 
     // MARK: RouterMiddleware extensions
     
-    /// Handle an HTTP request as a middleware. Used for sub routing.
+    /// Handle an HTTP request as a middleware. Used internally in `Router` to allow for sub routing.
     ///
-    /// - Parameter request: The `RouterRequest` object that is used to work with
-    ///                     the incoming request.
-    /// - Parameter response: The `RouterResponse` object used to send responses
-    ///                      to the HTTP request.
-    /// - Parameter next: The closure to invoke to cause the router to inspect the
-    ///                  path in the list of paths.
+    /// - Parameter request: The `RouterRequest` object used to work with the incoming
+    ///                     HTTP request.
+    /// - Parameter response: The `RouterResponse` object used to respond to the
+    ///                     HTTP request.
+    /// - Parameter next: The closure called to invoke the next handler or middleware
+    ///                     associated with the request.
+    /// - Throws: Any `ErrorType`. If an error is thrown, processing of the request
+    ///          is stopped, the error handlers, if any are defined, will be invoked,
+    ///          and the user will get a response with a status code of 500.
     public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws {
         guard let urlPath = request.parsedURLPath.path else {
             Log.error("request.parsedURLPath.path is nil. Failed to handle request")
@@ -309,15 +422,17 @@ extension Router : RouterMiddleware {
     }
 }
 
-// MARK: HTTPServerDelegate extensions
-extension Router : ServerDelegate {
 
-    /// Handle the HTTP request
+
+extension Router : ServerDelegate {
+    // MARK: HTTPServerDelegate extensions
+
+    /// Handle new incoming requests to the server.
     ///
     /// - Parameter request: The `ServerRequest` object used to work with the incoming
-    ///                     HTTP request at the Kitura-net API level.
+    ///                     HTTP request at the [Kitura-net](http://ibm-swift.github.io/Kitura-net/) API level.
     /// - Parameter response: The `ServerResponse` object used to send responses to the
-    ///                      HTTP request at the Kitura-net API level.
+    ///                      HTTP request at the [Kitura-net](http://ibm-swift.github.io/Kitura-net/) API level.
     public func handle(request: ServerRequest, response: ServerResponse) {
         let routeReq = RouterRequest(request: request)
         //TODO fix the stack
@@ -356,12 +471,12 @@ extension Router : ServerDelegate {
 
     /// Processes the request
     ///
-    /// - Parameter request: The `RouterRequest` object that is used to work with
-    ///                     the incoming request.
-    /// - Parameter response: The `RouterResponse` object used to send responses
-    ///                      to the HTTP request.
-    /// - Parameter callback: The closure to invoke to cause the router to inspect the
-    ///                  path in the list of paths.
+    /// - Parameter request: The `RouterRequest` object used to work with the incoming
+    ///                     HTTP request.
+    /// - Parameter response: The `RouterResponse` object used to respond to the
+    ///                     HTTP request.
+    /// - Parameter next: The closure called to invoke the next handler or middleware
+    ///                     associated with the request.
     fileprivate func process(request: RouterRequest, response: RouterResponse, callback: @escaping () -> Void) {
         guard let urlPath = request.parsedURLPath.path else {
             Log.error("request.parsedURLPath.path is nil. Failed to process request")
@@ -385,10 +500,10 @@ extension Router : ServerDelegate {
     /// Send default index.html file and its resources if appropriate, otherwise send
     /// default 404 message.
     ///
-    /// - Parameter request: The `RouterRequest` object that is used to work with
-    ///                     the incoming request.
-    /// - Parameter response: The `RouterResponse` object used to send responses
-    ///                      to the HTTP request.
+    /// - Parameter request: The `RouterRequest` object used to work with the incoming
+    ///                     HTTP request.
+    /// - Parameter response: The `RouterResponse` object used to respond to the
+    ///                     HTTP request.
     private func sendDefaultResponse(request: RouterRequest, response: RouterResponse) {
         if request.parsedURLPath.path == "/" {
             fileResourceServer.sendIfFound(resource: "index.html", usingResponse: response)

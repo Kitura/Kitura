@@ -71,8 +71,12 @@ public class RouteRegex {
         }
 
         if allowPartialMatch {
+            // Allows the route to match exactly, or match any additional text after its trailing '/'
+            // i.e. the route defined on the path "/hello" will match "/hello/foo/bar"
             regexStr.append("(?:/(?=$))?(?=/|$)")
         } else {
+            // Allows the route to match exactly, or with a trailing '/'
+            // i.e. the route defined on the path "/hello" will match only "/hello" or "/hello/"
             regexStr.append("(?:/(?=$))?$")
         }
 
