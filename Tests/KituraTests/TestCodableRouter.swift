@@ -40,7 +40,8 @@ class TestCodableRouter: KituraTest {
             ("testCodablePatchBodyParsing", testCodablePatchBodyParsing),
             ("testCodablePostBodyParsing", testCodablePostBodyParsing),
             ("testCodableGetQueryParameters", testCodableGetQueryParameters),
-            ("testCodableDeleteQueryParameters", testCodableDeleteQueryParameters)
+            ("testCodableDeleteQueryParameters", testCodableDeleteQueryParameters),
+            ("testCustomJSONEncoder", testCustomJSONEncoder)
         ]
     }
 
@@ -78,6 +79,13 @@ class TestCodableRouter: KituraTest {
         let description: String
         init(_ desc: String) {
             description = desc
+        }
+    }
+
+    struct CodableDate: Codable {
+        let date: Date
+        init(date: Date) {
+            self.date = date
         }
     }
 
@@ -753,5 +761,52 @@ class TestCodableRouter: KituraTest {
                 expectation.fulfill()
             })
         })
+    }
+
+
+    func testCustomJSONEncoder() {
+        router.customJSONEncoder = {
+            let encoder = JSONEncoder()
+            encoder.dateEncodingStrategy = .secondsSince1970
+            return encoder
+        }
+
+        router.get("/customJSONEncoder") { (respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("GET on /customJSONEncoder")
+            let date = Date(timeIntervalSince1970: 1519206456)
+            respondWith(CodableDate(date: date), nil)
+        }
+
+        performServerTest(router, timeout: 30) { expectation in
+            let expectedDate = Date(timeIntervalSince1970: 1519206456)
+
+            self.performRequest("get", path: "/customJSONEncoder", callback: { response in
+                guard let response = response else {
+                    XCTFail("ERROR!!! ClientRequest response object was nil")
+                    return
+                }
+
+                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
+                XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
+                var data = Data()
+                guard let length = try? response.readAllData(into: &data) else {
+                    XCTFail("Error reading response length!")
+                    return
+                }
+
+                XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
+
+                let decoder = JSONDecoder()
+                decoder.dateDecodingStrategy = .secondsSince1970
+                guard let object = try? decoder.decode(CodableDate.self, from: data) else {
+                    XCTFail("Could not decode response! Expected response decodable to a CodableDate object, but got \(String(describing: String(data: data, encoding: .utf8)))")
+                    return
+                }
+                // Validate the data we got back from the server
+                XCTAssertEqual(object.date.description, expectedDate.description)
+
+                expectation.fulfill()
+            })
+        }
     }
 }
