@@ -206,11 +206,11 @@ class TestCodableRouter: KituraTest {
             respondWith(Status("GOOD"), nil)
         }
         router.get("/error/status") { (respondWith: (Status?, RequestError?) -> Void) in
-            print("GET on /status")
+            print("GET on /error/status")
             respondWith(nil, .serviceUnavailable)
         }
         router.get("/bodyerror/status") { (respondWith: (Status?, RequestError?) -> Void) in
-            print("GET on /status")
+            print("GET on /bodyerror/status")
             respondWith(nil, RequestError(.serviceUnavailable, body: Status("BAD")))
         }
 
@@ -546,7 +546,7 @@ class TestCodableRouter: KituraTest {
         buildServerTest(router, timeout: 30)
             .request("get", path: "/status/1")
             .hasStatus(.notFound)
-            .hasData("Cannot GET /status/1.")
+            .hasData()
             .run()
     }
 

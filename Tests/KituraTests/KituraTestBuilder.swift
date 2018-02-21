@@ -51,6 +51,7 @@ protocol AssertionTestBuilder: RequestTestBuilder {
     func hasContentType(withPrefix contentTypePrefix: String) -> Self
     func hasHeader(_ name: String, only expectedValue: String) -> Self
     func hasNoData() -> Self
+    func hasData() -> Self
     func hasData(_ expected: String) -> Self
     func hasData<T: Decodable & Equatable>(_ expected: [T]) -> Self
     func hasData<T: Decodable & Equatable>(_ expected: T) -> Self
@@ -169,6 +170,12 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
         return has { response in
             guard let (length, _) = self.readDataOrFail(from: response, allowEmpty: true) else { return }
             XCTAssertEqual(length, 0, "Response data does not match expected length:\nexpected: 0\nactual: \(length)")
+        }
+    }
+
+    public func hasData() -> Self {
+        return has { response in
+            _ = self.readDataOrFail(from: response)
         }
     }
 
