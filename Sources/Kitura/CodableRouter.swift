@@ -616,8 +616,8 @@ extension Router {
                     response.status(status)
                     do {
                         if let bodyData = try err.encodeBody(.json) {
-                                response.headers.setType("json")
-                                response.send(data: bodyData)
+                            response.headers.setType("json")
+                            response.send(data: bodyData)
                         }
                     } catch {
                         response.status(.internalServerError)
