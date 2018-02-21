@@ -51,10 +51,10 @@ import KituraTemplateEngine
 ///
 /// router.all("/:greeting", middleware: userRouter)
 /// ```
-open class Router {
+public class Router {
 
     ///Returns the JSONEncoder instance used for encoding Codable objects
-    open var customJSONEncoder: (() -> JSONEncoder) = {
+    public var customJSONEncoder: (() -> JSONEncoder) = {
         return JSONEncoder()
     }
 
@@ -112,7 +112,7 @@ open class Router {
         Log.verbose("Router initialized")
     }
 
-    internal func routingHelper(_ method: RouterMethod, pattern: String?, handler: [RouterHandler]) -> Router {
+    func routingHelper(_ method: RouterMethod, pattern: String?, handler: [RouterHandler]) -> Router {
         elements.append(RouterElement(method: method,
                                       pattern: pattern,
                                       handler: handler,
@@ -120,8 +120,7 @@ open class Router {
         return self
     }
 
-    internal func routingHelper(_ method: RouterMethod, pattern: String?, allowPartialMatch: Bool = true,
-                                middleware: [RouterMiddleware]) -> Router {
+    func routingHelper(_ method: RouterMethod, pattern: String?, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
         elements.append(RouterElement(method: method,
                                       pattern: pattern,
                                       middleware: middleware,
@@ -215,7 +214,7 @@ open class Router {
                                          templateName: resourceWithExtension)
     }
 
-    internal func getTemplateEngine(template: String) -> TemplateEngine? {
+    func getTemplateEngine(template: String) -> TemplateEngine? {
         let (optionalFileExtension, _) = calculateExtension(template: template)
 
         guard let fileExtension = optionalFileExtension, !fileExtension.isEmpty else {
