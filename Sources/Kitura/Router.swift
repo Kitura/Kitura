@@ -51,7 +51,12 @@ import KituraTemplateEngine
 ///
 /// router.all("/:greeting", middleware: userRouter)
 /// ```
-public class Router {
+open class Router {
+
+    ///Returns the JSONEncoder instance used for encoding Codable objects
+    open var customJSONEncoder: (() -> JSONEncoder) = {
+        return JSONEncoder()
+    }
 
     /// Contains the list of routing elements
     var elements: [RouterElement] = []
@@ -107,7 +112,7 @@ public class Router {
         Log.verbose("Router initialized")
     }
 
-    func routingHelper(_ method: RouterMethod, pattern: String?, handler: [RouterHandler]) -> Router {
+    internal func routingHelper(_ method: RouterMethod, pattern: String?, handler: [RouterHandler]) -> Router {
         elements.append(RouterElement(method: method,
                                       pattern: pattern,
                                       handler: handler,
@@ -115,7 +120,8 @@ public class Router {
         return self
     }
 
-    func routingHelper(_ method: RouterMethod, pattern: String?, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+    internal func routingHelper(_ method: RouterMethod, pattern: String?, allowPartialMatch: Bool = true,
+                                middleware: [RouterMiddleware]) -> Router {
         elements.append(RouterElement(method: method,
                                       pattern: pattern,
                                       middleware: middleware,
@@ -148,7 +154,7 @@ public class Router {
         }
         setRootPaths(forTemplateEngine: templateEngine)
     }
-    
+
     /// Sets the default templating engine to be used when the extension of a file in the
     /// `viewsPath` doesn't match the extension of one of the registered templating engines.
     /// ### Usage Example: ###
@@ -209,7 +215,7 @@ public class Router {
                                          templateName: resourceWithExtension)
     }
 
-    func getTemplateEngine(template: String) -> TemplateEngine? {
+    internal func getTemplateEngine(template: String) -> TemplateEngine? {
         let (optionalFileExtension, _) = calculateExtension(template: template)
 
         guard let fileExtension = optionalFileExtension, !fileExtension.isEmpty else {
@@ -230,7 +236,7 @@ public class Router {
 
         if url.pathExtension.isEmpty {
             fileExtension = defaultEngineFileExtension ?? ""
-            
+
             resourceWithExtension = url.appendingPathExtension(fileExtension).absoluteString
         } else {
             fileExtension = url.pathExtension
@@ -240,7 +246,7 @@ public class Router {
         return (fileExtension: fileExtension, resourceWithExtension: resourceWithExtension)
     }
     // MARK: Sub router
-    
+
     /// Set up a "sub router" to handle requests. Chaining a route handler onto another router can make it easier to
     /// build a server that serves a large set of paths. Each sub router handles all of the path mappings below its
     /// parent's route path.
@@ -380,7 +386,7 @@ public class Router {
 extension Router : RouterMiddleware {
 
     // MARK: RouterMiddleware extensions
-    
+
     /// Handle an HTTP request as a middleware. Used internally in `Router` to allow for sub routing.
     ///
     /// - Parameter request: The `RouterRequest` object used to work with the incoming
