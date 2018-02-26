@@ -367,7 +367,7 @@ extension Router {
             handler(resultHandler)
         }
     }
-    
+
     // Get w/Query Parameters
     fileprivate func getSafely<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q, @escaping CodableArrayResultClosure<O>) -> Void) {
         get(route) { request, response, next in

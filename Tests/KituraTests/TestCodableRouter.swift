@@ -266,16 +266,15 @@ class TestCodableRouter: KituraTest {
     }
 
     func testBasicGetIdentifiersArray() {
+        var storeTuple = [(Int, User)]()
+        self.userStore.forEach { storeTuple.append(($0.0, $0.1)) }
+        
         router.get("/users") { (respondWith: ([(Int, User)]?, RequestError?) -> Void) in
             print("GET on /users")
-            var storeTuple = [(Int, User)]()
-            self.userStore.forEach { storeTuple.append(($0.0, $0.1)) }
             respondWith(storeTuple, nil)
         }
         
         performServerTest(router, timeout: 30) { expectation in
-            let expectedUsers = self.userStore
-            
             self.performRequest("get", path: "/users", callback: { response in
                 guard let response = response else {
                     XCTFail("ERROR!!! ClientRequest response object was nil")
@@ -291,15 +290,14 @@ class TestCodableRouter: KituraTest {
                 }
                 
                 XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
-                guard let users = try? JSONDecoder().decode([Int: User].self, from: data) else {
+                guard let users = try? JSONDecoder().decode([[Int: User]].self, from: data) else {
                     XCTFail("Could not decode response! Expected response decodable to array of Users, but got \(String(describing: String(data: data, encoding: .utf8)))")
                     return
                 }
-                
-                // Validate the data we got back from the server
-                for (index, user) in users {
-                    XCTAssertEqual(user.id, expectedUsers[index]?.id)
-                    XCTAssertEqual(user.name, expectedUsers[index]?.name)
+                // Validate the data and order we got back from the server
+                for (index, user) in users.enumerated() {
+                    XCTAssertEqual(Array(user.values)[0].id, storeTuple[index].1.id)
+                    XCTAssertEqual(Array(user.values)[0].name, storeTuple[index].1.name)
                 }
                 
                 expectation.fulfill()
