@@ -259,6 +259,7 @@ extension Router {
             guard !request.hasBodyParserBeenUsed else {
                 Log.error("No data in request. Codable routes do not allow the use of a BodyParser.")
                 response.status(.internalServerError)
+                next()
                 return
             }
             do {
@@ -271,6 +272,10 @@ extension Router {
                         if let err = error {
                             let status = self.httpStatusCode(from: err)
                             response.status(status)
+                            if let bodyData = try err.encodeBody(.json) {
+                                response.headers.setType("json")
+                                response.send(data: bodyData)
+                            }
                         } else {
                             let encoded = try JSONEncoder().encode(result)
                             response.status(.created)
@@ -308,6 +313,7 @@ extension Router {
             guard !request.hasBodyParserBeenUsed else {
                 Log.error("No data in request. Codable routes do not allow the use of a BodyParser.")
                 response.status(.internalServerError)
+                next()
                 return
             }
             do {
@@ -320,6 +326,10 @@ extension Router {
                         if let err = error {
                             let status = self.httpStatusCode(from: err)
                             response.status(status)
+                            if let bodyData = try err.encodeBody(.json) {
+                                response.headers.setType("json")
+                                response.send(data: bodyData)
+                            }
                         } else {
                             guard let id = id else {
                                 Log.error("No id (unique identifier) value provided.")
@@ -364,6 +374,7 @@ extension Router {
             guard !request.hasBodyParserBeenUsed else {
                 Log.error("No data in request. Codable routes do not allow the use of a BodyParser.")
                 response.status(.internalServerError)
+                next()
                 return
             }
             do {
@@ -377,6 +388,10 @@ extension Router {
                         if let err = error {
                             let status = self.httpStatusCode(from: err)
                             response.status(status)
+                            if let bodyData = try err.encodeBody(.json) {
+                                response.headers.setType("json")
+                                response.send(data: bodyData)
+                            }
                         } else {
                             let encoded = try JSONEncoder().encode(result)
                             response.status(.OK)
@@ -413,6 +428,7 @@ extension Router {
             guard !request.hasBodyParserBeenUsed else {
                 Log.error("No data in request. Codable routes do not allow the use of a BodyParser.")
                 response.status(.internalServerError)
+                next()
                 return
             }
             do {
@@ -427,6 +443,10 @@ extension Router {
                         if let err = error {
                             let status = self.httpStatusCode(from: err)
                             response.status(status)
+                            if let bodyData = try err.encodeBody(.json) {
+                                response.headers.setType("json")
+                                response.send(data: bodyData)
+                            }
                         } else {
                             let encoded = try JSONEncoder().encode(result)
                             response.status(.OK)
@@ -459,6 +479,10 @@ extension Router {
                     if let err = error {
                         let status = self.httpStatusCode(from: err)
                         response.status(status)
+                        if let bodyData = try err.encodeBody(.json) {
+                            response.headers.setType("json")
+                            response.send(data: bodyData)
+                        }
                     } else {
                         let encoded = try JSONEncoder().encode(result)
                         response.status(.OK)
@@ -485,6 +509,10 @@ extension Router {
                     if let err = error {
                         let status = self.httpStatusCode(from: err)
                         response.status(status)
+                        if let bodyData = try err.encodeBody(.json) {
+                            response.headers.setType("json")
+                            response.send(data: bodyData)
+                        }
                     } else {
                         let encoded = try JSONEncoder().encode(result)
                         response.status(.OK)
@@ -549,6 +577,10 @@ extension Router {
                         if let err = error {
                             let status = self.httpStatusCode(from: err)
                             response.status(status)
+                            if let bodyData = try err.encodeBody(.json) {
+                                response.headers.setType("json")
+                                response.send(data: bodyData)
+                            }
                         } else {
                             let encoded = try JSONEncoder().encode(result)
                             response.status(.OK)
@@ -582,6 +614,14 @@ extension Router {
                 if let err = error {
                     let status = self.httpStatusCode(from: err)
                     response.status(status)
+                    do {
+                        if let bodyData = try err.encodeBody(.json) {
+                            response.headers.setType("json")
+                            response.send(data: bodyData)
+                        }
+                    } catch {
+                        response.status(.internalServerError)
+                    }
                 } else {
                     response.status(.noContent)
                 }
@@ -602,6 +642,14 @@ extension Router {
                 if let err = error {
                     let status = self.httpStatusCode(from: err)
                     response.status(status)
+                    do {
+                        if let bodyData = try err.encodeBody(.json) {
+                            response.headers.setType("json")
+                            response.send(data: bodyData)
+                        }
+                    } catch {
+                        response.status(.internalServerError)
+                    }
                 } else {
                     response.status(.noContent)
                 }
