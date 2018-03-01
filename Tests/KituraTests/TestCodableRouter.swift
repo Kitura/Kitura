@@ -19,7 +19,6 @@ import Foundation
 import KituraContracts
 
 @testable import Kitura
-@testable import KituraNet
 
 class TestCodableRouter: KituraTest {
     static var allTests: [(String, (TestCodableRouter) -> () throws -> Void)] {
