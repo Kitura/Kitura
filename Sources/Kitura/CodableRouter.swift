@@ -425,7 +425,20 @@ public struct CodableHelpers {
         }
         return contentType.hasPrefix("application/json")
     }
-
+    
+    /**
+     * Check if the given request has content type x-www-form-urlencoded
+     *
+     * - Parameter request: The RouterRequest to check
+     * - Returns: True if the content type of the request is application/x-www-form-urlencoded, false otherwise
+     */
+    public static func isContentTypeURLEncoded(_ request: RouterRequest) -> Bool {
+        guard let contentType = request.headers["Content-Type"] else {
+            return false
+        }
+        return (contentType.hasPrefix("application/x-www-form-urlencoded"))
+    }
+    
     /**
      * Get the HTTPStatusCode corresponding to the provided RequestError
      *
@@ -614,7 +627,7 @@ public struct CodableHelpers {
      * - Returns: An instance of `InputType` representing the decoded body data.
      */
     public static func readCodableOrSetResponseStatus<InputType: Codable>(_ inputCodableType: InputType.Type, from request: RouterRequest, response: RouterResponse) -> InputType? {
-        guard CodableHelpers.isContentTypeJSON(request) else {
+        guard CodableHelpers.isContentTypeJSON(request) || CodableHelpers.isContentTypeURLEncoded(request) else {
             response.status(.unsupportedMediaType)
             return nil
         }
@@ -624,13 +637,41 @@ public struct CodableHelpers {
             return nil
         }
         do {
-            return try request.read(as: InputType.self)
+            return CodableHelpers.isContentTypeURLEncoded(request) ? try CodableHelpers.parseURLEncoded(InputType.self, from: request, response: response) : try request.read(as: InputType.self)
         } catch {
             Log.error("Failed to read Codable input from request: \(error)")
             response.status(.unprocessableEntity)
             return nil
         }
     }
+
+    /**
+     * Read URLEncoded data from the request body and decode as the given `InputType`, setting an error
+     * status on the given response in the case of failure.
+     *
+     * - Note: This function is intended for use by the codable router or extensions
+     *         thereof. It will read the codable input object from the request that can be passed
+     *         to a codable route handler.
+     *
+     * - Parameter inputCodableType: The `InputType.Type` (a concrete type complying to `Codable`)
+     *                               to use to represent the decoded body data.
+     * - Parameter request: The `RouterRequest` from which to read the body data.
+     * - Parameter response: The `RouterResponse` on which to set any error HTTP status codes in
+     *                       cases where reading or decoding the data fails.
+     * - Returns: An instance of `InputType` representing the decoded body data.
+     */
+    public static func parseURLEncoded<InputType: Codable> (_ inputCodableType: InputType.Type, from request: RouterRequest, response: RouterResponse) throws -> InputType? {
+        var bodyData = Data()
+        let _ = try request.read(into: &bodyData)
+        guard let bodyAsString = String(data: bodyData, encoding: .utf8) else {
+            Log.error("Failed to convert the body data to String")
+            response.status(.internalServerError)
+            return nil
+        }
+        let urlKeyValuePairs = bodyAsString.urlDecodedFieldValuePairs
+        return try QueryDecoder(dictionary: urlKeyValuePairs).decode(InputType.self)
+    }
+    
     /**
      * Read an id from the request URL, setting an error status on the given response in the case of failure.
      *
