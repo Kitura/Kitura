@@ -134,18 +134,18 @@ class TestCodableRouter: KituraTest {
     }
 
     func testBasicPost() {
-//        router.post("/users") { (user: User, respondWith: (User?, RequestError?) -> Void) in
-//            print("POST on /users for user \(user)")
-//            respondWith(user, nil)
-//        }
-//        router.post("/error/users") { (user: User, respondWith: (User?, RequestError?) -> Void) in
-//            print("POST on /error/users for user \(user)")
-//            respondWith(nil, .conflict)
-//        }
-//        router.post("/bodyerror/users") { (user: User, respondWith: (User?, RequestError?) -> Void) in
-//            print("POST on /bodyerror/users for user \(user)")
-//            respondWith(nil, RequestError(.conflict, body: Conflict(on: "id")))
-//        }
+        router.post("/users") { (user: User, respondWith: (User?, RequestError?) -> Void) in
+            print("POST on /users for user \(user)")
+            respondWith(user, nil)
+        }
+        router.post("/error/users") { (user: User, respondWith: (User?, RequestError?) -> Void) in
+            print("POST on /error/users for user \(user)")
+            respondWith(nil, .conflict)
+        }
+        router.post("/bodyerror/users") { (user: User, respondWith: (User?, RequestError?) -> Void) in
+            print("POST on /bodyerror/users for user \(user)")
+            respondWith(nil, RequestError(.conflict, body: Conflict(on: "id")))
+        }
         router.post("/urlencoded") { (user: User, respondWith: (User?, RequestError?) -> Void) in
             print("POST on /urlencoded for user \(user)")
             respondWith(user, nil)
