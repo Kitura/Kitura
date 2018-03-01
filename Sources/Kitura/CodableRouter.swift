@@ -434,6 +434,8 @@ public struct CodableHelpers {
      *            if valid, or HTTPStatusCode.unknown otherwise
      */
     public static func httpStatusCode(from error: RequestError) -> HTTPStatusCode {
+        // ORM status code 7XX mapped to internalServerError 500
+        if error.httpCode >= 700 { return HTTPStatusCode(rawValue: 500) ?? HTTPStatusCode.unknown }
         return HTTPStatusCode(rawValue: error.rawValue) ?? HTTPStatusCode.unknown
     }
 
