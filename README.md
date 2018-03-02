@@ -12,7 +12,7 @@
 <a href="https://travis-ci.org/IBM-Swift/Kitura">
 <img src="https://travis-ci.org/IBM-Swift/Kitura.svg?branch=master" alt="Build Status - Master">
 </a>
-<img src="https://img.shields.io/badge/os-Mac%20OS%20X-green.svg?style=flat" alt="Mac OS X">
+<img src="https://img.shields.io/badge/os-macOS-green.svg?style=flat" alt="macOS">
 <img src="https://img.shields.io/badge/os-linux-green.svg?style=flat" alt="Linux">
 <img src="https://img.shields.io/badge/license-Apache2-blue.svg?style=flat" alt="Apache 2">
 <a href="https://codecov.io/gh/IBM-Swift/Kitura">
