@@ -26,19 +26,18 @@ class TestCodableRouter: KituraTest {
         return [
             ("testBasicPost", testBasicPost),
             ("testBasicPostIdentifier", testBasicPostIdentifier),
-            ("testBasicGet", testBasicGet),
+            ("testBasicGetSingleton", testBasicGetSingleton),
             ("testBasicGetArray", testBasicGetArray),
-            ("testBasicSingleGet", testBasicSingleGet),
+            ("testBasicGetSingle", testBasicGetSingle),
             ("testBasicDelete", testBasicDelete),
-            ("testBasicSingleDelete", testBasicSingleDelete),
+            ("testBasicDeleteSingle", testBasicDeleteSingle),
             ("testBasicPut", testBasicPut),
             ("testBasicPatch", testBasicPatch),
             ("testJoinPath", testJoinPath),
             ("testRouteWithTrailingSlash", testRouteWithTrailingSlash),
+            ("testErrorOverridesBody", testErrorOverridesBody),
             ("testRouteParameters", testRouteParameters),
-            ("testCodablePutBodyParsing", testCodablePutBodyParsing),
-            ("testCodablePatchBodyParsing", testCodablePatchBodyParsing),
-            ("testCodablePostBodyParsing", testCodablePostBodyParsing),
+            ("testCodableRoutesWithBodyParsingFail", testCodableRoutesWithBodyParsingFail),
             ("testCodableGetQueryParameters", testCodableGetQueryParameters),
             ("testCodableDeleteQueryParameters", testCodableDeleteQueryParameters)
         ]
@@ -54,7 +53,19 @@ class TestCodableRouter: KituraTest {
         userStore = [1: User(id: 1, name: "Mike"), 2: User(id: 2, name: "Chris"), 3: User(id: 3, name: "Ricardo")]
     }
 
-    struct User: Codable {
+    struct Conflict: Codable, Equatable {
+        let field: String
+
+        init(on field: String) {
+            self.field = field
+        }
+
+        static func ==(lhs: Conflict, rhs: Conflict) -> Bool {
+            return lhs.field == rhs.field
+        }
+    }
+
+    struct User: Codable, Equatable {
         let id: Int
         let name: String
 
@@ -62,9 +73,13 @@ class TestCodableRouter: KituraTest {
             self.id = id
             self.name = name
         }
+
+        static func ==(lhs: User, rhs: User) -> Bool {
+            return lhs.id == rhs.id && lhs.name == rhs.name
+        }
     }
 
-    struct OptionalUser: Codable {
+    struct OptionalUser: Codable, Equatable {
         let id: Int?
         let name: String?
 
@@ -72,12 +87,20 @@ class TestCodableRouter: KituraTest {
             self.id = id
             self.name = name
         }
+
+        static func ==(lhs: OptionalUser, rhs: OptionalUser) -> Bool {
+            return lhs.id == rhs.id && lhs.name == rhs.name
+        }
     }
 
-    struct Status: Codable {
+    struct Status: Codable, Equatable {
         let description: String
         init(_ desc: String) {
             description = desc
+        }
+
+        static func ==(lhs: Status, rhs: Status) -> Bool {
+            return lhs.description == rhs.description
         }
     }
 
@@ -113,182 +136,137 @@ class TestCodableRouter: KituraTest {
     func testBasicPost() {
         router.post("/users") { (user: User, respondWith: (User?, RequestError?) -> Void) in
             print("POST on /users for user \(user)")
-            self.userStore[user.id] = user
             respondWith(user, nil)
         }
-
-        performServerTest(router, timeout: 30) { expectation in
-            let expectedUser = User(id: 4, name: "David")
-            guard let userData = try? JSONEncoder().encode(expectedUser) else {
-                XCTFail("Could not generate user data from string!")
-                return
-            }
-
-            self.performRequest("post", path: "/users", callback: { response in
-                guard let response = response else {
-                    XCTFail("ERROR!!! ClientRequest response object was nil")
-                    return
-                }
-
-                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
-                XCTAssertEqual(response.statusCode, HTTPStatusCode.created, "HTTP Status code was \(String(describing: response.statusCode))")
-                var data = Data()
-                guard let length = try? response.readAllData(into: &data) else {
-                    XCTFail("Error reading response length!")
-                    return
-                }
-
-                XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
-                    guard let user = try? JSONDecoder().decode(User.self, from: data) else {
-                    XCTFail("Could not decode response! Expected response decodable to User, but got \(String(describing: String(data: data, encoding: .utf8)))")
-                    return
-                }
-
-                // Validate the data we got back from the server
-                XCTAssertEqual(user.name, expectedUser.name)
-                XCTAssertEqual(user.id, expectedUser.id)
-
-                expectation.fulfill()
-            }, requestModifier: { request in
-                request.headers["Content-Type"] = "application/json; charset=utf-8"
-                request.write(from: userData)
-            })
+        router.post("/error/users") { (user: User, respondWith: (User?, RequestError?) -> Void) in
+            print("POST on /error/users for user \(user)")
+            respondWith(nil, .conflict)
         }
+        router.post("/bodyerror/users") { (user: User, respondWith: (User?, RequestError?) -> Void) in
+            print("POST on /bodyerror/users for user \(user)")
+            respondWith(nil, RequestError(.conflict, body: Conflict(on: "id")))
+        }
+
+        let user = User(id: 4, name: "David")
+        buildServerTest(router, timeout: 30)
+            .request("post", path: "/users", data: user)
+            .hasStatus(.created)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(user)
+
+            .request("post", path: "/error/users", data: user)
+            .hasStatus(.conflict)
+            .hasNoData()
+
+            .request("post", path: "/bodyerror/users", data: user)
+            .hasStatus(.conflict)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(Conflict(on: "id"))
+
+            .run()
     }
 
     func testBasicPostIdentifier() {
         router.post("/users") { (user: User, respondWith: (Int?, User?, RequestError?) -> Void) in
             print("POST on /users for user \(user)")
-            self.userStore[user.id] = user
             respondWith(user.id, user, nil)
         }
-
-        performServerTest(router, timeout: 30) { expectation in
-            let expectedUser = User(id: 4, name: "David")
-            guard let userData = try? JSONEncoder().encode(expectedUser) else {
-                XCTFail("Could not generate user data from string!")
-                return
-            }
-
-            self.performRequest("post", path: "/users", callback: { response in
-                guard let response = response else {
-                    XCTFail("ERROR!!! ClientRequest response object was nil")
-                    return
-                }
-
-                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
-                XCTAssertEqual(response.statusCode, HTTPStatusCode.created, "HTTP Status code was \(String(describing: response.statusCode))")
-                var data = Data()
-                guard let length = try? response.readAllData(into: &data) else {
-                    XCTFail("Error reading response length!")
-                    return
-                }
-
-                XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
-                guard let user = try? JSONDecoder().decode(User.self, from: data) else {
-                    XCTFail("Could not decode response! Expected response decodable to User, but got \(String(describing: String(data: data, encoding: .utf8)))")
-                    return
-                }
-
-                guard let location = response.headers["Location"] else {
-                    XCTFail("Could not find Location header. Expected Location header to be set to the created User id.")
-                    return
-                }
-                XCTAssertEqual(location[0], String(expectedUser.id))
-
-                // Validate the data we got back from the server
-                XCTAssertEqual(user.name, expectedUser.name)
-                XCTAssertEqual(user.id, expectedUser.id)
-
-                expectation.fulfill()
-            }, requestModifier: { request in
-                request.headers["Content-Type"] = "application/json; charset=utf-8"
-                request.write(from: userData)
-            })
+        router.post("/error/users") { (user: User, respondWith: (Int?, User?, RequestError?) -> Void) in
+            print("POST on /error/users for user \(user)")
+            respondWith(nil, nil, .conflict)
         }
+        router.post("/bodyerror/users") { (user: User, respondWith: (Int?, User?, RequestError?) -> Void) in
+            print("POST on /bodyerror/users for user \(user)")
+            respondWith(nil, nil, RequestError(.conflict, body: Conflict(on: "id")))
+        }
+
+        let user = User(id: 4, name: "David")
+        buildServerTest(router, timeout: 30)
+            .request("post", path: "/users", data: user)
+            .hasStatus(.created)
+            .hasHeader("Location", only: String(user.id))
+            .hasContentType(withPrefix: "application/json")
+            .hasData(user)
+
+            .request("post", path: "/error/users", data: user)
+            .hasStatus(.conflict)
+            .hasNoData()
+
+            .request("post", path: "/bodyerror/users", data: user)
+            .hasStatus(.conflict)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(Conflict(on: "id"))
+
+            .run()
     }
 
-    func testBasicGet() {
+    func testBasicGetSingleton() {
         router.get("/status") { (respondWith: (Status?, RequestError?) -> Void) in
             print("GET on /status")
-
             respondWith(Status("GOOD"), nil)
         }
-
-        performServerTest(router, timeout: 30) { expectation in
-            let expectedStatus = Status("GOOD")
-
-            self.performRequest("get", path: "/status", callback: { response in
-                guard let response = response else {
-                    XCTFail("ERROR!!! ClientRequest response object was nil")
-                    return
-                }
-
-                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
-                XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
-                var data = Data()
-                guard let length = try? response.readAllData(into: &data) else {
-                    XCTFail("Error reading response length!")
-                    return
-                }
-
-                XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
-                guard let status = try? JSONDecoder().decode(Status.self, from: data) else {
-                    XCTFail("Could not decode response! Expected response decodable to a Status object, but got \(String(describing: String(data: data, encoding: .utf8)))")
-                    return
-                }
-                // Validate the data we got back from the server
-                XCTAssertEqual(status.description, expectedStatus.description)
-
-                expectation.fulfill()
-            })
+        router.get("/error/status") { (respondWith: (Status?, RequestError?) -> Void) in
+            print("GET on /error/status")
+            respondWith(nil, .serviceUnavailable)
         }
+        router.get("/bodyerror/status") { (respondWith: (Status?, RequestError?) -> Void) in
+            print("GET on /bodyerror/status")
+            respondWith(nil, RequestError(.serviceUnavailable, body: Status("BAD")))
+        }
+
+        buildServerTest(router, timeout: 30)
+            .request("get", path: "/status")
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(Status("GOOD"))
+
+            .request("get", path: "/error/status")
+            .hasStatus(.serviceUnavailable)
+            .hasNoData()
+
+            .request("get", path: "/bodyerror/status")
+            .hasStatus(.serviceUnavailable)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(Status("BAD"))
+
+            .run()
     }
 
     func testBasicGetArray() {
         router.get("/users") { (respondWith: ([User]?, RequestError?) -> Void) in
             print("GET on /users")
-
             respondWith(self.userStore.map({ $0.value }), nil)
         }
-
-        performServerTest(router, timeout: 30) { expectation in
-            let expectedUsers = self.userStore.map({ $0.value }) // TODO: Write these out explicitly?
-
-            self.performRequest("get", path: "/users", callback: { response in
-                guard let response = response else {
-                    XCTFail("ERROR!!! ClientRequest response object was nil")
-                    return
-                }
-
-                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
-                XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
-                var data = Data()
-                guard let length = try? response.readAllData(into: &data) else {
-                    XCTFail("Error reading response length!")
-                    return
-                }
-
-                XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
-                guard let users = try? JSONDecoder().decode([User].self, from: data) else {
-                    XCTFail("Could not decode response! Expected response decodable to array of Users, but got \(String(describing: String(data: data, encoding: .utf8)))")
-                    return
-                }
-
-                // Validate the data we got back from the server
-                for (index, user) in users.enumerated() {
-                    XCTAssertEqual(user.id, expectedUsers[index].id)
-                    XCTAssertEqual(user.name, expectedUsers[index].name)
-                }
-
-                expectation.fulfill()
-            })
+        router.get("/error/users") { (respondWith: ([User]?, RequestError?) -> Void) in
+            print("GET on /error/users")
+            respondWith(nil, .serviceUnavailable)
         }
+        router.get("/bodyerror/users") { (respondWith: ([User]?, RequestError?) -> Void) in
+            print("GET on /bodyerror/users")
+            respondWith(nil, RequestError(.serviceUnavailable, body: Status("BAD")))
+        }
+
+        buildServerTest(router, timeout: 30)
+            .request("get", path: "/users")
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(self.userStore.map({ $0.value }))
+
+            .request("get", path: "/error/users")
+            .hasStatus(.serviceUnavailable)
+            .hasNoData()
+
+            .request("get", path: "/bodyerror/users")
+            .hasStatus(.serviceUnavailable)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(Status("BAD"))
+
+            .run()
     }
 
-    func testBasicSingleGet() {
+    func testBasicGetSingle() {
         router.get("/users") { (id: Int, respondWith: (User?, RequestError?) -> Void) in
-            print("GET on /users")
+            print("GET on /users/\(id)")
             guard let user = self.userStore[id] else {
                 XCTFail("ERROR!!! Couldn't find user with id \(id)")
                 respondWith(nil, .notFound)
@@ -296,154 +274,146 @@ class TestCodableRouter: KituraTest {
             }
             respondWith(user, nil)
         }
-
-        performServerTest(router, timeout: 30) { expectation in
-            guard let expectedUser = self.userStore[1] else {
-                XCTFail("ERROR!!! Couldn't find user with id 1")
-                return
-            }
-
-            self.performRequest("get", path: "/users/1", callback: { response in
-                guard let response = response else {
-                    XCTFail("ERROR!!! ClientRequest response object was nil")
-                    return
-                }
-
-                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
-                XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
-                var data = Data()
-                guard let length = try? response.readAllData(into: &data) else {
-                    XCTFail("Error reading response length!")
-                    return
-                }
-
-                XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
-                guard let user = try? JSONDecoder().decode(User.self, from: data) else {
-                    XCTFail("Could not decode response! Expected response decodable to array of Users, but got \(String(describing: String(data: data, encoding: .utf8)))")
-                    return
-                }
-
-                // Validate the data we got back from the server
-                XCTAssertEqual(user.id, expectedUser.id)
-                XCTAssertEqual(user.name, expectedUser.name)
-
-                expectation.fulfill()
-            })
+        router.get("/error/users") { (id: Int, respondWith: (User?, RequestError?) -> Void) in
+            print("GET on /error/users/\(id)")
+            respondWith(nil, .serviceUnavailable)
         }
+        router.get("/bodyerror/users") { (id: Int, respondWith: (User?, RequestError?) -> Void) in
+            print("GET on /bodyerror/users/\(id)")
+            respondWith(nil, RequestError(.serviceUnavailable, body: Status("BAD: \(id)")))
+        }
+
+        guard let user = self.userStore[1] else {
+            XCTFail("ERROR!!! Couldn't find user with id 1")
+            return
+        }
+        buildServerTest(router, timeout: 30)
+            .request("get", path: "/users/1")
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(user)
+
+            .request("get", path: "/error/users/1")
+            .hasStatus(.serviceUnavailable)
+            .hasNoData()
+
+            .request("get", path: "/bodyerror/users/1")
+            .hasStatus(.serviceUnavailable)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(Status("BAD: 1"))
+
+            .run()
     }
 
     func testBasicDelete() {
-
         router.delete("/users") { (respondWith: (RequestError?) -> Void) in
+            print("DELETE on /users")
             self.userStore.removeAll()
             respondWith(nil)
         }
-
-        performServerTest(router, timeout: 30) { expectation in
-
-            self.performRequest("delete", path: "/users", callback: { response in
-                guard let response = response else {
-                    XCTFail("ERROR!!! ClientRequest response object was nil")
-                    return
-                }
-
-                XCTAssertEqual(response.statusCode, HTTPStatusCode.noContent, "HTTP Status code was \(String(describing: response.statusCode))")
-                var data = Data()
-                guard let length = try? response.readAllData(into: &data) else {
-                    XCTFail("Error reading response length!")
-                    return
-                }
-
-                XCTAssert(length == 0, "Expected zero bytes, received \(String(describing: length)) bytes.")
-
-                expectation.fulfill()
-            })
+        router.delete("/error/users") { (respondWith: (RequestError?) -> Void) in
+            print("DELETE on /error/users")
+            respondWith(.serviceUnavailable)
         }
+        router.delete("/bodyerror/users") { (respondWith: (RequestError?) -> Void) in
+            print("DELETE on /bodyerror/users")
+            respondWith(RequestError(.serviceUnavailable, body: Status("BAD")))
+        }
+
+        buildServerTest(router, timeout: 30)
+            .request("delete", path: "/users")
+            .hasStatus(.noContent)
+            .hasNoData()
+            .has { _ in XCTAssertEqual(self.userStore.count, 0) }
+
+            .request("delete", path: "/error/users")
+            .hasStatus(.serviceUnavailable)
+            .hasNoData()
+
+            .request("delete", path: "/bodyerror/users")
+            .hasStatus(.serviceUnavailable)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(Status("BAD"))
+
+            .run()
     }
 
-    func testBasicSingleDelete() {
-
+    func testBasicDeleteSingle() {
         router.delete("/users") { (id: Int, respondWith: (RequestError?) -> Void) in
+            print("DELETE on /users/\(id)")
             guard let _ = self.userStore.removeValue(forKey: id) else {
                 respondWith(.notFound)
                 return
             }
             respondWith(nil)
         }
-
-        performServerTest(router, timeout: 30) { expectation in
-
-            self.performRequest("delete", path: "/users/1", callback: { response in
-                guard let response = response else {
-                    XCTFail("ERROR!!! ClientRequest response object was nil")
-                    return
-                }
-
-                XCTAssertEqual(response.statusCode, HTTPStatusCode.noContent, "HTTP Status code was \(String(describing: response.statusCode))")
-                var data = Data()
-                guard let length = try? response.readAllData(into: &data) else {
-                    XCTFail("Error reading response length!")
-                    return
-                }
-
-                XCTAssert(length == 0, "Expected zero bytes, received \(String(describing: length)) bytes.")
-
-                expectation.fulfill()
-            })
+        router.delete("/error/users") { (id: Int, respondWith: (RequestError?) -> Void) in
+            print("DELETE on /error/users/\(id)")
+            respondWith(.serviceUnavailable)
         }
+        router.delete("/bodyerror/users") { (id: Int, respondWith: (RequestError?) -> Void) in
+            print("DELETE on /bodyerror/users/\(id)")
+            respondWith(RequestError(.serviceUnavailable, body: Status("BAD: \(id)")))
+        }
+
+        buildServerTest(router, timeout: 30)
+            .request("delete", path: "/users/1")
+            .hasStatus(.noContent)
+            .hasNoData()
+            .has { _ in XCTAssertNil(self.userStore[1]) }
+
+            .request("delete", path: "/error/users/1")
+            .hasStatus(.serviceUnavailable)
+            .hasNoData()
+
+            .request("delete", path: "/bodyerror/users/1")
+            .hasStatus(.serviceUnavailable)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(Status("BAD: 1"))
+
+            .run()
     }
 
     func testBasicPut() {
-
         router.put("/users") { (id: Int, user: User, respondWith: (User?, RequestError?) -> Void) in
+            print("PUT on /users/\(id)")
             self.userStore[id] = user
             respondWith(user, nil)
         }
-
-        performServerTest(router, timeout: 30) { expectation in
-            // Let's create a User instance
-            let expectedUser = User(id: 1, name: "David")
-            // Create JSON representation of User instance
-            guard let userData = try? JSONEncoder().encode(expectedUser) else {
-                XCTFail("Could not generate user data from string!")
-                return
-            }
-
-            self.performRequest("put", path: "/users/1", callback: { response in
-                guard let response = response else {
-                    XCTFail("ERROR!!! ClientRequest response object was nil")
-                    return
-                }
-
-                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
-                XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
-                var data = Data()
-                guard let length = try? response.readAllData(into: &data) else {
-                    XCTFail("Error reading response length!")
-                    return
-                }
-
-                XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
-                guard let user = try? JSONDecoder().decode(User.self, from: data) else {
-                    XCTFail("Could not decode response! Expected response decodable to User, but got \(String(describing: String(data: data, encoding: .utf8)))")
-                    return
-                }
-
-                // Validate the data we got back from the server
-                XCTAssertEqual(user.name, expectedUser.name)
-                XCTAssertEqual(user.id, expectedUser.id)
-
-                expectation.fulfill()
-            }, requestModifier: { request in
-                request.headers["Content-Type"] = "application/json; charset=utf-8"
-                request.write(from: userData)
-            })
+        router.put("/error/users") { (id: Int, user: User, respondWith: (User?, RequestError?) -> Void) in
+            print("PUT on /error/users/\(id)")
+            respondWith(nil, .serviceUnavailable)
         }
+        router.put("/bodyerror/users") { (id: Int, user: User, respondWith: (User?, RequestError?) -> Void) in
+            print("PUT on /bodyerror/users/\(id)")
+            respondWith(nil, RequestError(.serviceUnavailable, body: Status("BAD: \(id)")))
+        }
+
+        XCTAssertEqual(self.userStore[1]?.name, "Mike")
+
+        let user = User(id: 1, name: "David")
+        buildServerTest(router, timeout: 30)
+            .request("put", path: "/users/1", data: user)
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(user)
+            .has { _ in XCTAssertEqual(self.userStore[1]?.name, "David") }
+
+            .request("put", path: "/error/users/1", data: user)
+            .hasStatus(.serviceUnavailable)
+            .hasNoData()
+
+            .request("put", path: "/bodyerror/users/1", data: user)
+            .hasStatus(.serviceUnavailable)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(Status("BAD: 1"))
+
+            .run()
     }
 
     func testBasicPatch() {
-
         router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?, RequestError?) -> Void) -> Void in
+            print("PATCH on /users/\(id)")
             guard let existingUser = self.userStore[id] else {
                 respondWith(nil, .notFound)
                 return
@@ -456,46 +426,35 @@ class TestCodableRouter: KituraTest {
                 respondWith(existingUser, nil)
             }
         }
-
-        performServerTest(router, timeout: 30) { expectation in
-            // Let's create a User instance
-            let patchUser = User(id: 2, name: "David")
-            // Create JSON representation of User instance
-            guard let userData = try? JSONEncoder().encode(patchUser) else {
-                XCTFail("Could not generate user data from string!")
-                return
-            }
-
-            self.performRequest("patch", path: "/users/2", callback: { response in
-                guard let response = response else {
-                    XCTFail("ERROR!!! ClientRequest response object was nil")
-                    return
-                }
-
-                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
-                XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
-                var data = Data()
-                guard let length = try? response.readAllData(into: &data) else {
-                    XCTFail("Error reading response length!")
-                    return
-                }
-
-                XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
-                guard let user = try? JSONDecoder().decode(User.self, from: data) else {
-                    XCTFail("Could not decode response! Expected response decodable to User, but got \(String(describing: String(data: data, encoding: .utf8)))")
-                    return
-                }
-
-                // Validate the data we got back from the server
-                XCTAssertEqual(user.name, patchUser.name)
-                XCTAssertEqual(user.id, 2)
-
-                expectation.fulfill()
-            }, requestModifier: { request in
-                request.headers["Content-Type"] = "application/json; charset=utf-8"
-                request.write(from: userData)
-            })
+        router.patch("/error/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?, RequestError?) -> Void) -> Void in
+            print("PATCH on /error/users/\(id)")
+            respondWith(nil, .serviceUnavailable)
         }
+        router.patch("/bodyerror/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?, RequestError?) -> Void) -> Void in
+            print("PATCH on /bodyerror/users/\(id)")
+            respondWith(nil, RequestError(.serviceUnavailable, body: Status("BAD: \(id)")))
+        }
+
+        XCTAssertEqual(self.userStore[2]?.name, "Chris")
+
+        let user = User(id: 2, name: "David")
+        buildServerTest(router, timeout: 30)
+            .request("patch", path: "/users/2", data: user)
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(user)
+            .has { _ in XCTAssertEqual(self.userStore[2]?.name, "David") }
+
+            .request("patch", path: "/error/users/2", data: user)
+            .hasStatus(.serviceUnavailable)
+            .hasNoData()
+
+            .request("patch", path: "/bodyerror/users/2", data: user)
+            .hasStatus(.serviceUnavailable)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(Status("BAD: 2"))
+
+            .run()
     }
 
     func testJoinPath() {
@@ -506,164 +465,109 @@ class TestCodableRouter: KituraTest {
         XCTAssertEqual(router.join(path: "a/", with: "b"), "a/b")
     }
 
+    // Test adding a trailing slash to your route when it has an implicit id parameter
     func testRouteWithTrailingSlash() {
-        router.get("/users/") { (id: Int, respondWith: (User?, RequestError?) -> Void) in
-            // Returning an error that's not .notFound so we know this route has been hit
-            respondWith(nil, .conflict)
-        }
-        performServerTest(router, timeout: 30) { expectation in
-            self.performRequest("get", path: "/users/1", callback: { response in
-                guard let response = response else {
-                    XCTFail("ERROR!!! ClientRequest response object was nil")
-                    return
-                }
+        let status = Status("Slashes work as expected")
+        router.get("/status/") { (id: Int, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, nil) }
+        router.put("/status/") { (id: Int, status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, nil) }
+        router.patch("/status/") { (id: Int, status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, nil) }
+        router.delete("/status/") { (id: Int, respondWith: (RequestError?) -> Void) in respondWith(nil) }
 
-                XCTAssertEqual(response.statusCode, HTTPStatusCode.conflict, "Expected the '/users' route to be executed even though we passed '/users/'")
+        buildServerTest(router, timeout: 30)
+            .request("get", path: "/status/1").hasStatus(.OK).hasContentType(withPrefix: "application/json").hasData(status)
+            .request("put", path: "/status/1", data: status).hasStatus(.OK).hasContentType(withPrefix: "application/json").hasData(status)
+            .request("patch", path: "/status/1", data: status).hasStatus(.OK).hasContentType(withPrefix: "application/json").hasData(status)
+            .request("delete", path: "/status/1").hasStatus(.noContent).hasNoData()
+            .run()
+    }
 
-                expectation.fulfill()
-            })
-        }
+    func testErrorOverridesBody() {
+        let status = Status("This should not be sent")
+        router.get("/status") { (id: Int, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, .conflict) }
+        router.post("/status") { (status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, .conflict) }
+        router.put("/status") { (id: Int, status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, .conflict) }
+        router.patch("/status") { (id: Int, status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, .conflict) }
+
+        let conflict = Conflict(on: "life")
+        let bodyError = RequestError(.conflict, body: conflict)
+        router.get("/bodyerror/status") { (id: Int, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, bodyError) }
+        router.post("/bodyerror/status") { (status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, bodyError) }
+        router.put("/bodyerror/status") { (id: Int, status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, bodyError) }
+        router.patch("/bodyerror/status") { (id: Int, status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, bodyError) }
+
+        buildServerTest(router, timeout: 30)
+            .request("get", path: "/status/1")
+            .hasStatus(.conflict)
+            .hasNoData()
+
+            .request("post", path: "/status", data: status)
+            .hasStatus(.conflict)
+            .hasNoData()
+
+            .request("put", path: "/status/1", data: status)
+            .hasStatus(.conflict)
+            .hasNoData()
+
+            .request("patch", path: "/status/1", data: status)
+            .hasStatus(.conflict)
+            .hasNoData()
+
+            .request("get", path: "/bodyerror/status/1")
+            .hasStatus(.conflict)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(conflict)
+
+            .request("post", path: "/bodyerror/status", data: status)
+            .hasStatus(.conflict)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(conflict)
+
+            .request("put", path: "/bodyerror/status/1", data: status)
+            .hasStatus(.conflict)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(conflict)
+
+            .request("patch", path: "/bodyerror/status/1", data: status)
+            .hasStatus(.conflict)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(conflict)
+
+            .run()
     }
 
     func testRouteParameters() {
-        //Add this erroneous route which should not be hit by the test, should log an error but we can't test the log so we checkout for a 404 not found.
-        router.get("/users/:id") { (id: Int, respondWith: (User?, RequestError?) -> Void) in
-            print("GET on /users")
-            //Returning an error that's not .notFound so the test will fail in a timely manner if this route is hit
-            respondWith(nil, .conflict)
+        //Add this erroneous route which should not be hit by the test, should log an error but we can't test the log so we check for a 404 not found.
+        let status = Status("Should not be seen")
+        router.get("/status/:id") { (id: Int, respondWith: (Status?, RequestError?) -> Void) in
+            print("GET on /status/:id that should not happen")
+            respondWith(status, nil)
         }
 
-        performServerTest(router, timeout: 30) { expectation in
-            self.performRequest("get", path: "/users/1", callback: { response in
-                guard let response = response else {
-                    XCTFail("ERROR!!! ClientRequest response object was nil")
-                    return
-                }
-
-                XCTAssertEqual(response.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response.statusCode))")
-
-                expectation.fulfill()
-            })
-        }
+        buildServerTest(router, timeout: 30)
+            .request("get", path: "/status/1")
+            .hasStatus(.notFound)
+            .hasData()
+            .run()
     }
 
-    func testCodablePutBodyParsing() {
-        router.all(middleware: BodyParser())
-        router.put("/users") { (id: Int, user: User, respondWith: (User?, RequestError?) -> Void) in
-            print("POST on /users for user \(user)")
-            // Let's keep the test simple
-            // We just want to test that we can register a handler that
-            // receives and sends back a Codable instance
-            self.userStore[user.id] = user
-            respondWith(user, nil)
-        }
-
-        performServerTest(router, timeout: 30) { expectation in
-            // Let's create a User instance
-            let expectedUser = User(id: 4, name: "David")
-            // Create JSON representation of User instance
-            guard let userData = try? JSONEncoder().encode(expectedUser) else {
-                XCTFail("Could not generate user data from string!")
-                return
-            }
-
-            self.performRequest("put", path: "/users/2", callback: { response in
-                guard let response = response else {
-                    XCTFail("ERROR!!! ClientRequest response object was nil")
-                    return
-                }
-
-                XCTAssertEqual(response.statusCode, HTTPStatusCode.internalServerError, "HTTP Status code was \(String(describing: response.statusCode))")
-
-                expectation.fulfill()
-            }, requestModifier: { request in
-                request.headers["Content-Type"] = "application/json; charset=utf-8"
-                request.write(from: userData)
-            })
-        }
-    }
-
-    func testCodablePatchBodyParsing() {
+    // Test that we get an internalServerError when using BodyParser with a Codable route
+    func testCodableRoutesWithBodyParsingFail() {
+        // Add a BodyParser that covers everything
         router.all(middleware: BodyParser())
 
-        router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?, RequestError?) -> Void) -> Void in
-            guard let existingUser = self.userStore[id] else {
-                respondWith(nil, .notFound)
-                return
-            }
-            if let patchUserName = patchUser.name {
-                let updatedUser = User(id: id, name: patchUserName)
-                self.userStore[id] = updatedUser
-                respondWith(updatedUser, nil)
-            } else {
-                respondWith(existingUser, nil)
-            }
-        }
+        let status = Status("Should not be seen")
+        router.put("/status") { (id: Int, status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, nil) }
+        router.patch("/status") { (id: Int, status: Status, respondWith: (Status?, RequestError?) -> Void) -> Void in respondWith(status, nil) }
+        router.post("/status") { (status: Status, respondWith: (Status?, RequestError?) -> Void) -> Void in respondWith(status, nil) }
 
-        performServerTest(router, timeout: 30) { expectation in
-            // Let's create a User instance
-            let patchUser = User(id: 2, name: "David")
-            // Create JSON representation of User instance
-            guard let userData = try? JSONEncoder().encode(patchUser) else {
-                XCTFail("Could not generate user data from string!")
-                return
-            }
-
-            self.performRequest("patch", path: "/users/2", callback: { response in
-                guard let response = response else {
-                    XCTFail("ERROR!!! ClientRequest response object was nil")
-                    return
-                }
-
-                XCTAssertEqual(response.statusCode, HTTPStatusCode.internalServerError, "HTTP Status code was \(String(describing: response.statusCode))")
-
-                expectation.fulfill()
-            }, requestModifier: { request in
-                request.headers["Content-Type"] = "application/json; charset=utf-8"
-                request.write(from: userData)
-            })
-        }
-    }
-
-    func testCodablePostBodyParsing() {
-        router.all(middleware: BodyParser())
-
-        router.post("/users") { (user: User, respondWith: (User?, RequestError?) -> Void) in
-            print("POST on /users for user \(user)")
-            // Let's keep the test simple
-            // We just want to test that we can register a handler that
-            // receives and sends back a Codable instance
-            self.userStore[user.id] = user
-            respondWith(user, nil)
-        }
-
-        performServerTest(router, timeout: 30) { expectation in
-            // Let's create a User instance
-            let expectedUser = User(id: 4, name: "David")
-            // Create JSON representation of User instance
-            guard let userData = try? JSONEncoder().encode(expectedUser) else {
-                XCTFail("Could not generate user data from string!")
-                return
-            }
-
-            self.performRequest("post", path: "/users", callback: { response in
-                guard let response = response else {
-                    XCTFail("ERROR!!! ClientRequest response object was nil")
-                    return
-                }
-
-                XCTAssertEqual(response.statusCode, HTTPStatusCode.internalServerError, "HTTP Status code was \(String(describing: response.statusCode))")
-
-                expectation.fulfill()
-            }, requestModifier: { request in
-                request.headers["Content-Type"] = "application/json; charset=utf-8"
-                request.write(from: userData)
-            })
-        }
+        buildServerTest(router, timeout: 30)
+            .request("put", path: "/status/2", data: status).hasStatus(.internalServerError).hasNoData()
+            .request("patch", path: "/status/2", data: status).hasStatus(.internalServerError).hasNoData()
+            .request("post", path: "/status", data: status).hasStatus(.internalServerError).hasNoData()
+            .run()
     }
 
     func testCodableGetQueryParameters() {
-
         /// Currently the milliseconds are cut off by our date formatter
         /// This synchronizes it for testing with the codable route
         let date: Date = Coder().dateFormatter.date(from: Coder().dateFormatter.string(from: Date()))!
@@ -680,44 +584,20 @@ class TestCodableRouter: KituraTest {
             respondWith([query], nil)
         }
 
-        performServerTest(router, timeout: 20, asyncTasks: { expectation in
-            self.performRequest("get", path: "/query\(queryStr)", callback: { response in
-                guard let response = response else {
-                    XCTFail("ERROR!!! ClientRequest response object was nil")
-                    return
-                }
+        buildServerTest(router, timeout: 30)
+            .request("get", path: "/query\(queryStr)")
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData([expectedQuery])
 
-                var data = Data()
-                guard let length = try? response.readAllData(into: &data) else {
-                    XCTFail("Error reading response length!")
-                    return
-                }
+            .request("get", path: "/query?param=badRequest")
+            .hasStatus(.badRequest)
+            .hasNoData()
 
-                XCTAssert(length > 0, "Expected some bytes, received \(String(describing: length)) bytes.")
-
-                guard let myQuery = try? JSONDecoder().decode([MyQuery].self, from: data) else {
-                    XCTFail("Could not decode response! Expected response decodable to MyQuery, but got \(String(describing: String(data: data, encoding: .utf8)))")
-                    return
-                }
-                XCTAssertEqual(myQuery, [expectedQuery])
-                XCTAssert(response.headers.contains { (key: String, value: [String]) in return key == "Content-Type" && value.contains("application/json") })
-                XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
-                expectation.fulfill()
-            })
-        }, { expectation in
-            self.performRequest("get", path: "/query?param=badRequest", callback: { response in
-                guard let response = response else {
-                    XCTFail("ERROR!!! ClientRequest response object was nil")
-                    return
-                }
-                XCTAssertEqual(response.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(String(describing: response.statusCode))")
-                expectation.fulfill()
-            })
-        })
+            .run()
     }
 
     func testCodableDeleteQueryParameters() {
-
         /// Currently the milliseconds are cut off by our date formatter
         /// This synchronizes it for testing with the codable route
         let date: Date = Coder().dateFormatter.date(from: Coder().dateFormatter.string(from: Date()))!
@@ -734,24 +614,15 @@ class TestCodableRouter: KituraTest {
             respondWith(nil)
         }
 
-        performServerTest(router, timeout: 20, asyncTasks: { expectation in
-            self.performRequest("delete", path: "/query\(queryStr)", callback: { response in
-                guard let response = response else {
-                    XCTFail("ERROR!!! ClientRequest response object was nil")
-                    return
-                }
-                XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response.statusCode))")
-                expectation.fulfill()
-            })
-        },{ expectation in
-            self.performRequest("delete", path: "/query?param=badRequest", callback: { response in
-                guard let response = response else {
-                    XCTFail("ERROR!!! ClientRequest response object was nil")
-                    return
-                }
-                XCTAssertEqual(response.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(String(describing: response.statusCode))")
-                expectation.fulfill()
-            })
-        })
+        buildServerTest(router, timeout: 30)
+            .request("delete", path: "/query\(queryStr)")
+            .hasStatus(.noContent)
+            .hasNoData()
+
+            .request("delete", path: "/query?param=badRequest")
+            .hasStatus(.badRequest)
+            .hasNoData()
+
+            .run()
     }
 }
