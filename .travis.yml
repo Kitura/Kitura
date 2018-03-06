@@ -29,6 +29,14 @@ matrix:
     - os: osx
       osx_image: xcode9.2
       sudo: required
+    - os: linux
+      dist: trusty
+      sudo: required
+      env: SWIFT_SNAPSHOT=swift-4.1-DEVELOPMENT-SNAPSHOT-2018-03-04-a
+    - os: osx
+      osx_image: xcode9.2
+      sudo: required
+      env: SWIFT_SNAPSHOT=swift-4.1-DEVELOPMENT-SNAPSHOT-2018-03-04-a
 
 script:
   - ./build.sh
