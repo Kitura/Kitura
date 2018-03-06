@@ -616,7 +616,7 @@ class TestCodableRouter: KituraTest {
 
         buildServerTest(router, timeout: 30)
             .request("delete", path: "/query\(queryStr)")
-            .hasStatus(.OK)
+            .hasStatus(.noContent)
             .hasNoData()
 
             .request("delete", path: "/query?param=badRequest")

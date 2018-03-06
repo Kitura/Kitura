@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (98% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -160,7 +160,13 @@
         <section class="section">
           <div class="section-content">
             <h1>SSLConfig</h1>
-            <p>Undocumented</p>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">SSLConfig</span></code></pre>
+
+                </div>
+              </div>
+            <p>A struct that allows you to configure your SSL using a CA certificate file (Linux), a CA certificate directory (Linux) or a certificate chain file (MacOS).</p>
 
           </div>
         </section>
@@ -169,40 +175,10 @@
           <div class="section-content">
             <div class="task-group">
               <div class="task-name-container">
-                <a name="/Properties"></a>
-                <a name="//apple_ref/swift/Section/Properties" class="dashAnchor"></a>
-                <a href="#/Properties">
-                  <h3 class="section-name">Properties</h3>
-                </a>
-              </div>
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura9SSLConfigV6config10SSLServiceAEC13ConfigurationVv"></a>
-                    <a name="//apple_ref/swift/Property/config" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura9SSLConfigV6config10SSLServiceAEC13ConfigurationVv">config</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <div class="task-name-container">
-                <a name="/Lifecycle"></a>
-                <a name="//apple_ref/swift/Section/Lifecycle" class="dashAnchor"></a>
-                <a href="#/Lifecycle">
-                  <h3 class="section-name">Lifecycle</h3>
+                <a name="/For%20Linux"></a>
+                <a name="//apple_ref/swift/Section/For Linux" class="dashAnchor"></a>
+                <a href="#/For%20Linux">
+                  <h3 class="section-name">For Linux</h3>
                 </a>
               </div>
               <ul class="item-container">
@@ -219,7 +195,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Initialize an SSLService.Configuration instance using a <code>CA Certificate</code> file.</p>
+                        <p>Initialize an <code>SSLService.Configuration</code> instance using a CA certificate file.</p>
 
                       </div>
                     </section>
@@ -238,14 +214,25 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Initialize an SSLService.Configuration instance using a <code>CA Certificate</code> directory.</p>
+                        <p>Initialize an <code>SSLService.Configuration</code> instance using a CA certificate directory.</p>
 
-<p><em>Note:</em> <code>caCertificateDirPath</code> - All certificates in the specified directory <strong>must</strong> be hashed using the <code>OpenSSL Certificate Tool</code>.</p>
+<p><em>Note:</em> <code>caCertificateDirPath</code> - all certificates in the specified directory <strong>must</strong> be hashed using the OpenSSL Certificate Tool.</p>
 
                       </div>
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/For%20MacOS"></a>
+                <a name="//apple_ref/swift/Section/For MacOS" class="dashAnchor"></a>
+                <a href="#/For%20MacOS">
+                  <h3 class="section-name">For MacOS</h3>
+                </a>
+              </div>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -259,16 +246,28 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Initialize an SSLService.Configuration instance using a <code>Certificate Chain File</code>.</p>
+                        <p>Initialize an <code>SSLService.Configuration</code> instance using a certificate chain file.</p>
 
 <p><em>Note:</em> If using a certificate chain file, the certificates must be in PEM format and must be sorted starting with the subject&rsquo;s certificate (actual client or server certificate), followed by intermediate CA certificates if applicable, and ending at the highest level (root) CA.</p>
+
+<p>For testing purposes you will most likely want to create and use some self-signed certificates. Follow the
+instructions in our <a href="http://www.kitura.io/en/resources/tutorials/ssl.html">Enabling SSL/TLS On Your Kitura Server</a> tutorial.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>This example initializes an <code>SSLConfig</code> instance and then associates this SSL configuration with the Kitura HTTP
+server registration.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">mySSLConfig</span> <span class="o">=</span>  <span class="kt">SSLConfig</span><span class="p">(</span><span class="nv">withChainFilePath</span><span class="p">:</span> <span class="s">"/tmp/Creds/Self-Signed/cert.pfx"</span><span class="p">,</span>
+                             <span class="nv">withPassword</span><span class="p">:</span> <span class="s">"password"</span><span class="p">,</span>
+                             <span class="nv">usingSelfSignedCerts</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
+<span class="kt">Kitura</span><span class="o">.</span><span class="nf">addHTTPServer</span><span class="p">(</span><span class="nv">onPort</span><span class="p">:</span> <span class="mi">8080</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="n">router</span><span class="p">,</span> <span class="nv">withSSL</span><span class="p">:</span> <span class="n">mySSLConfig</span><span class="p">)</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">withChainFilePath</span> <span class="nv">chainFilePath</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="n">withPassword</span> <span class="nv">password</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="n">usingSelfSignedCerts</span> <span class="nv">selfSigned</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="nv">cipherSuite</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">withChainFilePath</span> <span class="nv">chainFilePath</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="n">withPassword</span> <span class="nv">password</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="n">usingSelfSignedCerts</span> <span class="nv">selfSigned</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="nv">cipherSuite</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -284,7 +283,7 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>Path to the certificate chain file (optional). <em>(see note above)</em></p>
+                                  <p>Path to the certificate chain file (optional). <em>(See note above)</em></p>
                                 </div>
                               </td>
                             </tr>
@@ -308,7 +307,19 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>True if certs are <code>self-signed</code>, false otherwise. Defaults to true.</p>
+                                  <p>True if certs are <em>self-signed</em>, false otherwise. Defaults to true.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>cipherSuite</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Unused.</p>
                                 </div>
                               </td>
                             </tr>
@@ -317,7 +328,7 @@
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>New SSLConfig instance.</p>
+                        <p>New <code>SSLConfig</code> instance.</p>
                       </div>
                     </section>
                   </div>
@@ -330,8 +341,8 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-01-16)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-02-28)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>
