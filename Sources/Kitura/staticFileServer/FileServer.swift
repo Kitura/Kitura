@@ -91,10 +91,10 @@ extension StaticFileServer {
             var isDirectory = ObjCBool(false)
 
             if fileManager.fileExists(atPath: filePath, isDirectory: &isDirectory) {
-                #if os(Linux)
-                    let isDirectoryBool = isDirectory
-                #else
+                #if !os(Linux) || swift(>=4.1)
                     let isDirectoryBool = isDirectory.boolValue
+                #else
+                    let isDirectoryBool = isDirectory
                 #endif
                 serveExistingFile(filePath, requestPath: requestPath,
                                   isDirectory: isDirectoryBool, response: response)
@@ -130,10 +130,10 @@ extension StaticFileServer {
         private func serveIfNonDirectoryFile(atPath path: String, response: RouterResponse) -> Bool {
             var isDirectory = ObjCBool(false)
             if FileManager().fileExists(atPath: path, isDirectory: &isDirectory) {
-                #if os(Linux)
-                    let isDirectoryBool = isDirectory
-                #else
+                #if !os(Linux) || swift(>=4.1)
                     let isDirectoryBool = isDirectory.boolValue
+                #else
+                    let isDirectoryBool = isDirectory
                 #endif
                 if !isDirectoryBool {
                     serveNonDirectoryFile(path, response: response)
