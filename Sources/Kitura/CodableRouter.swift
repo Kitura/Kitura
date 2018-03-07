@@ -568,7 +568,7 @@ public struct CodableHelpers {
 
     /**
      * Create a closure that can be called by a codable route handler that
-     * provides an optional `Codable` body and an optional `RequestError`
+     * provides an array of tuples of (Identifier, Codable) and an optional `RequestError`
      *
      * - Note: This function is intended for use by the codable router or extensions
      *         thereof. It will create a closure that can be passed to the registered
@@ -580,7 +580,7 @@ public struct CodableHelpers {
      * - Parameter completion: The completion to be called after the when the returned
      *                         closure completes execution.
      * - Returns: The closure to pass to the codable route handler. The closure takes two arguments
-     *            `(OutputType?, RequestError?)`.
+     *            `([(Id, OutputType)]?, RequestError?)`.
      *            If the second (error) argument is `nil` then the first (body) argument should be non-`nil`
      *            and the response will be considered successful. If the second (error) argument is non-`nil`
      *            then the first argument is ignore and the response is considered failed.
