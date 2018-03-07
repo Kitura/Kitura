@@ -345,26 +345,7 @@ extension Router {
     fileprivate func getSafely<Id: Identifier, O: Codable>(_ route: String, handler: @escaping IdentifierCodableArrayClosure<Id, O>) {
         get(route) { request, response, next in
             Log.verbose("Received GET (plural with identifier) type-safe request")
-            // Define result handler
-            let resultHandler: IdentifierCodableArrayResultClosure<Id, O> = { result, error in
-                do {
-                    if let err = error {
-                        let status = self.httpStatusCode(from: err)
-                        response.status(status)
-                    } else if let result = result {
-                        let entries = result.map({ [$0.value: $1] })
-                        let encoded = try JSONEncoder().encode(entries)
-                        response.status(.OK)
-                        response.headers.setType("json")
-                        response.send(data: encoded)
-                    }
-                } catch {
-                    // Http 500 error
-                    response.status(.internalServerError)
-                }
-                next()
-            }
-            handler(resultHandler)
+            handler(CodableHelpers.constructTupleArrayOutResultHandler(response: response, completion: next))
         }
     }
 
@@ -585,6 +566,62 @@ public struct CodableHelpers {
         }
     }
 
+    /**
+     * Create a closure that can be called by a codable route handler that
+     * provides an optional `Codable` body and an optional `RequestError`
+     *
+     * - Note: This function is intended for use by the codable router or extensions
+     *         thereof. It will create a closure that can be passed to the registered
+     *         route handler.
+     *
+     * - Parameter successStatus: The `HTTPStatusCode` to use for a successful response (see below)
+     * - Parameter response: The `RouterResponse` to which the codable response body (or codable
+     *                       error) and status code will be written
+     * - Parameter completion: The completion to be called after the when the returned
+     *                         closure completes execution.
+     * - Returns: The closure to pass to the codable route handler. The closure takes two arguments
+     *            `(OutputType?, RequestError?)`.
+     *            If the second (error) argument is `nil` then the first (body) argument should be non-`nil`
+     *            and the response will be considered successful. If the second (error) argument is non-`nil`
+     *            then the first argument is ignore and the response is considered failed.
+     *
+     *            If successful, the HTTP status code will be set to `successStatus` and the first argument
+     *            will be encoded and sent as the body of the response.
+     *
+     *            If failed, the HTTP status code used for the response wll be set to either the
+     *            `httpCode` of the `RequestError`, if that is a valid HTTP status code, or
+     *            `HTTPStatusCode.unknown` otherwise. If the `RequestError` has a codable `body` then
+     *            it will be encoded and sent as the body of the response.
+     */
+    public static func constructTupleArrayOutResultHandler<Id: Identifier, OutputType: Codable>(successStatus: HTTPStatusCode = .OK, response: RouterResponse, completion: @escaping () -> Void) -> IdentifierCodableArrayResultClosure<Id, OutputType> {
+        return {codableOutput, error in
+            if let error = error {
+                response.status(httpStatusCode(from: error))
+                do {
+                    if let bodyData = try error.encodeBody(.json) {
+                        response.headers.setType("json")
+                        response.send(data: bodyData)
+                    }
+                } catch {
+                    Log.error("Could not encode error: \(error)")
+                    response.status(.internalServerError)
+                }
+            } else {
+                do {
+                    let entries = codableOutput?.map({ [$0.value: $1] })
+                    let encoded = try JSONEncoder().encode(entries)
+                    response.headers.setType("json")
+                    response.send(data: encoded)
+                    response.status(successStatus)
+                } catch {
+                    Log.error("Could not encode result: \(error)")
+                    response.status(.internalServerError)
+                }
+            }
+            completion()
+        }
+    }
+    
     /**
      * Create a closure that can be called by a codable route handler that
      * provides an optional `Identifier` id, optional `Codable` body and an optional `RequestError`
