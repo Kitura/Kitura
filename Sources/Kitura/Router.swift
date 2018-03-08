@@ -395,6 +395,7 @@ extension Router : RouterMiddleware {
     public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws {
         guard let urlPath = request.parsedURLPath.path else {
             Log.error("request.parsedURLPath.path is nil. Failed to handle request")
+            next()
             return
         }
 
@@ -406,6 +407,7 @@ extension Router : RouterMiddleware {
             /// Note: `hasPrefix("")` is `true` on macOS but `false` on Linux
             guard mountpath == "" || urlPath.hasPrefix(mountpath) else {
                 Log.error("Failed to find matches in url")
+                next()
                 return
             }
 
@@ -480,6 +482,7 @@ extension Router : ServerDelegate {
     fileprivate func process(request: RouterRequest, response: RouterResponse, callback: @escaping () -> Void) {
         guard let urlPath = request.parsedURLPath.path else {
             Log.error("request.parsedURLPath.path is nil. Failed to process request")
+            callback()
             return
         }
 
