@@ -19,7 +19,7 @@ import Socket
 import LoggerAPI
 
 import Foundation
-
+import KituraContracts
 // MARK: RouterRequest
 
 /// Router request.
@@ -183,6 +183,21 @@ public class RouterRequest {
         var data = Data()
         _ = try serverRequest.read(into: &data)
         return try JSONDecoder().decode(type, from: data)
+    }
+    
+    /// Read the URLEncoded body of the request as a Codable object.
+    ///
+    /// - Parameter type: Codable object to which the body of the request will be converted.
+    /// - Throws: Socket.Error if an error occurred while reading from a socket.
+    /// - Throws: `DecodingError.dataCorrupted` if values requested from the payload are corrupted, or if the given data is not valid JSON.
+    /// - Throws: An error if any value throws an error during decoding.
+    /// - Returns: The instantiated Codable object
+    public func readURLForm<T: Decodable>(as type: T.Type) throws -> T {
+        let bodyAsString = try self.readString()
+        guard let urlKeyValuePairs = bodyAsString?.urlDecodedFieldValuePairs else {
+            throw(Error.failedToParseRequestBody(body: bodyAsString ?? "Failed to read body as String"))
+        }
+        return try QueryDecoder(dictionary: urlKeyValuePairs).decode(T.self)
     }
 
     /// Read the body of the request as String.
