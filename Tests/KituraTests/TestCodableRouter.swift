@@ -170,10 +170,21 @@ class TestCodableRouter: KituraTest {
             .hasStatus(.created)
             .hasContentType(withPrefix: "application/json")
             .hasData(user)
-
+            
+            .request("post", path: "/urlencoded", urlEncodedString: "id=4&name=David&extra=yes")
+            .hasStatus(.created)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(user)
+            
+            .request("post", path: "/urlencoded", urlEncodedString: "encoding=valid&failed=match")
+            .hasStatus(.unprocessableEntity)
+            .hasNoData()
+            
             .request("post", path: "/urlencoded", urlEncodedString: "invalidEncoding")
             .hasStatus(.unprocessableEntity)
             .hasNoData()
+            
+
 
             .run()
     }
