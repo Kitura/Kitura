@@ -20,6 +20,7 @@ import LoggerAPI
 
 import Foundation
 import KituraContracts
+
 // MARK: RouterRequest
 
 /// Router request.
@@ -193,9 +194,9 @@ public class RouterRequest {
     /// - Throws: An error if any value throws an error during decoding.
     /// - Returns: The instantiated Codable object
     public func readURLEncoded<T: Decodable>(as type: T.Type) throws -> T {
-        let bodyAsString = try self.readString()
-        guard let urlKeyValuePairs = bodyAsString?.urlDecodedFieldValuePairs else {
-            throw(Error.failedToParseRequestBody(body: bodyAsString ?? "Failed to read body as String"))
+        let body = try self.readString()
+        guard let urlKeyValuePairs = body?.urlDecodedFieldValuePairs else {
+            throw Error.failedToParseRequestBody(body: body ?? "Failed to read body as String")
         }
         return try QueryDecoder(dictionary: urlKeyValuePairs).decode(T.self)
     }

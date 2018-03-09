@@ -166,7 +166,7 @@ class TestCodableRouter: KituraTest {
             .hasContentType(withPrefix: "application/json")
             .hasData(Conflict(on: "id"))
             
-            .request("post", path: "/urlencoded", URLEncodedObject: "id=4&name=David")
+            .request("post", path: "/urlencoded", urlEncodedString: "id=4&name=David")
             .hasStatus(.created)
             .hasData(user)
 

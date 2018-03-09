@@ -43,7 +43,7 @@ import Dispatch
 protocol RequestTestBuilder {
     func request(_ method: String, path: String) -> AssertionTestBuilder
     func request<T: Encodable>(_ method: String, path: String, data: T) -> AssertionTestBuilder
-    func request(_ method: String, path: String, URLEncodedObject: String) -> AssertionTestBuilder
+    func request(_ method: String, path: String, urlEncodedString: String) -> AssertionTestBuilder
     func run()
 }
 
@@ -123,8 +123,8 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
         return self
     }
     
-    public func request(_ method: String, path: String, URLEncodedObject: String) -> AssertionTestBuilder {
-        requests.append(Request(test, method, path, URLEncodedObject: URLEncodedObject))
+    public func request(_ method: String, path: String, urlEncodedString: String) -> AssertionTestBuilder {
+        requests.append(Request(test, method, path, URLEncodedObject: urlEncodedString))
         return self
     }
 
