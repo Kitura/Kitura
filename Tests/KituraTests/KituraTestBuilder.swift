@@ -87,11 +87,11 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
             }
         }
         
-        init(_ test: KituraTest, _ method: String, _ path: String, URLEncodedObject: String) {
+        init(_ test: KituraTest, _ method: String, _ path: String, _ URLEncodedObject: String) {
             self.test = test
             self.invoker = { callback in
                 test.performRequest(method, path: path, callback: callback, requestModifier: { request in
-                    request.headers["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8"
+                    request.headers["Content-Type"] = "application/x-www-form-urlencoded"
                     request.write(from: URLEncodedObject)
                 })
             }
@@ -124,7 +124,7 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
     }
     
     public func request(_ method: String, path: String, urlEncodedString: String) -> AssertionTestBuilder {
-        requests.append(Request(test, method, path, URLEncodedObject: urlEncodedString))
+        requests.append(Request(test, method, path, urlEncodedString))
         return self
     }
 
