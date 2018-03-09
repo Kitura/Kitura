@@ -192,7 +192,7 @@ public class RouterRequest {
     /// - Throws: `DecodingError.dataCorrupted` if values requested from the payload are corrupted, or if the given data is not valid JSON.
     /// - Throws: An error if any value throws an error during decoding.
     /// - Returns: The instantiated Codable object
-    public func readURLForm<T: Decodable>(as type: T.Type) throws -> T {
+    public func readURLEncoded<T: Decodable>(as type: T.Type) throws -> T {
         let bodyAsString = try self.readString()
         guard let urlKeyValuePairs = bodyAsString?.urlDecodedFieldValuePairs else {
             throw(Error.failedToParseRequestBody(body: bodyAsString ?? "Failed to read body as String"))
