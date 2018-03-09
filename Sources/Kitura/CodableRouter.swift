@@ -436,7 +436,7 @@ public struct CodableHelpers {
         guard let contentType = request.headers["Content-Type"] else {
             return false
         }
-        return (contentType.hasPrefix("application/x-www-form-urlencoded"))
+        return contentType.hasPrefix("application/x-www-form-urlencoded")
     }
     
     /**
