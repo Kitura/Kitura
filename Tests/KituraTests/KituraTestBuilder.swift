@@ -16,7 +16,6 @@
 
 import XCTest
 import Kitura
-import KituraContracts
 
 @testable import KituraNet
 
