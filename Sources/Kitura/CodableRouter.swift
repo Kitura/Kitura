@@ -594,7 +594,7 @@ public struct CodableHelpers {
      *            it will be encoded and sent as the body of the response.
      */
     public static func constructTupleArrayOutResultHandler<Id: Identifier, OutputType: Codable>(successStatus: HTTPStatusCode = .OK, response: RouterResponse, completion: @escaping () -> Void) -> IdentifierCodableArrayResultClosure<Id, OutputType> {
-        return {codableOutput, error in
+        return { codableOutput, error in
             if let error = error {
                 response.status(httpStatusCode(from: error))
                 do {
