@@ -476,7 +476,7 @@ public struct CodableHelpers {
      *
      * - Parameter response: The `RouterResponse` to which the codable response error and
      *                       status code will be written
-     * - Parameter completion: The completion to be called after the when the returned
+     * - Parameter completion: The completion to be called after the returned
      *                         closure completes execution.
      * - Returns: The closure to pass to the codable route handler. The closure takes one argument
      *            `(RequestError?)`.
@@ -486,7 +486,7 @@ public struct CodableHelpers {
      *            If successful, the HTTP status code will be set to `HTTPStatusCode.noContent` and no
      *            body will be sent.
      *
-     *            If failed, the HTTP status code used for the response wll be set to either the
+     *            If failed, the HTTP status code used for the response will be set to either the
      *            `httpCode` of the `RequestError`, if that is a valid HTTP status code, or
      *            `HTTPStatusCode.unknown` otherwise. If the `RequestError` has a codable `body` then
      *            it will be encoded and sent as the body of the response.
@@ -522,18 +522,18 @@ public struct CodableHelpers {
      * - Parameter successStatus: The `HTTPStatusCode` to use for a successful response (see below)
      * - Parameter response: The `RouterResponse` to which the codable response body (or codable
      *                       error) and status code will be written
-     * - Parameter completion: The completion to be called after the when the returned
+     * - Parameter completion: The completion to be called after the returned
      *                         closure completes execution.
      * - Returns: The closure to pass to the codable route handler. The closure takes two arguments
      *            `(OutputType?, RequestError?)`.
-     *            If the second (error) argument is `nil` then the first (body) argument should be non-`nil`
+     *            If the second (error) argument is `nil` then the first argument (body) should be non-`nil`
      *            and the response will be considered successful. If the second (error) argument is non-`nil`
-     *            then the first argument is ignore and the response is considered failed.
+     *            then the first argument is ignored and the response is considered failed.
      *
-     *            If successful, the HTTP status code will be set to `successStatus` and the first argument
-     *            will be encoded and sent as the body of the response.
+     *            If successful, the HTTP status code will be set to `successStatus` and the `CodableResultClosure` output
+     *            will be JSON encoded and sent as the body of the response.
      *
-     *            If failed, the HTTP status code used for the response wll be set to either the
+     *            If failed, the HTTP status code used for the response will be set to either the
      *            `httpCode` of the `RequestError`, if that is a valid HTTP status code, or
      *            `HTTPStatusCode.unknown` otherwise. If the `RequestError` has a codable `body` then
      *            it will be encoded and sent as the body of the response.
@@ -577,18 +577,18 @@ public struct CodableHelpers {
      * - Parameter successStatus: The `HTTPStatusCode` to use for a successful response (see below)
      * - Parameter response: The `RouterResponse` to which the codable response body (or codable
      *                       error) and status code will be written
-     * - Parameter completion: The completion to be called after the when the returned
+     * - Parameter completion: The completion to be called after the returned
      *                         closure completes execution.
      * - Returns: The closure to pass to the codable route handler. The closure takes two arguments
      *            `([(Id, OutputType)]?, RequestError?)`.
-     *            If the second (error) argument is `nil` then the first (body) argument should be non-`nil`
+     *            If the second (error) argument is `nil` then the first argument (body) should be non-`nil`
      *            and the response will be considered successful. If the second (error) argument is non-`nil`
-     *            then the first argument is ignore and the response is considered failed.
+     *            then the first argument is ignored and the response is considered failed.
      *
-     *            If successful, the HTTP status code will be set to `successStatus` and the first argument
-     *            will be encoded and sent as the body of the response.
+     *            If successful, the HTTP status code will be set to `successStatus` and the `IdentifierCodableArrayResultClosure` output
+     *            will be JSON encoded as an array of dictionaries, which is then sent as the body of the response.
      *
-     *            If failed, the HTTP status code used for the response wll be set to either the
+     *            If failed, the HTTP status code used for the response will be set to either the
      *            `httpCode` of the `RequestError`, if that is a valid HTTP status code, or
      *            `HTTPStatusCode.unknown` otherwise. If the `RequestError` has a codable `body` then
      *            it will be encoded and sent as the body of the response.
@@ -633,7 +633,7 @@ public struct CodableHelpers {
      * - Parameter successStatus: The `HTTPStatusCode` to use for a successful response (see below)
      * - Parameter response: The `RouterResponse` to which the id, codable response body (or codable
      *                       error) and status code will be written
-     * - Parameter completion: The completion to be called after the when the returned
+     * - Parameter completion: The completion to be called after the returned
      *                         closure completes execution.
      * - Returns: The closure to pass to the codable route handler. The closure takes three arguments
      *            `(IdType?, OutputType?, RequestError?)`.
@@ -642,11 +642,11 @@ public struct CodableHelpers {
      *            (error) argument is non-`nil` then the first and second arguments are ignored and the
      *            response is considered failed.
      *
-     *            If successful, the HTTP status code will be set to `successStatus`, the first argument
-     *            will be encoded and sent as the body of the response, and the `Location` header of the
+     *            If successful, the HTTP status code will be set to `successStatus`, the `IdentifierCodableResultClosure` output
+     *            will be JSON encoded and sent as the body of the response, and the `Location` header of the
      *            response will be set to the id (by converting it to a `String` using its `value` property).
      *
-     *            If failed, the HTTP status code used for the response wll be set to either the
+     *            If failed, the HTTP status code used for the response will be set to either the
      *            `httpCode` of the `RequestError`, if that is a valid HTTP status code, or
      *            `HTTPStatusCode.unknown` otherwise. If the `RequestError` has a codable `body` then
      *            it will be encoded and sent as the body of the response.
