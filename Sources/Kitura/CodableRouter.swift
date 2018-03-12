@@ -526,7 +526,7 @@ public struct CodableHelpers {
      *                         closure completes execution.
      * - Returns: The closure to pass to the codable route handler. The closure takes two arguments
      *            `(OutputType?, RequestError?)`.
-     *            If the second (error) argument is `nil` then the first argument (body) should be non-`nil`
+     *            If the second (error) argument is `nil` then the first (body) argument should be non-`nil`
      *            and the response will be considered successful. If the second (error) argument is non-`nil`
      *            then the first argument is ignored and the response is considered failed.
      *
