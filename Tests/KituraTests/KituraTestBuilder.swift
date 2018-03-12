@@ -87,12 +87,12 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
             }
         }
         
-        init(_ test: KituraTest, _ method: String, _ path: String, _ URLEncodedString: String) {
+        init(_ test: KituraTest, _ method: String, _ path: String, _ urlEncodedString: String) {
             self.test = test
             self.invoker = { callback in
                 test.performRequest(method, path: path, callback: callback, requestModifier: { request in
                     request.headers["Content-Type"] = "application/x-www-form-urlencoded"
-                    request.write(from: URLEncodedString)
+                    request.write(from: urlEncodedString)
                 })
             }
         }
