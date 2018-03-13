@@ -637,7 +637,7 @@ public struct CodableHelpers {
             return nil
         }
         do {
-            return CodableHelpers.isContentTypeJSON(request) ? try request.read(as: InputType.self) : try request.readURLEncoded(as: InputType.self)
+            return try request.read(as: InputType.self)
         } catch {
             Log.error("Failed to read Codable input from request: \(error)")
             response.status(.unprocessableEntity)
