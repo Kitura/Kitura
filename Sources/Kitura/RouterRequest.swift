@@ -181,17 +181,16 @@ public class RouterRequest {
     /// - Throws: An error if any value throws an error during decoding.
     /// - Returns: The instantiated Codable object
     public func read<T: Decodable>(as type: T.Type) throws -> T {
-        if headers["Content-Type"]?.hasPrefix("application/x-www-form-urlencoded")  ?? false {
+        guard !CodableHelpers.isContentTypeURLEncoded(self) else {
             let body = try self.readString()
             guard let urlKeyValuePairs = body?.urlDecodedFieldValuePairs else {
                 throw Error.failedToParseRequestBody(body: body ?? "Failed to read body as String")
             }
             return try QueryDecoder(dictionary: urlKeyValuePairs).decode(T.self)
-        } else {
-            var data = Data()
-            _ = try serverRequest.read(into: &data)
-            return try JSONDecoder().decode(type, from: data)
         }
+        var data = Data()
+        _ = try serverRequest.read(into: &data)
+        return try JSONDecoder().decode(type, from: data)
     }
     
     /// Read the body of the request as String.
