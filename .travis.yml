@@ -29,6 +29,7 @@ matrix:
     - os: osx
       osx_image: xcode9.2
       sudo: required
+      env: JAZZY_ELIGIBLE=true
     - os: linux
       dist: trusty
       sudo: required
