@@ -92,6 +92,7 @@ class RouterElement {
     func process(request: RouterRequest, response: RouterResponse, parameterWalker: RouterParameterWalker, next: @escaping () -> Void) {
         guard let path = request.parsedURLPath.path else {
             Log.error("Failed to process request (path is nil)")
+            next()
             return
         }
 
@@ -146,7 +147,10 @@ class RouterElement {
     /// - Parameter next: The closure called to invoke the next handler or middleware
     ///                     associated with the request.
     private func performSimpleMatch(path: String, request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
-        guard let pattern = pattern else { return }
+        guard let pattern = pattern else {
+            next()
+            return
+        }
 
         let pathToMatch = path.isEmpty ? "/" : path
         var matched: Bool
