@@ -19,7 +19,6 @@ import Foundation
 import KituraContracts
 
 @testable import Kitura
-@testable import KituraNet
 
 class TestCodableRouter: KituraTest {
     static var allTests: [(String, (TestCodableRouter) -> () throws -> Void)] {
@@ -147,6 +146,10 @@ class TestCodableRouter: KituraTest {
             print("POST on /bodyerror/users for user \(user)")
             respondWith(nil, RequestError(.conflict, body: Conflict(on: "id")))
         }
+        router.post("/urlencoded") { (user: User, respondWith: (User?, RequestError?) -> Void) in
+            print("POST on /urlencoded for user \(user)")
+            respondWith(user, nil)
+        }
 
         let user = User(id: 4, name: "David")
         buildServerTest(router, timeout: 30)
@@ -163,6 +166,26 @@ class TestCodableRouter: KituraTest {
             .hasStatus(.conflict)
             .hasContentType(withPrefix: "application/json")
             .hasData(Conflict(on: "id"))
+            
+            .request("post", path: "/urlencoded", urlEncodedString: "id=4&name=David")
+            .hasStatus(.created)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(user)
+            
+            .request("post", path: "/urlencoded", urlEncodedString: "id=4&name=David&extra=yes")
+            .hasStatus(.created)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(user)
+            
+            .request("post", path: "/urlencoded", urlEncodedString: "encoding=valid&failed=match")
+            .hasStatus(.unprocessableEntity)
+            .hasNoData()
+            
+            .request("post", path: "/urlencoded", urlEncodedString: "invalidEncoding")
+            .hasStatus(.unprocessableEntity)
+            .hasNoData()
+            
+
 
             .run()
     }

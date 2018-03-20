@@ -447,12 +447,27 @@ public struct CodableHelpers {
      * - Returns: True if the content type of the request is application/json, false otherwise
      */
     public static func isContentTypeJSON(_ request: RouterRequest) -> Bool {
+        // FIXME: This should be a simple lookup of content type cached on the RouterRequest
         guard let contentType = request.headers["Content-Type"] else {
             return false
         }
         return contentType.hasPrefix("application/json")
     }
-
+    
+    /**
+     * Check if the given request has content type x-www-form-urlencoded
+     *
+     * - Parameter request: The RouterRequest to check
+     * - Returns: True if the content type of the request is application/x-www-form-urlencoded, false otherwise
+     */
+    public static func isContentTypeURLEncoded(_ request: RouterRequest) -> Bool {
+        // FIXME: This should be a simple lookup of content type cached on the RouterRequest
+        guard let contentType = request.headers["Content-Type"] else {
+            return false
+        }
+        return contentType.hasPrefix("application/x-www-form-urlencoded")
+    }
+    
     /**
      * Get the HTTPStatusCode corresponding to the provided RequestError
      *
@@ -699,7 +714,7 @@ public struct CodableHelpers {
      * - Returns: An instance of `InputType` representing the decoded body data.
      */
     public static func readCodableOrSetResponseStatus<InputType: Codable>(_ inputCodableType: InputType.Type, from request: RouterRequest, response: RouterResponse) -> InputType? {
-        guard CodableHelpers.isContentTypeJSON(request) else {
+        guard CodableHelpers.isContentTypeJSON(request) || CodableHelpers.isContentTypeURLEncoded(request) else {
             response.status(.unsupportedMediaType)
             return nil
         }
@@ -716,6 +731,7 @@ public struct CodableHelpers {
             return nil
         }
     }
+    
     /**
      * Read an id from the request URL, setting an error status on the given response in the case of failure.
      *
