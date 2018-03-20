@@ -420,6 +420,7 @@ public struct CodableHelpers {
      * - Returns: True if the content type of the request is application/json, false otherwise
      */
     public static func isContentTypeJSON(_ request: RouterRequest) -> Bool {
+        // FIXME: This should be a simple lookup of content type cached on the RouterRequest
         guard let contentType = request.headers["Content-Type"] else {
             return false
         }
@@ -433,6 +434,7 @@ public struct CodableHelpers {
      * - Returns: True if the content type of the request is application/x-www-form-urlencoded, false otherwise
      */
     public static func isContentTypeURLEncoded(_ request: RouterRequest) -> Bool {
+        // FIXME: This should be a simple lookup of content type cached on the RouterRequest
         guard let contentType = request.headers["Content-Type"] else {
             return false
         }

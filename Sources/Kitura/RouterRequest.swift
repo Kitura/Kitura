@@ -182,6 +182,7 @@ public class RouterRequest {
     /// - Throws: An error if any value throws an error during decoding.
     /// - Returns: The instantiated Codable object
     public func read<T: Decodable>(as type: T.Type) throws -> T {
+        // FIXME: RouterRequest should cache the content type, so that this is just a lookup
         if CodableHelpers.isContentTypeURLEncoded(self) {
             let body = try self.readString()
             guard let urlKeyValuePairs = body?.urlDecodedFieldValuePairs else {
