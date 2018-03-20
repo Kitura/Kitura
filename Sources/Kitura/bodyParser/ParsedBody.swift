@@ -25,8 +25,8 @@ public indirect enum ParsedBody {
 
     /// If the content type was "application/x-www-form-urlencoded" this
     /// associated value will contain a representation of the body as a
-    /// dictionary of key-value pairs.
-    case urlEncoded([String:String])
+    /// dictionary of key-[value] pairs.
+    case urlEncoded([String: [String]])
 
     /// If the content type was "text" this associated value will contain a
     /// representation of the body as a String.
@@ -85,7 +85,7 @@ public indirect enum ParsedBody {
     ///
     /// - Returns: The parsed body as a Dictionary<String, String>, or nil if the body wasn't in
     ///           url encoded form format.
-    public var asURLEncoded: [String:String]? {
+    public var asURLEncoded: [String: [String]]? {
         switch self {
         case .urlEncoded(let body):
             return body
