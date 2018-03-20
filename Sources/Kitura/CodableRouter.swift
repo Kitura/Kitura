@@ -19,6 +19,90 @@ import LoggerAPI
 import KituraNet
 import KituraContracts
 
+/// A protocol to encode Encodable objects
+/// Used by the router to make codable Routing better
+public protocol RouterEncoder {
+    func encode<T>(_ value: T) throws -> Data where T: Encodable
+}
+
+/// A protocol to decode Decodable objects
+/// Used by the router to make codable Routing better
+public protocol RouterDecoder {
+    func decode<T>(_ type: T.Type, from data: Data) throws -> T where T: Decodable
+}
+
+/// conform JSONEncoder to RouterEncoder by default
+extension JSONEncoder: RouterEncoder {}
+/// conform JSONDecoder to RouterDecoder by default
+extension JSONDecoder: RouterDecoder {}
+
+/// A builder block that creates a RouterEncoder object
+public typealias RouterEncoderBuilderBlock = () -> RouterEncoder
+/// A builder block that creates a RouterDecoder object
+public typealias RouterDecoderBuilderBlock = () -> RouterDecoder
+/// A tuple that is used for getting the proper content type, charset and data for codable routers
+public typealias RouterResponseContent = (type: String, charset: String, data: Data)
+
+
+/// A protocol that is used for the type as the CodableRouter delegate
+public protocol CodableRouterDelegate {
+
+    /// The encoder builder block of the delegate object
+    var encoder: RouterEncoderBuilderBlock { get }
+    /// The decoder builder block of the delegate object
+    var decoder: RouterDecoderBuilderBlock { get }
+
+    /**
+     Encodes a custom encodable objects
+
+     - Parameter value: An Encodable object that will be encoded using the encoder
+     */
+    func encode<T>(_ value: T) throws -> RouterResponseContent where T: Encodable
+
+    /**
+     Decodes a custom decodable objects
+
+     - Parameter type: The type that should be returned from the data
+     - Parameter data: The encoded Data object
+     */
+    func decode<T>(_ type: T.Type, from data: Data) throws -> T where T: Decodable
+}
+
+/// Default JSONCodableRouterDelegate used for decoding and encoding JSON objects.
+open class JSONCodableRouterDelegate: CodableRouterDelegate {
+
+    /// Encoder builder block that returns the default JSONEncoder
+    open var encoder: RouterEncoderBuilderBlock { return { return JSONEncoder() } }
+    /// Decoder builder block that returns the default JSONDecoder
+    open var decoder: RouterDecoderBuilderBlock { return { return JSONDecoder() } }
+
+    public init() {
+
+    }
+
+    /**
+     Encodes a custom encodable objects using the JSONEncoder
+
+     - Parameter value: An Encodable object that will be encoded using the encoder
+     - Parameter request: A RouterRequest that can be used to setup custom encoding strategy per route
+     */
+    open func encode<T>(_ value: T) throws -> RouterResponseContent where T: Encodable {
+        let data = try self.encoder().encode(value)
+        return (type: "json", charset: "utf-8", data: data)
+    }
+
+    /**
+     Decodes a custom decodable objects using the JSONDecoder
+
+     - Parameter type: The type that should be returned from the data
+     - Parameter data: The encoded Data object
+     - Parameter request: A RouterRequest that can be used to setup custom decoding strategy per route
+     */
+    open func decode<T>(_ type: T.Type, from data: Data) throws -> T where T: Decodable {
+        return try self.decoder().decode(type, from: data)
+    }
+}
+
 // Codable router
 
 extension Router {
@@ -256,7 +340,7 @@ extension Router {
                 next()
                 return
             }
-            handler(codableInput, CodableHelpers.constructOutResultHandler(successStatus: .created, response: response, completion: next))
+            handler(codableInput, CodableHelpers.constructOutResultHandler(successStatus: .created, response: response, delegate: self.codableDelegate, completion: next))
         }
     }
 
@@ -268,7 +352,7 @@ extension Router {
                 next()
                 return
             }
-            handler(codableInput, CodableHelpers.constructIdentOutResultHandler(successStatus: .created, response: response, completion: next))
+            handler(codableInput, CodableHelpers.constructIdentOutResultHandler(successStatus: .created, response: response, delegate: self.codableDelegate, completion: next))
         }
     }
 
@@ -285,7 +369,7 @@ extension Router {
                 next()
                 return
             }
-            handler(identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+            handler(identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, delegate: self.codableDelegate, completion: next))
         }
     }
 
@@ -302,7 +386,7 @@ extension Router {
                 next()
                 return
             }
-            handler(identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+            handler(identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, delegate: self.codableDelegate, completion: next))
         }
     }
 
@@ -310,7 +394,7 @@ extension Router {
     fileprivate func getSafely<O: Codable>(_ route: String, handler: @escaping SimpleCodableClosure<O>) {
         get(route) { request, response, next in
             Log.verbose("Received GET (single no-identifier) type-safe request")
-            handler(CodableHelpers.constructOutResultHandler(response: response, completion: next))
+            handler(CodableHelpers.constructOutResultHandler(response: response, delegate: self.codableDelegate, completion: next))
         }
     }
 
@@ -318,7 +402,7 @@ extension Router {
     fileprivate func getSafely<O: Codable>(_ route: String, handler: @escaping CodableArrayClosure<O>) {
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request")
-            handler(CodableHelpers.constructOutResultHandler(response: response, completion: next))
+            handler(CodableHelpers.constructOutResultHandler(response: response, delegate: self.codableDelegate, completion: next))
         }
     }
 
@@ -329,7 +413,7 @@ extension Router {
             Log.verbose("Query Parameters: \(request.queryParameters)")
             do {
                 let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
-                handler(query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+                handler(query, CodableHelpers.constructOutResultHandler(response: response, delegate: self.codableDelegate, completion: next))
             } catch {
                 // Http 400 error
                 response.status(.badRequest)
@@ -349,7 +433,7 @@ extension Router {
                 next()
                 return
             }
-            handler(identifier, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+            handler(identifier, CodableHelpers.constructOutResultHandler(response: response, delegate: self.codableDelegate, completion: next))
         }
     }
 
@@ -510,6 +594,7 @@ public struct CodableHelpers {
      * - Parameter successStatus: The `HTTPStatusCode` to use for a successful response (see below)
      * - Parameter response: The `RouterResponse` to which the codable response body (or codable
      *                       error) and status code will be written
+     * - Parameter delegate: The `CodableRouterDelegate` used to encode objects.
      * - Parameter completion: The completion to be called after the when the returned
      *                         closure completes execution.
      * - Returns: The closure to pass to the codable route handler. The closure takes two arguments
@@ -526,7 +611,7 @@ public struct CodableHelpers {
      *            `HTTPStatusCode.unknown` otherwise. If the `RequestError` has a codable `body` then
      *            it will be encoded and sent as the body of the response.
      */
-    public static func constructOutResultHandler<OutputType: Codable>(successStatus: HTTPStatusCode = .OK, response: RouterResponse, completion: @escaping () -> Void) -> CodableResultClosure<OutputType> {
+    public static func constructOutResultHandler<OutputType: Codable>(successStatus: HTTPStatusCode = .OK, response: RouterResponse, delegate: CodableRouterDelegate, completion: @escaping () -> Void) -> CodableResultClosure<OutputType> {
         return { codableOutput, error in
             if let error = error {
                 response.status(httpStatusCode(from: error))
@@ -541,9 +626,9 @@ public struct CodableHelpers {
                 }
             } else {
                 do {
-                    let json = try JSONEncoder().encode(codableOutput)
-                    response.headers.setType("json")
-                    response.send(data: json)
+                    let content = try delegate.encode(codableOutput)
+                    response.headers.setType(content.type, charset: content.charset)
+                    response.send(data: content.data)
                     response.status(successStatus)
                 } catch {
                     Log.error("Could not encode result: \(error)")
@@ -563,8 +648,9 @@ public struct CodableHelpers {
      *         route handler.
      *
      * - Parameter successStatus: The `HTTPStatusCode` to use for a successful response (see below)
-     * - Parameter response: The `RouterResponse` to which the id, codable response body (or codable
+     * - Parameter response: The `RouterResponse` to which the codable response body (or codable
      *                       error) and status code will be written
+     * - Parameter delegate: The `CodableRouterDelegate` used to encode objects.
      * - Parameter completion: The completion to be called after the when the returned
      *                         closure completes execution.
      * - Returns: The closure to pass to the codable route handler. The closure takes three arguments
@@ -583,7 +669,7 @@ public struct CodableHelpers {
      *            `HTTPStatusCode.unknown` otherwise. If the `RequestError` has a codable `body` then
      *            it will be encoded and sent as the body of the response.
      */
-    public static func constructIdentOutResultHandler<IdType: Identifier, OutputType: Codable>(successStatus: HTTPStatusCode = .OK, response: RouterResponse, completion: @escaping () -> Void) -> IdentifierCodableResultClosure<IdType, OutputType> {
+    public static func constructIdentOutResultHandler<IdType: Identifier, OutputType: Codable>(successStatus: HTTPStatusCode = .OK, response: RouterResponse, delegate: CodableRouterDelegate, completion: @escaping () -> Void) -> IdentifierCodableResultClosure<IdType, OutputType> {
         return { id, codableOutput, error in
             if let error = error {
                 response.status(CodableHelpers.httpStatusCode(from: error))
@@ -599,9 +685,9 @@ public struct CodableHelpers {
             } else if let id = id {
                 response.headers["Location"] = String(id.value)
                 do {
-                    let json = try JSONEncoder().encode(codableOutput)
-                    response.headers.setType("json")
-                    response.send(data: json)
+                    let content = try delegate.encode(codableOutput)
+                    response.headers.setType(content.type, charset: content.charset)
+                    response.send(data: content.data)
                     response.status(successStatus)
                 } catch {
                     Log.error("Could not encode result: \(error)")

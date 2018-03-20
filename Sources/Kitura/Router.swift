@@ -53,6 +53,9 @@ import KituraTemplateEngine
 /// ```
 public class Router {
 
+    ///A delegate class for customizing the behavior for encoding Codable classes
+    public var codableDelegate: CodableRouterDelegate = JSONCodableRouterDelegate()
+
     /// Contains the list of routing elements
     var elements: [RouterElement] = []
 
@@ -148,7 +151,7 @@ public class Router {
         }
         setRootPaths(forTemplateEngine: templateEngine)
     }
-    
+
     /// Sets the default templating engine to be used when the extension of a file in the
     /// `viewsPath` doesn't match the extension of one of the registered templating engines.
     /// ### Usage Example: ###
@@ -230,7 +233,7 @@ public class Router {
 
         if url.pathExtension.isEmpty {
             fileExtension = defaultEngineFileExtension ?? ""
-            
+
             resourceWithExtension = url.appendingPathExtension(fileExtension).absoluteString
         } else {
             fileExtension = url.pathExtension
@@ -240,7 +243,7 @@ public class Router {
         return (fileExtension: fileExtension, resourceWithExtension: resourceWithExtension)
     }
     // MARK: Sub router
-    
+
     /// Set up a "sub router" to handle requests. Chaining a route handler onto another router can make it easier to
     /// build a server that serves a large set of paths. Each sub router handles all of the path mappings below its
     /// parent's route path.
@@ -380,7 +383,7 @@ public class Router {
 extension Router : RouterMiddleware {
 
     // MARK: RouterMiddleware extensions
-    
+
     /// Handle an HTTP request as a middleware. Used internally in `Router` to allow for sub routing.
     ///
     /// - Parameter request: The `RouterRequest` object used to work with the incoming

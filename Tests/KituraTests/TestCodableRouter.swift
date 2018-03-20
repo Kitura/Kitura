@@ -20,6 +20,9 @@ import KituraContracts
 
 @testable import Kitura
 
+extension PropertyListEncoder: RouterEncoder {}
+extension PropertyListDecoder: RouterDecoder {}
+
 class TestCodableRouter: KituraTest {
     static var allTests: [(String, (TestCodableRouter) -> () throws -> Void)] {
         return [
@@ -38,7 +41,8 @@ class TestCodableRouter: KituraTest {
             ("testRouteParameters", testRouteParameters),
             ("testCodableRoutesWithBodyParsingFail", testCodableRoutesWithBodyParsingFail),
             ("testCodableGetQueryParameters", testCodableGetQueryParameters),
-            ("testCodableDeleteQueryParameters", testCodableDeleteQueryParameters)
+            ("testCodableDeleteQueryParameters", testCodableDeleteQueryParameters),
+            ("testCodableRouterDelegate", testCodableRouterDelegate)
         ]
     }
 
@@ -61,6 +65,14 @@ class TestCodableRouter: KituraTest {
 
         static func ==(lhs: Conflict, rhs: Conflict) -> Bool {
             return lhs.field == rhs.field
+        }
+    }
+
+    struct Time: Codable, Equatable {
+        let date: Date
+
+        static func ==(lhs: Time, rhs: Time) -> Bool {
+            return lhs.date == rhs.date
         }
     }
 
@@ -646,6 +658,52 @@ class TestCodableRouter: KituraTest {
             .hasStatus(.badRequest)
             .hasNoData()
 
+            .run()
+    }
+
+    func testCodableRouterDelegate() {
+
+        class PropertyListCodableRouterDelegate: CodableRouterDelegate {
+
+            var encoder: RouterEncoderBuilderBlock { return { return PropertyListEncoder() } }
+            var decoder: RouterDecoderBuilderBlock { return { return PropertyListDecoder() } }
+
+            func encode<T>(_ value: T) throws -> RouterResponseContent where T: Encodable {
+                let data = try self.encoder().encode(value)
+                return (type: "application/x-plist", charset: "utf-8", data: data)
+            }
+
+            func decode<T>(_ type: T.Type, from data: Data) throws -> T where T: Decodable {
+                return try self.decoder().decode(type, from: data)
+            }
+        }
+
+        let time = Time(date: Date(timeIntervalSince1970: 1521541363))
+
+        router.codableDelegate = PropertyListCodableRouterDelegate()
+
+        router.get("/time") { (respondWith: (Time?, RequestError?) -> Void) in
+            print("GET on /time")
+            respondWith(time, nil)
+        }
+
+        buildServerTest(router, timeout: 30)
+            .request("get", path: "/time")
+            .hasStatus(.OK)
+            //.hasContentType(withPrefix: "application/x-plist") //NOTE: this won't work because of incomplete list of content types
+            // also I just have to decode the result by hand, because the KituraTestBuilder uses the hardcoded JSONDecoder... :(
+            .has { response in
+                var data = Data()
+                guard let _ = try? response.readAllData(into: &data) else {
+                    XCTFail("Failed to read response data")
+                    return
+                }
+                guard let responseTime = try? PropertyListCodableRouterDelegate().decode(Time.self, from: data) else {
+                    XCTFail("Failed to decode response data")
+                    return
+                }
+                XCTAssertEqual(time, responseTime)
+            }
             .run()
     }
 }
