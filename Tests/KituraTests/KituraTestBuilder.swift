@@ -57,6 +57,7 @@ protocol AssertionTestBuilder: RequestTestBuilder {
     func hasData(_ expected: String) -> Self
     func hasData<T: Decodable & Equatable>(_ expected: [T]) -> Self
     func hasData<T: Decodable & Equatable>(_ expected: T) -> Self
+    func hasData<T: Decodable & Equatable>(_ expected: [[String: T]]) -> Self
 }
 
 // A builder object for constructing tests made up of one or more
@@ -232,6 +233,23 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
             do {
                 let actual = try JSONDecoder().decode(T.self, from: data)
                 XCTAssertEqual(expected, actual, "Response data does not match expected value:\nexpected: \(expected)\nactual: \(actual)")
+            } catch {
+                XCTFail("Failed to decode response data into type \(T.self): \(error)")
+            }
+        }
+    }
+    
+    func hasData<T: Decodable & Equatable>(_ expected: [[String : T]]) -> Self {
+        return has { response in
+            guard let (_, data) = self.readDataOrFail(from: response) else { return }
+            do {
+                let actual = try JSONDecoder().decode([[String : T]].self, from: data)
+                for (index, tuple) in actual.enumerated() {
+                    let tupleKey = Array(tuple.keys)[0]
+                    let expectedKey = Array(expected[index].keys)[0]
+                    XCTAssertEqual(tupleKey, expectedKey, "Response data does not match expected key:\nexpected: \(tupleKey)\nactual: \(expectedKey)")
+                    XCTAssertEqual(tuple[tupleKey], expected[index][expectedKey], "Response data does not match expected value:\nexpected: \(String(describing: tuple[tupleKey]))\nactual: \(String(describing: expected[index][expectedKey]))")
+                }
             } catch {
                 XCTFail("Failed to decode response data into type \(T.self): \(error)")
             }

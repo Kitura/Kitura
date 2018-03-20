@@ -28,6 +28,7 @@ class TestCodableRouter: KituraTest {
             ("testBasicGetSingleton", testBasicGetSingleton),
             ("testBasicGetArray", testBasicGetArray),
             ("testBasicGetSingle", testBasicGetSingle),
+            ("testBasicGetIdentifiersArray", testBasicGetIdentifiersArray),
             ("testBasicDelete", testBasicDelete),
             ("testBasicDeleteSingle", testBasicDeleteSingle),
             ("testBasicPut", testBasicPut),
@@ -287,6 +288,48 @@ class TestCodableRouter: KituraTest {
             .run()
     }
 
+    func testBasicGetIdentifiersArray() {
+        var intTuple = [(Int, User)]()
+        self.userStore.forEach { intTuple.append(($0.0, $0.1)) }
+        let expectedIntData: [[String: User]] = intTuple.map({ [$0.value: $1] })
+        
+        var stringTuple = [(String, User)]()
+        self.userStore.forEach { stringTuple.append((String($0.0), $0.1)) }
+        let expectedStringData: [[String: User]] = stringTuple.map({ [$0.value: $1] })
+        
+        router.get("/int/users") { (respondWith: ([(Int, User)]?, RequestError?) -> Void) in
+            print("GET on /int/users")
+            respondWith(intTuple, nil)
+        }
+        
+        router.get("/string/users") { (respondWith: ([(String, User)]?, RequestError?) -> Void) in
+            print("GET on /string/users")
+            respondWith(stringTuple, nil)
+        }
+        
+        router.get("/error/users") { (respondWith: ([(String, User)]?, RequestError?) -> Void) in
+            print("GET on /error/users")
+            respondWith(nil, .serviceUnavailable)
+        }
+        
+        buildServerTest(router, timeout: 30)
+            .request("get", path: "/int/users")
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(expectedIntData)
+        
+            .request("get", path: "/string/users")
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(expectedStringData)
+            
+            .request("get", path: "/error/users")
+            .hasStatus(.serviceUnavailable)
+            .hasNoData()
+            
+            .run()
+    }
+    
     func testBasicGetSingle() {
         router.get("/users") { (id: Int, respondWith: (User?, RequestError?) -> Void) in
             print("GET on /users/\(id)")
