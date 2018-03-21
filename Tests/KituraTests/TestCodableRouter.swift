@@ -21,9 +21,6 @@ import KituraContracts
 @testable import Kitura
 @testable import KituraNet
 
-extension PropertyListEncoder: RouterEncoder {}
-extension PropertyListDecoder: RouterDecoder {}
-
 class TestCodableRouter: KituraTest {
     static var allTests: [(String, (TestCodableRouter) -> () throws -> Void)] {
         return [
@@ -640,14 +637,26 @@ class TestCodableRouter: KituraTest {
 
     func testCodableRouterDelegate() {
 
-        class PropertyListCodableRouterDelegate: CodableRouterDelegate {
+        class CustomJSONCodableRouterDelegate: CodableRouterDelegate {
 
-            var encoder: RouterEncoderBuilderBlock { return { return PropertyListEncoder() } }
-            var decoder: RouterDecoderBuilderBlock { return { return PropertyListDecoder() } }
+            var encoder: RouterEncoderBuilderBlock {
+                return {
+                    let encoder = JSONEncoder()
+                    encoder.dateEncodingStrategy = .secondsSince1970
+                    return encoder
+                }
+            }
+            var decoder: RouterDecoderBuilderBlock {
+                return {
+                    let decoder = JSONDecoder()
+                    decoder.dateDecodingStrategy = .secondsSince1970
+                    return decoder
+                }
+            }
 
             func encode<T>(_ value: T) throws -> RouterResponseContent where T: Encodable {
                 let data = try self.encoder().encode(value)
-                return (type: "application/x-plist", charset: "utf-8", data: data)
+                return (type: "json", charset: "utf-8", data: data)
             }
 
             func decode<T>(_ type: T.Type, from data: Data) throws -> T where T: Decodable {
@@ -655,9 +664,10 @@ class TestCodableRouter: KituraTest {
             }
         }
 
-        let time = Time(date: Date(timeIntervalSince1970: 1521541363))
+        let seconds: TimeInterval = 1521541363
+        let time = Time(date: Date(timeIntervalSince1970: seconds))
 
-        router.codableDelegate = PropertyListCodableRouterDelegate()
+        router.codableDelegate = CustomJSONCodableRouterDelegate()
 
         router.get("/time") { (respondWith: (Time?, RequestError?) -> Void) in
             print("GET on /time")
@@ -667,18 +677,19 @@ class TestCodableRouter: KituraTest {
         buildServerTest(router, timeout: 30)
             .request("get", path: "/time")
             .hasStatus(.OK)
-            //.hasContentType(withPrefix: "application/x-plist") //NOTE: this won't work because of incomplete list of content types
-            // also I just have to decode the result by hand, because the KituraTestBuilder uses the hardcoded JSONDecoder... :(
+            .hasContentType(withPrefix: "application/json")
+            // NOTE: I just have to decode the result by hand, because the KituraTestBuilder still uses the hardcoded JSONDecoder... :(
             .has { response in
                 var data = Data()
                 guard let _ = try? response.readAllData(into: &data) else {
                     XCTFail("Failed to read response data")
                     return
                 }
-                guard let responseTime = try? PropertyListCodableRouterDelegate().decode(Time.self, from: data) else {
+                guard let responseTime = try? CustomJSONCodableRouterDelegate().decode(Time.self, from: data) else {
                     XCTFail("Failed to decode response data")
                     return
                 }
+                XCTAssertEqual(responseTime.date.timeIntervalSince1970, seconds)
                 XCTAssertEqual(time, responseTime)
             }
             .run()
