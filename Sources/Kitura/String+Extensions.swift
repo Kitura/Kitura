@@ -20,9 +20,20 @@ import LoggerAPI
 /// String Utils
 extension String {
 
-    /// Parses percent encoded string into query parameters
+    /// Parses percent encoded string into query parameters with comma-separated
+    /// values.
     var urlDecodedFieldValuePairs: [String : String] {
-        var result: [String:String] = [:]
+        var result: [String: String] = [:]
+        self.urlDecodedFieldMultiValuePairs.forEach { key, values in
+            result[key] = values.joined(separator: ",")
+        }
+        return result
+    }
+
+    /// Parses percent encoded string int query parameters with values as an
+    /// array rather than a concatcenated string.
+    var urlDecodedFieldMultiValuePairs: [String: [String]] {
+        var result: [String: [String]] = [:]
 
         for item in self.components(separatedBy: "&") {
             guard let range = item.range(of: "=") else {
@@ -34,18 +45,20 @@ extension String {
             let value = String(item[range.upperBound...])
 
             let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
-            if let decodedValue = valueReplacingPlus.removingPercentEncoding {
-                if let value = result[key] {
-                    result[key] = "\(value),\(decodedValue)"
-                } else {
-                    result[key] = decodedValue
-                }
+            var decodedValue = valueReplacingPlus.removingPercentEncoding
+            if decodedValue == nil {
+                Log.warning("Unable to decode query parameter \(key) (coded value: \(valueReplacingPlus)")
+                decodedValue = valueReplacingPlus
+            }
+
+            if let _ = result[key] {
+                result[key]!.append(decodedValue!)
             } else {
-                Log.warning("Unable to decode query parameter \(key)")
-                result[key] = valueReplacingPlus
+                result[key] = [decodedValue!]
             }
         }
 
         return result
     }
+
 }
