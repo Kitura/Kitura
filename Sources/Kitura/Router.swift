@@ -93,6 +93,7 @@ public class Router {
     ///
     /// router.all("/:greeting", middleware: userRouter)
     /// ```
+    /// - Parameters mergeParameters: Optional parameter to specify if the router should be able to access parameters from its parent router. Defaults to `false` is not specifed
     public init(mergeParameters: Bool = false) {
         self.mergeParameters = mergeParameters
 
