@@ -27,7 +27,7 @@ matrix:
       services: docker
       env: DOCKER_IMAGE=ubuntu:16.04
     - os: osx
-      osx_image: xcode9.3beta
+      osx_image: xcode9.3
       sudo: required
       env: JAZZY_ELIGIBLE=true
     - os: linux
