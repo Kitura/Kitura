@@ -76,6 +76,7 @@ public class Router {
     /// the router will be able to access parameters matched in its parent router. For instance, in the example below
     /// if `mergeParameters` is set to `true`, `GET /Hello/Alex` will return "Hello Alex", but if set to `false`
     /// the `greeting` parameter will not be accessible and it will return just " Alex".
+    /// ### Usage Example: ###
     /// ```swift
     /// let router = Router()
     /// let userRouter = Router(mergeParameters: true)
@@ -93,7 +94,7 @@ public class Router {
     ///
     /// router.all("/:greeting", middleware: userRouter)
     /// ```
-    /// - Parameters mergeParameters: Optional parameter to specify if the router should be able to access parameters from its parent router. Defaults to `false` is not specifed
+    /// - Parameters mergeParameters: Optional parameter to specify if the router should be able to access parameters from its parent router. Defaults to `false` is not specifed.
     public init(mergeParameters: Bool = false) {
         self.mergeParameters = mergeParameters
 
