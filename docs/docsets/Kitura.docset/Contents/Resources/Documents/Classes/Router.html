@@ -183,27 +183,6 @@ the appropriate code to handle them. This includes:</p>
 <li>Serving the landing page when someone makes an HTTP request with a path of slash (/).</li>
 </ul>
 
-<p>When initialising a <code>Router</code>, <code>mergeParameters</code> allows you to control whether
-the router will be able to access parameters matched in its parent router. For instance, in the example below
-if <code>mergeParameters</code> is set to <code>true</code>, <code>GET /Hello/Alex</code> will return <q>Hello Alex</q>, but if set to <code>false</code>
-the <code>greeting</code> parameter will not be accessible and it will return just <q>Alex</q>.</p>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
-<span class="k">let</span> <span class="nv">userRouter</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">(</span><span class="nv">mergeParameters</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
-
-<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/:greeting"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">_</span> <span class="k">in</span>
-  <span class="k">let</span> <span class="nv">greeting</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s">"greeting"</span><span class="p">]</span> <span class="p">??</span> <span class="s">""</span>
-  <span class="k">try</span> <span class="n">response</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"</span><span class="se">\(</span><span class="n">greeting</span><span class="se">)</span><span class="s">"</span><span class="p">)</span><span class="o">.</span><span class="nf">end</span><span class="p">()</span>
-<span class="p">}</span>
-
-<span class="n">userRouter</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/:user"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">_</span> <span class="k">in</span>
-  <span class="k">let</span> <span class="nv">user</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s">"user"</span><span class="p">]</span> <span class="p">??</span> <span class="s">""</span>
-  <span class="k">let</span> <span class="nv">greeting</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s">"greeting"</span><span class="p">]</span> <span class="p">??</span> <span class="s">""</span>
-  <span class="k">try</span> <span class="n">response</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"</span><span class="se">\(</span><span class="n">greeting</span><span class="se">)</span><span class="s"> </span><span class="se">\(</span><span class="n">user</span><span class="se">)</span><span class="s">"</span><span class="p">)</span><span class="o">.</span><span class="nf">end</span><span class="p">()</span>
-<span class="p">}</span>
-
-<span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/:greeting"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="n">userRouter</span><span class="p">)</span>
-</code></pre>
-
           </div>
         </section>
 
@@ -259,10 +238,26 @@ same level as the project&rsquo;s <q>Sources</q> directory. Defaults to <q>./Vie
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Initialize a <code>Router</code> instance. The optional <code>mergeParameters</code> parameter allows you to control whether
-the router will be able to access parameters matched in its parent router.</p>
+                        <p>When initialising a <code>Router</code>, <code>mergeParameters</code> allows you to control whether
+the router will be able to access parameters matched in its parent router. For instance, in the example below
+if <code>mergeParameters</code> is set to <code>true</code>, <code>GET /Hello/Alex</code> will return <q>Hello Alex</q>, but if set to <code>false</code>
+the <code>greeting</code> parameter will not be accessible and it will return just <q>Alex</q>.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight swift"><code> <span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">userRouter</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">(</span><span class="nv">mergeParameters</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
+
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/:greeting"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">_</span> <span class="k">in</span>
+  <span class="k">let</span> <span class="nv">greeting</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s">"greeting"</span><span class="p">]</span> <span class="p">??</span> <span class="s">""</span>
+  <span class="k">try</span> <span class="n">response</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"</span><span class="se">\(</span><span class="n">greeting</span><span class="se">)</span><span class="s">"</span><span class="p">)</span><span class="o">.</span><span class="nf">end</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="n">userRouter</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/:user"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">_</span> <span class="k">in</span>
+  <span class="k">let</span> <span class="nv">user</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s">"user"</span><span class="p">]</span> <span class="p">??</span> <span class="s">""</span>
+  <span class="k">let</span> <span class="nv">greeting</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s">"greeting"</span><span class="p">]</span> <span class="p">??</span> <span class="s">""</span>
+  <span class="k">try</span> <span class="n">response</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"</span><span class="se">\(</span><span class="n">greeting</span><span class="se">)</span><span class="s"> </span><span class="se">\(</span><span class="n">user</span><span class="se">)</span><span class="s">"</span><span class="p">)</span><span class="o">.</span><span class="nf">end</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/:greeting"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="n">userRouter</span><span class="p">)</span>
 </code></pre>
 
                       </div>
@@ -273,26 +268,6 @@ the router will be able to access parameters matched in its parent router.</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">mergeParameters</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span></code></pre>
 
                         </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>mergeParameters</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>Optional parameter to specify if the router should be able to access parameters
-                            from its parent router. Defaults to <code>false</code> if not specified.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
                       </div>
                     </section>
                   </div>
@@ -1002,6 +977,73 @@ multiple routes requiring similar parameters which need to be handled in a certa
                               <td>
                                 <div>
                                   <p>An IdentifierSimpleCodableClosure that gets invoked when a request comes to the server.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC3getySS_yySayx_q_tGSg_0A9Contracts12RequestErrorVSgtcc7handlertAG10IdentifierRzs9DecodableR_s9EncodableR_r0_lF"></a>
+                    <a name="//apple_ref/swift/Method/get(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC3getySS_yySayx_q_tGSg_0A9Contracts12RequestErrorVSgtcc7handlertAG10IdentifierRzs9DecodableR_s9EncodableR_r0_lF">get(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Setup a IdentifierCodableArrayClosure on the provided route which will be invoked when a request comes to the server.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code><span class="c1">//User is a struct object that conforms to Codable</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/users"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">respondWith</span><span class="p">:</span> <span class="p">([(</span><span class="kt">Int</span><span class="p">,</span> <span class="kt">User</span><span class="p">)]?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+
+   <span class="o">...</span>
+
+   <span class="nf">respondWith</span><span class="p">([(</span><span class="kt">Int</span><span class="p">,</span> <span class="kt">User</span><span class="p">)],</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="k">get</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">IdentifierCodableArrayClosure</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">,</span> <span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A String specifying the pattern that needs to be matched, in order for the handler to be invoked.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A IdentifierCodableArrayClosure that gets invoked when a request comes to the server.</p>
                                 </div>
                               </td>
                             </tr>
@@ -9618,7 +9660,7 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-03-16)</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-04-12)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

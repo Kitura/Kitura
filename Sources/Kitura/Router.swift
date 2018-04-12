@@ -30,27 +30,6 @@ import KituraTemplateEngine
 ///   - Routing requests to a template engine to generate the appropriate output.
 ///   - Serving the landing page when someone makes an HTTP request with a path of slash (/).
 ///
-/// When initialising a `Router`, `mergeParameters` allows you to control whether
-/// the router will be able to access parameters matched in its parent router. For instance, in the example below
-/// if `mergeParameters` is set to `true`, `GET /Hello/Alex` will return "Hello Alex", but if set to `false`
-/// the `greeting` parameter will not be accessible and it will return just " Alex".
-/// ```swift
-/// let router = Router()
-/// let userRouter = Router(mergeParameters: true)
-///
-/// router.get("/:greeting") { request, response, _ in
-///   let greeting = request.parameters["greeting"] ?? ""
-///   try response.send("\(greeting)").end()
-/// }
-///
-/// userRouter.get("/:user") { request, response, _ in
-///   let user = request.parameters["user"] ?? ""
-///   let greeting = request.parameters["greeting"] ?? ""
-///   try response.send("\(greeting) \(user)").end()
-/// }
-///
-/// router.all("/:greeting", middleware: userRouter)
-/// ```
 public class Router {
 
     /// Contains the list of routing elements
@@ -93,14 +72,29 @@ public class Router {
     /// and used to handle request's url parameters.
     fileprivate var parameterHandlers = [String : [RouterParameterHandler]]()
 
-    /// Initialize a `Router` instance. The optional `mergeParameters` parameter allows you to control whether
-    /// the router will be able to access parameters matched in its parent router.
+    /// When initialising a `Router`, `mergeParameters` allows you to control whether
+    /// the router will be able to access parameters matched in its parent router. For instance, in the example below
+    /// if `mergeParameters` is set to `true`, `GET /Hello/Alex` will return "Hello Alex", but if set to `false`
+    /// the `greeting` parameter will not be accessible and it will return just " Alex".
     /// ### Usage Example: ###
     /// ```swift
-    ///  let router = Router()
+    /// let router = Router()
+    /// let userRouter = Router(mergeParameters: true)
+    ///
+    /// router.get("/:greeting") { request, response, _ in
+    ///   let greeting = request.parameters["greeting"] ?? ""
+    ///   try response.send("\(greeting)").end()
+    /// }
+    ///
+    /// userRouter.get("/:user") { request, response, _ in
+    ///   let user = request.parameters["user"] ?? ""
+    ///   let greeting = request.parameters["greeting"] ?? ""
+    ///   try response.send("\(greeting) \(user)").end()
+    /// }
+    ///
+    /// router.all("/:greeting", middleware: userRouter)
     /// ```
-    /// - Parameter mergeParameters: Optional parameter to specify if the router should be able to access parameters
-    ///                                 from its parent router. Defaults to `false` if not specified.
+    /// - Parameters mergeParameters: Optional parameter to specify if the router should be able to access parameters from its parent router. Defaults to `false` is not specifed.
     public init(mergeParameters: Bool = false) {
         self.mergeParameters = mergeParameters
 
