@@ -190,7 +190,7 @@ public class RouterRequest {
         // FIXME: RouterRequest should cache the content type, so that this is just a lookup
         if CodableHelpers.isContentTypeURLEncoded(self) {
             let body = try self.readString()
-            guard let urlKeyValuePairs = body?.urlDecodedFieldValuePairs else {
+            guard let urlKeyValuePairs = body?.urlDecodedFieldMultiValuePairs else {
                 throw Error.failedToParseRequestBody(body: body ?? "Failed to read body as String")
             }
             return try QueryDecoder(dictionary: urlKeyValuePairs).decode(type)
