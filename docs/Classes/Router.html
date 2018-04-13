@@ -214,9 +214,9 @@ the <code>greeting</code> parameter will not be accessible and it will return ju
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC9viewsPathSSv"></a>
+                    <a name="/s:6Kitura6RouterC9viewsPathSSvp"></a>
                     <a name="//apple_ref/swift/Property/viewsPath" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC9viewsPathSSv">viewsPath</a>
+                    <a class="token" href="#/s:6Kitura6RouterC9viewsPathSSvp">viewsPath</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -321,7 +321,7 @@ the router will be able to access parameters matched in its parent router.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Register a templating engine. The templating engine will handle files in the <code><a href="../Classes/Router.html#/s:6Kitura6RouterC9viewsPathSSv">viewsPath</a></code>
+                        <p>Register a templating engine. The templating engine will handle files in the <code><a href="../Classes/Router.html#/s:6Kitura6RouterC9viewsPathSSvp">viewsPath</a></code>
 that match the file extension it supports.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
@@ -400,7 +400,7 @@ template engine should be used. Defaults to <code>true</code> if not specified.<
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Sets the default templating engine to be used when the extension of a file in the
-<code><a href="../Classes/Router.html#/s:6Kitura6RouterC9viewsPathSSv">viewsPath</a></code> doesn&rsquo;t match the extension of one of the registered templating engines.</p>
+<code><a href="../Classes/Router.html#/s:6Kitura6RouterC9viewsPathSSvp">viewsPath</a></code> doesn&rsquo;t match the extension of one of the registered templating engines.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
 <span class="n">router</span><span class="o">.</span><span class="nf">setDefault</span><span class="p">(</span><span class="nv">templateEngine</span><span class="p">:</span> <span class="kt">MyTemplateEngine</span><span class="p">())</span>
@@ -548,9 +548,9 @@ matched in its parent router. Defaults to <code>false</code> if not specified.</
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC9parameterACSS_SayyAA0B7RequestC_AA0B8ResponseCSSyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC9parameterACSS_yAA0B7RequestC_AA0B8ResponseCSSyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/parameter(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC9parameterACSS_SayyAA0B7RequestC_AA0B8ResponseCSSyyctKcG7handlerdtF">parameter(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC9parameterACSS_yAA0B7RequestC_AA0B8ResponseCSSyyctKc7handlerdtF">parameter(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -632,9 +632,9 @@ multiple routes requiring the same parameter which needs to be handled in a cert
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC9parameterACSaySSG_SayyAA0B7RequestC_AA0B8ResponseCSSyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC9parameterACSaySSG_yAA0B7RequestC_AA0B8ResponseCSSyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/parameter(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC9parameterACSaySSG_SayyAA0B7RequestC_AA0B8ResponseCSSyyctKcG7handlerdtF">parameter(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC9parameterACSaySSG_yAA0B7RequestC_AA0B8ResponseCSSyyctKc7handlerdtF">parameter(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1002,6 +1002,73 @@ multiple routes requiring similar parameters which need to be handled in a certa
                               <td>
                                 <div>
                                   <p>An IdentifierSimpleCodableClosure that gets invoked when a request comes to the server.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC3getySS_yySayx_q_tGSg_0A9Contracts12RequestErrorVSgtcc7handlertAG10IdentifierRzs9DecodableR_s9EncodableR_r0_lF"></a>
+                    <a name="//apple_ref/swift/Method/get(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC3getySS_yySayx_q_tGSg_0A9Contracts12RequestErrorVSgtcc7handlertAG10IdentifierRzs9DecodableR_s9EncodableR_r0_lF">get(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Setup a IdentifierCodableArrayClosure on the provided route which will be invoked when a request comes to the server.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code><span class="c1">//User is a struct object that conforms to Codable</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/users"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">respondWith</span><span class="p">:</span> <span class="p">([(</span><span class="kt">Int</span><span class="p">,</span> <span class="kt">User</span><span class="p">)]?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+
+   <span class="o">...</span>
+
+   <span class="nf">respondWith</span><span class="p">([(</span><span class="kt">Int</span><span class="p">,</span> <span class="kt">User</span><span class="p">)],</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="k">get</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">IdentifierCodableArrayClosure</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">,</span> <span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A String specifying the pattern that needs to be matched, in order for the handler to be invoked.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A IdentifierCodableArrayClosure that gets invoked when a request comes to the server.</p>
                                 </div>
                               </td>
                             </tr>
@@ -1726,9 +1793,9 @@ in the location HTTP header).</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC5errorACSayyAA0B7RequestC_AA0B8ResponseCyyctKcGd_tF"></a>
+                    <a name="/s:6Kitura6RouterC5errorACyAA0B7RequestC_AA0B8ResponseCyyctKcd_tF"></a>
                     <a name="//apple_ref/swift/Method/error(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC5errorACSayyAA0B7RequestC_AA0B8ResponseCyyctKcGd_tF">error(_:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC5errorACyAA0B7RequestC_AA0B8ResponseCyyctKcd_tF">error(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1822,9 +1889,9 @@ of the type <code><a href="../Typealiases.html#/s:6Kitura13RouterHandlera">Route
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC5errorACSayAA0B10Middleware_pGd_tF"></a>
+                    <a name="/s:6Kitura6RouterC5errorAcA0B10Middleware_pd_tF"></a>
                     <a name="//apple_ref/swift/Method/error(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC5errorACSayAA0B10Middleware_pGd_tF">error(_:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC5errorAcA0B10Middleware_pd_tF">error(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1929,9 +1996,9 @@ to be invoked when an error occurs.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC3allACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC3allACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/all(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC3allACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">all(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC3allACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">all(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -2053,9 +2120,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC3allACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC3allACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/all(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC3allACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">all(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC3allACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">all(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -2214,9 +2281,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC3getACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC3getACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/get(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC3getACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">get(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC3getACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">get(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -2338,9 +2405,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC3getACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC3getACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/get(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC3getACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">get(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC3getACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">get(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -2499,9 +2566,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC4headACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC4headACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/head(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC4headACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">head(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC4headACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">head(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -2623,9 +2690,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC4headACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC4headACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/head(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC4headACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">head(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC4headACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">head(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -2784,9 +2851,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC4postACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC4postACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/post(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC4postACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">post(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC4postACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">post(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -2908,9 +2975,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC4postACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC4postACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/post(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC4postACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">post(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC4postACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">post(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -3069,9 +3136,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC3putACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC3putACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/put(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC3putACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">put(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC3putACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">put(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -3193,9 +3260,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC3putACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC3putACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/put(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC3putACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">put(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC3putACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">put(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -3354,9 +3421,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC6deleteACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC6deleteACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/delete(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC6deleteACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">delete(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC6deleteACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">delete(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -3478,9 +3545,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC6deleteACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC6deleteACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/delete(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC6deleteACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">delete(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC6deleteACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">delete(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -3639,9 +3706,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC7optionsACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC7optionsACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/options(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC7optionsACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">options(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC7optionsACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">options(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -3763,9 +3830,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC7optionsACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC7optionsACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/options(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC7optionsACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">options(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC7optionsACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">options(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -3924,9 +3991,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC5traceACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC5traceACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/trace(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC5traceACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">trace(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC5traceACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">trace(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -4048,9 +4115,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC5traceACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC5traceACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/trace(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC5traceACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">trace(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC5traceACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">trace(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -4209,9 +4276,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC4copyACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC4copyACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/copy(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC4copyACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">copy(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC4copyACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">copy(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -4333,9 +4400,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC4copyACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC4copyACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/copy(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC4copyACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">copy(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC4copyACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">copy(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -4494,9 +4561,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC4lockACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC4lockACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/lock(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC4lockACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">lock(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC4lockACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">lock(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -4618,9 +4685,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC4lockACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC4lockACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/lock(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC4lockACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">lock(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC4lockACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">lock(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -4779,9 +4846,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC5mkColACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC5mkColACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/mkCol(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC5mkColACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">mkCol(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC5mkColACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">mkCol(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -4903,9 +4970,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC5mkColACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC5mkColACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/mkCol(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC5mkColACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">mkCol(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC5mkColACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">mkCol(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -5064,9 +5131,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC4moveACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC4moveACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/move(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC4moveACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">move(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC4moveACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">move(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -5188,9 +5255,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC4moveACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC4moveACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/move(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC4moveACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">move(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC4moveACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">move(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -5349,9 +5416,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC5purgeACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC5purgeACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/purge(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC5purgeACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">purge(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC5purgeACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">purge(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -5473,9 +5540,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC5purgeACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC5purgeACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/purge(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC5purgeACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">purge(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC5purgeACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">purge(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -5634,9 +5701,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC8propFindACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC8propFindACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/propFind(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC8propFindACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">propFind(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC8propFindACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">propFind(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -5758,9 +5825,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC8propFindACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC8propFindACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/propFind(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC8propFindACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">propFind(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC8propFindACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">propFind(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -5919,9 +5986,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC9propPatchACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC9propPatchACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/propPatch(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC9propPatchACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">propPatch(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC9propPatchACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">propPatch(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -6043,9 +6110,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC9propPatchACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC9propPatchACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/propPatch(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC9propPatchACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">propPatch(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC9propPatchACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">propPatch(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -6204,9 +6271,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC6unlockACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC6unlockACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/unlock(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC6unlockACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">unlock(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC6unlockACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">unlock(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -6328,9 +6395,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC6unlockACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC6unlockACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/unlock(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC6unlockACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">unlock(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC6unlockACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">unlock(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -6489,9 +6556,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC6reportACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC6reportACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/report(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC6reportACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">report(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC6reportACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">report(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -6613,9 +6680,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC6reportACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC6reportACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/report(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC6reportACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">report(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC6reportACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">report(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -6774,9 +6841,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC10mkActivityACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC10mkActivityACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/mkActivity(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC10mkActivityACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">mkActivity(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC10mkActivityACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">mkActivity(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -6898,9 +6965,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC10mkActivityACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC10mkActivityACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/mkActivity(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC10mkActivityACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">mkActivity(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC10mkActivityACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">mkActivity(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -7059,9 +7126,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC8checkoutACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC8checkoutACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/checkout(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC8checkoutACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">checkout(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC8checkoutACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">checkout(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -7183,9 +7250,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC8checkoutACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC8checkoutACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/checkout(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC8checkoutACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">checkout(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC8checkoutACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">checkout(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -7344,9 +7411,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC5mergeACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC5mergeACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/merge(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC5mergeACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">merge(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC5mergeACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">merge(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -7468,9 +7535,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC5mergeACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC5mergeACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/merge(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC5mergeACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">merge(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC5mergeACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">merge(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -7629,9 +7696,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC7mSearchACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC7mSearchACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/mSearch(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC7mSearchACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">mSearch(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC7mSearchACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">mSearch(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -7753,9 +7820,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC7mSearchACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC7mSearchACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/mSearch(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC7mSearchACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">mSearch(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC7mSearchACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">mSearch(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -7914,9 +7981,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC6notifyACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC6notifyACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/notify(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC6notifyACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">notify(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC6notifyACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">notify(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -8038,9 +8105,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC6notifyACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC6notifyACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/notify(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC6notifyACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">notify(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC6notifyACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">notify(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -8199,9 +8266,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC9subscribeACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC9subscribeACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/subscribe(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC9subscribeACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">subscribe(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC9subscribeACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">subscribe(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -8323,9 +8390,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC9subscribeACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC9subscribeACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/subscribe(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC9subscribeACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">subscribe(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC9subscribeACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">subscribe(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -8484,9 +8551,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC11unsubscribeACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC11unsubscribeACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/unsubscribe(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC11unsubscribeACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">unsubscribe(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC11unsubscribeACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">unsubscribe(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -8608,9 +8675,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC11unsubscribeACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC11unsubscribeACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/unsubscribe(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC11unsubscribeACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">unsubscribe(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC11unsubscribeACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">unsubscribe(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -8769,9 +8836,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC5patchACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC5patchACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/patch(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC5patchACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">patch(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC5patchACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">patch(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -8893,9 +8960,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC5patchACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC5patchACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/patch(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC5patchACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">patch(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC5patchACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">patch(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -9054,9 +9121,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC6searchACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC6searchACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/search(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC6searchACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">search(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC6searchACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">search(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -9178,9 +9245,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC6searchACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC6searchACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/search(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC6searchACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">search(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC6searchACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">search(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -9339,9 +9406,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC7connectACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF"></a>
+                    <a name="/s:6Kitura6RouterC7connectACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF"></a>
                     <a name="//apple_ref/swift/Method/connect(_:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC7connectACSSSg_SayyAA0B7RequestC_AA0B8ResponseCyyctKcG7handlerdtF">connect(_:handler:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC7connectACSSSg_yAA0B7RequestC_AA0B8ResponseCyyctKc7handlerdtF">connect(_:handler:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -9463,9 +9530,9 @@ specified, the handlers will only be invoked if the pattern is matched.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC7connectACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF"></a>
+                    <a name="/s:6Kitura6RouterC7connectACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF"></a>
                     <a name="//apple_ref/swift/Method/connect(_:allowPartialMatch:middleware:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC7connectACSSSg_Sb17allowPartialMatchSayAA0B10Middleware_pG10middlewaredtF">connect(_:allowPartialMatch:middleware:)</a>
+                    <a class="token" href="#/s:6Kitura6RouterC7connectACSSSg_Sb17allowPartialMatchAA0B10Middleware_p10middlewaredtF">connect(_:allowPartialMatch:middleware:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -9618,7 +9685,7 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-03-16)</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-04-13)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
