@@ -45,16 +45,12 @@ extension String {
             let value = String(item[range.upperBound...])
 
             let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
-            var decodedValue = valueReplacingPlus.removingPercentEncoding
-            if decodedValue == nil {
-                Log.warning("Unable to decode query parameter \(key) (coded value: \(valueReplacingPlus)")
-                decodedValue = valueReplacingPlus
+            if let decodedValue = valueReplacingPlus.removingPercentEncoding {
+                result[key, default: []].append(decodedValue)
             }
-
-            if let _ = result[key] {
-                result[key]!.append(decodedValue!)
-            } else {
-                result[key] = [decodedValue!]
+            else {
+                Log.warning("Unable to decode query parameter \(key) (coded value: \(valueReplacingPlus)")
+                result[key, default: []].append(valueReplacingPlus)
             }
         }
 
