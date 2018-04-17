@@ -319,6 +319,7 @@ public class RouterResponse {
     ///
     /// - Parameter status: the HTTP status code.
     /// - Returns: this RouterResponse.
+    /// - Note: *KituraNet* needed to be imported to to set HTTPStatusCode. Can be done in way `response.status(HTTPStatusCode.unauthorized)`
     public func send(status: HTTPStatusCode) -> RouterResponse {
         guard !state.invokedEnd else {
             Log.warning("RouterResponse send(status:) invoked after end() for \(self.request.urlURL)")
