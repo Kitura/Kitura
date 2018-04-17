@@ -19,7 +19,7 @@ import Foundation
 // MARK: StaticFileServer
 
 /// A router middleware that serves static files from a given path.
-public class StaticFileServer: RouterMiddleware {
+open class StaticFileServer: RouterMiddleware {
 
     /// Cache configuration options for StaticFileServer.
     public struct CacheOptions {
@@ -108,7 +108,7 @@ public class StaticFileServer: RouterMiddleware {
     ///                     HTTP request.
     /// - Parameter next: The closure called to invoke the next handler or middleware
     ///                     associated with the request.
-    public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
+    open func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
         defer {
             next()
         }
