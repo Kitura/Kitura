@@ -179,30 +179,9 @@ the appropriate code to handle them. This includes:</p>
 <li>Routing requests to closures of type <code><a href="../Typealiases.html#/s:6Kitura13RouterHandlera">RouterHandler</a></code></li>
 <li>Routing requests to the handle function of classes that implement the
 <code><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></code> protocol.</li>
-<li>Routing requests to a template engine to generate the appropriate output.</li>
+<li>Routing requests to a <code>TemplateEngine</code> to generate the appropriate output.</li>
 <li>Serving the landing page when someone makes an HTTP request with a path of slash (/).</li>
 </ul>
-
-<p>When initialising a <code>Router</code>, <code>mergeParameters</code> allows you to control whether
-the router will be able to access parameters matched in its parent router. For instance, in the example below
-if <code>mergeParameters</code> is set to <code>true</code>, <code>GET /Hello/Alex</code> will return <q>Hello Alex</q>, but if set to <code>false</code>
-the <code>greeting</code> parameter will not be accessible and it will return just <q>Alex</q>.</p>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
-<span class="k">let</span> <span class="nv">userRouter</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">(</span><span class="nv">mergeParameters</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
-
-<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/:greeting"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">_</span> <span class="k">in</span>
-  <span class="k">let</span> <span class="nv">greeting</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s">"greeting"</span><span class="p">]</span> <span class="p">??</span> <span class="s">""</span>
-  <span class="k">try</span> <span class="n">response</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"</span><span class="se">\(</span><span class="n">greeting</span><span class="se">)</span><span class="s">"</span><span class="p">)</span><span class="o">.</span><span class="nf">end</span><span class="p">()</span>
-<span class="p">}</span>
-
-<span class="n">userRouter</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/:user"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">_</span> <span class="k">in</span>
-  <span class="k">let</span> <span class="nv">user</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s">"user"</span><span class="p">]</span> <span class="p">??</span> <span class="s">""</span>
-  <span class="k">let</span> <span class="nv">greeting</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s">"greeting"</span><span class="p">]</span> <span class="p">??</span> <span class="s">""</span>
-  <span class="k">try</span> <span class="n">response</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"</span><span class="se">\(</span><span class="n">greeting</span><span class="se">)</span><span class="s"> </span><span class="se">\(</span><span class="n">user</span><span class="se">)</span><span class="s">"</span><span class="p">)</span><span class="o">.</span><span class="nf">end</span><span class="p">()</span>
-<span class="p">}</span>
-
-<span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/:greeting"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="n">userRouter</span><span class="p">)</span>
-</code></pre>
 
           </div>
         </section>
@@ -259,10 +238,31 @@ same level as the project&rsquo;s <q>Sources</q> directory. Defaults to <q>./Vie
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Initialize a <code>Router</code> instance. The optional <code>mergeParameters</code> parameter allows you to control whether
-the router will be able to access parameters matched in its parent router.</p>
+                        <p>Initialize a <code>Router</code> instance.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight swift"><code> <span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+</code></pre>
+<h4 id='using-code-mergeparameters-code' class='heading'>Using <code>mergeParameters</code>:</h4>
+
+<p>When initialising a <code>Router</code>, <code>mergeParameters</code> allows you to control whether
+the router will be able to access parameters matched in its parent router. For instance, in the example below
+if <code>mergeParameters</code> is set to <code>true</code>, <code>GET /Hello/Alex</code> will return <q>Hello Alex</q>, but if set to <code>false</code>
+the <code>greeting</code> parameter will not be accessible and it will return just <q>Alex</q>.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">userRouter</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">(</span><span class="nv">mergeParameters</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
+
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/:greeting"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">_</span> <span class="k">in</span>
+  <span class="k">let</span> <span class="nv">greeting</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s">"greeting"</span><span class="p">]</span> <span class="p">??</span> <span class="s">""</span>
+  <span class="k">try</span> <span class="n">response</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"</span><span class="se">\(</span><span class="n">greeting</span><span class="se">)</span><span class="s">"</span><span class="p">)</span><span class="o">.</span><span class="nf">end</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="n">userRouter</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/:user"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">_</span> <span class="k">in</span>
+  <span class="k">let</span> <span class="nv">user</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s">"user"</span><span class="p">]</span> <span class="p">??</span> <span class="s">""</span>
+  <span class="k">let</span> <span class="nv">greeting</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s">"greeting"</span><span class="p">]</span> <span class="p">??</span> <span class="s">""</span>
+  <span class="k">try</span> <span class="n">response</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"</span><span class="se">\(</span><span class="n">greeting</span><span class="se">)</span><span class="s"> </span><span class="se">\(</span><span class="n">user</span><span class="se">)</span><span class="s">"</span><span class="p">)</span><span class="o">.</span><span class="nf">end</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/:greeting"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="n">userRouter</span><span class="p">)</span>
 </code></pre>
 
                       </div>
@@ -321,13 +321,19 @@ the router will be able to access parameters matched in its parent router.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Register a templating engine. The templating engine will handle files in the <code><a href="../Classes/Router.html#/s:6Kitura6RouterC9viewsPathSSvp">viewsPath</a></code>
-that match the file extension it supports.</p>
+                        <p>Register a template engine to a given router instance.
+A template engine allows rendering of documents using static templates.</p>
+
+<p>By default the templating engine will handle files in the <code>./Views</code> directory
+that match the file extension it supports. You can change this default location using the <code><a href="../Classes/Router.html#/s:6Kitura6RouterC9viewsPathSSvp">viewsPath</a></code> property.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
 <span class="n">router</span><span class="o">.</span><span class="nf">add</span><span class="p">(</span><span class="nv">templateEngine</span><span class="p">:</span> <span class="kt">MyTemplateEngine</span><span class="p">())</span>
 <span class="n">router</span><span class="o">.</span><span class="nf">add</span><span class="p">(</span><span class="nv">templateEngine</span><span class="p">:</span> <span class="kt">MyOtherTemplateEngine</span><span class="p">(),</span> <span class="nv">forFileExtensions</span><span class="p">:</span> <span class="p">[</span><span class="s">"html"</span><span class="p">],</span> <span class="nv">useDefaultFileExtension</span><span class="p">:</span> <span class="kc">false</span><span class="p">)</span>
 </code></pre>
+
+<p>If multiple different template engines are registered for the same extension, the template engine
+that is registered last will be the one that attempts to render all template files with the chosen extension.</p>
 
                       </div>
                       <div class="declaration">
@@ -405,6 +411,11 @@ template engine should be used. Defaults to <code>true</code> if not specified.<
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
 <span class="n">router</span><span class="o">.</span><span class="nf">setDefault</span><span class="p">(</span><span class="nv">templateEngine</span><span class="p">:</span> <span class="kt">MyTemplateEngine</span><span class="p">())</span>
 </code></pre>
+
+<p>If the template engine doesn&rsquo;t provide a default extension you can provide one using
+<code><a href="../Classes/Router.html#/s:6Kitura6RouterC3addy0A14TemplateEngine0dE0_p08templateE0_SaySSG17forFileExtensionsSb010useDefaultH9ExtensiontF">add(templateEngine:forFileExtensions:useDefaultFileExtension:)</a></code>. If a router instance doesn&rsquo;t
+have a template engine registered that can render the given template file a
+<q>No template engine defined for extension</q> <code>TemplatingError</code> is thrown.</p>
 
                       </div>
                       <div class="declaration">
@@ -9685,7 +9696,7 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-04-13)</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-04-17)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
