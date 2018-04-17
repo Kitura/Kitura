@@ -125,6 +125,27 @@ extension Router {
         getSafely(route, handler: handler)
     }
 
+   /**
+     Setup a (QueryParams, CodableResultClosure) -> Void on the provided route which will be invoked when a request comes to the server.
+
+     ### Usage Example: ###
+     ````
+     // MyQuery is a codable struct defining the supported query parameters
+     // User is a struct object that conforms to Codable
+     router.get("/query") { (query: MyQuery, respondWith: (User?, RequestError?) -> Void) in
+
+     ...
+
+     respondWith(user, nil)
+     }
+     ````
+     - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
+     - Parameter handler: A (QueryParams, CodableResultClosure) -> Void that gets invoked when a request comes to the server.
+     */
+    public func get<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q, @escaping CodableResultClosure<O>) -> Void) {
+        getSafely(route, handler: handler)
+    }
+
     /**
      Setup a NonCodableClosure on the provided route which will be invoked when a request comes to the server.
 
@@ -354,6 +375,23 @@ extension Router {
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
+            do {
+                let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
+                handler(query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+            } catch {
+                // Http 400 error
+                response.status(.badRequest)
+                next()
+            }
+        }
+    }
+
+    // Get w/Query Parameters with CodableResultClosure
+    fileprivate func getSafely<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q, @escaping CodableResultClosure<O>) -> Void) {
+        get(route) { request, response, next in
+            Log.verbose("Received GET (singular) type-safe request with Query Parameters")
+            Log.verbose("Query Parameters: \(request.queryParameters)")
+            // Define result handler
             do {
                 let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
                 handler(query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
