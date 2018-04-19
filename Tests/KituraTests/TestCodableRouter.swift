@@ -39,7 +39,8 @@ class TestCodableRouter: KituraTest {
             ("testRouteParameters", testRouteParameters),
             ("testCodableRoutesWithBodyParsingFail", testCodableRoutesWithBodyParsingFail),
             ("testCodableGetQueryParameters", testCodableGetQueryParameters),
-            ("testCodableDeleteQueryParameters", testCodableDeleteQueryParameters)
+            ("testCodableDeleteQueryParameters", testCodableDeleteQueryParameters),
+            ("testCodablePostSuccessStatuses", testCodablePostSuccessStatuses)
         ]
     }
 
@@ -688,6 +689,42 @@ class TestCodableRouter: KituraTest {
             .request("delete", path: "/query?param=badRequest")
             .hasStatus(.badRequest)
             .hasNoData()
+
+            .run()
+    }
+
+    func testCodablePostSuccessStatuses() {
+        // Test POST success statuses other than .created
+        router.post("/ok") { (user: User, respondWith: (User?, RequestError?) -> Void) in
+            print("POST on /ok for user \(user)")
+            respondWith(user, .ok)
+        }
+        router.post("/partialContent") { (user: User, respondWith: (User?, RequestError?) -> Void) in
+            print("POST on /partialContent for user \(user)")
+            respondWith(user, .partialContent)
+        }
+        router.post("/okId") { (user: User, respondWith: (Int?, User?, RequestError?) -> Void) in
+            print("POST on /okId for user \(user)")
+            respondWith(user.id, user, .ok)
+        }
+
+        let user = User(id: 5, name: "Jane")
+        buildServerTest(router, timeout: 30)//
+            .request("post", path: "/ok", data: user)
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(user)
+
+            .request("post", path: "/partialContent", data: user)
+            .hasStatus(.partialContent)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(user)
+
+            .request("post", path: "/okId", data: user)
+            .hasStatus(.OK)
+            .hasHeader("Location", only: String(user.id))
+            .hasContentType(withPrefix: "application/json")
+            .hasData(user)
 
             .run()
     }
