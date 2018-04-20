@@ -74,7 +74,7 @@ public class RouterResponse {
     private var routerStack: Stack<Router>
 
     /// The associated request
-    let request: RouterRequest
+    public let request: RouterRequest
 
     /// The buffer used for output
     private let buffer = BufferList()
