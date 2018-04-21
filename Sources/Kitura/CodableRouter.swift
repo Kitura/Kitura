@@ -728,6 +728,12 @@ public struct CodableHelpers {
         } catch {
             Log.error("Failed to read Codable input from request: \(error)")
             response.status(.unprocessableEntity)
+            if let decodingError = error as? DecodingError {
+                response.send("Could not decode received JSON: \(decodingError.humanReadableDescription)")
+            } else {
+                // Linux Swift does not send a DecodingError when the JSON is invalid, instead it sends Error "The operation could not be completed"
+                response.send("Could not decode received JSON.")
+            }
             return nil
         }
     }

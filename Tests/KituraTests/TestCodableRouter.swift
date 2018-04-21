@@ -179,11 +179,11 @@ class TestCodableRouter: KituraTest {
             
             .request("post", path: "/urlencoded", urlEncodedString: "encoding=valid&failed=match")
             .hasStatus(.unprocessableEntity)
-            .hasNoData()
+            .hasData()
             
             .request("post", path: "/urlencoded", urlEncodedString: "invalidEncoding")
             .hasStatus(.unprocessableEntity)
-            .hasNoData()
+            .hasData()
             
 
 
