@@ -68,6 +68,18 @@ public indirect enum ParsedBody {
             return nil
         }
     }
+    
+    /// Extract a "raw" body from the `ParsedBody` enum
+    ///
+    /// - Returns: The "raw" body as a Data, or nil if the body wasn't in raw format.
+    public var asRaw: Data? {
+        switch self {
+        case .raw(let body):
+            return body
+        default:
+            return nil
+        }
+    }
 
     /// Extract a "text" body from the `ParsedBody` enum
     ///
