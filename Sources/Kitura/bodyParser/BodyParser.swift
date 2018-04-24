@@ -82,7 +82,7 @@ public class BodyParser: RouterMiddleware {
     /// - Returns: The parsed body.
     public class func parse(_ message: RouterRequest, contentType: String?) -> ParsedBody? {
         guard let contentType = contentType else {
-            return parse(message, parser: RawBodyParser())
+            return nil
         }
 
         if let parser = getParser(contentType: contentType) {
