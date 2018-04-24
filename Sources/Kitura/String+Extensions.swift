@@ -22,10 +22,29 @@ extension String {
 
     /// Parses percent encoded string into query parameters with comma-separated
     /// values.
-    var urlDecodedFieldValuePairs: [String : String] {
+    var urlDecodedFieldValuePairs: [String: String] {
         var result: [String: String] = [:]
-        self.urlDecodedFieldMultiValuePairs.forEach { key, values in
-            result[key] = values.joined(separator: ",")
+        for item in self.components(separatedBy: "&") {
+            guard let range = item.range(of: "=") else {
+                result[item] = nil
+                continue
+            }
+
+            let key = String(item[..<range.lowerBound])
+            let value = String(item[range.upperBound...])
+
+            let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
+            let decodedValue = valueReplacingPlus.removingPercentEncoding
+            if decodedValue == nil {
+                Log.warning("Unable to decode query parameter \(key) (coded value: \(valueReplacingPlus)")
+            }
+            // Append existing value
+            if let existingValue = result[key] {
+                result[key] = "\(existingValue),\(decodedValue ?? valueReplacingPlus)"
+            }
+            else {
+                result[key] = decodedValue ?? valueReplacingPlus
+            }
         }
         return result
     }
