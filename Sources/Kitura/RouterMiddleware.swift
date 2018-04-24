@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import KituraContracts
+
 // MARK: RouterMiddleware protocol
 
 /// Defines the protocol which all Kitura compliant middleware must implement.
@@ -36,3 +38,23 @@ public protocol RouterMiddleware {
     ///          and the user will get a response with a status code of 500.
     func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws
 }
+
+/// Defines the protocol which all Kitura type-safe middleware must implement.
+///
+/// Middleware are class or struct based request handlers. They are often generic
+/// in nature and not tied to a specific request.
+public protocol TypedMiddleware {
+    
+    /// Handle an incoming HTTP request.
+    ///
+    /// - Parameter request: The `RouterRequest` object used to work with the incoming
+    ///                     HTTP request.
+    /// - Parameter response: The `RouterResponse` object used to respond to the
+    ///                     HTTP request.
+    /// - Parameter completion: TODO - document
+    static func handle(request: RouterRequest, response: RouterResponse, completion: @escaping (Self?, RequestError?) -> Void) -> Void
+    
+    /// TODO - document
+    static func describe() -> String
+}
+
