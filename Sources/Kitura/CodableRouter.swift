@@ -355,7 +355,7 @@ extension Router {
             Log.verbose("Received GET (plural) type-safe request with Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
             do {
-                let query: Q = try QueryDecoder(dictionary: request.queryParametersMultiValues).decode(Q.self)
+                let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
                 handler(query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
             } catch {
                 // Http 400 error
@@ -409,7 +409,7 @@ extension Router {
             Log.verbose("Received DELETE type-safe request with Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
             do {
-                let query: Q = try QueryDecoder(dictionary: request.queryParametersMultiValues).decode(Q.self)
+                let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
                 handler(query, CodableHelpers.constructResultHandler(response: response, completion: next))
             } catch {
                 // Http 400 error
