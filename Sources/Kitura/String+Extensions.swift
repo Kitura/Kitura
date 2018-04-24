@@ -25,25 +25,15 @@ extension String {
     var urlDecodedFieldValuePairs: [String: String] {
         var result: [String: String] = [:]
         for item in self.components(separatedBy: "&") {
-            guard let range = item.range(of: "=") else {
-                result[item] = nil
-                continue
-            }
-
-            let key = String(item[..<range.lowerBound])
-            let value = String(item[range.upperBound...])
-
-            let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
-            let decodedValue = valueReplacingPlus.removingPercentEncoding
-            if decodedValue == nil {
-                Log.warning("Unable to decode query parameter \(key) (coded value: \(valueReplacingPlus)")
-            }
-            // Append existing value
-            if let existingValue = result[key] {
-                result[key] = "\(existingValue),\(decodedValue ?? valueReplacingPlus)"
-            }
-            else {
-                result[key] = decodedValue ?? valueReplacingPlus
+            let (key, value) = item.keyAndDecodedValue
+            if let value = value {
+                // If value already exists for this key, append it
+                if let existingValue = result[key] {
+                    result[key] = "\(existingValue),\(value)"
+                }
+                else {
+                    result[key] = value
+                }
             }
         }
         return result
@@ -55,25 +45,31 @@ extension String {
         var result: [String: [String]] = [:]
 
         for item in self.components(separatedBy: "&") {
-            guard let range = item.range(of: "=") else {
-                result[item] = nil
-                continue
-            }
-
-            let key = String(item[..<range.lowerBound])
-            let value = String(item[range.upperBound...])
-
-            let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
-            if let decodedValue = valueReplacingPlus.removingPercentEncoding {
-                result[key, default: []].append(decodedValue)
-            }
-            else {
-                Log.warning("Unable to decode query parameter \(key) (coded value: \(valueReplacingPlus)")
-                result[key, default: []].append(valueReplacingPlus)
+            let (key, value) = item.keyAndDecodedValue
+            if let value = value {
+                result[key, default: []].append(value)
             }
         }
 
         return result
+    }
+
+    /// Splits a URL-encoded key and value pair (e.g. "foo=bar") into a tuple
+    /// with corresponding "key" and "value" values, with the value being URL
+    /// unencoded.
+    var keyAndDecodedValue: (key: String, value: String?) {
+        guard let range = self.range(of: "=") else {
+            return (key: self, value: nil)
+        }
+        let key = String(self[..<range.lowerBound])
+        let value = String(self[range.upperBound...])
+
+        let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
+        let decodedValue = valueReplacingPlus.removingPercentEncoding
+        if decodedValue == nil {
+            Log.warning("Unable to decode query parameter \(key) (coded value: \(valueReplacingPlus)")
+        }
+        return (key: key, value: decodedValue ?? valueReplacingPlus)
     }
 
 }
