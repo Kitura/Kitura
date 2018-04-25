@@ -32,7 +32,7 @@ extension Router {
     }
 
     // Get
-    fileprivate func getSafely<T: TypedMiddleware, O: Codable>(_ route: String, handler userHandlerCode: @escaping (CodableTypedArrayClosure<T, O>)) {
+    fileprivate func getSafely<T: TypedMiddleware, O: Codable>(_ route: String, handler userCodableRequestHandler: @escaping (CodableTypedArrayClosure<T, O>)) {
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request")
             print("Handling Request")
@@ -47,7 +47,7 @@ extension Router {
                     return
                 }
                 print(typedMiddleware)
-                userHandlerCode(typedMiddleware, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+                userCodableRequestHandler(typedMiddleware, CodableHelpers.constructOutResultHandler(response: response, completion: next))
             }
         }
     }
