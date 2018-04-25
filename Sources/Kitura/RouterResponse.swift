@@ -116,6 +116,9 @@ public class RouterResponse {
         }
     }
 
+    /// User info.
+    public var userInfo: [String: Any] = [:]
+    
     /// Initialize a `RouterResponse` instance
     ///
     /// - Parameter response: The `ServerResponse` object to work with
