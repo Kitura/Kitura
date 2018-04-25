@@ -68,11 +68,10 @@ public class BodyParser: RouterMiddleware {
             return next() // the body was already parsed
         }
 
-        guard request.headers["Content-Length"] != nil,
-            let contentType = request.headers["Content-Type"] else {
-                return next()
+        guard request.headers["Content-Length"] != nil else {
+            return next()
         }
-
+        let contentType = request.headers["Content-Type"]
         request.body = BodyParser.parse(request, contentType: contentType)
         next()
     }
@@ -92,7 +91,6 @@ public class BodyParser: RouterMiddleware {
         guard let contentType = contentType else {
             return parse(message, parser: RawBodyParser())
         }
-
         if let parser = getParser(contentType: contentType) {
             return parse(message, parser: parser)
         }
