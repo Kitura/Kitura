@@ -61,7 +61,8 @@ class TestResponse: KituraTest {
             ("testLifecycle", testLifecycle),
             ("testSend", testSend),
             ("testSendAfterEnd", testSendAfterEnd),
-            ("testChangeStatusCodeOnInvokedSend", testChangeStatusCodeOnInvokedSend)
+            ("testChangeStatusCodeOnInvokedSend", testChangeStatusCodeOnInvokedSend),
+            ("testUserInfo", testUserInfo)
         ]
     }
 
