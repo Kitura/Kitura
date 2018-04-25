@@ -280,7 +280,7 @@ class TestResponse: KituraTest {
     func testRawDataNoContentHeaderPost() {
         performServerTest(router) { expectation in
             self.performRequest("post",
-                                path: "/bodytesthardway",
+                                path: "/bodytest",
                                 callback: { response in
                                     guard let response = response else {
                                         XCTFail("Client response was nil on raw data post.")
@@ -291,7 +291,7 @@ class TestResponse: KituraTest {
                                     XCTAssertNotNil(response.headers["Date"], "There was No Date header in the response")
                                     do {
                                         let responseString = try response.readString()
-                                        XCTAssertEqual("Read 2048 bytes", responseString)
+                                        XCTAssertEqual("length: 2048", responseString)
                                     } catch {
                                         XCTFail("Failed posting raw data")
                                     }
