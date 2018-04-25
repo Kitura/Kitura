@@ -1221,7 +1221,7 @@ class TestResponse: KituraTest {
                 } catch {
                     XCTFail("caught error: \(error)")
                 }
-            } else if case let .raw(data) = requestBody {
+            } else if let data = requestBody.asRaw {
                 XCTAssertNotNil(data)
                 let length = "2048"
                 _ = response.send("length: \(length)")
