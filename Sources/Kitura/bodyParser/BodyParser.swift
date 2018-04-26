@@ -24,7 +24,7 @@ import Foundation
 /// The `BodyParser` parses the body of the request prior to sending it to the handler. It reads the Content-Type of the message header and populates the `RouterRequest` body field with a corresponding `ParsedBody` enumeration ("application/json" -> JSON, "text/*" -> text, "application/x-www-form-urlencoded" -> URLEncoded, "multipart/*" -> multiPart, no declared content type -> nil, any other Content-Type -> raw).
 /// In order for the BodyParser to be used it must first be registered with any routes that are interested in the ParsedBody payload.
 ///### Usage Example: ###
-/// In this example, all routes to the BodyParser middleware are registered to the `BodyParser` middleware. An request with "contentType" = application/json is received. It is then parse as JSON and the value for "name" is returned in the response.
+/// In this example, all routes to the BodyParser middleware are registered to the `BodyParser` middleware. A request with "contentType" = application/json is received. It is then parsed as JSON and the value for "name" is returned in the response.
 ///```swift
 ///router.all("/name", middleware: BodyParser())
 ///router.post("/name") { request, response, next in
