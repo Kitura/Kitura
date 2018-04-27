@@ -18,7 +18,7 @@ import Foundation
 import XCTest
 
 @testable import Kitura
-@testable import KituraNet
+@testable import KituraNIO
 
 fileprivate let helloworld = "Hello world"
 // swiftlint:disable variable_name

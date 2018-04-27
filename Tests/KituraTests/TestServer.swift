@@ -17,7 +17,7 @@
 import XCTest
 import Dispatch
 
-import KituraNet
+import KituraNIO
 @testable import Kitura
 
 class TestServer: KituraTest {
@@ -41,57 +41,57 @@ class TestServer: KituraTest {
 
     private func setupServerAndExpectations(expectStart: Bool, expectStop: Bool, expectFail: Bool, httpPort: Int?=nil, fastCgiPort: Int?=nil) {
         let router = Router()
-        let httpServer = Kitura.addHTTPServer(onPort: httpPort ?? self.httpPort, with: router)
-        let fastCgiServer = Kitura.addFastCGIServer(onPort: fastCgiPort ?? self.fastCgiPort, with: router)
+        let httpServer = Kitura.addHTTPServer(onPort: httpPort ?? self.httpPort, with: router, allowPortReuse: true)
+        //let fastCgiServer = Kitura.addFastCGIServer(onPort: fastCgiPort ?? self.fastCgiPort, with: router)
 
         if expectStart {
             let httpStarted = expectation(description: "HTTPServer started()")
-            let fastCgiStarted = expectation(description: "FastCGIServer started()")
+            //let fastCgiStarted = expectation(description: "FastCGIServer started()")
 
             httpServer.started {
                 httpStarted.fulfill()
             }
-            fastCgiServer.started {
-                fastCgiStarted.fulfill()
-            }
+            //fastCgiServer.started {
+            //    fastCgiStarted.fulfill()
+            //}
         } else {
             httpServer.started {
                 XCTFail("httpServer.started should not have been called")
             }
-            fastCgiServer.started {
-                XCTFail("fastCgiServer.started should not have been called")
-            }
+            //fastCgiServer.started {
+            //    XCTFail("fastCgiServer.started should not have been called")
+            //}
         }
 
         if expectStop {
             let httpStopped = expectation(description: "HTTPServer stopped()")
-            let fastCgiStopped = expectation(description: "FastCGIServer stopped()")
+            //let fastCgiStopped = expectation(description: "FastCGIServer stopped()")
 
             httpServer.stopped {
                 httpStopped.fulfill()
             }
-            fastCgiServer.stopped {
-                fastCgiStopped.fulfill()
-            }
+            //fastCgiServer.stopped {
+            //    fastCgiStopped.fulfill()
+            //}
         }
 
         if expectFail {
-            let httpFailed = expectation(description: "HTTPServer failed()")
-            let fastCgiFailed = expectation(description: "FastCGIServer failed()")
+            let httpFailed = expectation(description: "HTTPServer failed()") 
+            //let fastCgiFailed = expectation(description: "FastCGIServer failed()")
 
             httpServer.failed { error in
                 httpFailed.fulfill()
             }
-            fastCgiServer.failed { error in
-                fastCgiFailed.fulfill()
-            }
+            //fastCgiServer.failed { error in
+            //    fastCgiFailed.fulfill()
+            //}
         } else {
             httpServer.failed { error in
                 XCTFail("\(error)")
             }
-            fastCgiServer.failed { error in
-                XCTFail("\(error)")
-            }
+            //fastCgiServer.failed { error in
+            //    XCTFail("\(error)")
+            //}
         }
     }
 
@@ -150,7 +150,7 @@ class TestServer: KituraTest {
             next()
         }
 
-        let server = Kitura.addHTTPServer(onPort: port, with: router)
+        let server = Kitura.addHTTPServer(onPort: port, with: router, allowPortReuse: true)
         server.sslConfig = KituraTest.sslConfig.config
 
         let stopped = DispatchSemaphore(value: 0)

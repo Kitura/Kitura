@@ -19,7 +19,7 @@ import Foundation
 import KituraTemplateEngine
 
 @testable import Kitura
-@testable import KituraNet
+@testable import KituraNIO
 
 #if os(Linux)
 import Glibc
