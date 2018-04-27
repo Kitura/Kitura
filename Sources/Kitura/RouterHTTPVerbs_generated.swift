@@ -74,6 +74,12 @@ extension Router {
     public func all(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
         return routingHelper(.all, pattern: path, allowPartialMatch: allowPartialMatch, middleware: middleware)
     }
+    
+    @discardableResult
+    public func all<T: TypedMiddleware>(_ path: String?=nil, allowPartialMatch: Bool = true, middleware: T) -> Router {
+        return routingHelper(.all, pattern: path, allowPartialMatch: allowPartialMatch, middleware: T)
+    }
+    
     // MARK: Get
 
     /// Setup a set of one or more closures of the type `RouterHandler` that will be

@@ -124,6 +124,15 @@ public class Router {
                                       mergeParameters: mergeParameters))
         return self
     }
+    
+    func routingHelper<T: TypedMiddleware>(_ method: RouterMethod, pattern: String?, allowPartialMatch: Bool = true, middleware: T) -> Router {
+        elements.append(RouterElement(method: method,
+                                      pattern: pattern,
+                                      middleware: T,
+                                      allowPartialMatch: allowPartialMatch,
+                                      mergeParameters: mergeParameters))
+        return self
+    }
 
     // MARK: Template Engine
 
