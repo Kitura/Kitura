@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import KituraNet
+import KituraNIO
 import LoggerAPI
 
 import Foundation
@@ -67,6 +67,7 @@ public class Kitura {
         httpServersAndPorts.append((server: server, port: port))
         return server
     }
+
 
     /// Add a FastCGIServer on a port with a delegate.
     ///

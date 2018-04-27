@@ -15,7 +15,7 @@
  **/
 
 @testable import Kitura
-import KituraNet
+import KituraNIO
 
 import Foundation
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import KituraNet
+import KituraNIO
 import KituraTemplateEngine
 import LoggerAPI
 import Foundation

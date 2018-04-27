@@ -29,7 +29,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/IBM-Swift/Kitura-net.git", from: "2.1.0"),
+        .package(url: "https://github.com/IBM-Swift/Kitura-NIO.git", from: "0.0.0"),
         .package(url: "https://github.com/IBM-Swift/Kitura-TemplateEngine.git", from: "2.0.0"),
         .package(url: "https://github.com/IBM-Swift/KituraContracts.git", from: "0.0.24"),
     ],
@@ -38,7 +38,7 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
             name: "Kitura",
-            dependencies: ["KituraNet", "KituraTemplateEngine", "KituraContracts"]
+            dependencies: ["KituraNIO", "KituraTemplateEngine", "KituraContracts"]
         ),
         .testTarget(
             name: "KituraTests",

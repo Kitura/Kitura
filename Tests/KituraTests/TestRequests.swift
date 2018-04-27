@@ -19,7 +19,7 @@ import Foundation
 import KituraContracts
 
 @testable import Kitura
-@testable import KituraNet
+@testable import KituraNIO
 
 class TestRequests: KituraTest {
 

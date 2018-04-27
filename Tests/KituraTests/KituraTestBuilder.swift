@@ -17,7 +17,7 @@
 import XCTest
 import Kitura
 
-@testable import KituraNet
+@testable import KituraNIO
 @testable import KituraContracts
 
 import Foundation
