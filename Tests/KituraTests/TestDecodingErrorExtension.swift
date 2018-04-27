@@ -43,7 +43,7 @@ class TestDecodingErrorExtension: XCTestCase {
 }
 """
         do {
-            let _ = try JSONDecoder().decode(TestCodable.self, from: testJSON.data(using: .utf8)!)
+            _ = try JSONDecoder().decode(TestCodable.self, from: testJSON.data(using: .utf8)!)
             XCTFail("We should have had a decoding error, but had no error.")
         } catch  {
             if let decodingError = error as? DecodingError {
@@ -70,7 +70,7 @@ class TestDecodingErrorExtension: XCTestCase {
 }
 """
         do {
-            let _ = try JSONDecoder().decode(TestCodable.self, from: testJSON.data(using: .utf8)!)
+            _ = try JSONDecoder().decode(TestCodable.self, from: testJSON.data(using: .utf8)!)
             XCTFail("We should have had a decoding error.")
         } catch  {
             if let decodingError = error as? DecodingError {
@@ -93,7 +93,7 @@ class TestDecodingErrorExtension: XCTestCase {
 }
 """
         do {
-            let _ = try JSONDecoder().decode(TestCodable.self, from: testJSON.data(using: .utf8)!)
+            _ = try JSONDecoder().decode(TestCodable.self, from: testJSON.data(using: .utf8)!)
             XCTFail("We should have had a decoding error.")
         } catch  {
             if let decodingError = error as? DecodingError {
