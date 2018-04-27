@@ -16,7 +16,7 @@
 
 import Foundation
 import LoggerAPI
-import KituraNet
+import KituraNIO
 import KituraContracts
 
 /// Bridge [RequestError](https://ibm-swift.github.io/KituraContracts/Structs/RequestError.html)

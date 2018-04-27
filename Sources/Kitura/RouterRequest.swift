@@ -15,7 +15,7 @@
  */
 
 import Foundation
-import KituraNet
+import KituraNIO
 import Socket
 import LoggerAPI
 import KituraContracts

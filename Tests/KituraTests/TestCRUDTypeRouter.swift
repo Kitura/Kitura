@@ -19,7 +19,7 @@
 //import KituraContracts
 //
 //@testable import Kitura
-//@testable import KituraNet
+//@testable import KituraNIO
 //
 //var employeeStore: [Int: Employee] = [:]
 //
