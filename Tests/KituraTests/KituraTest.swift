@@ -17,7 +17,7 @@
 import XCTest
 import Kitura
 
-@testable import KituraNet
+@testable import KituraNIO
 
 import Foundation
 import Dispatch
@@ -126,6 +126,7 @@ class KituraTest: XCTestCase {
         }
 
         let server = HTTP.createServer()
+        server.allowPortReuse = true
         server.delegate = router
         if useSSL {
             server.sslConfig = KituraTest.sslConfig.config

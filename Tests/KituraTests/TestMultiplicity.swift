@@ -17,7 +17,7 @@
 import XCTest
 
 @testable import Kitura
-@testable import KituraNet
+@testable import KituraNIO
 
 class TestMultiplicity: KituraTest {
 
