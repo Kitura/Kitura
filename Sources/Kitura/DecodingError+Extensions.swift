@@ -1,9 +1,18 @@
-//
-//  DecodingError+Extensions.swift
-//  Kitura
-//
-//  Created by patrick on 21.04.18.
-//
+/*
+ * Copyright IBM Corporation 2018
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 import Foundation
 
@@ -12,10 +21,7 @@ extension DecodingError {
     
     /// Concats the CodingKeys to provide a key path string
     static func codingKeyAsPrefixString(from codingKeys: [CodingKey]) -> String {
-        let codingKeys = codingKeys.map { (key) -> String in
-            return key.stringValue
-        }
-        return codingKeys.joined(separator: ".")
+        return codingKeys.map({ $0.stringValue }).joined(separator: ".")
     }
     
     /// Returns a human readable error description from a `DecodingError`, useful for returning back to clients to help them debug their malformed JSON objects.
@@ -34,7 +40,7 @@ extension DecodingError {
             // Linux does not get to this state but sends an Error "The operation could not be completed" instead. Future proofing this though just in case.
             #if os(Linux)
             // Linux wants a force downcast, MacOS doesn't.
-            if let nsError = context.underlyingError as! NSError?, let detailedError = nsError.userInfo["NSDebugDescription"] as? String {
+            if let nsError = context.underlyingError as? NSError, let detailedError = nsError.userInfo["NSDebugDescription"] as? String {
                 return "The JSON appears to be malformed. \(detailedError)"
             }
             #else
