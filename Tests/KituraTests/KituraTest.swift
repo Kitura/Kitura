@@ -167,9 +167,6 @@ class KituraTest: XCTestCase {
                 allHeaders[headerName] = headerValue
             }
         }
-        if allHeaders["Content-Type"] == nil {
-            allHeaders["Content-Type"] = "text/plain"
-        }
 
         let schema = useSSL ? "https" : "http"
         var options: [ClientRequest.Options] =

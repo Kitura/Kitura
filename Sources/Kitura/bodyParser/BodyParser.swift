@@ -21,12 +21,20 @@ import Foundation
 
 // MARK: BodyParser
 
-/// The `BodyParser` parses the body of the request prior to sending it to the handler. It reads the Content-Type of the message header and populates the `RouterRequest` body field with a `ParsedBody` enumeration (e.g. json, raw, text, urlEncoded).
+/// The `BodyParser` parses the body of the request prior to sending it to the handler. It reads the Content-Type of the message header and populates the `RouterRequest` body field with a corresponding `ParsedBody` enumeration ("application/json" -> JSON, "text/*" -> text, "application/x-www-form-urlencoded" -> URLEncoded, "multipart/*" -> multiPart, missing or any other Content-Type -> raw).
 /// In order for the BodyParser to be used it must first be registered with any routes that are interested in the ParsedBody payload.
 ///### Usage Example: ###
-/// In this example, all routes to the BodyParser middleware are registered to the `BodyParser` middleware.
+/// In this example, all routes to the BodyParser middleware are registered to the `BodyParser` middleware. An request with "contentType" = application/json is received. It is then parse as JSON and the value for "name" is returned in the response.
 ///```swift
-///   router.all("/*", middleware: BodyParser())
+///router.all("/name", middleware: BodyParser())
+///router.post("/name") { request, response, next in
+///    guard let jsonBody = request.body?.asJSON else {
+///        next()
+///        return
+///    }
+///    let name = jsonBody["name"] as? String ?? ""
+///    try response.send("Hello \(name)").end()
+///}
 ///```
 /// __Note__: When using Codable Routing in Kitura 2.x the BodyParser should not be registered to any codable routes (doing so will log the following error "No data in request. Codable routes do not allow the use of a BodyParser." and the route handler will not be executed).
 public class BodyParser: RouterMiddleware {
@@ -60,11 +68,10 @@ public class BodyParser: RouterMiddleware {
             return next() // the body was already parsed
         }
 
-        guard request.headers["Content-Length"] != nil,
-            let contentType = request.headers["Content-Type"] else {
-                return next()
+        guard request.headers["Content-Length"] != nil else {
+            return next()
         }
-
+        let contentType = request.headers["Content-Type"]
         request.body = BodyParser.parse(request, contentType: contentType)
         next()
     }
@@ -82,9 +89,8 @@ public class BodyParser: RouterMiddleware {
     /// - Returns: The parsed body.
     public class func parse(_ message: RouterRequest, contentType: String?) -> ParsedBody? {
         guard let contentType = contentType else {
-            return nil
+            return parse(message, parser: RawBodyParser())
         }
-
         if let parser = getParser(contentType: contentType) {
             return parse(message, parser: parser)
         }

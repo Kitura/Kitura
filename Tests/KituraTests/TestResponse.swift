@@ -195,6 +195,7 @@ class TestResponse: KituraTest {
                 }
                 expectation.fulfill()
             }) {req in
+                req.headers["Content-Type"] = "text/plain"
                 req.write(from: "plover\n")
                 req.write(from: "xyzzy\n")
             }
@@ -269,12 +270,43 @@ class TestResponse: KituraTest {
                 }
                 expectation.fulfill()
             }) {req in
+                req.headers["Content-Type"] = "text/plain"
                 req.write(from: "plover\n")
                 req.write(from: "xyzzy\n")
             }
         }
     }
-
+    
+    func testRawDataNoContentHeaderPost() {
+        performServerTest(router) { expectation in
+            self.performRequest("post",
+                                path: "/bodytest",
+                                callback: { response in
+                                    guard let response = response else {
+                                        XCTFail("Client response was nil on raw data post.")
+                                        expectation.fulfill()
+                                        return
+                                    }
+                                    
+                                    XCTAssertNotNil(response.headers["Date"], "There was No Date header in the response")
+                                    do {
+                                        let responseString = try response.readString()
+                                        XCTAssertEqual("length: 2048", responseString)
+                                    } catch {
+                                        XCTFail("Failed posting raw data")
+                                    }
+                                    expectation.fulfill()
+            },
+                                
+                                requestModifier: { request in
+                                    let length = 2048
+                                    let bytes = [UInt32](repeating: 0, count: length).map { _ in 0 }
+                                    let randomData = Data(bytes: bytes, count: length)
+                                    request.write(from: randomData)
+            })
+        }
+    }
+    
     func testPostRequestUrlEncoded() {
         performServerTest(router) { expectation in
             self.performRequest("post", path: "/bodytest", callback: {response in
