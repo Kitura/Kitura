@@ -27,8 +27,16 @@ extension Router {
     public typealias CodableTypedArrayClosure<T: TypedMiddleware, O: Codable> = ((T, @escaping ([O]?, RequestError?) -> Void) -> Void)
     
     /// TODO - document
+    public typealias CodableTypedClosure<T: TypedMiddleware, I: Codable, O: Codable> = ((T, I, @escaping (O?, RequestError?) -> Void) -> Void)
+
+    /// TODO - document
     public func get<T: TypedMiddleware, O: Codable>(_ route: String, handler: @escaping (CodableTypedArrayClosure<T, O>)) {
         getSafely(route, handler: handler)
+    }
+    
+    /// TODO - document
+    public func post<T: TypedMiddleware, I: Codable, O: Codable>(_ route: String, handler: @escaping CodableTypedClosure<T, I, O>) {
+        postSafely(route, handler: handler)
     }
 
     // Get
@@ -48,6 +56,29 @@ extension Router {
                 }
                 print(typedMiddleware)
                 userCodableRequestHandler(typedMiddleware, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+            }
+        }
+    }
+    
+    // POST
+    fileprivate func postSafely<T: TypedMiddleware, I: Codable, O: Codable>(_ route: String, handler userCodableRequestHandler: @escaping CodableTypedClosure<T, I, O>) {
+        post(route) { request, response, next in
+            Log.verbose("Received POST type-safe request")
+            guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
+                next()
+                return
+            }
+            // Define result handler
+            T.handle(request: request, response: response) { (tMiddle: T?, error: RequestError?) in
+                print("T.handle")
+                guard let typedMiddleware = tMiddle else {
+                    print("no auth")
+                    response.status(CodableHelpers.httpStatusCode(from: error!))
+                    next()
+                    return
+                }
+                print(typedMiddleware)
+                userCodableRequestHandler(typedMiddleware, codableInput, CodableHelpers.constructOutResultHandler(successStatus: .created, response: response, completion: next))
             }
         }
     }
