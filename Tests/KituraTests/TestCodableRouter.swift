@@ -303,6 +303,11 @@ class TestCodableRouter: KituraTest {
             respondWith(intTuple, nil)
         }
         
+        router.get("/int/explicitStatus") { (respondWith: ([(Int, User)]?, RequestError?) -> Void) in
+            print("GET on /int/explicitStatus")
+            respondWith(intTuple, .ok)
+        }
+        
         router.get("/string/users") { (respondWith: ([(String, User)]?, RequestError?) -> Void) in
             print("GET on /string/users")
             respondWith(stringTuple, nil)
@@ -315,6 +320,11 @@ class TestCodableRouter: KituraTest {
         
         buildServerTest(router, timeout: 30)
             .request("get", path: "/int/users")
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(expectedIntData)
+        
+            .request("get", path: "/int/explicitStatus")
             .hasStatus(.OK)
             .hasContentType(withPrefix: "application/json")
             .hasData(expectedIntData)

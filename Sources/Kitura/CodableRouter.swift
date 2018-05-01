@@ -613,8 +613,12 @@ public struct CodableHelpers {
      */
     public static func constructTupleArrayOutResultHandler<Id: Identifier, OutputType: Codable>(successStatus: HTTPStatusCode = .OK, response: RouterResponse, completion: @escaping () -> Void) -> IdentifierCodableArrayResultClosure<Id, OutputType> {
         return { codableOutput, error in
+            var status = successStatus
             if let error = error {
-                response.status(httpStatusCode(from: error))
+                status = httpStatusCode(from: error)
+            }
+            response.status(status)
+            if status.class != .successful, let error = error {
                 do {
                     if let bodyData = try error.encodeBody(.json) {
                         response.headers.setType("json")
@@ -630,7 +634,6 @@ public struct CodableHelpers {
                     let encoded = try JSONEncoder().encode(entries)
                     response.headers.setType("json")
                     response.send(data: encoded)
-                    response.status(successStatus)
                 } catch {
                     Log.error("Could not encode result: \(error)")
                     response.status(.internalServerError)
@@ -677,7 +680,6 @@ public struct CodableHelpers {
             }
             response.status(status)
             if status.class != .successful, let error = error {
-                response.status(CodableHelpers.httpStatusCode(from: error))
                 do {
                     if let bodyData = try error.encodeBody(.json) {
                         response.headers.setType("json")
