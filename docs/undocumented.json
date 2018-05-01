@@ -1,19 +1,12 @@
 {
   "warnings": [
     {
-      "file": "/Users/david/Documents/Kitura/Sources/Kitura/CodableRouter.swift",
-      "line": 415,
-      "symbol": "CodableHelpers",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/david/Documents/Kitura/Sources/Kitura/staticFileServer/StaticFileServer.swift",
+      "file": "/Users/helenmasters/Kitura/Sources/Kitura/staticFileServer/StaticFileServer.swift",
       "line": 75,
       "symbol": "StaticFileServer.absoluteRootPath",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     }
   ],
-  "source_directory": "/Users/david/Documents/Kitura"
+  "source_directory": "/Users/helenmasters/Kitura"
 }
