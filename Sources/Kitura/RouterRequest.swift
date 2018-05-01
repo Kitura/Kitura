@@ -139,7 +139,7 @@ public class RouterRequest {
     public internal(set) var parameters: [String:String] = [:]
 
     /// List of query parameters.
-    public lazy var queryParameters: [String:String] = { [unowned self] in
+    public lazy var queryParameters: [String:[String]] = { [unowned self] in
         return self.urlURL.query?.urlDecodedFieldValuePairs ?? [:]
         }()
 

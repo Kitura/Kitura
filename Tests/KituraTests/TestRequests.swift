@@ -74,7 +74,7 @@ class TestRequests: KituraTest {
             let expectedQueryParams = ["key1" : "value1", "key2" : "value2", "key3" : "value3"]
             XCTAssertEqual(expectedQueryParams.count, request.queryParameters.count, "Unexpected number of query parameters!")
             for (key, value) in expectedQueryParams {
-                guard let v = request.queryParameters[key] else {
+                guard let v = request.queryParameters[key]?.first else {
                     XCTFail("Query parameter \(key) was nil!")
                     return
                 }
@@ -85,7 +85,7 @@ class TestRequests: KituraTest {
 
         // Test query parameters with multiple values assigned to a single key (array)
         router.get("/abc") { request, _, next in
-            let expectedQueryParams = ["key1" : "value1", "key2" : "value2", "key3" : "value3.1,value3.2,value3.3"]
+            let expectedQueryParams = ["key1" : ["value1"], "key2" : ["value2"], "key3" : ["value3.1", "value3.2", "value3.3"]]
             XCTAssertEqual(expectedQueryParams.count, request.queryParameters.count, "Unexpected number of query parameters!")
             for (key, value) in expectedQueryParams {
                 guard let v = request.queryParameters[key] else {
@@ -162,7 +162,7 @@ class TestRequests: KituraTest {
         router.get("/zxcv/:p1") { request, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             let p1 = request.parameters["p1"] ?? "(nil)"
-            let q = request.queryParameters["q"] ?? "(nil)"
+            let q = request.queryParameters["q"]?.first ?? "(nil)"
             let u1 = request.userInfo["u1"] as? NSString ?? "(nil)"
             do {
                 try response.send("<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=\(p1)<p><p>q=\(q)<p><p>u1=\(u1)</body></html>\n\n").end()

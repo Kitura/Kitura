@@ -282,7 +282,7 @@ class TestResponse: KituraTest {
                 XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
                 do {
                     let body = try response?.readString()
-                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> [\"swift\": \"rocks\"] </body></html>\n\n")
+                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> [\"swift\": [\"rocks\"]] </body></html>\n\n")
                 } catch {
                     XCTFail("Error reading body")
                 }
@@ -299,7 +299,7 @@ class TestResponse: KituraTest {
                 XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
                 do {
                     let body = try response?.readString()
-                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> [\"swift\": \"rocks\"] </body></html>\n\n")
+                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> [\"swift\": [\"rocks\"]] </body></html>\n\n")
                 } catch {
                     XCTFail("Error reading body")
                 }
@@ -1121,8 +1121,8 @@ class TestResponse: KituraTest {
 
         router.get("/largeGet") { request, response, _ in
             do {
-                let uint8 = UInt8(request.queryParameters["uint8"] ?? "NA")
-                let count = Int(request.queryParameters["count"] ?? "NA")
+                let uint8 = UInt8(request.queryParameters["uint8"]?.first ?? "NA")
+                let count = Int(request.queryParameters["count"]?.first ?? "NA")
                 if let uint8 = uint8, let count = count {
                     response.send(data: Data(repeating: uint8, count: count))
                 }
@@ -1153,7 +1153,7 @@ class TestResponse: KituraTest {
         router.get("/zxcv/:p1") { request, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             let p1 = request.parameters["p1"] ?? "(nil)"
-            let q = request.queryParameters["q"] ?? "(nil)"
+            let q = request.queryParameters["q"]?.first ?? "(nil)"
             let u1 = request.userInfo["u1"] as? String ?? "(nil)"
             do {
                 try response.send("<!DOCTYPE html><html><body><b>Received /zxcv</b><p><p>p1=\(p1)<p><p>q=\(q)<p><p>u1=\(u1)</body></html>\n\n").end()

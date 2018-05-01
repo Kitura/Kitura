@@ -507,7 +507,7 @@ extension RouterResponse {
 
         let jsonStr = String(data: try encoder.encode(jsonp), encoding: .utf8)!
 
-        let taintedJSCallbackName = request.queryParameters[callbackParameter]
+        let taintedJSCallbackName = request.queryParameters[callbackParameter]?.first
 
         if let jsCallbackName = validJsonpCallbackName(taintedJSCallbackName) {
             headers.setType("js")
