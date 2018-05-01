@@ -234,6 +234,56 @@
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/s:6Kitura14CodableHelpersV23isContentTypeURLEncodedSbAA13RouterRequestCFZ"></a>
+                    <a name="//apple_ref/swift/Method/isContentTypeURLEncoded(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14CodableHelpersV23isContentTypeURLEncodedSbAA13RouterRequestCFZ">isContentTypeURLEncoded(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Check if the given request has content type x-www-form-urlencoded</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">isContentTypeURLEncoded</span><span class="p">(</span><span class="n">_</span> <span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterRequest.html">RouterRequest</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>request</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The RouterRequest to check</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>True if the content type of the request is application/x-www-form-urlencoded, false otherwise</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/s:6Kitura14CodableHelpersV14httpStatusCode0A3Net010HTTPStatusF0O0A9Contracts12RequestErrorV4from_tFZ"></a>
                     <a name="//apple_ref/swift/Method/httpStatusCode(from:)" class="dashAnchor"></a>
                     <a class="token" href="#/s:6Kitura14CodableHelpersV14httpStatusCode0A3Net010HTTPStatusF0O0A9Contracts12RequestErrorV4from_tFZ">httpStatusCode(from:)</a>
@@ -339,7 +389,7 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>The completion to be called after the when the returned
+                                  <p>The completion to be called after the returned
                      closure completes execution.</p>
                                 </div>
                               </td>
@@ -356,9 +406,9 @@
 <pre class="highlight swift"><code>    <span class="kt">If</span> <span class="n">successful</span><span class="p">,</span> <span class="n">the</span> <span class="kt">HTTP</span> <span class="n">status</span> <span class="n">code</span> <span class="n">will</span> <span class="n">be</span> <span class="k">set</span> <span class="n">to</span> <span class="err">`</span><span class="kt">HTTPStatusCode</span><span class="o">.</span><span class="n">noContent</span><span class="err">`</span> <span class="n">and</span> <span class="n">no</span>
     <span class="n">body</span> <span class="n">will</span> <span class="n">be</span> <span class="n">sent</span><span class="o">.</span>
 
-    <span class="kt">If</span> <span class="n">failed</span><span class="p">,</span> <span class="n">the</span> <span class="kt">HTTP</span> <span class="n">status</span> <span class="n">code</span> <span class="n">used</span> <span class="k">for</span> <span class="n">the</span> <span class="n">response</span> <span class="n">wll</span> <span class="n">be</span> <span class="k">set</span> <span class="n">to</span> <span class="n">either</span> <span class="n">the</span>
-    <span class="err">`</span><span class="n">httpCode</span><span class="err">`</span> <span class="n">of</span> <span class="n">the</span> <span class="err">`</span><span class="kt">RequestError</span><span class="err">`</span><span class="p">,</span> <span class="k">if</span> <span class="n">that</span> <span class="k">is</span> <span class="n">a</span> <span class="n">valid</span> <span class="kt">HTTP</span> <span class="n">status</span> <span class="n">code</span><span class="p">,</span> <span class="n">or</span>
-    <span class="err">`</span><span class="kt">HTTPStatusCode</span><span class="o">.</span><span class="n">unknown</span><span class="err">`</span> <span class="n">otherwise</span><span class="o">.</span> <span class="kt">If</span> <span class="n">the</span> <span class="err">`</span><span class="kt">RequestError</span><span class="err">`</span> <span class="n">has</span> <span class="n">a</span> <span class="n">codable</span> <span class="err">`</span><span class="n">body</span><span class="err">`</span> <span class="n">then</span>
+    <span class="kt">If</span> <span class="n">failed</span><span class="p">,</span> <span class="n">the</span> <span class="kt">HTTP</span> <span class="n">status</span> <span class="n">code</span> <span class="n">used</span> <span class="k">for</span> <span class="n">the</span> <span class="n">response</span> <span class="n">will</span> <span class="n">be</span> <span class="k">set</span> <span class="n">to</span> <span class="n">either</span> <span class="n">the</span>
+    <span class="p">`</span><span class="nv">httpCode</span><span class="p">`</span> <span class="n">of</span> <span class="n">the</span> <span class="p">`</span><span class="nv">RequestError</span><span class="p">`,</span> <span class="k">if</span> <span class="n">that</span> <span class="k">is</span> <span class="n">a</span> <span class="n">valid</span> <span class="kt">HTTP</span> <span class="n">status</span> <span class="n">code</span><span class="p">,</span> <span class="n">or</span>
+    <span class="err">`</span><span class="kt">HTTPStatusCode</span><span class="o">.</span><span class="n">unknown</span><span class="err">`</span> <span class="n">otherwise</span><span class="o">.</span> <span class="kt">If</span> <span class="n">the</span> <span class="p">`</span><span class="nv">RequestError</span><span class="p">`</span> <span class="n">has</span> <span class="n">a</span> <span class="n">codable</span> <span class="p">`</span><span class="nv">body</span><span class="p">`</span> <span class="n">then</span>
     <span class="n">it</span> <span class="n">will</span> <span class="n">be</span> <span class="n">encoded</span> <span class="n">and</span> <span class="n">sent</span> <span class="k">as</span> <span class="n">the</span> <span class="n">body</span> <span class="n">of</span> <span class="n">the</span> <span class="n">response</span><span class="o">.</span>
 </code></pre>
                       </div>
@@ -434,7 +484,7 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>The completion to be called after the when the returned
+                                  <p>The completion to be called after the returned
                      closure completes execution.</p>
                                 </div>
                               </td>
@@ -448,13 +498,109 @@
         <code>(OutputType?, RequestError?)</code>.
         If the second (error) argument is <code>nil</code> then the first (body) argument should be non-<code>nil</code>
         and the response will be considered successful. If the second (error) argument is non-<code>nil</code>
-        then the first argument is ignore and the response is considered failed.</p>
-<pre class="highlight swift"><code>    <span class="kt">If</span> <span class="n">successful</span><span class="p">,</span> <span class="n">the</span> <span class="kt">HTTP</span> <span class="n">status</span> <span class="n">code</span> <span class="n">will</span> <span class="n">be</span> <span class="k">set</span> <span class="n">to</span> <span class="err">`</span><span class="n">successStatus</span><span class="err">`</span> <span class="n">and</span> <span class="n">the</span> <span class="n">first</span> <span class="n">argument</span>
-    <span class="n">will</span> <span class="n">be</span> <span class="n">encoded</span> <span class="n">and</span> <span class="n">sent</span> <span class="k">as</span> <span class="n">the</span> <span class="n">body</span> <span class="n">of</span> <span class="n">the</span> <span class="n">response</span><span class="o">.</span>
+        then the first argument is ignored and the response is considered failed.</p>
+<pre class="highlight swift"><code>    <span class="kt">If</span> <span class="n">successful</span><span class="p">,</span> <span class="n">the</span> <span class="kt">HTTP</span> <span class="n">status</span> <span class="n">code</span> <span class="n">will</span> <span class="n">be</span> <span class="k">set</span> <span class="n">to</span> <span class="p">`</span><span class="nv">successStatus</span><span class="p">`</span> <span class="n">and</span> <span class="n">the</span> <span class="p">`</span><span class="nv">CodableResultClosure</span><span class="p">`</span> <span class="n">output</span>
+    <span class="n">will</span> <span class="n">be</span> <span class="kt">JSON</span> <span class="n">encoded</span> <span class="n">and</span> <span class="n">sent</span> <span class="k">as</span> <span class="n">the</span> <span class="n">body</span> <span class="n">of</span> <span class="n">the</span> <span class="n">response</span><span class="o">.</span>
 
-    <span class="kt">If</span> <span class="n">failed</span><span class="p">,</span> <span class="n">the</span> <span class="kt">HTTP</span> <span class="n">status</span> <span class="n">code</span> <span class="n">used</span> <span class="k">for</span> <span class="n">the</span> <span class="n">response</span> <span class="n">wll</span> <span class="n">be</span> <span class="k">set</span> <span class="n">to</span> <span class="n">either</span> <span class="n">the</span>
-    <span class="err">`</span><span class="n">httpCode</span><span class="err">`</span> <span class="n">of</span> <span class="n">the</span> <span class="err">`</span><span class="kt">RequestError</span><span class="err">`</span><span class="p">,</span> <span class="k">if</span> <span class="n">that</span> <span class="k">is</span> <span class="n">a</span> <span class="n">valid</span> <span class="kt">HTTP</span> <span class="n">status</span> <span class="n">code</span><span class="p">,</span> <span class="n">or</span>
-    <span class="err">`</span><span class="kt">HTTPStatusCode</span><span class="o">.</span><span class="n">unknown</span><span class="err">`</span> <span class="n">otherwise</span><span class="o">.</span> <span class="kt">If</span> <span class="n">the</span> <span class="err">`</span><span class="kt">RequestError</span><span class="err">`</span> <span class="n">has</span> <span class="n">a</span> <span class="n">codable</span> <span class="err">`</span><span class="n">body</span><span class="err">`</span> <span class="n">then</span>
+    <span class="kt">If</span> <span class="n">failed</span><span class="p">,</span> <span class="n">the</span> <span class="kt">HTTP</span> <span class="n">status</span> <span class="n">code</span> <span class="n">used</span> <span class="k">for</span> <span class="n">the</span> <span class="n">response</span> <span class="n">will</span> <span class="n">be</span> <span class="k">set</span> <span class="n">to</span> <span class="n">either</span> <span class="n">the</span>
+    <span class="p">`</span><span class="nv">httpCode</span><span class="p">`</span> <span class="n">of</span> <span class="n">the</span> <span class="p">`</span><span class="nv">RequestError</span><span class="p">`,</span> <span class="k">if</span> <span class="n">that</span> <span class="k">is</span> <span class="n">a</span> <span class="n">valid</span> <span class="kt">HTTP</span> <span class="n">status</span> <span class="n">code</span><span class="p">,</span> <span class="n">or</span>
+    <span class="err">`</span><span class="kt">HTTPStatusCode</span><span class="o">.</span><span class="n">unknown</span><span class="err">`</span> <span class="n">otherwise</span><span class="o">.</span> <span class="kt">If</span> <span class="n">the</span> <span class="p">`</span><span class="nv">RequestError</span><span class="p">`</span> <span class="n">has</span> <span class="n">a</span> <span class="n">codable</span> <span class="p">`</span><span class="nv">body</span><span class="p">`</span> <span class="n">then</span>
+    <span class="n">it</span> <span class="n">will</span> <span class="n">be</span> <span class="n">encoded</span> <span class="n">and</span> <span class="n">sent</span> <span class="k">as</span> <span class="n">the</span> <span class="n">body</span> <span class="n">of</span> <span class="n">the</span> <span class="n">response</span><span class="o">.</span>
+</code></pre>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura14CodableHelpersV35constructTupleArrayOutResultHandlerySayx_q_tGSg_0A9Contracts12RequestErrorVSgtc0A3Net14HTTPStatusCodeO13successStatus_AA14RouterResponseC8responseyyc10completiontAG10IdentifierRzs9DecodableR_s9EncodableR_r0_lFZ"></a>
+                    <a name="//apple_ref/swift/Method/constructTupleArrayOutResultHandler(successStatus:response:completion:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14CodableHelpersV35constructTupleArrayOutResultHandlerySayx_q_tGSg_0A9Contracts12RequestErrorVSgtc0A3Net14HTTPStatusCodeO13successStatus_AA14RouterResponseC8responseyyc10completiontAG10IdentifierRzs9DecodableR_s9EncodableR_r0_lFZ">constructTupleArrayOutResultHandler(successStatus:response:completion:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Create a closure that can be called by a codable route handler that
+ provides an array of tuples of (Identifier, Codable) and an optional <code>RequestError</code></p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    <p>This function is intended for use by the codable router or extensions
+     thereof. It will create a closure that can be passed to the registered
+     route handler.</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="n">constructTupleArrayOutResultHandler</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">OutputType</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">successStatus</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura14HTTPStatusCodea">HTTPStatusCode</a></span> <span class="o">=</span> <span class="o">.</span><span class="kt">OK</span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterResponse.html">RouterResponse</a></span><span class="p">,</span> <span class="nv">completion</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">IdentifierCodableArrayResultClosure</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">,</span> <span class="kt">OutputType</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>successStatus</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code><a href="../Typealiases.html#/s:6Kitura14HTTPStatusCodea">HTTPStatusCode</a></code> to use for a successful response (see below)</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>response</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code><a href="../Classes/RouterResponse.html">RouterResponse</a></code> to which the codable response body (or codable
+                   error) and status code will be written</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completion</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The completion to be called after the returned
+                     closure completes execution.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The closure to pass to the codable route handler. The closure takes two arguments
+        <code>([(Id, OutputType)]?, RequestError?)</code>.
+        If the second (error) argument is <code>nil</code> then the first argument (body) should be non-<code>nil</code>
+        and the response will be considered successful. If the second (error) argument is non-<code>nil</code>
+        then the first argument is ignored and the response is considered failed.</p>
+<pre class="highlight swift"><code>    <span class="kt">If</span> <span class="n">successful</span><span class="p">,</span> <span class="n">the</span> <span class="kt">HTTP</span> <span class="n">status</span> <span class="n">code</span> <span class="n">will</span> <span class="n">be</span> <span class="k">set</span> <span class="n">to</span> <span class="p">`</span><span class="nv">successStatus</span><span class="p">`</span> <span class="n">and</span> <span class="n">the</span> <span class="p">`</span><span class="nv">IdentifierCodableArrayResultClosure</span><span class="p">`</span> <span class="n">output</span>
+    <span class="n">will</span> <span class="n">be</span> <span class="kt">JSON</span> <span class="n">encoded</span> <span class="k">as</span> <span class="n">an</span> <span class="n">array</span> <span class="n">of</span> <span class="n">dictionaries</span><span class="p">,</span> <span class="n">which</span> <span class="k">is</span> <span class="n">then</span> <span class="n">sent</span> <span class="k">as</span> <span class="n">the</span> <span class="n">body</span> <span class="n">of</span> <span class="n">the</span> <span class="n">response</span><span class="o">.</span>
+
+    <span class="kt">If</span> <span class="n">failed</span><span class="p">,</span> <span class="n">the</span> <span class="kt">HTTP</span> <span class="n">status</span> <span class="n">code</span> <span class="n">used</span> <span class="k">for</span> <span class="n">the</span> <span class="n">response</span> <span class="n">will</span> <span class="n">be</span> <span class="k">set</span> <span class="n">to</span> <span class="n">either</span> <span class="n">the</span>
+    <span class="p">`</span><span class="nv">httpCode</span><span class="p">`</span> <span class="n">of</span> <span class="n">the</span> <span class="p">`</span><span class="nv">RequestError</span><span class="p">`,</span> <span class="k">if</span> <span class="n">that</span> <span class="k">is</span> <span class="n">a</span> <span class="n">valid</span> <span class="kt">HTTP</span> <span class="n">status</span> <span class="n">code</span><span class="p">,</span> <span class="n">or</span>
+    <span class="err">`</span><span class="kt">HTTPStatusCode</span><span class="o">.</span><span class="n">unknown</span><span class="err">`</span> <span class="n">otherwise</span><span class="o">.</span> <span class="kt">If</span> <span class="n">the</span> <span class="p">`</span><span class="nv">RequestError</span><span class="p">`</span> <span class="n">has</span> <span class="n">a</span> <span class="n">codable</span> <span class="p">`</span><span class="nv">body</span><span class="p">`</span> <span class="n">then</span>
     <span class="n">it</span> <span class="n">will</span> <span class="n">be</span> <span class="n">encoded</span> <span class="n">and</span> <span class="n">sent</span> <span class="k">as</span> <span class="n">the</span> <span class="n">body</span> <span class="n">of</span> <span class="n">the</span> <span class="n">response</span><span class="o">.</span>
 </code></pre>
                       </div>
@@ -530,7 +676,7 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>The completion to be called after the when the returned
+                                  <p>The completion to be called after the returned
                      closure completes execution.</p>
                                 </div>
                               </td>
@@ -546,13 +692,13 @@
         should both be non-<code>nil</code> and the response will be considered successful. If the third
         (error) argument is non-<code>nil</code> then the first and second arguments are ignored and the
         response is considered failed.</p>
-<pre class="highlight swift"><code>    <span class="kt">If</span> <span class="n">successful</span><span class="p">,</span> <span class="n">the</span> <span class="kt">HTTP</span> <span class="n">status</span> <span class="n">code</span> <span class="n">will</span> <span class="n">be</span> <span class="k">set</span> <span class="n">to</span> <span class="err">`</span><span class="n">successStatus</span><span class="err">`</span><span class="p">,</span> <span class="n">the</span> <span class="n">first</span> <span class="n">argument</span>
-    <span class="n">will</span> <span class="n">be</span> <span class="n">encoded</span> <span class="n">and</span> <span class="n">sent</span> <span class="k">as</span> <span class="n">the</span> <span class="n">body</span> <span class="n">of</span> <span class="n">the</span> <span class="n">response</span><span class="p">,</span> <span class="n">and</span> <span class="n">the</span> <span class="err">`</span><span class="kt">Location</span><span class="err">`</span> <span class="n">header</span> <span class="n">of</span> <span class="n">the</span>
-    <span class="n">response</span> <span class="n">will</span> <span class="n">be</span> <span class="k">set</span> <span class="n">to</span> <span class="n">the</span> <span class="nf">id</span> <span class="p">(</span><span class="n">by</span> <span class="n">converting</span> <span class="n">it</span> <span class="n">to</span> <span class="n">a</span> <span class="err">`</span><span class="kt">String</span><span class="err">`</span> <span class="n">using</span> <span class="n">its</span> <span class="err">`</span><span class="n">value</span><span class="err">`</span> <span class="n">property</span><span class="p">)</span><span class="o">.</span>
+<pre class="highlight swift"><code>    <span class="kt">If</span> <span class="n">successful</span><span class="p">,</span> <span class="n">the</span> <span class="kt">HTTP</span> <span class="n">status</span> <span class="n">code</span> <span class="n">will</span> <span class="n">be</span> <span class="k">set</span> <span class="n">to</span> <span class="p">`</span><span class="nv">successStatus</span><span class="p">`,</span> <span class="n">the</span> <span class="p">`</span><span class="nv">IdentifierCodableResultClosure</span><span class="p">`</span> <span class="n">output</span>
+    <span class="n">will</span> <span class="n">be</span> <span class="kt">JSON</span> <span class="n">encoded</span> <span class="n">and</span> <span class="n">sent</span> <span class="k">as</span> <span class="n">the</span> <span class="n">body</span> <span class="n">of</span> <span class="n">the</span> <span class="n">response</span><span class="p">,</span> <span class="n">and</span> <span class="n">the</span> <span class="p">`</span><span class="nv">Location</span><span class="p">`</span> <span class="n">header</span> <span class="n">of</span> <span class="n">the</span>
+    <span class="n">response</span> <span class="n">will</span> <span class="n">be</span> <span class="k">set</span> <span class="n">to</span> <span class="n">the</span> <span class="nf">id</span> <span class="p">(</span><span class="n">by</span> <span class="n">converting</span> <span class="n">it</span> <span class="n">to</span> <span class="n">a</span> <span class="p">`</span><span class="nv">String</span><span class="p">`</span> <span class="n">using</span> <span class="n">its</span> <span class="p">`</span><span class="nv">value</span><span class="p">`</span> <span class="n">property</span><span class="p">)</span><span class="o">.</span>
 
-    <span class="kt">If</span> <span class="n">failed</span><span class="p">,</span> <span class="n">the</span> <span class="kt">HTTP</span> <span class="n">status</span> <span class="n">code</span> <span class="n">used</span> <span class="k">for</span> <span class="n">the</span> <span class="n">response</span> <span class="n">wll</span> <span class="n">be</span> <span class="k">set</span> <span class="n">to</span> <span class="n">either</span> <span class="n">the</span>
-    <span class="err">`</span><span class="n">httpCode</span><span class="err">`</span> <span class="n">of</span> <span class="n">the</span> <span class="err">`</span><span class="kt">RequestError</span><span class="err">`</span><span class="p">,</span> <span class="k">if</span> <span class="n">that</span> <span class="k">is</span> <span class="n">a</span> <span class="n">valid</span> <span class="kt">HTTP</span> <span class="n">status</span> <span class="n">code</span><span class="p">,</span> <span class="n">or</span>
-    <span class="err">`</span><span class="kt">HTTPStatusCode</span><span class="o">.</span><span class="n">unknown</span><span class="err">`</span> <span class="n">otherwise</span><span class="o">.</span> <span class="kt">If</span> <span class="n">the</span> <span class="err">`</span><span class="kt">RequestError</span><span class="err">`</span> <span class="n">has</span> <span class="n">a</span> <span class="n">codable</span> <span class="err">`</span><span class="n">body</span><span class="err">`</span> <span class="n">then</span>
+    <span class="kt">If</span> <span class="n">failed</span><span class="p">,</span> <span class="n">the</span> <span class="kt">HTTP</span> <span class="n">status</span> <span class="n">code</span> <span class="n">used</span> <span class="k">for</span> <span class="n">the</span> <span class="n">response</span> <span class="n">will</span> <span class="n">be</span> <span class="k">set</span> <span class="n">to</span> <span class="n">either</span> <span class="n">the</span>
+    <span class="p">`</span><span class="nv">httpCode</span><span class="p">`</span> <span class="n">of</span> <span class="n">the</span> <span class="p">`</span><span class="nv">RequestError</span><span class="p">`,</span> <span class="k">if</span> <span class="n">that</span> <span class="k">is</span> <span class="n">a</span> <span class="n">valid</span> <span class="kt">HTTP</span> <span class="n">status</span> <span class="n">code</span><span class="p">,</span> <span class="n">or</span>
+    <span class="err">`</span><span class="kt">HTTPStatusCode</span><span class="o">.</span><span class="n">unknown</span><span class="err">`</span> <span class="n">otherwise</span><span class="o">.</span> <span class="kt">If</span> <span class="n">the</span> <span class="p">`</span><span class="nv">RequestError</span><span class="p">`</span> <span class="n">has</span> <span class="n">a</span> <span class="n">codable</span> <span class="p">`</span><span class="nv">body</span><span class="p">`</span> <span class="n">then</span>
     <span class="n">it</span> <span class="n">will</span> <span class="n">be</span> <span class="n">encoded</span> <span class="n">and</span> <span class="n">sent</span> <span class="k">as</span> <span class="n">the</span> <span class="n">body</span> <span class="n">of</span> <span class="n">the</span> <span class="n">response</span><span class="o">.</span>
 </code></pre>
                       </div>
@@ -734,7 +880,7 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-03-16)</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-04-17)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
