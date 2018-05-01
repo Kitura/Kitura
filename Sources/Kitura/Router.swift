@@ -27,30 +27,10 @@ import KituraTemplateEngine
 ///   - Routing requests to closures of type `RouterHandler`
 ///   - Routing requests to the handle function of classes that implement the
 ///    `RouterMiddleware` protocol.
-///   - Routing requests to a template engine to generate the appropriate output.
+///   - Routing requests to a `TemplateEngine` to generate the appropriate output.
 ///   - Serving the landing page when someone makes an HTTP request with a path of slash (/).
 ///
-/// When initialising a `Router`, `mergeParameters` allows you to control whether
-/// the router will be able to access parameters matched in its parent router. For instance, in the example below
-/// if `mergeParameters` is set to `true`, `GET /Hello/Alex` will return "Hello Alex", but if set to `false`
-/// the `greeting` parameter will not be accessible and it will return just " Alex".
-/// ```swift
-/// let router = Router()
-/// let userRouter = Router(mergeParameters: true)
-///
-/// router.get("/:greeting") { request, response, _ in
-///   let greeting = request.parameters["greeting"] ?? ""
-///   try response.send("\(greeting)").end()
-/// }
-///
-/// userRouter.get("/:user") { request, response, _ in
-///   let user = request.parameters["user"] ?? ""
-///   let greeting = request.parameters["greeting"] ?? ""
-///   try response.send("\(greeting) \(user)").end()
-/// }
-///
-/// router.all("/:greeting", middleware: userRouter)
-/// ```
+
 public class Router {
 
     /// Contains the list of routing elements
@@ -93,11 +73,32 @@ public class Router {
     /// and used to handle request's url parameters.
     fileprivate var parameterHandlers = [String : [RouterParameterHandler]]()
 
-    /// Initialize a `Router` instance. The optional `mergeParameters` parameter allows you to control whether
-    /// the router will be able to access parameters matched in its parent router.
+    /// Initialize a `Router` instance.
     /// ### Usage Example: ###
     /// ```swift
     ///  let router = Router()
+    /// ```
+    /// #### Using `mergeParameters`: ####
+    /// When initialising a `Router`, `mergeParameters` allows you to control whether
+    /// the router will be able to access parameters matched in its parent router. For instance, in the example below
+    /// if `mergeParameters` is set to `true`, `GET /Hello/Alex` will return "Hello Alex", but if set to `false`
+    /// the `greeting` parameter will not be accessible and it will return just " Alex".
+    /// ```swift
+    /// let router = Router()
+    /// let userRouter = Router(mergeParameters: true)
+    ///
+    /// router.get("/:greeting") { request, response, _ in
+    ///   let greeting = request.parameters["greeting"] ?? ""
+    ///   try response.send("\(greeting)").end()
+    /// }
+    ///
+    /// userRouter.get("/:user") { request, response, _ in
+    ///   let user = request.parameters["user"] ?? ""
+    ///   let greeting = request.parameters["greeting"] ?? ""
+    ///   try response.send("\(greeting) \(user)").end()
+    /// }
+    ///
+    /// router.all("/:greeting", middleware: userRouter)
     /// ```
     /// - Parameter mergeParameters: Optional parameter to specify if the router should be able to access parameters
     ///                                 from its parent router. Defaults to `false` if not specified.
@@ -126,14 +127,19 @@ public class Router {
 
     // MARK: Template Engine
 
-    /// Register a templating engine. The templating engine will handle files in the `viewsPath`
-    /// that match the file extension it supports.
+    /// Register a template engine to a given router instance.
+    /// A template engine allows rendering of documents using static templates.
+    ///
+    /// By default the templating engine will handle files in the `./Views` directory
+    /// that match the file extension it supports. You can change this default location using the `viewsPath` property.
     /// ### Usage Example: ###
     /// ```swift
     /// let router = Router()
     /// router.add(templateEngine: MyTemplateEngine())
     /// router.add(templateEngine: MyOtherTemplateEngine(), forFileExtensions: ["html"], useDefaultFileExtension: false)
     /// ```
+    /// If multiple different template engines are registered for the same extension, the template engine
+    /// that is registered last will be the one that attempts to render all template files with the chosen extension.
     /// - Parameter templateEngine: The templating engine to register.
     /// - Parameter forFileExtensions: The extensions of the files to apply the template engine on.
     /// - Parameter useDefaultFileExtension: The flag to specify if the default file extension of the
@@ -156,6 +162,10 @@ public class Router {
     /// let router = Router()
     /// router.setDefault(templateEngine: MyTemplateEngine())
     /// ```
+    /// If the template engine doesn't provide a default extension you can provide one using
+    /// `add(templateEngine:forFileExtensions:useDefaultFileExtension:)`. If a router instance doesn't
+    /// have a template engine registered that can render the given template file a
+    /// "No template engine defined for extension" `TemplatingError` is thrown.
     /// - Parameter templateEngine: The templating engine to set as default.
     public func setDefault(templateEngine: TemplateEngine?) {
         if let templateEngine = templateEngine {
@@ -395,6 +405,7 @@ extension Router : RouterMiddleware {
     public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws {
         guard let urlPath = request.parsedURLPath.path else {
             Log.error("request.parsedURLPath.path is nil. Failed to handle request")
+            next()
             return
         }
 
@@ -406,6 +417,7 @@ extension Router : RouterMiddleware {
             /// Note: `hasPrefix("")` is `true` on macOS but `false` on Linux
             guard mountpath == "" || urlPath.hasPrefix(mountpath) else {
                 Log.error("Failed to find matches in url")
+                next()
                 return
             }
 
@@ -480,6 +492,7 @@ extension Router : ServerDelegate {
     fileprivate func process(request: RouterRequest, response: RouterResponse, callback: @escaping () -> Void) {
         guard let urlPath = request.parsedURLPath.path else {
             Log.error("request.parsedURLPath.path is nil. Failed to process request")
+            callback()
             return
         }
 

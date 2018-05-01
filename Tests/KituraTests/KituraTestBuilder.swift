@@ -18,6 +18,7 @@ import XCTest
 import Kitura
 
 @testable import KituraNet
+@testable import KituraContracts
 
 import Foundation
 import Dispatch
@@ -42,6 +43,7 @@ import Dispatch
 protocol RequestTestBuilder {
     func request(_ method: String, path: String) -> AssertionTestBuilder
     func request<T: Encodable>(_ method: String, path: String, data: T) -> AssertionTestBuilder
+    func request(_ method: String, path: String, urlEncodedString: String) -> AssertionTestBuilder
     func run()
 }
 
@@ -55,6 +57,7 @@ protocol AssertionTestBuilder: RequestTestBuilder {
     func hasData(_ expected: String) -> Self
     func hasData<T: Decodable & Equatable>(_ expected: [T]) -> Self
     func hasData<T: Decodable & Equatable>(_ expected: T) -> Self
+    func hasData<T: Decodable & Equatable>(_ expected: [[String: T]]) -> Self
 }
 
 // A builder object for constructing tests made up of one or more
@@ -84,6 +87,16 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
                 })
             }
         }
+        
+        init(_ test: KituraTest, _ method: String, _ path: String, _ urlEncodedString: String) {
+            self.test = test
+            self.invoker = { callback in
+                test.performRequest(method, path: path, callback: callback, requestModifier: { request in
+                    request.headers["Content-Type"] = "application/x-www-form-urlencoded"
+                    request.write(from: urlEncodedString)
+                })
+            }
+        }
     }
     let test: KituraTest
     let router: ServerDelegate
@@ -108,6 +121,11 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
 
     public func request<T: Encodable>(_ method: String, path: String, data: T) -> AssertionTestBuilder {
         requests.append(Request(test, method, path, data))
+        return self
+    }
+    
+    public func request(_ method: String, path: String, urlEncodedString: String) -> AssertionTestBuilder {
+        requests.append(Request(test, method, path, urlEncodedString))
         return self
     }
 
@@ -215,6 +233,23 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
             do {
                 let actual = try JSONDecoder().decode(T.self, from: data)
                 XCTAssertEqual(expected, actual, "Response data does not match expected value:\nexpected: \(expected)\nactual: \(actual)")
+            } catch {
+                XCTFail("Failed to decode response data into type \(T.self): \(error)")
+            }
+        }
+    }
+    
+    func hasData<T: Decodable & Equatable>(_ expected: [[String : T]]) -> Self {
+        return has { response in
+            guard let (_, data) = self.readDataOrFail(from: response) else { return }
+            do {
+                let actual = try JSONDecoder().decode([[String : T]].self, from: data)
+                for (index, tuple) in actual.enumerated() {
+                    let tupleKey = Array(tuple.keys)[0]
+                    let expectedKey = Array(expected[index].keys)[0]
+                    XCTAssertEqual(tupleKey, expectedKey, "Response data does not match expected key:\nexpected: \(tupleKey)\nactual: \(expectedKey)")
+                    XCTAssertEqual(tuple[tupleKey], expected[index][expectedKey], "Response data does not match expected value:\nexpected: \(String(describing: tuple[tupleKey]))\nactual: \(String(describing: expected[index][expectedKey]))")
+                }
             } catch {
                 XCTFail("Failed to decode response data into type \(T.self): \(error)")
             }

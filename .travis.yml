@@ -1,4 +1,4 @@
-# Travis CI build file for Kitura sample app.
+# Travis CI build file for Kitura.
 # Kitura runs on OS X and Linux (Ubuntu).
 # See the following URLs for further details on Travis CI
 # https://docs.travis-ci.com/user/customizing-the-build/
@@ -12,12 +12,15 @@ branches:
     - develop
     - /^issue.*$/
 
-notifications:
-  slack:
-    secure: "VFUQIBCL8Kiubw7ojN3oJOs2TgobYaAZTCQePDATOMSRKRo/rDgsloGDc3kqGkLb0lAwky1lwKQjnRUsG1mEES6+W2K3QWsmzpTR1owPzZprrHrL/h1vkWdysx7ed0dBnbs8uhtD4iPe46vWZqLc1ZyfV8QxefTD9mrS4VeH7rd4qOwMgkjphaoVc0/cOkt0u8p54961HLVt4euSZf0766hfYH+1EwvoShaiK/2aKTF/hmFavB2iASHRXJnOm9S4iDWyFW2D7XEwoo9o9jOAqtYbVefGglCjUymmuNCmj1bE3NSWXJB/5KC8xFNYs7b5jZ19diu5PQK2K1HCtJvLhW2wv7cBfBFrluvz52zeHB8izYIiSV+sr6mJgnPuwaoYUObJWkLlKpTo3oPgAU/62l0KMgdn1EoBrCSDVCz5IBjLmty25nFl1oDGZITQjNIkIMUjh4dojjr+JSRDumHxje39bu8nvxsA5pxDulnWQNorvaHeWf8t2ZAqYW/ojpAlmvBr7E+U9P6DHw40FDStcI8bJGfWv8yybjMocYtTTl6FaQdfqNm3Afp5wlUxNAkAG2neRGnuitHTQ4CBHquA9NG4c7tlyafUf9UMuce3ikQiUeecNnrW2tLkKEnkO6KXwgvOCAyQrFMHncPWXfQVY/+c/2ejelCOUW8BL2pBLBY="
-
+# the matrix of builds should cover each combination of Swift version
+# and platform that is supported. The version of Swift used is specified
+# by .swift-version, unless SWIFT_SNAPSHOT is specified.
 matrix:
   include:
+    - os: linux
+      dist: trusty
+      sudo: required
+      env: SWIFT_SNAPSHOT=4.0.3
     - os: linux
       dist: trusty
       sudo: required
@@ -29,14 +32,11 @@ matrix:
     - os: osx
       osx_image: xcode9.2
       sudo: required
-    - os: linux
-      dist: trusty
-      sudo: required
-      env: SWIFT_SNAPSHOT=swift-4.1-DEVELOPMENT-SNAPSHOT-2018-03-04-a
+      env: SWIFT_SNAPSHOT=4.0.3
     - os: osx
-      osx_image: xcode9.2
+      osx_image: xcode9.3
       sudo: required
-      env: SWIFT_SNAPSHOT=swift-4.1-DEVELOPMENT-SNAPSHOT-2018-03-04-a
+      env: JAZZY_ELIGIBLE=true
 
 script:
   - ./build.sh

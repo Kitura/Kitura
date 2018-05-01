@@ -86,6 +86,25 @@ extension Router {
     }
 
     /**
+     Setup a IdentifierCodableArrayClosure on the provided route which will be invoked when a request comes to the server.
+     ### Usage Example: ###
+     ````
+     //User is a struct object that conforms to Codable
+     router.get("/users") { (respondWith: ([(Int, User)]?, RequestError?) -> Void) in
+     
+        ...
+     
+        respondWith([(Int, User)], nil)
+     }
+     ````
+     - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
+     - Parameter handler: A IdentifierCodableArrayClosure that gets invoked when a request comes to the server.
+     */
+    public func get<Id: Identifier, O: Codable>(_ route: String, handler: @escaping IdentifierCodableArrayClosure<Id, O>) {
+        getSafely(route, handler: handler)
+    }
+    
+    /**
      Setup a (QueryParams, CodableArrayResultClosure) -> Void on the provided route which will be invoked when a request comes to the server.
 
      ### Usage Example: ###
@@ -321,6 +340,14 @@ extension Router {
             handler(CodableHelpers.constructOutResultHandler(response: response, completion: next))
         }
     }
+    
+    // Get array of (Id, Codable) tuples
+    fileprivate func getSafely<Id: Identifier, O: Codable>(_ route: String, handler: @escaping IdentifierCodableArrayClosure<Id, O>) {
+        get(route) { request, response, next in
+            Log.verbose("Received GET (plural with identifier) type-safe request")
+            handler(CodableHelpers.constructTupleArrayOutResultHandler(response: response, completion: next))
+        }
+    }
 
     // Get w/Query Parameters
     fileprivate func getSafely<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q, @escaping CodableArrayResultClosure<O>) -> Void) {
@@ -420,12 +447,27 @@ public struct CodableHelpers {
      * - Returns: True if the content type of the request is application/json, false otherwise
      */
     public static func isContentTypeJSON(_ request: RouterRequest) -> Bool {
+        // FIXME: This should be a simple lookup of content type cached on the RouterRequest
         guard let contentType = request.headers["Content-Type"] else {
             return false
         }
         return contentType.hasPrefix("application/json")
     }
-
+    
+    /**
+     * Check if the given request has content type x-www-form-urlencoded
+     *
+     * - Parameter request: The RouterRequest to check
+     * - Returns: True if the content type of the request is application/x-www-form-urlencoded, false otherwise
+     */
+    public static func isContentTypeURLEncoded(_ request: RouterRequest) -> Bool {
+        // FIXME: This should be a simple lookup of content type cached on the RouterRequest
+        guard let contentType = request.headers["Content-Type"] else {
+            return false
+        }
+        return contentType.hasPrefix("application/x-www-form-urlencoded")
+    }
+    
     /**
      * Get the HTTPStatusCode corresponding to the provided RequestError
      *
@@ -449,7 +491,7 @@ public struct CodableHelpers {
      *
      * - Parameter response: The `RouterResponse` to which the codable response error and
      *                       status code will be written
-     * - Parameter completion: The completion to be called after the when the returned
+     * - Parameter completion: The completion to be called after the returned
      *                         closure completes execution.
      * - Returns: The closure to pass to the codable route handler. The closure takes one argument
      *            `(RequestError?)`.
@@ -459,7 +501,7 @@ public struct CodableHelpers {
      *            If successful, the HTTP status code will be set to `HTTPStatusCode.noContent` and no
      *            body will be sent.
      *
-     *            If failed, the HTTP status code used for the response wll be set to either the
+     *            If failed, the HTTP status code used for the response will be set to either the
      *            `httpCode` of the `RequestError`, if that is a valid HTTP status code, or
      *            `HTTPStatusCode.unknown` otherwise. If the `RequestError` has a codable `body` then
      *            it will be encoded and sent as the body of the response.
@@ -495,26 +537,30 @@ public struct CodableHelpers {
      * - Parameter successStatus: The `HTTPStatusCode` to use for a successful response (see below)
      * - Parameter response: The `RouterResponse` to which the codable response body (or codable
      *                       error) and status code will be written
-     * - Parameter completion: The completion to be called after the when the returned
+     * - Parameter completion: The completion to be called after the returned
      *                         closure completes execution.
      * - Returns: The closure to pass to the codable route handler. The closure takes two arguments
      *            `(OutputType?, RequestError?)`.
      *            If the second (error) argument is `nil` then the first (body) argument should be non-`nil`
      *            and the response will be considered successful. If the second (error) argument is non-`nil`
-     *            then the first argument is ignore and the response is considered failed.
+     *            then the first argument is ignored and the response is considered failed.
      *
-     *            If successful, the HTTP status code will be set to `successStatus` and the first argument
-     *            will be encoded and sent as the body of the response.
+     *            If successful, the HTTP status code will be set to `successStatus` and the `CodableResultClosure` output
+     *            will be JSON encoded and sent as the body of the response.
      *
-     *            If failed, the HTTP status code used for the response wll be set to either the
+     *            If failed, the HTTP status code used for the response will be set to either the
      *            `httpCode` of the `RequestError`, if that is a valid HTTP status code, or
      *            `HTTPStatusCode.unknown` otherwise. If the `RequestError` has a codable `body` then
      *            it will be encoded and sent as the body of the response.
      */
     public static func constructOutResultHandler<OutputType: Codable>(successStatus: HTTPStatusCode = .OK, response: RouterResponse, completion: @escaping () -> Void) -> CodableResultClosure<OutputType> {
         return { codableOutput, error in
+            var status = successStatus
             if let error = error {
-                response.status(httpStatusCode(from: error))
+                status = httpStatusCode(from: error)
+            }
+            response.status(status)
+            if status.class != .successful, let error = error {
                 do {
                     if let bodyData = try error.encodeBody(.json) {
                         response.headers.setType("json")
@@ -529,7 +575,6 @@ public struct CodableHelpers {
                     let json = try JSONEncoder().encode(codableOutput)
                     response.headers.setType("json")
                     response.send(data: json)
-                    response.status(successStatus)
                 } catch {
                     Log.error("Could not encode result: \(error)")
                     response.status(.internalServerError)
@@ -541,6 +586,65 @@ public struct CodableHelpers {
 
     /**
      * Create a closure that can be called by a codable route handler that
+     * provides an array of tuples of (Identifier, Codable) and an optional `RequestError`
+     *
+     * - Note: This function is intended for use by the codable router or extensions
+     *         thereof. It will create a closure that can be passed to the registered
+     *         route handler.
+     *
+     * - Parameter successStatus: The `HTTPStatusCode` to use for a successful response (see below)
+     * - Parameter response: The `RouterResponse` to which the codable response body (or codable
+     *                       error) and status code will be written
+     * - Parameter completion: The completion to be called after the returned
+     *                         closure completes execution.
+     * - Returns: The closure to pass to the codable route handler. The closure takes two arguments
+     *            `([(Id, OutputType)]?, RequestError?)`.
+     *            If the second (error) argument is `nil` then the first argument (body) should be non-`nil`
+     *            and the response will be considered successful. If the second (error) argument is non-`nil`
+     *            then the first argument is ignored and the response is considered failed.
+     *
+     *            If successful, the HTTP status code will be set to `successStatus` and the `IdentifierCodableArrayResultClosure` output
+     *            will be JSON encoded as an array of dictionaries, which is then sent as the body of the response.
+     *
+     *            If failed, the HTTP status code used for the response will be set to either the
+     *            `httpCode` of the `RequestError`, if that is a valid HTTP status code, or
+     *            `HTTPStatusCode.unknown` otherwise. If the `RequestError` has a codable `body` then
+     *            it will be encoded and sent as the body of the response.
+     */
+    public static func constructTupleArrayOutResultHandler<Id: Identifier, OutputType: Codable>(successStatus: HTTPStatusCode = .OK, response: RouterResponse, completion: @escaping () -> Void) -> IdentifierCodableArrayResultClosure<Id, OutputType> {
+        return { codableOutput, error in
+            var status = successStatus
+            if let error = error {
+                status = httpStatusCode(from: error)
+            }
+            response.status(status)
+            if status.class != .successful, let error = error {
+                do {
+                    if let bodyData = try error.encodeBody(.json) {
+                        response.headers.setType("json")
+                        response.send(data: bodyData)
+                    }
+                } catch {
+                    Log.error("Could not encode error: \(error)")
+                    response.status(.internalServerError)
+                }
+            } else {
+                do {
+                    let entries = codableOutput?.map({ [$0.value: $1] })
+                    let encoded = try JSONEncoder().encode(entries)
+                    response.headers.setType("json")
+                    response.send(data: encoded)
+                } catch {
+                    Log.error("Could not encode result: \(error)")
+                    response.status(.internalServerError)
+                }
+            }
+            completion()
+        }
+    }
+    
+    /**
+     * Create a closure that can be called by a codable route handler that
      * provides an optional `Identifier` id, optional `Codable` body and an optional `RequestError`
      *
      * - Note: This function is intended for use by the codable router or extensions
@@ -550,7 +654,7 @@ public struct CodableHelpers {
      * - Parameter successStatus: The `HTTPStatusCode` to use for a successful response (see below)
      * - Parameter response: The `RouterResponse` to which the id, codable response body (or codable
      *                       error) and status code will be written
-     * - Parameter completion: The completion to be called after the when the returned
+     * - Parameter completion: The completion to be called after the returned
      *                         closure completes execution.
      * - Returns: The closure to pass to the codable route handler. The closure takes three arguments
      *            `(IdType?, OutputType?, RequestError?)`.
@@ -559,19 +663,23 @@ public struct CodableHelpers {
      *            (error) argument is non-`nil` then the first and second arguments are ignored and the
      *            response is considered failed.
      *
-     *            If successful, the HTTP status code will be set to `successStatus`, the first argument
-     *            will be encoded and sent as the body of the response, and the `Location` header of the
+     *            If successful, the HTTP status code will be set to `successStatus`, the `IdentifierCodableResultClosure` output
+     *            will be JSON encoded and sent as the body of the response, and the `Location` header of the
      *            response will be set to the id (by converting it to a `String` using its `value` property).
      *
-     *            If failed, the HTTP status code used for the response wll be set to either the
+     *            If failed, the HTTP status code used for the response will be set to either the
      *            `httpCode` of the `RequestError`, if that is a valid HTTP status code, or
      *            `HTTPStatusCode.unknown` otherwise. If the `RequestError` has a codable `body` then
      *            it will be encoded and sent as the body of the response.
      */
     public static func constructIdentOutResultHandler<IdType: Identifier, OutputType: Codable>(successStatus: HTTPStatusCode = .OK, response: RouterResponse, completion: @escaping () -> Void) -> IdentifierCodableResultClosure<IdType, OutputType> {
         return { id, codableOutput, error in
+            var status = successStatus
             if let error = error {
-                response.status(CodableHelpers.httpStatusCode(from: error))
+                status = httpStatusCode(from: error)
+            }
+            response.status(status)
+            if status.class != .successful, let error = error {
                 do {
                     if let bodyData = try error.encodeBody(.json) {
                         response.headers.setType("json")
@@ -587,7 +695,6 @@ public struct CodableHelpers {
                     let json = try JSONEncoder().encode(codableOutput)
                     response.headers.setType("json")
                     response.send(data: json)
-                    response.status(successStatus)
                 } catch {
                     Log.error("Could not encode result: \(error)")
                     response.status(.internalServerError)
@@ -616,7 +723,7 @@ public struct CodableHelpers {
      * - Returns: An instance of `InputType` representing the decoded body data.
      */
     public static func readCodableOrSetResponseStatus<InputType: Codable>(_ inputCodableType: InputType.Type, from request: RouterRequest, response: RouterResponse) -> InputType? {
-        guard CodableHelpers.isContentTypeJSON(request) else {
+        guard CodableHelpers.isContentTypeJSON(request) || CodableHelpers.isContentTypeURLEncoded(request) else {
             response.status(.unsupportedMediaType)
             return nil
         }
@@ -633,6 +740,7 @@ public struct CodableHelpers {
             return nil
         }
     }
+    
     /**
      * Read an id from the request URL, setting an error status on the given response in the case of failure.
      *

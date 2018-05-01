@@ -119,6 +119,9 @@
             <a class="nav-group-name-link" href="Structs.html">Structures</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CodableHelpers.html">CodableHelpers</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/HTTPVersion.html">HTTPVersion</a>
               </li>
               <li class="nav-group-task">
@@ -138,6 +141,9 @@
           <li class="nav-group-name">
             <a class="nav-group-name-link" href="Typealiases.html">Type Aliases</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura14HTTPStatusCodea">HTTPStatusCode</a>
+              </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura16LifecycleHandlera">LifecycleHandler</a>
               </li>
@@ -166,6 +172,39 @@
 
         <section class="section">
           <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura14HTTPStatusCodea"></a>
+                    <a name="//apple_ref/swift/Alias/HTTPStatusCode" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14HTTPStatusCodea">HTTPStatusCode</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Bridge <a href="http://ibm-swift.github.io/Kitura-net/Enums/HTTPStatusCode.html">HTTPStatusCode</a>
+from <a href="http://ibm-swift.github.io/Kitura-net">KituraNet</a> so that you only need to import
+<code><a href="Classes/Kitura.html">Kitura</a></code> to access it.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">HTTPStatusCode</span> <span class="o">=</span> <span class="kt">KituraNet</span><span class="o">.</span><span class="kt">HTTPStatusCode</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
             <div class="task-group">
               <ul class="item-container">
                 <li class="item">
@@ -259,7 +298,7 @@ when routing HTTP requests to closure.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A <a href="https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/Declarations.html#//apple_ref/doc/uid/TP40014097-CH34-ID361">type alias</a> declaration to describe a handler for named parameters when using <code><a href="Classes/Router.html#/s:6Kitura6RouterC9parameterACSS_SayyAA0B7RequestC_AA0B8ResponseCSSyyctKcG7handlerdtF">Router.parameter(...)</a></code>. The example below shows two ways to use it, both as a function named <code>handler</code> to handle the <q>id</q> parameter and as a closure to handle the <q>name</q> parameter.</p>
+                        <p>A <a href="https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/Declarations.html#//apple_ref/doc/uid/TP40014097-CH34-ID361">type alias</a> declaration to describe a handler for named parameters when using <code><a href="Classes/Router.html#/s:6Kitura6RouterC9parameterACSS_yAA0B7RequestC_AA0B8ResponseCSSyyctKc7handlerdtF">Router.parameter(...)</a></code>. The example below shows two ways to use it, both as a function named <code>handler</code> to handle the <q>id</q> parameter and as a closure to handle the <q>name</q> parameter.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
 <span class="kd">func</span> <span class="nf">handler</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">RouterRequest</span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt">RouterResponse</span><span class="p">,</span> <span class="nv">param</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">next</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span> <span class="p">{</span>
@@ -423,7 +462,7 @@ when routing HTTP requests to closure.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-02-28)</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-04-17)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

@@ -21,13 +21,40 @@ import Foundation
 
 // MARK: BodyParser
 
-/// The `BodyParser` parses the body of the request prior to sending it to the handler. It reads the Content-Type of the message header and populates the `RouterRequest` body field with a `ParsedBody` enumeration (e.g. json, raw, text, urlEncoded).
-/// In order for the BodyParser to be used it must first be registered with any routes that are interested in the ParsedBody payload.
-///### Usage Example: ###
-/// In this example, all routes to the BodyParser middleware are registered to the `BodyParser` middleware.
-///```swift
-///   router.all("/*", middleware: BodyParser())
-///```
+/// The `BodyParser` parses the body of the request prior to sending it to the handler. It reads the Content-Type of the message header and populates the `RouterRequest` body field with a corresponding `ParsedBody` enumeration.
+/// 
+/// In order for the BodyParser to be used it must first be registered with any routes that are interested in the `ParsedBody` payload.
+/// 
+/// ### ParsedBody enumeration: ###
+/// 
+/// The mappings from the incoming Content-Type to an internal representation of the body are as follows:
+/// 
+/// ```swift
+///    .json([String: Any])          // "application/json"
+///    .text(String)                 // "text/*"
+///    .urlEncoded([String:String])  // "application/x-www-form-urlencoded"
+///    .multipart([Part])            // "multipart/form-data"
+///    .raw(Data)                    // Any other Content-Type
+/// ```
+///
+/// Each case has a corresponding convenience property, e.g. `asURLEncoded: [String:String]`, for accessing the associated data.
+/// 
+/// __Note__: If you have not declared a Content-Type header, `ParsedBody` will be `nil`.
+/// 
+/// ### Usage Example: ###
+/// 
+/// In this example, all routes to the BodyParser middleware are registered to the `BodyParser` middleware. A request with "application/json", ContentType header is received. It is then parsed as JSON and the value for "name" is returned in the response.
+/// ```swift
+/// router.all("/name", middleware: BodyParser())
+/// router.post("/name") { request, response, next in
+///     guard let jsonBody = request.parsedBody?.asJSON else {
+///         next()
+///         return
+///     }
+///     let name = jsonBody["name"] as? String ?? ""
+///     try response.send("Hello \(name)").end()
+/// }
+/// ```
 /// __Note__: When using Codable Routing in Kitura 2.x the BodyParser should not be registered to any codable routes (doing so will log the following error "No data in request. Codable routes do not allow the use of a BodyParser." and the route handler will not be executed).
 public class BodyParser: RouterMiddleware {
 

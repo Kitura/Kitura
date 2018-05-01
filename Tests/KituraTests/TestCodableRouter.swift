@@ -19,7 +19,6 @@ import Foundation
 import KituraContracts
 
 @testable import Kitura
-@testable import KituraNet
 
 class TestCodableRouter: KituraTest {
     static var allTests: [(String, (TestCodableRouter) -> () throws -> Void)] {
@@ -29,6 +28,7 @@ class TestCodableRouter: KituraTest {
             ("testBasicGetSingleton", testBasicGetSingleton),
             ("testBasicGetArray", testBasicGetArray),
             ("testBasicGetSingle", testBasicGetSingle),
+            ("testBasicGetIdentifiersArray", testBasicGetIdentifiersArray),
             ("testBasicDelete", testBasicDelete),
             ("testBasicDeleteSingle", testBasicDeleteSingle),
             ("testBasicPut", testBasicPut),
@@ -39,7 +39,8 @@ class TestCodableRouter: KituraTest {
             ("testRouteParameters", testRouteParameters),
             ("testCodableRoutesWithBodyParsingFail", testCodableRoutesWithBodyParsingFail),
             ("testCodableGetQueryParameters", testCodableGetQueryParameters),
-            ("testCodableDeleteQueryParameters", testCodableDeleteQueryParameters)
+            ("testCodableDeleteQueryParameters", testCodableDeleteQueryParameters),
+            ("testCodablePostSuccessStatuses", testCodablePostSuccessStatuses)
         ]
     }
 
@@ -146,6 +147,10 @@ class TestCodableRouter: KituraTest {
             print("POST on /bodyerror/users for user \(user)")
             respondWith(nil, RequestError(.conflict, body: Conflict(on: "id")))
         }
+        router.post("/urlencoded") { (user: User, respondWith: (User?, RequestError?) -> Void) in
+            print("POST on /urlencoded for user \(user)")
+            respondWith(user, nil)
+        }
 
         let user = User(id: 4, name: "David")
         buildServerTest(router, timeout: 30)
@@ -162,6 +167,26 @@ class TestCodableRouter: KituraTest {
             .hasStatus(.conflict)
             .hasContentType(withPrefix: "application/json")
             .hasData(Conflict(on: "id"))
+            
+            .request("post", path: "/urlencoded", urlEncodedString: "id=4&name=David")
+            .hasStatus(.created)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(user)
+            
+            .request("post", path: "/urlencoded", urlEncodedString: "id=4&name=David&extra=yes")
+            .hasStatus(.created)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(user)
+            
+            .request("post", path: "/urlencoded", urlEncodedString: "encoding=valid&failed=match")
+            .hasStatus(.unprocessableEntity)
+            .hasNoData()
+            
+            .request("post", path: "/urlencoded", urlEncodedString: "invalidEncoding")
+            .hasStatus(.unprocessableEntity)
+            .hasNoData()
+            
+
 
             .run()
     }
@@ -264,6 +289,58 @@ class TestCodableRouter: KituraTest {
             .run()
     }
 
+    func testBasicGetIdentifiersArray() {
+        var intTuple = [(Int, User)]()
+        self.userStore.forEach { intTuple.append(($0.0, $0.1)) }
+        let expectedIntData: [[String: User]] = intTuple.map({ [$0.value: $1] })
+        
+        var stringTuple = [(String, User)]()
+        self.userStore.forEach { stringTuple.append((String($0.0), $0.1)) }
+        let expectedStringData: [[String: User]] = stringTuple.map({ [$0.value: $1] })
+        
+        router.get("/int/users") { (respondWith: ([(Int, User)]?, RequestError?) -> Void) in
+            print("GET on /int/users")
+            respondWith(intTuple, nil)
+        }
+        
+        router.get("/int/explicitStatus") { (respondWith: ([(Int, User)]?, RequestError?) -> Void) in
+            print("GET on /int/explicitStatus")
+            respondWith(intTuple, .ok)
+        }
+        
+        router.get("/string/users") { (respondWith: ([(String, User)]?, RequestError?) -> Void) in
+            print("GET on /string/users")
+            respondWith(stringTuple, nil)
+        }
+        
+        router.get("/error/users") { (respondWith: ([(String, User)]?, RequestError?) -> Void) in
+            print("GET on /error/users")
+            respondWith(nil, .serviceUnavailable)
+        }
+        
+        buildServerTest(router, timeout: 30)
+            .request("get", path: "/int/users")
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(expectedIntData)
+        
+            .request("get", path: "/int/explicitStatus")
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(expectedIntData)
+        
+            .request("get", path: "/string/users")
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(expectedStringData)
+            
+            .request("get", path: "/error/users")
+            .hasStatus(.serviceUnavailable)
+            .hasNoData()
+            
+            .run()
+    }
+    
     func testBasicGetSingle() {
         router.get("/users") { (id: Int, respondWith: (User?, RequestError?) -> Void) in
             print("GET on /users/\(id)")
@@ -622,6 +699,42 @@ class TestCodableRouter: KituraTest {
             .request("delete", path: "/query?param=badRequest")
             .hasStatus(.badRequest)
             .hasNoData()
+
+            .run()
+    }
+
+    func testCodablePostSuccessStatuses() {
+        // Test POST success statuses other than .created
+        router.post("/ok") { (user: User, respondWith: (User?, RequestError?) -> Void) in
+            print("POST on /ok for user \(user)")
+            respondWith(user, .ok)
+        }
+        router.post("/partialContent") { (user: User, respondWith: (User?, RequestError?) -> Void) in
+            print("POST on /partialContent for user \(user)")
+            respondWith(user, .partialContent)
+        }
+        router.post("/okId") { (user: User, respondWith: (Int?, User?, RequestError?) -> Void) in
+            print("POST on /okId for user \(user)")
+            respondWith(user.id, user, .ok)
+        }
+
+        let user = User(id: 5, name: "Jane")
+        buildServerTest(router, timeout: 30)//
+            .request("post", path: "/ok", data: user)
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(user)
+
+            .request("post", path: "/partialContent", data: user)
+            .hasStatus(.partialContent)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(user)
+
+            .request("post", path: "/okId", data: user)
+            .hasStatus(.OK)
+            .hasHeader("Location", only: String(user.id))
+            .hasContentType(withPrefix: "application/json")
+            .hasData(user)
 
             .run()
     }
