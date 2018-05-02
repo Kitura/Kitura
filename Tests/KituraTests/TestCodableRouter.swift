@@ -40,7 +40,7 @@ class TestCodableRouter: KituraTest {
             ("testCodableRoutesWithBodyParsingFail", testCodableRoutesWithBodyParsingFail),
             ("testCodableGetQueryParameters", testCodableGetQueryParameters),
             ("testCodableDeleteQueryParameters", testCodableDeleteQueryParameters),
-            ("testCodablePostSuccessStatuses", testCodablePostSuccessStatuses)
+            ("testCodablePostSuccessStatuses", testCodablePostSuccessStatuses),
             ("testEncodableType", testEncodableType),
             ("testDecodableType", testDecodableType),
         ]
@@ -539,15 +539,26 @@ class TestCodableRouter: KituraTest {
 
     // Test that a type that only conforms to Decodable can be received
     func testDecodableType() {
-        router.put("/decodable") { (id: Int, data: OnlyDecodable, respondWith: (OnlyDecodable?, RequestError?) -> Void) in
+        router.put("/decodable") { (id: Int, data: OnlyDecodable, respondWith: (OnlyEncodable?, RequestError?) -> Void) in
             print("PUT on /decodable/\(id)")
-            respondWith(nil, .created)
+            respondWith(nil, .ok)
+        }
+        router.post("/decodable") { (data: OnlyDecodable, respondWith: (Int?, OnlyEncodable?, RequestError?) -> Void) in
+            print("POST on /decodable")
+            respondWith(1, nil, .created)
         }
         let encodedJson = "{\"data\":\"Hello\"}"
         buildServerTest(router, timeout: 30)
-            .request("put", path: "/decodable/1", json: encodedJson)
+
+            .request("post", path: "/decodable", json: encodedJson)
             .hasStatus(.created)
+            .hasHeader("Location", only: "1")
             .hasNoData()
+
+            .request("put", path: "/decodable/1", json: encodedJson)
+            .hasStatus(.OK)
+            .hasNoData()
+
             .run()
     }
 
