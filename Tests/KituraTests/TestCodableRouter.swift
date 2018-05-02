@@ -52,6 +52,7 @@ class TestCodableRouter: KituraTest {
 
     // Reset for each test
     override func setUp() {
+        super.setUp()           // Initialize logging
         router = Router()
         userStore = [1: User(id: 1, name: "Mike"), 2: User(id: 2, name: "Chris"), 3: User(id: 3, name: "Ricardo")]
     }

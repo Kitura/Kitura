@@ -577,7 +577,7 @@ public struct CodableHelpers {
                         response.headers.setType("json")
                         response.send(data: json)
                     } else {
-                        Log.debug("Note: successful response \(status) delivers no data.")
+                        Log.debug("Note: successful response ('\(status)') delivers no data.")
                     }
                 } catch {
                     Log.error("Could not encode result: \(error)")
@@ -640,7 +640,7 @@ public struct CodableHelpers {
                         response.headers.setType("json")
                         response.send(data: encoded)
                     } else {
-                        Log.debug("Note: successful response \(status) delivers no data.")
+                        Log.debug("Note: successful response ('\(status)') delivers no data.")
                     }
                 } catch {
                     Log.error("Could not encode result: \(error)")
@@ -705,7 +705,7 @@ public struct CodableHelpers {
                         response.headers.setType("json")
                         response.send(data: json)
                     } else {
-                        Log.debug("Note: successful response \(status) delivers no data.")
+                        Log.debug("Note: successful response ('\(status)') delivers no data.")
                     }
                 } catch {
                     Log.error("Could not encode result: \(error)")
