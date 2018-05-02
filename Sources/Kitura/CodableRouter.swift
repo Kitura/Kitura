@@ -572,9 +572,13 @@ public struct CodableHelpers {
                 }
             } else {
                 do {
-                    let json = try JSONEncoder().encode(codableOutput)
-                    response.headers.setType("json")
-                    response.send(data: json)
+                    if let codableOutput = codableOutput {
+                        let json = try JSONEncoder().encode(codableOutput)
+                        response.headers.setType("json")
+                        response.send(data: json)
+                    } else {
+                        Log.debug("Note: successful response \(status) delivers no data.")
+                    }
                 } catch {
                     Log.error("Could not encode result: \(error)")
                     response.status(.internalServerError)
@@ -630,10 +634,14 @@ public struct CodableHelpers {
                 }
             } else {
                 do {
-                    let entries = codableOutput?.map({ [$0.value: $1] })
-                    let encoded = try JSONEncoder().encode(entries)
-                    response.headers.setType("json")
-                    response.send(data: encoded)
+                    if let codableOutput = codableOutput {
+                        let entries = codableOutput.map({ [$0.value: $1] })
+                        let encoded = try JSONEncoder().encode(entries)
+                        response.headers.setType("json")
+                        response.send(data: encoded)
+                    } else {
+                        Log.debug("Note: successful response \(status) delivers no data.")
+                    }
                 } catch {
                     Log.error("Could not encode result: \(error)")
                     response.status(.internalServerError)
@@ -692,9 +700,13 @@ public struct CodableHelpers {
             } else if let id = id {
                 response.headers["Location"] = String(id.value)
                 do {
-                    let json = try JSONEncoder().encode(codableOutput)
-                    response.headers.setType("json")
-                    response.send(data: json)
+                    if let codableOutput = codableOutput {
+                        let json = try JSONEncoder().encode(codableOutput)
+                        response.headers.setType("json")
+                        response.send(data: json)
+                    } else {
+                        Log.debug("Note: successful response \(status) delivers no data.")
+                    }
                 } catch {
                     Log.error("Could not encode result: \(error)")
                     response.status(.internalServerError)
