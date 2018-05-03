@@ -97,6 +97,21 @@ class TestRequests: KituraTest {
             next()
         }
 
+        // Test query parameters with multiple values assigned to a single key
+        // with values in an array rather than concatenated.
+        router.get("/abc") { request, _, next in
+            let expectedQueryParams = ["key1" : ["value1"], "key2" : ["value2"], "key3" : ["value3.1", "value3.2", "value3.3"]]
+            XCTAssertEqual(expectedQueryParams.count, request.queryParametersMultiValues.count, "Unexpected number of query parameters!")
+            for (key, value) in expectedQueryParams {
+                guard let v = request.queryParametersMultiValues[key] else {
+                    XCTFail("Query parameter \(key) was nil!")
+                    return
+                }
+                XCTAssertEqual(v, value)
+            }
+            next()
+        }
+
         router.all { _, response, next in
             response.status(.OK).send("OK")
             next()

@@ -196,6 +196,38 @@ public class BodyParser: RouterMiddleware {
     }
 }
 
+public class BodyParserMultiValue: BodyParser {
+    override class func getParser(contentType: String) -> BodyParserProtocol? {
+        if contentType.hasPrefix("application/x-www-form-urlencoded") {
+            return URLEncodedMultiValueBodyParser()
+        }
+        else {
+            return super.getParser(contentType: contentType)
+        }
+    }
+
+    /// This function is called by the Kitura `Router` when an incoming request matches the route provided when the BodyParser was registered with the `Router`. It performs the parsing of the body content using `parse(_:contentType)`. We don't expect a user to call this function directly.
+    /// - Parameter request: The `RouterRequest` object used to work with the incoming
+    ///                     HTTP request.
+    /// - Parameter response: The `RouterResponse` object used to respond to the
+    ///                     HTTP request.
+    /// - Parameter next: The closure called to invoke the next handler or middleware
+    ///                     associated with the request.
+    override public func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws {
+        guard request.body == nil else {
+            return next() // the body was already parsed
+        }
+
+        guard request.headers["Content-Length"] != nil,
+            let contentType = request.headers["Content-Type"] else {
+                return next()
+        }
+
+        request.body = BodyParserMultiValue.parse(request, contentType: contentType)
+        next()
+    }
+}
+
 extension Data {
     func hasPrefix(_ data: Data) -> Bool {
         if data.count > self.count {
