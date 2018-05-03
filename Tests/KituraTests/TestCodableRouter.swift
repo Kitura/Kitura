@@ -38,9 +38,10 @@ class TestCodableRouter: KituraTest {
             ("testErrorOverridesBody", testErrorOverridesBody),
             ("testRouteParameters", testRouteParameters),
             ("testCodableRoutesWithBodyParsingFail", testCodableRoutesWithBodyParsingFail),
-            ("testCodableGetQueryParameters", testCodableGetQueryParameters),
+            ("testCodableGetSingleQueryParameters", testCodableGetSingleQueryParameters),
+            ("testCodableGetArrayQueryParameters", testCodableGetArrayQueryParameters),
             ("testCodableDeleteQueryParameters", testCodableDeleteQueryParameters),
-            ("testCodablePostSuccessStatuses", testCodablePostSuccessStatuses)
+	    ("testCodablePostSuccessStatuses", testCodablePostSuccessStatuses)
         ]
     }
 
@@ -644,7 +645,35 @@ class TestCodableRouter: KituraTest {
             .run()
     }
 
-    func testCodableGetQueryParameters() {
+    func testCodableGetSingleQueryParameters() {
+        let date: Date = Coder().dateFormatter.date(from: Coder().dateFormatter.string(from: Date()))!
+
+        let expectedQuery = MyQuery(intField: 23, optionalIntField: 282, stringField: "a string", intArray: [1, 2, 3], dateField: date, optionalDateField: date, nested: Nested(nestedIntField: 333, nestedStringField: "nested string"))
+
+        guard let queryStr: String = try? QueryEncoder().encode(expectedQuery) else {
+            XCTFail("ERROR!!! Could not encode query object to string")
+            return
+        }
+
+        router.get("/query") { (query: MyQuery, respondWith: (MyQuery?, RequestError?) -> Void) in
+            XCTAssertEqual(query, expectedQuery)
+            respondWith(query, nil)
+        }
+
+        buildServerTest(router, timeout: 30)
+            .request("get", path: "/query\(queryStr)")
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(expectedQuery)
+
+            .request("get", path: "/query?param=badRequest")
+            .hasStatus(.badRequest)
+            .hasNoData()
+
+            .run()
+    }
+
+    func testCodableGetArrayQueryParameters() {
         /// Currently the milliseconds are cut off by our date formatter
         /// This synchronizes it for testing with the codable route
         let date: Date = Coder().dateFormatter.date(from: Coder().dateFormatter.string(from: Date()))!
