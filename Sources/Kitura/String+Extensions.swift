@@ -26,7 +26,7 @@ extension String {
         var result: [String: String] = [:]
         for item in self.components(separatedBy: "&") {
             let (key, value) = item.keyAndDecodedValue
-            if let value = value {
+            if let value = value, !value.isEmpty {
                 // If value already exists for this key, append it
                 if let existingValue = result[key] {
                     result[key] = "\(existingValue),\(value)"
@@ -46,7 +46,7 @@ extension String {
 
         for item in self.components(separatedBy: "&") {
             let (key, value) = item.keyAndDecodedValue
-            if let value = value {
+            if let value = value, !value.isEmpty {
                 result[key, default: []].append(value)
             }
         }

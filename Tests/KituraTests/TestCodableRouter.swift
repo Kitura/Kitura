@@ -152,8 +152,13 @@ class TestCodableRouter: KituraTest {
             print("POST on /urlencoded for user \(user)")
             respondWith(user, nil)
         }
+        router.post("/optionalurlencoded") { (OptionalUser: OptionalUser, respondWith: (OptionalUser?, RequestError?) -> Void) in
+            print("POST on /urlencoded for user \(OptionalUser)")
+            respondWith(OptionalUser, nil)
+        }
 
         let user = User(id: 4, name: "David")
+        let optionalUser = OptionalUser(id: nil, name: "David")
         buildServerTest(router, timeout: 30)
             .request("post", path: "/users", data: user)
             .hasStatus(.created)
@@ -178,6 +183,19 @@ class TestCodableRouter: KituraTest {
             .hasStatus(.created)
             .hasContentType(withPrefix: "application/json")
             .hasData(user)
+            
+            .request("post", path: "/optionalurlencoded", urlEncodedString: "id=&name=David")
+            .hasStatus(.created)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(optionalUser)
+            
+            .request("post", path: "/urlencoded", urlEncodedString: "id=&name=David")
+            .hasStatus(.unprocessableEntity)
+            .hasNoData()
+            
+            .request("post", path: "/urlencoded", urlEncodedString: "id=4&name=")
+            .hasStatus(.unprocessableEntity)
+            .hasNoData()
             
             .request("post", path: "/urlencoded", urlEncodedString: "encoding=valid&failed=match")
             .hasStatus(.unprocessableEntity)
