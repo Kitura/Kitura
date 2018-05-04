@@ -42,7 +42,8 @@ class TestCodableRouter: KituraTest {
             ("testCodableDeleteQueryParameters", testCodableDeleteQueryParameters),
             ("testCodablePostSuccessStatuses", testCodablePostSuccessStatuses),
             ("testEncodableType", testEncodableType),
-            ("testDecodableType", testDecodableType),
+            ("testDecodableTypeCustomStatus", testDecodableTypeCustomStatus),
+            ("testDecodableTypeDefaultStatus", testDecodableTypeDefaultStatus),
         ]
     }
 
@@ -538,8 +539,10 @@ class TestCodableRouter: KituraTest {
             .run()
     }
 
-    // Test that a type that only conforms to Decodable can be received
-    func testDecodableType() {
+    // Test that a type that only conforms to Decodable can be received. Responses contain no
+    // result body, as the incoming type is not Encodable. Response handlers are tested with
+    // an explicit (nil, .someSuccessStatus) status code.
+    func testDecodableTypeCustomStatus() {
         router.put("/decodable") { (id: Int, data: OnlyDecodable, respondWith: (OnlyEncodable?, RequestError?) -> Void) in
             print("PUT on /decodable/\(id)")
             respondWith(nil, .ok)
@@ -549,17 +552,46 @@ class TestCodableRouter: KituraTest {
             respondWith(1, nil, .created)
         }
         let encodedJson = "{\"data\":\"Hello\"}"
+        
         buildServerTest(router, timeout: 30)
 
             .request("post", path: "/decodable", json: encodedJson)
             .hasStatus(.created)
             .hasHeader("Location", only: "1")
             .hasNoData()
-
+            
             .request("put", path: "/decodable/1", json: encodedJson)
             .hasStatus(.OK)
             .hasNoData()
+            
+            .run()
+    }
 
+    // Test that a type that only conforms to Decodable can be received. Responses contain no
+    // result body, as the incoming type is not Encodable. Response handlers are tested with
+    // the default (nil, nil) status code response.
+    func testDecodableTypeDefaultStatus() {
+        router.put("/decodable") { (id: Int, data: OnlyDecodable, respondWith: (OnlyEncodable?, RequestError?) -> Void) in
+            print("PUT on /decodable/\(id)")
+            respondWith(nil, nil)
+        }
+        router.post("/decodable") { (data: OnlyDecodable, respondWith: (Int?, OnlyEncodable?, RequestError?) -> Void) in
+            print("POST on /decodable")
+            respondWith(1, nil, nil)
+        }
+        let encodedJson = "{\"data\":\"Hello\"}"
+        
+        buildServerTest(router, timeout: 30)
+            
+            .request("post", path: "/decodable", json: encodedJson)
+            .hasStatus(.created)
+            .hasHeader("Location", only: "1")
+            .hasNoData()
+            
+            .request("put", path: "/decodable/1", json: encodedJson)
+            .hasStatus(.OK)
+            .hasNoData()
+            
             .run()
     }
 
