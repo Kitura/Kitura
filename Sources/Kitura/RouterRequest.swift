@@ -137,10 +137,15 @@ public class RouterRequest {
     /// List of URL parameters.
     public internal(set) var parameters: [String:String] = [:]
 
-    /// List of query parameters.
+    /// List of query parameters and comma-separated values.
     public lazy var queryParameters: [String:String] = { [unowned self] in
         return self.urlURL.query?.urlDecodedFieldValuePairs ?? [:]
         }()
+
+    /// Query parameters with values as an array.
+    public lazy var queryParametersMultiValues: [String: [String]] = { [unowned self] in
+        return self.urlURL.query?.urlDecodedFieldMultiValuePairs ?? [:]
+    }()
 
     /// User info.
     public var userInfo: [String: Any] = [:]
