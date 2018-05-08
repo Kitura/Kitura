@@ -50,11 +50,8 @@ public class Router {
         }
     }
 
-    /// Prefix for special page resources
-    fileprivate let kituraResourcePrefix = "/@@Kitura-router@@/"
-
     /// Helper for serving file resources
-    fileprivate let fileResourceServer = FileResourceServer()
+    internal let fileResourceServer: StaticFileServer?
 
     /// Flag to enable/disable access to parent router's params
     private let mergeParameters: Bool
@@ -70,8 +67,21 @@ public class Router {
     /// matched in its parent router. Defaults to `false`.
     public init(mergeParameters: Bool = false) {
         self.mergeParameters = mergeParameters
+        guard let resourcePath = Router.getKituraResourcePath() else {
+            self.fileResourceServer = nil
+            return
+        }
+        self.fileResourceServer = StaticFileServer(path: resourcePath)
 
         Log.verbose("Router initialized")
+    }
+
+    fileprivate static func getKituraResourcePath() -> String? {
+        guard let currentFilePath = NSURL(string: #file),
+            let folderPath = currentFilePath.deletingLastPathComponent else {
+            return nil
+        }
+        return folderPath.appendingPathComponent("resources").absoluteString
     }
 
     func routingHelper(_ method: RouterMethod, pattern: String?, handler: [RouterHandler]) -> Router {
@@ -366,27 +376,16 @@ extension Router : ServerDelegate {
     /// - Parameter callback: The closure to invoke to cause the router to inspect the
     ///                  path in the list of paths.
     fileprivate func process(request: RouterRequest, response: RouterResponse, callback: @escaping () -> Void) {
-        guard let urlPath = request.parsedURLPath.path else {
-            Log.error("request.parsedURLPath.path is nil. Failed to process request")
+        if let fileServer = fileResourceServer,
+            fileServer.serveKituraResource(request: request, response: response) {
             return
         }
-
-        if  urlPath.hasPrefix(kituraResourcePrefix) {
-            #if swift(>=3.2)
-                let resource = String(urlPath[kituraResourcePrefix.endIndex...])
-            #else
-                let resource = urlPath.substring(from: kituraResourcePrefix.endIndex)
-            #endif
-            fileResourceServer.sendIfFound(resource: resource, usingResponse: response)
-        } else {
-            let looper = RouterElementWalker(elements: self.elements,
-                                             parameterHandlers: self.parameterHandlers,
-                                             request: request,
-                                             response: response,
-                                             callback: callback)
-
-            looper.next()
-        }
+        let looper = RouterElementWalker(elements: self.elements,
+                                         parameterHandlers: self.parameterHandlers,
+                                         request: request,
+                                         response: response,
+                                         callback: callback)
+        looper.next()
     }
 
     /// Send default index.html file and its resources if appropriate, otherwise send
@@ -397,8 +396,9 @@ extension Router : ServerDelegate {
     /// - Parameter response: The `RouterResponse` object used to send responses
     ///                      to the HTTP request.
     private func sendDefaultResponse(request: RouterRequest, response: RouterResponse) {
-        if request.parsedURLPath.path == "/" {
-            fileResourceServer.sendIfFound(resource: "index.html", usingResponse: response)
+        if let fileServer = fileResourceServer,
+            request.parsedURLPath.path == "/" {
+            fileServer.handle(request: request, response: response, next: {})
         } else {
             do {
                 let errorMessage = "Cannot \(request.method) \(request.parsedURLPath.path ?? "")."

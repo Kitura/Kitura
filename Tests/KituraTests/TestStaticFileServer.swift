@@ -36,6 +36,7 @@ class TestStaticFileServer: KituraTest {
             ("testGetWithSpecialCharacters", testGetWithSpecialCharacters),
             ("testGetWithSpecialCharactersEncoded", testGetWithSpecialCharactersEncoded),
             ("testGetKituraResource", testGetKituraResource),
+            ("testGetDefaultResponse", testGetDefaultResponse),
             ("testGetMissingKituraResource", testGetMissingKituraResource),
             ("testAbsolutePathFunction", testAbsolutePathFunction)
         ]
@@ -208,6 +209,10 @@ class TestStaticFileServer: KituraTest {
 
     func testGetKituraResource() {
         runGetResponseTest(path: "/@@Kitura-router@@/")
+    }
+
+    func testGetDefaultResponse() {
+        runGetResponseTest(path: "/")
     }
 
     func testGetMissingKituraResource() {

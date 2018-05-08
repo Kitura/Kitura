@@ -22,6 +22,8 @@ extension StaticFileServer {
     // MARK: FileServer
     class FileServer {
 
+        private static let kituraResourcePrefix = "/@@Kitura-router@@/"
+
         /// Serve "index.html" files in response to a request on a directory.
         private let serveIndexForDirectory: Bool
 
@@ -47,7 +49,45 @@ extension StaticFileServer {
             self.responseHeadersSetter = responseHeadersSetter
         }
 
-        func getFilePath(from request: RouterRequest) -> String? {
+        internal func isRequestForKituraResource(in request: RouterRequest) -> Bool {
+            guard let requestPath = request.parsedURLPath.path else {
+                return false
+            }
+            if requestPath.hasPrefix(FileServer.kituraResourcePrefix) {
+                return true
+            }
+            return false
+        }
+
+        internal func getKituraResourcePath(from request: RouterRequest, for response: RouterResponse) -> String? {
+            var filePath = servingFilesPath + "/"
+            guard let requestPath = request.parsedURLPath.path else {
+                return nil
+            }
+            #if swift(>=3.2)
+                let url = String(requestPath[FileServer.kituraResourcePrefix.endIndex...])
+            #else
+                let url = requestPath.substring(from: FileServer.kituraResourcePrefix.endIndex)
+            #endif
+            if let decodedURL = url.removingPercentEncoding {
+                filePath += decodedURL
+            } else {
+                Log.warning("unable to decode url \(url)")
+                do {
+                    try response.status(.badRequest).end()
+                } catch {
+                    Log.error("Unable to send \"Invalid Request\" for url: \(url) from request path: \(requestPath)")
+                }
+                return nil
+            }
+
+            if filePath.hasSuffix("/") {
+                filePath += "index.html"
+            }
+            return filePath
+        }
+
+        func getFilePath(from request: RouterRequest, for response: RouterResponse) -> String? {
             var filePath = servingFilesPath
             guard let requestPath = request.parsedURLPath.path else {
                 return nil
@@ -67,7 +107,12 @@ extension StaticFileServer {
                     filePath += decodedURL
                 } else {
                     Log.warning("unable to decode url \(url)")
-                    filePath += url
+                    do {
+                        try response.status(.badRequest).end()
+                    } catch {
+                        Log.error("Unable to send \"Invalid Request\" for url: \(url) from request path: \(requestPath)")
+                    }
+                    return nil
                 }
             }
 
@@ -83,6 +128,15 @@ extension StaticFileServer {
         }
 
         func serveFile(_ filePath: String, requestPath: String, response: RouterResponse) {
+            if  !isValidFilePath(filePath) {
+                Log.error("Invalid request for resource: \(filePath) from request path: \(requestPath)")
+                do {
+                    try response.status(.badRequest).end()
+                } catch {
+                    Log.error("Unable to send \"Invalid Request\" for: \(filePath) from request path: \(requestPath)")
+                }
+                return
+            }
             let fileManager = FileManager()
             var isDirectory = ObjCBool(false)
 
@@ -97,14 +151,23 @@ extension StaticFileServer {
                 return
             }
 
-            tryToServeWithExtensions(filePath, response: response)
+            if !tryToServeWithExtensions(filePath, response: response) {
+                do {
+                    try response.send("Cannot GET \(requestPath)").status(.notFound).end()
+                } catch {
+                    Log.error("failed to send not found response for resource: \(filePath)")
+                }
+            }
         }
 
-        private func tryToServeWithExtensions(_ filePath: String, response: RouterResponse) {
+        private func tryToServeWithExtensions(_ filePath: String, response: RouterResponse) -> Bool {
             let filePathWithPossibleExtensions = possibleExtensions.map { filePath + "." + $0 }
             for filePathWithExtension in filePathWithPossibleExtensions {
-                serveIfNonDirectoryFile(atPath: filePathWithExtension, response: response)
+                if serveIfNonDirectoryFile(atPath: filePathWithExtension, response: response) {
+                    return true
+                }
             }
+            return false
         }
 
         private func serveExistingFile(_ filePath: String, requestPath: String, isDirectory: Bool,
@@ -132,18 +195,14 @@ extension StaticFileServer {
                     let isDirectoryBool = isDirectory.boolValue
                 #endif
                 if !isDirectoryBool {
-                    serveNonDirectoryFile(path, response: response)
-                    return true
+                    return serveNonDirectoryFile(path, response: response)
                 }
             }
             return false
         }
 
-        private func serveNonDirectoryFile(_ filePath: String, response: RouterResponse) {
-            if  !isValidFilePath(filePath) {
-                return
-            }
-
+        @discardableResult
+        private func serveNonDirectoryFile(_ filePath: String, response: RouterResponse) -> Bool {
             do {
                 let fileAttributes = try FileManager().attributesOfItem(atPath: filePath)
                 responseHeadersSetter?.setCustomResponseHeaders(response: response,
@@ -153,19 +212,18 @@ extension StaticFileServer {
                 try response.send(fileName: filePath)
             } catch {
                 Log.error("serving file at path \(filePath) error: \(error)")
+                return false
             }
             response.statusCode = .OK
+            return true
         }
 
         private func isValidFilePath(_ filePath: String) -> Bool {
             // Check that no-one is using ..'s in the path to poke around the filesystem
-            let absoluteBasePath = NSURL(fileURLWithPath: servingFilesPath).absoluteString
-            let absoluteFilePath = NSURL(fileURLWithPath: filePath).absoluteString
-            #if os(Linux)
-                return  absoluteFilePath.hasPrefix(absoluteBasePath)
-            #else
-                return  absoluteFilePath!.hasPrefix(absoluteBasePath!)
-            #endif
+            guard let absoluteBasePath = NSURL(fileURLWithPath: servingFilesPath).standardizingPath?.absoluteString, let standardisedPath = NSURL(fileURLWithPath: filePath).standardizingPath?.absoluteString else {
+                return false
+            }
+            return  standardisedPath.hasPrefix(absoluteBasePath)
         }
     }
 }
