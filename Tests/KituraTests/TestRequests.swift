@@ -16,6 +16,7 @@
 
 import XCTest
 import Foundation
+import KituraContracts
 
 @testable import Kitura
 @testable import KituraNet
@@ -69,23 +70,45 @@ class TestRequests: KituraTest {
         // Set up router for this test
         let router = Router()
 
+        struct Params: QueryParams {
+            let key1: String
+            let key2: String
+            let key3: String
+        }
+
         // Test query params
         router.get("/xyz") { request, _, next in
             let expectedQueryParams = ["key1" : "value1", "key2" : "value2", "key3" : "value3"]
+            guard let parsedParams = request.getQueryParameters(as: Params.self) else {
+                XCTFail("Failed to get query parameters")
+                return next()
+            }
+            XCTAssert(parsedParams.key1 == "value1" && parsedParams.key2 == "value2" && parsedParams.key3 == "value3" )
             XCTAssertEqual(expectedQueryParams.count, request.queryParameters.count, "Unexpected number of query parameters!")
             for (key, value) in expectedQueryParams {
                 guard let v = request.queryParameters[key] else {
                     XCTFail("Query parameter \(key) was nil!")
-                    return
+                    return next()
                 }
                 XCTAssertEqual(v, value)
             }
             next()
         }
 
+        struct Params2: QueryParams {
+            let key1: String
+            let key2: String
+            let key3: [String]
+        }
+
         // Test query parameters with multiple values assigned to a single key (array)
         router.get("/abc") { request, _, next in
             let expectedQueryParams = ["key1" : "value1", "key2" : "value2", "key3" : "value3.1,value3.2,value3.3"]
+            guard let parsedParams = request.getQueryParameters(as: Params2.self) else {
+                XCTFail("Failed to get query parameters")
+                return next()
+            }
+            XCTAssert(parsedParams.key1 == "value1" && parsedParams.key2 == "value2" && parsedParams.key3 == ["value3.1","value3.2","value3.3"] )
             XCTAssertEqual(expectedQueryParams.count, request.queryParameters.count, "Unexpected number of query parameters!")
             for (key, value) in expectedQueryParams {
                 guard let v = request.queryParameters[key] else {
@@ -127,7 +150,7 @@ class TestRequests: KituraTest {
             self.performRequest("get", path: "/xyz?key1=value1&key2=value2&key3=value3", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 expectation.fulfill()
-            })            
+            })
         })
     }
 
