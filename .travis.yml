@@ -37,7 +37,7 @@ matrix:
     - os: osx
       osx_image: xcode9.3
       sudo: required
-      env: JAZZY_ELIGIBLE=true
+      env: SWIFT_SNAPSHOT=4.1 JAZZY_ELIGIBLE=true
 
 script:
   - ./build.sh
