@@ -30,7 +30,7 @@ extension Router {
 
      ### Usage Example: ###
      ````
-     //User is a struct object that conforms to Encodable
+     //User is a struct that conforms to Encodable
      router.get("/users") { (respondWith: ([User]?, RequestError?) -> Void) in
 
         ...
@@ -50,7 +50,7 @@ extension Router {
 
      ### Usage Example: ###
      ````
-     //Status is a struct object that conforms to Encodable
+     //Status is a struct that conforms to Encodable
      router.get("/status") { (respondWith: (Status?, RequestError?) -> Void) in
 
         ...
@@ -70,7 +70,7 @@ extension Router {
 
      ### Usage Example: ###
      ````
-     //User is a struct object that conforms to Encodable
+     //User is a struct that conforms to Encodable
      router.get("/users") { (id: Int, respondWith: (User?, RequestError?) -> Void) in
 
         ...
@@ -89,7 +89,7 @@ extension Router {
      Setup a IdentifierCodableArrayClosure on the provided route which will be invoked when a request comes to the server.
      ### Usage Example: ###
      ````
-     //User is a struct object that conforms to Codable
+     //User is a struct that conforms to Codable
      router.get("/users") { (respondWith: ([(Int, User)]?, RequestError?) -> Void) in
      
         ...
@@ -110,7 +110,7 @@ extension Router {
      ### Usage Example: ###
      ````
      // MyQuery is a codable struct defining the supported query parameters
-     // User is a struct object that conforms to Codable
+     // User is a struct that conforms to Codable
      router.get("/query") { (query: MyQuery, respondWith: ([User]?, RequestError?) -> Void) in
 
         ...
@@ -131,7 +131,7 @@ extension Router {
      ### Usage Example: ###
      ````
      // MyQuery is a codable struct defining the supported query parameters
-     // User is a struct object that conforms to Codable
+     // User is a struct that conforms to Encodable
      router.get("/query") { (query: MyQuery, respondWith: (User?, RequestError?) -> Void) in
 
      ...
@@ -210,7 +210,7 @@ extension Router {
 
      ### Usage Example: ###
      ````
-     //User is a struct object that conforms to Codable
+     //User is a struct that conforms to Codable
      router.post("/users") { (user: User, respondWith: (User?, RequestError?) -> Void) in
 
         ...
@@ -232,7 +232,7 @@ extension Router {
 
      ### Usage Example: ###
      ````
-     //User is a struct object that conforms to Codable
+     //User is a struct that conforms to Codable
      router.post("/users") { (user: User, respondWith: (Int?, User?, RequestError?) -> Void) in
 
         ...
@@ -252,7 +252,7 @@ extension Router {
 
      ### Usage Example: ###
      ````
-     //User is a struct object that conforms to Codable
+     //User is a struct that conforms to Codable
      router.put("/users") { (id: Int, user: User, respondWith: (User?, RequestError?) -> Void) in
 
         ...
@@ -272,8 +272,8 @@ extension Router {
 
      ### Usage Example: ###
      ````
-     //User is a struct object that conforms to Codable
-     //OptionalUser is a struct object that conforms to Codable where all properties are optional
+     //User is a struct that conforms to Codable
+     //OptionalUser is a struct that conforms to Codable where all properties are optional
      router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?, RequestError?) -> Void) -> Void in
 
         ...
