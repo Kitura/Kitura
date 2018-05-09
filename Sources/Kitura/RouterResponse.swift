@@ -116,6 +116,10 @@ public class RouterResponse {
         }
     }
 
+    /// User info.
+    /// Can be used by middlewares and handlers to store and pass information on to subsequent handlers.
+    public var userInfo: [String: Any] = [:]
+    
     /// Initialize a `RouterResponse` instance
     ///
     /// - Parameter response: The `ServerResponse` object to work with
