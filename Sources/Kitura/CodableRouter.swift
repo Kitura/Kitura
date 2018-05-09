@@ -142,7 +142,7 @@ extension Router {
      - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
      - Parameter handler: A (QueryParams, CodableResultClosure) -> Void that gets invoked when a request comes to the server.
      */
-    public func get<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q, @escaping CodableResultClosure<O>) -> Void) {
+    public func get<Q: QueryParams, O: Encodable>(_ route: String, handler: @escaping (Q, @escaping CodableResultClosure<O>) -> Void) {
         getSafely(route, handler: handler)
     }
 
@@ -387,7 +387,7 @@ extension Router {
     }
 
     // Get w/Query Parameters with CodableResultClosure
-    fileprivate func getSafely<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q, @escaping CodableResultClosure<O>) -> Void) {
+    fileprivate func getSafely<Q: QueryParams, O: Encodable>(_ route: String, handler: @escaping (Q, @escaping CodableResultClosure<O>) -> Void) {
         get(route) { request, response, next in
             Log.verbose("Received GET (singular) type-safe request with Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
