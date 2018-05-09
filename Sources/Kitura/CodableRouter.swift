@@ -288,7 +288,7 @@ extension Router {
         patchSafely(route, handler: handler)
     }
 
-     // POST
+    // POST
     fileprivate func postSafely<I: Decodable, O: Encodable>(_ route: String, handler: @escaping CodableClosure<I, O>) {
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
@@ -312,7 +312,7 @@ extension Router {
         }
     }
 
-     // PUT with Identifier
+    // PUT with Identifier
     fileprivate func putSafely<Id: Identifier, I: Decodable, O: Encodable>(_ route: String, handler: @escaping IdentifierCodableClosure<Id, I, O>) {
         if parameterIsPresent(in: route) {
             return
