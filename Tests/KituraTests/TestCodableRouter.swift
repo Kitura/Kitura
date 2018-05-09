@@ -140,7 +140,7 @@ class TestCodableRouter: KituraTest {
     }
 
     enum OnlyEncodable: Encodable {
-	case data(String)
+        case data(String)
 
         private enum CodingKeys: String, CodingKey {
             case data
@@ -156,7 +156,7 @@ class TestCodableRouter: KituraTest {
     }
 
     enum OnlyDecodable: Decodable {
-	case data(String)
+        case data(String)
 
         private enum CodingKeys: String, CodingKey {
             case data
