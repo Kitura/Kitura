@@ -11,6 +11,7 @@ branches:
     - master
     - develop
     - /^issue.*$/
+    - /^kitura.*$/
 
 notifications:
   slack:
