@@ -148,6 +148,7 @@ public class RouterRequest {
     }()
 
     /// User info.
+    /// Can be used by middlewares and handlers to store and pass information on to subsequent handlers.
     public var userInfo: [String: Any] = [:]
 
     /// Body of the message.

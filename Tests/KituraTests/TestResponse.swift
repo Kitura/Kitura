@@ -61,7 +61,8 @@ class TestResponse: KituraTest {
             ("testLifecycle", testLifecycle),
             ("testSend", testSend),
             ("testSendAfterEnd", testSendAfterEnd),
-            ("testChangeStatusCodeOnInvokedSend", testChangeStatusCodeOnInvokedSend)
+            ("testChangeStatusCodeOnInvokedSend", testChangeStatusCodeOnInvokedSend),
+            ("testUserInfo", testUserInfo)
         ]
     }
 
@@ -1105,6 +1106,22 @@ class TestResponse: KituraTest {
         })
     }
 
+    func testUserInfo() {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/user_info", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
+                do {
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "hello world")
+                } catch {
+                    XCTFail("Error reading body. Error=\(error.localizedDescription)")
+                }
+                expectation.fulfill()
+            })
+        }
+    }
+    
     static func setupRouter() -> Router {
         let router = Router()
 
@@ -1509,6 +1526,22 @@ class TestResponse: KituraTest {
             XCTAssert(response.statusCode == .notFound)
         }
 
+        
+        router.get("user_info", handler: {
+            _, response, next in
+            // Store something in userInfo
+            response.userInfo["greeting"] = "hello"
+            next()
+        }, {
+            _, response, next in
+            // Read the value that should be stored in userInfo
+            guard let greeting = response.userInfo["greeting"] as? String else {
+                return XCTFail()
+            }
+            response.send("\(greeting) world")
+            next()
+        })
+        
         router.error { _, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             do {
