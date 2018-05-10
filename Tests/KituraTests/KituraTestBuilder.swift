@@ -100,6 +100,16 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
                 })
             }
         }
+        
+        init(_ test: KituraTest, _ method: String, _ path: String, json: String) {
+            self.test = test
+            self.invoker = { callback in
+                test.performRequest(method, path: path, callback: callback, requestModifier: { request in
+                    request.headers["Content-Type"] = "application/json; charset=utf-8"
+                    request.write(from: json)
+                })
+            }
+        }
     }
     let test: KituraTest
     let router: ServerDelegate
