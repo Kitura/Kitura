@@ -38,11 +38,22 @@ class TestBridgingRequestError: KituraTest {
         ]
     }
 
+    /// An error message that will be returned as a RequestError body. Equatable
+    /// in order to assert that the correct body was received in the response.
     struct AccessError: Codable, Equatable {
         let errorReason: String
+
+        static func ==(lhs: TestBridgingRequestError.AccessError, rhs: TestBridgingRequestError.AccessError) -> Bool {
+            return lhs.errorReason == rhs.errorReason
+        }
     }
+
+    /// The error instance that will be used when responding, and used to validate
+    /// that the deserialized response contains the same error.
     static let expectedError = AccessError(errorReason: "impossible")
 
+    /// Used only in the signature of our route, never created as we return an error
+    /// instead.
     struct Dummy: Codable {
         let dummy: String
     }
