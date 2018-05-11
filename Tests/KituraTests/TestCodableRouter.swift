@@ -41,7 +41,10 @@ class TestCodableRouter: KituraTest {
             ("testCodableGetSingleQueryParameters", testCodableGetSingleQueryParameters),
             ("testCodableGetArrayQueryParameters", testCodableGetArrayQueryParameters),
             ("testCodableDeleteQueryParameters", testCodableDeleteQueryParameters),
-	    ("testCodablePostSuccessStatuses", testCodablePostSuccessStatuses)
+            ("testCodablePostSuccessStatuses", testCodablePostSuccessStatuses),
+            ("testEncodableType", testEncodableType),
+            ("testDecodableTypeCustomStatus", testDecodableTypeCustomStatus),
+            ("testDecodableTypeDefaultStatus", testDecodableTypeDefaultStatus),
         ]
     }
 
@@ -51,6 +54,7 @@ class TestCodableRouter: KituraTest {
 
     // Reset for each test
     override func setUp() {
+        super.setUp()           // Initialize logging
         router = Router()
         userStore = [1: User(id: 1, name: "Mike"), 2: User(id: 2, name: "Chris"), 3: User(id: 3, name: "Ricardo")]
     }
@@ -132,6 +136,40 @@ class TestCodableRouter: KituraTest {
 
         public static func ==(lhs: Nested, rhs: Nested) -> Bool {
             return lhs.nestedIntField == rhs.nestedIntField && lhs.nestedStringField == rhs.nestedStringField
+        }
+    }
+
+    enum OnlyEncodable: Encodable {
+        case data(String)
+
+        private enum CodingKeys: String, CodingKey {
+            case data
+        }
+
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            switch self {
+            case .data(let value):
+                try container.encode(value, forKey: .data)
+            }
+        }
+    }
+
+    enum OnlyDecodable: Decodable {
+        case data(String)
+
+        private enum CodingKeys: String, CodingKey {
+            case data
+        }
+
+        init(from decoder: Decoder) throws {
+            let values = try decoder.container(keyedBy: CodingKeys.self)
+            if let value = try? values.decode(String.self, forKey: .data) {
+                self = .data(value)
+                return
+            }
+            XCTFail("Unable to decode \(dump(values))")
+            self = .data("FAIL")
         }
     }
 
@@ -383,6 +421,19 @@ class TestCodableRouter: KituraTest {
             .run()
     }
 
+    // Test that a type that only conforms to Encodable can be sent
+    func testEncodableType() {
+        router.get("/encodable") { (id: Int, respondWith: (OnlyEncodable?, RequestError?) -> Void) in
+            print("GET on /encodable/\(id)")
+            respondWith(.data("Hello"), nil)
+        }
+        buildServerTest(router, timeout: 30)
+            .request("get", path: "/encodable/1")
+            .hasContentType(withPrefix: "application/json")
+            .hasData("{\"data\":\"Hello\"}")
+            .run()
+    }
+
     func testBasicDelete() {
         router.delete("/users") { (respondWith: (RequestError?) -> Void) in
             print("DELETE on /users")
@@ -486,6 +537,62 @@ class TestCodableRouter: KituraTest {
             .hasContentType(withPrefix: "application/json")
             .hasData(Status("BAD: 1"))
 
+            .run()
+    }
+
+    // Test that a type that only conforms to Decodable can be received. Responses contain no
+    // result body, as the incoming type is not Encodable. Response handlers are tested with
+    // an explicit (nil, .someSuccessStatus) status code.
+    func testDecodableTypeCustomStatus() {
+        router.put("/decodable") { (id: Int, data: OnlyDecodable, respondWith: (OnlyEncodable?, RequestError?) -> Void) in
+            print("PUT on /decodable/\(id)")
+            respondWith(nil, .ok)
+        }
+        router.post("/decodable") { (data: OnlyDecodable, respondWith: (Int?, OnlyEncodable?, RequestError?) -> Void) in
+            print("POST on /decodable")
+            respondWith(1, nil, .created)
+        }
+        let encodedJson = "{\"data\":\"Hello\"}"
+        
+        buildServerTest(router, timeout: 30)
+
+            .request("post", path: "/decodable", json: encodedJson)
+            .hasStatus(.created)
+            .hasHeader("Location", only: "1")
+            .hasNoData()
+            
+            .request("put", path: "/decodable/1", json: encodedJson)
+            .hasStatus(.OK)
+            .hasNoData()
+            
+            .run()
+    }
+
+    // Test that a type that only conforms to Decodable can be received. Responses contain no
+    // result body, as the incoming type is not Encodable. Response handlers are tested with
+    // the default (nil, nil) status code response.
+    func testDecodableTypeDefaultStatus() {
+        router.put("/decodable") { (id: Int, data: OnlyDecodable, respondWith: (OnlyEncodable?, RequestError?) -> Void) in
+            print("PUT on /decodable/\(id)")
+            respondWith(nil, nil)
+        }
+        router.post("/decodable") { (data: OnlyDecodable, respondWith: (Int?, OnlyEncodable?, RequestError?) -> Void) in
+            print("POST on /decodable")
+            respondWith(1, nil, nil)
+        }
+        let encodedJson = "{\"data\":\"Hello\"}"
+        
+        buildServerTest(router, timeout: 30)
+            
+            .request("post", path: "/decodable", json: encodedJson)
+            .hasStatus(.created)
+            .hasHeader("Location", only: "1")
+            .hasNoData()
+            
+            .request("put", path: "/decodable/1", json: encodedJson)
+            .hasStatus(.OK)
+            .hasNoData()
+            
             .run()
     }
 
