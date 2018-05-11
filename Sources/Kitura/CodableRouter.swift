@@ -19,6 +19,11 @@ import LoggerAPI
 import KituraNet
 import KituraContracts
 
+/// Bridge [RequestError](https://ibm-swift.github.io/KituraContracts/Structs/RequestError.html)
+/// from [KituraContracts](https://ibm-swift.github.io/KituraContracts) so that you only need to import
+/// `Kitura` to access it.
+public typealias RequestError = KituraContracts.RequestError
+
 // Codable router
 
 extension Router {
