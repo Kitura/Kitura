@@ -51,7 +51,10 @@ public protocol TypedMiddleware {
     ///                     HTTP request.
     /// - Parameter response: The `RouterResponse` object used to respond to the
     ///                     HTTP request.
-    /// - Parameter completion: TODO - document
+    /// - Parameter completion: The closure to invoke once middleware processing is
+    ///                         complete. Either an instance of Self or a RequestError
+    ///                         should be provided, indicating a successful or failed
+    ///                         attempt to process the request, respectively.
     static func handle(request: RouterRequest, response: RouterResponse, completion: @escaping (Self?, RequestError?) -> Void) -> Void
     
     /// TODO - document
