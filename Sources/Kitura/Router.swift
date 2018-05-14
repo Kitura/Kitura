@@ -204,7 +204,7 @@ public class Router {
                          options: RenderingOptions = NullRenderingOptions()) throws -> String {
         let (optionalFileExtension, resourceWithExtension) = calculateExtension(template: template)
         
-        let templateEngine = try validateTemplate(template: template, optionalExtension: optionalFileExtension)
+        let templateEngine = try getTemplateEngineForTemplate(template: template, optionalExtension: optionalFileExtension)
         let absoluteFilePath = buildAbsoluteFilePath(with: resourceWithExtension)
         
         return try templateEngine.render(filePath: absoluteFilePath, context: context, options: options,
@@ -226,13 +226,13 @@ public class Router {
                          options: RenderingOptions = NullRenderingOptions()) throws -> String {
         let (optionalFileExtension, resourceWithExtension) = calculateExtension(template: template)
         
-        let templateEngine = try validateTemplate(template: template, optionalExtension: optionalFileExtension)
+        let templateEngine = try getTemplateEngineForTemplate(template: template, optionalExtension: optionalFileExtension)
         let absoluteFilePath = buildAbsoluteFilePath(with: resourceWithExtension)
         
         return try templateEngine.render(filePath: absoluteFilePath, with: value, forKey: key, options: options, templateName: resourceWithExtension)
     }
     
-    private func validateTemplate(template: String, optionalExtension: String?) throws -> TemplateEngine {
+    private func getTemplateEngineForTemplate(template: String, optionalExtension: String?) throws -> TemplateEngine {
         // extension is nil (not the empty string), this should not happen
         guard let fileExtension = optionalExtension else {
             throw TemplatingError.noTemplateEngineForExtension(extension: "")

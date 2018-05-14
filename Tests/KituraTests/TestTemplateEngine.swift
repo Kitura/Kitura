@@ -17,6 +17,7 @@
 import XCTest
 import Foundation
 import KituraTemplateEngine
+import KituraContracts
 
 @testable import Kitura
 @testable import KituraNet
@@ -161,6 +162,21 @@ class TestTemplateEngine: KituraTest {
                 response.status(HTTPStatusCode.internalServerError).send("Failed to render")
                 next()
             }
+        }
+        
+        router.get("/renderWithId") { _, response, next in
+            do {
+                if let options = options {
+                    try response.render("test.mock", with: [(1, self.person)], forKey: "", options: options)
+                } else {
+                    try response.render("test.mock", with: [(1, self.person)], forKey: "")
+                }
+                next()
+            } catch {
+                response.status(HTTPStatusCode.internalServerError).send("Failed to render")
+                next()
+            }
+
         }
     }
 
@@ -307,7 +323,6 @@ class TestTemplateEngine: KituraTest {
         let router = Router()
         let templateEngine = MockTemplateEngine()
         router.add(templateEngine: templateEngine)
-//        router.setDefault(templateEngine: templateEngine)
         do {
             let content = try router.render(template: "test.mock", with: person, forKey: "")
             XCTAssertEqual(content, "Hello World!")
@@ -414,6 +429,12 @@ class TestTemplateEngine: KituraTest {
         } catch {
             XCTFail("Error during render \(error)")
         }
+    }
+    
+    func testCodableRenderWithTuple() {
+        let router = Router()
+        setupRouterForCodableRendering(router, options: MockRenderingOptions())
+        performRenderServerTest(withRouter: router, onPath: "/renderWithId")
     }
 }
 
