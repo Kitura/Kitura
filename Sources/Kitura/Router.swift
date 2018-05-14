@@ -203,28 +203,10 @@ public class Router {
     internal func render(template: String, context: [String: Any],
                          options: RenderingOptions = NullRenderingOptions()) throws -> String {
         let (optionalFileExtension, resourceWithExtension) = calculateExtension(template: template)
-        // extension is nil (not the empty string), this should not happen
-        guard let fileExtension = optionalFileExtension else {
-            throw TemplatingError.noTemplateEngineForExtension(extension: "")
-        }
-
-        guard let templateEngine = getTemplateEngine(template: template) else {
-            if fileExtension.isEmpty {
-                throw TemplatingError.noDefaultTemplateEngineAndNoExtensionSpecified
-            }
-
-            throw TemplatingError.noTemplateEngineForExtension(extension: fileExtension)
-        }
-
-        let filePath: String
-        if let decodedResourceExtension = resourceWithExtension.removingPercentEncoding {
-            filePath = viewsPath + decodedResourceExtension
-        } else {
-            Log.warning("Unable to decode url \(resourceWithExtension)")
-            filePath = viewsPath + resourceWithExtension
-        }
-
-        let absoluteFilePath = StaticFileServer.ResourcePathHandler.getAbsolutePath(for: filePath)
+        
+        let templateEngine = try validateTemplate(template: template, optionalExtension: optionalFileExtension)
+        let absoluteFilePath = buildAbsoluteFilePath(with: resourceWithExtension)
+        
         return try templateEngine.render(filePath: absoluteFilePath, context: context, options: options,
                                          templateName: resourceWithExtension)
     }
@@ -243,8 +225,16 @@ public class Router {
     internal func render<T: Encodable>(template: String, with value: T, forKey key: String?,
                          options: RenderingOptions = NullRenderingOptions()) throws -> String {
         let (optionalFileExtension, resourceWithExtension) = calculateExtension(template: template)
+        
+        let templateEngine = try validateTemplate(template: template, optionalExtension: optionalFileExtension)
+        let absoluteFilePath = buildAbsoluteFilePath(with: resourceWithExtension)
+        
+        return try templateEngine.render(filePath: absoluteFilePath, with: value, forKey: key, options: options, templateName: resourceWithExtension)
+    }
+    
+    private func validateTemplate(template: String, optionalExtension: String?) throws -> TemplateEngine {
         // extension is nil (not the empty string), this should not happen
-        guard let fileExtension = optionalFileExtension else {
+        guard let fileExtension = optionalExtension else {
             throw TemplatingError.noTemplateEngineForExtension(extension: "")
         }
         
@@ -255,7 +245,10 @@ public class Router {
             
             throw TemplatingError.noTemplateEngineForExtension(extension: fileExtension)
         }
-        
+        return templateEngine
+    }
+    
+    private func buildAbsoluteFilePath(with resourceWithExtension: String) -> String {
         let filePath: String
         if let decodedResourceExtension = resourceWithExtension.removingPercentEncoding {
             filePath = viewsPath + decodedResourceExtension
@@ -264,8 +257,7 @@ public class Router {
             filePath = viewsPath + resourceWithExtension
         }
         
-        let absoluteFilePath = StaticFileServer.ResourcePathHandler.getAbsolutePath(for: filePath)
-        return try templateEngine.render(filePath: absoluteFilePath, with: value, forKey: key, options: options, templateName: resourceWithExtension)
+        return StaticFileServer.ResourcePathHandler.getAbsolutePath(for: filePath)
     }
 
     func getTemplateEngine(template: String) -> TemplateEngine? {
