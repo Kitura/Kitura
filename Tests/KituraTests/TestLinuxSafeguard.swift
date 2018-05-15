@@ -41,6 +41,11 @@
             darwinCount = Int(TestCookies.defaultTestSuite.testCaseCount)
             XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestCookies.allTests")
 
+            // TestDecodeErrorExtensions
+            linuxCount = TestDecodingErrorExtension.allTests.count
+            darwinCount = Int(TestDecodingErrorExtension.defaultTestSuite.testCaseCount)
+            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestDecodingErrorExtension.allTests")
+
             // TestErrors
             linuxCount = TestErrors.allTests.count
             darwinCount = Int(TestErrors.defaultTestSuite.testCaseCount)
