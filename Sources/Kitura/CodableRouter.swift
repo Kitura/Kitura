@@ -19,6 +19,11 @@ import LoggerAPI
 import KituraNet
 import KituraContracts
 
+/// Bridge [RequestError](https://ibm-swift.github.io/KituraContracts/Structs/RequestError.html)
+/// from [KituraContracts](https://ibm-swift.github.io/KituraContracts) so that you only need to import
+/// `Kitura` to access it.
+public typealias RequestError = KituraContracts.RequestError
+
 // Codable router
 
 extension Router {
@@ -30,7 +35,7 @@ extension Router {
 
      ### Usage Example: ###
      ````
-     //User is a struct object that conforms to Codable
+     //User is a struct that conforms to Encodable
      router.get("/users") { (respondWith: ([User]?, RequestError?) -> Void) in
 
         ...
@@ -41,7 +46,7 @@ extension Router {
      - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
      - Parameter handler: A CodableArrayClosure that gets invoked when a request comes to the server.
      */
-    public func get<O: Codable>(_ route: String, handler: @escaping CodableArrayClosure<O>) {
+    public func get<O: Encodable>(_ route: String, handler: @escaping CodableArrayClosure<O>) {
         getSafely(route, handler: handler)
     }
 
@@ -50,7 +55,7 @@ extension Router {
 
      ### Usage Example: ###
      ````
-     //Status is a struct object that conforms to Codable
+     //Status is a struct that conforms to Encodable
      router.get("/status") { (respondWith: (Status?, RequestError?) -> Void) in
 
         ...
@@ -61,7 +66,7 @@ extension Router {
      - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
      - Parameter handler: A SimpleCodableClosure that gets invoked when a request comes to the server.
      */
-    public func get<O: Codable>(_ route: String, handler: @escaping SimpleCodableClosure<O>) {
+    public func get<O: Encodable>(_ route: String, handler: @escaping SimpleCodableClosure<O>) {
         getSafely(route, handler: handler)
     }
 
@@ -70,7 +75,7 @@ extension Router {
 
      ### Usage Example: ###
      ````
-     //User is a struct object that conforms to Codable
+     //User is a struct that conforms to Encodable
      router.get("/users") { (id: Int, respondWith: (User?, RequestError?) -> Void) in
 
         ...
@@ -81,7 +86,7 @@ extension Router {
      - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
      - Parameter handler: An IdentifierSimpleCodableClosure that gets invoked when a request comes to the server.
      */
-    public func get<Id: Identifier, O: Codable>(_ route: String, handler: @escaping IdentifierSimpleCodableClosure<Id, O>) {
+    public func get<Id: Identifier, O: Encodable>(_ route: String, handler: @escaping IdentifierSimpleCodableClosure<Id, O>) {
         getSafely(route, handler: handler)
     }
 
@@ -89,7 +94,7 @@ extension Router {
      Setup a IdentifierCodableArrayClosure on the provided route which will be invoked when a request comes to the server.
      ### Usage Example: ###
      ````
-     //User is a struct object that conforms to Codable
+     //User is a struct that conforms to Codable
      router.get("/users") { (respondWith: ([(Int, User)]?, RequestError?) -> Void) in
      
         ...
@@ -100,7 +105,7 @@ extension Router {
      - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
      - Parameter handler: A IdentifierCodableArrayClosure that gets invoked when a request comes to the server.
      */
-    public func get<Id: Identifier, O: Codable>(_ route: String, handler: @escaping IdentifierCodableArrayClosure<Id, O>) {
+    public func get<Id: Identifier, O: Encodable>(_ route: String, handler: @escaping IdentifierCodableArrayClosure<Id, O>) {
         getSafely(route, handler: handler)
     }
     
@@ -110,7 +115,7 @@ extension Router {
      ### Usage Example: ###
      ````
      // MyQuery is a codable struct defining the supported query parameters
-     // User is a struct object that conforms to Codable
+     // User is a struct that conforms to Codable
      router.get("/query") { (query: MyQuery, respondWith: ([User]?, RequestError?) -> Void) in
 
         ...
@@ -121,7 +126,28 @@ extension Router {
      - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
      - Parameter handler: A (QueryParams, CodableArrayResultClosure) -> Void that gets invoked when a request comes to the server.
      */
-    public func get<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q, @escaping CodableArrayResultClosure<O>) -> Void) {
+    public func get<Q: QueryParams, O: Encodable>(_ route: String, handler: @escaping (Q, @escaping CodableArrayResultClosure<O>) -> Void) {
+        getSafely(route, handler: handler)
+    }
+
+   /**
+     Setup a (QueryParams, CodableResultClosure) -> Void on the provided route which will be invoked when a request comes to the server.
+
+     ### Usage Example: ###
+     ````
+     // MyQuery is a codable struct defining the supported query parameters
+     // User is a struct that conforms to Encodable
+     router.get("/query") { (query: MyQuery, respondWith: (User?, RequestError?) -> Void) in
+
+     ...
+
+     respondWith(user, nil)
+     }
+     ````
+     - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
+     - Parameter handler: A (QueryParams, CodableResultClosure) -> Void that gets invoked when a request comes to the server.
+     */
+    public func get<Q: QueryParams, O: Encodable>(_ route: String, handler: @escaping (Q, @escaping CodableResultClosure<O>) -> Void) {
         getSafely(route, handler: handler)
     }
 
@@ -189,7 +215,7 @@ extension Router {
 
      ### Usage Example: ###
      ````
-     //User is a struct object that conforms to Codable
+     //User is a struct that conforms to Codable
      router.post("/users") { (user: User, respondWith: (User?, RequestError?) -> Void) in
 
         ...
@@ -200,7 +226,7 @@ extension Router {
      - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
      - Parameter handler: A Codable closure that gets invoked when a request comes to the server.
     */
-    public func post<I: Codable, O: Codable>(_ route: String, handler: @escaping CodableClosure<I, O>) {
+    public func post<I: Decodable, O: Encodable>(_ route: String, handler: @escaping CodableClosure<I, O>) {
         postSafely(route, handler: handler)
     }
 
@@ -211,7 +237,7 @@ extension Router {
 
      ### Usage Example: ###
      ````
-     //User is a struct object that conforms to Codable
+     //User is a struct that conforms to Codable
      router.post("/users") { (user: User, respondWith: (Int?, User?, RequestError?) -> Void) in
 
         ...
@@ -222,7 +248,7 @@ extension Router {
      - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
      - Parameter handler: A Codable closure that gets invoked when a request comes to the server.
     */
-    public func post<I: Codable, Id: Identifier, O: Codable>(_ route: String, handler: @escaping CodableIdentifierClosure<I, Id, O>) {
+    public func post<I: Decodable, Id: Identifier, O: Encodable>(_ route: String, handler: @escaping CodableIdentifierClosure<I, Id, O>) {
         postSafelyWithId(route, handler: handler)
     }
 
@@ -231,7 +257,7 @@ extension Router {
 
      ### Usage Example: ###
      ````
-     //User is a struct object that conforms to Codable
+     //User is a struct that conforms to Codable
      router.put("/users") { (id: Int, user: User, respondWith: (User?, RequestError?) -> Void) in
 
         ...
@@ -242,7 +268,7 @@ extension Router {
      - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
      - Parameter handler: An Identifier Codable closure that gets invoked when a request comes to the server.
      */
-    public func put<Id: Identifier, I: Codable, O: Codable>(_ route: String, handler: @escaping IdentifierCodableClosure<Id, I, O>) {
+    public func put<Id: Identifier, I: Decodable, O: Encodable>(_ route: String, handler: @escaping IdentifierCodableClosure<Id, I, O>) {
         putSafely(route, handler: handler)
     }
 
@@ -251,8 +277,8 @@ extension Router {
 
      ### Usage Example: ###
      ````
-     //User is a struct object that conforms to Codable
-     //OptionalUser is a struct object that conforms to Codable where all properties are optional
+     //User is a struct that conforms to Codable
+     //OptionalUser is a struct that conforms to Codable where all properties are optional
      router.patch("/users") { (id: Int, patchUser: OptionalUser, respondWith: (User?, RequestError?) -> Void) -> Void in
 
         ...
@@ -263,12 +289,12 @@ extension Router {
      - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
      - Parameter handler: An Identifier Codable closure that gets invoked when a request comes to the server.
      */
-    public func patch<Id: Identifier, I: Codable, O: Codable>(_ route: String, handler: @escaping IdentifierCodableClosure<Id, I, O>) {
+    public func patch<Id: Identifier, I: Decodable, O: Encodable>(_ route: String, handler: @escaping IdentifierCodableClosure<Id, I, O>) {
         patchSafely(route, handler: handler)
     }
 
     // POST
-    fileprivate func postSafely<I: Codable, O: Codable>(_ route: String, handler: @escaping CodableClosure<I, O>) {
+    fileprivate func postSafely<I: Decodable, O: Encodable>(_ route: String, handler: @escaping CodableClosure<I, O>) {
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
             guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
@@ -280,7 +306,7 @@ extension Router {
     }
 
     // POST
-    fileprivate func postSafelyWithId<I: Codable, Id: Identifier, O: Codable>(_ route: String, handler: @escaping CodableIdentifierClosure<I, Id, O>) {
+    fileprivate func postSafelyWithId<I: Decodable, Id: Identifier, O: Encodable>(_ route: String, handler: @escaping CodableIdentifierClosure<I, Id, O>) {
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
             guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
@@ -292,7 +318,7 @@ extension Router {
     }
 
     // PUT with Identifier
-    fileprivate func putSafely<Id: Identifier, I: Codable, O: Codable>(_ route: String, handler: @escaping IdentifierCodableClosure<Id, I, O>) {
+    fileprivate func putSafely<Id: Identifier, I: Decodable, O: Encodable>(_ route: String, handler: @escaping IdentifierCodableClosure<Id, I, O>) {
         if parameterIsPresent(in: route) {
             return
         }
@@ -309,7 +335,7 @@ extension Router {
     }
 
     // PATCH
-    fileprivate func patchSafely<Id: Identifier, I: Codable, O: Codable>(_ route: String, handler: @escaping IdentifierCodableClosure<Id, I, O>) {
+    fileprivate func patchSafely<Id: Identifier, I: Decodable, O: Encodable>(_ route: String, handler: @escaping IdentifierCodableClosure<Id, I, O>) {
         if parameterIsPresent(in: route) {
             return
         }
@@ -326,7 +352,7 @@ extension Router {
     }
 
     // Get single
-    fileprivate func getSafely<O: Codable>(_ route: String, handler: @escaping SimpleCodableClosure<O>) {
+    fileprivate func getSafely<O: Encodable>(_ route: String, handler: @escaping SimpleCodableClosure<O>) {
         get(route) { request, response, next in
             Log.verbose("Received GET (single no-identifier) type-safe request")
             handler(CodableHelpers.constructOutResultHandler(response: response, completion: next))
@@ -334,15 +360,15 @@ extension Router {
     }
 
     // Get array
-    fileprivate func getSafely<O: Codable>(_ route: String, handler: @escaping CodableArrayClosure<O>) {
+    fileprivate func getSafely<O: Encodable>(_ route: String, handler: @escaping CodableArrayClosure<O>) {
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request")
             handler(CodableHelpers.constructOutResultHandler(response: response, completion: next))
         }
     }
     
-    // Get array of (Id, Codable) tuples
-    fileprivate func getSafely<Id: Identifier, O: Codable>(_ route: String, handler: @escaping IdentifierCodableArrayClosure<Id, O>) {
+    // Get array of (Id, Encodable) tuples
+    fileprivate func getSafely<Id: Identifier, O: Encodable>(_ route: String, handler: @escaping IdentifierCodableArrayClosure<Id, O>) {
         get(route) { request, response, next in
             Log.verbose("Received GET (plural with identifier) type-safe request")
             handler(CodableHelpers.constructTupleArrayOutResultHandler(response: response, completion: next))
@@ -350,7 +376,7 @@ extension Router {
     }
 
     // Get w/Query Parameters
-    fileprivate func getSafely<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q, @escaping CodableArrayResultClosure<O>) -> Void) {
+    fileprivate func getSafely<Q: QueryParams, O: Encodable>(_ route: String, handler: @escaping (Q, @escaping CodableArrayResultClosure<O>) -> Void) {
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -365,8 +391,25 @@ extension Router {
         }
     }
 
+    // Get w/Query Parameters with CodableResultClosure
+    fileprivate func getSafely<Q: QueryParams, O: Encodable>(_ route: String, handler: @escaping (Q, @escaping CodableResultClosure<O>) -> Void) {
+        get(route) { request, response, next in
+            Log.verbose("Received GET (singular) type-safe request with Query Parameters")
+            Log.verbose("Query Parameters: \(request.queryParameters)")
+            // Define result handler
+            do {
+                let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
+                handler(query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+            } catch {
+                // Http 400 error
+                response.status(.badRequest)
+                next()
+            }
+        }
+    }
+
     // GET single identified element
-    fileprivate func getSafely<Id: Identifier, O: Codable>(_ route: String, handler: @escaping IdentifierSimpleCodableClosure<Id, O>) {
+    fileprivate func getSafely<Id: Identifier, O: Encodable>(_ route: String, handler: @escaping IdentifierSimpleCodableClosure<Id, O>) {
         if parameterIsPresent(in: route) {
             return
         }
@@ -528,7 +571,7 @@ public struct CodableHelpers {
 
     /**
      * Create a closure that can be called by a codable route handler that
-     * provides an optional `Codable` body and an optional `RequestError`
+     * provides an optional `Encodable` body and an optional `RequestError`
      *
      * - Note: This function is intended for use by the codable router or extensions
      *         thereof. It will create a closure that can be passed to the registered
@@ -553,10 +596,14 @@ public struct CodableHelpers {
      *            `HTTPStatusCode.unknown` otherwise. If the `RequestError` has a codable `body` then
      *            it will be encoded and sent as the body of the response.
      */
-    public static func constructOutResultHandler<OutputType: Codable>(successStatus: HTTPStatusCode = .OK, response: RouterResponse, completion: @escaping () -> Void) -> CodableResultClosure<OutputType> {
+    public static func constructOutResultHandler<OutputType: Encodable>(successStatus: HTTPStatusCode = .OK, response: RouterResponse, completion: @escaping () -> Void) -> CodableResultClosure<OutputType> {
         return { codableOutput, error in
+            var status = successStatus
             if let error = error {
-                response.status(httpStatusCode(from: error))
+                status = httpStatusCode(from: error)
+            }
+            response.status(status)
+            if status.class != .successful, let error = error {
                 do {
                     if let bodyData = try error.encodeBody(.json) {
                         response.headers.setType("json")
@@ -568,10 +615,13 @@ public struct CodableHelpers {
                 }
             } else {
                 do {
-                    let json = try JSONEncoder().encode(codableOutput)
-                    response.headers.setType("json")
-                    response.send(data: json)
-                    response.status(successStatus)
+                    if let codableOutput = codableOutput {
+                        let json = try JSONEncoder().encode(codableOutput)
+                        response.headers.setType("json")
+                        response.send(data: json)
+                    } else {
+                        Log.debug("Note: successful response ('\(status)') delivers no data.")
+                    }
                 } catch {
                     Log.error("Could not encode result: \(error)")
                     response.status(.internalServerError)
@@ -583,7 +633,7 @@ public struct CodableHelpers {
 
     /**
      * Create a closure that can be called by a codable route handler that
-     * provides an array of tuples of (Identifier, Codable) and an optional `RequestError`
+     * provides an array of tuples of (Identifier, Encodable) and an optional `RequestError`
      *
      * - Note: This function is intended for use by the codable router or extensions
      *         thereof. It will create a closure that can be passed to the registered
@@ -608,10 +658,14 @@ public struct CodableHelpers {
      *            `HTTPStatusCode.unknown` otherwise. If the `RequestError` has a codable `body` then
      *            it will be encoded and sent as the body of the response.
      */
-    public static func constructTupleArrayOutResultHandler<Id: Identifier, OutputType: Codable>(successStatus: HTTPStatusCode = .OK, response: RouterResponse, completion: @escaping () -> Void) -> IdentifierCodableArrayResultClosure<Id, OutputType> {
+    public static func constructTupleArrayOutResultHandler<Id: Identifier, OutputType: Encodable>(successStatus: HTTPStatusCode = .OK, response: RouterResponse, completion: @escaping () -> Void) -> IdentifierCodableArrayResultClosure<Id, OutputType> {
         return { codableOutput, error in
+            var status = successStatus
             if let error = error {
-                response.status(httpStatusCode(from: error))
+                status = httpStatusCode(from: error)
+            }
+            response.status(status)
+            if status.class != .successful, let error = error {
                 do {
                     if let bodyData = try error.encodeBody(.json) {
                         response.headers.setType("json")
@@ -623,11 +677,14 @@ public struct CodableHelpers {
                 }
             } else {
                 do {
-                    let entries = codableOutput?.map({ [$0.value: $1] })
-                    let encoded = try JSONEncoder().encode(entries)
-                    response.headers.setType("json")
-                    response.send(data: encoded)
-                    response.status(successStatus)
+                    if let codableOutput = codableOutput {
+                        let entries = codableOutput.map({ [$0.value: $1] })
+                        let encoded = try JSONEncoder().encode(entries)
+                        response.headers.setType("json")
+                        response.send(data: encoded)
+                    } else {
+                        Log.debug("Note: successful response ('\(status)') delivers no data.")
+                    }
                 } catch {
                     Log.error("Could not encode result: \(error)")
                     response.status(.internalServerError)
@@ -639,7 +696,7 @@ public struct CodableHelpers {
     
     /**
      * Create a closure that can be called by a codable route handler that
-     * provides an optional `Identifier` id, optional `Codable` body and an optional `RequestError`
+     * provides an optional `Identifier` id, optional `Encodable` body and an optional `RequestError`
      *
      * - Note: This function is intended for use by the codable router or extensions
      *         thereof. It will create a closure that can be passed to the registered
@@ -666,10 +723,14 @@ public struct CodableHelpers {
      *            `HTTPStatusCode.unknown` otherwise. If the `RequestError` has a codable `body` then
      *            it will be encoded and sent as the body of the response.
      */
-    public static func constructIdentOutResultHandler<IdType: Identifier, OutputType: Codable>(successStatus: HTTPStatusCode = .OK, response: RouterResponse, completion: @escaping () -> Void) -> IdentifierCodableResultClosure<IdType, OutputType> {
+    public static func constructIdentOutResultHandler<IdType: Identifier, OutputType: Encodable>(successStatus: HTTPStatusCode = .OK, response: RouterResponse, completion: @escaping () -> Void) -> IdentifierCodableResultClosure<IdType, OutputType> {
         return { id, codableOutput, error in
+            var status = successStatus
             if let error = error {
-                response.status(CodableHelpers.httpStatusCode(from: error))
+                status = httpStatusCode(from: error)
+            }
+            response.status(status)
+            if status.class != .successful, let error = error {
                 do {
                     if let bodyData = try error.encodeBody(.json) {
                         response.headers.setType("json")
@@ -682,16 +743,18 @@ public struct CodableHelpers {
             } else if let id = id {
                 response.headers["Location"] = String(id.value)
                 do {
-                    let json = try JSONEncoder().encode(codableOutput)
-                    response.headers.setType("json")
-                    response.send(data: json)
-                    response.status(successStatus)
+                    if let codableOutput = codableOutput {
+                        let json = try JSONEncoder().encode(codableOutput)
+                        response.headers.setType("json")
+                        response.send(data: json)
+                    } else {
+                        Log.debug("Note: successful response ('\(status)') delivers no data.")
+                    }
                 } catch {
                     Log.error("Could not encode result: \(error)")
                     response.status(.internalServerError)
                 }
             } else {
-                Log.error("No id (unique identifier) value provided.")
                 response.status(.internalServerError)
             }
             completion()
@@ -706,14 +769,14 @@ public struct CodableHelpers {
      *         thereof. It will read the codable input object from the request that can be passed
      *         to a codable route handler.
      *
-     * - Parameter inputCodableType: The `InputType.Type` (a concrete type complying to `Codable`)
+     * - Parameter inputCodableType: The `InputType.Type` (a concrete type complying to `Decodable`)
      *                               to use to represent the decoded body data.
      * - Parameter request: The `RouterRequest` from which to read the body data.
      * - Parameter response: The `RouterResponse` on which to set any error HTTP status codes in
      *                       cases where reading or decoding the data fails.
      * - Returns: An instance of `InputType` representing the decoded body data.
      */
-    public static func readCodableOrSetResponseStatus<InputType: Codable>(_ inputCodableType: InputType.Type, from request: RouterRequest, response: RouterResponse) -> InputType? {
+    public static func readCodableOrSetResponseStatus<InputType: Decodable>(_ inputCodableType: InputType.Type, from request: RouterRequest, response: RouterResponse) -> InputType? {
         guard CodableHelpers.isContentTypeJSON(request) || CodableHelpers.isContentTypeURLEncoded(request) else {
             response.status(.unsupportedMediaType)
             return nil

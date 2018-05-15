@@ -59,5 +59,7 @@ XCTMain([
     testCase(TestStack.allTests.shuffled()),
     testCase(TestCodableRouter.allTests.shuffled()),
     testCase(TestDecodingErrorExtension.allTests.shuffled()),
+    testCase(TestBridgingHTTPStatusCode.allTests.shuffled()),
+    testCase(TestBridgingRequestError.allTests.shuffled()),
 //    testCase(TestCRUDTypeRouter.allTests.shuffled()),
     ].shuffled())
