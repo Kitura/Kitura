@@ -378,14 +378,6 @@ public class RouterResponse {
     public func render<T: Encodable>(_ resource: String, with value: T, forKey key: String? = nil,
                        options: RenderingOptions = NullRenderingOptions()) throws -> RouterResponse {
         
-        //Throw an error if an array is passed without providing a key.
-        if key == nil {
-            let mirror = Mirror(reflecting: value)
-            if mirror.displayStyle == .collection {
-                throw TemplatingError.noKeyProvidedForArrayType
-            }
-        }
-        
         guard let router = getRouterThatCanRender(resource: resource) else {
             throw TemplatingError.noTemplateEngineForExtension(extension: "")
         }

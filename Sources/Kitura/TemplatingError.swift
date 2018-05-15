@@ -17,7 +17,6 @@
 import Foundation
 
 enum TemplatingError: Swift.Error {
-    case noKeyProvidedForArrayType
     case noDefaultTemplateEngineAndNoExtensionSpecified
     case noTemplateEngineForExtension(extension: String)
 }
@@ -29,8 +28,6 @@ extension TemplatingError: CustomStringConvertible {
             return "No default template engine set and no file extension specified"
         case .noTemplateEngineForExtension(let fileExtension):
             return "No template engine defined for extension \(fileExtension)"
-        case .noKeyProvidedForArrayType:
-            return "No key provided for Array<Encodable>. Use the 'forKey' parameter to provide a key."
         }
     }
 }
