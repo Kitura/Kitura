@@ -19,6 +19,11 @@ import LoggerAPI
 import KituraNet
 import KituraContracts
 
+/// Bridge [RequestError](https://ibm-swift.github.io/KituraContracts/Structs/RequestError.html)
+/// from [KituraContracts](https://ibm-swift.github.io/KituraContracts) so that you only need to import
+/// `Kitura` to access it.
+public typealias RequestError = KituraContracts.RequestError
+
 // Codable router
 
 extension Router {
@@ -786,6 +791,12 @@ public struct CodableHelpers {
         } catch {
             Log.error("Failed to read Codable input from request: \(error)")
             response.status(.unprocessableEntity)
+            if let decodingError = error as? DecodingError {
+                response.send("Could not decode received JSON: \(decodingError.humanReadableDescription)")
+            } else {
+                // Linux Swift does not send a DecodingError when the JSON is invalid, instead it sends Error "The operation could not be completed"
+                response.send("Could not decode received JSON.")
+            }
             return nil
         }
     }
