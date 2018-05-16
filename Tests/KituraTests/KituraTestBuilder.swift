@@ -44,7 +44,6 @@ protocol RequestTestBuilder {
     func request(_ method: String, path: String) -> AssertionTestBuilder
     func request<T: Encodable>(_ method: String, path: String, data: T) -> AssertionTestBuilder
     func request(_ method: String, path: String, urlEncodedString: String) -> AssertionTestBuilder
-    func request(_ method: String, path: String, json: String) -> AssertionTestBuilder
     func run()
 }
 
@@ -89,22 +88,12 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
             }
         }
         
-        init(_ test: KituraTest, _ method: String, _ path: String, urlEncodedString: String) {
+        init(_ test: KituraTest, _ method: String, _ path: String, _ urlEncodedString: String) {
             self.test = test
             self.invoker = { callback in
                 test.performRequest(method, path: path, callback: callback, requestModifier: { request in
                     request.headers["Content-Type"] = "application/x-www-form-urlencoded"
                     request.write(from: urlEncodedString)
-                })
-            }
-        }
-        
-        init(_ test: KituraTest, _ method: String, _ path: String, json: String) {
-            self.test = test
-            self.invoker = { callback in
-                test.performRequest(method, path: path, callback: callback, requestModifier: { request in
-                    request.headers["Content-Type"] = "application/json; charset=utf-8"
-                    request.write(from: json)
                 })
             }
         }
@@ -136,12 +125,7 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
     }
     
     public func request(_ method: String, path: String, urlEncodedString: String) -> AssertionTestBuilder {
-        requests.append(Request(test, method, path, urlEncodedString: urlEncodedString))
-        return self
-    }
-
-    public func request(_ method: String, path: String, json: String) -> AssertionTestBuilder {
-        requests.append(Request(test, method, path, json: json))
+        requests.append(Request(test, method, path, urlEncodedString))
         return self
     }
 
