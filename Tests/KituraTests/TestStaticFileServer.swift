@@ -175,6 +175,9 @@ class TestStaticFileServer: KituraTest {
         options = StaticFileServer.Options(possibleExtensions: ["exe", "html"], cacheOptions: cacheOptions, acceptRanges: false)
         router.all("/tyui", middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options:options, customResponseHeadersSetter: HeaderSetter()))
 
+        // The route below ensures that the static file server does not prevent all routes being walked
+        router.all("/", middleware: StaticFileServer())
+
         return router
     }
 
@@ -210,6 +213,20 @@ class TestStaticFileServer: KituraTest {
         }
     }
 
+    private func runCheckResponseCodeTest(path: String, expectedStatusCode: HTTPStatusCode = HTTPStatusCode.OK) {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: path, callback: { response in
+                guard let response = response else {
+                    XCTFail("ClientRequest response object was nil")
+                    expectation.fulfill()
+                    return
+                }
+                XCTAssertEqual(response.statusCode, expectedStatusCode, "No success status code returned")
+                expectation.fulfill()
+            })
+        }
+    }
+
     func testGetWithWhiteSpaces() {
         runGetResponseTest(path: "/qwer/index%20with%20whitespace.html", expectedResponseText: "<!DOCTYPE html><html><body><b>Index with whitespace</b></body></html>\n")
     }
@@ -223,15 +240,15 @@ class TestStaticFileServer: KituraTest {
     }
 
     func testGetKituraResource() {
-        runGetResponseTest(path: "/@@Kitura-router@@/")
+        runGetResponseTest(path: "/@@Kitura-router@@/", expectedStatusCode: HTTPStatusCode.OK)
     }
 
     func testGetDefaultResponse() {
-        runGetResponseTest(path: "/")
+        runGetResponseTest(path: "/", expectedStatusCode: HTTPStatusCode.OK)
     }
 
     func testGetMissingKituraResource() {
-        runGetResponseTest(path: "/@@Kitura-router@@/missing.file", expectedStatusCode: HTTPStatusCode.notFound)
+        runCheckResponseCodeTest(path: "/@@Kitura-router@@/missing.file", expectedStatusCode: HTTPStatusCode.notFound)
     }
 
     func testAbsolutePathFunction() {
