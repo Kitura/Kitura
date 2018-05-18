@@ -101,21 +101,9 @@ public class Router {
     ///                                 from its parent router. Defaults to `false` if not specified.
     public init(mergeParameters: Bool = false) {
         self.mergeParameters = mergeParameters
-        guard let resourcePath = Router.getKituraResourcePath() else {
-            self.fileResourceServer = nil
-            return
-        }
-        self.fileResourceServer = StaticFileServer(path: resourcePath)
+        self.fileResourceServer = StaticFileServer(path: "./Sources/Kitura/resources")
 
         Log.verbose("Router initialized")
-    }
-
-    fileprivate static func getKituraResourcePath() -> String? {
-        guard let currentFilePath = NSURL(string: #file),
-            let folderPath = currentFilePath.deletingLastPathComponent else {
-            return nil
-        }
-        return folderPath.appendingPathComponent("resources").absoluteString
     }
 
     func routingHelper(_ method: RouterMethod, pattern: String?, handler: [RouterHandler]) -> Router {
