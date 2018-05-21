@@ -30,7 +30,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/IBM-Swift/Kitura-net.git", from: "2.1.0"),
-        .package(url: "https://github.com/IBM-Swift/Kitura-TemplateEngine.git", from: "1.7.4"),
+        .package(url: "https://github.com/IBM-Swift/Kitura-TemplateEngine.git", from: "2.0.0"),
         .package(url: "https://github.com/IBM-Swift/KituraContracts.git", from: "0.0.24"),
     ],
     targets: [

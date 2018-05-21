@@ -17,6 +17,7 @@
 import XCTest
 import Foundation
 import KituraTemplateEngine
+import KituraContracts
 
 @testable import Kitura
 @testable import KituraNet
@@ -47,6 +48,15 @@ class TestTemplateEngine: KituraTest {
              testAddWithFileExtensionsWithoutTheDefaultOne)
         ]
     }
+    
+    struct Person: Codable {
+        let name: String
+        let age: Int
+        let email: String?
+        let isMember: Bool
+    }
+    
+    let person = Person(name: "Ollie", age: 26, email: nil, isMember: false)
 
     func testEmptyTemplateName() {
         let router = Router()
@@ -134,6 +144,39 @@ class TestTemplateEngine: KituraTest {
                response.status(HTTPStatusCode.internalServerError).send("Failed to render")
 	       next()
             }
+        }
+    }
+    
+    private func setupRouterForCodableRendering(_ router: Router, options: RenderingOptions? = nil) {
+        router.setDefault(templateEngine: MockTemplateEngine())
+        
+        router.get("/render") { _, response, next in
+            do {
+                if let options = options {
+                    try response.render("test.mock", with: self.person, forKey: "", options: options)
+                } else {
+                    try response.render("test.mock", with: self.person, forKey: "")
+                }
+                next()
+            } catch {
+                response.status(HTTPStatusCode.internalServerError).send("Failed to render")
+                next()
+            }
+        }
+        
+        router.get("/renderWithId") { _, response, next in
+            do {
+                if let options = options {
+                    try response.render("test.mock", with: [(1, self.person)], forKey: "", options: options)
+                } else {
+                    try response.render("test.mock", with: [(1, self.person)], forKey: "")
+                }
+                next()
+            } catch {
+                response.status(HTTPStatusCode.internalServerError).send("Failed to render")
+                next()
+            }
+
         }
     }
 
@@ -236,12 +279,172 @@ class TestTemplateEngine: KituraTest {
             XCTFail("Error during render \(error)")
         }
     }
+    
+    // Codable Rendering tests
+    func testEmptyTemplateNameCodable() {
+        let router = Router()
+        router.setDefault(templateEngine: MockTemplateEngine())
+        
+        do {
+            _ = try router.render(template: "", with: person, forKey: nil)
+        } catch TemplatingError.noTemplateEngineForExtension {
+            //Expect this error to be thrown
+        } catch {
+            XCTFail("Error during render \(error)")
+        }
+    }
+    
+    func testMissingExtensionCodable() {
+        let router = Router()
+        router.setDefault(templateEngine: MockTemplateEngine())
+        
+        do {
+            _ = try router.render(template: "index.html", with: person, forKey: nil)
+        } catch TemplatingError.noTemplateEngineForExtension {
+            //Expect this error to be thrown
+        } catch {
+            XCTFail("Error during render \(error)")
+        }
+    }
+    
+    func testNoDefaultEngineCodable() {
+        let router = Router()
+        
+        do {
+            _ = try router.render(template: "test", with: person, forKey: nil)
+        } catch TemplatingError.noDefaultTemplateEngineAndNoExtensionSpecified {
+            //Expect this error to be thrown
+        } catch {
+            XCTFail("Error during render \(error)")
+        }
+    }
+    
+    func testCodableRender() {
+        let router = Router()
+        let templateEngine = MockTemplateEngine()
+        router.add(templateEngine: templateEngine)
+        do {
+            let content = try router.render(template: "test.mock", with: person, forKey: "")
+            XCTAssertEqual(content, "Hello World!")
+        } catch {
+            XCTFail("Error during render \(error)")
+        }
+    }
+    
+    func testCodableRenderWithServer() {
+        let router = Router()
+        setupRouterForCodableRendering(router)
+        performRenderServerTest(withRouter: router, onPath: "/render")
+    }
+    
+    func testCodableRenderWithOptionsWithServer() {
+        let router = Router()
+        setupRouterForCodableRendering(router, options: MockRenderingOptions())
+        performRenderServerTest(withRouter: router, onPath: "/render")
+    }
+    
+    func testCodableRenderWithServerAndSubRouter() {
+        let subRouter = Router()
+        setupRouterForCodableRendering(subRouter)
+        
+        let router = Router()
+        router.all("/sub", middleware: subRouter)
+        performRenderServerTest(withRouter: router, onPath: "/sub/render")
+    }
+    
+    func testCodableRenderWithExtensionAndWithoutDefaultTemplateEngine() {
+        let router = Router()
+        router.add(templateEngine: MockTemplateEngine())
+        
+        do {
+            let content = try router.render(template: "test.mock", with: person, forKey: "")
+            XCTAssertEqual(content, "Hello World!")
+        } catch {
+            XCTFail("Error during render \(error)")
+        }
+    }
+    
+    func testCodableRenderWithExtensionAndWithoutDefaultTemplateEngineAfterSettingViewsPath() {
+        let router = Router()
+        router.add(templateEngine: MockTemplateEngine())
+        router.viewsPath = "./Views2/"
+        
+        do {
+            let content = try router.render(template: "test.mock", with: person, forKey: "")
+            XCTAssertEqual(content, "Hello World!")
+        } catch {
+            XCTFail("Error during render \(error)")
+        }
+    }
+    
+    func testCodableAddWithFileExtensions() {
+        let router = Router()
+        router.add(templateEngine: MockTemplateEngine(), forFileExtensions: ["htm", "html"])
+        
+        do {
+            let content = try router.render(template: "test.mock", with: person, forKey: "")
+            XCTAssertEqual(content, "Hello World!")
+        } catch {
+            XCTFail("Error during render \(error)")
+        }
+        
+        do {
+            let content = try router.render(template: "test.html", with: person, forKey: "")
+            XCTAssertEqual(content, "Hello World!")
+        } catch {
+            XCTFail("Error during render \(error)")
+        }
+        
+        do {
+            let content = try router.render(template: "test.htm", with: person, forKey: "")
+            XCTAssertEqual(content, "Hello World!")
+        } catch {
+            XCTFail("Error during render \(error)")
+        }
+    }
+    
+    func testCodableAddWithFileExtensionsWithoutTheDefaultOne() {
+        let router = Router()
+        router.add(templateEngine: MockTemplateEngine(), forFileExtensions: ["htm", "html"],
+                   useDefaultFileExtension: false)
+        
+        do {
+            _ = try router.render(template: "test.mock", with: person, forKey: "")
+        } catch TemplatingError.noTemplateEngineForExtension {
+            //Expect this error to be thrown
+        } catch {
+            XCTFail("Error during render \(error)")
+        }
+        
+        do {
+            let content = try router.render(template: "test.html", with: person, forKey: "")
+            XCTAssertEqual(content, "Hello World!")
+        } catch {
+            XCTFail("Error during render \(error)")
+        }
+        
+        do {
+            let content = try router.render(template: "test.htm", with: person, forKey: "")
+            XCTAssertEqual(content, "Hello World!")
+        } catch {
+            XCTFail("Error during render \(error)")
+        }
+    }
+    
+    func testCodableRenderWithTuple() {
+        let router = Router()
+        setupRouterForCodableRendering(router, options: MockRenderingOptions())
+        performRenderServerTest(withRouter: router, onPath: "/renderWithId")
+    }
 }
 
 class MockTemplateEngine: TemplateEngine {
-
+    
     public var fileExtension: String { return "mock" }
 
+    func render<T: Encodable>(filePath: String, with: T, forKey: String?, options: RenderingOptions, templateName: String) throws -> String {
+        return "Hello World!"
+    }
     public func render(filePath: String, context: [String: Any]) throws -> String {
         return "Hello World!"
     }
