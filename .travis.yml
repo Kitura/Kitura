@@ -11,7 +11,7 @@ branches:
     - master
     - develop
     - /^issue.*$/
-    - /^kitura/
+    - /^kitura.*$/
 
 # the matrix of builds should cover each combination of Swift version
 # and platform that is supported. The version of Swift used is specified

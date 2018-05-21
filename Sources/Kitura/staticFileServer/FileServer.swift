@@ -22,8 +22,6 @@ extension StaticFileServer {
     // MARK: FileServer
     class FileServer {
 
-        private static let kituraResourcePrefix = "/@@Kitura-router@@/"
-
         /// Serve "index.html" files in response to a request on a directory.
         private let serveIndexForDirectory: Bool
 
@@ -53,41 +51,7 @@ extension StaticFileServer {
             self.responseHeadersSetter = responseHeadersSetter
         }
 
-        internal func isRequestForKituraResource(in request: RouterRequest) -> Bool {
-            guard let requestPath = request.parsedURLPath.path else {
-                return false
-            }
-            if requestPath.hasPrefix(FileServer.kituraResourcePrefix) {
-                return true
-            }
-            return false
-        }
-
-        internal func getKituraResourcePath(from request: RouterRequest, for response: RouterResponse) -> String? {
-            var filePath = servingFilesPath + "/"
-            guard let requestPath = request.parsedURLPath.path else {
-                return nil
-            }
-            let url = String(requestPath[FileServer.kituraResourcePrefix.endIndex...])
-            if let decodedURL = url.removingPercentEncoding {
-                filePath += decodedURL
-            } else {
-                Log.warning("unable to decode url \(url)")
-                do {
-                    try response.status(.badRequest).end()
-                } catch {
-                    Log.error("Unable to send \"Invalid Request\" for url: \(url) from request path: \(requestPath)")
-                }
-                return nil
-            }
-
-            if filePath.hasSuffix("/") {
-                filePath += "index.html"
-            }
-            return filePath
-        }
-
-        func getFilePath(from request: RouterRequest, for response: RouterResponse) -> String? {
+        func getFilePath(from request: RouterRequest) -> String? {
             var filePath = servingFilesPath
             guard let requestPath = request.parsedURLPath.path else {
                 return nil
@@ -107,12 +71,7 @@ extension StaticFileServer {
                     filePath += decodedURL
                 } else {
                     Log.warning("unable to decode url \(url)")
-                    do {
-                        try response.status(.badRequest).end()
-                    } catch {
-                        Log.error("Unable to send \"Invalid Request\" for url: \(url) from request path: \(requestPath)")
-                    }
-                    return nil
+                    filePath += url
                 }
             }
 
@@ -128,15 +87,6 @@ extension StaticFileServer {
         }
 
         func serveFile(_ filePath: String, requestPath: String, response: RouterResponse) {
-            if  !isValidFilePath(filePath) {
-                Log.error("Invalid request for resource: \(filePath) from request path: \(requestPath)")
-                do {
-                    try response.status(.badRequest).end()
-                } catch {
-                    Log.error("Unable to send \"Invalid Request\" for: \(filePath) from request path: \(requestPath)")
-                }
-                return
-            }
             let fileManager = FileManager()
             var isDirectory = ObjCBool(false)
 
@@ -151,23 +101,14 @@ extension StaticFileServer {
                 return
             }
 
-            if !tryToServeWithExtensions(filePath, response: response) {
-                do {
-                    try response.send("Cannot GET \(requestPath)").status(.notFound).end()
-                } catch {
-                    Log.error("failed to send not found response for resource: \(filePath)")
-                }
-            }
+            tryToServeWithExtensions(filePath, response: response)
         }
 
-        private func tryToServeWithExtensions(_ filePath: String, response: RouterResponse) -> Bool {
+        private func tryToServeWithExtensions(_ filePath: String, response: RouterResponse) {
             let filePathWithPossibleExtensions = possibleExtensions.map { filePath + "." + $0 }
             for filePathWithExtension in filePathWithPossibleExtensions {
-                if serveIfNonDirectoryFile(atPath: filePathWithExtension, response: response) {
-                    return true
-                }
+                serveIfNonDirectoryFile(atPath: filePathWithExtension, response: response)
             }
-            return false
         }
 
         private func serveExistingFile(_ filePath: String, requestPath: String, isDirectory: Bool,
@@ -195,14 +136,18 @@ extension StaticFileServer {
                     let isDirectoryBool = isDirectory
                 #endif
                 if !isDirectoryBool {
-                    return serveNonDirectoryFile(path, response: response)
+                    serveNonDirectoryFile(path, response: response)
+                    return true
                 }
             }
             return false
         }
 
-        @discardableResult
-        private func serveNonDirectoryFile(_ filePath: String, response: RouterResponse) -> Bool {
+        private func serveNonDirectoryFile(_ filePath: String, response: RouterResponse) {
+            if  !isValidFilePath(filePath) {
+                return
+            }
+
             do {
                 let fileAttributes = try FileManager().attributesOfItem(atPath: filePath)
 
@@ -228,49 +173,44 @@ extension StaticFileServer {
                             // If-Range header prevented a partial response. Send the entire file
                             try response.send(fileName: filePath)
                             response.statusCode = .OK
-                            return true
                         } else {
                             // Send a partial response
-                            return serveNonDirectoryPartialFile(filePath, fileSize: fileSize, ranges: rangeHeaderValue.ranges, response: response)
+                            serveNonDirectoryPartialFile(filePath, fileSize: fileSize, ranges: rangeHeaderValue.ranges, response: response)
                         }
                     } else {
                         // Send not satisfiable response
-                        return serveNotSatisfiable(filePath, fileSize: fileSize, response: response)
+                        serveNotSatisfiable(filePath, fileSize: fileSize, response: response)
                     }
                 } else {
                     // Regular request OR Syntactically invalid range request OR fileSize was not available
                     if method == "HEAD" {
                         // Send only headers
                         _ = response.send(status: .OK)
-                        return true
                     } else {
                         // Send the entire file
                         try response.send(fileName: filePath)
                         response.statusCode = .OK
-                        return true
                     }
                 }
             } catch {
                 Log.error("serving file at path \(filePath), error: \(error)")
-                return false
             }
         }
 
         private func isValidFilePath(_ filePath: String) -> Bool {
-            // Check that no-one is using ..'s in the path to poke around the filesystem
-            guard let absoluteBasePath = NSURL(fileURLWithPath: servingFilesPath).standardizingPath?.absoluteString, let standardisedPath = NSURL(fileURLWithPath: filePath).standardizingPath?.absoluteString else {
+            guard let absoluteBasePath = NSURL(fileURLWithPath: servingFilesPath).standardizingPath?.absoluteString,
+                let standardisedPath = NSURL(fileURLWithPath: filePath).standardizingPath?.absoluteString else {
                 return false
             }
             return  standardisedPath.hasPrefix(absoluteBasePath)
         }
 
-        private func serveNotSatisfiable(_ filePath: String, fileSize: UInt64, response: RouterResponse) -> Bool {
+        private func serveNotSatisfiable(_ filePath: String, fileSize: UInt64, response: RouterResponse) {
             response.headers["Content-Range"] = "bytes */\(fileSize)"
             _ = response.send(status: .requestedRangeNotSatisfiable)
-            return true
         }
 
-        private func serveNonDirectoryPartialFile(_ filePath: String, fileSize: UInt64, ranges: [Range<UInt64>], response: RouterResponse) -> Bool {
+        private func serveNonDirectoryPartialFile(_ filePath: String, fileSize: UInt64, ranges: [Range<UInt64>], response: RouterResponse) {
             let contentType =  ContentType.sharedInstance.getContentType(forFileName: filePath)
             if ranges.count == 1 {
                 let data = FileServer.read(contentsOfFile: filePath, inRange: ranges[0])
@@ -279,7 +219,7 @@ extension StaticFileServer {
                 response.headers["Content-Range"] = "bytes \(ranges[0].lowerBound)-\(ranges[0].upperBound)/\(fileSize)"
                 response.send(data: data ?? Data())
                 response.statusCode = .partialContent
-                return true
+
             } else {
                 // Send multi part response
                 let boundary = "KituraBoundary\(UUID().uuidString)" // Maybe a better boundary can be calculated in the future
@@ -298,7 +238,6 @@ extension StaticFileServer {
                 data.append("--\(boundary)--".data(using: .utf8)!)
                 response.send(data: data)
                 response.statusCode = .partialContent
-                return true
             }
         }
 
