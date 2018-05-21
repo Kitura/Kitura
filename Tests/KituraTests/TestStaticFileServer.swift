@@ -161,6 +161,9 @@ class TestStaticFileServer: KituraTest {
     static func setupRouter() -> Router {
         let router = Router()
 
+        // The route below ensures that the static file server does not prevent all routes being walked
+        router.all("/", middleware: StaticFileServer())
+
         var cacheOptions = StaticFileServer.CacheOptions(maxAgeCacheControlHeader: 2)
         var options = StaticFileServer.Options(possibleExtensions: ["exe", "html"], cacheOptions: cacheOptions)
         router.all("/qwer", middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options:options, customResponseHeadersSetter: HeaderSetter()))
@@ -175,9 +178,6 @@ class TestStaticFileServer: KituraTest {
 
         options = StaticFileServer.Options(possibleExtensions: ["exe", "html"], cacheOptions: cacheOptions, acceptRanges: false)
         router.all("/tyui", middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options:options, customResponseHeadersSetter: HeaderSetter()))
-
-        // The route below ensures that the static file server does not prevent all routes being walked
-        router.all("/", middleware: StaticFileServer())
 
         return router
     }
@@ -235,11 +235,11 @@ class TestStaticFileServer: KituraTest {
     }
 
     func testGetTraversedFileKituraResource() {
-        runGetResponseTest(path: "/@@Kitura-router@@/../../../../../../../../../etc/hosts", expectedStatusCode: HTTPStatusCode.notFound)
+        runGetResponseTest(path: "/@@Kitura-router@@/../../../../../../../../../../../../../../../../../../../../etc/hosts", expectedStatusCode: HTTPStatusCode.notFound)
     }
 
     func testGetTraversedFile() {
-        runGetResponseTest(path: "/../../../../../../../../../etc/hosts", expectedStatusCode: HTTPStatusCode.notFound)
+        runGetResponseTest(path: "/../../../../../../../../../../../../../../../../../../../../etc/hosts", expectedStatusCode: HTTPStatusCode.notFound)
     }
 
     func testAbsolutePathFunction() {
