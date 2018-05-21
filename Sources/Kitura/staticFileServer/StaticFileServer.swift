@@ -114,7 +114,7 @@ public class StaticFileServer: RouterMiddleware {
             return
         }
 
-        guard let filePath = fileServer.getFilePath(from: request, for: response) else {
+        guard let filePath = fileServer.getFilePath(from: request) else {
             return
         }
 
@@ -123,28 +123,5 @@ public class StaticFileServer: RouterMiddleware {
         }
 
         fileServer.serveFile(filePath, requestPath: requestPath, response: response)
-    }
-
-    @discardableResult
-    internal func serveKituraResource(request: RouterRequest, response: RouterResponse) -> Bool {
-
-        if !fileServer.isRequestForKituraResource(in: request) {
-            return false
-        }
-
-        guard request.serverRequest.method == "GET" else {
-            return false
-        }
-
-        guard let filePath = fileServer.getKituraResourcePath(from: request, for: response) else {
-            return false
-        }
-
-        guard let requestPath = request.parsedURLPath.path else {
-            return false
-        }
-
-        fileServer.serveFile(filePath, requestPath: requestPath, response: response)
-        return true
     }
 }
