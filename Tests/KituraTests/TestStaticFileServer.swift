@@ -235,11 +235,11 @@ class TestStaticFileServer: KituraTest {
     }
 
     func testGetTraversedFileKituraResource() {
-        runGetResponseTest(path: "/@@Kitura-router@@/../../../../../../../../../../../../../../../../../../../../etc/hosts", expectedStatusCode: HTTPStatusCode.notFound)
+        runGetResponseTest(path: "/@@Kitura-router@@/../../../Tests/KituraTests/TestStaticFileServer.swift", expectedStatusCode: HTTPStatusCode.notFound)
     }
 
     func testGetTraversedFile() {
-        runGetResponseTest(path: "/../../../../../../../../../../../../../../../../../../../../etc/hosts", expectedStatusCode: HTTPStatusCode.notFound)
+        runGetResponseTest(path: "../Tests/KituraTests/TestStaticFileServer.swift", expectedStatusCode: HTTPStatusCode.notFound)
     }
 
     func testAbsolutePathFunction() {
