@@ -41,9 +41,9 @@ public protocol RouterMiddleware {
 
 /// Defines the protocol which all Kitura type-safe middleware must implement.
 ///
-/// Middleware are class or struct based request handlers. They are often generic
-/// in nature and not tied to a specific request.
-public protocol TypedMiddleware {
+/// TypeSafeMiddleware are class or struct which use the request and response,
+/// which on success create an instance of self
+public protocol TypeSafeMiddleware {
     
     /// Handle an incoming HTTP request.
     ///
@@ -57,7 +57,7 @@ public protocol TypedMiddleware {
     ///                         attempt to process the request, respectively.
     static func handle(request: RouterRequest, response: RouterResponse, completion: @escaping (Self?, RequestError?) -> Void) -> Void
     
-    /// TODO - document
+    /// Decribe the type-safe middleware
     static func describe() -> String
 }
 
