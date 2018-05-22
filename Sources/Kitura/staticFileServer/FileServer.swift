@@ -153,10 +153,8 @@ extension StaticFileServer {
                 try response.send(fileName: filePath)
             } catch {
                 Log.error("serving file at path \(filePath) error: \(error)")
-                return false
             }
             response.statusCode = .OK
-            return true
         }
 
         private func isValidFilePath(_ filePath: String) -> Bool {
