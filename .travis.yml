@@ -11,6 +11,7 @@ branches:
     - master
     - develop
     - /^issue.*$/
+    - /^kitura.*$/
 
 # the matrix of builds should cover each combination of Swift version
 # and platform that is supported. The version of Swift used is specified
@@ -36,7 +37,7 @@ matrix:
     - os: osx
       osx_image: xcode9.3
       sudo: required
-      env: JAZZY_ELIGIBLE=true
+      env: SWIFT_SNAPSHOT=4.1 JAZZY_ELIGIBLE=true
 
 script:
   - ./build.sh

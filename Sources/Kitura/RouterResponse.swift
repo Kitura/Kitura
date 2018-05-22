@@ -18,6 +18,7 @@ import KituraNet
 import KituraTemplateEngine
 import LoggerAPI
 import Foundation
+import KituraContracts
 
 
 // MARK: RouterResponse
@@ -116,6 +117,10 @@ public class RouterResponse {
         }
     }
 
+    /// User info.
+    /// Can be used by middlewares and handlers to store and pass information on to subsequent handlers.
+    public var userInfo: [String: Any] = [:]
+    
     /// Initialize a `RouterResponse` instance
     ///
     /// - Parameter response: The `ServerResponse` object to work with
@@ -357,6 +362,48 @@ public class RouterResponse {
             throw TemplatingError.noTemplateEngineForExtension(extension: "")
         }
         let renderedResource = try router.render(template: resource, context: context, options: options)
+        return send(renderedResource)
+    }
+    
+    /// Render a resource using Router's template engine.
+    ///
+    /// - Parameter resource: the resource name without extension.
+    /// - Parameter with: a value that conforms to Encodable that is used to generate the content.
+    /// - Parameter forKey: A value used to match the Encodable value to the correct variable in a template file.
+    ///                                 The `forKey` value should match the desired variable in the template file.
+    /// - Parameter options: rendering options, specific per template engine
+    /// - Throws: TemplatingError if no file extension was specified or there is no template engine defined for the extension.
+    /// - Returns: this RouterResponse.
+    @discardableResult
+    public func render<T: Encodable>(_ resource: String, with value: T, forKey key: String? = nil,
+                       options: RenderingOptions = NullRenderingOptions()) throws -> RouterResponse {
+        
+        guard let router = getRouterThatCanRender(resource: resource) else {
+            throw TemplatingError.noTemplateEngineForExtension(extension: "")
+        }
+        
+        let renderedResource = try router.render(template: resource, with: value, forKey: key, options: options)
+        return send(renderedResource)
+    }
+    
+    /// Render a resource using Router's template engine.
+    ///
+    /// - Parameter resource: the resource name without extension.
+    /// - Parameter with: an array of tuples of type (Identifier, Encodable). The Encodable values are used to generate the content.
+    /// - Parameter forKey: A value used to match the Encodable values to the correct variable in a template file.
+    ///                                 The `forKey` value should match the desired variable in the template file.
+    /// - Parameter options: rendering options, specific per template engine
+    /// - Throws: TemplatingError if no file extension was specified or there is no template engine defined for the extension.
+    /// - Returns: this RouterResponse.
+    @discardableResult
+    public func render<I: Identifier, T: Encodable>(_ resource: String, with values: [(I, T)], forKey key: String,
+                                   options: RenderingOptions = NullRenderingOptions()) throws -> RouterResponse {
+        guard let router = getRouterThatCanRender(resource: resource) else {
+            throw TemplatingError.noTemplateEngineForExtension(extension: "")
+        }
+        let items: [T] = values.map { $0.1 }
+        
+        let renderedResource = try router.render(template: resource, with: items, forKey: key, options: options)
         return send(renderedResource)
     }
 

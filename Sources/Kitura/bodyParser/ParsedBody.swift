@@ -28,6 +28,11 @@ public indirect enum ParsedBody {
     /// dictionary of key-value pairs.
     case urlEncoded([String:String])
 
+    /// If the content type was "application/x-www-form-urlencoded" this
+    /// associated value will contain a representation of the body as a
+    /// dictionary of key-[value] pairs.
+    case urlEncodedMultiValue([String: [String]])
+
     /// If the content type was "text" this associated value will contain a
     /// representation of the body as a String.
     case text(String)
@@ -68,6 +73,18 @@ public indirect enum ParsedBody {
             return nil
         }
     }
+    
+    /// Extract a "raw" body from the `ParsedBody` enum
+    ///
+    /// - Returns: The "raw" body as a Data, or nil if the body wasn't in raw format.
+    public var asRaw: Data? {
+        switch self {
+        case .raw(let body):
+            return body
+        default:
+            return nil
+        }
+    }
 
     /// Extract a "text" body from the `ParsedBody` enum
     ///
@@ -81,13 +98,28 @@ public indirect enum ParsedBody {
         }
     }
 
-    /// Extract a "urlEncoded" body from the `ParsedBody` enum
+    /// Extract a "urlEncoded" body from the `ParsedBody` enum with comma-
+    /// separated values.
     ///
     /// - Returns: The parsed body as a Dictionary<String, String>, or nil if the body wasn't in
     ///           url encoded form format.
     public var asURLEncoded: [String:String]? {
         switch self {
         case .urlEncoded(let body):
+            return body
+        default:
+            return nil
+        }
+    }
+
+    /// Extract a "urlEncoded" body from the `ParsedBody` enum with values in
+    /// an array..
+    ///
+    /// - Returns: The parsed body as a Dictionary<String, Array<String>>, or
+    ///            nil if the body wasn't in url encoded form format.
+    public var asURLEncodedMultiValue: [String: [String]]? {
+        switch self {
+        case .urlEncodedMultiValue(let body):
             return body
         default:
             return nil

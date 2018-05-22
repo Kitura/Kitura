@@ -26,3 +26,14 @@ class URLEncodedBodyParser: BodyParserProtocol {
         return parsedBody.count > 0 ? .urlEncoded(parsedBody) : nil
     }
 }
+
+class URLEncodedMultiValueBodyParser: BodyParserProtocol {
+    func parse(_ data: Data) -> ParsedBody? {
+        guard let bodyAsString = String(data: data, encoding: .utf8) else {
+            return nil
+        }
+
+        let parsedBody = bodyAsString.urlDecodedFieldMultiValuePairs
+        return parsedBody.count > 0 ? .urlEncodedMultiValue(parsedBody) : nil
+    }
+}

@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
+import Foundation
 import KituraNet
 import Socket
 import LoggerAPI
-
-import Foundation
 import KituraContracts
 
 // MARK: RouterRequest
@@ -138,12 +137,18 @@ public class RouterRequest {
     /// List of URL parameters.
     public internal(set) var parameters: [String:String] = [:]
 
-    /// List of query parameters.
+    /// List of query parameters and comma-separated values.
     public lazy var queryParameters: [String:String] = { [unowned self] in
         return self.urlURL.query?.urlDecodedFieldValuePairs ?? [:]
         }()
 
+    /// Query parameters with values as an array.
+    public lazy var queryParametersMultiValues: [String: [String]] = { [unowned self] in
+        return self.urlURL.query?.urlDecodedFieldMultiValuePairs ?? [:]
+    }()
+
     /// User info.
+    /// Can be used by middlewares and handlers to store and pass information on to subsequent handlers.
     public var userInfo: [String: Any] = [:]
 
     /// Body of the message.
@@ -162,6 +167,14 @@ public class RouterRequest {
         httpVersion = HTTPVersion(major: serverRequest.httpVersionMajor ?? 1, minor: serverRequest.httpVersionMinor ?? 1)
         method = RouterMethod(fromRawValue: serverRequest.method)
         headers = Headers(headers: serverRequest.headers)
+    }
+
+    /// Convert query parameters into a QueryParam type
+    ///
+    /// - Parameter type: The QueryParam type describing the expected query parameters
+    /// - Returns: The route's Query parameters as a QueryParam object
+    public func getQueryParameters<T: QueryParams>(as type: T.Type) -> T? {
+        return try? QueryDecoder(dictionary: self.queryParameters).decode(type)
     }
 
     /// Read the body of the request as Data.
