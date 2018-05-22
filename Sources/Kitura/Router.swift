@@ -373,9 +373,9 @@ extension Router : ServerDelegate {
 
         if  urlPath.hasPrefix(kituraResourcePrefix) {
             #if swift(>=3.2)
-            let resource = String(urlPath[kituraResourcePrefix.endIndex...])
+                let resource = String(urlPath[kituraResourcePrefix.endIndex...])
             #else
-            let resource = urlPath.substring(from: kituraResourcePrefix.endIndex)
+                let resource = urlPath.substring(from: kituraResourcePrefix.endIndex)
             #endif
             fileResourceServer.sendIfFound(resource: resource, usingResponse: response)
         } else {
