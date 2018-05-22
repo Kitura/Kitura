@@ -365,7 +365,6 @@ extension Router : ServerDelegate {
     fileprivate func process(request: RouterRequest, response: RouterResponse, callback: @escaping () -> Void) {
         guard let urlPath = request.parsedURLPath.path else {
             Log.error("request.parsedURLPath.path is nil. Failed to process request")
-            callback()
             return
         }
 
