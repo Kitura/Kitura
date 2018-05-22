@@ -61,7 +61,8 @@ class TestResponse: KituraTest {
             ("testLifecycle", testLifecycle),
             ("testSend", testSend),
             ("testSendAfterEnd", testSendAfterEnd),
-            ("testChangeStatusCodeOnInvokedSend", testChangeStatusCodeOnInvokedSend)
+            ("testChangeStatusCodeOnInvokedSend", testChangeStatusCodeOnInvokedSend),
+            ("testUserInfo", testUserInfo)
         ]
     }
 
@@ -309,6 +310,24 @@ class TestResponse: KituraTest {
                 req.write(from: "swift=rocks")
             }
         }
+        // Now try the multi-value body parser
+        performServerTest(router) { expectation in
+            self.performRequest("post", path: "/bodytestMultiValue", callback: {response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
+                do {
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> [\"swift\": [\"rocks\", \"rules\"]] </body></html>\n\n")
+                } catch {
+                    XCTFail("Error reading body")
+                }
+                expectation.fulfill()
+            }) {req in
+                req.headers["Content-Type"] = "application/x-www-form-urlencoded"
+                req.write(from: "swift=rocks&swift=rules")
+            }
+        }
+
     }
 
     func dataComponentsTest(_ searchString: String, separator: String) {
@@ -1087,6 +1106,22 @@ class TestResponse: KituraTest {
         })
     }
 
+    func testUserInfo() {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/user_info", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
+                do {
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "hello world")
+                } catch {
+                    XCTFail("Error reading body. Error=\(error.localizedDescription)")
+                }
+                expectation.fulfill()
+            })
+        }
+    }
+    
     static func setupRouter() -> Router {
         let router = Router()
 
@@ -1207,6 +1242,13 @@ class TestResponse: KituraTest {
                 } catch {
                     XCTFail("caught error: \(error)")
                 }
+            } else if let urlEncoded = requestBody.asURLEncodedMultiValue {
+                do {
+                    response.headers["Content-Type"] = "text/html; charset=utf-8"
+                    try response.send("<!DOCTYPE html><html><body><b>Received URL encoded body</b><br> \(urlEncoded) </body></html>\n\n").end()
+                } catch {
+                    XCTFail("caught error: \(error)")
+                }
             } else if let text = requestBody.asText {
                 do {
                     response.headers["Content-Type"] = "text/html; charset=utf-8"
@@ -1221,7 +1263,7 @@ class TestResponse: KituraTest {
                 } catch {
                     XCTFail("caught error: \(error)")
                 }
-            } else if case let .raw(data) = requestBody {
+            } else if let data = requestBody.asRaw {
                 XCTAssertNotNil(data)
                 let length = "2048"
                 _ = response.send("length: \(length)")
@@ -1233,7 +1275,10 @@ class TestResponse: KituraTest {
             next()
         }
 
-        router.all("/bodytest", middleware: BodyParser())
+        router.all("/bodytestMultiValue", allowPartialMatch: false, middleware: BodyParserMultiValue())
+        router.post("/bodytestMultiValue", handler: bodyTestHandler)
+
+        router.all("/bodytest", allowPartialMatch: false, middleware: BodyParser())
         router.post("/bodytest", handler: bodyTestHandler)
 
         router.post("/bodytesthardway") { request, response, next in
@@ -1481,6 +1526,22 @@ class TestResponse: KituraTest {
             XCTAssert(response.statusCode == .notFound)
         }
 
+        
+        router.get("user_info", handler: {
+            _, response, next in
+            // Store something in userInfo
+            response.userInfo["greeting"] = "hello"
+            next()
+        }, {
+            _, response, next in
+            // Read the value that should be stored in userInfo
+            guard let greeting = response.userInfo["greeting"] as? String else {
+                return XCTFail()
+            }
+            response.send("\(greeting) world")
+            next()
+        })
+        
         router.error { _, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
             do {
