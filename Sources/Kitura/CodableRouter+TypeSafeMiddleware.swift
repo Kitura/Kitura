@@ -844,7 +844,6 @@ extension Router {
     ) {
         T.handle(request: request, response: response) { (typeSafeMiddleware: T?, error: RequestError?) in
             guard let typeSafeMiddleware = typeSafeMiddleware else {
-                print("failed typeSafeMiddleware. Error: \(String(describing: error))")
                 response.status(CodableHelpers.httpStatusCode(from: error ?? .internalServerError))
                 return completion(nil)
             }
