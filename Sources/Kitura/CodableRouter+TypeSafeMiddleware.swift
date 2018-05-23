@@ -18,13 +18,32 @@ import Foundation
 import LoggerAPI
 import KituraNet
 import KituraContracts
-import Dispatch
 
-// Codable router
+// Type-safe middleware Codable router
 
 extension Router {
     
-    // GET returning single Codable
+    // MARK: Type-safe middleware Routing
+    
+    /**
+     Setup a closure, which will be invoked when a GET request to the provided route is received by the server.
+     The closure accepts a successfully executed instance of TypeSafeMiddleware
+     and a handler which responds with a single Codable object or a RequestError.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     MySession is a TypeSafeMiddleware instance containing optional Users.
+     User is a struct that conforms to Codable.
+     ```swift
+     router.get("/user") { (session: MySession, respondWith: (User?, RequestError?) -> Void) in
+         guard let user: User = session.user else {
+            return respondWith(nil, .notFound)
+         }
+         respondWith(user, nil)
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that returns a single Codable object or a RequestError.
+     */
     public func get<T: TypeSafeMiddleware, O: Codable>(
         _ route: String,
         handler: @escaping (T, CodableResultClosure<O>) -> Void
@@ -825,6 +844,7 @@ extension Router {
     ) {
         T.handle(request: request, response: response) { (typeSafeMiddleware: T?, error: RequestError?) in
             guard let typeSafeMiddleware = typeSafeMiddleware else {
+                print("failed typeSafeMiddleware. Error: \(String(describing: error))")
                 response.status(CodableHelpers.httpStatusCode(from: error ?? .internalServerError))
                 return completion(nil)
             }

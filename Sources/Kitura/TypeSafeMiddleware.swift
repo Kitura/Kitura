@@ -18,8 +18,8 @@ import KituraContracts
 
 /// Defines the protocol which all Kitura type-safe middleware must implement.
 ///
-/// TypeSafeMiddleware are class or struct which use the request and response,
-/// which on success create an instance of self
+/// TypeSafeMiddleware are classes or structs that process an incoming request
+/// and on success create an instance of self, which is passed to the users route handler.
 public protocol TypeSafeMiddleware {
     
     /// Handle an incoming HTTP request.
