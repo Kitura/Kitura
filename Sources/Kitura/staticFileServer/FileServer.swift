@@ -198,14 +198,11 @@ extension StaticFileServer {
         }
 
         private func isValidFilePath(_ filePath: String) -> Bool {
-            // Check that no-one is using ..'s in the path to poke around the filesystem
-            let absoluteBasePath = NSURL(fileURLWithPath: servingFilesPath).absoluteString
-            let absoluteFilePath = NSURL(fileURLWithPath: filePath).absoluteString
-            #if os(Linux)
-                return  absoluteFilePath.hasPrefix(absoluteBasePath)
-            #else
-                return  absoluteFilePath!.hasPrefix(absoluteBasePath!)
-            #endif
+            guard let absoluteBasePath = NSURL(fileURLWithPath: servingFilesPath).standardizingPath?.absoluteString,
+                let standardisedPath = NSURL(fileURLWithPath: filePath).standardizingPath?.absoluteString else {
+                return false
+            }
+            return  standardisedPath.hasPrefix(absoluteBasePath)
         }
 
         private func serveNotSatisfiable(_ filePath: String, fileSize: UInt64, response: RouterResponse) {
