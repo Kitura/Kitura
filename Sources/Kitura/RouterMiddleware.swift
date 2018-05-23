@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import KituraContracts
-
 // MARK: RouterMiddleware protocol
 
 /// Defines the protocol which all Kitura compliant middleware must implement.
@@ -38,6 +36,3 @@ public protocol RouterMiddleware {
     ///          and the user will get a response with a status code of 500.
     func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws
 }
-
-
-

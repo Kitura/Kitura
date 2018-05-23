@@ -1,5 +1,5 @@
 /*
- * Copyright IBM Corporation 2017
+ * Copyright IBM Corporation 2018
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ extension Router {
     // MARK: Type-safe middleware Routing
     
     /**
-     Setup a closure, which will be invoked when a GET request to the provided route is received by the server.
+     Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
      The closure accepts a successfully executed instance of TypeSafeMiddleware
      and a handler which responds with a single Codable object or a RequestError.
      The handler contains the developer's logic, which determines the server's response.
