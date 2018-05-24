@@ -16,10 +16,33 @@
 
 import KituraContracts
 
-/// Defines the protocol which all Kitura type-safe middleware must implement.
-///
-/// TypeSafeMiddleware are classes or structs that process an incoming request
-/// and on success create an instance of self, which is passed to the users route handler.
+/**
+ The protocol that type-safe middleware must implement to be used in Kitura Codable routes.
+ 
+ Classes or structs conforming to TypeSafeMiddleware must contain a static handle function that processes an incoming request.
+ On success, the handle function creates an instance of Self and passes this instance to the users route handler.
+ ### Usage Example: ###
+ In this example, a UserMiddleware struct is defined that checks the request for the header "TestHeader".
+ If the header is found UserMiddleware initialises itself with the header and passes itself to the route.
+ If the header is not found it returns a RequestError.
+ ```swift
+ struct UserMiddleware: TypeSafeMiddleware {
+     let header: String
+ 
+     static func handle(
+                 request: RouterRequest,
+                 response: RouterResponse,
+                 completion: @escaping (UserMiddleware?, RequestError?) -> Void
+     ) {
+         guard let expectedHeader = request.headers["TestHeader"] else {
+             return completion(nil, .badRequest)
+         }
+         let selfInstance: UserMiddleware = UserMiddleware(header: expectedHeader)
+         completion(selfInstance, nil)
+     }
+ }
+ ```
+ */
 public protocol TypeSafeMiddleware {
     
     /// Handle an incoming HTTP request.
