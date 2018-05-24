@@ -31,9 +31,7 @@ extension Router {
      and a handler which responds with a single Codable object or a `RequestError`.
      The handler contains the developer's logic, which determines the server's response.
      ### Usage Example: ###
-     In this example, MySession is a struct that conforms to the TypeSafeMiddleware protocol and
-     session is an instance of MySession, that contains optional Users.
-     User is a struct that conforms to Codable.
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an optional `User`, where `User` conforms to Codable.
      ```swift
      router.get("/user") { (session: MySession, respondWith: (User?, RequestError?) -> Void) in
          guard let user: User = session.user else {
@@ -102,8 +100,7 @@ extension Router {
      and a handler which responds with an array of Codable objects or a `RequestError`.
      The handler contains the developer's logic, which determines the server's response.
      ### Usage Example: ###
-     In this example, MySession is a struct that conforms to the TypeSafeMiddleware protocoland is an instance of MySession, that contains an array of optional Users.
-     User is a struct that conforms to Codable.
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an optional `User` array, where `User` conforms to Codable.
      ```swift
      router.get("/user") { (session: MySession, respondWith: ([User]?, RequestError?) -> Void) in
         guard let user: [User] = session.user else {
@@ -174,8 +171,7 @@ extension Router {
      and a handler which responds with a single Codable object or a `RequestError`.
      The handler contains the developer's logic, which determines the server's response.
      ### Usage Example: ###
-     In this example, MySession is a struct that conforms to the TypeSafeMiddleware protocoland is an instance of MySession, that contains an [Int: User] dictionary.
-     User is a struct that conforms to Codable.
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: User] dictionary, where `User` conforms to Codable.
      ```swift
      router.get("/user") { (session: MySession, id: Int, respondWith: (User?, RequestError?) -> Void) in
         guard let user: User = session.user[id] else {
@@ -267,8 +263,7 @@ extension Router {
      and a handler which responds with an array of Codable objects or a `RequestError`.
      The handler contains the developer's logic, which determines the server's response.
      ### Usage Example: ###
-     In this example, MySession is a struct that conforms to the TypeSafeMiddleware protocol and session is an instance of MySession, that contains an [Int: [User]] dictionary.
-     User is a struct that conforms to Codable.
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: [User]] dictionary, where `User` conforms to Codable.
      ```swift
      router.get("/user") { (session: MySession, id: Int, respondWith: ([User]?, RequestError?) -> Void) in
         guard let user: [User] = session.user[id] else {
@@ -339,9 +334,7 @@ extension Router {
      and a handler which responds with a single Codable object or a `RequestError`.
      The handler contains the developer's logic, which determines the server's response.
      ### Usage Example: ###
-     In this example, MySession is a struct that conforms to the TypeSafeMiddleware protocol and session is an instance of MySession, that contains an [Int: User] dictionary.
-     queryParam is a struct containing the decoded query parameters.
-     User is a struct that conforms to Codable.
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: User] dictionary, where `User` conforms to Codable.
      ```swift
      struct Query: QueryParams {
         let id: Int
@@ -442,9 +435,7 @@ extension Router {
      and a handler which responds with an array of Codable objects or a `RequestError`.
      The handler contains the developer's logic, which determines the server's response.
      ### Usage Example: ###
-     In this example, MySession is a struct that conforms to the TypeSafeMiddleware protocol and session is an instance of MySession, that contains an [Int: [User]] dictionary.
-     queryParam is a struct containing the decoded query parameters.
-     User is a struct that conforms to Codable.
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: [User]] dictionary, where `User` conforms to Codable.
      ```swift
      struct Query: QueryParams {
         let id: Int
@@ -541,7 +532,7 @@ extension Router {
      and a handler which responds with nil on success, or a `RequestError`.
      The handler contains the developer's logic, which determines the server's response.
      ### Usage Example: ###
-     In this example, MySession is a struct that conforms to the TypeSafeMiddleware protocol and session is an instance of MySession, that contains optional Users.
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an optional `User`, where `User` conforms to Codable.
      ```swift
      router.delete("/user") { (session: MySession, respondWith: (RequestError?) -> Void) in
         session.user: User? = nil
@@ -610,7 +601,7 @@ extension Router {
      and a handler which responds with nil on success, or a `RequestError`.
      The handler contains the developer's logic, which determines the server's response.
      ### Usage Example: ###
-     In this example, MySession is a struct that conforms to the TypeSafeMiddleware protocol and session is an instance of MySession, that contains an [Int: User] dictionary.
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: User] dictionary, where `User` conforms to Codable.
      ```swift
      router.delete("/user") { (session: MySession, id: Int, respondWith: (RequestError?) -> Void) in
          session.user[id] = nil
@@ -700,7 +691,7 @@ extension Router {
      and a handler which responds with nil on success, or a `RequestError`.
      The handler contains the developer's logic, which determines the server's response.
      ### Usage Example: ###
-     In this example, MySession is a struct that conforms to the TypeSafeMiddleware protocol and session is an instance of MySession, that contains an [Int: User] dictionary.
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: User] dictionary, where `User` conforms to Codable.
      ```swift
      struct Query: QueryParams {
         let id: Int
@@ -796,8 +787,7 @@ extension Router {
      and a handler which responds with a single Codable object or a `RequestError`.
      The handler contains the developer's logic, which determines the server's response.
      ### Usage Example: ###
-     In this example, MySession is a struct that conforms to the TypeSafeMiddleware protocol and session is an instance of MySession, that contains optional Users.
-     User is a struct that conforms to Codable.
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an optional `User`, where `User` conforms to Codable.
      ```swift
      router.post("/user") { (session: MySession, user: User, respondWith: (User?, RequestError?) -> Void) in
         if session.user == nil {
@@ -882,8 +872,7 @@ extension Router {
      and a handler which responds with a single Codable object or a `RequestError`.
      The handler contains the developer's logic, which determines the server's response.
      ### Usage Example: ###
-     In this example, MySession is a struct that conforms to the TypeSafeMiddleware protocol and session is an instance of MySession, that contains an [Int: User] dictionary.
-     User is a struct that conforms to Codable.
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: User] dictionary, where `User` conforms to Codable.
      ```swift
      router.post("/user") { (session: MySession, user: User, id: Int respondWith: (User?, RequestError?) -> Void) in
         if session.user[id] == nil {
@@ -965,8 +954,7 @@ extension Router {
      and a handler which responds with a single Codable object or a `RequestError`.
      The handler contains the developer's logic, which determines the server's response.
      ### Usage Example: ###
-     In this example, MySession is a struct that conforms to the TypeSafeMiddleware protocol and session is an instance of MySession, that contains an [Int: User] dictionary.
-     User is a struct that conforms to Codable.
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: User] dictionary, where `User` conforms to Codable.
      ```swift
      router.post("/user") { (session: MySession, user: User, id: Int respondWith: (User?, RequestError?) -> Void) in
          session.user[id] = user
@@ -1062,8 +1050,7 @@ extension Router {
      and a handler which responds with a single Codable object or a `RequestError`.
      The handler contains the developer's logic, which determines the server's response.
      ### Usage Example: ###
-     In this example, MySession is a struct that conforms to the TypeSafeMiddleware protocol and session is an instance of MySession, that contains an [Int: User] dictionary.
-     User is a struct that conforms to Codable.
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: User] dictionary, where `User` conforms to Codable.
      ```swift
      router.patch("/user") { (session: MySession, inputUser: User, id: Int respondWith: (User?, RequestError?) -> Void) in
      guard let user: User = session.user[id] else {
