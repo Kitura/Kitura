@@ -33,17 +33,5 @@ public protocol TypeSafeMiddleware {
     ///                         should be provided, indicating a successful or failed
     ///                         attempt to process the request, respectively.
     static func handle(request: RouterRequest, response: RouterResponse, completion: @escaping (Self?, RequestError?) -> Void) -> Void
-    
-    /**
-     Describe the type-safe middleware for OpenAPI 3.0.
-     TODO: This seems to only apply to auth for the moment. Should this be in TypeSafeCredentials?
-     ### Usage Example: ###
-     The following is the description for basic auth from https://swagger.io/docs/specification/authentication/basic-authentication/:
-     ```
-     basicAuth:     # <-- arbitrary name for the security scheme
-        type: http
-        scheme: basic
-     ```
-     */
-    static func describe() -> String
+
 }
