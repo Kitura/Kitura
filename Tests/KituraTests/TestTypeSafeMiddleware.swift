@@ -139,10 +139,6 @@ extension TestMiddleware {
         let selfInstance: Self = Self(header: expectedHeader)
         completion(selfInstance, nil)
     }
-    
-    static func describe() -> String {
-        return "TestMiddleware"
-    }
 }
 
 protocol TestMiddleware2: TypeSafeMiddleware {
@@ -158,10 +154,6 @@ extension TestMiddleware2 {
         let selfInstance: Self = Self(header: expectedHeader)
         completion(selfInstance, nil)
     }
-    
-    static func describe() -> String {
-        return "TestMiddleware2"
-    }
 }
 
 protocol TestMiddleware3: TypeSafeMiddleware {
@@ -176,9 +168,5 @@ extension TestMiddleware3 {
         }
         let selfInstance: Self = Self(header: expectedHeader)
         completion(selfInstance, nil)
-    }
-    
-    static func describe() -> String {
-        return "TestMiddleware3"
     }
 }
