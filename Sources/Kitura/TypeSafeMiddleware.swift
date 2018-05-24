@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import KituraContracts
-
 /**
  The protocol that type-safe middleware must implement to be used in Kitura Codable routes.
  
