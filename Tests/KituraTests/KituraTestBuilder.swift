@@ -42,8 +42,11 @@ import Dispatch
 // one request
 protocol RequestTestBuilder {
     func request(_ method: String, path: String) -> AssertionTestBuilder
+    func request(_ method: String, path: String, headers: [String:String]?) -> AssertionTestBuilder
     func request<T: Encodable>(_ method: String, path: String, data: T) -> AssertionTestBuilder
+    func request<T: Encodable>(_ method: String, path: String, data: T, headers: [String:String]?) -> AssertionTestBuilder
     func request(_ method: String, path: String, urlEncodedString: String) -> AssertionTestBuilder
+    func request(_ method: String, path: String, urlEncodedString: String, headers: [String:String]?) -> AssertionTestBuilder
     func run()
 }
 
@@ -70,28 +73,28 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
         let invoker: (@escaping (ClientResponse?) -> Void) throws -> Void
         fileprivate var assertions: [(ClientResponse) -> Void] = []
 
-        init(_ test: KituraTest, _ method: String, _ path: String) {
+        init(_ test: KituraTest, _ method: String, _ path: String, headers: [String:String]? = nil) {
             self.test = test
             self.invoker = { callback in
-                test.performRequest(method, path: path, callback: callback)
+                test.performRequest(method, path: path, callback: callback, headers: headers)
             }
         }
 
-        init<T: Encodable>(_ test: KituraTest, _ method: String, _ path: String, _ data: T) {
+        init<T: Encodable>(_ test: KituraTest, _ method: String, _ path: String, _ data: T, headers: [String:String]? = nil) {
             self.test = test
             self.invoker = { callback in
                 let data = try JSONEncoder().encode(data)
-                test.performRequest(method, path: path, callback: callback, requestModifier: { request in
+                test.performRequest(method, path: path, callback: callback, headers: headers, requestModifier: { request in
                     request.headers["Content-Type"] = "application/json; charset=utf-8"
                     request.write(from: data)
                 })
             }
         }
         
-        init(_ test: KituraTest, _ method: String, _ path: String, _ urlEncodedString: String) {
+        init(_ test: KituraTest, _ method: String, _ path: String, _ urlEncodedString: String, headers: [String:String]? = nil) {
             self.test = test
             self.invoker = { callback in
-                test.performRequest(method, path: path, callback: callback, requestModifier: { request in
+                test.performRequest(method, path: path, callback: callback, headers: headers, requestModifier: { request in
                     request.headers["Content-Type"] = "application/x-www-form-urlencoded"
                     request.write(from: urlEncodedString)
                 })
@@ -115,17 +118,29 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
     }
 
     public func request(_ method: String, path: String) -> AssertionTestBuilder {
-        requests.append(Request(test, method, path))
+        return request(method, path: path, headers: nil)
+    }
+
+    public func request(_ method: String, path: String, headers: [String:String]?) -> AssertionTestBuilder {
+        requests.append(Request(test, method, path, headers: headers))
         return self
     }
 
     public func request<T: Encodable>(_ method: String, path: String, data: T) -> AssertionTestBuilder {
-        requests.append(Request(test, method, path, data))
+        return request(method, path: path, data: data, headers: nil)
+    }
+    
+    public func request<T: Encodable>(_ method: String, path: String, data: T, headers: [String:String]?) -> AssertionTestBuilder {
+        requests.append(Request(test, method, path, data, headers: headers))
         return self
     }
     
     public func request(_ method: String, path: String, urlEncodedString: String) -> AssertionTestBuilder {
-        requests.append(Request(test, method, path, urlEncodedString))
+        return request(method, path: path, urlEncodedString: urlEncodedString, headers: nil)
+    }
+    
+    public func request(_ method: String, path: String, urlEncodedString: String, headers: [String:String]?) -> AssertionTestBuilder {
+        requests.append(Request(test, method, path, urlEncodedString, headers: headers))
         return self
     }
 
