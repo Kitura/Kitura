@@ -259,27 +259,27 @@ extension Router {
 
     /**
      Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
-     The closure accepts a successfully executed instance of `TypeSafeMiddleware`, an identifier
-     and a handler which responds with an array of Codable objects or a `RequestError`.
+     The closure accepts a successfully executed instance of `TypeSafeMiddleware`
+     and a handler which responds with an array of (Identifier, Codable) tuples or a `RequestError`.
      The handler contains the developer's logic, which determines the server's response.
      ### Usage Example: ###
-     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: [User]] dictionary, where `User` conforms to Codable.
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [(Int, User)] dictionary, where `User` conforms to Codable.
      ```swift
-     router.get("/user") { (session: MySession, id: Int, respondWith: ([User]?, RequestError?) -> Void) in
-        guard let user: [User] = session.user[id] else {
+     router.get("/user") { (session: MySession, respondWith: ([(Int, User)]?, RequestError?) -> Void) in
+        guard let users: [(Int, User)] = session.users else {
             return respondWith(nil, .notFound)
         }
-        respondWith(user, nil)
+        respondWith(users, nil)
      }
      ```
      #### Multiple Middleware: ####
      The closure can process up to three `TypeSafeMiddleware` objects by defining them in the handler:
      ```swift
      router.get("/user") { (middle1: Middle1, middle2: Middle2, middle3: Middle3, id: Int,
-                            respondWith: ([User]?, RequestError?) -> Void) in
+                            respondWith: ([(Int, User)]?, RequestError?) -> Void) in
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
-     - Parameter handler: A closure that receives a TypeSafeMiddleware instance and an Identifier, and returns an array of Codable objects or a RequestError.
+     - Parameter handler: A closure that receives a TypeSafeMiddleware instance, and returns an array of (Identifier, Codable) tuples or a RequestError.
      */
     public func get<T: TypeSafeMiddleware, Id: Identifier, O: Codable>(
         _ route: String,
