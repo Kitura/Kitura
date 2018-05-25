@@ -42,16 +42,14 @@ class KituraTest: XCTestCase {
     static let sslConfig: SSLConfig = {
         let sslConfigDir = URL(fileURLWithPath: #file).appendingPathComponent("../SSLConfig")
 
-        #if os(Linux)
             let certificatePath = sslConfigDir.appendingPathComponent("certificate.pem").standardized.path
             let keyPath = sslConfigDir.appendingPathComponent("key.pem").standardized.path
             return SSLConfig(withCACertificateDirectory: nil, usingCertificateFile: certificatePath,
                              withKeyFile: keyPath, usingSelfSignedCerts: true)
-        #else
-            let chainFilePath = sslConfigDir.appendingPathComponent("certificateChain.pfx").standardized.path
-            return SSLConfig(withChainFilePath: chainFilePath, withPassword: "kitura",
-                             usingSelfSignedCerts: true)
-        #endif
+
+            // TODO: Disbaling this due to https://github.com/IBM-Swift/Kitura-NIO/issues/14
+            // let chainFilePath = sslConfigDir.appendingPathComponent("certificateChain.pfx").standardized.path
+            // return SSLConfig(withChainFilePath: chainFilePath, withPassword: "kitura", usingSelfSignedCerts: true)
     }()
 
     private static let initOnce: () = {
