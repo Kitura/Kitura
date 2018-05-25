@@ -63,7 +63,26 @@ extension Router {
             }
         }
     }
-    ///:nodoc:
+    
+    /**
+     Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+     The closure accepts two successfully executed instances of `TypeSafeMiddleware`
+     and a handler which responds with a single Codable object or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an optional `User`, where `User` conforms to Codable.
+     ```swift
+     router.get("/user") { (session: MySession, middle2: Middle2, respondWith: (User?, RequestError?) -> Void) in
+        guard let user: User = session.user else {
+            return respondWith(nil, .notFound)
+        }
+        respondWith(user, nil)
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives two TypeSafeMiddleware instances and returns a single Codable object or a RequestError.
+     :nodoc:
+    */
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, CodableResultClosure<O>) -> Void
@@ -78,7 +97,26 @@ extension Router {
             }
         }
     }
-    ///:nodoc:
+    
+    /**
+     Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+     The closure accepts three successfully executed instances of `TypeSafeMiddleware`
+     and a handler which responds with a single Codable object or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an optional `User`, where `User` conforms to Codable.
+     ```swift
+     router.get("/user") { (session: MySession, middle2: Middle2, middle3: Middle3, rrespondWith: (User?, RequestError?) -> Void) in
+        guard let user: User = session.user else {
+            return respondWith(nil, .notFound)
+        }
+        respondWith(user, nil)
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives three TypeSafeMiddleware instances and returns a single Codable object or a RequestError.
+     :nodoc:
+     */
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, T3, CodableResultClosure<O>) -> Void
@@ -132,8 +170,26 @@ extension Router {
             }
         }
     }
-
-    ///:nodoc:
+    
+    /**
+     Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+     The closure accepts two successfully executed instances of `TypeSafeMiddleware`
+     and a handler which responds with an array of Codable objects or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an optional `User` array, where `User` conforms to Codable.
+     ```swift
+     router.get("/user") { (session: MySession, middle2: Middle2, respondWith: ([User]?, RequestError?) -> Void) in
+        guard let user: [User] = session.user else {
+            return respondWith(nil, .notFound)
+        }
+        respondWith([user], nil)
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives two TypeSafeMiddleware instances and returns an array of Codable objects or a RequestError.
+     :nodoc:
+     */
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, CodableArrayResultClosure<O>) -> Void
@@ -149,7 +205,25 @@ extension Router {
         }
     }
 
-    ///:nodoc:
+    /**
+     Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+     The closure accepts three successfully executed instances of `TypeSafeMiddleware`
+     and a handler which responds with an array of Codable objects or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an optional `User` array, where `User` conforms to Codable.
+     ```swift
+     router.get("/user") { (session: MySession, middle2: Middle2, middle3: Middle3, respondWith: ([User]?, RequestError?) -> Void) in
+        guard let user: [User] = session.user else {
+            return respondWith(nil, .notFound)
+        }
+        respondWith([user], nil)
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives three TypeSafeMiddleware instances and returns an array of Codable objects or a RequestError.
+     :nodoc:
+     */
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, T3, CodableArrayResultClosure<O>) -> Void
@@ -167,7 +241,7 @@ extension Router {
 
     /**
      Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
-     The closure accepts a successfully executed instance of `TypeSafeMiddleware`, an identifier
+     The closure accepts a successfully executed instance of `TypeSafeMiddleware`, an `Identifier`
      and a handler which responds with a single Codable object or a `RequestError`.
      The handler contains the developer's logic, which determines the server's response.
      ### Usage Example: ###
@@ -211,7 +285,25 @@ extension Router {
         }
     }
 
-    ///:nodoc:
+    /**
+     Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+     The closure accepts two successfully executed instances of `TypeSafeMiddleware`, an identifier
+     and a handler which responds with a single Codable object or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: User] dictionary, where `User` conforms to Codable.
+     ```swift
+     router.get("/user") { (session: MySession, middle2: Middle2, id: Int, respondWith: (User?, RequestError?) -> Void) in
+        guard let user: User = session.user[id] else {
+            return respondWith(nil, .notFound)
+        }
+        respondWith(user, nil)
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives two TypeSafeMiddleware instances and an Identifier, and returns a single of Codable object or a RequestError.
+     :nodoc:
+     */
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Id: Identifier, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, Id, CodableResultClosure<O>) -> Void
@@ -234,7 +326,25 @@ extension Router {
         }
     }
 
-    ///:nodoc:
+    /**
+     Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+     The closure accepts three successfully executed instances of `TypeSafeMiddleware`, an identifier
+     and a handler which responds with a single Codable object or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: User] dictionary, where `User` conforms to Codable.
+     ```swift
+     router.get("/user") { (session: MySession, middle2: Middle2, middle3: Middle3, rid: Int, respondWith: (User?, RequestError?) -> Void) in
+        guard let user: User = session.user[id] else {
+            return respondWith(nil, .notFound)
+        }
+        respondWith(user, nil)
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives three TypeSafeMiddleware instances and an Identifier, and returns a single of Codable object or a RequestError.
+     :nodoc:
+     */
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Id: Identifier, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, T3, Id, CodableResultClosure<O>) -> Void
@@ -260,7 +370,7 @@ extension Router {
     /**
      Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
      The closure accepts a successfully executed instance of `TypeSafeMiddleware`
-     and a handler which responds with an array of (Identifier, Codable) tuples or a `RequestError`.
+     and a handler which responds with an array of (`Identifier`, Codable) tuples or a `RequestError`.
      The handler contains the developer's logic, which determines the server's response.
      ### Usage Example: ###
      In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [(Int, User)] dictionary, where `User` conforms to Codable.
@@ -296,7 +406,25 @@ extension Router {
         }
     }
 
-    ///:nodoc:
+    /**
+     Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+     The closure accepts two successfully executed instances of `TypeSafeMiddleware`
+     and a handler which responds with an array of (`Identifier`, Codable) tuples or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [(Int, User)] dictionary, where `User` conforms to Codable.
+     ```swift
+     router.get("/user") { (session: MySession, middle2: Middle2, respondWith: ([(Int, User)]?, RequestError?) -> Void) in
+        guard let users: [(Int, User)] = session.users else {
+            return respondWith(nil, .notFound)
+        }
+        respondWith(users, nil)
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives two TypeSafeMiddleware instances, and returns an array of (Identifier, Codable) tuples or a RequestError.
+     :nodoc:
+     */
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Id: Identifier, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, IdentifierCodableArrayResultClosure<Id, O>) -> Void
@@ -312,7 +440,25 @@ extension Router {
         }
     }
 
-    ///:nodoc:
+    /**
+     Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+     The closure accepts three successfully executed instances of `TypeSafeMiddleware`
+     and a handler which responds with an array of (`Identifier`, Codable) tuples or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [(Int, User)] dictionary, where `User` conforms to Codable.
+     ```swift
+     router.get("/user") { (session: MySession, middle2: Middle2, middle3: Middle3, rrespondWith: ([(Int, User)]?, RequestError?) -> Void) in
+        guard let users: [(Int, User)] = session.users else {
+            return respondWith(nil, .notFound)
+        }
+        respondWith(users, nil)
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives three TypeSafeMiddleware instances, and returns an array of (Identifier, Codable) tuples or a RequestError.
+     :nodoc:
+     */
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Id: Identifier, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, T3, IdentifierCodableArrayResultClosure<Id, O>) -> Void
@@ -379,7 +525,28 @@ extension Router {
         }
     }
 
-    ///:nodoc:
+    /**
+     Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+     The closure accepts two successfully executed instances of `TypeSafeMiddleware`, the parsed query parameters,
+     and a handler which responds with a single Codable object or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: User] dictionary, where `User` conforms to Codable.
+     ```swift
+     struct Query: QueryParams {
+        let id: Int
+     }
+     router.get("/user") { (session: MySession, middle2: Middle2, query: Query, respondWith: (User?, RequestError?) -> Void) in
+        guard let user: User = session.user[query.id] else {
+            return respondWith(nil, .notFound)
+        }
+        respondWith(user, nil)
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives two TypeSafeMiddleware instances and a QueryParams instance, and returns a single of Codable object or a RequestError.
+     :nodoc:
+     */
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Q: QueryParams, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, Q, @escaping CodableResultClosure<O>) -> Void
@@ -404,7 +571,28 @@ extension Router {
         }
     }
 
-    ///:nodoc:
+    /**
+     Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+     The closure accepts three successfully executed instances of `TypeSafeMiddleware`, the parsed query parameters,
+     and a handler which responds with a single Codable object or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: User] dictionary, where `User` conforms to Codable.
+     ```swift
+     struct Query: QueryParams {
+        let id: Int
+     }
+     router.get("/user") { (session: MySession, middle2: Middle2, middle3: Middle3, rquery: Query, respondWith: (User?, RequestError?) -> Void) in
+        guard let user: User = session.user[query.id] else {
+            return respondWith(nil, .notFound)
+        }
+        respondWith(user, nil)
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives three TypeSafeMiddleware instances and a QueryParams instance, and returns a single of Codable object or a RequestError.
+     :nodoc:
+     */
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Q: QueryParams, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, T3, Q, @escaping CodableResultClosure<O>) -> Void
@@ -479,7 +667,28 @@ extension Router {
         }
     }
 
-    ///:nodoc:
+    /**
+     Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+     The closure accepts two successfully executed instances of `TypeSafeMiddleware`, the parsed query parameters,
+     and a handler which responds with an array of Codable objects or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: [User]] dictionary, where `User` conforms to Codable.
+     ```swift
+     struct Query: QueryParams {
+        let id: Int
+     }
+     router.get("/user") { (session: MySession, middle2: Middle2, query: Query, respondWith: ([User]?, RequestError?) -> Void) in
+        guard let user: [User] = session.user[query.id] else {
+            return respondWith(nil, .notFound)
+        }
+        respondWith(user, nil)
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives two TypeSafeMiddleware instances and a QueryParams instance, and returns an array of Codable objects or a RequestError.
+     :nodoc:
+     */
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Q: QueryParams, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, Q, @escaping CodableArrayResultClosure<O>) -> Void
@@ -503,7 +712,28 @@ extension Router {
         }
     }
 
-    ///:nodoc:
+    /**
+     Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+     The closure accepts three successfully executed instances of `TypeSafeMiddleware`, the parsed query parameters,
+     and a handler which responds with an array of Codable objects or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: [User]] dictionary, where `User` conforms to Codable.
+     ```swift
+     struct Query: QueryParams {
+        let id: Int
+     }
+     router.get("/user") { (session: MySession, middle2: Middle2, middle3: Middle3, rquery: Query, respondWith: ([User]?, RequestError?) -> Void) in
+        guard let user: [User] = session.user[query.id] else {
+            return respondWith(nil, .notFound)
+        }
+        respondWith(user, nil)
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives three TypeSafeMiddleware instances and a QueryParams instance, and returns an array of Codable objects or a RequestError.
+     :nodoc:
+     */
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Q: QueryParams, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, T3, Q, @escaping CodableArrayResultClosure<O>) -> Void
@@ -563,7 +793,23 @@ extension Router {
         }
     }
 
-    ///:nodoc:
+    /**
+     Sets up a closure that will be invoked when a DELETE request to the provided route is received by the server.
+     The closure accepts two successfully executed instances of `TypeSafeMiddleware`
+     and a handler which responds with nil on success, or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an optional `User`, where `User` conforms to Codable.
+     ```swift
+     router.delete("/user") { (session: MySession, middle2: Middle2, respondWith: (RequestError?) -> Void) in
+        session.user: User? = nil
+        respondWith(nil)
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives a TypeSafeMiddleware and returns a RequestError or nil on success.
+     :nodoc:
+     */
     public func delete<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware>(
         _ route: String,
         handler: @escaping (T1, T2, ResultClosure) -> Void
@@ -579,7 +825,23 @@ extension Router {
         }
     }
 
-    ///:nodoc:
+    /**
+     Sets up a closure that will be invoked when a DELETE request to the provided route is received by the server.
+     The closure accepts three successfully executed instances of `TypeSafeMiddleware`
+     and a handler which responds with nil on success, or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an optional `User`, where `User` conforms to Codable.
+     ```swift
+     router.delete("/user") { (session: MySession, middle2: Middle2, middle3: Middle3, rrespondWith: (RequestError?) -> Void) in
+        session.user: User? = nil
+        respondWith(nil)
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives a TypeSafeMiddleware and returns a RequestError or nil on success.
+     :nodoc:
+     */
     public func delete<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware>(
         _ route: String,
         handler: @escaping (T1, T2, T3, ResultClosure) -> Void
@@ -597,7 +859,7 @@ extension Router {
 
     /**
      Sets up a closure that will be invoked when a DELETE request to the provided route is received by the server.
-     The closure accepts a successfully executed instance of `TypeSafeMiddleware`, an identifier
+     The closure accepts a successfully executed instance of `TypeSafeMiddleware`, an `Identifier`
      and a handler which responds with nil on success, or a `RequestError`.
      The handler contains the developer's logic, which determines the server's response.
      ### Usage Example: ###
@@ -639,7 +901,23 @@ extension Router {
         }
     }
 
-    ///:nodoc:
+    /**
+     Sets up a closure that will be invoked when a DELETE request to the provided route is received by the server.
+     The closure accepts two successfully executed instances of `TypeSafeMiddleware`, an `Identifier`
+     and a handler which responds with nil on success, or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: User] dictionary, where `User` conforms to Codable.
+     ```swift
+     router.delete("/user") { (session: MySession, middle2: Middle2, id: Int, respondWith: (RequestError?) -> Void) in
+        session.user[id] = nil
+        respondWith(nil)
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives a TypeSafeMiddleware and Identifier, and returns nil on success, or a `RequestError`.
+     :nodoc:
+     */
     public func delete<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Id: Identifier>(
         _ route: String,
         handler: @escaping (T1, T2, Id, ResultClosure) -> Void
@@ -662,7 +940,23 @@ extension Router {
         }
     }
 
-    ///:nodoc:
+    /**
+     Sets up a closure that will be invoked when a DELETE request to the provided route is received by the server.
+     The closure accepts three successfully executed instances of `TypeSafeMiddleware`, an `Identifier`
+     and a handler which responds with nil on success, or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: User] dictionary, where `User` conforms to Codable.
+     ```swift
+     router.delete("/user") { (session: MySession, middle2: Middle2, middle3: Middle3, rid: Int, respondWith: (RequestError?) -> Void) in
+        session.user[id] = nil
+        respondWith(nil)
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives a TypeSafeMiddleware and Identifier, and returns nil on success, or a `RequestError`.
+     :nodoc:
+     */
     public func delete<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Id: Identifier>(
         _ route: String,
         handler: @escaping (T1, T2, T3, Id, ResultClosure) -> Void
@@ -733,7 +1027,26 @@ extension Router {
         }
     }
 
-    ///:nodoc:
+    /**
+     Sets up a closure that will be invoked when a DELETE request to the provided route is received by the server.
+     The closure accepts two successfully executed instances of `TypeSafeMiddleware`, the parsed query parameters,
+     and a handler which responds with nil on success, or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: User] dictionary, where `User` conforms to Codable.
+     ```swift
+     struct Query: QueryParams {
+        let id: Int
+     }
+     router.delete("/user") { (session: MySession, middle2: Middle2, query: Query, respondWith: (RequestError?) -> Void) in
+        session.user[query.id] = nil
+        respondWith(nil)
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives a TypeSafeMiddleware and Identifier, and returns nil on success, or a `RequestError`.
+     :nodoc:
+     */
     public func delete<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Q: QueryParams>(
         _ route: String,
         handler: @escaping (T1, T2, Q, @escaping ResultClosure) -> Void
@@ -757,7 +1070,26 @@ extension Router {
         }
     }
 
-    ///:nodoc:
+    /**
+     Sets up a closure that will be invoked when a DELETE request to the provided route is received by the server.
+     The closure accepts three successfully executed instances of `TypeSafeMiddleware`, the parsed query parameters,
+     and a handler which responds with nil on success, or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: User] dictionary, where `User` conforms to Codable.
+     ```swift
+     struct Query: QueryParams {
+        let id: Int
+     }
+     router.delete("/user") { (session: MySession, middle2: Middle2, middle3: Middle3, rquery: Query, respondWith: (RequestError?) -> Void) in
+        session.user[query.id] = nil
+        respondWith(nil)
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives a TypeSafeMiddleware and Identifier, and returns nil on success, or a `RequestError`.
+     :nodoc:
+     */
     public func delete<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Q: QueryParams>(
         _ route: String,
         handler: @escaping (T1, T2, T3, Q, @escaping ResultClosure) -> Void
@@ -826,7 +1158,27 @@ extension Router {
         }
     }
 
-    ///:nodoc:
+    /**
+     Sets up a closure that will be invoked when a POST request to the provided route is received by the server.
+     The closure accepts two successfully executed instances of `TypeSafeMiddleware`, a Codable object
+     and a handler which responds with a single Codable object or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an optional `User`, where `User` conforms to Codable.
+     ```swift
+     router.post("/user") { (session: MySession, middle2: Middle2, user: User, respondWith: (User?, RequestError?) -> Void) in
+        if session.user == nil {
+            return respondWith(nil, .badRequest)
+        } else {
+            session.user = user
+        respondWith(user, nil)
+        }
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives two TypeSafeMiddleware instances and a Codable object, and returns a Codable object or a RequestError.
+     :nodoc:
+     */
     public func post<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, I: Codable, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, I, CodableResultClosure<O>) -> Void
@@ -846,7 +1198,27 @@ extension Router {
         }
     }
 
-    ///:nodoc:
+    /**
+     Sets up a closure that will be invoked when a POST request to the provided route is received by the server.
+     The closure accepts three successfully executed instances of `TypeSafeMiddleware`, a Codable object
+     and a handler which responds with a single Codable object or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an optional `User`, where `User` conforms to Codable.
+     ```swift
+     router.post("/user") { (session: MySession, middle2: Middle2, middle3: Middle3, ruser: User, respondWith: (User?, RequestError?) -> Void) in
+        if session.user == nil {
+            return respondWith(nil, .badRequest)
+        } else {
+            session.user = user
+        respondWith(user, nil)
+        }
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives three TypeSafeMiddleware instances and a Codable object, and returns a Codable object or a RequestError.
+     :nodoc:
+     */
     public func post<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, I: Codable, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, T3, I, CodableResultClosure<O>) -> Void
@@ -868,29 +1240,26 @@ extension Router {
 
     /**
      Sets up a closure that will be invoked when a POST request to the provided route is received by the server.
-     The closure accepts a successfully executed instance of `TypeSafeMiddleware`, a Codable object, an identifier
-     and a handler which responds with a single Codable object or a `RequestError`.
+     The closure accepts a successfully executed instance of `TypeSafeMiddleware`, a Codable object
+     and a handler which responds with an `Identifier` and a Codable object, or a `RequestError`.
      The handler contains the developer's logic, which determines the server's response.
      ### Usage Example: ###
      In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: User] dictionary, where `User` conforms to Codable.
      ```swift
-     router.post("/user") { (session: MySession, user: User, id: Int respondWith: (User?, RequestError?) -> Void) in
-        if session.user[id] == nil {
-            return respondWith(nil, .badRequest)
-        } else {
-            session.user[id] = user
-            respondWith(user, nil)
+     router.post("/user") { (session: MySession, user: User, respondWith: (Int?, User?, RequestError?) -> Void) in
+        let newId = session.users.count + 1
+        session.user[newId] = user
+        respondWith(newId, user, nil)
         }
      }
      ```
      #### Multiple Middleware: ####
      The closure can process up to three `TypeSafeMiddleware` objects by defining them in the handler:
      ```swift
-     router.post("/user") { (middle1: Middle1, middle2: Middle2, middle3: Middle3, user: User,
-                             id: Int, respondWith: (User?, RequestError?) -> Void) in
+     router.post("/user") { (middle1: Middle1, middle2: Middle2, middle3: Middle3, user: User, respondWith: (Int?, User?, RequestError?) -> Void) in
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
-     - Parameter handler: A closure that receives a TypeSafeMiddleware instance, a Codable object and an identifier, and returns a Codable object or a RequestError.
+     - Parameter handler: A closure that receives a TypeSafeMiddleware instance and a Codable object, and returns an Identifier and a Codable object or a RequestError.
      */
     public func post<T: TypeSafeMiddleware, I: Codable, Id: Identifier, O: Codable>(
         _ route: String,
@@ -910,7 +1279,25 @@ extension Router {
         }
     }
 
-    ///:nodoc:
+    /**
+     Sets up a closure that will be invoked when a POST request to the provided route is received by the server.
+     The closure accepts two successfully executed instances of `TypeSafeMiddleware`, a Codable object
+     and a handler which responds with an `Identifier` and a Codable object, or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: User] dictionary, where `User` conforms to Codable.
+     ```swift
+     router.post("/user") { (session: MySession, middle2: Middle2, user: User, respondWith: (Int?, User?, RequestError?) -> Void) in
+        let newId = session.users.count + 1
+        session.user[newId] = user
+        respondWith(newId, user, nil)
+        }
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives two TypeSafeMiddleware instances and a Codable object, and returns an Identifier and a Codable object or a RequestError.
+     :nodoc:
+     */
     public func post<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, I: Codable, Id: Identifier, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, I, IdentifierCodableResultClosure<Id, O>) -> Void
@@ -929,7 +1316,25 @@ extension Router {
         }
     }
 
-    ///:nodoc:
+    /**
+     Sets up a closure that will be invoked when a POST request to the provided route is received by the server.
+     The closure accepts three successfully executed instances of `TypeSafeMiddleware`, a Codable object
+     and a handler which responds with an `Identifier` and a Codable object, or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: User] dictionary, where `User` conforms to Codable.
+     ```swift
+     router.post("/user") { (session: MySession, middle2: Middle2, middle3: Middle3, ruser: User, respondWith: (Int?, User?, RequestError?) -> Void) in
+        let newId = session.users.count + 1
+        session.user[newId] = user
+        respondWith(newId, user, nil)
+        }
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives three TypeSafeMiddleware instances and a Codable object, and returns an Identifier and a Codable object or a RequestError.
+     :nodoc:
+     */
     public func post<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, I: Codable, Id: Identifier, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, T3, I, IdentifierCodableResultClosure<Id, O>) -> Void
@@ -950,13 +1355,13 @@ extension Router {
 
     /**
      Sets up a closure that will be invoked when a PUT request to the provided route is received by the server.
-     The closure accepts a successfully executed instance of `TypeSafeMiddleware`, a Codable object, an identifier
+     The closure accepts a successfully executed instance of `TypeSafeMiddleware`, an `Identifier`, a Codable object
      and a handler which responds with a single Codable object or a `RequestError`.
      The handler contains the developer's logic, which determines the server's response.
      ### Usage Example: ###
      In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: User] dictionary, where `User` conforms to Codable.
      ```swift
-     router.post("/user") { (session: MySession, user: User, id: Int respondWith: (User?, RequestError?) -> Void) in
+     router.post("/user") { (session: MySession,  id: Int, user: User, respondWith: (User?, RequestError?) -> Void) in
          session.user[id] = user
          respondWith(user, nil)
      }
@@ -964,11 +1369,11 @@ extension Router {
      #### Multiple Middleware: ####
      The closure can process up to three `TypeSafeMiddleware` objects by defining them in the handler:
      ```swift
-     router.put("/user") { (middle1: Middle1, middle2: Middle2, middle3: Middle3, user: User,
-     id: Int, respondWith: (User?, RequestError?) -> Void) in
+     router.put("/user") { (middle1: Middle1, middle2: Middle2, middle3: Middle3,
+     id: Int, user: User, respondWith: (User?, RequestError?) -> Void) in
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
-     - Parameter handler: A closure that receives a TypeSafeMiddleware instance, a Codable object and an identifier, and returns a Codable object or a RequestError.
+     - Parameter handler: A closure that receives a TypeSafeMiddleware instance, an Identifier and a Codable object, and returns a Codable object or a RequestError.
      */
     public func put<T: TypeSafeMiddleware, Id: Identifier, I: Codable, O: Codable>(
         _ route: String,
@@ -994,7 +1399,23 @@ extension Router {
         }
     }
 
-    ///:nodoc:
+    /**
+     Sets up a closure that will be invoked when a PUT request to the provided route is received by the server.
+     The closure accepts two successfully executed instances of `TypeSafeMiddleware`, an `Identifier`, a Codable object
+     and a handler which responds with a single Codable object or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: User] dictionary, where `User` conforms to Codable.
+     ```swift
+     router.post("/user") { (session: MySession, middle2: Middle2,  id: Int, user: User, respondWith: (User?, RequestError?) -> Void) in
+        session.user[id] = user
+        respondWith(user, nil)
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives two TypeSafeMiddleware instances, an Identifier and a Codable object, and returns a Codable object or a RequestError.
+     :nodoc:
+     */
     public func put<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Id: Identifier, I: Codable, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, Id, I, CodableResultClosure<O>) -> Void
@@ -1019,7 +1440,23 @@ extension Router {
         }
     }
 
-    ///:nodoc:
+    /**
+     Sets up a closure that will be invoked when a PUT request to the provided route is received by the server.
+     The closure accepts three successfully executed instances of `TypeSafeMiddleware`, an `Identifier`, a Codable object
+     and a handler which responds with a single Codable object or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: User] dictionary, where `User` conforms to Codable.
+     ```swift
+     router.post("/user") { (session: MySession, middle2: Middle2, middle3: Middle3, r id: Int, user: User, respondWith: (User?, RequestError?) -> Void) in
+        session.user[id] = user
+        respondWith(user, nil)
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives three TypeSafeMiddleware instances, an Identifier and a Codable object, and returns a Codable object or a RequestError.
+     :nodoc:
+     */
     public func put<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Id: Identifier, I: Codable, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, T3, Id, I, CodableResultClosure<O>) -> Void
@@ -1046,29 +1483,30 @@ extension Router {
 
     /**
      Sets up a closure that will be invoked when a PATCH request to the provided route is received by the server.
-     The closure accepts a successfully executed instance of `TypeSafeMiddleware`, a Codable object, an identifier
+     The closure accepts a successfully executed instance of `TypeSafeMiddleware`, an `Identifier`, a Codable object
      and a handler which responds with a single Codable object or a `RequestError`.
      The handler contains the developer's logic, which determines the server's response.
      ### Usage Example: ###
      In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: User] dictionary, where `User` conforms to Codable.
      ```swift
-     router.patch("/user") { (session: MySession, inputUser: User, id: Int respondWith: (User?, RequestError?) -> Void) in
+     router.patch("/user") { (session: MySession, id: Int, inputUser: User, respondWith: (User?, RequestError?) -> Void) in
      guard let user: User = session.user[id] else {
             return respondWith(nil, .notFound)
         }
         user.id = inputUser.id ?? user.id
         user.name = inputUser.name ?? user.name
         respondWith(user, nil)
+        }
      }
      ```
      #### Multiple Middleware: ####
      The closure can process up to three `TypeSafeMiddleware` objects by defining them in the handler:
      ```swift
-     router.patch("/user") { (middle1: Middle1, middle2: Middle2, middle3: Middle3, user: User,
-     id: Int, respondWith: (User?, RequestError?) -> Void) in
+     router.patch("/user") { (middle1: Middle1, middle2: Middle2, middle3: Middle3,
+     id: Int, user: User, respondWith: (User?, RequestError?) -> Void) in
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
-     - Parameter handler: A closure that receives a TypeSafeMiddleware instance, a Codable object and an identifier, and returns a Codable object or a RequestError.
+     - Parameter handler: A closure that receives a TypeSafeMiddleware instance, an Identifier and a Codable object, and returns a Codable object or a RequestError.
      */
     public func patch<T: TypeSafeMiddleware, Id: Identifier, I: Codable, O: Codable>(
         _ route: String,
@@ -1095,7 +1533,28 @@ extension Router {
         }
     }
 
-    ///:nodoc:
+    /**
+     Sets up a closure that will be invoked when a PATCH request to the provided route is received by the server.
+     The closure accepts two successfully executed instances of `TypeSafeMiddleware`, an `Identifier`, a Codable object
+     and a handler which responds with a single Codable object or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: User] dictionary, where `User` conforms to Codable.
+     ```swift
+     router.patch("/user") { (session: MySession, middle2: Middle2, id: Int, inputUser: User, respondWith: (User?, RequestError?) -> Void) in
+        guard let user: User = session.user[id] else {
+            return respondWith(nil, .notFound)
+        }
+        user.id = inputUser.id ?? user.id
+        user.name = inputUser.name ?? user.name
+        respondWith(user, nil)
+        }
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives two TypeSafeMiddleware instances, an Identifier and a Codable object, and returns a Codable object or a RequestError.
+     :nodoc:
+     */
     public func patch<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Id: Identifier, I: Codable, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, Id, I, CodableResultClosure<O>) -> Void
@@ -1121,7 +1580,28 @@ extension Router {
         }
     }
 
-    ///:nodoc:
+    /**
+     Sets up a closure that will be invoked when a PATCH request to the provided route is received by the server.
+     The closure accepts three successfully executed instances of `TypeSafeMiddleware`, an `Identifier`, a Codable object
+     and a handler which responds with a single Codable object or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [Int: User] dictionary, where `User` conforms to Codable.
+     ```swift
+     router.patch("/user") { (session: MySession, middle2: Middle2, middle3: Middle3, rid: Int, inputUser: User, respondWith: (User?, RequestError?) -> Void) in
+        guard let user: User = session.user[id] else {
+            return respondWith(nil, .notFound)
+        }
+        user.id = inputUser.id ?? user.id
+        user.name = inputUser.name ?? user.name
+        respondWith(user, nil)
+        }
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives three TypeSafeMiddleware instances, an Identifier and a Codable object, and returns a Codable object or a RequestError.
+     :nodoc:
+     */
     public func patch<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Id: Identifier, I: Codable, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, T3, Id, I, CodableResultClosure<O>) -> Void
