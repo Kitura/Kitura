@@ -462,7 +462,7 @@ extension Router {
         }
     }
 
-    private func parameterIsPresent(in route: String) -> Bool {
+    internal func parameterIsPresent(in route: String) -> Bool {
         if route.contains(":") {
             let paramaterString = route.split(separator: ":", maxSplits: 1, omittingEmptySubsequences: false)
             let parameter = paramaterString.count > 0 ? paramaterString[1] : ""
