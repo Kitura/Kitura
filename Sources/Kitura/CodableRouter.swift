@@ -755,6 +755,7 @@ public struct CodableHelpers {
                     response.status(.internalServerError)
                 }
             } else {
+                Log.error("No id (unique identifier) value provided.")
                 response.status(.internalServerError)
             }
             completion()
