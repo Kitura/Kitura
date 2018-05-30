@@ -718,10 +718,10 @@ class TestCodableRouter: KituraTest {
 
         router.get("/optionalquery") { (query: MyQuery?, respondWith: (MyQuery?, RequestError?) -> Void) in
             if let query = query {
-              XCTAssertEqual(query, expectedQuery)
-              respondWith(query, nil)
+                XCTAssertEqual(query, expectedQuery)
+                respondWith(query, nil)
             } else {
-              respondWith(nil, nil)
+                respondWith(nil, nil)
             }
         }
 
@@ -770,10 +770,10 @@ class TestCodableRouter: KituraTest {
 
         router.get("/optionalquery") { (query: MyQuery?, respondWith: ([MyQuery]?, RequestError?) -> Void) in
             if let query = query {
-              XCTAssertEqual(query, expectedQuery)
-              respondWith([query], nil)
+                XCTAssertEqual(query, expectedQuery)
+                respondWith([query], nil)
             } else {
-              respondWith(nil, nil)
+                respondWith(nil, nil)
             }
         }
 
@@ -822,7 +822,7 @@ class TestCodableRouter: KituraTest {
 
         router.delete("/optionalquery") { (query: MyQuery?, respondWith: (RequestError?) -> Void) in
             if let query = query {
-              XCTAssertEqual(query, expectedQuery)
+                XCTAssertEqual(query, expectedQuery)
             }
             respondWith(nil)
         }
