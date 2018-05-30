@@ -605,12 +605,12 @@ class TestSwaggerGeneration: KituraTest {
         router.get("/me/getarray", handler: getArrayAppleHandler)
         router.get("/me/getarray", handler: getSingleArrayAppleHandler)
         router.get("/me/getid", handler: getSingleAppleHandler)
-        
+
         router.patch("/me/patch", handler: patchSingleAppleHandler)
 
         router.post("/me/post", handler: postAppleHandler)
         router.post("/me/postid", handler: postSingleAppleHandler)
-        
+
         router.put("/me/put", handler: putSingleAppleHandler)
 
         setupServerAndExpectations(router: router, expectStart: true, expectStop: true, expectFail: false)
