@@ -73,6 +73,20 @@ public class Router {
     /// and used to handle request's url parameters.
     fileprivate var parameterHandlers = [String : [RouterParameterHandler]]()
 
+    /// Contains the structures needed for swagger document generation
+    var swagger: SwaggerDocument
+
+    /// Returns the current in-memory representation of Codable routes as a
+    /// Swagger document in JSON format, or nil if the document cannot be
+    /// generated.
+    public var swaggerJSON: String? {
+        do {
+            return try self.swagger.serializeAPI(format: .json)
+        } catch {
+            return nil
+        }
+    }
+
     /// Initialize a `Router` instance.
     /// ### Usage Example: ###
     /// ```swift
@@ -103,6 +117,7 @@ public class Router {
     /// - Parameter mergeParameters: Optional parameter to specify if the router should be able to access parameters
     ///                                 from its parent router. Defaults to `false` if not specified.
     public init(mergeParameters: Bool = false) {
+        self.swagger = SwaggerDocument()
         self.mergeParameters = mergeParameters
 
         Log.verbose("Router initialized")
