@@ -48,7 +48,7 @@ class TestTypeSafeMiddleware: KituraTest {
             ("testSingleMiddlewarePut", testSingleMiddlewarePut),
             ("testMultipleMiddlewarePut", testMultipleMiddlewarePut),
             ("testSingleMiddlewarePatch", testSingleMiddlewarePatch),
-            ("testMultipleMiddlewarePatch", testMultipleMiddlewarePatch),
+            ("testMultipleMiddlewarePatch", testMultipleMiddlewarePatch)
         ]
     }
 
@@ -78,11 +78,11 @@ class TestTypeSafeMiddleware: KituraTest {
 
     struct MyQuery: QueryParams {
         let id: Int
-        
+
         init(id: Int) {
             self.id = id
         }
-        
+
         static func == (lhs: MyQuery, rhs: MyQuery) -> Bool {
             return lhs.id == rhs.id
         }
@@ -116,43 +116,43 @@ class TestTypeSafeMiddleware: KituraTest {
             .hasStatus(.OK)
             .hasContentType(withPrefix: "application/json")
             .hasData(user)
-            
+
             .request("get", path: "/userMiddleware")
             .hasStatus(.badRequest)
             .hasNoData()
-            
+
             .run()
     }
 
     func testMultipleMiddlewareGetSingleton() {
         let user = User(id: 5, name: "Neil")
-        
+
         router.get("/userMultiMiddleware") { (middleware: UserMiddleware, middleware2: UserMiddleware2, middleware3: UserMiddleware3, respondWith: (User?, RequestError?) -> Void) in
             print("GET on /userMultiMiddleware - received headers \(middleware.header), \(middleware2.header), \(middleware3.header)")
             respondWith(user, nil)
         }
-        
+
         let goodHeaders = ["TestHeader": "Foo", "TestHeader2": "Bar", "TestHeader3": "Baz"]
         let missing2ndHeader = ["TestHeader": "Foo", "TestHeader3": "Baz"]
         let missing3rdHeader = ["TestHeader": "Foo", "TestHeader2": "Bar"]
-        
+
         buildServerTest(router, timeout: 30)
             // Test that handler is invoked successfully when all middlewares are satisfied
             .request("get", path: "/userMultiMiddleware", headers: goodHeaders)
             .hasStatus(.OK)
             .hasContentType(withPrefix: "application/json")
             .hasData(user)
-            
+
             // Test that Middleware2 fails when its header is missing, by examining the status (.notAcceptable)
             .request("get", path: "/userMultiMiddleware", headers: missing2ndHeader)
             .hasStatus(.notAcceptable)
             .hasNoData()
-            
+
             // Test that Middleware3 fails when its header is missing, by examining the status (.badRequest)
             .request("get", path: "/userMultiMiddleware", headers: missing3rdHeader)
             .hasStatus(.badRequest)
             .hasNoData()
-            
+
             .run()
     }
 
@@ -169,14 +169,14 @@ class TestTypeSafeMiddleware: KituraTest {
             .hasStatus(.OK)
             .hasContentType(withPrefix: "application/json")
             .hasData(userArray)
-            
+
             .request("get", path: "/userMiddleware")
             .hasStatus(.badRequest)
             .hasNoData()
-            
+
             .run()
     }
-    
+
     func testMultipleMiddlewareGetArray() {
         let userArray = [User(id: 1, name: "Andy"), User(id: 2, name: "Dave")]
 
@@ -184,39 +184,38 @@ class TestTypeSafeMiddleware: KituraTest {
             print("GET on /userMultiMiddleware - received headers \(middleware.header), \(middleware2.header), \(middleware3.header)")
             respondWith(userArray, nil)
         }
-        
+
         let goodHeaders = ["TestHeader": "Foo", "TestHeader2": "Bar", "TestHeader3": "Baz"]
         let missing2ndHeader = ["TestHeader": "Foo", "TestHeader3": "Baz"]
         let missing3rdHeader = ["TestHeader": "Foo", "TestHeader2": "Bar"]
-        
+
         buildServerTest(router, timeout: 30)
             // Test that handler is invoked successfully when all middlewares are satisfied
             .request("get", path: "/userMultiMiddleware", headers: goodHeaders)
             .hasStatus(.OK)
             .hasContentType(withPrefix: "application/json")
             .hasData(userArray)
-            
+
             // Test that Middleware2 fails when its header is missing, by examining the status (.notAcceptable)
             .request("get", path: "/userMultiMiddleware", headers: missing2ndHeader)
             .hasStatus(.notAcceptable)
             .hasNoData()
-            
+
             // Test that Middleware3 fails when its header is missing, by examining the status (.badRequest)
             .request("get", path: "/userMultiMiddleware", headers: missing3rdHeader)
             .hasStatus(.badRequest)
             .hasNoData()
-            
+
             .run()
     }
 
     func testSingleMiddlewareGetIdentifier() {
         // Expected user: User(id: 1, name: "Andy")
         guard let user = userStore[1] else {
-            print("no value found for userStore[1]")
-            XCTFail()
+            XCTFail("no value found for userStore[1]")
             return
         }
-    
+
         router.get("/userMiddleware") { (middleware: UserMiddleware, id: Int, respondWith: (User?, RequestError?) -> Void) in
             print("GET with identifier on /userMiddleware - received header \(middleware.header)")
             let user = self.userStore[id]
@@ -228,19 +227,18 @@ class TestTypeSafeMiddleware: KituraTest {
             .hasStatus(.OK)
             .hasContentType(withPrefix: "application/json")
             .hasData(user)
-            
+
             .request("get", path: "/userMiddleware/1")
             .hasStatus(.badRequest)
             .hasNoData()
-            
+
             .run()
     }
 
     func testMultipleMiddlewareGetIdentifier() {
         // Expected user: User(id: 1, name: "Andy")
         guard let user = userStore[1] else {
-            print("no value found for userStore[1]")
-            XCTFail()
+            XCTFail("no value found for userStore[1]")
             return
         }
 
@@ -259,17 +257,17 @@ class TestTypeSafeMiddleware: KituraTest {
             .hasStatus(.OK)
             .hasContentType(withPrefix: "application/json")
             .hasData(user)
-            
+
             // Test that Middleware2 fails when its header is missing, by examining the status (.notAcceptable)
             .request("get", path: "/userMultiMiddleware/1", headers: missing2ndHeader)
             .hasStatus(.notAcceptable)
             .hasNoData()
-            
+
             // Test that Middleware3 fails when its header is missing, by examining the status (.badRequest)
             .request("get", path: "/userMultiMiddleware/1", headers: missing3rdHeader)
             .hasStatus(.badRequest)
             .hasNoData()
-            
+
             .run()
     }
 
@@ -278,7 +276,7 @@ class TestTypeSafeMiddleware: KituraTest {
         var intTuple = [(Int, User)]()
         self.userStore.forEach { intTuple.append(($0.0, $0.1)) }
         let expectedIntData: [[String: User]] = intTuple.map({ [$0.value: $1] })
-        
+
         router.get("/userMiddleware") { (middleware: UserMiddleware, respondWith: ([(Int, User)]?, RequestError?) -> Void) in
             print("GET Identifier Codable tuple on /userMiddleware - received header \(middleware.header)")
             var intTuple = [(Int, User)]()
@@ -291,11 +289,11 @@ class TestTypeSafeMiddleware: KituraTest {
             .hasStatus(.OK)
             .hasContentType(withPrefix: "application/json")
             .hasData(expectedIntData)
-            
+
             .request("get", path: "/userMiddleware")
             .hasStatus(.badRequest)
             .hasNoData()
-            
+
             .run()
     }
 
@@ -304,7 +302,7 @@ class TestTypeSafeMiddleware: KituraTest {
         var intTuple = [(Int, User)]()
         self.userStore.forEach { intTuple.append(($0.0, $0.1)) }
         let expectedIntData: [[String: User]] = intTuple.map({ [$0.value: $1] })
-        
+
         router.get("/userMultiMiddleware") { (middleware: UserMiddleware, middleware2: UserMiddleware2, middleware3: UserMiddleware3, respondWith: ([(Int, User)]?, RequestError?) -> Void) in
             print("GET Identifier Codable on /userMultiMiddleware - received headers \(middleware.header), \(middleware2.header), \(middleware3.header)")
             var intTuple = [(Int, User)]()
@@ -322,25 +320,24 @@ class TestTypeSafeMiddleware: KituraTest {
             .hasStatus(.OK)
             .hasContentType(withPrefix: "application/json")
             .hasData(expectedIntData)
-            
+
             // Test that Middleware2 fails when its header is missing, by examining the status (.notAcceptable)
             .request("get", path: "/userMultiMiddleware", headers: missing2ndHeader)
             .hasStatus(.notAcceptable)
             .hasNoData()
-            
+
             // Test that Middleware3 fails when its header is missing, by examining the status (.badRequest)
             .request("get", path: "/userMultiMiddleware", headers: missing3rdHeader)
             .hasStatus(.badRequest)
             .hasNoData()
-            
+
             .run()
     }
 
     func testSingleMiddlewareGetSingletonParameters() {
         // Expected user: User(id: 1, name: "Andy")
         guard let user = userStore[1] else {
-            print("no value found for userStore[1]")
-            XCTFail()
+            XCTFail("no value found for userStore[1]")
             return
         }
 
@@ -349,7 +346,6 @@ class TestTypeSafeMiddleware: KituraTest {
             let user = self.userStore[query.id]
             respondWith(user, nil)
         }
-
 
         buildServerTest(router, timeout: 30)
             .request("get", path: "/userMiddleware?id=1", headers: ["TestHeader": "Hello"])
@@ -367,8 +363,7 @@ class TestTypeSafeMiddleware: KituraTest {
     func testMultipleMiddlewareGetSingletonParameters() {
         // Expected user: User(id: 1, name: "Andy")
         guard let user = userStore[1] else {
-            print("no value found for userStore[1]")
-            XCTFail()
+            XCTFail("no value found for userStore[1]")
             return
         }
 
@@ -410,7 +405,6 @@ class TestTypeSafeMiddleware: KituraTest {
             let matchedUsers = userArray.filter { $0.id <=  query.id }
             respondWith(matchedUsers, nil)
         }
-
 
         buildServerTest(router, timeout: 30)
             .request("get", path: "/userMiddleware?id=2", headers: ["TestHeader": "Hello"])
@@ -466,7 +460,6 @@ class TestTypeSafeMiddleware: KituraTest {
             self.userStore.removeAll()
             respondWith(nil)
         }
-
 
         buildServerTest(router, timeout: 30)
             .request("delete", path: "/userMiddleware", headers: ["TestHeader": "Hello"])
@@ -688,8 +681,7 @@ class TestTypeSafeMiddleware: KituraTest {
     func testSingleMiddlewarePostIdentifier() {
         // Expected user: User(id: 1, name: "Andy")
         guard let user = userStore[1] else {
-            print("no value found for userStore[1]")
-            XCTFail()
+            XCTFail("no value found for userStore[1]")
             return
         }
 
@@ -716,8 +708,7 @@ class TestTypeSafeMiddleware: KituraTest {
     func testMultipleMiddlewarePostIdentifier() {
         // Expected user: User(id: 1, name: "Andy")
         guard let user = userStore[1] else {
-            print("no value found for userStore[1]")
-            XCTFail()
+            XCTFail("no value found for userStore[1]")
             return
         }
 
