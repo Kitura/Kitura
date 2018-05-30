@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>LinkParameter Enumeration Reference</title>
+    <title>DecodingError Extension Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Enum/LinkParameter" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Extension/DecodingError" class="dashAnchor"></a>
 
-    <a title="LinkParameter Enumeration Reference"></a>
+    <a title="DecodingError Extension Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -44,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html">Kitura Reference</a>
       <img class="carat" src="../img/carat.png" />
-      LinkParameter Enumeration Reference
+      DecodingError Extension Reference
     </p>
 
     <div class="content-wrapper">
@@ -182,16 +182,14 @@
 
         <section class="section">
           <div class="section-content">
-            <h1>LinkParameter</h1>
+            <h1>DecodingError</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">LinkParameter</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">DecodingError</span> <span class="p">:</span> <span class="kt">Error</span></code></pre>
 
                 </div>
               </div>
-            <p>Possible parameters of Link HTTP header.</p>
-
-<p>See <a href="https://tools.ietf.org/html/rfc5988">RFC 5988</a> for more details.</p>
+            <p>DecodingError Extension to print human readable error messages for clients</p>
 
           </div>
         </section>
@@ -203,9 +201,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura13LinkParameterO3relA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/rel" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura13LinkParameterO3relA2CmF">rel</a>
+                    <a name="/s:s13DecodingErrorO6KituraE24humanReadableDescriptionSSvp"></a>
+                    <a name="//apple_ref/swift/Property/humanReadableDescription" class="dashAnchor"></a>
+                    <a class="token" href="#/s:s13DecodingErrorO6KituraE24humanReadableDescriptionSSvp">humanReadableDescription</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -213,200 +211,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The relation type of the link.</p>
+                        <p>Returns a human readable error description from a <code>DecodingError</code>, useful for returning back to clients to help them debug their malformed JSON objects.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">rel</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura13LinkParameterO6anchorA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/anchor" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura13LinkParameterO6anchorA2CmF">anchor</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The context of a link conveyed in the Link header field.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">anchor</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura13LinkParameterO3revA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/rev" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura13LinkParameterO3revA2CmF">rev</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>An indication that the semantics of the relationship are in the reverse direction.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">rev</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura13LinkParameterO8hreflangA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/hreflang" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura13LinkParameterO8hreflangA2CmF">hreflang</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>A hint indicating what the language of the result of dereferencing the link should be.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">hreflang</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura13LinkParameterO5mediaA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/media" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura13LinkParameterO5mediaA2CmF">media</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>An intended destination medium or media for style information.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">media</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura13LinkParameterO5titleA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/title" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura13LinkParameterO5titleA2CmF">title</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>A human-readable label of the destination of a link.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">title</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura13LinkParameterO4typeA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/type" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura13LinkParameterO4typeA2CmF">type</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>A hint indicating what the media type of the result of dereferencing the link should be.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">type</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">humanReadableDescription</span><span class="p">:</span> <span class="kt">String</span></code></pre>
 
                         </div>
                       </div>

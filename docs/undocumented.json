@@ -2,9 +2,16 @@
   "warnings": [
     {
       "file": "/Users/travis/build/IBM-Swift/Kitura/Sources/Kitura/CodableRouter.swift",
-      "line": 442,
+      "line": 498,
       "symbol": "CodableHelpers",
       "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/IBM-Swift/Kitura/Sources/Kitura/bodyParser/BodyParser.swift",
+      "line": 199,
+      "symbol": "BodyParserMultiValue",
+      "symbol_kind": "source.lang.swift.decl.class",
       "warning": "undocumented"
     },
     {

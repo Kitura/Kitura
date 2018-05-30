@@ -57,6 +57,9 @@
                 <a class="nav-group-task-link" href="../Classes/BodyParser.html">BodyParser</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/BodyParserMultiValue.html">BodyParserMultiValue</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ContentType.html">ContentType</a>
               </li>
               <li class="nav-group-task">
@@ -106,6 +109,14 @@
             </ul>
           </li>
           <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/DecodingError.html">DecodingError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
             <a class="nav-group-name-link" href="../Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
@@ -113,6 +124,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/RouterMiddleware.html">RouterMiddleware</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a>
               </li>
             </ul>
           </li>
@@ -147,6 +161,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura16LifecycleHandlera">LifecycleHandler</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura13RouterHandlera">RouterHandler</a>
@@ -219,6 +236,35 @@ same level as the project&rsquo;s <q>Sources</q> directory. Defaults to <q>./Vie
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">viewsPath</span> <span class="o">=</span> <span class="s">"./Views/"</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC11swaggerJSONSSSgvp"></a>
+                    <a name="//apple_ref/swift/Property/swaggerJSON" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC11swaggerJSONSSSgvp">swaggerJSON</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the current in-memory representation of Codable routes as a
+Swagger document in JSON format, or nil if the document cannot be
+generated.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">swaggerJSON</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
 
                         </div>
                       </div>
@@ -814,6 +860,1062 @@ multiple routes requiring similar parameters which need to be handled in a certa
             </div>
             <div class="task-group">
               <div class="task-name-container">
+                <a name="/Codable%20Routing%20with%20TypeSafeMiddleware"></a>
+                <a name="//apple_ref/swift/Section/Codable Routing with TypeSafeMiddleware" class="dashAnchor"></a>
+                <a href="#/Codable%20Routing%20with%20TypeSafeMiddleware">
+                  <h3 class="section-name">Codable Routing with TypeSafeMiddleware</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC3getySS_yx_yq_Sg_0A9Contracts12RequestErrorVSgtctc7handlertAA18TypeSafeMiddlewareRzs9DecodableR_s9EncodableR_r0_lF"></a>
+                    <a name="//apple_ref/swift/Method/get(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC3getySS_yx_yq_Sg_0A9Contracts12RequestErrorVSgtctc7handlertAA18TypeSafeMiddlewareRzs9DecodableR_s9EncodableR_r0_lF">get(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+The closure accepts a successfully executed instance of <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code>
+and a handler which responds with a single Codable object or a <code><a href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a></code>.
+The handler contains the developer&rsquo;s logic, which determines the server&rsquo;s response.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, <code>MySession</code> is a struct that conforms to the <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> protocol and specifies an optional <code>User</code>, where <code>User</code> conforms to Codable.</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">session</span><span class="p">:</span> <span class="kt">MySession</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">User</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+    <span class="k">guard</span> <span class="k">let</span> <span class="nv">user</span><span class="p">:</span> <span class="kt">User</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">user</span> <span class="k">else</span> <span class="p">{</span>
+       <span class="k">return</span> <span class="nf">respondWith</span><span class="p">(</span><span class="kc">nil</span><span class="p">,</span> <span class="o">.</span><span class="n">notFound</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="nf">respondWith</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+<h4 id='multiple-middleware' class='heading'>Multiple Middleware:</h4>
+
+<p>The closure can process up to three <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> objects by defining them in the handler:</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">middle1</span><span class="p">:</span> <span class="kt">Middle1</span><span class="p">,</span> <span class="nv">middle2</span><span class="p">:</span> <span class="kt">Middle2</span><span class="p">,</span> <span class="nv">middle3</span><span class="p">:</span> <span class="kt">Middle3</span><span class="p">,</span>
+                       <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">User</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="k">get</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span>
+    <span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">CodableResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+<span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A String specifying the URL path that will invoke the handler.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A closure that receives a TypeSafeMiddleware instance and returns a single Codable object or a RequestError.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC3getySS_yx_ySayq_GSg_0A9Contracts12RequestErrorVSgtctc7handlertAA18TypeSafeMiddlewareRzs9DecodableR_s9EncodableR_r0_lF"></a>
+                    <a name="//apple_ref/swift/Method/get(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC3getySS_yx_ySayq_GSg_0A9Contracts12RequestErrorVSgtctc7handlertAA18TypeSafeMiddlewareRzs9DecodableR_s9EncodableR_r0_lF">get(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+The closure accepts a successfully executed instance of <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code>
+and a handler which responds with an array of Codable objects or a <code><a href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a></code>.
+The handler contains the developer&rsquo;s logic, which determines the server&rsquo;s response.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, <code>MySession</code> is a struct that conforms to the <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> protocol and specifies an optional <code>User</code> array, where <code>User</code> conforms to Codable.</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">session</span><span class="p">:</span> <span class="kt">MySession</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">([</span><span class="kt">User</span><span class="p">]?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+   <span class="k">guard</span> <span class="k">let</span> <span class="nv">user</span><span class="p">:</span> <span class="p">[</span><span class="kt">User</span><span class="p">]</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">user</span> <span class="k">else</span> <span class="p">{</span>
+       <span class="k">return</span> <span class="nf">respondWith</span><span class="p">(</span><span class="kc">nil</span><span class="p">,</span> <span class="o">.</span><span class="n">notFound</span><span class="p">)</span>
+   <span class="p">}</span>
+   <span class="nf">respondWith</span><span class="p">([</span><span class="n">user</span><span class="p">],</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+<h4 id='multiple-middleware' class='heading'>Multiple Middleware:</h4>
+
+<p>The closure can process up to three <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> objects by defining them in the handler:</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">middle1</span><span class="p">:</span> <span class="kt">Middle1</span><span class="p">,</span> <span class="nv">middle2</span><span class="p">:</span> <span class="kt">Middle2</span><span class="p">,</span> <span class="nv">middle3</span><span class="p">:</span> <span class="kt">Middle3</span><span class="p">,</span>
+                       <span class="nv">respondWith</span><span class="p">:</span> <span class="p">([</span><span class="kt">User</span><span class="p">]?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="k">get</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span>
+    <span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">CodableArrayResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+<span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A String specifying the URL path that will invoke the handler.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A closure that receives a TypeSafeMiddleware instance and returns an array of Codable objects or a RequestError.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC3getySS_yx_q_yq0_Sg_0A9Contracts12RequestErrorVSgtctc7handlertAA18TypeSafeMiddlewareRzAF10IdentifierR_s9DecodableR0_s9EncodableR0_r1_lF"></a>
+                    <a name="//apple_ref/swift/Method/get(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC3getySS_yx_q_yq0_Sg_0A9Contracts12RequestErrorVSgtctc7handlertAA18TypeSafeMiddlewareRzAF10IdentifierR_s9DecodableR0_s9EncodableR0_r1_lF">get(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+The closure accepts a successfully executed instance of <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code>, an <code>Identifier</code>
+and a handler which responds with a single Codable object or a <code><a href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a></code>.
+The handler contains the developer&rsquo;s logic, which determines the server&rsquo;s response.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, <code>MySession</code> is a struct that conforms to the <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> protocol and specifies an [Int: User] dictionary, where <code>User</code> conforms to Codable.</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">session</span><span class="p">:</span> <span class="kt">MySession</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">User</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+   <span class="k">guard</span> <span class="k">let</span> <span class="nv">user</span><span class="p">:</span> <span class="kt">User</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">user</span><span class="p">[</span><span class="n">id</span><span class="p">]</span> <span class="k">else</span> <span class="p">{</span>
+       <span class="k">return</span> <span class="nf">respondWith</span><span class="p">(</span><span class="kc">nil</span><span class="p">,</span> <span class="o">.</span><span class="n">notFound</span><span class="p">)</span>
+   <span class="p">}</span>
+   <span class="nf">respondWith</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+<h4 id='multiple-middleware' class='heading'>Multiple Middleware:</h4>
+
+<p>The closure can process up to three <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> objects by defining them in the handler:</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">middle1</span><span class="p">:</span> <span class="kt">Middle1</span><span class="p">,</span> <span class="nv">middle2</span><span class="p">:</span> <span class="kt">Middle2</span><span class="p">,</span> <span class="nv">middle3</span><span class="p">:</span> <span class="kt">Middle3</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span>
+                       <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">User</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="k">get</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></span><span class="p">,</span> <span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span>
+    <span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">Id</span><span class="p">,</span> <span class="kt">CodableResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+<span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A String specifying the URL path that will invoke the handler.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A closure that receives a TypeSafeMiddleware instance and an Identifier, and returns a single of Codable object or a RequestError.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC3getySS_yx_ySayq__q0_tGSg_0A9Contracts12RequestErrorVSgtctc7handlertAA18TypeSafeMiddlewareRzAG10IdentifierR_s9DecodableR0_s9EncodableR0_r1_lF"></a>
+                    <a name="//apple_ref/swift/Method/get(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC3getySS_yx_ySayq__q0_tGSg_0A9Contracts12RequestErrorVSgtctc7handlertAA18TypeSafeMiddlewareRzAG10IdentifierR_s9DecodableR0_s9EncodableR0_r1_lF">get(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+The closure accepts a successfully executed instance of <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code>
+and a handler which responds with an array of (<code>Identifier</code>, Codable) tuples or a <code><a href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a></code>.
+The handler contains the developer&rsquo;s logic, which determines the server&rsquo;s response.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, <code>MySession</code> is a struct that conforms to the <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> protocol and specifies an [(Int, User)] dictionary, where <code>User</code> conforms to Codable.</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">session</span><span class="p">:</span> <span class="kt">MySession</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">([(</span><span class="kt">Int</span><span class="p">,</span> <span class="kt">User</span><span class="p">)]?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+   <span class="k">guard</span> <span class="k">let</span> <span class="nv">users</span><span class="p">:</span> <span class="p">[(</span><span class="kt">Int</span><span class="p">,</span> <span class="kt">User</span><span class="p">)]</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">users</span> <span class="k">else</span> <span class="p">{</span>
+       <span class="k">return</span> <span class="nf">respondWith</span><span class="p">(</span><span class="kc">nil</span><span class="p">,</span> <span class="o">.</span><span class="n">notFound</span><span class="p">)</span>
+   <span class="p">}</span>
+   <span class="nf">respondWith</span><span class="p">(</span><span class="n">users</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+<h4 id='multiple-middleware' class='heading'>Multiple Middleware:</h4>
+
+<p>The closure can process up to three <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> objects by defining them in the handler:</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">middle1</span><span class="p">:</span> <span class="kt">Middle1</span><span class="p">,</span> <span class="nv">middle2</span><span class="p">:</span> <span class="kt">Middle2</span><span class="p">,</span> <span class="nv">middle3</span><span class="p">:</span> <span class="kt">Middle3</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span>
+                       <span class="nv">respondWith</span><span class="p">:</span> <span class="p">([(</span><span class="kt">Int</span><span class="p">,</span> <span class="kt">User</span><span class="p">)]?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="k">get</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></span><span class="p">,</span> <span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span>
+    <span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">IdentifierCodableArrayResultClosure</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">,</span> <span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+<span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A String specifying the URL path that will invoke the handler.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A closure that receives a TypeSafeMiddleware instance, and returns an array of (Identifier, Codable) tuples or a RequestError.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC3getySS_yx_q_yq0_Sg_0A9Contracts12RequestErrorVSgtctc7handlertAA18TypeSafeMiddlewareRzAF11QueryParamsR_s9DecodableR0_s9EncodableR0_r1_lF"></a>
+                    <a name="//apple_ref/swift/Method/get(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC3getySS_yx_q_yq0_Sg_0A9Contracts12RequestErrorVSgtctc7handlertAA18TypeSafeMiddlewareRzAF11QueryParamsR_s9DecodableR0_s9EncodableR0_r1_lF">get(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+The closure accepts a successfully executed instance of <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code>, the parsed query parameters,
+and a handler which responds with a single Codable object or a <code><a href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a></code>.
+The handler contains the developer&rsquo;s logic, which determines the server&rsquo;s response.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, <code>MySession</code> is a struct that conforms to the <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> protocol and specifies an [Int: User] dictionary, where <code>User</code> conforms to Codable.</p>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Query</span><span class="p">:</span> <span class="kt">QueryParams</span> <span class="p">{</span>
+   <span class="k">let</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Int</span>
+<span class="p">}</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">session</span><span class="p">:</span> <span class="kt">MySession</span><span class="p">,</span> <span class="nv">query</span><span class="p">:</span> <span class="kt">Query</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">User</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+   <span class="k">guard</span> <span class="k">let</span> <span class="nv">user</span><span class="p">:</span> <span class="kt">User</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">user</span><span class="p">[</span><span class="n">query</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="k">else</span> <span class="p">{</span>
+       <span class="k">return</span> <span class="nf">respondWith</span><span class="p">(</span><span class="kc">nil</span><span class="p">,</span> <span class="o">.</span><span class="n">notFound</span><span class="p">)</span>
+   <span class="p">}</span>
+   <span class="nf">respondWith</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+<h4 id='multiple-middleware' class='heading'>Multiple Middleware:</h4>
+
+<p>The closure can process up to three <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> objects by defining them in the handler:</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">middle1</span><span class="p">:</span> <span class="kt">Middle1</span><span class="p">,</span> <span class="nv">middle2</span><span class="p">:</span> <span class="kt">Middle2</span><span class="p">,</span> <span class="nv">middle3</span><span class="p">:</span> <span class="kt">Middle3</span><span class="p">,</span> <span class="nv">query</span><span class="p">:</span> <span class="kt">Query</span><span class="p">,</span>
+<span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">User</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="k">get</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></span><span class="p">,</span> <span class="kt">Q</span><span class="p">:</span> <span class="kt">QueryParams</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span>
+    <span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">Q</span><span class="p">,</span> <span class="kd">@escaping</span> <span class="kt">CodableResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+<span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A String specifying the URL path that will invoke the handler.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A closure that receives a TypeSafeMiddleware instance and a QueryParams instance, and returns a single of Codable object or a RequestError.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC3getySS_yx_q_ySayq0_GSg_0A9Contracts12RequestErrorVSgtctc7handlertAA18TypeSafeMiddlewareRzAG11QueryParamsR_s9DecodableR0_s9EncodableR0_r1_lF"></a>
+                    <a name="//apple_ref/swift/Method/get(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC3getySS_yx_q_ySayq0_GSg_0A9Contracts12RequestErrorVSgtctc7handlertAA18TypeSafeMiddlewareRzAG11QueryParamsR_s9DecodableR0_s9EncodableR0_r1_lF">get(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+The closure accepts a successfully executed instance of <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code>, the parsed query parameters,
+and a handler which responds with an array of Codable objects or a <code><a href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a></code>.
+The handler contains the developer&rsquo;s logic, which determines the server&rsquo;s response.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, <code>MySession</code> is a struct that conforms to the <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> protocol and specifies an [Int: [User]] dictionary, where <code>User</code> conforms to Codable.</p>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Query</span><span class="p">:</span> <span class="kt">QueryParams</span> <span class="p">{</span>
+   <span class="k">let</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Int</span>
+<span class="p">}</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">session</span><span class="p">:</span> <span class="kt">MySession</span><span class="p">,</span> <span class="nv">query</span><span class="p">:</span> <span class="kt">Query</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">([</span><span class="kt">User</span><span class="p">]?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+   <span class="k">guard</span> <span class="k">let</span> <span class="nv">user</span><span class="p">:</span> <span class="p">[</span><span class="kt">User</span><span class="p">]</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">user</span><span class="p">[</span><span class="n">query</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="k">else</span> <span class="p">{</span>
+       <span class="k">return</span> <span class="nf">respondWith</span><span class="p">(</span><span class="kc">nil</span><span class="p">,</span> <span class="o">.</span><span class="n">notFound</span><span class="p">)</span>
+   <span class="p">}</span>
+   <span class="nf">respondWith</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+<h4 id='multiple-middleware' class='heading'>Multiple Middleware:</h4>
+
+<p>The closure can process up to three <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> objects by defining them in the handler:</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">middle1</span><span class="p">:</span> <span class="kt">Middle1</span><span class="p">,</span> <span class="nv">middle2</span><span class="p">:</span> <span class="kt">Middle2</span><span class="p">,</span> <span class="nv">middle3</span><span class="p">:</span> <span class="kt">Middle3</span><span class="p">,</span> <span class="nv">query</span><span class="p">:</span> <span class="kt">Query</span><span class="p">,</span>
+                       <span class="nv">respondWith</span><span class="p">:</span> <span class="p">([</span><span class="kt">User</span><span class="p">]?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="k">get</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></span><span class="p">,</span> <span class="kt">Q</span><span class="p">:</span> <span class="kt">QueryParams</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span>
+    <span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">Q</span><span class="p">,</span> <span class="kd">@escaping</span> <span class="kt">CodableArrayResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+<span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A String specifying the URL path that will invoke the handler.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A closure that receives a TypeSafeMiddleware instance and a QueryParams instance, and returns an array of Codable objects or a RequestError.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC6deleteySS_yx_y0A9Contracts12RequestErrorVSgctc7handlertAA18TypeSafeMiddlewareRzlF"></a>
+                    <a name="//apple_ref/swift/Method/delete(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC6deleteySS_yx_y0A9Contracts12RequestErrorVSgctc7handlertAA18TypeSafeMiddlewareRzlF">delete(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets up a closure that will be invoked when a DELETE request to the provided route is received by the server.
+The closure accepts a successfully executed instance of <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code>
+and a handler which responds with nil on success, or a <code><a href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a></code>.
+The handler contains the developer&rsquo;s logic, which determines the server&rsquo;s response.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, <code>MySession</code> is a struct that conforms to the <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> protocol and specifies an optional <code>User</code>, where <code>User</code> conforms to Codable.</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">delete</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">session</span><span class="p">:</span> <span class="kt">MySession</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+   <span class="n">session</span><span class="o">.</span><span class="nv">user</span><span class="p">:</span> <span class="kt">User</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span>
+   <span class="nf">respondWith</span><span class="p">(</span><span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+<h4 id='multiple-middleware' class='heading'>Multiple Middleware:</h4>
+
+<p>The closure can process up to three <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> objects by defining them in the handler:</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">delete</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">middle1</span><span class="p">:</span> <span class="kt">Middle1</span><span class="p">,</span> <span class="nv">middle2</span><span class="p">:</span> <span class="kt">Middle2</span><span class="p">,</span> <span class="nv">middle3</span><span class="p">:</span> <span class="kt">Middle3</span><span class="p">,</span>
+                          <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">delete</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></span><span class="o">&gt;</span><span class="p">(</span>
+    <span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">ResultClosure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+<span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A String specifying the URL path that will invoke the handler.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A closure that receives a TypeSafeMiddleware and returns a RequestError or nil on success.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC6deleteySS_yx_q_y0A9Contracts12RequestErrorVSgctc7handlertAA18TypeSafeMiddlewareRzAE10IdentifierR_r0_lF"></a>
+                    <a name="//apple_ref/swift/Method/delete(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC6deleteySS_yx_q_y0A9Contracts12RequestErrorVSgctc7handlertAA18TypeSafeMiddlewareRzAE10IdentifierR_r0_lF">delete(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets up a closure that will be invoked when a DELETE request to the provided route is received by the server.
+The closure accepts a successfully executed instance of <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code>, an <code>Identifier</code>
+and a handler which responds with nil on success, or a <code><a href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a></code>.
+The handler contains the developer&rsquo;s logic, which determines the server&rsquo;s response.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, <code>MySession</code> is a struct that conforms to the <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> protocol and specifies an [Int: User] dictionary, where <code>User</code> conforms to Codable.</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">delete</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">session</span><span class="p">:</span> <span class="kt">MySession</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">user</span><span class="p">[</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">nil</span>
+    <span class="nf">respondWith</span><span class="p">(</span><span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+<h4 id='multiple-middleware' class='heading'>Multiple Middleware:</h4>
+
+<p>The closure can process up to three <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> objects by defining them in the handler:</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">delete</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">middle1</span><span class="p">:</span> <span class="kt">Middle1</span><span class="p">,</span> <span class="nv">middle2</span><span class="p">:</span> <span class="kt">Middle2</span><span class="p">,</span> <span class="nv">middle3</span><span class="p">:</span> <span class="kt">Middle3</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span>
+                          <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">delete</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></span><span class="p">,</span> <span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="o">&gt;</span><span class="p">(</span>
+    <span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">Id</span><span class="p">,</span> <span class="kt">ResultClosure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+<span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A String specifying the URL path that will invoke the handler.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A closure that receives a TypeSafeMiddleware and Identifier, and returns nil on success, or a <code><a href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a></code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC6deleteySS_yx_q_y0A9Contracts12RequestErrorVSgctc7handlertAA18TypeSafeMiddlewareRzAE11QueryParamsR_r0_lF"></a>
+                    <a name="//apple_ref/swift/Method/delete(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC6deleteySS_yx_q_y0A9Contracts12RequestErrorVSgctc7handlertAA18TypeSafeMiddlewareRzAE11QueryParamsR_r0_lF">delete(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets up a closure that will be invoked when a DELETE request to the provided route is received by the server.
+The closure accepts a successfully executed instance of <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code>, the parsed query parameters,
+and a handler which responds with nil on success, or a <code><a href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a></code>.
+The handler contains the developer&rsquo;s logic, which determines the server&rsquo;s response.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, <code>MySession</code> is a struct that conforms to the <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> protocol and specifies an [Int: User] dictionary, where <code>User</code> conforms to Codable.</p>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Query</span><span class="p">:</span> <span class="kt">QueryParams</span> <span class="p">{</span>
+   <span class="k">let</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Int</span>
+<span class="p">}</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">delete</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">session</span><span class="p">:</span> <span class="kt">MySession</span><span class="p">,</span> <span class="nv">query</span><span class="p">:</span> <span class="kt">Query</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+   <span class="n">session</span><span class="o">.</span><span class="n">user</span><span class="p">[</span><span class="n">query</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">nil</span>
+   <span class="nf">respondWith</span><span class="p">(</span><span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+<h4 id='multiple-middleware' class='heading'>Multiple Middleware:</h4>
+
+<p>The closure can process up to three <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> objects by defining them in the handler:</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">delete</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">middle1</span><span class="p">:</span> <span class="kt">Middle1</span><span class="p">,</span> <span class="nv">middle2</span><span class="p">:</span> <span class="kt">Middle2</span><span class="p">,</span> <span class="nv">middle3</span><span class="p">:</span> <span class="kt">Middle3</span><span class="p">,</span> <span class="nv">query</span><span class="p">:</span> <span class="kt">Query</span><span class="p">,</span>
+                          <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">delete</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></span><span class="p">,</span> <span class="kt">Q</span><span class="p">:</span> <span class="kt">QueryParams</span><span class="o">&gt;</span><span class="p">(</span>
+    <span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">Q</span><span class="p">,</span> <span class="kd">@escaping</span> <span class="kt">ResultClosure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+<span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A String specifying the URL path that will invoke the handler.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A closure that receives a TypeSafeMiddleware and Identifier, and returns nil on success, or a <code><a href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a></code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC4postySS_yx_q_yq0_Sg_0A9Contracts12RequestErrorVSgtctc7handlertAA18TypeSafeMiddlewareRzs9DecodableR_s9EncodableR_sALR0_sAMR0_r1_lF"></a>
+                    <a name="//apple_ref/swift/Method/post(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC4postySS_yx_q_yq0_Sg_0A9Contracts12RequestErrorVSgtctc7handlertAA18TypeSafeMiddlewareRzs9DecodableR_s9EncodableR_sALR0_sAMR0_r1_lF">post(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets up a closure that will be invoked when a POST request to the provided route is received by the server.
+The closure accepts a successfully executed instance of <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code>, a Codable object
+and a handler which responds with a single Codable object or a <code><a href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a></code>.
+The handler contains the developer&rsquo;s logic, which determines the server&rsquo;s response.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, <code>MySession</code> is a struct that conforms to the <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> protocol and specifies an optional <code>User</code>, where <code>User</code> conforms to Codable.</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">session</span><span class="p">:</span> <span class="kt">MySession</span><span class="p">,</span> <span class="nv">user</span><span class="p">:</span> <span class="kt">User</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">User</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+   <span class="k">if</span> <span class="n">session</span><span class="o">.</span><span class="n">user</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+       <span class="k">return</span> <span class="nf">respondWith</span><span class="p">(</span><span class="kc">nil</span><span class="p">,</span> <span class="o">.</span><span class="n">badRequest</span><span class="p">)</span>
+   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+       <span class="n">session</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">user</span>
+       <span class="nf">respondWith</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+   <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<h4 id='multiple-middleware' class='heading'>Multiple Middleware:</h4>
+
+<p>The closure can process up to three <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> objects by defining them in the handler:</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">middle1</span><span class="p">:</span> <span class="kt">Middle1</span><span class="p">,</span> <span class="nv">middle2</span><span class="p">:</span> <span class="kt">Middle2</span><span class="p">,</span> <span class="nv">middle3</span><span class="p">:</span> <span class="kt">Middle3</span><span class="p">,</span> <span class="nv">user</span><span class="p">:</span> <span class="kt">User</span><span class="p">,</span>
+                        <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">User</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">post</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></span><span class="p">,</span> <span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span>
+    <span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">I</span><span class="p">,</span> <span class="kt">CodableResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+<span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A String specifying the URL path that will invoke the handler.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A closure that receives a TypeSafeMiddleware instance and a Codable object, and returns a Codable object or a RequestError.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC4postySS_yx_q_yq0_Sg_q1_Sg0A9Contracts12RequestErrorVSgtctc7handlertAA18TypeSafeMiddlewareRzs9DecodableR_s9EncodableR_AG10IdentifierR0_sAMR1_sANR1_r2_lF"></a>
+                    <a name="//apple_ref/swift/Method/post(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC4postySS_yx_q_yq0_Sg_q1_Sg0A9Contracts12RequestErrorVSgtctc7handlertAA18TypeSafeMiddlewareRzs9DecodableR_s9EncodableR_AG10IdentifierR0_sAMR1_sANR1_r2_lF">post(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets up a closure that will be invoked when a POST request to the provided route is received by the server.
+The closure accepts a successfully executed instance of <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code>, a Codable object
+and a handler which responds with an <code>Identifier</code> and a Codable object, or a <code><a href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a></code>.
+The handler contains the developer&rsquo;s logic, which determines the server&rsquo;s response.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, <code>MySession</code> is a struct that conforms to the <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> protocol and specifies an [Int: User] dictionary, where <code>User</code> conforms to Codable.</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">session</span><span class="p">:</span> <span class="kt">MySession</span><span class="p">,</span> <span class="nv">user</span><span class="p">:</span> <span class="kt">User</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">Int</span><span class="p">?,</span> <span class="kt">User</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+   <span class="k">let</span> <span class="nv">newId</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
+   <span class="n">session</span><span class="o">.</span><span class="n">user</span><span class="p">[</span><span class="n">newId</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span>
+   <span class="nf">respondWith</span><span class="p">(</span><span class="n">newId</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+   <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<h4 id='multiple-middleware' class='heading'>Multiple Middleware:</h4>
+
+<p>The closure can process up to three <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> objects by defining them in the handler:</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">middle1</span><span class="p">:</span> <span class="kt">Middle1</span><span class="p">,</span> <span class="nv">middle2</span><span class="p">:</span> <span class="kt">Middle2</span><span class="p">,</span> <span class="nv">middle3</span><span class="p">:</span> <span class="kt">Middle3</span><span class="p">,</span> <span class="nv">user</span><span class="p">:</span> <span class="kt">User</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">Int</span><span class="p">?,</span> <span class="kt">User</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">post</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></span><span class="p">,</span> <span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span>
+    <span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">I</span><span class="p">,</span> <span class="kt">IdentifierCodableResultClosure</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">,</span> <span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+<span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A String specifying the URL path that will invoke the handler.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A closure that receives a TypeSafeMiddleware instance and a Codable object, and returns an Identifier and a Codable object or a RequestError.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC3putySS_yx_q_q0_yq1_Sg_0A9Contracts12RequestErrorVSgtctc7handlertAA18TypeSafeMiddlewareRzAF10IdentifierR_s9DecodableR0_s9EncodableR0_sAMR1_sANR1_r2_lF"></a>
+                    <a name="//apple_ref/swift/Method/put(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC3putySS_yx_q_q0_yq1_Sg_0A9Contracts12RequestErrorVSgtctc7handlertAA18TypeSafeMiddlewareRzAF10IdentifierR_s9DecodableR0_s9EncodableR0_sAMR1_sANR1_r2_lF">put(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets up a closure that will be invoked when a PUT request to the provided route is received by the server.
+The closure accepts a successfully executed instance of <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code>, an <code>Identifier</code>, a Codable object
+and a handler which responds with a single Codable object or a <code><a href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a></code>.
+The handler contains the developer&rsquo;s logic, which determines the server&rsquo;s response.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, <code>MySession</code> is a struct that conforms to the <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> protocol and specifies an [Int: User] dictionary, where <code>User</code> conforms to Codable.</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">session</span><span class="p">:</span> <span class="kt">MySession</span><span class="p">,</span>  <span class="nv">id</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">user</span><span class="p">:</span> <span class="kt">User</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">User</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">user</span><span class="p">[</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span>
+    <span class="nf">respondWith</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+<h4 id='multiple-middleware' class='heading'>Multiple Middleware:</h4>
+
+<p>The closure can process up to three <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> objects by defining them in the handler:</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">put</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">middle1</span><span class="p">:</span> <span class="kt">Middle1</span><span class="p">,</span> <span class="nv">middle2</span><span class="p">:</span> <span class="kt">Middle2</span><span class="p">,</span> <span class="nv">middle3</span><span class="p">:</span> <span class="kt">Middle3</span><span class="p">,</span>
+<span class="nv">id</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">user</span><span class="p">:</span> <span class="kt">User</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">User</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">put</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></span><span class="p">,</span> <span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span>
+    <span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">Id</span><span class="p">,</span> <span class="kt">I</span><span class="p">,</span> <span class="kt">CodableResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+<span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A String specifying the URL path that will invoke the handler.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A closure that receives a TypeSafeMiddleware instance, an Identifier and a Codable object, and returns a Codable object or a RequestError.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC5patchySS_yx_q_q0_yq1_Sg_0A9Contracts12RequestErrorVSgtctc7handlertAA18TypeSafeMiddlewareRzAF10IdentifierR_s9DecodableR0_s9EncodableR0_sAMR1_sANR1_r2_lF"></a>
+                    <a name="//apple_ref/swift/Method/patch(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC5patchySS_yx_q_q0_yq1_Sg_0A9Contracts12RequestErrorVSgtctc7handlertAA18TypeSafeMiddlewareRzAF10IdentifierR_s9DecodableR0_s9EncodableR0_sAMR1_sANR1_r2_lF">patch(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets up a closure that will be invoked when a PATCH request to the provided route is received by the server.
+The closure accepts a successfully executed instance of <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code>, an <code>Identifier</code>, a Codable object
+and a handler which responds with a single Codable object or a <code><a href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a></code>.
+The handler contains the developer&rsquo;s logic, which determines the server&rsquo;s response.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, <code>MySession</code> is a struct that conforms to the <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> protocol and specifies an [Int: User] dictionary, where <code>User</code> conforms to Codable.</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">patch</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">session</span><span class="p">:</span> <span class="kt">MySession</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">inputUser</span><span class="p">:</span> <span class="kt">User</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">User</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+<span class="k">guard</span> <span class="k">let</span> <span class="nv">user</span><span class="p">:</span> <span class="kt">User</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">user</span><span class="p">[</span><span class="n">id</span><span class="p">]</span> <span class="k">else</span> <span class="p">{</span>
+       <span class="k">return</span> <span class="nf">respondWith</span><span class="p">(</span><span class="kc">nil</span><span class="p">,</span> <span class="o">.</span><span class="n">notFound</span><span class="p">)</span>
+   <span class="p">}</span>
+   <span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">inputUser</span><span class="o">.</span><span class="n">id</span> <span class="p">??</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span>
+   <span class="n">user</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">inputUser</span><span class="o">.</span><span class="n">name</span> <span class="p">??</span> <span class="n">user</span><span class="o">.</span><span class="n">name</span>
+   <span class="nf">respondWith</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+   <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<h4 id='multiple-middleware' class='heading'>Multiple Middleware:</h4>
+
+<p>The closure can process up to three <code><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></code> objects by defining them in the handler:</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">patch</span><span class="p">(</span><span class="s">"/user"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">middle1</span><span class="p">:</span> <span class="kt">Middle1</span><span class="p">,</span> <span class="nv">middle2</span><span class="p">:</span> <span class="kt">Middle2</span><span class="p">,</span> <span class="nv">middle3</span><span class="p">:</span> <span class="kt">Middle3</span><span class="p">,</span>
+<span class="nv">id</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">user</span><span class="p">:</span> <span class="kt">User</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">User</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">patch</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></span><span class="p">,</span> <span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span>
+    <span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">Id</span><span class="p">,</span> <span class="kt">I</span><span class="p">,</span> <span class="kt">CodableResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+<span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A String specifying the URL path that will invoke the handler.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A closure that receives a TypeSafeMiddleware instance, an Identifier and a Codable object, and returns a Codable object or a RequestError.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
                 <a name="/Codable%20Routing"></a>
                 <a name="//apple_ref/swift/Section/Codable Routing" class="dashAnchor"></a>
                 <a href="#/Codable%20Routing">
@@ -1148,6 +2250,74 @@ multiple routes requiring similar parameters which need to be handled in a certa
                               <td>
                                 <div>
                                   <p>A (QueryParams, CodableArrayResultClosure) -&gt; Void that gets invoked when a request comes to the server.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC3getySS_yx_yq_Sg_0A9Contracts12RequestErrorVSgtctc7handlertAF11QueryParamsRzs9DecodableR_s9EncodableR_r0_lF"></a>
+                    <a name="//apple_ref/swift/Method/get(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC3getySS_yx_yq_Sg_0A9Contracts12RequestErrorVSgtctc7handlertAF11QueryParamsRzs9DecodableR_s9EncodableR_r0_lF">get(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Setup a (QueryParams, CodableResultClosure) -&gt; Void on the provided route which will be invoked when a request comes to the server.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code><span class="c1">// MyQuery is a codable struct defining the supported query parameters</span>
+<span class="c1">// User is a struct object that conforms to Codable</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/query"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">query</span><span class="p">:</span> <span class="kt">MyQuery</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">User</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+
+<span class="o">...</span>
+
+<span class="nf">respondWith</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="k">get</span><span class="o">&lt;</span><span class="kt">Q</span><span class="p">:</span> <span class="kt">QueryParams</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">Q</span><span class="p">,</span> <span class="kd">@escaping</span> <span class="kt">CodableResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A String specifying the pattern that needs to be matched, in order for the handler to be invoked.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A (QueryParams, CodableResultClosure) -&gt; Void that gets invoked when a request comes to the server.</p>
                                 </div>
                               </td>
                             </tr>
@@ -9690,13 +10860,1095 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 </li>
               </ul>
             </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idxm10outputtypeyySayxGSg_0A9Contracts12RequestErrorVSgtcc7handlerts9DecodableRzs9EncodableRzlF"></a>
+                    <a name="//apple_ref/swift/Method/registerGetRoute(route:id:outputtype:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idxm10outputtypeyySayxGSg_0A9Contracts12RequestErrorVSgtcc7handlerts9DecodableRzs9EncodableRzlF">registerGetRoute(route:id:outputtype:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Register GET route that is handled by a CodableArrayClosure.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerGetRoute</span><span class="o">&lt;</span><span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">CodableArrayClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The route to register.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>id</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Boolean to indicate if id is used.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>outputtype</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The path where the document will be written.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The CodableArrayClosure that handles this route.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idxm10outputtypeyyxSg_0A9Contracts12RequestErrorVSgtcc7handlerts9DecodableRzs9EncodableRzlF"></a>
+                    <a name="//apple_ref/swift/Method/registerGetRoute(route:id:outputtype:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idxm10outputtypeyyxSg_0A9Contracts12RequestErrorVSgtcc7handlerts9DecodableRzs9EncodableRzlF">registerGetRoute(route:id:outputtype:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Register GET route that is handled by a SimpleCodableClosure.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerGetRoute</span><span class="o">&lt;</span><span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">SimpleCodableClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The route to register.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>id</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Boolean to indicate if id is used.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>outputtype</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The output object type.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The SimpleCodableClosure that handles this route.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idq_m10outputtypeyx_yq_Sg_0A9Contracts12RequestErrorVSgtctc7handlertAI10IdentifierRzs9DecodableR_s9EncodableR_r0_lF"></a>
+                    <a name="//apple_ref/swift/Method/registerGetRoute(route:id:outputtype:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idq_m10outputtypeyx_yq_Sg_0A9Contracts12RequestErrorVSgtctc7handlertAI10IdentifierRzs9DecodableR_s9EncodableR_r0_lF">registerGetRoute(route:id:outputtype:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Register GET route that is handled by a IdentifierSimpleCodableClosure.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerGetRoute</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">IdentifierSimpleCodableClosure</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">,</span> <span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The route to register.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>id</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Boolean to indicate if id is used.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>outputtype</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The output object type.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The IdentifierSimpleCodableClosure that handles this route.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idq_m10outputtypeyySayx_q_tGSg_0A9Contracts12RequestErrorVSgtcc7handlertAJ10IdentifierRzs9DecodableR_s9EncodableR_r0_lF"></a>
+                    <a name="//apple_ref/swift/Method/registerGetRoute(route:id:outputtype:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idq_m10outputtypeyySayx_q_tGSg_0A9Contracts12RequestErrorVSgtcc7handlertAJ10IdentifierRzs9DecodableR_s9EncodableR_r0_lF">registerGetRoute(route:id:outputtype:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Register GET route that is handled by a IdentifierCodableArrayClosure.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerGetRoute</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">IdentifierCodableArrayClosure</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">,</span> <span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The route to register.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>id</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Boolean to indicate if id is used.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>outputtype</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The output object type.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The IdentifierSimpleCodableClosure that handles this route.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idq_m10outputtypeyx_ySayq_GSg_0A9Contracts12RequestErrorVSgtctc7handlertAJ11QueryParamsRzs9DecodableR_s9EncodableR_r0_lF"></a>
+                    <a name="//apple_ref/swift/Method/registerGetRoute(route:id:outputtype:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idq_m10outputtypeyx_ySayq_GSg_0A9Contracts12RequestErrorVSgtctc7handlertAJ11QueryParamsRzs9DecodableR_s9EncodableR_r0_lF">registerGetRoute(route:id:outputtype:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Register GET route that is handled by: (Q, @escaping CodableArrayResultClosure<O>) -&gt; Void .</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerGetRoute</span><span class="o">&lt;</span><span class="kt">Q</span><span class="p">:</span> <span class="kt">QueryParams</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">Q</span><span class="p">,</span> <span class="kd">@escaping</span> <span class="kt">CodableArrayResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The route to register.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>id</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Boolean to indicate if id is used.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>outputtype</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The output object type.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The IdentifierSimpleCodableClosure that handles this route.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idq_m10outputtypeyx_yq_Sg_0A9Contracts12RequestErrorVSgtctc7handlertAI11QueryParamsRzs9DecodableR_s9EncodableR_r0_lF"></a>
+                    <a name="//apple_ref/swift/Method/registerGetRoute(route:id:outputtype:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idq_m10outputtypeyx_yq_Sg_0A9Contracts12RequestErrorVSgtctc7handlertAI11QueryParamsRzs9DecodableR_s9EncodableR_r0_lF">registerGetRoute(route:id:outputtype:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Register GET route that is handled by: (Q, @escaping CodableResultClosure<O>) -&gt; Void .</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerGetRoute</span><span class="o">&lt;</span><span class="kt">Q</span><span class="p">:</span> <span class="kt">QueryParams</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">Q</span><span class="p">,</span> <span class="kd">@escaping</span> <span class="kt">CodableResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The route to register.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>id</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Boolean to indicate if id is used.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>outputtype</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The output object type.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The IdentifierSimpleCodableClosure that handles this route.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC19registerDeleteRouteySS5route_Sb2idyy0A9Contracts12RequestErrorVSgcc7handlertF"></a>
+                    <a name="//apple_ref/swift/Method/registerDeleteRoute(route:id:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC19registerDeleteRouteySS5route_Sb2idyy0A9Contracts12RequestErrorVSgcc7handlertF">registerDeleteRoute(route:id:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Register DELETE route that is handled by a NonCodableClosure.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">registerDeleteRoute</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">NonCodableClosure</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The route to register.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>id</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Boolean to indicate if id is used.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The NonCodableClosure that handles this route.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC19registerDeleteRouteySS5route_Sb2idyx_y0A9Contracts12RequestErrorVSgctc7handlertAG10IdentifierRzlF"></a>
+                    <a name="//apple_ref/swift/Method/registerDeleteRoute(route:id:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC19registerDeleteRouteySS5route_Sb2idyx_y0A9Contracts12RequestErrorVSgctc7handlertAG10IdentifierRzlF">registerDeleteRoute(route:id:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Register DELETE route that is handled by a NonCodableClosure.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerDeleteRoute</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">IdentifierNonCodableClosure</span><span class="o">&lt;</span><span class="kt">Id</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The route to register.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>id</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Boolean to indicate if id is used.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The IdentifierNonCodableClosure that handles this route.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC19registerDeleteRouteySS5route_Sb2idyx_y0A9Contracts12RequestErrorVSgctc7handlerts9DecodableRzs9EncodableRzlF"></a>
+                    <a name="//apple_ref/swift/Method/registerDeleteRoute(route:id:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC19registerDeleteRouteySS5route_Sb2idyx_y0A9Contracts12RequestErrorVSgctc7handlerts9DecodableRzs9EncodableRzlF">registerDeleteRoute(route:id:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Register DELETE route that is handled by: (Q, @escaping ResultClosure) -&gt; Void</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerDeleteRoute</span><span class="o">&lt;</span><span class="kt">Q</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">Q</span><span class="p">,</span> <span class="kd">@escaping</span> <span class="kt">ResultClosure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The route to register.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>id</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Boolean to indicate if id is used.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The (Q, @escaping ResultClosure) -&gt; Void closure that handles this route.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC17registerPostRouteySS5route_Sb2idxm9inputtypeq_m10outputtypeyx_yq_Sg_0A9Contracts12RequestErrorVSgtctc7handlerts9DecodableRzs9EncodableRzsAOR_sAPR_r0_lF"></a>
+                    <a name="//apple_ref/swift/Method/registerPostRoute(route:id:inputtype:outputtype:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC17registerPostRouteySS5route_Sb2idxm9inputtypeq_m10outputtypeyx_yq_Sg_0A9Contracts12RequestErrorVSgtctc7handlerts9DecodableRzs9EncodableRzsAOR_sAPR_r0_lF">registerPostRoute(route:id:inputtype:outputtype:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Register POST route that is handled by a CodableClosure.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerPostRoute</span><span class="o">&lt;</span><span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">inputtype</span><span class="p">:</span> <span class="kt">I</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">CodableClosure</span><span class="o">&lt;</span><span class="kt">I</span><span class="p">,</span> <span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The route to register.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>id</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Boolean to indicate if id is used.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>inputtype</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The input object type.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>outputtype</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The output object type.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The CodableClosure that handles this route.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC17registerPostRouteySS5route_Sb2idxm9inputtypeq0_m10outputtypeyx_yq_Sg_q0_Sg0A9Contracts12RequestErrorVSgtctc7handlerts9DecodableRzs9EncodableRzAK10IdentifierR_sAPR0_sAQR0_r1_lF"></a>
+                    <a name="//apple_ref/swift/Method/registerPostRoute(route:id:inputtype:outputtype:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC17registerPostRouteySS5route_Sb2idxm9inputtypeq0_m10outputtypeyx_yq_Sg_q0_Sg0A9Contracts12RequestErrorVSgtctc7handlerts9DecodableRzs9EncodableRzAK10IdentifierR_sAPR0_sAQR0_r1_lF">registerPostRoute(route:id:inputtype:outputtype:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Register POST route that is handled by a CodableIdentifierClosure.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerPostRoute</span><span class="o">&lt;</span><span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">inputtype</span><span class="p">:</span> <span class="kt">I</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">CodableIdentifierClosure</span><span class="o">&lt;</span><span class="kt">I</span><span class="p">,</span> <span class="kt">Id</span><span class="p">,</span> <span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The route to register.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>id</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Boolean to indicate if id is used.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>inputtype</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The input object type.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>outputtype</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The output object type.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The CodableIdentifierClosure that handles this route.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC16registerPutRouteySS5route_Sb2idxm9inputtypeq0_m10outputtypeyq__xyq0_Sg_0A9Contracts12RequestErrorVSgtctc7handlerts9DecodableRzs9EncodableRzAJ10IdentifierR_sAOR0_sAPR0_r1_lF"></a>
+                    <a name="//apple_ref/swift/Method/registerPutRoute(route:id:inputtype:outputtype:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC16registerPutRouteySS5route_Sb2idxm9inputtypeq0_m10outputtypeyq__xyq0_Sg_0A9Contracts12RequestErrorVSgtctc7handlerts9DecodableRzs9EncodableRzAJ10IdentifierR_sAOR0_sAPR0_r1_lF">registerPutRoute(route:id:inputtype:outputtype:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Register PUT route that is handled by a IdentifierCodableClosure.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerPutRoute</span><span class="o">&lt;</span><span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">inputtype</span><span class="p">:</span> <span class="kt">I</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">IdentifierCodableClosure</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">,</span> <span class="kt">I</span><span class="p">,</span> <span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The route to register.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>id</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Boolean to indicate if id is used.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>inputtype</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The input object type.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>outputtype</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The output object type.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The IdentifierCodableClosure that handles this route.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC18registerPatchRouteySS5route_Sb2idxm9inputtypeq0_m10outputtypeyq__xyq0_Sg_0A9Contracts12RequestErrorVSgtctc7handlerts9DecodableRzs9EncodableRzAJ10IdentifierR_sAOR0_sAPR0_r1_lF"></a>
+                    <a name="//apple_ref/swift/Method/registerPatchRoute(route:id:inputtype:outputtype:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC18registerPatchRouteySS5route_Sb2idxm9inputtypeq0_m10outputtypeyq__xyq0_Sg_0A9Contracts12RequestErrorVSgtctc7handlerts9DecodableRzs9EncodableRzAJ10IdentifierR_sAOR0_sAPR0_r1_lF">registerPatchRoute(route:id:inputtype:outputtype:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Register PATCH route that is handled by an IdentifierCodableClosure.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerPatchRoute</span><span class="o">&lt;</span><span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">inputtype</span><span class="p">:</span> <span class="kt">I</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">IdentifierCodableClosure</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">,</span> <span class="kt">I</span><span class="p">,</span> <span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The route to register.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>id</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Boolean to indicate if id is used.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>inputtype</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The input object type.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>outputtype</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The output object type.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The IdentifierCodableClosure that handles this route.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
         </section>
 
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-04-17)</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-05-30)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

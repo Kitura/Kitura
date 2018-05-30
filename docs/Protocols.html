@@ -56,6 +56,9 @@
                 <a class="nav-group-task-link" href="Classes/BodyParser.html">BodyParser</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/BodyParserMultiValue.html">BodyParserMultiValue</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Classes/ContentType.html">ContentType</a>
               </li>
               <li class="nav-group-task">
@@ -105,6 +108,14 @@
             </ul>
           </li>
           <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/DecodingError.html">DecodingError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
             <a class="nav-group-name-link" href="Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
@@ -112,6 +123,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/RouterMiddleware.html">RouterMiddleware</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a>
               </li>
             </ul>
           </li>
@@ -146,6 +160,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura16LifecycleHandlera">LifecycleHandler</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura13RouterHandlera">RouterHandler</a>
@@ -219,6 +236,62 @@ in nature and not tied to a specific request.</p>
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/s:6Kitura18TypeSafeMiddlewareP"></a>
+                    <a name="//apple_ref/swift/Protocol/TypeSafeMiddleware" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura18TypeSafeMiddlewareP">TypeSafeMiddleware</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The protocol that type-safe middleware must implement to be used in Kitura Codable routes.</p>
+
+<p>Classes or structs conforming to TypeSafeMiddleware must contain a static handle function that processes an incoming request.
+On success, the handle function creates an instance of Self and passes this instance to the users route handler.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, a UserMiddleware struct is defined that checks the request for the header <q>TestHeader</q>.
+If the header is found UserMiddleware initialises itself with the header and passes itself to the route.
+If the header is not found it returns a RequestError.</p>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">UserMiddleware</span><span class="p">:</span> <span class="kt">TypeSafeMiddleware</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">header</span><span class="p">:</span> <span class="kt">String</span>
+
+    <span class="kd">static</span> <span class="kd">func</span> <span class="nf">handle</span><span class="p">(</span>
+                <span class="nv">request</span><span class="p">:</span> <span class="kt">RouterRequest</span><span class="p">,</span>
+                <span class="nv">response</span><span class="p">:</span> <span class="kt">RouterResponse</span><span class="p">,</span>
+                <span class="nv">completion</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">UserMiddleware</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+    <span class="p">)</span> <span class="p">{</span>
+        <span class="k">guard</span> <span class="k">let</span> <span class="nv">expectedHeader</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s">"TestHeader"</span><span class="p">]</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nf">completion</span><span class="p">(</span><span class="kc">nil</span><span class="p">,</span> <span class="o">.</span><span class="n">badRequest</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="k">let</span> <span class="nv">selfInstance</span><span class="p">:</span> <span class="kt">UserMiddleware</span> <span class="o">=</span> <span class="kt">UserMiddleware</span><span class="p">(</span><span class="nv">header</span><span class="p">:</span> <span class="n">expectedHeader</span><span class="p">)</span>
+        <span class="nf">completion</span><span class="p">(</span><span class="n">selfInstance</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+
+                        <a href="Protocols/TypeSafeMiddleware.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">TypeSafeMiddleware</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/s:6Kitura21ResponseHeadersSetterP"></a>
                     <a name="//apple_ref/swift/Protocol/ResponseHeadersSetter" class="dashAnchor"></a>
                     <a class="token" href="#/s:6Kitura21ResponseHeadersSetterP">ResponseHeadersSetter</a>
@@ -253,7 +326,7 @@ the headers of the response of static file serving middleware.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-04-17)</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-05-30)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

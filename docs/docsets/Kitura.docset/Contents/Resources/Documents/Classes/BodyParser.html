@@ -57,6 +57,9 @@
                 <a class="nav-group-task-link" href="../Classes/BodyParser.html">BodyParser</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/BodyParserMultiValue.html">BodyParserMultiValue</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ContentType.html">ContentType</a>
               </li>
               <li class="nav-group-task">
@@ -106,6 +109,14 @@
             </ul>
           </li>
           <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/DecodingError.html">DecodingError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
             <a class="nav-group-name-link" href="../Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
@@ -113,6 +124,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/RouterMiddleware.html">RouterMiddleware</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a>
               </li>
             </ul>
           </li>
@@ -149,6 +163,9 @@
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura16LifecycleHandlera">LifecycleHandler</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura13RouterHandlera">RouterHandler</a>
               </li>
               <li class="nav-group-task">
@@ -172,12 +189,34 @@
 
                 </div>
               </div>
-            <p>The <code>BodyParser</code> parses the body of the request prior to sending it to the handler. It reads the Content-Type of the message header and populates the <code><a href="../Classes/RouterRequest.html">RouterRequest</a></code> body field with a <code><a href="../Enums/ParsedBody.html">ParsedBody</a></code> enumeration (e.g. json, raw, text, urlEncoded).
- In order for the BodyParser to be used it must first be registered with any routes that are interested in the ParsedBody payload.</p>
+            <p>The <code>BodyParser</code> parses the body of the request prior to sending it to the handler. It reads the Content-Type of the message header and populates the <code><a href="../Classes/RouterRequest.html">RouterRequest</a></code> body field with a corresponding <code><a href="../Enums/ParsedBody.html">ParsedBody</a></code> enumeration.</p>
+
+<p>In order for the BodyParser to be used it must first be registered with any routes that are interested in the <code><a href="../Enums/ParsedBody.html">ParsedBody</a></code> payload.</p>
+<h3 id='parsedbody-enumeration' class='heading'>ParsedBody enumeration:</h3>
+
+<p>The mappings from the incoming Content-Type to an internal representation of the body are as follows:</p>
+<pre class="highlight swift"><code>   <span class="o">.</span><span class="nf">json</span><span class="p">([</span><span class="kt">String</span><span class="p">:</span> <span class="kt">Any</span><span class="p">])</span>          <span class="c1">// "application/json"</span>
+   <span class="o">.</span><span class="nf">text</span><span class="p">(</span><span class="kt">String</span><span class="p">)</span>                 <span class="c1">// "text/*"</span>
+   <span class="o">.</span><span class="nf">urlEncoded</span><span class="p">([</span><span class="kt">String</span><span class="p">:</span><span class="kt">String</span><span class="p">])</span>  <span class="c1">// "application/x-www-form-urlencoded"</span>
+   <span class="o">.</span><span class="nf">multipart</span><span class="p">([</span><span class="kt">Part</span><span class="p">])</span>            <span class="c1">// "multipart/form-data"</span>
+   <span class="o">.</span><span class="nf">raw</span><span class="p">(</span><span class="kt">Data</span><span class="p">)</span>                    <span class="c1">// Any other Content-Type</span>
+</code></pre>
+
+<p>Each case has a corresponding convenience property, e.g. <code>asURLEncoded: [String:String]</code>, for accessing the associated data.</p>
+
+<p><strong>Note</strong>: If you have not declared a Content-Type header, <code><a href="../Enums/ParsedBody.html">ParsedBody</a></code> will be <code>nil</code>.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 
-<p>In this example, all routes to the BodyParser middleware are registered to the <code>BodyParser</code> middleware.</p>
-<pre class="highlight swift"><code>   <span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/*"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="kt">BodyParser</span><span class="p">())</span>
+<p>In this example, all routes to the BodyParser middleware are registered to the <code>BodyParser</code> middleware. A request with <q>application/json</q>, ContentType header is received. It is then parsed as JSON and the value for <q>name</q> is returned in the response.</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/name"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="kt">BodyParser</span><span class="p">())</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="s">"/name"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
+    <span class="k">guard</span> <span class="k">let</span> <span class="nv">jsonBody</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">parsedBody</span><span class="p">?</span><span class="o">.</span><span class="n">asJSON</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nf">next</span><span class="p">()</span>
+        <span class="k">return</span>
+    <span class="p">}</span>
+    <span class="k">let</span> <span class="nv">name</span> <span class="o">=</span> <span class="n">jsonBody</span><span class="p">[</span><span class="s">"name"</span><span class="p">]</span> <span class="k">as?</span> <span class="kt">String</span> <span class="p">??</span> <span class="s">""</span>
+    <span class="k">try</span> <span class="n">response</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"Hello </span><span class="se">\(</span><span class="n">name</span><span class="se">)</span><span class="s">"</span><span class="p">)</span><span class="o">.</span><span class="nf">end</span><span class="p">()</span>
+<span class="p">}</span>
 </code></pre>
 
 <p><strong>Note</strong>: When using Codable Routing in Kitura 2.x the BodyParser should not be registered to any codable routes (doing so will log the following error <q>No data in request. Codable routes do not allow the use of a BodyParser.</q> and the route handler will not be executed).</p>
@@ -428,7 +467,7 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-04-17)</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-05-30)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

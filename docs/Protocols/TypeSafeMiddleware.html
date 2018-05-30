@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>LinkParameter Enumeration Reference</title>
+    <title>TypeSafeMiddleware Protocol Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Enum/LinkParameter" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Protocol/TypeSafeMiddleware" class="dashAnchor"></a>
 
-    <a title="LinkParameter Enumeration Reference"></a>
+    <a title="TypeSafeMiddleware Protocol Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -44,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html">Kitura Reference</a>
       <img class="carat" src="../img/carat.png" />
-      LinkParameter Enumeration Reference
+      TypeSafeMiddleware Protocol Reference
     </p>
 
     <div class="content-wrapper">
@@ -182,16 +182,38 @@
 
         <section class="section">
           <div class="section-content">
-            <h1>LinkParameter</h1>
+            <h1>TypeSafeMiddleware</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">LinkParameter</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">TypeSafeMiddleware</span></code></pre>
 
                 </div>
               </div>
-            <p>Possible parameters of Link HTTP header.</p>
+            <p>The protocol that type-safe middleware must implement to be used in Kitura Codable routes.</p>
 
-<p>See <a href="https://tools.ietf.org/html/rfc5988">RFC 5988</a> for more details.</p>
+<p>Classes or structs conforming to TypeSafeMiddleware must contain a static handle function that processes an incoming request.
+On success, the handle function creates an instance of Self and passes this instance to the users route handler.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example, a UserMiddleware struct is defined that checks the request for the header <q>TestHeader</q>.
+If the header is found UserMiddleware initialises itself with the header and passes itself to the route.
+If the header is not found it returns a RequestError.</p>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">UserMiddleware</span><span class="p">:</span> <span class="kt">TypeSafeMiddleware</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">header</span><span class="p">:</span> <span class="kt">String</span>
+
+    <span class="kd">static</span> <span class="kd">func</span> <span class="nf">handle</span><span class="p">(</span>
+                <span class="nv">request</span><span class="p">:</span> <span class="kt">RouterRequest</span><span class="p">,</span>
+                <span class="nv">response</span><span class="p">:</span> <span class="kt">RouterResponse</span><span class="p">,</span>
+                <span class="nv">completion</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">UserMiddleware</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+    <span class="p">)</span> <span class="p">{</span>
+        <span class="k">guard</span> <span class="k">let</span> <span class="nv">expectedHeader</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s">"TestHeader"</span><span class="p">]</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nf">completion</span><span class="p">(</span><span class="kc">nil</span><span class="p">,</span> <span class="o">.</span><span class="n">badRequest</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="k">let</span> <span class="nv">selfInstance</span><span class="p">:</span> <span class="kt">UserMiddleware</span> <span class="o">=</span> <span class="kt">UserMiddleware</span><span class="p">(</span><span class="nv">header</span><span class="p">:</span> <span class="n">expectedHeader</span><span class="p">)</span>
+        <span class="nf">completion</span><span class="p">(</span><span class="n">selfInstance</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
 
           </div>
         </section>
@@ -203,9 +225,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura13LinkParameterO3relA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/rel" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura13LinkParameterO3relA2CmF">rel</a>
+                    <a name="/s:6Kitura18TypeSafeMiddlewareP6handleyAA13RouterRequestC7request_AA0F8ResponseC8responseyxSg_0A9Contracts0G5ErrorVSgtc10completiontFZ"></a>
+                    <a name="//apple_ref/swift/Method/handle(request:response:completion:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura18TypeSafeMiddlewareP6handleyAA13RouterRequestC7request_AA0F8ResponseC8responseyxSg_0A9Contracts0G5ErrorVSgtc10completiontFZ">handle(request:response:completion:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -213,202 +235,64 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The relation type of the link.</p>
+                        <p>Handle an incoming HTTP request.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">rel</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">static</span> <span class="kd">func</span> <span class="nf">handle</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterRequest.html">RouterRequest</a></span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterResponse.html">RouterResponse</a></span><span class="p">,</span> <span class="nv">completion</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="k">Self</span><span class="p">?,</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a></span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span></code></pre>
 
                         </div>
                       </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura13LinkParameterO6anchorA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/anchor" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura13LinkParameterO6anchorA2CmF">anchor</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The context of a link conveyed in the Link header field.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">anchor</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura13LinkParameterO3revA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/rev" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura13LinkParameterO3revA2CmF">rev</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>An indication that the semantics of the relationship are in the reverse direction.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">rev</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura13LinkParameterO8hreflangA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/hreflang" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura13LinkParameterO8hreflangA2CmF">hreflang</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>A hint indicating what the language of the result of dereferencing the link should be.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">hreflang</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura13LinkParameterO5mediaA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/media" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura13LinkParameterO5mediaA2CmF">media</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>An intended destination medium or media for style information.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">media</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura13LinkParameterO5titleA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/title" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura13LinkParameterO5titleA2CmF">title</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>A human-readable label of the destination of a link.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">title</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura13LinkParameterO4typeA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/type" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura13LinkParameterO4typeA2CmF">type</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>A hint indicating what the media type of the result of dereferencing the link should be.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">type</span></code></pre>
-
-                        </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>request</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code><a href="../Classes/RouterRequest.html">RouterRequest</a></code> object used to work with the incoming
+                HTTP request.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>response</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code><a href="../Classes/RouterResponse.html">RouterResponse</a></code> object used to respond to the
+                HTTP request.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completion</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The closure to invoke once middleware processing is
+                    complete. Either an instance of Self or a RequestError
+                    should be provided, indicating a successful or failed
+                    attempt to process the request, respectively.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
                     </section>
                   </div>
