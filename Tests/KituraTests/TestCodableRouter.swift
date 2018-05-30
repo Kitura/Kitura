@@ -41,7 +41,9 @@ class TestCodableRouter: KituraTest {
             ("testCodableGetSingleQueryParameters", testCodableGetSingleQueryParameters),
             ("testCodableGetArrayQueryParameters", testCodableGetArrayQueryParameters),
             ("testCodableDeleteQueryParameters", testCodableDeleteQueryParameters),
-	    ("testCodablePostSuccessStatuses", testCodablePostSuccessStatuses)
+	    ("testCodablePostSuccessStatuses", testCodablePostSuccessStatuses),
+            ("testNoDataCustomStatus", testNoDataCustomStatus),
+            ("testNoDataDefaultStatus", testNoDataDefaultStatus)
         ]
     }
 
@@ -51,6 +53,7 @@ class TestCodableRouter: KituraTest {
 
     // Reset for each test
     override func setUp() {
+        super.setUp()           // Initialize logging
         router = Router()
         userStore = [1: User(id: 1, name: "Mike"), 2: User(id: 2, name: "Chris"), 3: User(id: 3, name: "Ricardo")]
     }
@@ -486,6 +489,59 @@ class TestCodableRouter: KituraTest {
             .hasContentType(withPrefix: "application/json")
             .hasData(Status("BAD: 1"))
 
+            .run()
+    }
+
+    // Tests that a handler is able to return a nil response with a custom success status.
+    func testNoDataCustomStatus() {
+        router.put("/noBody") { (id: Int, data: User, respondWith: (User?, RequestError?) -> Void) in
+            print("PUT on /noBody/\(id)")
+            respondWith(nil, .noContent)
+        }
+        router.post("/noBody") { (data: User, respondWith: (Int?, User?, RequestError?) -> Void) in
+            print("POST on /noBody")
+            respondWith(1, nil, .noContent)
+        }
+        
+        let user = User(id: 1, name: "David")
+        buildServerTest(router, timeout: 30)
+
+            .request("post", path: "/noBody", data: user)
+            .hasStatus(.noContent)
+            .hasHeader("Location", only: "1")
+            .hasNoData()
+            
+            .request("put", path: "/noBody/1", data: user)
+            .hasStatus(.noContent)
+            .hasNoData()
+            
+            .run()
+    }
+
+    // Tests that a handler is able to return a nil response with the default success status
+    // for that method.
+    func testNoDataDefaultStatus() {
+        router.put("/noBody") { (id: Int, data: User, respondWith: (User?, RequestError?) -> Void) in
+            print("PUT on /noBody/\(id)")
+            respondWith(nil, nil)
+        }
+        router.post("/noBody") { (data: User, respondWith: (Int?, User?, RequestError?) -> Void) in
+            print("POST on /noBody")
+            respondWith(1, nil, nil)
+        }
+        
+        let user = User(id: 1, name: "David")
+        buildServerTest(router, timeout: 30)
+
+            .request("post", path: "/noBody", data: user)
+            .hasStatus(.created)
+            .hasHeader("Location", only: "1")
+            .hasNoData()
+            
+            .request("put", path: "/noBody/1", data: user)
+            .hasStatus(.OK)
+            .hasNoData()
+            
             .run()
     }
 
