@@ -41,7 +41,9 @@ class TestCodableRouter: KituraTest {
             ("testCodableGetSingleQueryParameters", testCodableGetSingleQueryParameters),
             ("testCodableGetArrayQueryParameters", testCodableGetArrayQueryParameters),
             ("testCodableDeleteQueryParameters", testCodableDeleteQueryParameters),
-	    ("testCodablePostSuccessStatuses", testCodablePostSuccessStatuses)
+	    ("testCodablePostSuccessStatuses", testCodablePostSuccessStatuses),
+            ("testNoDataCustomStatus", testNoDataCustomStatus),
+            ("testNoDataDefaultStatus", testNoDataDefaultStatus)
         ]
     }
 
@@ -490,56 +492,53 @@ class TestCodableRouter: KituraTest {
             .run()
     }
 
-    // Test that a type that only conforms to Decodable can be received. Responses contain no
-    // result body, as the incoming type is not Encodable. Response handlers are tested with
-    // an explicit (nil, .someSuccessStatus) status code.
-    func testDecodableTypeCustomStatus() {
-        router.put("/decodable") { (id: Int, data: OnlyDecodable, respondWith: (OnlyEncodable?, RequestError?) -> Void) in
-            print("PUT on /decodable/\(id)")
-            respondWith(nil, .ok)
+    // Tests that a handler is able to return a nil response with a custom success status.
+    func testNoDataCustomStatus() {
+        router.put("/noBody") { (id: Int, data: User, respondWith: (User?, RequestError?) -> Void) in
+            print("PUT on /noBody/\(id)")
+            respondWith(nil, .noContent)
         }
-        router.post("/decodable") { (data: OnlyDecodable, respondWith: (Int?, OnlyEncodable?, RequestError?) -> Void) in
-            print("POST on /decodable")
-            respondWith(1, nil, .created)
+        router.post("/noBody") { (data: User, respondWith: (Int?, User?, RequestError?) -> Void) in
+            print("POST on /noBody")
+            respondWith(1, nil, .noContent)
         }
-        let encodedJson = "{\"data\":\"Hello\"}"
         
+        let user = User(id: 1, name: "David")
         buildServerTest(router, timeout: 30)
 
-            .request("post", path: "/decodable", json: encodedJson)
-            .hasStatus(.created)
+            .request("post", path: "/noBody", data: user)
+            .hasStatus(.noContent)
             .hasHeader("Location", only: "1")
             .hasNoData()
             
-            .request("put", path: "/decodable/1", json: encodedJson)
-            .hasStatus(.OK)
+            .request("put", path: "/noBody/1", data: user)
+            .hasStatus(.noContent)
             .hasNoData()
             
             .run()
     }
 
-    // Test that a type that only conforms to Decodable can be received. Responses contain no
-    // result body, as the incoming type is not Encodable. Response handlers are tested with
-    // the default (nil, nil) status code response.
-    func testDecodableTypeDefaultStatus() {
-        router.put("/decodable") { (id: Int, data: OnlyDecodable, respondWith: (OnlyEncodable?, RequestError?) -> Void) in
-            print("PUT on /decodable/\(id)")
+    // Tests that a handler is able to return a nil response with the default success status
+    // for that method.
+    func testNoDataDefaultStatus() {
+        router.put("/noBody") { (id: Int, data: User, respondWith: (User?, RequestError?) -> Void) in
+            print("PUT on /noBody/\(id)")
             respondWith(nil, nil)
         }
-        router.post("/decodable") { (data: OnlyDecodable, respondWith: (Int?, OnlyEncodable?, RequestError?) -> Void) in
-            print("POST on /decodable")
+        router.post("/noBody") { (data: User, respondWith: (Int?, User?, RequestError?) -> Void) in
+            print("POST on /noBody")
             respondWith(1, nil, nil)
         }
-        let encodedJson = "{\"data\":\"Hello\"}"
         
+        let user = User(id: 1, name: "David")
         buildServerTest(router, timeout: 30)
-            
-            .request("post", path: "/decodable", json: encodedJson)
+
+            .request("post", path: "/noBody", data: user)
             .hasStatus(.created)
             .hasHeader("Location", only: "1")
             .hasNoData()
             
-            .request("put", path: "/decodable/1", json: encodedJson)
+            .request("put", path: "/noBody/1", data: user)
             .hasStatus(.OK)
             .hasNoData()
             
