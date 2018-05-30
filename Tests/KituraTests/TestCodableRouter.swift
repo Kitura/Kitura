@@ -41,7 +41,7 @@ class TestCodableRouter: KituraTest {
             ("testCodableGetSingleQueryParameters", testCodableGetSingleQueryParameters),
             ("testCodableGetArrayQueryParameters", testCodableGetArrayQueryParameters),
             ("testCodableDeleteQueryParameters", testCodableDeleteQueryParameters),
-	    ("testCodablePostSuccessStatuses", testCodablePostSuccessStatuses),
+            ("testCodablePostSuccessStatuses", testCodablePostSuccessStatuses),
             ("testNoDataCustomStatus", testNoDataCustomStatus),
             ("testNoDataDefaultStatus", testNoDataDefaultStatus)
         ]
@@ -716,6 +716,15 @@ class TestCodableRouter: KituraTest {
             respondWith(query, nil)
         }
 
+        router.get("/optionalquery") { (query: MyQuery?, respondWith: (MyQuery?, RequestError?) -> Void) in
+            if let query = query {
+                XCTAssertEqual(query, expectedQuery)
+                respondWith(query, nil)
+            } else {
+                respondWith(nil, nil)
+            }
+        }
+
         buildServerTest(router, timeout: 30)
             .request("get", path: "/query\(queryStr)")
             .hasStatus(.OK)
@@ -723,6 +732,19 @@ class TestCodableRouter: KituraTest {
             .hasData(expectedQuery)
 
             .request("get", path: "/query?param=badRequest")
+            .hasStatus(.badRequest)
+            .hasNoData()
+
+            .request("get", path: "/optionalquery\(queryStr)")
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(expectedQuery)
+
+            .request("get", path: "/optionalquery")
+            .hasStatus(.OK)
+            .hasNoData()
+
+            .request("get", path: "/optionalquery?param=badRequest")
             .hasStatus(.badRequest)
             .hasNoData()
 
@@ -746,13 +768,35 @@ class TestCodableRouter: KituraTest {
             respondWith([query], nil)
         }
 
+        router.get("/optionalquery") { (query: MyQuery?, respondWith: ([MyQuery]?, RequestError?) -> Void) in
+            if let query = query {
+                XCTAssertEqual(query, expectedQuery)
+                respondWith([query], nil)
+            } else {
+                respondWith(nil, nil)
+            }
+        }
+
         buildServerTest(router, timeout: 30)
             .request("get", path: "/query\(queryStr)")
             .hasStatus(.OK)
             .hasContentType(withPrefix: "application/json")
             .hasData([expectedQuery])
 
+            .request("get", path: "/optionalquery\(queryStr)")
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData([expectedQuery])
+
+            .request("get", path: "/optionalquery")
+            .hasStatus(.OK)
+            .hasNoData()
+
             .request("get", path: "/query?param=badRequest")
+            .hasStatus(.badRequest)
+            .hasNoData()
+
+            .request("get", path: "/optionalquery?param=badRequest")
             .hasStatus(.badRequest)
             .hasNoData()
 
@@ -776,12 +820,31 @@ class TestCodableRouter: KituraTest {
             respondWith(nil)
         }
 
+        router.delete("/optionalquery") { (query: MyQuery?, respondWith: (RequestError?) -> Void) in
+            if let query = query {
+                XCTAssertEqual(query, expectedQuery)
+            }
+            respondWith(nil)
+        }
+
         buildServerTest(router, timeout: 30)
             .request("delete", path: "/query\(queryStr)")
             .hasStatus(.noContent)
             .hasNoData()
 
             .request("delete", path: "/query?param=badRequest")
+            .hasStatus(.badRequest)
+            .hasNoData()
+
+            .request("delete", path: "/optionalquery\(queryStr)")
+            .hasStatus(.noContent)
+            .hasNoData()
+
+            .request("delete", path: "/optionalquery")
+            .hasStatus(.noContent)
+            .hasNoData()
+
+            .request("delete", path: "/optionalquery?param=badRequest")
             .hasStatus(.badRequest)
             .hasNoData()
 
