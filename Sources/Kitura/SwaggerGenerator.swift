@@ -820,132 +820,27 @@ extension Router {
         swagger.add(path: route, method: "delete", id: id, inputtype: nil, responselist: responsetypes)
     }
 
-    /// Register GET route that is handled by a CodableArrayClosure.
-    ///
-    /// - Parameter route: The route to register.
-    /// - Parameter id: Boolean to indicate if id is used.
-    /// - Parameter outputtype: The path where the document will be written.
-    /// - Parameter handler: The CodableArrayClosure that handles this route.
-    public func registerGetRoute<O: Codable>(route: String, id: Bool, outputtype: O.Type, handler: @escaping CodableArrayClosure<O>) {
-        var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: true, type: "\(O.self)"))
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
-        registerRoute(route: route, method: "get", id: id, outputtype: O.self, responsetypes: responseTypes)
-    }
-
-    /// Register GET route that is handled by a SimpleCodableClosure.
+    /// Register GET route
     ///
     /// - Parameter route: The route to register.
     /// - Parameter id: Boolean to indicate if id is used.
     /// - Parameter outputtype: The output object type.
-    /// - Parameter handler: The SimpleCodableClosure that handles this route.
-    public func registerGetRoute<O: Codable>(route: String, id: Bool, outputtype: O.Type, handler: @escaping SimpleCodableClosure<O>) {
+    public func registerGetRoute<O: Codable>(route: String, id: Bool, outputtype: O.Type) {
         var responseTypes = [SwaggerResponseType]()
         responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "\(O.self)"))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
         registerRoute(route: route, method: "get", id: id, outputtype: O.self, responsetypes: responseTypes)
     }
 
-    /// Register GET route that is handled by a IdentifierSimpleCodableClosure.
+    /// Register DELETE route
     ///
     /// - Parameter route: The route to register.
     /// - Parameter id: Boolean to indicate if id is used.
-    /// - Parameter outputtype: The output object type.
-    /// - Parameter handler: The IdentifierSimpleCodableClosure that handles this route.
-    public func registerGetRoute<Id: Identifier, O: Codable>(route: String, id: Bool, outputtype: O.Type, handler: @escaping IdentifierSimpleCodableClosure<Id, O>) {
-        var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "\(O.self)"))
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
-        registerRoute(route: route, method: "get", id: id, outputtype: O.self, responsetypes: responseTypes)
-    }
-
-    /// Register GET route that is handled by a IdentifierCodableArrayClosure.
-    ///
-    /// - Parameter route: The route to register.
-    /// - Parameter id: Boolean to indicate if id is used.
-    /// - Parameter outputtype: The output object type.
-    /// - Parameter handler: The IdentifierSimpleCodableClosure that handles this route.
-    public func registerGetRoute<Id: Identifier, O: Codable>(route: String, id: Bool, outputtype: O.Type, handler: @escaping IdentifierCodableArrayClosure<Id, O>) {
-        var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: true, type: "\(O.self)"))
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
-        registerRoute(route: route, method: "get", id: id, outputtype: O.self, responsetypes: responseTypes)
-    }
-
-    /// Register GET route that is handled by: (Q, @escaping CodableArrayResultClosure<O>) -> Void .
-    ///
-    /// - Parameter route: The route to register.
-    /// - Parameter id: Boolean to indicate if id is used.
-    /// - Parameter outputtype: The output object type.
-    /// - Parameter handler: The IdentifierSimpleCodableClosure that handles this route.
-    public func registerGetRoute<Q: QueryParams, O: Codable>(route: String, id: Bool, outputtype: O.Type, handler: @escaping (Q, @escaping CodableArrayResultClosure<O>) -> Void) {
-        var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: true, type: "\(O.self)"))
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
-        registerRoute(route: route, method: "get", id: id, outputtype: O.self, responsetypes: responseTypes)
-    }
-
-    /// Register GET route that is handled by: (Q, @escaping CodableResultClosure<O>) -> Void .
-    ///
-    /// - Parameter route: The route to register.
-    /// - Parameter id: Boolean to indicate if id is used.
-    /// - Parameter outputtype: The output object type.
-    /// - Parameter handler: The IdentifierSimpleCodableClosure that handles this route.
-    public func registerGetRoute<Q: QueryParams, O: Codable>(route: String, id: Bool, outputtype: O.Type, handler: @escaping (Q, @escaping CodableResultClosure<O>) -> Void) {
-        var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "\(O.self)"))
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
-        registerRoute(route: route, method: "get", id: id, outputtype: O.self, responsetypes: responseTypes)
-    }
-
-    /// Register DELETE route that is handled by a NonCodableClosure.
-    ///
-    /// - Parameter route: The route to register.
-    /// - Parameter id: Boolean to indicate if id is used.
-    /// - Parameter handler: The NonCodableClosure that handles this route.
-    public func registerDeleteRoute(route: String, id: Bool, handler: @escaping NonCodableClosure) {
+    public func registerDeleteRoute(route: String, id: Bool) {
         var responseTypes = [SwaggerResponseType]()
         responseTypes.append(SwaggerResponseType(optional: true, array: false, type: ""))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
         registerDelete(route: route, id: id, responsetypes: responseTypes)
-    }
-
-    /// Register DELETE route that is handled by a NonCodableClosure.
-    ///
-    /// - Parameter route: The route to register.
-    /// - Parameter id: Boolean to indicate if id is used.
-    /// - Parameter handler: The IdentifierNonCodableClosure that handles this route.
-    public func registerDeleteRoute<Id: Identifier>(route: String, id: Bool, handler: @escaping IdentifierNonCodableClosure<Id>) {
-        var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: ""))
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
-        registerDelete(route: route, id: id, responsetypes: responseTypes)
-    }
-
-    /// Register DELETE route that is handled by: (Q, @escaping ResultClosure) -> Void
-    ///
-    /// - Parameter route: The route to register.
-    /// - Parameter id: Boolean to indicate if id is used.
-    /// - Parameter handler: The (Q, @escaping ResultClosure) -> Void closure that handles this route.
-    public func registerDeleteRoute<Q: Codable>(route: String, id: Bool, handler: @escaping (Q, @escaping ResultClosure) -> Void) {
-        var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: ""))
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
-        registerDelete(route: route, id: id, responsetypes: responseTypes)
-    }
-
-    /// Register POST route that is handled by a CodableClosure.
-    ///
-    /// - Parameter route: The route to register.
-    /// - Parameter id: Boolean to indicate if id is used.
-    /// - Parameter inputtype: The input object type.
-    /// - Parameter outputtype: The output object type.
-    /// - Parameter handler: The CodableClosure that handles this route.
-    public func registerPostRoute<I: Codable, O: Codable>(route: String, id: Bool, inputtype: I.Type, outputtype: O.Type, handler: @escaping CodableClosure<I, O>) {
-        var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "\(O.self)"))
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
-        registerRoute(route: route, method: "post", id: id, inputtype: I.self, outputtype: O.self, responsetypes: responseTypes)
     }
 
     /// Register POST route that is handled by a CodableIdentifierClosure.
@@ -954,8 +849,7 @@ extension Router {
     /// - Parameter id: Boolean to indicate if id is used.
     /// - Parameter inputtype: The input object type.
     /// - Parameter outputtype: The output object type.
-    /// - Parameter handler: The CodableIdentifierClosure that handles this route.
-    public func registerPostRoute<I: Codable, Id: Identifier, O: Codable>(route: String, id: Bool, inputtype: I.Type, outputtype: O.Type, handler: @escaping CodableIdentifierClosure<I, Id, O>) {
+    public func registerPostRoute<I: Codable, O: Codable>(route: String, id: Bool, inputtype: I.Type, outputtype: O.Type) {
         var responseTypes = [SwaggerResponseType]()
         responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "\(O.self)"))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
@@ -968,8 +862,7 @@ extension Router {
     /// - Parameter id: Boolean to indicate if id is used.
     /// - Parameter inputtype: The input object type.
     /// - Parameter outputtype: The output object type.
-    /// - Parameter handler: The IdentifierCodableClosure that handles this route.
-    public func registerPutRoute<I: Codable, Id: Identifier, O: Codable>(route: String, id: Bool, inputtype: I.Type, outputtype: O.Type, handler: @escaping IdentifierCodableClosure<Id, I, O>) {
+    public func registerPutRoute<I: Codable, O: Codable>(route: String, id: Bool, inputtype: I.Type, outputtype: O.Type) {
         var responseTypes = [SwaggerResponseType]()
         responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "\(O.self)"))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
@@ -982,8 +875,7 @@ extension Router {
     /// - Parameter id: Boolean to indicate if id is used.
     /// - Parameter inputtype: The input object type.
     /// - Parameter outputtype: The output object type.
-    /// - Parameter handler: The IdentifierCodableClosure that handles this route.
-    public func registerPatchRoute<I: Codable, Id: Identifier, O: Codable>(route: String, id: Bool, inputtype: I.Type, outputtype: O.Type, handler: @escaping IdentifierCodableClosure<Id, I, O>) {
+    public func registerPatchRoute<I: Codable, O: Codable>(route: String, id: Bool, inputtype: I.Type, outputtype: O.Type) {
         var responseTypes = [SwaggerResponseType]()
         responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "\(O.self)"))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))

@@ -152,6 +152,48 @@ extension Router {
     }
 
     /**
+     Setup a (QueryParams?, CodableArrayResultClosure) -> Void on the provided route which will be invoked when a request comes to the server.
+
+     ### Usage Example: ###
+     ````
+     // MyQuery is a codable struct defining the supported query parameters
+     // User is a struct object that conforms to Codable
+     router.get("/query") { (query: MyQuery?, respondWith: ([User]?, RequestError?) -> Void) in
+
+        ...
+
+        respondWith(users, nil)
+     }
+     ````
+     - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
+     - Parameter handler: A (QueryParams?, CodableArrayResultClosure) -> Void that gets invoked when a request comes to the server.
+     */
+    public func get<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q?, @escaping CodableArrayResultClosure<O>) -> Void) {
+        getSafely(route, handler: handler)
+    }
+
+   /**
+     Setup a (QueryParams?, CodableResultClosure) -> Void on the provided route which will be invoked when a request comes to the server.
+
+     ### Usage Example: ###
+     ````
+     // MyQuery is a codable struct defining the supported query parameters
+     // User is a struct object that conforms to Codable
+     router.get("/query") { (query: MyQuery?, respondWith: (User?, RequestError?) -> Void) in
+
+     ...
+
+     respondWith(user, nil)
+     }
+     ````
+     - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
+     - Parameter handler: A (QueryParams?, CodableResultClosure) -> Void that gets invoked when a request comes to the server.
+     */
+    public func get<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q?, @escaping CodableResultClosure<O>) -> Void) {
+        getSafely(route, handler: handler)
+    }
+
+    /**
      Setup a NonCodableClosure on the provided route which will be invoked when a request comes to the server.
 
      ### Usage Example: ###
@@ -206,6 +248,26 @@ extension Router {
      - Parameter handler: A (QueryParams, ResultClosure) -> Void that gets invoked when a request comes to the server.
      */
     public func delete<Q: QueryParams>(_ route: String, handler: @escaping (Q, @escaping ResultClosure) -> Void) {
+        deleteSafely(route, handler: handler)
+    }
+
+    /**
+     Setup a (QueryParams?, ResultClosure) -> Void on the provided route which will be invoked when a request comes to the server.
+
+     ### Usage Example: ###
+     ````
+     // MyQuery is a codable struct defining the supported query parameters
+     router.delete("/query") { (query: MyQuery?, respondWith: (RequestError?) -> Void) in
+
+     ...
+
+     respondWith(nil)
+     }
+     ````
+     - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
+     - Parameter handler: A (QueryParams?, ResultClosure) -> Void that gets invoked when a request comes to the server.
+     */
+    public func delete<Q: QueryParams>(_ route: String, handler: @escaping (Q?, @escaping ResultClosure) -> Void) {
         deleteSafely(route, handler: handler)
     }
 
@@ -295,7 +357,7 @@ extension Router {
 
     // POST
     fileprivate func postSafely<I: Codable, O: Codable>(_ route: String, handler: @escaping CodableClosure<I, O>) {
-        registerPostRoute(route: route, id: false, inputtype: I.self, outputtype: O.self, handler: handler)
+        registerPostRoute(route: route, id: false, inputtype: I.self, outputtype: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
             guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
@@ -308,7 +370,7 @@ extension Router {
 
     // POST
     fileprivate func postSafelyWithId<I: Codable, Id: Identifier, O: Codable>(_ route: String, handler: @escaping CodableIdentifierClosure<I, Id, O>) {
-        registerPostRoute(route: route, id: true, inputtype: I.self, outputtype: O.self, handler: handler)
+        registerPostRoute(route: route, id: true, inputtype: I.self, outputtype: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
             guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
@@ -324,7 +386,7 @@ extension Router {
         if parameterIsPresent(in: route) {
             return
         }
-        registerPutRoute(route: route, id: true, inputtype: I.self, outputtype: O.self, handler: handler)
+        registerPutRoute(route: route, id: true, inputtype: I.self, outputtype: O.self)
         put(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PUT type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
@@ -342,7 +404,7 @@ extension Router {
         if parameterIsPresent(in: route) {
             return
         }
-        registerPatchRoute(route: route, id: true, inputtype: I.self, outputtype: O.self, handler: handler)
+        registerPatchRoute(route: route, id: true, inputtype: I.self, outputtype: O.self)
         patch(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PATCH type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
@@ -357,7 +419,7 @@ extension Router {
 
     // Get single
     fileprivate func getSafely<O: Codable>(_ route: String, handler: @escaping SimpleCodableClosure<O>) {
-        registerGetRoute(route: route, id: false, outputtype: O.self, handler: handler)
+        registerGetRoute(route: route, id: false, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (single no-identifier) type-safe request")
             handler(CodableHelpers.constructOutResultHandler(response: response, completion: next))
@@ -366,7 +428,7 @@ extension Router {
 
     // Get array
     fileprivate func getSafely<O: Codable>(_ route: String, handler: @escaping CodableArrayClosure<O>) {
-        registerGetRoute(route: route, id: false, outputtype: O.self, handler: handler)
+        registerGetRoute(route: route, id: false, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request")
             handler(CodableHelpers.constructOutResultHandler(response: response, completion: next))
@@ -375,7 +437,7 @@ extension Router {
     
     // Get array of (Id, Codable) tuples
     fileprivate func getSafely<Id: Identifier, O: Codable>(_ route: String, handler: @escaping IdentifierCodableArrayClosure<Id, O>) {
-        registerGetRoute(route: route, id: true, outputtype: O.self, handler: handler)
+        registerGetRoute(route: route, id: true, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural with identifier) type-safe request")
             handler(CodableHelpers.constructTupleArrayOutResultHandler(response: response, completion: next))
@@ -384,7 +446,7 @@ extension Router {
 
     // Get w/Query Parameters
     fileprivate func getSafely<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q, @escaping CodableArrayResultClosure<O>) -> Void) {
-        registerGetRoute(route: route, id: false, outputtype: O.self, handler: handler)
+        registerGetRoute(route: route, id: false, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -401,7 +463,7 @@ extension Router {
 
     // Get w/Query Parameters with CodableResultClosure
     fileprivate func getSafely<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q, @escaping CodableResultClosure<O>) -> Void) {
-        registerGetRoute(route: route, id: false, outputtype: O.self, handler: handler)
+        registerGetRoute(route: route, id: false, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (singular) type-safe request with Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -417,12 +479,54 @@ extension Router {
         }
     }
 
+    // Get w/Optional Query Parameters
+    fileprivate func getSafely<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q?, @escaping CodableArrayResultClosure<O>) -> Void) {
+        registerGetRoute(route: route, id: false, outputtype: O.self)
+        get(route) { request, response, next in
+            Log.verbose("Received GET (plural) type-safe request with Query Parameters")
+            Log.verbose("Query Parameters: \(request.queryParameters)")
+            do {
+                var query: Q? = nil
+                let queryParameters = request.queryParameters
+                if queryParameters.count > 0 {
+                    query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
+                }
+                handler(query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+            } catch {
+                // Http 400 error
+                response.status(.badRequest)
+                next()
+            }
+        }
+    }
+
+    // Get w/Optional Query Parameters with CodableResultClosure
+    fileprivate func getSafely<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q?, @escaping CodableResultClosure<O>) -> Void) {
+        registerGetRoute(route: route, id: false, outputtype: O.self)
+        get(route) { request, response, next in
+            Log.verbose("Received GET (singular) type-safe request with Query Parameters")
+            Log.verbose("Query Parameters: \(request.queryParameters)")
+            // Define result handler
+            do {
+                var query: Q? = nil
+                let queryParameters = request.queryParameters
+                if queryParameters.count > 0 {
+                    query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
+                }
+                handler(query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+            } catch {
+                // Http 400 error
+                response.status(.badRequest)
+                next()
+            }
+        }
+    }
     // GET single identified element
     fileprivate func getSafely<Id: Identifier, O: Codable>(_ route: String, handler: @escaping IdentifierSimpleCodableClosure<Id, O>) {
         if parameterIsPresent(in: route) {
             return
         }
-        registerGetRoute(route: route, id: true, outputtype: O.self, handler: handler)
+        registerGetRoute(route: route, id: true, outputtype: O.self)
         get(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received GET (singular with identifier) type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
@@ -435,7 +539,7 @@ extension Router {
 
     // DELETE
     fileprivate func deleteSafely(_ route: String, handler: @escaping NonCodableClosure) {
-        registerDeleteRoute(route: route, id: false, handler: handler)
+        registerDeleteRoute(route: route, id: false)
         delete(route) { request, response, next in
             Log.verbose("Received DELETE (plural) type-safe request")
             handler(CodableHelpers.constructResultHandler(response: response, completion: next))
@@ -447,7 +551,7 @@ extension Router {
         if parameterIsPresent(in: route) {
             return
         }
-        registerDeleteRoute(route: route, id: true, handler: handler)
+        registerDeleteRoute(route: route, id: true)
         delete(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received DELETE (singular) type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
@@ -459,13 +563,34 @@ extension Router {
     }
 
     // DELETE w/Query Parameters
-    fileprivate func deleteSafely<Q: Codable>(_ route: String, handler: @escaping (Q, @escaping ResultClosure) -> Void) {
-        registerDeleteRoute(route: route, id: false, handler: handler)
+    fileprivate func deleteSafely<Q: QueryParams>(_ route: String, handler: @escaping (Q, @escaping ResultClosure) -> Void) {
+        registerDeleteRoute(route: route, id: false)
         delete(route) { request, response, next in
             Log.verbose("Received DELETE type-safe request with Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
             do {
                 let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
+                handler(query, CodableHelpers.constructResultHandler(response: response, completion: next))
+            } catch {
+                // Http 400 error
+                response.status(.badRequest)
+                next()
+            }
+        }
+    }
+
+    // DELETE w/Optional Query Parameters
+    fileprivate func deleteSafely<Q: QueryParams>(_ route: String, handler: @escaping (Q?, @escaping ResultClosure) -> Void) {
+        registerDeleteRoute(route: route, id: false)
+        delete(route) { request, response, next in
+            Log.verbose("Received DELETE type-safe request with Query Parameters")
+            Log.verbose("Query Parameters: \(request.queryParameters)")
+            do {
+                var query: Q? = nil
+                let queryParameters = request.queryParameters
+                if queryParameters.count > 0 {
+                    query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
+                }
                 handler(query, CodableHelpers.constructResultHandler(response: response, completion: next))
             } catch {
                 // Http 400 error
