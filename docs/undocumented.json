@@ -2,7 +2,7 @@
   "warnings": [
     {
       "file": "/Users/travis/build/IBM-Swift/Kitura/Sources/Kitura/CodableRouter.swift",
-      "line": 498,
+      "line": 623,
       "symbol": "CodableHelpers",
       "symbol_kind": "source.lang.swift.decl.struct",
       "warning": "undocumented"

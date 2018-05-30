@@ -2330,6 +2330,142 @@ The handler contains the developer&rsquo;s logic, which determines the server&rs
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/s:6Kitura6RouterC3getySS_yxSg_ySayq_GSg_0A9Contracts12RequestErrorVSgtctc7handlertAH11QueryParamsRzs9DecodableR_s9EncodableR_r0_lF"></a>
+                    <a name="//apple_ref/swift/Method/get(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC3getySS_yxSg_ySayq_GSg_0A9Contracts12RequestErrorVSgtctc7handlertAH11QueryParamsRzs9DecodableR_s9EncodableR_r0_lF">get(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Setup a (QueryParams?, CodableArrayResultClosure) -&gt; Void on the provided route which will be invoked when a request comes to the server.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code><span class="c1">// MyQuery is a codable struct defining the supported query parameters</span>
+<span class="c1">// User is a struct object that conforms to Codable</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/query"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">query</span><span class="p">:</span> <span class="kt">MyQuery</span><span class="p">?,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">([</span><span class="kt">User</span><span class="p">]?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+
+   <span class="o">...</span>
+
+   <span class="nf">respondWith</span><span class="p">(</span><span class="n">users</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="k">get</span><span class="o">&lt;</span><span class="kt">Q</span><span class="p">:</span> <span class="kt">QueryParams</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">Q</span><span class="p">?,</span> <span class="kd">@escaping</span> <span class="kt">CodableArrayResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A String specifying the pattern that needs to be matched, in order for the handler to be invoked.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A (QueryParams?, CodableArrayResultClosure) -&gt; Void that gets invoked when a request comes to the server.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC3getySS_yxSg_yq_Sg_0A9Contracts12RequestErrorVSgtctc7handlertAG11QueryParamsRzs9DecodableR_s9EncodableR_r0_lF"></a>
+                    <a name="//apple_ref/swift/Method/get(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC3getySS_yxSg_yq_Sg_0A9Contracts12RequestErrorVSgtctc7handlertAG11QueryParamsRzs9DecodableR_s9EncodableR_r0_lF">get(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Setup a (QueryParams?, CodableResultClosure) -&gt; Void on the provided route which will be invoked when a request comes to the server.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code><span class="c1">// MyQuery is a codable struct defining the supported query parameters</span>
+<span class="c1">// User is a struct object that conforms to Codable</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/query"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">query</span><span class="p">:</span> <span class="kt">MyQuery</span><span class="p">?,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">User</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+
+<span class="o">...</span>
+
+<span class="nf">respondWith</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="k">get</span><span class="o">&lt;</span><span class="kt">Q</span><span class="p">:</span> <span class="kt">QueryParams</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">Q</span><span class="p">?,</span> <span class="kd">@escaping</span> <span class="kt">CodableResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A String specifying the pattern that needs to be matched, in order for the handler to be invoked.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A (QueryParams?, CodableResultClosure) -&gt; Void that gets invoked when a request comes to the server.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/s:6Kitura6RouterC6deleteySS_yy0A9Contracts12RequestErrorVSgcc7handlertF"></a>
                     <a name="//apple_ref/swift/Method/delete(_:handler:)" class="dashAnchor"></a>
                     <a class="token" href="#/s:6Kitura6RouterC6deleteySS_yy0A9Contracts12RequestErrorVSgcc7handlertF">delete(_:handler:)</a>
@@ -2517,6 +2653,73 @@ The handler contains the developer&rsquo;s logic, which determines the server&rs
                               <td>
                                 <div>
                                   <p>A (QueryParams, ResultClosure) -&gt; Void that gets invoked when a request comes to the server.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC6deleteySS_yxSg_y0A9Contracts12RequestErrorVSgctc7handlertAF11QueryParamsRzlF"></a>
+                    <a name="//apple_ref/swift/Method/delete(_:handler:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC6deleteySS_yxSg_y0A9Contracts12RequestErrorVSgctc7handlertAF11QueryParamsRzlF">delete(_:handler:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Setup a (QueryParams?, ResultClosure) -&gt; Void on the provided route which will be invoked when a request comes to the server.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code><span class="c1">// MyQuery is a codable struct defining the supported query parameters</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">delete</span><span class="p">(</span><span class="s">"/query"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">query</span><span class="p">:</span> <span class="kt">MyQuery</span><span class="p">?,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+
+<span class="o">...</span>
+
+<span class="nf">respondWith</span><span class="p">(</span><span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">delete</span><span class="o">&lt;</span><span class="kt">Q</span><span class="p">:</span> <span class="kt">QueryParams</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">Q</span><span class="p">?,</span> <span class="kd">@escaping</span> <span class="kt">ResultClosure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A String specifying the pattern that needs to be matched, in order for the handler to be invoked.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A (QueryParams?, ResultClosure) -&gt; Void that gets invoked when a request comes to the server.</p>
                                 </div>
                               </td>
                             </tr>
@@ -10865,9 +11068,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idxm10outputtypeyySayxGSg_0A9Contracts12RequestErrorVSgtcc7handlerts9DecodableRzs9EncodableRzlF"></a>
-                    <a name="//apple_ref/swift/Method/registerGetRoute(route:id:outputtype:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idxm10outputtypeyySayxGSg_0A9Contracts12RequestErrorVSgtcc7handlerts9DecodableRzs9EncodableRzlF">registerGetRoute(route:id:outputtype:handler:)</a>
+                    <a name="/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idxm10outputtypets9DecodableRzs9EncodableRzlF"></a>
+                    <a name="//apple_ref/swift/Method/registerGetRoute(route:id:outputtype:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idxm10outputtypets9DecodableRzs9EncodableRzlF">registerGetRoute(route:id:outputtype:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -10875,96 +11078,14 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Register GET route that is handled by a CodableArrayClosure.</p>
+                        <p>Register GET route</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerGetRoute</span><span class="o">&lt;</span><span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">CodableArrayClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>route</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The route to register.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>id</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>Boolean to indicate if id is used.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>outputtype</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The path where the document will be written.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>handler</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The CodableArrayClosure that handles this route.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idxm10outputtypeyyxSg_0A9Contracts12RequestErrorVSgtcc7handlerts9DecodableRzs9EncodableRzlF"></a>
-                    <a name="//apple_ref/swift/Method/registerGetRoute(route:id:outputtype:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idxm10outputtypeyyxSg_0A9Contracts12RequestErrorVSgtcc7handlerts9DecodableRzs9EncodableRzlF">registerGetRoute(route:id:outputtype:handler:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Register GET route that is handled by a SimpleCodableClosure.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerGetRoute</span><span class="o">&lt;</span><span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">SimpleCodableClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerGetRoute</span><span class="o">&lt;</span><span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -11008,18 +11129,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                                 </div>
                               </td>
                             </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>handler</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The SimpleCodableClosure that handles this route.</p>
-                                </div>
-                              </td>
-                            </tr>
                           </tbody>
                         </table>
                       </div>
@@ -11029,9 +11138,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idq_m10outputtypeyx_yq_Sg_0A9Contracts12RequestErrorVSgtctc7handlertAI10IdentifierRzs9DecodableR_s9EncodableR_r0_lF"></a>
-                    <a name="//apple_ref/swift/Method/registerGetRoute(route:id:outputtype:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idq_m10outputtypeyx_yq_Sg_0A9Contracts12RequestErrorVSgtctc7handlertAI10IdentifierRzs9DecodableR_s9EncodableR_r0_lF">registerGetRoute(route:id:outputtype:handler:)</a>
+                    <a name="/s:6Kitura6RouterC19registerDeleteRouteySS5route_Sb2idtF"></a>
+                    <a name="//apple_ref/swift/Method/registerDeleteRoute(route:id:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC19registerDeleteRouteySS5route_Sb2idtF">registerDeleteRoute(route:id:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -11039,14 +11148,14 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Register GET route that is handled by a IdentifierSimpleCodableClosure.</p>
+                        <p>Register DELETE route</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerGetRoute</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">IdentifierSimpleCodableClosure</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">,</span> <span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">registerDeleteRoute</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -11078,30 +11187,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                                 </div>
                               </td>
                             </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>outputtype</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The output object type.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>handler</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The IdentifierSimpleCodableClosure that handles this route.</p>
-                                </div>
-                              </td>
-                            </tr>
                           </tbody>
                         </table>
                       </div>
@@ -11111,559 +11196,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idq_m10outputtypeyySayx_q_tGSg_0A9Contracts12RequestErrorVSgtcc7handlertAJ10IdentifierRzs9DecodableR_s9EncodableR_r0_lF"></a>
-                    <a name="//apple_ref/swift/Method/registerGetRoute(route:id:outputtype:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idq_m10outputtypeyySayx_q_tGSg_0A9Contracts12RequestErrorVSgtcc7handlertAJ10IdentifierRzs9DecodableR_s9EncodableR_r0_lF">registerGetRoute(route:id:outputtype:handler:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Register GET route that is handled by a IdentifierCodableArrayClosure.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerGetRoute</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">IdentifierCodableArrayClosure</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">,</span> <span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>route</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The route to register.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>id</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>Boolean to indicate if id is used.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>outputtype</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The output object type.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>handler</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The IdentifierSimpleCodableClosure that handles this route.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idq_m10outputtypeyx_ySayq_GSg_0A9Contracts12RequestErrorVSgtctc7handlertAJ11QueryParamsRzs9DecodableR_s9EncodableR_r0_lF"></a>
-                    <a name="//apple_ref/swift/Method/registerGetRoute(route:id:outputtype:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idq_m10outputtypeyx_ySayq_GSg_0A9Contracts12RequestErrorVSgtctc7handlertAJ11QueryParamsRzs9DecodableR_s9EncodableR_r0_lF">registerGetRoute(route:id:outputtype:handler:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Register GET route that is handled by: (Q, @escaping CodableArrayResultClosure<O>) -&gt; Void .</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerGetRoute</span><span class="o">&lt;</span><span class="kt">Q</span><span class="p">:</span> <span class="kt">QueryParams</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">Q</span><span class="p">,</span> <span class="kd">@escaping</span> <span class="kt">CodableArrayResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>route</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The route to register.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>id</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>Boolean to indicate if id is used.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>outputtype</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The output object type.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>handler</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The IdentifierSimpleCodableClosure that handles this route.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idq_m10outputtypeyx_yq_Sg_0A9Contracts12RequestErrorVSgtctc7handlertAI11QueryParamsRzs9DecodableR_s9EncodableR_r0_lF"></a>
-                    <a name="//apple_ref/swift/Method/registerGetRoute(route:id:outputtype:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idq_m10outputtypeyx_yq_Sg_0A9Contracts12RequestErrorVSgtctc7handlertAI11QueryParamsRzs9DecodableR_s9EncodableR_r0_lF">registerGetRoute(route:id:outputtype:handler:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Register GET route that is handled by: (Q, @escaping CodableResultClosure<O>) -&gt; Void .</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerGetRoute</span><span class="o">&lt;</span><span class="kt">Q</span><span class="p">:</span> <span class="kt">QueryParams</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">Q</span><span class="p">,</span> <span class="kd">@escaping</span> <span class="kt">CodableResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>route</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The route to register.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>id</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>Boolean to indicate if id is used.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>outputtype</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The output object type.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>handler</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The IdentifierSimpleCodableClosure that handles this route.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura6RouterC19registerDeleteRouteySS5route_Sb2idyy0A9Contracts12RequestErrorVSgcc7handlertF"></a>
-                    <a name="//apple_ref/swift/Method/registerDeleteRoute(route:id:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC19registerDeleteRouteySS5route_Sb2idyy0A9Contracts12RequestErrorVSgcc7handlertF">registerDeleteRoute(route:id:handler:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Register DELETE route that is handled by a NonCodableClosure.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">registerDeleteRoute</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">NonCodableClosure</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>route</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The route to register.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>id</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>Boolean to indicate if id is used.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>handler</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The NonCodableClosure that handles this route.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura6RouterC19registerDeleteRouteySS5route_Sb2idyx_y0A9Contracts12RequestErrorVSgctc7handlertAG10IdentifierRzlF"></a>
-                    <a name="//apple_ref/swift/Method/registerDeleteRoute(route:id:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC19registerDeleteRouteySS5route_Sb2idyx_y0A9Contracts12RequestErrorVSgctc7handlertAG10IdentifierRzlF">registerDeleteRoute(route:id:handler:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Register DELETE route that is handled by a NonCodableClosure.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerDeleteRoute</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">IdentifierNonCodableClosure</span><span class="o">&lt;</span><span class="kt">Id</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>route</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The route to register.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>id</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>Boolean to indicate if id is used.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>handler</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The IdentifierNonCodableClosure that handles this route.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura6RouterC19registerDeleteRouteySS5route_Sb2idyx_y0A9Contracts12RequestErrorVSgctc7handlerts9DecodableRzs9EncodableRzlF"></a>
-                    <a name="//apple_ref/swift/Method/registerDeleteRoute(route:id:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC19registerDeleteRouteySS5route_Sb2idyx_y0A9Contracts12RequestErrorVSgctc7handlerts9DecodableRzs9EncodableRzlF">registerDeleteRoute(route:id:handler:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Register DELETE route that is handled by: (Q, @escaping ResultClosure) -&gt; Void</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerDeleteRoute</span><span class="o">&lt;</span><span class="kt">Q</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">Q</span><span class="p">,</span> <span class="kd">@escaping</span> <span class="kt">ResultClosure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>route</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The route to register.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>id</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>Boolean to indicate if id is used.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>handler</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The (Q, @escaping ResultClosure) -&gt; Void closure that handles this route.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura6RouterC17registerPostRouteySS5route_Sb2idxm9inputtypeq_m10outputtypeyx_yq_Sg_0A9Contracts12RequestErrorVSgtctc7handlerts9DecodableRzs9EncodableRzsAOR_sAPR_r0_lF"></a>
-                    <a name="//apple_ref/swift/Method/registerPostRoute(route:id:inputtype:outputtype:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC17registerPostRouteySS5route_Sb2idxm9inputtypeq_m10outputtypeyx_yq_Sg_0A9Contracts12RequestErrorVSgtctc7handlerts9DecodableRzs9EncodableRzsAOR_sAPR_r0_lF">registerPostRoute(route:id:inputtype:outputtype:handler:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Register POST route that is handled by a CodableClosure.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerPostRoute</span><span class="o">&lt;</span><span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">inputtype</span><span class="p">:</span> <span class="kt">I</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">CodableClosure</span><span class="o">&lt;</span><span class="kt">I</span><span class="p">,</span> <span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>route</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The route to register.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>id</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>Boolean to indicate if id is used.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>inputtype</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The input object type.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>outputtype</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The output object type.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>handler</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The CodableClosure that handles this route.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura6RouterC17registerPostRouteySS5route_Sb2idxm9inputtypeq0_m10outputtypeyx_yq_Sg_q0_Sg0A9Contracts12RequestErrorVSgtctc7handlerts9DecodableRzs9EncodableRzAK10IdentifierR_sAPR0_sAQR0_r1_lF"></a>
-                    <a name="//apple_ref/swift/Method/registerPostRoute(route:id:inputtype:outputtype:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC17registerPostRouteySS5route_Sb2idxm9inputtypeq0_m10outputtypeyx_yq_Sg_q0_Sg0A9Contracts12RequestErrorVSgtctc7handlerts9DecodableRzs9EncodableRzAK10IdentifierR_sAPR0_sAQR0_r1_lF">registerPostRoute(route:id:inputtype:outputtype:handler:)</a>
+                    <a name="/s:6Kitura6RouterC17registerPostRouteySS5route_Sb2idxm9inputtypeq_m10outputtypets9DecodableRzs9EncodableRzsAIR_sAJR_r0_lF"></a>
+                    <a name="//apple_ref/swift/Method/registerPostRoute(route:id:inputtype:outputtype:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC17registerPostRouteySS5route_Sb2idxm9inputtypeq_m10outputtypets9DecodableRzs9EncodableRzsAIR_sAJR_r0_lF">registerPostRoute(route:id:inputtype:outputtype:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -11678,7 +11213,7 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerPostRoute</span><span class="o">&lt;</span><span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">inputtype</span><span class="p">:</span> <span class="kt">I</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">CodableIdentifierClosure</span><span class="o">&lt;</span><span class="kt">I</span><span class="p">,</span> <span class="kt">Id</span><span class="p">,</span> <span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerPostRoute</span><span class="o">&lt;</span><span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">inputtype</span><span class="p">:</span> <span class="kt">I</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -11734,18 +11269,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                                 </div>
                               </td>
                             </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>handler</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The CodableIdentifierClosure that handles this route.</p>
-                                </div>
-                              </td>
-                            </tr>
                           </tbody>
                         </table>
                       </div>
@@ -11755,9 +11278,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC16registerPutRouteySS5route_Sb2idxm9inputtypeq0_m10outputtypeyq__xyq0_Sg_0A9Contracts12RequestErrorVSgtctc7handlerts9DecodableRzs9EncodableRzAJ10IdentifierR_sAOR0_sAPR0_r1_lF"></a>
-                    <a name="//apple_ref/swift/Method/registerPutRoute(route:id:inputtype:outputtype:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC16registerPutRouteySS5route_Sb2idxm9inputtypeq0_m10outputtypeyq__xyq0_Sg_0A9Contracts12RequestErrorVSgtctc7handlerts9DecodableRzs9EncodableRzAJ10IdentifierR_sAOR0_sAPR0_r1_lF">registerPutRoute(route:id:inputtype:outputtype:handler:)</a>
+                    <a name="/s:6Kitura6RouterC16registerPutRouteySS5route_Sb2idxm9inputtypeq_m10outputtypets9DecodableRzs9EncodableRzsAIR_sAJR_r0_lF"></a>
+                    <a name="//apple_ref/swift/Method/registerPutRoute(route:id:inputtype:outputtype:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC16registerPutRouteySS5route_Sb2idxm9inputtypeq_m10outputtypets9DecodableRzs9EncodableRzsAIR_sAJR_r0_lF">registerPutRoute(route:id:inputtype:outputtype:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -11772,7 +11295,7 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerPutRoute</span><span class="o">&lt;</span><span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">inputtype</span><span class="p">:</span> <span class="kt">I</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">IdentifierCodableClosure</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">,</span> <span class="kt">I</span><span class="p">,</span> <span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerPutRoute</span><span class="o">&lt;</span><span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">inputtype</span><span class="p">:</span> <span class="kt">I</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -11828,18 +11351,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                                 </div>
                               </td>
                             </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>handler</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The IdentifierCodableClosure that handles this route.</p>
-                                </div>
-                              </td>
-                            </tr>
                           </tbody>
                         </table>
                       </div>
@@ -11849,9 +11360,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC18registerPatchRouteySS5route_Sb2idxm9inputtypeq0_m10outputtypeyq__xyq0_Sg_0A9Contracts12RequestErrorVSgtctc7handlerts9DecodableRzs9EncodableRzAJ10IdentifierR_sAOR0_sAPR0_r1_lF"></a>
-                    <a name="//apple_ref/swift/Method/registerPatchRoute(route:id:inputtype:outputtype:handler:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC18registerPatchRouteySS5route_Sb2idxm9inputtypeq0_m10outputtypeyq__xyq0_Sg_0A9Contracts12RequestErrorVSgtctc7handlerts9DecodableRzs9EncodableRzAJ10IdentifierR_sAOR0_sAPR0_r1_lF">registerPatchRoute(route:id:inputtype:outputtype:handler:)</a>
+                    <a name="/s:6Kitura6RouterC18registerPatchRouteySS5route_Sb2idxm9inputtypeq_m10outputtypets9DecodableRzs9EncodableRzsAIR_sAJR_r0_lF"></a>
+                    <a name="//apple_ref/swift/Method/registerPatchRoute(route:id:inputtype:outputtype:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC18registerPatchRouteySS5route_Sb2idxm9inputtypeq_m10outputtypets9DecodableRzs9EncodableRzsAIR_sAJR_r0_lF">registerPatchRoute(route:id:inputtype:outputtype:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -11866,7 +11377,7 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerPatchRoute</span><span class="o">&lt;</span><span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">inputtype</span><span class="p">:</span> <span class="kt">I</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">IdentifierCodableClosure</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">,</span> <span class="kt">I</span><span class="p">,</span> <span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerPatchRoute</span><span class="o">&lt;</span><span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">inputtype</span><span class="p">:</span> <span class="kt">I</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -11919,18 +11430,6 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                               <td>
                                 <div>
                                   <p>The output object type.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>handler</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The IdentifierCodableClosure that handles this route.</p>
                                 </div>
                               </td>
                             </tr>
