@@ -48,7 +48,7 @@ class TestTypeSafeMiddleware: KituraTest {
             ("testSingleMiddlewarePut", testSingleMiddlewarePut),
             ("testMultipleMiddlewarePut", testMultipleMiddlewarePut),
             ("testSingleMiddlewarePatch", testSingleMiddlewarePatch),
-            ("testMultipleMiddlewarePatch", testMultipleMiddlewarePatch)
+            ("testMultipleMiddlewarePatch", testMultipleMiddlewarePatch),
         ]
     }
 
