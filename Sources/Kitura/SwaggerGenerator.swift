@@ -173,7 +173,7 @@ typealias SwaggerProperties = OrderedDictionary<String, SwaggerProperty>
 struct SwaggerModel {
     var type: String
     var properties: SwaggerProperties
-    var required: [String]?
+    var required: [String]
 }
 
 // Enum of supported Swift types.
@@ -508,7 +508,7 @@ struct SwaggerDocument: Encodable {
                 if modelInfo.required.count > 0 {
                     modelDefinition = SwaggerModel(type: "object", properties: modelInfo.properties, required: Array(modelInfo.required))
                 } else {
-                    modelDefinition = SwaggerModel(type: "object", properties: modelInfo.properties, required: nil)
+                    modelDefinition = SwaggerModel(type: "object", properties: modelInfo.properties, required: [])
                 }
                 self.definitions[model] = modelDefinition
             }
@@ -631,16 +631,20 @@ struct SwaggerDocument: Encodable {
         do {
             if let modelRef = self.definitions[model] {
                 contentStr.append("\(sp)\"type\": \"\(modelRef.type)\",\(nl)")
-                let encoder = JSONEncoder()
-                let encodedData = try encoder.encode(modelRef.required)
-                if let json = String(data: encodedData, encoding: .utf8) {
-                    contentStr.append("\(sp)\"required\": \(json),\(nl)")
-                    contentStr.append("\(sp)\"properties\": {\(nl)")
-                    contentStr.append(try JSONEncodeModelProperties(properties: modelRef.properties, pretty: pretty, depth: depth + 1))
-                    contentStr.append("\(sp)}\(nl)")
-                } else {
-                    throw SwaggerGenerationError.encodingError
+                if modelRef.required.count > 0 {
+                    let encoder = JSONEncoder()
+                    let encodedData = try encoder.encode(modelRef.required)
+                    if let json = String(data: encodedData, encoding: .utf8) {
+                        contentStr.append("\(sp)\"required\": \(json),\(nl)")
+                    } else {
+                        throw SwaggerGenerationError.encodingError
+                    }
                 }
+                contentStr.append("\(sp)\"properties\": {\(nl)")
+                contentStr.append(try JSONEncodeModelProperties(properties: modelRef.properties, pretty: pretty, depth: depth + 1))
+                contentStr.append("\(sp)}\(nl)")
+            } else {
+                throw SwaggerGenerationError.encodingError
             }
         } catch {
             throw SwaggerGenerationError.encodingError
