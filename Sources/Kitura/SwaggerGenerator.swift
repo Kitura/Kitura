@@ -636,6 +636,8 @@ struct SwaggerDocument: Encodable {
                     let encodedData = try encoder.encode(modelRef.required)
                     if let json = String(data: encodedData, encoding: .utf8) {
                         contentStr.append("\(sp)\"required\": \(json),\(nl)")
+                    } else {
+                        throw SwaggerGenerationError.encodingError
                     }
                 }
                 contentStr.append("\(sp)\"properties\": {\(nl)")
