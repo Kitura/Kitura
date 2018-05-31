@@ -763,20 +763,23 @@ extension Router {
     func registerRoute<O: Codable>(route: String, method: String, id: Bool, outputtype: O.Type, responsetypes: [SwaggerResponseType]) {
         Log.debug("Registering \(route) for \(method) method")
 
+        let t: TypeInfo
+        do {
+            t = try TypeDecoder.decode(outputtype)
+        } catch {
+            Log.debug("type decode error")
+            return
+        }
+
         // insert the path information into the document structure.
         swagger.add(path: route, method: method, id: id, inputtype: nil, responselist: responsetypes)
 
-        do {
-            // add model information into the document structure.
-            let t = try TypeDecoder.decode(outputtype)
-            swagger.add(model: t)
+        // add model information into the document structure.
+        swagger.add(model: t)
 
-            // now walk all the unprocessed models and ensure they are processed.
-            for t in Array(swagger.unprocessedTypes) {
-                swagger.add(model: t)
-            }
-        } catch {
-            Log.debug("type decode error")
+        // now walk all the unprocessed models and ensure they are processed.
+        for t in Array(swagger.unprocessedTypes) {
+            swagger.add(model: t)
         }
     }
 
@@ -791,25 +794,36 @@ extension Router {
     func registerRoute<I: Codable, O: Codable>(route: String, method: String, id: Bool, inputtype: I.Type, outputtype: O.Type, responsetypes: [SwaggerResponseType]) {
         Log.debug("Registering \(route) for \(method) method")
 
+        let t1: TypeInfo
+        do {
+            t1 = try TypeDecoder.decode(inputtype)
+        } catch {
+            Log.debug("failed to decode input type")
+            return
+        }
+
+        var t2: TypeInfo? = nil
+        if inputtype != outputtype {
+            do {
+                t2 = try TypeDecoder.decode(outputtype)
+            } catch {
+                Log.debug("failed to decode output type")
+                return
+            }
+        }
+
         // insert the path information into the document structure
         swagger.add(path: route, method: method, id: id, inputtype: "\(inputtype)", responselist: responsetypes)
 
-        do {
-            // add model information into the document structure.
-            var t = try TypeDecoder.decode(inputtype)
+        // add model information into the document structure.
+        swagger.add(model: t1)
+        if let t2 = t2 {
+            swagger.add(model: t2)
+        }
+
+        // now walk all the unprocessed models and ensure they are processed.
+        for t in Array(swagger.unprocessedTypes) {
             swagger.add(model: t)
-
-            if inputtype != outputtype {
-              t = try TypeDecoder.decode(outputtype)
-              swagger.add(model: t)
-            }
-
-            // now walk all the unprocessed models and ensure they are processed.
-            for t in Array(swagger.unprocessedTypes) {
-                swagger.add(model: t)
-            }
-        } catch {
-            Log.debug("type decode error")
         }
     }
 
