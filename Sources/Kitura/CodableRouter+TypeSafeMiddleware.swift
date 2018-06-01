@@ -51,7 +51,7 @@ extension Router {
      */
     public func get<T: TypeSafeMiddleware, O: Codable>(
         _ route: String,
-        handler: @escaping (T, CodableResultClosure<O>) -> Void
+        handler: @escaping (T, @escaping CodableResultClosure<O>) -> Void
     ) {
         registerGetRoute(route: route, id: false, outputtype: O.self)
         get(route) { request, response, next in
@@ -86,7 +86,7 @@ extension Router {
     */
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, O: Codable>(
         _ route: String,
-        handler: @escaping (T1, T2, CodableResultClosure<O>) -> Void
+        handler: @escaping (T1, T2, @escaping CodableResultClosure<O>) -> Void
     ) {
         registerGetRoute(route: route, id: false, outputtype: O.self)
         get(route) { request, response, next in
@@ -121,7 +121,7 @@ extension Router {
      */
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, O: Codable>(
         _ route: String,
-        handler: @escaping (T1, T2, T3, CodableResultClosure<O>) -> Void
+        handler: @escaping (T1, T2, T3, @escaping CodableResultClosure<O>) -> Void
     ) {
         registerGetRoute(route: route, id: false, outputtype: O.self)
         get(route) { request, response, next in
@@ -161,7 +161,7 @@ extension Router {
      */
     public func get<T: TypeSafeMiddleware, O: Codable>(
         _ route: String,
-        handler: @escaping (T, CodableArrayResultClosure<O>) -> Void
+        handler: @escaping (T, @escaping CodableArrayResultClosure<O>) -> Void
     ) {
         registerGetRoute(route: route, id: false, outputtype: O.self)
         get(route) { request, response, next in
@@ -196,7 +196,7 @@ extension Router {
      */
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, O: Codable>(
         _ route: String,
-        handler: @escaping (T1, T2, CodableArrayResultClosure<O>) -> Void
+        handler: @escaping (T1, T2, @escaping CodableArrayResultClosure<O>) -> Void
     ) {
         registerGetRoute(route: route, id: false, outputtype: O.self)
         get(route) { request, response, next in
@@ -231,7 +231,7 @@ extension Router {
      */
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, O: Codable>(
         _ route: String,
-        handler: @escaping (T1, T2, T3, CodableArrayResultClosure<O>) -> Void
+        handler: @escaping (T1, T2, T3, @escaping CodableArrayResultClosure<O>) -> Void
     ) {
         registerGetRoute(route: route, id: false, outputtype: O.self)
         get(route) { request, response, next in
@@ -271,7 +271,7 @@ extension Router {
      */
     public func get<T: TypeSafeMiddleware, Id: Identifier, O: Codable>(
         _ route: String,
-        handler: @escaping (T, Id, CodableResultClosure<O>) -> Void
+        handler: @escaping (T, Id, @escaping CodableResultClosure<O>) -> Void
     ) {
         if parameterIsPresent(in: route) {
             return
@@ -313,7 +313,7 @@ extension Router {
      */
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Id: Identifier, O: Codable>(
         _ route: String,
-        handler: @escaping (T1, T2, Id, CodableResultClosure<O>) -> Void
+        handler: @escaping (T1, T2, Id, @escaping CodableResultClosure<O>) -> Void
     ) {
         if parameterIsPresent(in: route) {
             return
@@ -355,7 +355,7 @@ extension Router {
      */
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Id: Identifier, O: Codable>(
         _ route: String,
-        handler: @escaping (T1, T2, T3, Id, CodableResultClosure<O>) -> Void
+        handler: @escaping (T1, T2, T3, Id, @escaping CodableResultClosure<O>) -> Void
     ) {
         if parameterIsPresent(in: route) {
             return
@@ -402,7 +402,7 @@ extension Router {
      */
     public func get<T: TypeSafeMiddleware, Id: Identifier, O: Codable>(
         _ route: String,
-        handler: @escaping (T, IdentifierCodableArrayResultClosure<Id, O>) -> Void
+        handler: @escaping (T, @escaping IdentifierCodableArrayResultClosure<Id, O>) -> Void
     ) {
         registerGetRoute(route: route, id: true, outputtype: O.self)
         get(route) { request, response, next in
@@ -437,7 +437,7 @@ extension Router {
      */
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Id: Identifier, O: Codable>(
         _ route: String,
-        handler: @escaping (T1, T2, IdentifierCodableArrayResultClosure<Id, O>) -> Void
+        handler: @escaping (T1, T2, @escaping IdentifierCodableArrayResultClosure<Id, O>) -> Void
     ) {
         registerGetRoute(route: route, id: true, outputtype: O.self)
         get(route) { request, response, next in
@@ -472,7 +472,7 @@ extension Router {
      */
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Id: Identifier, O: Codable>(
         _ route: String,
-        handler: @escaping (T1, T2, T3, IdentifierCodableArrayResultClosure<Id, O>) -> Void
+        handler: @escaping (T1, T2, T3, @escaping IdentifierCodableArrayResultClosure<Id, O>) -> Void
     ) {
         registerGetRoute(route: route, id: true, outputtype: O.self)
         get(route) { request, response, next in
@@ -798,7 +798,7 @@ extension Router {
      */
     public func delete<T: TypeSafeMiddleware>(
         _ route: String,
-        handler: @escaping (T, ResultClosure) -> Void
+        handler: @escaping (T, @escaping ResultClosure) -> Void
     ) {
         registerDeleteRoute(route: route, id: false)
         delete(route) { request, response, next in
@@ -831,7 +831,7 @@ extension Router {
      */
     public func delete<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware>(
         _ route: String,
-        handler: @escaping (T1, T2, ResultClosure) -> Void
+        handler: @escaping (T1, T2, @escaping ResultClosure) -> Void
     ) {
         registerDeleteRoute(route: route, id: false)
         delete(route) { request, response, next in
@@ -864,7 +864,7 @@ extension Router {
      */
     public func delete<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware>(
         _ route: String,
-        handler: @escaping (T1, T2, T3, ResultClosure) -> Void
+        handler: @escaping (T1, T2, T3, @escaping ResultClosure) -> Void
     ) {
         registerDeleteRoute(route: route, id: false)
         delete(route) { request, response, next in
@@ -902,7 +902,7 @@ extension Router {
      */
     public func delete<T: TypeSafeMiddleware, Id: Identifier>(
         _ route: String,
-        handler: @escaping (T, Id, ResultClosure) -> Void
+        handler: @escaping (T, Id, @escaping ResultClosure) -> Void
     ) {
         if parameterIsPresent(in: route) {
             return
@@ -942,7 +942,7 @@ extension Router {
      */
     public func delete<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Id: Identifier>(
         _ route: String,
-        handler: @escaping (T1, T2, Id, ResultClosure) -> Void
+        handler: @escaping (T1, T2, Id, @escaping ResultClosure) -> Void
     ) {
         if parameterIsPresent(in: route) {
             return
@@ -982,7 +982,7 @@ extension Router {
      */
     public func delete<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Id: Identifier>(
         _ route: String,
-        handler: @escaping (T1, T2, T3, Id, ResultClosure) -> Void
+        handler: @escaping (T1, T2, T3, Id, @escaping ResultClosure) -> Void
     ) {
         if parameterIsPresent(in: route) {
             return
@@ -1168,7 +1168,7 @@ extension Router {
      */
     public func post<T: TypeSafeMiddleware, I: Codable, O: Codable>(
         _ route: String,
-        handler: @escaping (T, I, CodableResultClosure<O>) -> Void
+        handler: @escaping (T, I, @escaping CodableResultClosure<O>) -> Void
     ) {
         registerPostRoute(route: route, id: false, inputtype: I.self, outputtype: O.self)
         post(route) { request, response, next in
@@ -1209,7 +1209,7 @@ extension Router {
      */
     public func post<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, I: Codable, O: Codable>(
         _ route: String,
-        handler: @escaping (T1, T2, I, CodableResultClosure<O>) -> Void
+        handler: @escaping (T1, T2, I, @escaping CodableResultClosure<O>) -> Void
     ) {
         registerPostRoute(route: route, id: false, inputtype: I.self, outputtype: O.self)
         post(route) { request, response, next in
@@ -1250,7 +1250,7 @@ extension Router {
      */
     public func post<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, I: Codable, O: Codable>(
         _ route: String,
-        handler: @escaping (T1, T2, T3, I, CodableResultClosure<O>) -> Void
+        handler: @escaping (T1, T2, T3, I, @escaping CodableResultClosure<O>) -> Void
     ) {
         registerPostRoute(route: route, id: false, inputtype: I.self, outputtype: O.self)
         post(route) { request, response, next in
@@ -1293,7 +1293,7 @@ extension Router {
      */
     public func post<T: TypeSafeMiddleware, I: Codable, Id: Identifier, O: Codable>(
         _ route: String,
-        handler: @escaping (T, I, IdentifierCodableResultClosure<Id, O>) -> Void
+        handler: @escaping (T, I, @escaping IdentifierCodableResultClosure<Id, O>) -> Void
     ) {
         registerPostRoute(route: route, id: true, inputtype: I.self, outputtype: O.self)
         post(route) { request, response, next in
@@ -1331,7 +1331,7 @@ extension Router {
      */
     public func post<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, I: Codable, Id: Identifier, O: Codable>(
         _ route: String,
-        handler: @escaping (T1, T2, I, IdentifierCodableResultClosure<Id, O>) -> Void
+        handler: @escaping (T1, T2, I, @escaping IdentifierCodableResultClosure<Id, O>) -> Void
     ) {
         registerPostRoute(route: route, id: true, inputtype: I.self, outputtype: O.self)
         post(route) { request, response, next in
@@ -1369,7 +1369,7 @@ extension Router {
      */
     public func post<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, I: Codable, Id: Identifier, O: Codable>(
         _ route: String,
-        handler: @escaping (T1, T2, T3, I, IdentifierCodableResultClosure<Id, O>) -> Void
+        handler: @escaping (T1, T2, T3, I, @escaping IdentifierCodableResultClosure<Id, O>) -> Void
     ) {
         registerPostRoute(route: route, id: true, inputtype: I.self, outputtype: O.self)
         post(route) { request, response, next in
@@ -1410,7 +1410,7 @@ extension Router {
      */
     public func put<T: TypeSafeMiddleware, Id: Identifier, I: Codable, O: Codable>(
         _ route: String,
-        handler: @escaping (T, Id, I, CodableResultClosure<O>) -> Void
+        handler: @escaping (T, Id, I, @escaping CodableResultClosure<O>) -> Void
     ) {
         if parameterIsPresent(in: route) {
             return
@@ -1452,7 +1452,7 @@ extension Router {
      */
     public func put<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Id: Identifier, I: Codable, O: Codable>(
         _ route: String,
-        handler: @escaping (T1, T2, Id, I, CodableResultClosure<O>) -> Void
+        handler: @escaping (T1, T2, Id, I, @escaping CodableResultClosure<O>) -> Void
     ) {
         if parameterIsPresent(in: route) {
             return
@@ -1494,7 +1494,7 @@ extension Router {
      */
     public func put<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Id: Identifier, I: Codable, O: Codable>(
         _ route: String,
-        handler: @escaping (T1, T2, T3, Id, I, CodableResultClosure<O>) -> Void
+        handler: @escaping (T1, T2, T3, Id, I, @escaping CodableResultClosure<O>) -> Void
     ) {
         if parameterIsPresent(in: route) {
             return
@@ -1546,7 +1546,7 @@ extension Router {
      */
     public func patch<T: TypeSafeMiddleware, Id: Identifier, I: Codable, O: Codable>(
         _ route: String,
-        handler: @escaping (T, Id, I, CodableResultClosure<O>) -> Void
+        handler: @escaping (T, Id, I, @escaping CodableResultClosure<O>) -> Void
     ) {
         if parameterIsPresent(in: route) {
             return
@@ -1594,7 +1594,7 @@ extension Router {
      */
     public func patch<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Id: Identifier, I: Codable, O: Codable>(
         _ route: String,
-        handler: @escaping (T1, T2, Id, I, CodableResultClosure<O>) -> Void
+        handler: @escaping (T1, T2, Id, I, @escaping CodableResultClosure<O>) -> Void
     ) {
         if parameterIsPresent(in: route) {
             return
@@ -1642,7 +1642,7 @@ extension Router {
      */
     public func patch<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Id: Identifier, I: Codable, O: Codable>(
         _ route: String,
-        handler: @escaping (T1, T2, T3, Id, I, CodableResultClosure<O>) -> Void
+        handler: @escaping (T1, T2, T3, Id, I, @escaping CodableResultClosure<O>) -> Void
     ) {
         if parameterIsPresent(in: route) {
             return
