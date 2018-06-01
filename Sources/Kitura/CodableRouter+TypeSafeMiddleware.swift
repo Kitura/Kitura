@@ -53,6 +53,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T, CodableResultClosure<O>) -> Void
     ) {
+        registerGetRoute(route: route, id: false, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET(Single) typed middleware request")
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
@@ -87,6 +88,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, CodableResultClosure<O>) -> Void
     ) {
+        registerGetRoute(route: route, id: false, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET(Single) typed middleware request")
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
@@ -121,6 +123,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, T3, CodableResultClosure<O>) -> Void
     ) {
+        registerGetRoute(route: route, id: false, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET(Single) typed middleware request")
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
@@ -160,6 +163,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T, CodableArrayResultClosure<O>) -> Void
     ) {
+        registerGetRoute(route: route, id: false, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET(Array) typed middleware request")
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
@@ -194,6 +198,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, CodableArrayResultClosure<O>) -> Void
     ) {
+        registerGetRoute(route: route, id: false, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET(Array) typed middleware request")
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
@@ -228,6 +233,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, T3, CodableArrayResultClosure<O>) -> Void
     ) {
+        registerGetRoute(route: route, id: false, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET(Array) typed middleware request")
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
@@ -270,6 +276,7 @@ extension Router {
         if parameterIsPresent(in: route) {
             return
         }
+        registerGetRoute(route: route, id: true, outputtype: O.self)
         get(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received GET (singular with identifier and middleware) type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
@@ -311,6 +318,7 @@ extension Router {
         if parameterIsPresent(in: route) {
             return
         }
+        registerGetRoute(route: route, id: true, outputtype: O.self)
         get(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received GET (singular with identifier and middleware) type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
@@ -352,6 +360,7 @@ extension Router {
         if parameterIsPresent(in: route) {
             return
         }
+        registerGetRoute(route: route, id: true, outputtype: O.self)
         get(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received GET (singular with identifier and middleware) type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
@@ -395,6 +404,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T, IdentifierCodableArrayResultClosure<Id, O>) -> Void
     ) {
+        registerGetRoute(route: route, id: true, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET(Array) with identifier typed middleware request")
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
@@ -429,6 +439,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, IdentifierCodableArrayResultClosure<Id, O>) -> Void
     ) {
+        registerGetRoute(route: route, id: true, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET(Array) with identifier typed middleware request")
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
@@ -463,6 +474,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, T3, IdentifierCodableArrayResultClosure<Id, O>) -> Void
     ) {
+        registerGetRoute(route: route, id: true, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET(Array) with identifier typed middleware request")
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
@@ -505,6 +517,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T, Q, @escaping CodableResultClosure<O>) -> Void
     ) {
+        registerGetRoute(route: route, id: false, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (singular) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -551,6 +564,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, Q, @escaping CodableResultClosure<O>) -> Void
     ) {
+        registerGetRoute(route: route, id: false, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (singular) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -597,6 +611,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, T3, Q, @escaping CodableResultClosure<O>) -> Void
     ) {
+        registerGetRoute(route: route, id: false, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (singular) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -648,6 +663,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T, Q, @escaping CodableArrayResultClosure<O>) -> Void
     ) {
+        registerGetRoute(route: route, id: false, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -693,6 +709,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, Q, @escaping CodableArrayResultClosure<O>) -> Void
     ) {
+        registerGetRoute(route: route, id: false, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -738,6 +755,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, T3, Q, @escaping CodableArrayResultClosure<O>) -> Void
     ) {
+        registerGetRoute(route: route, id: false, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -782,6 +800,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T, ResultClosure) -> Void
     ) {
+        registerDeleteRoute(route: route, id: false)
         delete(route) { request, response, next in
             Log.verbose("Received DELETE (plural with middleware) type-safe request")
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
@@ -814,6 +833,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, ResultClosure) -> Void
     ) {
+        registerDeleteRoute(route: route, id: false)
         delete(route) { request, response, next in
             Log.verbose("Received DELETE (plural with middleware) type-safe request")
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
@@ -846,6 +866,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, T3, ResultClosure) -> Void
     ) {
+        registerDeleteRoute(route: route, id: false)
         delete(route) { request, response, next in
             Log.verbose("Received DELETE (plural with middleware) type-safe request")
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
@@ -886,6 +907,7 @@ extension Router {
         if parameterIsPresent(in: route) {
             return
         }
+        registerDeleteRoute(route: route, id: true)
         delete(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received DELETE (singular with middleware) type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
@@ -925,6 +947,7 @@ extension Router {
         if parameterIsPresent(in: route) {
             return
         }
+        registerDeleteRoute(route: route, id: true)
         delete(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received DELETE (singular with middleware) type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
@@ -964,6 +987,7 @@ extension Router {
         if parameterIsPresent(in: route) {
             return
         }
+        registerDeleteRoute(route: route, id: true)
         delete(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received DELETE (singular with middleware) type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
@@ -1008,6 +1032,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T, Q, @escaping ResultClosure) -> Void
     ) {
+        registerDeleteRoute(route: route, id: false)
         delete(route) { request, response, next in
             Log.verbose("Received DELETE type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -1051,6 +1076,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, Q, @escaping ResultClosure) -> Void
     ) {
+        registerDeleteRoute(route: route, id: false)
         delete(route) { request, response, next in
             Log.verbose("Received DELETE type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -1094,6 +1120,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, T3, Q, @escaping ResultClosure) -> Void
     ) {
+        registerDeleteRoute(route: route, id: false)
         delete(route) { request, response, next in
             Log.verbose("Received DELETE type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -1143,6 +1170,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T, I, CodableResultClosure<O>) -> Void
     ) {
+        registerPostRoute(route: route, id: false, inputtype: I.self, outputtype: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
             guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
@@ -1183,6 +1211,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, I, CodableResultClosure<O>) -> Void
     ) {
+        registerPostRoute(route: route, id: false, inputtype: I.self, outputtype: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
             guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
@@ -1223,6 +1252,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, T3, I, CodableResultClosure<O>) -> Void
     ) {
+        registerPostRoute(route: route, id: false, inputtype: I.self, outputtype: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
             guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
@@ -1265,6 +1295,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T, I, IdentifierCodableResultClosure<Id, O>) -> Void
     ) {
+        registerPostRoute(route: route, id: true, inputtype: I.self, outputtype: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
             guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
@@ -1302,6 +1333,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, I, IdentifierCodableResultClosure<Id, O>) -> Void
     ) {
+        registerPostRoute(route: route, id: true, inputtype: I.self, outputtype: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
             guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
@@ -1339,6 +1371,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, T3, I, IdentifierCodableResultClosure<Id, O>) -> Void
     ) {
+        registerPostRoute(route: route, id: true, inputtype: I.self, outputtype: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
             guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
@@ -1382,6 +1415,7 @@ extension Router {
         if parameterIsPresent(in: route) {
             return
         }
+        registerPutRoute(route: route, id: true, inputtype: I.self, outputtype: O.self)
         put(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PUT type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
@@ -1423,6 +1457,7 @@ extension Router {
         if parameterIsPresent(in: route) {
             return
         }
+        registerPutRoute(route: route, id: true, inputtype: I.self, outputtype: O.self)
         put(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PUT type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
@@ -1464,6 +1499,7 @@ extension Router {
         if parameterIsPresent(in: route) {
             return
         }
+        registerPutRoute(route: route, id: true, inputtype: I.self, outputtype: O.self)
         put(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PUT type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
@@ -1515,6 +1551,7 @@ extension Router {
         if parameterIsPresent(in: route) {
             return
         }
+        registerPatchRoute(route: route, id: true, inputtype: I.self, outputtype: O.self)
         patch(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PATCH type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
@@ -1562,6 +1599,7 @@ extension Router {
         if parameterIsPresent(in: route) {
             return
         }
+        registerPatchRoute(route: route, id: true, inputtype: I.self, outputtype: O.self)
         patch(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PATCH type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
@@ -1609,6 +1647,7 @@ extension Router {
         if parameterIsPresent(in: route) {
             return
         }
+        registerPatchRoute(route: route, id: true, inputtype: I.self, outputtype: O.self)
         patch(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PATCH type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),

@@ -220,7 +220,7 @@ class TestSwaggerGeneration: KituraTest {
                         XCTAssertTrue(required.contains("answer"), "model Apple: required is incorrect")
                         XCTAssertTrue(required.count == 1, "model Apple: required.count is incorrect")
                     } else {
-                        XCTFail("model Apple: type is missing")
+                        XCTFail("model Apple: required is missing")
                     }
 
                     if let properties = model["properties"] as? [String: Any] {
@@ -261,6 +261,40 @@ class TestSwaggerGeneration: KituraTest {
                     } else {
                         XCTFail("model Apple: properties is missing")
                     }
+                }
+            } else {
+                XCTFail("definitions section is missing")
+            }
+        } else {
+            XCTFail("got unexpected nil from router.swaggerJSON")
+        }
+    }
+
+    func uglifruitDefinitionsAssertions(json: String?) {
+        if let jsonString = json {
+            guard let data = jsonString.data(using: String.Encoding.utf8, allowLossyConversion: false) else {
+                XCTFail("got unexpected nil from router.swaggerJSON")
+                return
+            }
+            guard let json = try? JSONSerialization.jsonObject(with: data, options: []) else {
+                XCTFail("got unexpected nil from router.swaggerJSON")
+                return
+            }
+            guard let dict = json as? [String: Any] else {
+                XCTFail("got unexpected nil from router.swaggerJSON")
+                return
+            }
+
+            // test for definitions section
+            if let definitions = dict["definitions"] as? [String: Any] {
+                if let model = definitions["Uglifruit"] as? [String: Any] {
+                    if let type = model["type"] as? String {
+                        XCTAssertTrue(type == "object", "model Uglifruit: type is incorrect")
+                    } else {
+                        XCTFail("model Uglifruit: type is missing")
+                    }
+
+                    XCTAssertTrue(model["required"] == nil, "model uglifruit: required should not be here")
                 }
             } else {
                 XCTFail("definitions section is missing")
@@ -623,6 +657,7 @@ class TestSwaggerGeneration: KituraTest {
         sectionsAssertions(json: router.swaggerJSON)
         appleDefinitionsAssertions(json: router.swaggerJSON)
         pearDefinitionsAssertions(json: router.swaggerJSON)
+        uglifruitDefinitionsAssertions(json: router.swaggerJSON)
         pathAssertions(json: router.swaggerJSON)
         pathContentAssertions1(json: router.swaggerJSON)
         pathContentAssertions2(json: router.swaggerJSON)

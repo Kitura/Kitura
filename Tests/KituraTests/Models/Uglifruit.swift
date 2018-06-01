@@ -15,8 +15,8 @@
  */
 public struct Uglifruit: Codable {
 
-    let auth: String
-    let colour: String
-    let flavour: String
-    let test: Pear
+    let auth: String?
+    let colour: String?
+    let flavour: String?
+    let test: Pear?
 }
