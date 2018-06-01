@@ -57,6 +57,9 @@
                 <a class="nav-group-task-link" href="../Classes/BodyParser.html">BodyParser</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/BodyParserMultiValue.html">BodyParserMultiValue</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ContentType.html">ContentType</a>
               </li>
               <li class="nav-group-task">
@@ -106,6 +109,14 @@
             </ul>
           </li>
           <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/DecodingError.html">DecodingError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
             <a class="nav-group-name-link" href="../Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
@@ -113,6 +124,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/RouterMiddleware.html">RouterMiddleware</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a>
               </li>
             </ul>
           </li>
@@ -147,6 +161,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura16LifecycleHandlera">LifecycleHandler</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura13RouterHandlera">RouterHandler</a>
@@ -283,6 +300,34 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">statusCode</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura14HTTPStatusCodea">HTTPStatusCode</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura14RouterResponseC8userInfos10DictionaryVySSypGvp"></a>
+                    <a name="//apple_ref/swift/Property/userInfo" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC8userInfos10DictionaryVySSypGvp">userInfo</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>User info.
+Can be used by middlewares and handlers to store and pass information on to subsequent handlers.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">userInfo</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">[:]</span></code></pre>
 
                         </div>
                       </div>
@@ -801,6 +846,192 @@
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/s:6Kitura14RouterResponseC6renderACSS_x4withSSSg6forKey0A14TemplateEngine16RenderingOptions_p7optionstKs9EncodableRzlF"></a>
+                    <a name="//apple_ref/swift/Method/render(_:with:forKey:options:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC6renderACSS_x4withSSSg6forKey0A14TemplateEngine16RenderingOptions_p7optionstKs9EncodableRzlF">render(_:with:forKey:options:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Render a resource using Router&rsquo;s template engine.</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    TemplatingError if no file extension was specified or there is no template engine defined for the extension.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">render</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt">Encodable</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">resource</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="n">with</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">T</span><span class="p">,</span> <span class="n">forKey</span> <span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
+                   <span class="nv">options</span><span class="p">:</span> <span class="kt">RenderingOptions</span> <span class="o">=</span> <span class="kt">NullRenderingOptions</span><span class="p">())</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>resource</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>the resource name without extension.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>with</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>a value that conforms to Encodable that is used to generate the content.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>forKey</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A value used to match the Encodable value to the correct variable in a template file.
+                            The <code>forKey</code> value should match the desired variable in the template file.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>options</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>rendering options, specific per template engine</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>this RouterResponse.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura14RouterResponseC6renderACSS_Sayx_q_tG4withSS6forKey0A14TemplateEngine16RenderingOptions_p7optionstK0A9Contracts10IdentifierRzs9EncodableR_r0_lF"></a>
+                    <a name="//apple_ref/swift/Method/render(_:with:forKey:options:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC6renderACSS_Sayx_q_tG4withSS6forKey0A14TemplateEngine16RenderingOptions_p7optionstK0A9Contracts10IdentifierRzs9EncodableR_r0_lF">render(_:with:forKey:options:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Render a resource using Router&rsquo;s template engine.</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    TemplatingError if no file extension was specified or there is no template engine defined for the extension.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">render</span><span class="o">&lt;</span><span class="kt">I</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">T</span><span class="p">:</span> <span class="kt">Encodable</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">resource</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="n">with</span> <span class="nv">values</span><span class="p">:</span> <span class="p">[(</span><span class="kt">I</span><span class="p">,</span> <span class="kt">T</span><span class="p">)],</span> <span class="n">forKey</span> <span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+                               <span class="nv">options</span><span class="p">:</span> <span class="kt">RenderingOptions</span> <span class="o">=</span> <span class="kt">NullRenderingOptions</span><span class="p">())</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>resource</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>the resource name without extension.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>with</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>an array of tuples of type (Identifier, Encodable). The Encodable values are used to generate the content.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>forKey</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A value used to match the Encodable values to the correct variable in a template file.
+                            The <code>forKey</code> value should match the desired variable in the template file.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>options</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>rendering options, specific per template engine</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>this RouterResponse.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/s:6Kitura14RouterResponseC4sendySS8download_tKF"></a>
                     <a name="//apple_ref/swift/Method/send(download:)" class="dashAnchor"></a>
                     <a class="token" href="#/s:6Kitura14RouterResponseC4sendySS8download_tKF">send(download:)</a>
@@ -1188,7 +1419,7 @@ parameter whose value contains the JSONP callback function.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-04-17)</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-06-01)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

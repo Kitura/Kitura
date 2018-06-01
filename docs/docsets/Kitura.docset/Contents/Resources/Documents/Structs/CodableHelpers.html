@@ -57,6 +57,9 @@
                 <a class="nav-group-task-link" href="../Classes/BodyParser.html">BodyParser</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/BodyParserMultiValue.html">BodyParserMultiValue</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ContentType.html">ContentType</a>
               </li>
               <li class="nav-group-task">
@@ -106,6 +109,14 @@
             </ul>
           </li>
           <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/DecodingError.html">DecodingError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
             <a class="nav-group-name-link" href="../Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
@@ -113,6 +124,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/RouterMiddleware.html">RouterMiddleware</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a>
               </li>
             </ul>
           </li>
@@ -147,6 +161,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura16LifecycleHandlera">LifecycleHandler</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura13RouterHandlera">RouterHandler</a>
@@ -301,7 +318,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">httpStatusCode</span><span class="p">(</span><span class="n">from</span> <span class="nv">error</span><span class="p">:</span> <span class="kt">RequestError</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura14HTTPStatusCodea">HTTPStatusCode</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">httpStatusCode</span><span class="p">(</span><span class="n">from</span> <span class="nv">error</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura14HTTPStatusCodea">HTTPStatusCode</a></span></code></pre>
 
                         </div>
                       </div>
@@ -346,7 +363,7 @@
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Create a closure that can be called by a codable route handler that
- provides only an optional <code>RequestError</code></p>
+ provides only an optional <code><a href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a></code></p>
 <div class="aside aside-note">
     <p class="aside-title">Note</p>
     <p>This function is intended for use by the codable router or extensions
@@ -429,7 +446,7 @@
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Create a closure that can be called by a codable route handler that
- provides an optional <code>Codable</code> body and an optional <code>RequestError</code></p>
+ provides an optional <code>Codable</code> body and an optional <code><a href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a></code></p>
 <div class="aside aside-note">
     <p class="aside-title">Note</p>
     <p>This function is intended for use by the codable router or extensions
@@ -525,7 +542,7 @@
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Create a closure that can be called by a codable route handler that
- provides an array of tuples of (Identifier, Codable) and an optional <code>RequestError</code></p>
+ provides an array of tuples of (Identifier, Codable) and an optional <code><a href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a></code></p>
 <div class="aside aside-note">
     <p class="aside-title">Note</p>
     <p>This function is intended for use by the codable router or extensions
@@ -621,7 +638,7 @@
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Create a closure that can be called by a codable route handler that
- provides an optional <code>Identifier</code> id, optional <code>Codable</code> body and an optional <code>RequestError</code></p>
+ provides an optional <code>Identifier</code> id, optional <code>Codable</code> body and an optional <code><a href="../Typealiases.html#/s:6Kitura12RequestErrora">RequestError</a></code></p>
 <div class="aside aside-note">
     <p class="aside-title">Note</p>
     <p>This function is intended for use by the codable router or extensions
@@ -880,7 +897,7 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-04-17)</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-06-01)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

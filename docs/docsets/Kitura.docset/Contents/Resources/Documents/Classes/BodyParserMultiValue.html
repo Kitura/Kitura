@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>RouterMiddleware Protocol Reference</title>
+    <title>BodyParserMultiValue Class Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Protocol/RouterMiddleware" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Class/BodyParserMultiValue" class="dashAnchor"></a>
 
-    <a title="RouterMiddleware Protocol Reference"></a>
+    <a title="BodyParserMultiValue Class Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -44,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html">Kitura Reference</a>
       <img class="carat" src="../img/carat.png" />
-      RouterMiddleware Protocol Reference
+      BodyParserMultiValue Class Reference
     </p>
 
     <div class="content-wrapper">
@@ -182,17 +182,14 @@
 
         <section class="section">
           <div class="section-content">
-            <h1>RouterMiddleware</h1>
+            <h1>BodyParserMultiValue</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">RouterMiddleware</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">BodyParserMultiValue</span><span class="p">:</span> <span class="kt"><a href="../Classes/BodyParser.html">BodyParser</a></span></code></pre>
 
                 </div>
               </div>
-            <p>Defines the protocol which all Kitura compliant middleware must implement.</p>
-
-<p>Middleware are class or struct based request handlers. They are often generic
-in nature and not tied to a specific request.</p>
+            <p>Undocumented</p>
 
           </div>
         </section>
@@ -204,9 +201,9 @@ in nature and not tied to a specific request.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura16RouterMiddlewareP6handleyAA0B7RequestC7request_AA0B8ResponseC8responseyyc4nexttKF"></a>
+                    <a name="/s:6Kitura20BodyParserMultiValueC6handleyAA13RouterRequestC7request_AA0G8ResponseC8responseyyc4nexttKF"></a>
                     <a name="//apple_ref/swift/Method/handle(request:response:next:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura16RouterMiddlewareP6handleyAA0B7RequestC7request_AA0B8ResponseC8responseyyc4nexttKF">handle(request:response:next:)</a>
+                    <a class="token" href="#/s:6Kitura20BodyParserMultiValueC6handleyAA13RouterRequestC7request_AA0G8ResponseC8responseyyc4nexttKF">handle(request:response:next:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -214,21 +211,14 @@ in nature and not tied to a specific request.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Handle an incoming HTTP request.</p>
-<div class="aside aside-throws">
-    <p class="aside-title">Throws</p>
-    <p>Any <code>ErrorType</code>. If an error is thrown, processing of the request
-     is stopped, the error handlers, if any are defined, will be invoked,
-     and the user will get a response with a status code of 500.</p>
-
-</div>
+                        <p>This function is called by the Kitura <code><a href="../Classes/Router.html">Router</a></code> when an incoming request matches the route provided when the BodyParser was registered with the <code><a href="../Classes/Router.html">Router</a></code>. It performs the parsing of the body content using <code>parse(_:contentType)</code>. We don&rsquo;t expect a user to call this function directly.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">handle</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterRequest.html">RouterRequest</a></span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterResponse.html">RouterResponse</a></span><span class="p">,</span> <span class="nv">next</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">override</span> <span class="kd">public</span> <span class="kd">func</span> <span class="nf">handle</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterRequest.html">RouterRequest</a></span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterResponse.html">RouterResponse</a></span><span class="p">,</span> <span class="nv">next</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span></code></pre>
 
                         </div>
                       </div>

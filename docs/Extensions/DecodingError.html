@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>RouterMiddleware Protocol Reference</title>
+    <title>DecodingError Extension Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Protocol/RouterMiddleware" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Extension/DecodingError" class="dashAnchor"></a>
 
-    <a title="RouterMiddleware Protocol Reference"></a>
+    <a title="DecodingError Extension Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -44,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html">Kitura Reference</a>
       <img class="carat" src="../img/carat.png" />
-      RouterMiddleware Protocol Reference
+      DecodingError Extension Reference
     </p>
 
     <div class="content-wrapper">
@@ -182,17 +182,14 @@
 
         <section class="section">
           <div class="section-content">
-            <h1>RouterMiddleware</h1>
+            <h1>DecodingError</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">RouterMiddleware</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">DecodingError</span> <span class="p">:</span> <span class="kt">Error</span></code></pre>
 
                 </div>
               </div>
-            <p>Defines the protocol which all Kitura compliant middleware must implement.</p>
-
-<p>Middleware are class or struct based request handlers. They are often generic
-in nature and not tied to a specific request.</p>
+            <p>DecodingError Extension to print human readable error messages for clients</p>
 
           </div>
         </section>
@@ -204,9 +201,9 @@ in nature and not tied to a specific request.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura16RouterMiddlewareP6handleyAA0B7RequestC7request_AA0B8ResponseC8responseyyc4nexttKF"></a>
-                    <a name="//apple_ref/swift/Method/handle(request:response:next:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura16RouterMiddlewareP6handleyAA0B7RequestC7request_AA0B8ResponseC8responseyyc4nexttKF">handle(request:response:next:)</a>
+                    <a name="/s:s13DecodingErrorO6KituraE24humanReadableDescriptionSSvp"></a>
+                    <a name="//apple_ref/swift/Property/humanReadableDescription" class="dashAnchor"></a>
+                    <a class="token" href="#/s:s13DecodingErrorO6KituraE24humanReadableDescriptionSSvp">humanReadableDescription</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -214,69 +211,16 @@ in nature and not tied to a specific request.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Handle an incoming HTTP request.</p>
-<div class="aside aside-throws">
-    <p class="aside-title">Throws</p>
-    <p>Any <code>ErrorType</code>. If an error is thrown, processing of the request
-     is stopped, the error handlers, if any are defined, will be invoked,
-     and the user will get a response with a status code of 500.</p>
-
-</div>
+                        <p>Returns a human readable error description from a <code>DecodingError</code>, useful for returning back to clients to help them debug their malformed JSON objects.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">handle</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterRequest.html">RouterRequest</a></span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt"><a href="../Classes/RouterResponse.html">RouterResponse</a></span><span class="p">,</span> <span class="nv">next</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">humanReadableDescription</span><span class="p">:</span> <span class="kt">String</span></code></pre>
 
                         </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>request</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The <code><a href="../Classes/RouterRequest.html">RouterRequest</a></code> object used to work with the incoming
-                HTTP request.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>response</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The <code><a href="../Classes/RouterResponse.html">RouterResponse</a></code> object used to respond to the
-                HTTP request.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>next</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The closure called to invoke the next handler or middleware
-                associated with the request.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
                       </div>
                     </section>
                   </div>
