@@ -111,7 +111,11 @@ class TestSwaggerGeneration: KituraTest {
         completion(nil, nil, nil)
     }
 
-    func putSingleAppleHandler(id: Int, posted: Apple, completion: (Apple?, RequestError?) -> Void ) -> Void {
+    func putSingleAppleHandlerStringId(id: String, posted: Apple, completion: (Apple?, RequestError?) -> Void ) -> Void {
+        completion(nil, nil)
+    }
+
+    func putSingleAppleHandlerIntId(id: Int, posted: Apple, completion: (Apple?, RequestError?) -> Void ) -> Void {
         completion(nil, nil)
     }
 
@@ -393,7 +397,8 @@ class TestSwaggerGeneration: KituraTest {
                 XCTAssertTrue(paths["/me/getid/{id}"] != nil, "path /me/getid/{id} is missing")
                 XCTAssertTrue(paths["/me/patch/{id}"] != nil, "path /me/patch/{id} is missing")
                 XCTAssertTrue(paths["/me/pear"] != nil, "path /me/pear is missing")
-                XCTAssertTrue(paths["/me/put/{id}"] != nil, "path /me/put/{id} is missing")
+                XCTAssertTrue(paths["/me/puts/{id}"] != nil, "path /me/puts/{id} is missing")
+                XCTAssertTrue(paths["/me/puti/{id}"] != nil, "path /me/puti/{id} is missing")
             } else {
                 XCTFail("paths is missing")
             }
@@ -420,69 +425,69 @@ class TestSwaggerGeneration: KituraTest {
             // test for paths section
             if let paths = dict["paths"] as? [String: Any] {
                 // test for path contents
-                if let path = paths["/me/put/{id}"] as? [String: Any] {
+                if let path = paths["/me/puts/{id}"] as? [String: Any] {
                     // test for put method
                     if let put = path["put"] as? [String: Any] {
                         // test for parameters section
                         if let parameters = put["parameters"] as? [[String: Any]] {
-                            XCTAssertTrue(parameters.count == 2, "path /me/put/{id}: put parameters.count is incorrect")
+                            XCTAssertTrue(parameters.count == 2, "path /me/puts{id}: put parameters.count is incorrect")
                             // test for 1st parameter block
                             let p1 = parameters[0]
                             if let inval = p1["in"] as? String {
-                                XCTAssertTrue(inval == "path", "path /me/put/{id}: put parameters in value is incorrect")
+                                XCTAssertTrue(inval == "path", "path /me/puts/{id}: put parameters in value is incorrect")
                             } else {
-                                XCTFail("path /me/put/{id}: put parameters in value is missing")
+                                XCTFail("path /me/puts/{id}: put parameters in value is missing")
                             }
                             if let name = p1["name"] as? String {
-                                XCTAssertTrue(name == "id", "path /me/put/{id}: put parameters name value is incorrect")
+                                XCTAssertTrue(name == "id", "path /me/puts/{id}: put parameters name value is incorrect")
                             } else {
-                                XCTFail("path /me/put/{id}: put parameters name value is missing")
+                                XCTFail("path /me/puts/{id}: put parameters name value is missing")
                             }
                             if let required = p1["required"] as? Bool {
-                                XCTAssertTrue(required == true, "path /me/put/{id}: put parameters required value is incorrect")
+                                XCTAssertTrue(required == true, "path /me/puts/{id}: put parameters required value is incorrect")
                             } else {
-                                XCTFail("path /me/put/{id}: put parameters required value is missing")
+                                XCTFail("path /me/puts/{id}: put parameters required value is missing")
                             }
                             if let type = p1["type"] as? String {
-                                XCTAssertTrue(type == "integer", "path /me/put/{id}: put parameters type value is incorrect")
+                                XCTAssertTrue(type == "string", "path /me/puts/{id}: put parameters type value is incorrect")
                             } else {
-                                XCTFail("path /me/put/{id}: put parameters type value is missing")
+                                XCTFail("path /me/puts/{id}: put parameters type value is missing")
                             }
 
                             // test for 2nd parameter block
                             let p2 = parameters[1]
                             if let inval = p2["in"] as? String {
-                                XCTAssertTrue(inval == "body", "path /me/put/{id}: put parameters in value is incorrect")
+                                XCTAssertTrue(inval == "body", "path /me/puts/{id}: put parameters in value is incorrect")
                             } else {
-                                XCTFail("path /me/put/{id}: put parameters in value is missing")
+                                XCTFail("path /me/puts/{id}: put parameters in value is missing")
                             }
                             if let name = p2["name"] as? String {
-                                XCTAssertTrue(name == "input", "path /me/put/{id}: put parameters name value is incorrect")
+                                XCTAssertTrue(name == "input", "path /me/puts/{id}: put parameters name value is incorrect")
                             } else {
-                                XCTFail("path /me/put/{id}: put parameters name value is missing")
+                                XCTFail("path /me/puts/{id}: put parameters name value is missing")
                             }
                             if let required = p2["required"] as? Bool {
-                                XCTAssertTrue(required == true, "path /me/put/{id}: put parameters required value is incorrect")
+                                XCTAssertTrue(required == true, "path /me/puts/{id}: put parameters required value is incorrect")
                             } else {
-                                XCTFail("path /me/put/{id}: put parameters required value is missing")
+                                XCTFail("path /me/puts/{id}: put parameters required value is missing")
                             }
                             if let schema = p2["schema"] as? [String: String] {
                                 if let ref = schema["$ref"] {
-                                    XCTAssertTrue(ref == "#/definitions/Apple", "path /me/put/{id}: put parameters schema ref is incorrect")
+                                    XCTAssertTrue(ref == "#/definitions/Apple", "path /me/puts/{id}: put parameters schema ref is incorrect")
                                 } else {
-                                    XCTFail("path /me/put/{id}: put parameters schema ref is missing")
+                                    XCTFail("path /me/puts/{id}: put parameters schema ref is missing")
                                 }
                             } else {
-                                XCTFail("path /me/put/{id}: put parameters schema value is missing")
+                                XCTFail("path /me/puts/{id}: put parameters schema value is missing")
                             }
                         } else {
-                            XCTFail("path /me/put/{id}: put parameters are missing")
+                            XCTFail("path /me/puts/{id}: put parameters are missing")
                         }
                     } else {
-                        XCTFail("path /me/put/{id}: put method is missing")
+                        XCTFail("path /me/puts/{id}: put method is missing")
                     }
                 } else {
-                    XCTFail("path /me/put/{id} is missing")
+                    XCTFail("path /me/puts/{id} is missing")
                 }
             } else {
                 XCTFail("paths is missing")
@@ -510,52 +515,52 @@ class TestSwaggerGeneration: KituraTest {
             // test for paths section
             if let paths = dict["paths"] as? [String: Any] {
                 // test for path contents
-                if let path = paths["/me/put/{id}"] as? [String: Any] {
+                if let path = paths["/me/puts/{id}"] as? [String: Any] {
                     // test for put method
                     if let put = path["put"] as? [String: Any] {
                         // test for produces block
                         if let produces = put["produces"] as? [String] {
-                            XCTAssertTrue(produces.contains("application/json"), "path /me/put/{id}: put produces does not contain application/json")
-                            XCTAssertTrue(produces.count == 1, "path /me/put/{id}: put produces.count is incorrect")
+                            XCTAssertTrue(produces.contains("application/json"), "path /me/puts/{id}: put produces does not contain application/json")
+                            XCTAssertTrue(produces.count == 1, "path /me/puts/{id}: put produces.count is incorrect")
                         } else {
-                            XCTFail("path /me/put/{id}: put produces is missing")
+                            XCTFail("path /me/puts/{id}: put produces is missing")
                         }
                         // test for consumes block
                         if let consumes = put["consumes"] as? [String] {
-                            XCTAssertTrue(consumes.contains("application/json"), "path /me/put/{id}: put consumes does not contain application/json")
-                            XCTAssertTrue(consumes.count == 1, "path /me/put/{id}: put consumes.count is incorrect")
+                            XCTAssertTrue(consumes.contains("application/json"), "path /me/puts/{id}: put consumes does not contain application/json")
+                            XCTAssertTrue(consumes.count == 1, "path /me/puts/{id}: put consumes.count is incorrect")
                         } else {
-                            XCTFail("path /me/put/{id}: put consumes is missing")
+                            XCTFail("path /me/puts/{id}: put consumes is missing")
                         }
                         // test for responses block
                         if let responses = put["responses"] as? [String: Any] {
                             if let twohundred = responses["200"] as? [String: Any] {
                                 if let description = twohundred["description"] as? String {
-                                    XCTAssertTrue(description == "successful response", "path /me/put/{id}: put responses 200 description is incorrect")
+                                    XCTAssertTrue(description == "successful response", "path /me/puts/{id}: put responses 200 description is incorrect")
                                 } else {
-                                    XCTFail("path /me/put/{id}: put 200 response does not contain a description")
+                                    XCTFail("path /me/puts/{id}: put 200 response does not contain a description")
                                 }
                                 if let schema = twohundred["schema"] as? [String: Any] {
                                     if let ref = schema["$ref"] as? String {
-                                        XCTAssertTrue(ref == "#/definitions/Apple", "path /me/put/{id}: put responses 200 schema is incorrect")
+                                        XCTAssertTrue(ref == "#/definitions/Apple", "path /me/puts/{id}: put responses 200 schema is incorrect")
                                     } else {
-                                        XCTFail("path /me/put/{id}: put 200 response schema is missing")
+                                        XCTFail("path /me/puts/{id}: put 200 response schema is missing")
                                     }
                                 } else {
-                                    XCTFail("path /me/put/{id}: put 200 response does not contain a schema")
+                                    XCTFail("path /me/puts/{id}: put 200 response does not contain a schema")
                                 }
                             } else {
-                                XCTFail("path /me/put/{id}: put 200 response is missing")
+                                XCTFail("path /me/puts/{id}: put 200 response is missing")
                             }
-                            XCTAssertTrue(responses.count == 1, "path /me/put/{id}: put responses.count is incorrect")
+                            XCTAssertTrue(responses.count == 1, "path /me/puts/{id}: put responses.count is incorrect")
                         } else {
-                            XCTFail("path /me/put/{id}: put responses is missing")
+                            XCTFail("path /me/puts/{id}: put responses is missing")
                         }
                     } else {
-                        XCTFail("path /me/put/{id}: put method is missing")
+                        XCTFail("path /me/puts/{id}: put method is missing")
                     }
                 } else {
-                    XCTFail("path /me/put/{id} is missing")
+                    XCTFail("path /me/puts/{id} is missing")
                 }
             } else {
                 XCTFail("paths is missing")
@@ -629,6 +634,69 @@ class TestSwaggerGeneration: KituraTest {
         }
     }
 
+    func pathContentAssertions4(json: String?) {
+        if let jsonString = json {
+            guard let data = jsonString.data(using: String.Encoding.utf8, allowLossyConversion: false) else {
+                XCTFail("got unexpected nil from router.swaggerJSON")
+                return
+            }
+            guard let json = try? JSONSerialization.jsonObject(with: data, options: []) else {
+                XCTFail("got unexpected nil from router.swaggerJSON")
+                return
+            }
+            guard let dict = json as? [String: Any] else {
+                XCTFail("got unexpected nil from router.swaggerJSON")
+                return
+            }
+
+            // test for paths section
+            if let paths = dict["paths"] as? [String: Any] {
+                // test for path contents
+                if let path = paths["/me/puti/{id}"] as? [String: Any] {
+                    // test for put method
+                    if let put = path["put"] as? [String: Any] {
+                        // test for parameters section
+                        if let parameters = put["parameters"] as? [[String: Any]] {
+                            XCTAssertTrue(parameters.count == 2, "path /me/puti{id}: put parameters.count is incorrect")
+                            // test for 1st parameter block
+                            let p1 = parameters[0]
+                            if let inval = p1["in"] as? String {
+                                XCTAssertTrue(inval == "path", "path /me/puti/{id}: put parameters in value is incorrect")
+                            } else {
+                                XCTFail("path /me/puti/{id}: put parameters in value is missing")
+                            }
+                            if let name = p1["name"] as? String {
+                                XCTAssertTrue(name == "id", "path /me/puti/{id}: put parameters name value is incorrect")
+                            } else {
+                                XCTFail("path /me/puti/{id}: put parameters name value is missing")
+                            }
+                            if let required = p1["required"] as? Bool {
+                                XCTAssertTrue(required == true, "path /me/puti/{id}: put parameters required value is incorrect")
+                            } else {
+                                XCTFail("path /me/puti/{id}: put parameters required value is missing")
+                            }
+                            if let type = p1["type"] as? String {
+                                XCTAssertTrue(type == "integer", "path /me/puti/{id}: put parameters type value is incorrect")
+                            } else {
+                                XCTFail("path /me/puti/{id}: put parameters type value is missing")
+                            }
+                        } else {
+                            XCTFail("path /me/puti/{id}: put parameters are missing")
+                        }
+                    } else {
+                        XCTFail("path /me/puti/{id}: put method is missing")
+                    }
+                } else {
+                    XCTFail("path /me/puti/{id} is missing")
+                }
+            } else {
+                XCTFail("paths is missing")
+            }
+        } else {
+            XCTFail("got unexpected nil from router.swaggerJSON")
+        }
+    }
+
     func testSwaggerGeneration() {
         // test correct values returned from JsonApiDoc property
         let router = Router()
@@ -645,7 +713,8 @@ class TestSwaggerGeneration: KituraTest {
         router.post("/me/post", handler: postAppleHandler)
         router.post("/me/postid", handler: postSingleAppleHandler)
 
-        router.put("/me/put", handler: putSingleAppleHandler)
+        router.put("/me/puts", handler: putSingleAppleHandlerStringId)
+        router.put("/me/puti", handler: putSingleAppleHandlerIntId)
 
         setupServerAndExpectations(router: router, expectStart: true, expectStop: true, expectFail: false)
 
@@ -662,6 +731,7 @@ class TestSwaggerGeneration: KituraTest {
         pathContentAssertions1(json: router.swaggerJSON)
         pathContentAssertions2(json: router.swaggerJSON)
         pathContentAssertions3(json: router.swaggerJSON)
+        pathContentAssertions4(json: router.swaggerJSON)
 
         requestQueue.async() {
             Kitura.stop()
