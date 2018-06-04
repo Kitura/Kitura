@@ -336,8 +336,7 @@ class TestSwaggerGeneration: KituraTest {
             // test for schemes section
             if let schemes = dict["schemes"] as? [String] {
                 XCTAssertTrue(schemes.contains("http"), "schemes does not contain http")
-                XCTAssertTrue(schemes.contains("https"), "schemes does not contain https")
-                XCTAssertTrue(schemes.count == 2, "schemes.count is incorrect")
+                XCTAssertTrue(schemes.count == 1, "schemes.count is incorrect")
             } else {
                 XCTFail("schemes is missing")
             }
