@@ -42,16 +42,16 @@ class KituraTest: XCTestCase {
     static let sslConfig: SSLConfig = {
         let sslConfigDir = URL(fileURLWithPath: #file).appendingPathComponent("../SSLConfig")
 
-        #if os(Linux)
+        //#if os(Linux)
             let certificatePath = sslConfigDir.appendingPathComponent("certificate.pem").standardized.path
             let keyPath = sslConfigDir.appendingPathComponent("key.pem").standardized.path
             return SSLConfig(withCACertificateDirectory: nil, usingCertificateFile: certificatePath,
-                             withKeyFile: keyPath, usingSelfSignedCerts: true)
-        #else
-            let chainFilePath = sslConfigDir.appendingPathComponent("certificateChain.pfx").standardized.path
-            return SSLConfig(withChainFilePath: chainFilePath, withPassword: "kitura",
-                             usingSelfSignedCerts: true)
-        #endif
+                              withKeyFile: keyPath, usingSelfSignedCerts: true)
+        //#else
+        //    let chainFilePath = sslConfigDir.appendingPathComponent("certificateChain.pfx").standardized.path
+        //    return SSLConfig(withChainFilePath: chainFilePath, withPassword: "kitura",
+        //                     usingSelfSignedCerts: true)
+        //#endif
     }()
 
     private static let initOnce: () = {
