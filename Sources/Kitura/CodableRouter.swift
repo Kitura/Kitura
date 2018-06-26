@@ -446,7 +446,7 @@ extension Router {
 
     // Get w/Query Parameters
     fileprivate func getSafely<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q, @escaping CodableArrayResultClosure<O>) -> Void) {
-        registerGetRoute(route: route, outputtype: O.self)
+        registerGetRoute(route: route, queryparams: Q.self, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -463,7 +463,7 @@ extension Router {
 
     // Get w/Query Parameters with CodableResultClosure
     fileprivate func getSafely<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q, @escaping CodableResultClosure<O>) -> Void) {
-        registerGetRoute(route: route, outputtype: O.self)
+        registerGetRoute(route: route, queryparams: Q.self, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (singular) type-safe request with Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -481,7 +481,7 @@ extension Router {
 
     // Get w/Optional Query Parameters
     fileprivate func getSafely<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q?, @escaping CodableArrayResultClosure<O>) -> Void) {
-        registerGetRoute(route: route, outputtype: O.self)
+        registerGetRoute(route: route, queryparams: Q.self, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -502,7 +502,7 @@ extension Router {
 
     // Get w/Optional Query Parameters with CodableResultClosure
     fileprivate func getSafely<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q?, @escaping CodableResultClosure<O>) -> Void) {
-        registerGetRoute(route: route, outputtype: O.self)
+        registerGetRoute(route: route, queryparams: Q.self, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (singular) type-safe request with Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -564,7 +564,7 @@ extension Router {
 
     // DELETE w/Query Parameters
     fileprivate func deleteSafely<Q: QueryParams>(_ route: String, handler: @escaping (Q, @escaping ResultClosure) -> Void) {
-        registerDeleteRoute(route: route)
+        registerDeleteRoute(route: route, queryparams: Q.self)
         delete(route) { request, response, next in
             Log.verbose("Received DELETE type-safe request with Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -581,7 +581,7 @@ extension Router {
 
     // DELETE w/Optional Query Parameters
     fileprivate func deleteSafely<Q: QueryParams>(_ route: String, handler: @escaping (Q?, @escaping ResultClosure) -> Void) {
-        registerDeleteRoute(route: route)
+        registerDeleteRoute(route: route, queryparams: Q.self)
         delete(route) { request, response, next in
             Log.verbose("Received DELETE type-safe request with Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
