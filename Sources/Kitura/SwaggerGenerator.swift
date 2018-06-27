@@ -130,7 +130,7 @@ struct QueryParamArrayItems: Encodable {
 struct QueryParamArray: Encodable {
     let invalue: String = "query"
     let name: String
-    let required: Bool = true
+    let required: Bool
     let type: String = "array"
     let items: QueryParamArrayItems
     let collectionFormat: CollectionFormat
@@ -144,7 +144,7 @@ struct QueryParamArray: Encodable {
 struct QueryParamSingle: Encodable {
     let invalue: String = "query"
     let name: String
-    let required: Bool = true
+    let required: Bool
     let type: String
     let format: String?
 
@@ -191,16 +191,13 @@ struct SwaggerResponse: Encodable {
     let schema: ResponseSchema?
 }
 
-// Container for Swagger Parameters.
-typealias SwaggerParameters = [SwaggerParameter]
-
 // Container for Swagger Responses.
 typealias SwaggerResponses = Dictionary<String, SwaggerResponse>
 
 // Container for Swagger Method.
 struct SwaggerMethod: Encodable {
-    var consumes: [String]
-    var produces: [String]
+    var consumes: [String]?
+    var produces: [String]?
     var parameters: [SwaggerParameter]?
     var responses: SwaggerResponses
 }
@@ -262,20 +259,8 @@ struct SwaggerModel {
 enum SwiftType: String {
     case Bool
     case Dictionary
-    case Double
-    case Float
-    case Float32
-    case Float64
-    case Int
-    case UInt
-    case Int8
-    case UInt8
-    case Int16
-    case UInt16
-    case Int32
-    case UInt32
-    case Int64
-    case UInt64
+    case Double, Float, Float32, Float64
+    case Int, UInt, Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64
     case String
 
     // Return the OpenApi (Swagger) type that maps to the Swift type.
@@ -299,28 +284,8 @@ enum SwiftType: String {
     // a type for an application that uses the generated Swagger doc.
     func swaggerFormat() -> String? {
         switch self {
-        case .Float:
-            return "float"
-        case .Float32:
-            return "float32"
-        case .Float64:
-            return "float64"
-        case .Int8:
-            return "int8"
-        case .UInt8:
-            return "uint8"
-        case .Int16:
-            return "int16"
-        case .UInt16:
-            return "uint16"
-        case .Int32:
-            return "int32"
-        case .UInt32:
-            return "uint32"
-        case .Int64:
-            return "int64"
-        case .UInt64:
-            return "uint64"
+        case .Float, .Float32, .Float64, .Int8, .UInt8, .Int16, .UInt16, .Int32, .UInt32, .Int64, .UInt64:
+            return self.rawValue.lowercased()
         default:
             return nil
         }
@@ -415,45 +380,52 @@ struct SwaggerDocument: Encodable {
         return SwaggerParameter.body(bParam)
     }
 
+    // Process a query parameter
     //
-    func buildQueryParameter(name: String, paramTypeInfo: Any, array: Bool, parameters: inout SwaggerParameters) {
+    // - Parameter name: The name of the parameter.
+    // - Parameter typeInfo: The TypeInfo that represents this parameter.
+    // - Parameter parameters: An array of parameters to append to.
+    // - Parameter isArray: A boolean to indicate that this parameter is an array.
+    // - Parameter isRequired: A boolean to indicate that this parameter is required.
+    func processQueryParameter(name: String, typeInfo: TypeInfo, parameters: inout [SwaggerParameter], isArray array: Bool=false, isRequired required: Bool=true) {
         var property = [String: String]()
         var sp: SwaggerParameter
-        if let swifttype = SwiftType(rawValue: String(describing: paramTypeInfo)) {
-            property["type"] = swifttype.swaggerType()
-            if let format = swifttype.swaggerFormat() {
-                property["format"] = format
-            }
-            if let paramType = property["type"] {
-                if array {
-                    let items = QueryParamArrayItems(type: paramType, format: property["format"])
-                    let qpa = QueryParamArray(name: name, items: items, collectionFormat: CollectionFormat.csv)
-                    sp = SwaggerParameter.query(QueryParameter.array(qpa))
-                } else {
-                    let qps = QueryParamSingle(name: name, type: paramType, format: property["format"])
-                    sp = SwaggerParameter.query(QueryParameter.single(qps))
+
+        if case .unkeyed(_, let elementTypeInfo) = typeInfo {
+            // An array container.
+            processQueryParameter(name: name, typeInfo: elementTypeInfo, parameters: &parameters, isArray: true, isRequired: required)
+        } else if case .optional(let wrappedTypeInfo) = typeInfo {
+            // An optional container.
+            processQueryParameter(name: name, typeInfo: wrappedTypeInfo, parameters: &parameters, isArray: array, isRequired: false)
+        } else if case .single(_, let typeInfo) = typeInfo {
+            // A native type.
+            if let swifttype = SwiftType(rawValue: String(describing: typeInfo)) {
+                property["type"] = swifttype.swaggerType()
+                if let format = swifttype.swaggerFormat() {
+                    property["format"] = format
                 }
-                parameters.append(sp)
+                if let paramType = property["type"] {
+                    if array {
+                        let items = QueryParamArrayItems(type: paramType, format: property["format"])
+                        let qpa = QueryParamArray(name: name, required: required, items: items, collectionFormat: CollectionFormat.csv)
+                        sp = SwaggerParameter.query(QueryParameter.array(qpa))
+                    } else {
+                        let qps = QueryParamSingle(name: name, required: required, type: paramType, format: property["format"])
+                        sp = SwaggerParameter.query(QueryParameter.single(qps))
+                    }
+                    parameters.append(sp)
+                }
             }
         }
     }
 
-    // addQueryParameters: Walk through a TypeInfo dict, extracting the field
-    // name and its type info. If the type is .single, then this is the base
-    // parameter. If the type is unkeyed, then this is an array.
+    // Add query parameters.
     //
-    // - Parameter qparams:
-    // - Parameter: inout SwaggerParameters
-    func addQueryParameters(qparams: QParams, parameters: inout SwaggerParameters) {
+    // - Parameter qparams: A QueryParams object.
+    // - Parameter parameters: An array of parameters to append to.
+    func addQueryParameters(qparams: QParams, parameters: inout [SwaggerParameter]) {
         for (name, typeInfo) in qparams {
-            if case .single(_, let typeInfo) = typeInfo {
-                buildQueryParameter(name: name, paramTypeInfo: typeInfo, array: false, parameters: &parameters)
-            }
-            if case .unkeyed(_, let typeInfo) = typeInfo {
-               if case .single(_, let typeInfo) = typeInfo {
-                   buildQueryParameter(name: name, paramTypeInfo: typeInfo, array: true, parameters: &parameters)
-               }
-            }
+            processQueryParameter(name: name, typeInfo: typeInfo, parameters: &parameters)
         }
     }
 
@@ -535,9 +507,8 @@ struct SwaggerDocument: Encodable {
     // - Parameter isArray: indicate whether this is an array type.
     // - Parameter isOptional: indicate whether this is an optional type.
     // - Returns: Tuple containing  a SwaggerProperty that represents the type, and an optional flag.
-    mutating func decomposeType(_ t: TypeInfo, name: String, isArray: Bool=false, isOptional: Bool=false) -> (SwaggerProperty, Bool) {
+    mutating func decomposeType(_ t: TypeInfo, name: String, isArray array: Bool=false, isRequired required: Bool=true) -> (SwaggerProperty, Bool) {
         var property = SwaggerProperty()
-        let required = false
 
         switch t {
         case .keyed(let type, _):
@@ -546,11 +517,11 @@ struct SwaggerDocument: Encodable {
             addModel(model: t)
             let typeName = String(describing: type)
             property["$ref"] = .string("#/definitions/\(typeName)")
-            return (property, isOptional == false)
+            return (property, required == true)
         case .dynamicKeyed(_, _ /*let keyTypeInfo*/, let valueTypeInfo):
             // found a Dictionary, this needs to be mapped to an "object" type with additionalProperties
             property["type"] = .string("object")
-            let (prop, optional) = decomposeType(valueTypeInfo, name: name, isArray: isArray, isOptional: isOptional)
+            let (prop, optional) = decomposeType(valueTypeInfo, name: name, isArray: array, isRequired: required)
             property["additionalProperties"] = .dict(prop)
             return (property, optional)
         case .unkeyed(_, let elementTypeInfo):
@@ -574,19 +545,19 @@ struct SwaggerDocument: Encodable {
             if self.processedSet.contains(elementTypeInfo) == false {
                 self.unprocessedSet.insert(elementTypeInfo)
             }
-            return (property, isOptional == false)
+            return (property, required == true)
         case .cyclic(let type):
             property["type"] = .string(String(describing: type))
-            return (property, isOptional == false)
+            return (property, required == true)
         case .single(_, let type):
             if let property = try? swaggerPropertyFromSwiftType(type) {
-                return (property, isOptional == false)
+                return (property, required == true)
             }
         case .optional(let wrappedTypeInfo):
-            return decomposeType(wrappedTypeInfo, name: name, isArray: isArray, isOptional: true)
+            return decomposeType(wrappedTypeInfo, name: name, isArray: array, isRequired: false)
         case .opaque(let type):
             if let property = try? swaggerPropertyFromSwiftType(type) {
-                return (property, isOptional == false)
+                return (property, required == true)
             }
         }
         return (property, required)
@@ -624,8 +595,8 @@ struct SwaggerDocument: Encodable {
         // from the typeinfo we can extract the model name and all subordinate structures.
 
         // get the model name.
-        if case let .keyed(o, _) = typeinfo {
-            let model = String(describing: o)
+        if case .keyed(let name, _) = typeinfo {
+            let model = String(describing: name)
             var modelDefinition: SwaggerModel
 
             // then build all it
@@ -672,7 +643,7 @@ struct SwaggerDocument: Encodable {
                 }
 
                 // handle the input parameter here: turn it into a parameters object.
-                var parameters = SwaggerParameters()
+                var parameters = [SwaggerParameter]()
                 if let id = id {
                     parameters.append(buildParameter(name: "id", parametertype: id))
                 }
