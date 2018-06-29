@@ -1,5 +1,5 @@
 /*
- * Copyright IBM Corporation 2017
+ * Copyright IBM Corporation 2018
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,29 +21,58 @@ import KituraContracts
   The purpose is to expose these types at the top level without having to import a specific dependency.
 */
 
-/// Public TypeAlias for QueryParams Type from KituraContracts
+/// Bridge [QueryParams](https://github.com/IBM-Swift/KituraContracts/blob/master/Sources/KituraContracts/Contracts.swift#L525)
+/// from [KituraContracts](https://ibm-swift.github.io/KituraContracts) so that you only need to import
+/// `Kitura` to access it.
 public typealias QueryParams = KituraContracts.QueryParams
 
-/// Public TypeAlias for GreaterThan Type from KituraContracts
+/// Bridge [Identifier](https://github.com/IBM-Swift/KituraContracts/blob/master/Sources/KituraContracts/Contracts.swift#L568)
+/// from [KituraContracts](https://ibm-swift.github.io/KituraContracts) so that you only need to import
+/// `Kitura` to access it.
+public typealias Identifier = KituraContracts.Identifier
+
+
+/// Bridge [GreaterThan](https://github.com/IBM-Swift/KituraContracts/blob/master/Sources/KituraContracts/Contracts.swift#L1159)
+/// from [KituraContracts](https://ibm-swift.github.io/KituraContracts) so that you only need to import
+/// `Kitura` to access it.
 public typealias GreaterThan = KituraContracts.GreaterThan
 
-/// Public TypeAlias for LowerThan Type from KituraContracts
+/// Bridge [LowerThan](https://github.com/IBM-Swift/KituraContracts/blob/master/Sources/KituraContracts/Contracts.swift#L1254)
+/// from [KituraContracts](https://ibm-swift.github.io/KituraContracts) so that you only need to import
+/// `Kitura` to access it.
 public typealias LowerThan = KituraContracts.LowerThan
 
-/// Public TypeAlias for GreaterThanOrEqual Type from KituraContracts
+/// Bridge [GreaterThanOrEqual](https://github.com/IBM-Swift/KituraContracts/blob/master/Sources/KituraContracts/Contracts.swift#L1206)
+/// from [KituraContracts](https://ibm-swift.github.io/KituraContracts) so that you only need to import
+/// `Kitura` to access it.
 public typealias GreaterThanOrEqual = KituraContracts.GreaterThanOrEqual
 
-/// Public TypeAlias for LowerThanOrEqual Type from KituraContracts
+/// Bridge [LowerThanOrEqual](https://github.com/IBM-Swift/KituraContracts/blob/master/Sources/KituraContracts/Contracts.swift#L1301)
+/// from [KituraContracts](https://ibm-swift.github.io/KituraContracts) so that you only need to import
+/// `Kitura` to access it.
 public typealias LowerThanOrEqual = KituraContracts.LowerThanOrEqual
 
-/// Public TypeAlias for InclusiveRange Type from KituraContracts
+/// Bridge [InclusiveRange](https://github.com/IBM-Swift/KituraContracts/blob/master/Sources/KituraContracts/Contracts.swift#L1348)
+/// from [KituraContracts](https://ibm-swift.github.io/KituraContracts) so that you only need to import
+/// `Kitura` to access it.
 public typealias InclusiveRange = KituraContracts.InclusiveRange
 
-/// Public TypeAlias for ExclusiveRange Type from KituraContracts
+/// Bridge [ExclusiveRange](https://github.com/IBM-Swift/KituraContracts/blob/master/Sources/KituraContracts/Contracts.swift#L1402)
+/// from [KituraContracts](https://ibm-swift.github.io/KituraContracts) so that you only need to import
+/// `Kitura` to access it.
 public typealias ExclusiveRange = KituraContracts.ExclusiveRange
 
-/// Public TypeAlias for Pagination Type from KituraContracts
+/// Bridge [Pagination](https://github.com/IBM-Swift/KituraContracts/blob/master/Sources/KituraContracts/Contracts.swift#L1057)
+/// from [KituraContracts](https://ibm-swift.github.io/KituraContracts) so that you only need to import
+/// `Kitura` to access it.
 public typealias Pagination = KituraContracts.Pagination
 
-/// Public TypeAlias for Ordering Type from KituraContracts
+/// Bridge [Ordering](https://github.com/IBM-Swift/KituraContracts/blob/master/Sources/KituraContracts/Contracts.swift#L983)
+/// from [KituraContracts](https://ibm-swift.github.io/KituraContracts) so that you only need to import
+/// `Kitura` to access it.
 public typealias Ordering = KituraContracts.Ordering
+
+/// Bridge [Order](https://github.com/IBM-Swift/KituraContracts/blob/master/Sources/KituraContracts/Contracts.swift#L983)
+/// from [KituraContracts](https://ibm-swift.github.io/KituraContracts) so that you only need to import
+/// `Kitura` to access it.
+public typealias Order = KituraContracts.Order
