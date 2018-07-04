@@ -18,7 +18,12 @@ import Foundation
 import XCTest
 
 @testable import Kitura
+
+#if NIO
+@testable import KituraNIO
+#else
 @testable import KituraNet
+#endif
 
 class MiscellaneousTests: KituraTest {
 

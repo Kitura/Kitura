@@ -17,7 +17,12 @@
 import XCTest
 import Dispatch
 
+#if NIO
+import KituraNIO
+#else
 import KituraNet
+#endif
+
 @testable import Kitura
 
 class TestServer: KituraTest {
@@ -41,57 +46,87 @@ class TestServer: KituraTest {
 
     private func setupServerAndExpectations(expectStart: Bool, expectStop: Bool, expectFail: Bool, httpPort: Int?=nil, fastCgiPort: Int?=nil) {
         let router = Router()
+
+        #if NIO
+        let httpServer = Kitura.addHTTPServer(onPort: httpPort ?? self.httpPort, with: router, allowPortReuse: true)
+        #else
         let httpServer = Kitura.addHTTPServer(onPort: httpPort ?? self.httpPort, with: router)
         let fastCgiServer = Kitura.addFastCGIServer(onPort: fastCgiPort ?? self.fastCgiPort, with: router)
+        #endif
 
         if expectStart {
             let httpStarted = expectation(description: "HTTPServer started()")
+
+            #if !NIO
             let fastCgiStarted = expectation(description: "FastCGIServer started()")
+            #endif
 
             httpServer.started {
                 httpStarted.fulfill()
             }
+
+            #if !NIO
             fastCgiServer.started {
                 fastCgiStarted.fulfill()
             }
+            #endif
         } else {
             httpServer.started {
                 XCTFail("httpServer.started should not have been called")
             }
+
+            #if !NIO
             fastCgiServer.started {
                 XCTFail("fastCgiServer.started should not have been called")
             }
+            #endif
         }
 
         if expectStop {
             let httpStopped = expectation(description: "HTTPServer stopped()")
+
+            #if !NIO
             let fastCgiStopped = expectation(description: "FastCGIServer stopped()")
+            #endif
 
             httpServer.stopped {
                 httpStopped.fulfill()
             }
+
+            #if !NIO
             fastCgiServer.stopped {
                 fastCgiStopped.fulfill()
             }
+            #endif
         }
 
         if expectFail {
             let httpFailed = expectation(description: "HTTPServer failed()")
+
+            #if !NIO
             let fastCgiFailed = expectation(description: "FastCGIServer failed()")
+            #endif
 
             httpServer.failed { error in
                 httpFailed.fulfill()
             }
+
+            #if !NIO
             fastCgiServer.failed { error in
                 fastCgiFailed.fulfill()
             }
+            #endif
+
         } else {
             httpServer.failed { error in
                 XCTFail("\(error)")
             }
+
+            #if !NIO
             fastCgiServer.failed { error in
                 XCTFail("\(error)")
             }
+            #endif
         }
     }
 
@@ -150,7 +185,12 @@ class TestServer: KituraTest {
             next()
         }
 
+        #if NIO
+        let server = Kitura.addHTTPServer(onPort: port, with: router, allowPortReuse: true)
+        #else
         let server = Kitura.addHTTPServer(onPort: port, with: router)
+        #endif
+
         server.sslConfig = KituraTest.sslConfig.config
 
         let stopped = DispatchSemaphore(value: 0)

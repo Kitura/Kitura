@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
+#if NIO
+import KituraNIO
+#else
 import KituraNet
+#endif
+
 import Foundation
 
 extension StaticFileServer {

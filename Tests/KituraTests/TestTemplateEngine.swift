@@ -20,7 +20,12 @@ import KituraTemplateEngine
 import KituraContracts
 
 @testable import Kitura
+
+#if NIO
+@testable import KituraNIO
+#else
 @testable import KituraNet
+#endif
 
 #if os(Linux)
 import Glibc

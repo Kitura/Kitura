@@ -15,10 +15,14 @@
  **/
 
 @testable import Kitura
+
+#if NIO
+import KituraNIO
+#else
 import KituraNet
+#endif
 
 import Foundation
-
 import XCTest
 
 #if os(Linux)

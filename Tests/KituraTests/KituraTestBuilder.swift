@@ -17,7 +17,12 @@
 import XCTest
 import Kitura
 
+#if NIO
+@testable import KituraNIO
+#else
 @testable import KituraNet
+#endif
+
 @testable import KituraContracts
 
 import Foundation

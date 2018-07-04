@@ -15,7 +15,13 @@
  */
 import Foundation
 import LoggerAPI
+
+#if NIO
+import KituraNIO
+#else
 import KituraNet
+#endif
+
 import KituraContracts
 import TypeDecoder
 
