@@ -423,9 +423,9 @@ struct SwaggerDocument: Encodable {
     //
     // - Parameter qparams: A QueryParams object.
     // - Parameter parameters: An array of parameters to append to.
-    func addQueryParameters(qparams: QParams, parameters: inout [SwaggerParameter]) {
+    func addQueryParameters(qparams: QParams, allOptQParams: Bool, parameters: inout [SwaggerParameter]) {
         for (name, typeInfo) in qparams {
-            processQueryParameter(name: name, typeInfo: typeInfo, parameters: &parameters)
+            processQueryParameter(name: name, typeInfo: typeInfo, parameters: &parameters, isRequired: !allOptQParams)
         }
     }
 
@@ -617,7 +617,7 @@ struct SwaggerDocument: Encodable {
     /// - Parameter path: The API path to register.
     /// - Parameter method: The method the will be called on this path.
     /// - Parameter responselist: An array of response types that can be returned from this path.
-    public mutating func addPath(path: String, method: String, id: String?, qparams: QParams?, inputtype: String?, responselist: [SwaggerResponseType]?) {
+    public mutating func addPath(path: String, method: String, id: String?, qparams: QParams?, allOptQParams: Bool=false, inputtype: String?, responselist: [SwaggerResponseType]?) {
         Log.debug("in addPath(path: \(path))")
         // split the path into its components:
         // - route path.
@@ -654,7 +654,7 @@ struct SwaggerDocument: Encodable {
 
                 if let qparams = qparams {
                     // add any query parameters
-                    addQueryParameters(qparams: qparams, parameters: &parameters)
+                    addQueryParameters(qparams: qparams, allOptQParams: allOptQParams, parameters: &parameters)
                 }
 
                 // not going to use the default response for now as this refers to
@@ -890,9 +890,10 @@ extension Router {
     // - Parameter route: The route to be registered.
     // - Parameter method: The http method name: one of 'get', 'patch', 'post', 'put'.
     // - Parameter querytypes: The types of the query parameters.
+    // - Parameter allOptQParams: The type of the model to register.
     // - Parameter outputtype: The type of the model to register.
     // - Parameter responsetypes: array of expected swagger response type objects.
-    func registerRoute<Q: QueryParams, O: Codable>(route: String, method: String, querytype: Q.Type, outputtype: O.Type, responsetypes: [SwaggerResponseType]) {
+    func registerRoute<Q: QueryParams, O: Codable>(route: String, method: String, querytype: Q.Type, allOptQParams: Bool, outputtype: O.Type, responsetypes: [SwaggerResponseType]) {
         Log.debug("Registering \(route) for \(method) method")
 
         let t: TypeInfo
@@ -916,7 +917,7 @@ extension Router {
         }
 
         // insert the path information into the document structure.
-        swagger.addPath(path: route, method: method, id: nil, qparams: params, inputtype: nil, responselist: responsetypes)
+        swagger.addPath(path: route, method: method, id: nil, qparams: params, allOptQParams: allOptQParams, inputtype: nil, responselist: responsetypes)
 
         // add model information into the document structure.
         swagger.addModel(model: t)
@@ -1044,7 +1045,8 @@ extension Router {
     // Register a delete route in the SwaggerDocument.
     //
     // - Parameter route: The route to be registered.
-    func registerDelete<Q: QueryParams>(route: String, querytype: Q.Type, responsetypes: [SwaggerResponseType]) {
+    // - Parameter allOptQParams: Flag to indicate that the parameters are optional.
+    func registerDelete<Q: QueryParams>(route: String, querytype: Q.Type, allOptQParams: Bool, responsetypes: [SwaggerResponseType]) {
         Log.debug("Registering \(route) for delete method")
 
         let q: TypeInfo
@@ -1060,7 +1062,7 @@ extension Router {
         }
 
         // insert the path information into the document structure.
-        swagger.addPath(path: route, method: "delete", id: nil, qparams: params, inputtype: nil, responselist: responsetypes)
+        swagger.addPath(path: route, method: "delete", id: nil, qparams: params, allOptQParams: allOptQParams, inputtype: nil, responselist: responsetypes)
     }
 
     // Register a delete route in the SwaggerDocument.
@@ -1102,11 +1104,11 @@ extension Router {
     /// - Parameter route: The route to register.
     /// - Parameter id: The id type.
     /// - Parameter outputtype: The output object type.
-    public func registerGetRoute<Q: QueryParams, O: Codable>(route: String, queryparams: Q.Type, outputtype: O.Type) {
+    public func registerGetRoute<Q: QueryParams, O: Codable>(route: String, queryparams: Q.Type, optionalQParam: Bool, outputtype: O.Type) {
         var responseTypes = [SwaggerResponseType]()
         responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "\(O.self)"))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
-        registerRoute(route: route, method: "get", querytype: Q.self, outputtype: O.self, responsetypes: responseTypes)
+        registerRoute(route: route, method: "get", querytype: Q.self, allOptQParams: optionalQParam, outputtype: O.self, responsetypes: responseTypes)
     }
 
     /// Register DELETE route
@@ -1122,11 +1124,12 @@ extension Router {
     /// Register DELETE route
     ///
     /// - Parameter route: The route to register.
-    public func registerDeleteRoute<Q: QueryParams>(route: String, queryparams: Q.Type) {
+    /// - Parameter optionalQParam: Flag to indicate that the query params are all optional.
+    public func registerDeleteRoute<Q: QueryParams>(route: String, queryparams: Q.Type, optionalQParam: Bool) {
         var responseTypes = [SwaggerResponseType]()
         responseTypes.append(SwaggerResponseType(optional: true, array: false, type: ""))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
-        registerDelete(route: route, querytype: Q.self, responsetypes: responseTypes)
+        registerDelete(route: route, querytype: Q.self, allOptQParams: optionalQParam, responsetypes: responseTypes)
     }
 
     /// Register DELETE route

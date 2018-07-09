@@ -517,7 +517,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T, Q, @escaping CodableResultClosure<O>) -> Void
     ) {
-        registerGetRoute(route: route, outputtype: O.self)
+        registerGetRoute(route: route, queryparams: Q.self, optionalQParam: false, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (singular) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -564,7 +564,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, Q, @escaping CodableResultClosure<O>) -> Void
     ) {
-        registerGetRoute(route: route, outputtype: O.self)
+        registerGetRoute(route: route, queryparams: Q.self, optionalQParam: false, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (singular) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -611,7 +611,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, T3, Q, @escaping CodableResultClosure<O>) -> Void
     ) {
-        registerGetRoute(route: route, outputtype: O.self)
+        registerGetRoute(route: route, queryparams: Q.self, optionalQParam: false, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (singular) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -663,7 +663,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T, Q, @escaping CodableArrayResultClosure<O>) -> Void
     ) {
-        registerGetRoute(route: route, outputtype: O.self)
+        registerGetRoute(route: route, queryparams: Q.self, optionalQParam: false, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -709,7 +709,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, Q, @escaping CodableArrayResultClosure<O>) -> Void
     ) {
-        registerGetRoute(route: route, outputtype: O.self)
+        registerGetRoute(route: route, queryparams: Q.self, optionalQParam: false, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -755,7 +755,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, T3, Q, @escaping CodableArrayResultClosure<O>) -> Void
     ) {
-        registerGetRoute(route: route, outputtype: O.self)
+        registerGetRoute(route: route, queryparams: Q.self, optionalQParam: false, outputtype: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -1032,7 +1032,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T, Q, @escaping ResultClosure) -> Void
     ) {
-        registerDeleteRoute(route: route)
+        registerDeleteRoute(route: route, queryparams: Q.self, optionalQParam: false)
         delete(route) { request, response, next in
             Log.verbose("Received DELETE type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -1076,7 +1076,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, Q, @escaping ResultClosure) -> Void
     ) {
-        registerDeleteRoute(route: route)
+        registerDeleteRoute(route: route, queryparams: Q.self, optionalQParam: false)
         delete(route) { request, response, next in
             Log.verbose("Received DELETE type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -1120,7 +1120,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, T3, Q, @escaping ResultClosure) -> Void
     ) {
-        registerDeleteRoute(route: route)
+        registerDeleteRoute(route: route, queryparams: Q.self, optionalQParam: false)
         delete(route) { request, response, next in
             Log.verbose("Received DELETE type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
