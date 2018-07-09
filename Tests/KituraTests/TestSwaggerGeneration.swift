@@ -75,11 +75,20 @@ func getQueryUglifruitHandler5(query: QueryThreeParams, completion: (Uglifruit?,
     completion(ugli, nil)
 }
 
+func getQueryUglifruitHandler6(query: QueryThreeParams?, completion: (Uglifruit?, RequestError?) -> Void ) -> Void {
+    let ugli = Uglifruit(auth: "hi", colour: "red", flavour: "tangy", test: nil)
+    completion(ugli, nil)
+}
+
 func deleteQueryUglifruitHandler1(query: QueryIntFieldParam, completion: (RequestError?) -> Void) {
     completion(nil)
 }
 
 func deleteQueryUglifruitHandler2(query: QueryIntFieldParam?, completion: (RequestError?) -> Void) {
+    completion(nil)
+}
+
+func deleteQueryUglifruitHandler3(query: QueryThreeParams?, completion: (RequestError?) -> Void) {
     completion(nil)
 }
 
@@ -155,8 +164,10 @@ class TestSwaggerGeneration: KituraTest {
         router.get("/me/getugli3", handler: getQueryUglifruitHandler3)
         router.get("/me/getugli4", handler: getQueryUglifruitHandler4)
         router.get("/me/getugli5", handler: getQueryUglifruitHandler5)
+        router.get("/me/getugli6", handler: getQueryUglifruitHandler6)
         router.delete("/me/delugli1", handler: deleteQueryUglifruitHandler1)
         router.delete("/me/delugli2", handler: deleteQueryUglifruitHandler2)
+        router.delete("/me/delugli3", handler: deleteQueryUglifruitHandler3)
 
         router.patch("/me/patch", handler: patchSingleAppleHandler)
 
@@ -792,6 +803,7 @@ class TestSwaggerGeneration: KituraTest {
     }
 
     func pathDeleteQueryParams(paths: [String: Any]) {
+        // Confirm that query params are created for deletes.
         if let path = paths["/me/delugli1"] as? [String: Any] {
             // test for put method
             if let delete = path["delete"] as? [String: Any] {
@@ -836,6 +848,60 @@ class TestSwaggerGeneration: KituraTest {
             }
         } else {
             XCTFail("path /me/delugli2 is missing")
+        }
+    }
+
+    func pathOptionalQueryParams(paths: [String: Any]) {
+        // Ensure that an optional query param causes all fields in the query
+        // params to be optional.
+        if let path = paths["/me/getugli6"] as? [String: Any] {
+            // test for put method
+            if let get = path["get"] as? [String: Any] {
+                // test for parameters section
+                if let parameters = get["parameters"] as? [[String: Any]] {
+                    XCTAssertTrue(parameters.count == 3, "path /me/getugli6: get parameters.count is incorrect")
+                    // test for 1st parameter block
+                    for i in 0 ... 2 {
+                        let param = parameters[i]
+                        if let required = param["required"] as? Bool {
+                            XCTAssertTrue(required == false, "path /me/getugli6 get parameter[\(i)] 'required' value is incorrect")
+                        } else {
+                            XCTFail("path /me/getugli6: get parameters[\(i)] 'required' value is missing")
+                        }
+                    }
+                } else {
+                    XCTFail("path /me/getugli6: get parameters are missing")
+                }
+            } else {
+                XCTFail("path /me/getugli6: get method is missing")
+            }
+        } else {
+            XCTFail("path /me/getugli6 is missing")
+        }
+
+        if let path = paths["/me/delugli3"] as? [String: Any] {
+            // test for put method
+            if let get = path["delete"] as? [String: Any] {
+                // test for parameters section
+                if let parameters = get["parameters"] as? [[String: Any]] {
+                    XCTAssertTrue(parameters.count == 3, "path /me/delugli3: delete parameters.count is incorrect")
+                    // test for 1st parameter block
+                    for i in 0 ... 2 {
+                        let param = parameters[i]
+                        if let required = param["required"] as? Bool {
+                            XCTAssertTrue(required == false, "path /me/delugli3 delete parameter[\(i)] 'required' value is incorrect")
+                        } else {
+                            XCTFail("path /me/delugli3: delete parameters[\(i)] 'required' value is missing")
+                        }
+                    }
+                } else {
+                    XCTFail("path /me/delugli3: delete parameters are missing")
+                }
+            } else {
+                XCTFail("path /me/delugli3: delete method is missing")
+            }
+        } else {
+            XCTFail("path /me/delugli3 is missing")
         }
     }
 
@@ -954,6 +1020,7 @@ class TestSwaggerGeneration: KituraTest {
                 pathGetQueryParams3(paths: paths)
                 pathGetQueryParams4(paths: paths)
                 pathGetQueryParams5(paths: paths)
+                pathOptionalQueryParams(paths: paths)
                 pathDeleteQueryParams(paths: paths)
             } else {
                 XCTFail("paths is missing")
