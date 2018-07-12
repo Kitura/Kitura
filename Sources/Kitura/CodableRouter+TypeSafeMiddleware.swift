@@ -273,7 +273,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T, Id, @escaping CodableResultClosure<O>) -> Void
     ) {
-        if parameterIsPresent(in: route) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
             return
         }
         registerGetRoute(route: route, id: Id.self, outputType: O.self)
@@ -315,7 +315,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, Id, @escaping CodableResultClosure<O>) -> Void
     ) {
-        if parameterIsPresent(in: route) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
             return
         }
         registerGetRoute(route: route, id: Id.self, outputType: O.self)
@@ -357,7 +357,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, T3, Id, @escaping CodableResultClosure<O>) -> Void
     ) {
-        if parameterIsPresent(in: route) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
             return
         }
         registerGetRoute(route: route, id: Id.self, outputType: O.self)
@@ -904,7 +904,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T, Id, @escaping ResultClosure) -> Void
     ) {
-        if parameterIsPresent(in: route) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
             return
         }
         registerDeleteRoute(route: route, id: Id.self)
@@ -944,7 +944,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, Id, @escaping ResultClosure) -> Void
     ) {
-        if parameterIsPresent(in: route) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
             return
         }
         registerDeleteRoute(route: route, id: Id.self)
@@ -984,7 +984,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, T3, Id, @escaping ResultClosure) -> Void
     ) {
-        if parameterIsPresent(in: route) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
             return
         }
         registerDeleteRoute(route: route, id: Id.self)
@@ -1412,7 +1412,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T, Id, I, @escaping CodableResultClosure<O>) -> Void
     ) {
-        if parameterIsPresent(in: route) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
             return
         }
         registerPutRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
@@ -1454,7 +1454,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, Id, I, @escaping CodableResultClosure<O>) -> Void
     ) {
-        if parameterIsPresent(in: route) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
             return
         }
         registerPutRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
@@ -1496,7 +1496,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, T3, Id, I, @escaping CodableResultClosure<O>) -> Void
     ) {
-        if parameterIsPresent(in: route) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
             return
         }
         registerPutRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
@@ -1548,7 +1548,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T, Id, I, @escaping CodableResultClosure<O>) -> Void
     ) {
-        if parameterIsPresent(in: route) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
             return
         }
         registerPatchRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
@@ -1596,7 +1596,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, Id, I, @escaping CodableResultClosure<O>) -> Void
     ) {
-        if parameterIsPresent(in: route) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
             return
         }
         registerPatchRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
@@ -1644,7 +1644,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, T3, Id, I, @escaping CodableResultClosure<O>) -> Void
     ) {
-        if parameterIsPresent(in: route) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
             return
         }
         registerPatchRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)

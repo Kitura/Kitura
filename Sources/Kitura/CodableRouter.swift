@@ -383,7 +383,7 @@ extension Router {
 
     // PUT with Identifier
     fileprivate func putSafely<Id: Identifier, I: Codable, O: Codable>(_ route: String, handler: @escaping IdentifierCodableClosure<Id, I, O>) {
-        if parameterIsPresent(in: route) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
             return
         }
         registerPutRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
@@ -401,7 +401,7 @@ extension Router {
 
     // PATCH
     fileprivate func patchSafely<Id: Identifier, I: Codable, O: Codable>(_ route: String, handler: @escaping IdentifierCodableClosure<Id, I, O>) {
-        if parameterIsPresent(in: route) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
             return
         }
         registerPatchRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
@@ -523,7 +523,7 @@ extension Router {
     }
     // GET single identified element
     fileprivate func getSafely<Id: Identifier, O: Codable>(_ route: String, handler: @escaping IdentifierSimpleCodableClosure<Id, O>) {
-        if parameterIsPresent(in: route) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
             return
         }
         registerGetRoute(route: route, id: Id.self, outputType: O.self)
@@ -539,6 +539,9 @@ extension Router {
 
     // DELETE
     fileprivate func deleteSafely(_ route: String, handler: @escaping NonCodableClosure) {
+        if !pathSyntaxIsValid(route, identifierExpected: false) {
+            return
+        }
         registerDeleteRoute(route: route)
         delete(route) { request, response, next in
             Log.verbose("Received DELETE (plural) type-safe request")
@@ -548,7 +551,7 @@ extension Router {
 
     // DELETE single element
     fileprivate func deleteSafely<Id: Identifier>(_ route: String, handler: @escaping IdentifierNonCodableClosure<Id>) {
-        if parameterIsPresent(in: route) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
             return
         }
         registerDeleteRoute(route: route, id: Id.self)
@@ -600,14 +603,31 @@ extension Router {
         }
     }
 
-    internal func parameterIsPresent(in route: String) -> Bool {
-        if route.contains(":") {
-            let paramaterString = route.split(separator: ":", maxSplits: 1, omittingEmptySubsequences: false)
-            let parameter = paramaterString.count > 0 ? paramaterString[1] : ""
-            Log.error("Erroneous path '\(route)', parameter ':\(parameter)' is not allowed. Codable routes do not allow parameters.")
+    func pathSyntaxIsValid(_ path: String, identifierExpected: Bool) -> Bool {
+        let identifierSupplied = path.contains(":")
+        switch(identifierExpected, identifierSupplied) {
+        case(false, true) :
+            Log.error("Path '\(path)' is not allowed: Codable routes do not allow path parameters.")
+            return false
+        case (true, false):
+            Log.warning("Identifier expected for '\(path)'. :id will be automatically appended to the path.")
+            return true
+        case (true, true):
+            /// Precondition: Path is known to contain a : character
+            func pathHasSingleParamIdAsSuffix(_ path: String) -> Bool {
+                let parameterString = path.split(separator: ":", maxSplits: 1, omittingEmptySubsequences: false)
+                let parameter = parameterString.count > 0 ? parameterString[1] : ""
+                return parameter.isEmpty || parameter.elementsEqual("id")
+            }
+
+            guard pathHasSingleParamIdAsSuffix(path) else {
+            Log.error("Erroneous path '\(path)' is not allowed. Codable routes support a trailing id parameter only.")
+            return false
+            }
+            return true
+        case (false, false):
             return true
         }
-        return false
     }
 
     internal func join(path base: String, with component: String) -> String {
