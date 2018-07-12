@@ -45,6 +45,7 @@ protocol RequestTestBuilder {
     func request(_ method: String, path: String, headers: [String:String]?) -> AssertionTestBuilder
     func request<T: Encodable>(_ method: String, path: String, data: T) -> AssertionTestBuilder
     func request<T: Encodable>(_ method: String, path: String, data: T, headers: [String:String]?) -> AssertionTestBuilder
+    func request<T: Encodable>(_ method: String, path: String, data: T, headers: [String:String]?, encoder: BodyEncoder) -> AssertionTestBuilder
     func request(_ method: String, path: String, urlEncodedString: String) -> AssertionTestBuilder
     func request(_ method: String, path: String, urlEncodedString: String, headers: [String:String]?) -> AssertionTestBuilder
     func run()
@@ -60,6 +61,7 @@ protocol AssertionTestBuilder: RequestTestBuilder {
     func hasData(_ expected: String) -> Self
     func hasData<T: Decodable & Equatable>(_ expected: [T]) -> Self
     func hasData<T: Decodable & Equatable>(_ expected: T) -> Self
+    func hasData<T: Decodable & Equatable>(_ expected: T, customDecoder: BodyDecoder) -> Self
     func hasData<T: Decodable & Equatable>(_ expected: [[String: T]]) -> Self
 }
 
@@ -86,6 +88,18 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
                 let data = try JSONEncoder().encode(data)
                 test.performRequest(method, path: path, callback: callback, headers: headers, requestModifier: { request in
                     request.headers["Content-Type"] = "application/json; charset=utf-8"
+                    request.write(from: data)
+                })
+            }
+        }
+        
+        init<T: Encodable>(_ test: KituraTest, _ method: String, _ path: String, _ data: T, headers: [String:String]? = nil, encoder: BodyEncoder) {
+            self.test = test
+            self.invoker = { callback in
+                let data = try encoder.encode(data)
+                test.performRequest(method, path: path, callback: callback, headers: headers, requestModifier: { request in
+                    let encoderType = ContentType.sharedInstance.getContentType(forExtension: encoder.contentType) ?? "application/json"
+                    request.headers["Content-Type"] = "\(encoderType); charset=utf-8"
                     request.write(from: data)
                 })
             }
@@ -132,6 +146,11 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
     
     public func request<T: Encodable>(_ method: String, path: String, data: T, headers: [String:String]?) -> AssertionTestBuilder {
         requests.append(Request(test, method, path, data, headers: headers))
+        return self
+    }
+    
+    public func request<T: Encodable>(_ method: String, path: String, data: T, headers: [String:String]?, encoder: BodyEncoder) -> AssertionTestBuilder {
+        requests.append(Request(test, method, path, data, headers: headers, encoder: encoder))
         return self
     }
     
@@ -247,6 +266,18 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
             guard let (_, data) = self.readDataOrFail(from: response) else { return }
             do {
                 let actual = try JSONDecoder().decode(T.self, from: data)
+                XCTAssertEqual(expected, actual, "Response data does not match expected value:\nexpected: \(expected)\nactual: \(actual)")
+            } catch {
+                XCTFail("Failed to decode response data into type \(T.self): \(error)")
+            }
+        }
+    }
+    
+    public func hasData<T: Decodable & Equatable>(_ expected: T, customDecoder: BodyDecoder) -> Self {
+        return has { response in
+            guard let (_, data) = self.readDataOrFail(from: response) else { return }
+            do {
+                let actual = try customDecoder.decode(T.self, from: data)
                 XCTAssertEqual(expected, actual, "Response data does not match expected value:\nexpected: \(expected)\nactual: \(actual)")
             } catch {
                 XCTFail("Failed to decode response data into type \(T.self): \(error)")

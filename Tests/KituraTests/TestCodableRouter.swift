@@ -43,7 +43,8 @@ class TestCodableRouter: KituraTest {
             ("testCodableDeleteQueryParameters", testCodableDeleteQueryParameters),
             ("testCodablePostSuccessStatuses", testCodablePostSuccessStatuses),
             ("testNoDataCustomStatus", testNoDataCustomStatus),
-            ("testNoDataDefaultStatus", testNoDataDefaultStatus)
+            ("testNoDataDefaultStatus", testNoDataDefaultStatus),
+            ("testCustomCoder", testCustomCoder)
         ]
     }
 
@@ -106,6 +107,16 @@ class TestCodableRouter: KituraTest {
 
         static func ==(lhs: Status, rhs: Status) -> Bool {
             return lhs.description == rhs.description
+        }
+    }
+    
+    struct CodableDate: Codable, Equatable {
+        let date: Date
+        init(date: Date) {
+            self.date = date
+        }
+        public static func == (lhs: CodableDate, rhs: CodableDate) -> Bool {
+            return lhs.date == rhs.date
         }
     }
 
@@ -886,4 +897,109 @@ class TestCodableRouter: KituraTest {
 
             .run()
     }
+    
+    func testCustomCoder() {
+        struct SimpleQuery: QueryParams {
+            let string: String
+        }
+        let jsonEncoder = JSONEncoder()
+        jsonEncoder.dateEncodingStrategy = .secondsSince1970
+        let jsonDecoder = JSONDecoder()
+        jsonDecoder.dateDecodingStrategy = .secondsSince1970
+
+        
+        let customRouter = Router(encoder: jsonEncoder, decoder: jsonDecoder)
+        let date = Date(timeIntervalSince1970: 1519206456)
+        let codableDate = CodableDate(date: date)
+        print("codableDate \(codableDate)")
+        customRouter.get("/customCoder") { (respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("GET on /customCoder")
+            respondWith(codableDate, nil)
+        }
+        customRouter.get("/customCoderArray") { (respondWith: ([CodableDate]?, RequestError?) -> Void) in
+            print("GET on /customCoderArray")
+            respondWith([codableDate], nil)
+        }
+        customRouter.get("/customCoderTuple") { (respondWith: ([(Int, CodableDate)]?, RequestError?) -> Void) in
+            print("GET on /customCoderTuple")
+            respondWith([(1, codableDate)], nil)
+        }
+        customRouter.get("/customCoderQuery") { (query: SimpleQuery, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("GET on /customCoderQuery")
+            respondWith(codableDate, nil)
+        }
+        customRouter.get("/customCoderQueryArray") { (query: SimpleQuery, respondWith: ([CodableDate]?, RequestError?) -> Void) in
+            print("GET on /customCoderQueryArray")
+            respondWith([codableDate], nil)
+        }
+        customRouter.post("/customCoder") { (inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("POST on /customCoder for date \(inDate)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(codableDate, nil)
+        }
+        customRouter.post("/customCoderId") { (inDate: CodableDate, respondWith: (Int?, CodableDate?, RequestError?) -> Void) in
+            print("POST on /customCoderId for user \(inDate)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(1, codableDate, nil)
+        }
+        customRouter.put("/customCoder") { (id: Int, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("PUT on /customCoder/\(id)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(codableDate, nil)
+        }
+        customRouter.patch("/customCoder") { (id: Int, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("PATCH on /customCoder/\(id)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(codableDate, nil)
+        }
+        
+        buildServerTest(customRouter, timeout: 30)
+            .request("get", path: "/customCoder")
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+            
+            .request("get", path: "/customCoderArray")
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData([codableDate], customDecoder: jsonDecoder)
+            
+            .request("get", path: "/customCoderTuple")
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData([[1: codableDate]], customDecoder: jsonDecoder)
+            
+            .request("get", path: "/customCoderQuery?string=hello")
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+            
+            .request("get", path: "/customCoderQueryArray?string=hello")
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData([codableDate], customDecoder: jsonDecoder)
+            
+            .request("post", path: "/customCoder", data: codableDate, headers: nil, encoder: jsonEncoder)
+            .hasStatus(.created)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+            
+            .request("post", path: "/customCoderId", data: codableDate, headers: nil, encoder: jsonEncoder)
+            .hasStatus(.created)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+            
+            .request("put", path: "/customCoder/1", data: codableDate, headers: nil, encoder: jsonEncoder)
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+            
+            .request("patch", path: "/customCoder/1", data: codableDate, headers: nil, encoder: jsonEncoder)
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+
+            .run()
+    }
+
 }

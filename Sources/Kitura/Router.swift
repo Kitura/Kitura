@@ -18,6 +18,7 @@ import KituraNet
 import LoggerAPI
 import Foundation
 import KituraTemplateEngine
+import KituraContracts
 
 // MARK Router
 
@@ -33,6 +34,11 @@ import KituraTemplateEngine
 
 public class Router {
 
+    /// The encoder instance used for encoding Codable objects
+    internal let encoder: BodyEncoder
+    /// The decoder instance used for encoding Codable objects
+    internal let decoder: BodyDecoder
+    
     /// Contains the list of routing elements
     var elements: [RouterElement] = []
 
@@ -116,10 +122,11 @@ public class Router {
     /// ```
     /// - Parameter mergeParameters: Optional parameter to specify if the router should be able to access parameters
     ///                                 from its parent router. Defaults to `false` if not specified.
-    public init(mergeParameters: Bool = false) {
+    public init(mergeParameters: Bool = false, encoder: BodyEncoder = JSONEncoder(), decoder: BodyDecoder = JSONDecoder()) {
         self.swagger = SwaggerDocument()
         self.mergeParameters = mergeParameters
-
+        self.encoder = encoder
+        self.decoder = decoder
         Log.verbose("Router initialized")
     }
 
