@@ -709,51 +709,6 @@ public struct CodableHelpers {
     
     /**
      * Create a closure that can be called by a codable route handler that
-     * provides only an optional `RequestError`
-     *
-     * - Note: This function is intended for use by the codable router or extensions
-     *         thereof. It will create a closure that can be passed to the registered
-     *         route handler.
-     *
-     * - Parameter response: The `RouterResponse` to which the codable response error and
-     *                       status code will be written
-     * - Parameter completion: The completion to be called after the returned
-     *                         closure completes execution.
-     * - Returns: The closure to pass to the codable route handler. The closure takes one argument
-     *            `(RequestError?)`.
-     *            If the argument is `nil` then the response will be considered successful, otherwise
-     *            it will be considered failed.
-     *
-     *            If successful, the HTTP status code will be set to `HTTPStatusCode.noContent` and no
-     *            body will be sent.
-     *
-     *            If failed, the HTTP status code used for the response will be set to either the
-     *            `httpCode` of the `RequestError`, if that is a valid HTTP status code, or
-     *            `HTTPStatusCode.unknown` otherwise. If the `RequestError` has a codable `body` then
-     *            it will be encoded and sent as the body of the response.
-     */
-    public static func constructResultHandler(response: RouterResponse, encoder: BodyEncoder = JSONEncoder(), completion: @escaping () -> Void) -> ResultClosure {
-        return { error in
-            if let error = error {
-                response.status(httpStatusCode(from: error))
-                do {
-                    if let bodyData = try error.encodeBody(.json) {
-                        response.headers.setType(encoder.contentType)
-                        response.send(data: bodyData)
-                    }
-                } catch {
-                    Log.error("Could not encode error: \(error)")
-                    response.status(.internalServerError)
-                }
-            } else {
-                response.status(.noContent)
-            }
-            completion()
-        }
-    }
-
-    /**
-     * Create a closure that can be called by a codable route handler that
      * provides an optional `Codable` body and an optional `RequestError`
      *
      * - Note: This function is intended for use by the codable router or extensions
