@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-<a href="http://www.kitura.io/en/api/">
+<a href="https://www.kitura.io/packages.html#all">
 <img src="https://img.shields.io/badge/docs-kitura.io-1FBCE4.svg" alt="Docs">
 </a>
 <a href="https://travis-ci.org/IBM-Swift/Kitura">

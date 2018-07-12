@@ -45,7 +45,7 @@ class TestRequests: KituraTest {
             XCTAssertNotNil(parameter, "URL parameter p1 was nil")
             XCTAssertEqual(request.hostname, "localhost", "RouterRequest.hostname wasn't localhost, it was \(request.hostname)")
             XCTAssertEqual(request.port, self.port, "RouterRequest.port wasn't \(self.port), it was \(request.port)")
-            XCTAssertEqual(request.remoteAddress, "127.0.0.1", "RouterRequest.remoteAddress wasn't 127.0.0.1, it was \(request.remoteAddress)")
+            XCTAssertTrue(request.remoteAddress == "127.0.0.1" || request.remoteAddress == "::1", "RouterRequest.remoteAddress was neither 127.0.0.1 nor ::1, it was \(request.remoteAddress)")
             next()
         }
         router.get("/zxcv/ploni") { request, _, next in
