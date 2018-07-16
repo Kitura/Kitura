@@ -2,7 +2,7 @@
 
 import Kitura
 
-#if NIO
+#if KITURA_NIO
 import KituraNIO
 #else
 import KituraNet

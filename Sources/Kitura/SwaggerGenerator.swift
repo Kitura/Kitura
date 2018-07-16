@@ -16,7 +16,7 @@
 import Foundation
 import LoggerAPI
 
-#if NIO
+#if KITURA_NIO
 import KituraNIO
 #else
 import KituraNet

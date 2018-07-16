@@ -19,7 +19,7 @@ import Foundation
 
 @testable import Kitura
 
-#if NIO
+#if KITURA_NIO
 @testable import KituraNIO
 #else
 @testable import KituraNet

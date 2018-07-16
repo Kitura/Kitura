@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#if NIO
+#if KITURA_NIO
 import KituraNIO
 #else
 import KituraNet

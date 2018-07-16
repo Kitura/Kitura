@@ -17,7 +17,7 @@
 import XCTest
 import Kitura
 
-#if NIO
+#if KITURA_NIO
 @testable import KituraNIO
 #else
 @testable import KituraNet
@@ -131,7 +131,7 @@ class KituraTest: XCTestCase {
 
         let server = HTTP.createServer()
 
-        #if NIO
+        #if KITURA_NIO
         server.allowPortReuse = true
         #endif
 

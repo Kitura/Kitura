@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#if NIO
+#if KITURA_NIO
 import KituraNIO
 #else
 import KituraNet
