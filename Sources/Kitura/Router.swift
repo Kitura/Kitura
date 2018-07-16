@@ -18,6 +18,7 @@ import KituraNet
 import LoggerAPI
 import Foundation
 import KituraTemplateEngine
+import KituraContracts
 
 // MARK Router
 
@@ -34,9 +35,9 @@ import KituraTemplateEngine
 public class Router {
 
     /// The encoder instance used for encoding Codable objects
-    internal let encoder: BodyEncoder
+    let encoder: BodyEncoder
     /// The decoder instance used for encoding Codable objects
-    internal let decoder: BodyDecoder
+    let decoder: BodyDecoder
     
     /// Contains the list of routing elements
     var elements: [RouterElement] = []
