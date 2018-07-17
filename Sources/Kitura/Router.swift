@@ -34,10 +34,10 @@ import KituraContracts
 
 public class Router {
 
-    /// The encoder instance used for encoding Codable objects
-    public var encoders: [String: () -> BodyEncoder] = ["application/json": {return JSONEncoder()}]
-    /// The decoder instance used for encoding Codable objects
-    public var decoders: [String: () -> BodyDecoder] = ["application/json": {return JSONDecoder()}]
+    /// A dictionary of Content-type to BodyEncoder generators
+    public var encoders: [String: () -> BodyEncoder] = ["application/json": {return JSONEncoder()}, "application/x-www-form-urlencoded": {return QueryEncoder()}]
+    /// A dictionary of Content-type to BodyDecoder generators
+    public var decoders: [String: () -> BodyDecoder] = ["application/json": {return JSONDecoder()}, "application/x-www-form-urlencoded": {return QueryDecoder()}]
     
     /// Contains the list of routing elements
     var elements: [RouterElement] = []
@@ -125,6 +125,7 @@ public class Router {
     public init(mergeParameters: Bool = false) {
         self.swagger = SwaggerDocument()
         self.mergeParameters = mergeParameters
+        
         Log.verbose("Router initialized")
     }
 

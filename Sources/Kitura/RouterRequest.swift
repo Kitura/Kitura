@@ -194,7 +194,7 @@ public class RouterRequest {
     /// - Throws: `DecodingError.dataCorrupted` if values requested from the payload are corrupted, or if the given data is not valid JSON.
     /// - Throws: An error if any value throws an error during decoding.
     /// - Returns: The instantiated Codable object
-    public func read<T: Decodable>(as type: T.Type, decoder: BodyDecoder = JSONDecoder()) throws -> T {
+    public func read<T: Decodable>(as type: T.Type) throws -> T {
         // FIXME: RouterRequest should cache the content type, so that this is just a lookup
         if CodableHelpers.isContentTypeURLEncoded(self) {
             let body = try self.readString()
@@ -203,6 +203,19 @@ public class RouterRequest {
             }
             return try QueryDecoder(dictionary: urlKeyValuePairs).decode(type)
         }
+        var data = Data()
+        _ = try serverRequest.read(into: &data)
+        return try JSONDecoder().decode(type, from: data)
+    }
+    
+    /// Read the body of the request as a Codable object using the given `BodyDecoder`
+    /// - Parameter as: Codable object to which the body of the request will be converted.
+    /// - Parameter decoder: The BodyDecoder which will be used to decode the request as the Codable object.
+    /// - Throws: Socket.Error if an error occurred while reading from a socket.
+    /// - Throws: `DecodingError.dataCorrupted` if values requested from the payload are corrupted, or if the given data is not valid JSON.
+    /// - Throws: An error if any value throws an error during decoding.
+    /// - Returns: The instantiated Codable object
+    public func read<T: Decodable>(as type: T.Type, decoder: BodyDecoder) throws -> T {
         var data = Data()
         _ = try serverRequest.read(into: &data)
         return try decoder.decode(type, from: data)

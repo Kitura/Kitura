@@ -634,7 +634,8 @@ extension Router {
 //
 public struct CodableHelpers {
     
-    public static var defaultDecoders: [String: () -> BodyDecoder] = ["application/json": {return JSONDecoder()}]
+    /// The default decoders which will be used by `readCodableOrSetResponseStatus` to decode the content type if no decoders are provided.
+    public static var defaultDecoders: [String: () -> BodyDecoder] = ["application/json": {return JSONDecoder()}, "application/x-www-form-urlencoded": {return QueryDecoder()}]
     
     /**
      * Check if the given request has content type JSON
@@ -686,6 +687,27 @@ public struct CodableHelpers {
             }
         }
         return bestEncoder()
+    }
+    
+    /**
+     * Return the highest rated encoder using the request's Accepts header
+     *
+     * ### Usage Example: ###
+     * ```swift
+     * let decoders: [String: () -> BodyDecoder] = ["application/json": {return JSONEncoder()}]
+     * let decoder = CodableHelpers.selectRequestDecoder(request, decoders: decoders)
+     * ```
+     * - Parameter request: The RouterRequest to check
+     * - Parameter decoders: A dictionary of Content-type to BodyDecoder generators
+     * - Returns: A decoder for the request content type or nil if none match.
+     */
+    public static func selectRequestDecoder(_ request: RouterRequest, decoders: [String: () -> BodyDecoder]) -> BodyDecoder? {
+        guard let contentType = request.headers["Content-Type"],
+              let decoder = decoders[contentType.components(separatedBy: ";")[0]]
+        else {
+            return nil
+        }
+        return decoder()
     }
     
     /**
@@ -745,7 +767,7 @@ public struct CodableHelpers {
             completion()
         }
     }
-    
+
     /**
      * Create a closure that can be called by a codable route handler that
      * provides an optional `Codable` body and an optional `RequestError`
@@ -783,7 +805,7 @@ public struct CodableHelpers {
             if status.class != .successful, let error = error {
                 do {
                     if let bodyData = try error.encodeBody(.json) {
-                        response.headers.setType(encoder.contentType)
+                        response.headers.setType("json")
                         response.send(data: bodyData)
                     }
                 } catch {
@@ -845,7 +867,7 @@ public struct CodableHelpers {
             if status.class != .successful, let error = error {
                 do {
                     if let bodyData = try error.encodeBody(.json) {
-                        response.headers.setType(encoder.contentType)
+                        response.headers.setType("json")
                         response.send(data: bodyData)
                     }
                 } catch {
@@ -910,7 +932,7 @@ public struct CodableHelpers {
             if status.class != .successful, let error = error {
                 do {
                     if let bodyData = try error.encodeBody(.json) {
-                        response.headers.setType(encoder.contentType)
+                        response.headers.setType("json")
                         response.send(data: bodyData)
                     }
                 } catch {
@@ -955,10 +977,7 @@ public struct CodableHelpers {
      * - Returns: An instance of `InputType` representing the decoded body data.
      */
     public static func readCodableOrSetResponseStatus<InputType: Codable>(_ inputCodableType: InputType.Type, from request: RouterRequest, response: RouterResponse, decoders: [String: () -> BodyDecoder] = defaultDecoders) -> InputType? {
-        
-        guard let contentType = request.headers["Content-Type"],
-              let decoderGenerator = decoders[contentType.components(separatedBy: ";")[0]]
-        else {
+        guard let decoder = selectRequestDecoder(request, decoders: decoders) else {
             response.status(.unsupportedMediaType)
             return nil
         }
@@ -968,15 +987,15 @@ public struct CodableHelpers {
             return nil
         }
         do {
-            return try request.read(as: InputType.self, decoder: decoderGenerator())
+            return try request.read(as: InputType.self, decoder: decoder)
         } catch {
             Log.error("Failed to read Codable input from request: \(error)")
             response.status(.unprocessableEntity)
             if let decodingError = error as? DecodingError {
-                response.send("Could not decode received \(contentType): \(decodingError.humanReadableDescription)")
+                response.send("Could not decode received \(decoder.contentType): \(decodingError.humanReadableDescription)")
             } else {
                 // Linux Swift does not send a DecodingError when the JSON is invalid, instead it sends Error "The operation could not be completed"
-                response.send("Could not decode received \(contentType).")
+                response.send("Could not decode received \(decoder.contentType).")
             }
             return nil
         }
