@@ -35,9 +35,9 @@ import KituraContracts
 public class Router {
 
     /// The encoder instance used for encoding Codable objects
-    let encoder: BodyEncoder
+    public var encoders: [String: () -> BodyEncoder] = ["application/json": {return JSONEncoder()}]
     /// The decoder instance used for encoding Codable objects
-    let decoder: BodyDecoder
+    public var decoders: [String: () -> BodyDecoder] = ["application/json": {return JSONDecoder()}]
     
     /// Contains the list of routing elements
     var elements: [RouterElement] = []
@@ -122,11 +122,9 @@ public class Router {
     /// ```
     /// - Parameter mergeParameters: Optional parameter to specify if the router should be able to access parameters
     ///                                 from its parent router. Defaults to `false` if not specified.
-    public init(mergeParameters: Bool = false, encoder: BodyEncoder = JSONEncoder(), decoder: BodyDecoder = JSONDecoder()) {
+    public init(mergeParameters: Bool = false) {
         self.swagger = SwaggerDocument()
         self.mergeParameters = mergeParameters
-        self.encoder = encoder
-        self.decoder = decoder
         Log.verbose("Router initialized")
     }
 

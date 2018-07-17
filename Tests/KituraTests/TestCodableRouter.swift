@@ -187,16 +187,16 @@ class TestCodableRouter: KituraTest {
             .hasStatus(.created)
             .hasContentType(withPrefix: "application/json")
             .hasData(user)
-            
+
             .request("post", path: "/urlencoded", urlEncodedString: "id=4&name=David&extra=yes")
             .hasStatus(.created)
             .hasContentType(withPrefix: "application/json")
             .hasData(user)
-            
+
             .request("post", path: "/urlencoded", urlEncodedString: "encoding=valid&failed=match")
             .hasStatus(.unprocessableEntity)
             .hasData()
-            
+
             .request("post", path: "/urlencoded", urlEncodedString: "invalidEncoding")
             .hasStatus(.unprocessableEntity)
             .hasData()
@@ -902,13 +902,20 @@ class TestCodableRouter: KituraTest {
         struct SimpleQuery: QueryParams {
             let string: String
         }
-        let jsonEncoder = JSONEncoder()
-        jsonEncoder.dateEncodingStrategy = .secondsSince1970
-        let jsonDecoder = JSONDecoder()
-        jsonDecoder.dateDecodingStrategy = .secondsSince1970
-
+        let jsonEncoder: () -> BodyEncoder = {
+            let encoder = JSONEncoder()
+            encoder.dateEncodingStrategy = .secondsSince1970
+            return encoder
+        }
+        let jsonDecoder: () -> BodyDecoder = {
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .secondsSince1970
+            return decoder
+        }
+        let customRouter = Router()
+        customRouter.decoders["application/json"] = jsonDecoder
+        customRouter.encoders["application/json"] = jsonEncoder
         
-        let customRouter = Router(encoder: jsonEncoder, decoder: jsonDecoder)
         let date = Date(timeIntervalSince1970: 1519206456)
         let codableDate = CodableDate(date: date)
         print("codableDate \(codableDate)")

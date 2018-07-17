@@ -45,7 +45,7 @@ protocol RequestTestBuilder {
     func request(_ method: String, path: String, headers: [String:String]?) -> AssertionTestBuilder
     func request<T: Encodable>(_ method: String, path: String, data: T) -> AssertionTestBuilder
     func request<T: Encodable>(_ method: String, path: String, data: T, headers: [String:String]?) -> AssertionTestBuilder
-    func request<T: Encodable>(_ method: String, path: String, data: T, headers: [String:String]?, encoder: BodyEncoder) -> AssertionTestBuilder
+    func request<T: Encodable>(_ method: String, path: String, data: T, headers: [String:String]?, encoder: @escaping () -> BodyEncoder) -> AssertionTestBuilder
     func request(_ method: String, path: String, urlEncodedString: String) -> AssertionTestBuilder
     func request(_ method: String, path: String, urlEncodedString: String, headers: [String:String]?) -> AssertionTestBuilder
     func run()
@@ -61,7 +61,7 @@ protocol AssertionTestBuilder: RequestTestBuilder {
     func hasData(_ expected: String) -> Self
     func hasData<T: Decodable & Equatable>(_ expected: [T]) -> Self
     func hasData<T: Decodable & Equatable>(_ expected: T) -> Self
-    func hasData<T: Decodable & Equatable>(_ expected: T, customDecoder: BodyDecoder) -> Self
+    func hasData<T: Decodable & Equatable>(_ expected: T, customDecoder: @escaping () -> BodyDecoder) -> Self
     func hasData<T: Decodable & Equatable>(_ expected: [[String: T]]) -> Self
 }
 
@@ -93,12 +93,12 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
             }
         }
         
-        init<T: Encodable>(_ test: KituraTest, _ method: String, _ path: String, _ data: T, headers: [String:String]? = nil, encoder: BodyEncoder) {
+        init<T: Encodable>(_ test: KituraTest, _ method: String, _ path: String, _ data: T, headers: [String:String]? = nil, encoder: @escaping () -> BodyEncoder) {
             self.test = test
             self.invoker = { callback in
-                let data = try encoder.encode(data)
+                let data = try encoder().encode(data)
                 test.performRequest(method, path: path, callback: callback, headers: headers, requestModifier: { request in
-                    let encoderType = ContentType.sharedInstance.getContentType(forExtension: encoder.contentType) ?? "application/json"
+                    let encoderType = ContentType.sharedInstance.getContentType(forExtension: encoder().contentType) ?? "application/json"
                     request.headers["Content-Type"] = "\(encoderType); charset=utf-8"
                     request.write(from: data)
                 })
@@ -149,7 +149,7 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
         return self
     }
     
-    public func request<T: Encodable>(_ method: String, path: String, data: T, headers: [String:String]?, encoder: BodyEncoder) -> AssertionTestBuilder {
+    public func request<T: Encodable>(_ method: String, path: String, data: T, headers: [String:String]?, encoder: @escaping () -> BodyEncoder) -> AssertionTestBuilder {
         requests.append(Request(test, method, path, data, headers: headers, encoder: encoder))
         return self
     }
@@ -273,11 +273,11 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
         }
     }
     
-    public func hasData<T: Decodable & Equatable>(_ expected: T, customDecoder: BodyDecoder) -> Self {
+    public func hasData<T: Decodable & Equatable>(_ expected: T, customDecoder: @escaping () -> BodyDecoder) -> Self {
         return has { response in
             guard let (_, data) = self.readDataOrFail(from: response) else { return }
             do {
-                let actual = try customDecoder.decode(T.self, from: data)
+                let actual = try customDecoder().decode(T.self, from: data)
                 XCTAssertEqual(expected, actual, "Response data does not match expected value:\nexpected: \(expected)\nactual: \(actual)")
             } catch {
                 XCTFail("Failed to decode response data into type \(T.self): \(error)")

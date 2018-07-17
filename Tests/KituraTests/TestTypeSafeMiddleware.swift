@@ -49,6 +49,7 @@ class TestTypeSafeMiddleware: KituraTest {
             ("testMultipleMiddlewarePut", testMultipleMiddlewarePut),
             ("testSingleMiddlewarePatch", testSingleMiddlewarePatch),
             ("testMultipleMiddlewarePatch", testMultipleMiddlewarePatch),
+            ("testCustomCoder", testCustomCoder),
         ]
     }
 
@@ -850,6 +851,296 @@ class TestTypeSafeMiddleware: KituraTest {
             .hasStatus(.badRequest)
             .hasNoData()
 
+            .run()
+    }
+    
+    func testCustomCoder() {
+        struct SimpleQuery: QueryParams {
+            let string: String
+        }
+        struct CodableDate: Codable, Equatable {
+            let date: Date
+            init(date: Date) {
+                self.date = date
+            }
+            public static func == (lhs: CodableDate, rhs: CodableDate) -> Bool {
+                return lhs.date == rhs.date
+            }
+        }
+        let jsonEncoder: () -> BodyEncoder = {
+            let encoder = JSONEncoder()
+            encoder.dateEncodingStrategy = .secondsSince1970
+            return encoder
+        }
+        let jsonDecoder: () -> BodyDecoder = {
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .secondsSince1970
+            return decoder
+        }
+        let customRouter = Router()
+        customRouter.decoders["application/json"] = jsonDecoder
+        customRouter.encoders["application/json"] = jsonEncoder
+        
+        let date = Date(timeIntervalSince1970: 1519206456)
+        let codableDate = CodableDate(date: date)
+        print("codableDate \(codableDate)")
+        customRouter.get("/customCoder1") { (middleware: UserMiddleware, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("GET on /customCoder")
+            respondWith(codableDate, nil)
+        }
+        customRouter.get("/customCoder2") { (middleware: UserMiddleware, middleware2: UserMiddleware, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("GET on /customCoder")
+            respondWith(codableDate, nil)
+        }
+        customRouter.get("/customCoder3") { (middleware: UserMiddleware, middleware2: UserMiddleware, middleware3: UserMiddleware, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("GET on /customCoder")
+            respondWith(codableDate, nil)
+        }
+        customRouter.get("/customCoderArray1") { (middleware: UserMiddleware, respondWith: ([CodableDate]?, RequestError?) -> Void) in
+            print("GET on /customCoderArray")
+            respondWith([codableDate], nil)
+        }
+        customRouter.get("/customCoderArray2") { (middleware: UserMiddleware, middleware2: UserMiddleware, respondWith: ([CodableDate]?, RequestError?) -> Void) in
+            print("GET on /customCoderArray")
+            respondWith([codableDate], nil)
+        }
+        customRouter.get("/customCoderArray3") { (middleware: UserMiddleware, middleware2: UserMiddleware, middleware3: UserMiddleware, respondWith: ([CodableDate]?, RequestError?) -> Void) in
+            print("GET on /customCoderArray")
+            respondWith([codableDate], nil)
+        }
+        customRouter.get("/customCoderTuple1") { (middleware: UserMiddleware, respondWith: ([(Int, CodableDate)]?, RequestError?) -> Void) in
+            print("GET on /customCoderTuple")
+            respondWith([(1, codableDate)], nil)
+        }
+        customRouter.get("/customCoderTuple2") { (middleware: UserMiddleware, middleware2: UserMiddleware, respondWith: ([(Int, CodableDate)]?, RequestError?) -> Void) in
+            print("GET on /customCoderTuple")
+            respondWith([(1, codableDate)], nil)
+        }
+        customRouter.get("/customCoderTuple3") { (middleware: UserMiddleware, middleware2: UserMiddleware, middleware3: UserMiddleware, respondWith: ([(Int, CodableDate)]?, RequestError?) -> Void) in
+            print("GET on /customCoderTuple")
+            respondWith([(1, codableDate)], nil)
+        }
+        customRouter.get("/customCoderQuery1") { (middleware: UserMiddleware, query: SimpleQuery, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("GET on /customCoderQuery")
+            respondWith(codableDate, nil)
+        }
+        customRouter.get("/customCoderQuery2") { (middleware: UserMiddleware, middleware2: UserMiddleware, query: SimpleQuery, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("GET on /customCoderQuery")
+            respondWith(codableDate, nil)
+        }
+        customRouter.get("/customCoderQuery3") { (middleware: UserMiddleware, middleware2: UserMiddleware, middleware3: UserMiddleware, query: SimpleQuery, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("GET on /customCoderQuery")
+            respondWith(codableDate, nil)
+        }
+        customRouter.get("/customCoderQueryArray1") { (middleware: UserMiddleware, query: SimpleQuery, respondWith: ([CodableDate]?, RequestError?) -> Void) in
+            print("GET on /customCoderQueryArray")
+            respondWith([codableDate], nil)
+        }
+        customRouter.get("/customCoderQueryArray2") { (middleware: UserMiddleware, middleware2: UserMiddleware, query: SimpleQuery, respondWith: ([CodableDate]?, RequestError?) -> Void) in
+            print("GET on /customCoderQueryArray")
+            respondWith([codableDate], nil)
+        }
+        customRouter.get("/customCoderQueryArray3") { (middleware: UserMiddleware, middleware2: UserMiddleware, middleware3: UserMiddleware, query: SimpleQuery, respondWith: ([CodableDate]?, RequestError?) -> Void) in
+            print("GET on /customCoderQueryArray")
+            respondWith([codableDate], nil)
+        }
+        customRouter.post("/customCoder1") { (middleware: UserMiddleware, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("POST on /customCoder for date \(inDate)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(codableDate, nil)
+        }
+        customRouter.post("/customCoder2") { (middleware: UserMiddleware, middleware2: UserMiddleware, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("POST on /customCoder for date \(inDate)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(codableDate, nil)
+        }
+        customRouter.post("/customCoder3") { (middleware: UserMiddleware, middleware2: UserMiddleware, middleware3: UserMiddleware, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("POST on /customCoder for date \(inDate)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(codableDate, nil)
+        }
+        customRouter.post("/customCoderId1") { (middleware: UserMiddleware, inDate: CodableDate, respondWith: (Int?, CodableDate?, RequestError?) -> Void) in
+            print("POST on /customCoderId for user \(inDate)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(1, codableDate, nil)
+        }
+        customRouter.post("/customCoderId2") { (middleware: UserMiddleware, middleware2: UserMiddleware, inDate: CodableDate, respondWith: (Int?, CodableDate?, RequestError?) -> Void) in
+            print("POST on /customCoderId for user \(inDate)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(1, codableDate, nil)
+        }
+        customRouter.post("/customCoderId3") { (middleware: UserMiddleware, middleware2: UserMiddleware, middleware3: UserMiddleware, inDate: CodableDate, respondWith: (Int?, CodableDate?, RequestError?) -> Void) in
+            print("POST on /customCoderId for user \(inDate)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(1, codableDate, nil)
+        }
+        customRouter.put("/customCoder1") { (middleware: UserMiddleware, id: Int, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("PUT on /customCoder/\(id)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(codableDate, nil)
+        }
+        customRouter.put("/customCoder2") { (middleware: UserMiddleware, middleware2: UserMiddleware, id: Int, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("PUT on /customCoder/\(id)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(codableDate, nil)
+        }
+        customRouter.put("/customCoder3") { (middleware: UserMiddleware, middleware2: UserMiddleware, middleware3: UserMiddleware, id: Int, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("PUT on /customCoder/\(id)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(codableDate, nil)
+        }
+        customRouter.patch("/customCoder1") { (middleware: UserMiddleware, id: Int, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("PATCH on /customCoder/\(id)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(codableDate, nil)
+        }
+        customRouter.patch("/customCoder2") { (middleware: UserMiddleware, middleware2: UserMiddleware, id: Int, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("PATCH on /customCoder/\(id)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(codableDate, nil)
+        }
+        customRouter.patch("/customCoder3") { (middleware: UserMiddleware, middleware2: UserMiddleware, middleware3: UserMiddleware, id: Int, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("PATCH on /customCoder/\(id)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(codableDate, nil)
+        }
+        
+        buildServerTest(customRouter, timeout: 30)
+            .request("get", path: "/customCoder1", headers: ["TestHeader": "Hello"])
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+            
+            .request("get", path: "/customCoder2", headers: ["TestHeader": "Hello"])
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+            
+            .request("get", path: "/customCoder3", headers: ["TestHeader": "Hello"])
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+            
+            .request("get", path: "/customCoderArray1", headers: ["TestHeader": "Hello"])
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData([codableDate], customDecoder: jsonDecoder)
+            
+            .request("get", path: "/customCoderArray2", headers: ["TestHeader": "Hello"])
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData([codableDate], customDecoder: jsonDecoder)
+            
+            .request("get", path: "/customCoderArray3", headers: ["TestHeader": "Hello"])
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData([codableDate], customDecoder: jsonDecoder)
+            
+            .request("get", path: "/customCoderTuple1", headers: ["TestHeader": "Hello"])
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData([[1: codableDate]], customDecoder: jsonDecoder)
+            
+            .request("get", path: "/customCoderTuple2", headers: ["TestHeader": "Hello"])
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData([[1: codableDate]], customDecoder: jsonDecoder)
+            
+            .request("get", path: "/customCoderTuple3", headers: ["TestHeader": "Hello"])
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData([[1: codableDate]], customDecoder: jsonDecoder)
+            
+            .request("get", path: "/customCoderQuery1?string=hello", headers: ["TestHeader": "Hello"])
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+            
+            .request("get", path: "/customCoderQuery2?string=hello", headers: ["TestHeader": "Hello"])
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+            
+            .request("get", path: "/customCoderQuery3?string=hello", headers: ["TestHeader": "Hello"])
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+            
+            .request("get", path: "/customCoderQueryArray1?string=hello", headers: ["TestHeader": "Hello"])
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData([codableDate], customDecoder: jsonDecoder)
+            
+            .request("get", path: "/customCoderQueryArray2?string=hello", headers: ["TestHeader": "Hello"])
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData([codableDate], customDecoder: jsonDecoder)
+            
+            .request("get", path: "/customCoderQueryArray3?string=hello", headers: ["TestHeader": "Hello"])
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData([codableDate], customDecoder: jsonDecoder)
+            
+            .request("post", path: "/customCoder1", data: codableDate, headers: ["TestHeader": "Hello"], encoder: jsonEncoder)
+            .hasStatus(.created)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+            
+            .request("post", path: "/customCoder2", data: codableDate, headers: ["TestHeader": "Hello"], encoder: jsonEncoder)
+            .hasStatus(.created)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+            
+            .request("post", path: "/customCoder3", data: codableDate, headers: ["TestHeader": "Hello"], encoder: jsonEncoder)
+            .hasStatus(.created)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+            
+            .request("post", path: "/customCoderId1", data: codableDate, headers: ["TestHeader": "Hello"], encoder: jsonEncoder)
+            .hasStatus(.created)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+            
+            .request("post", path: "/customCoderId2", data: codableDate, headers: ["TestHeader": "Hello"], encoder: jsonEncoder)
+            .hasStatus(.created)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+            
+            .request("post", path: "/customCoderId3", data: codableDate, headers: ["TestHeader": "Hello"], encoder: jsonEncoder)
+            .hasStatus(.created)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+            
+            .request("put", path: "/customCoder1/1", data: codableDate, headers: ["TestHeader": "Hello"], encoder: jsonEncoder)
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+            
+            .request("put", path: "/customCoder2/1", data: codableDate, headers: ["TestHeader": "Hello"], encoder: jsonEncoder)
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+            
+            .request("put", path: "/customCoder3/1", data: codableDate, headers: ["TestHeader": "Hello"], encoder: jsonEncoder)
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+            
+            .request("patch", path: "/customCoder1/1", data: codableDate, headers: ["TestHeader": "Hello"], encoder: jsonEncoder)
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+            
+            .request("patch", path: "/customCoder2/1", data: codableDate, headers: ["TestHeader": "Hello"], encoder: jsonEncoder)
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+            
+            .request("patch", path: "/customCoder3/1", data: codableDate, headers: ["TestHeader": "Hello"], encoder: jsonEncoder)
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+            
             .run()
     }
 }

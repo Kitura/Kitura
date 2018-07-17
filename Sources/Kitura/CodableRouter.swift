@@ -360,11 +360,12 @@ extension Router {
         registerPostRoute(route: route, inputType: I.self, outputType: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
-            guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response, decoder: self.decoder) else {
+            guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response, decoders: self.decoders) else {
                 next()
                 return
             }
-            handler(codableInput, CodableHelpers.constructOutResultHandler(successStatus: .created, response: response, encoder: self.encoder, completion: next))
+            let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
+            handler(codableInput, CodableHelpers.constructOutResultHandler(successStatus: .created, response: response, encoder: encoder, completion: next))
         }
     }
 
@@ -373,11 +374,12 @@ extension Router {
         registerPostRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
-            guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response, decoder: self.decoder) else {
+            guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response, decoders: self.decoders) else {
                 next()
                 return
             }
-            handler(codableInput, CodableHelpers.constructIdentOutResultHandler(successStatus: .created, response: response, encoder: self.encoder, completion: next))
+            let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
+            handler(codableInput, CodableHelpers.constructIdentOutResultHandler(successStatus: .created, response: response, encoder: encoder, completion: next))
         }
     }
 
@@ -390,12 +392,13 @@ extension Router {
         put(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PUT type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
-                  let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response, decoder: self.decoder)
+                  let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response, decoders: self.decoders)
             else {
                 next()
                 return
             }
-            handler(identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, encoder: self.encoder, completion: next))
+            let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
+            handler(identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
         }
     }
 
@@ -408,12 +411,13 @@ extension Router {
         patch(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PATCH type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
-                  let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response, decoder: self.decoder)
+                  let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response, decoders: self.decoders)
             else {
                 next()
                 return
             }
-            handler(identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, encoder: self.encoder, completion: next))
+            let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
+            handler(identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
         }
     }
 
@@ -422,7 +426,8 @@ extension Router {
         registerGetRoute(route: route, outputType: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (single no-identifier) type-safe request")
-            handler(CodableHelpers.constructOutResultHandler(response: response, encoder: self.encoder, completion: next))
+            let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
+            handler(CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
         }
     }
 
@@ -431,7 +436,8 @@ extension Router {
         registerGetRoute(route: route, outputType: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request")
-            handler(CodableHelpers.constructOutResultHandler(response: response, encoder: self.encoder, completion: next))
+            let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
+            handler(CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
         }
     }
     
@@ -440,7 +446,8 @@ extension Router {
         registerGetRoute(route: route, id: Id.self, outputType: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural with identifier) type-safe request")
-            handler(CodableHelpers.constructTupleArrayOutResultHandler(response: response, encoder: self.encoder, completion: next))
+            let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
+            handler(CodableHelpers.constructTupleArrayOutResultHandler(response: response, encoder: encoder, completion: next))
         }
     }
 
@@ -452,7 +459,8 @@ extension Router {
             Log.verbose("Query Parameters: \(request.queryParameters)")
             do {
                 let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
-                handler(query, CodableHelpers.constructOutResultHandler(response: response, encoder: self.encoder, completion: next))
+                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
+                handler(query, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
             } catch {
                 // Http 400 error
                 response.status(.badRequest)
@@ -470,7 +478,8 @@ extension Router {
             // Define result handler
             do {
                 let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
-                handler(query, CodableHelpers.constructOutResultHandler(response: response, encoder: self.encoder, completion: next))
+                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
+                handler(query, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
             } catch {
                 // Http 400 error
                 response.status(.badRequest)
@@ -491,7 +500,8 @@ extension Router {
                 if queryParameters.count > 0 {
                     query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
                 }
-                handler(query, CodableHelpers.constructOutResultHandler(response: response, encoder: self.encoder, completion: next))
+                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
+                handler(query, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
             } catch {
                 // Http 400 error
                 response.status(.badRequest)
@@ -513,7 +523,8 @@ extension Router {
                 if queryParameters.count > 0 {
                     query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
                 }
-                handler(query, CodableHelpers.constructOutResultHandler(response: response, encoder: self.encoder, completion: next))
+                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
+                handler(query, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
             } catch {
                 // Http 400 error
                 response.status(.badRequest)
@@ -533,7 +544,8 @@ extension Router {
                 next()
                 return
             }
-            handler(identifier, CodableHelpers.constructOutResultHandler(response: response, encoder: self.encoder, completion: next))
+            let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
+            handler(identifier, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
         }
     }
 
@@ -621,6 +633,9 @@ extension Router {
 // Building blocks for Codable routing
 //
 public struct CodableHelpers {
+    
+    public static var defaultDecoders: [String: () -> BodyDecoder] = ["application/json": {return JSONDecoder()}]
+    
     /**
      * Check if the given request has content type JSON
      *
@@ -647,6 +662,30 @@ public struct CodableHelpers {
             return false
         }
         return contentType.hasPrefix("application/x-www-form-urlencoded")
+    }
+    
+    /**
+     * Return the highest rated encoder using the request's Accepts header
+     *
+     * ### Usage Example: ###
+     * ```swift
+     * let encoders: [String: () -> BodyEncoder] = ["application/json": {return JSONEncoder()}]
+     * let encoder = CodableHelpers.selectResponseEncoder(request, encoders: encoders)
+     * ```
+     * - Parameter request: The RouterRequest to check
+     * - Parameter encoders: A dictionary of Content-type to BodyEncoder generators
+     * - Returns: The highest rated Encoder, or a JSONEncoder() if no encoders match the Accepts header.
+     */
+    public static func selectResponseEncoder(_ request: RouterRequest, encoders: [String: () -> BodyEncoder]) -> BodyEncoder {
+        let encoderAcceptsTypes = Array(encoders.keys)
+        guard let bestAccepts = request.accepts(types: encoderAcceptsTypes), let bestEncoder = encoders[bestAccepts] else {
+            if let jsonEncoder = encoders["application/json"] {
+                return jsonEncoder()
+            } else {
+                return JSONEncoder()
+            }
+        }
+        return bestEncoder()
     }
     
     /**
@@ -915,11 +954,10 @@ public struct CodableHelpers {
      *                       cases where reading or decoding the data fails.
      * - Returns: An instance of `InputType` representing the decoded body data.
      */
-    public static func readCodableOrSetResponseStatus<InputType: Codable>(_ inputCodableType: InputType.Type, from request: RouterRequest, response: RouterResponse, decoder: BodyDecoder = JSONDecoder()) -> InputType? {
+    public static func readCodableOrSetResponseStatus<InputType: Codable>(_ inputCodableType: InputType.Type, from request: RouterRequest, response: RouterResponse, decoders: [String: () -> BodyDecoder] = defaultDecoders) -> InputType? {
         
         guard let contentType = request.headers["Content-Type"],
-              let decoderType = ContentType.sharedInstance.getContentType(forExtension: decoder.contentType),
-                  contentType.hasPrefix(decoderType) || contentType.hasPrefix("application/x-www-form-urlencoded")
+              let decoderGenerator = decoders[contentType.components(separatedBy: ";")[0]]
         else {
             response.status(.unsupportedMediaType)
             return nil
@@ -930,15 +968,15 @@ public struct CodableHelpers {
             return nil
         }
         do {
-            return try request.read(as: InputType.self, decoder: decoder)
+            return try request.read(as: InputType.self, decoder: decoderGenerator())
         } catch {
             Log.error("Failed to read Codable input from request: \(error)")
             response.status(.unprocessableEntity)
             if let decodingError = error as? DecodingError {
-                response.send("Could not decode received JSON: \(decodingError.humanReadableDescription)")
+                response.send("Could not decode received \(contentType): \(decodingError.humanReadableDescription)")
             } else {
                 // Linux Swift does not send a DecodingError when the JSON is invalid, instead it sends Error "The operation could not be completed"
-                response.send("Could not decode received JSON.")
+                response.send("Could not decode received \(contentType).")
             }
             return nil
         }
