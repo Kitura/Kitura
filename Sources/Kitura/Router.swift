@@ -35,7 +35,7 @@ import KituraContracts
 public class Router {
 
     /// A dictionary of Content-type to BodyEncoder generators
-    public var encoders: [String: () -> BodyEncoder] = ["application/json": {return JSONEncoder()}, "application/x-www-form-urlencoded": {return QueryEncoder()}]
+    public var encoders: [String: () -> BodyEncoder] = ["application/json": {return JSONEncoder()}]
     /// A dictionary of Content-type to BodyDecoder generators
     public var decoders: [String: () -> BodyDecoder] = ["application/json": {return JSONDecoder()}, "application/x-www-form-urlencoded": {return QueryDecoder()}]
     
