@@ -222,6 +222,28 @@ public class RouterResponse {
         }
         return self
     }
+    
+    /// Send an optional string.
+    ///
+    /// - Parameter str: the string to send.
+    /// - Returns: this RouterResponse.
+    @discardableResult
+    public func send(_ str: String?) -> RouterResponse {
+        guard !state.invokedEnd else {
+            Log.warning("RouterResponse send(str:) invoked after end() for \(self.request.urlURL)")
+            return self
+        }
+        var stringToSend: String
+        if str == nil {
+            stringToSend = ""
+            Log.warning("RouterResponse send(data:) invoked with a nil value")
+        } else {
+            guard let str = str else { return self }
+            stringToSend = str
+        }
+        let returnedString = send(stringToSend)
+        return returnedString
+    }
 
     /// Send data.
     ///
