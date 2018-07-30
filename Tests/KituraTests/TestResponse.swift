@@ -1493,8 +1493,8 @@ class TestResponse: KituraTest {
 
                 try response.send(status: HTTPStatusCode.forbidden).send(data: "<!DOCTYPE html><html><body><b>forbidden</b></body></html>\n\n".data(using: .utf8)!).end()
                 try response.send(status: HTTPStatusCode.OK).end()
-                let emptyString: String? = nil
-                response.send(emptyString)
+                let nilString: String? = nil
+                response.send(nilString)
                 response.send("string")
                 response.send(json: json)
                 response.send(json: ["some": "json"])
