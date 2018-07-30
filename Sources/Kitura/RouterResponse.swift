@@ -234,7 +234,7 @@ public class RouterResponse {
             return self
         }
         guard let str = str else {
-            Log.warning("RouterResponse send(data:) invoked with a nil value")
+            Log.warning("RouterResponse send(str:) invoked with a nil value")
             return send("")
         }
         return send(str)
