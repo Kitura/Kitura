@@ -229,8 +229,12 @@ public class RouterResponse {
     /// - Returns: this RouterResponse.
     @discardableResult
     public func send(_ str: String?) -> RouterResponse {
-        guard !state.invokedEnd, let str = str else {
+        guard !state.invokedEnd else {
             Log.warning("RouterResponse send(str:) invoked after end() for \(self.request.urlURL)")
+            return self
+        }
+        guard let str = str else {
+            Log.warning("RouterResponse send(data:) invoked with a nil value")
             return send("")
         }
         return send(str)
