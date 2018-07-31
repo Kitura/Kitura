@@ -1213,7 +1213,8 @@ class TestResponse: KituraTest {
         
         router.post("/sendNilString") { request, response, _ in
             do {
-                try response.send(nil).end()
+                let str: String? = nil
+                try response.send(str).end()
             } catch {
                 XCTFail("Error sending response. Error=\(error.localizedDescription)")
             }
@@ -1221,7 +1222,8 @@ class TestResponse: KituraTest {
         
         router.post("/sendNonNilString") { request, response, _ in
             do {
-                try response.send("Test").end()
+                let str: String? = "Test"
+                try response.send(str).end()
             } catch {
                 XCTFail("Error sending response. Error=\(error.localizedDescription)")
             }
