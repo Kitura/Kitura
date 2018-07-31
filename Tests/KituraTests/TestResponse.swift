@@ -110,8 +110,9 @@ class TestResponse: KituraTest {
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 
                 do {
-                    let body = try response?.readOptionalString()
-                    XCTAssertEqual(body, "")
+                    var data = Data()
+                    let body = try response?.readAllData(into: &data)
+                    XCTAssertEqual(body, 0, "Expected 0 bytes, received \(String(describing: body)).")
                 } catch {
                     XCTFail("Error reading body")
                 }
