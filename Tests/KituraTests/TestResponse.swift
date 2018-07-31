@@ -31,6 +31,7 @@ class TestResponse: KituraTest {
     static var allTests: [(String, (TestResponse) -> () throws -> Void)] {
         return [
             ("testSimpleResponse", testSimpleResponse),
+            ("testOptionalStringResponse", testOptionalStringResponse),
             ("testLargeGet", testLargeGet),
             ("testLargePost", testLargePost),
             ("testResponseNoEndOrNext", testResponseNoEndOrNext),
@@ -99,6 +100,19 @@ class TestResponse: KituraTest {
                 }
                 expectation.fulfill()
             })
+        }
+    }
+    
+    func testOptionalStringResponse() {
+        let router = Router()
+        router.get("/qwer") { _, response, next in
+            response.headers["Content-Type"] = "text/html; charset=utf-8"
+            do {
+                try response.send(nil).end()
+                try response.send("Test").end()
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+            }
         }
     }
 
