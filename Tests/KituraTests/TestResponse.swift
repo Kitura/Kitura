@@ -31,6 +31,7 @@ class TestResponse: KituraTest {
     static var allTests: [(String, (TestResponse) -> () throws -> Void)] {
         return [
             ("testSimpleResponse", testSimpleResponse),
+            ("testOptionalStringNilResponse", testOptionalStringNilResponse),
             ("testOptionalStringResponse", testOptionalStringResponse),
             ("testLargeGet", testLargeGet),
             ("testLargePost", testLargePost),
@@ -103,16 +104,35 @@ class TestResponse: KituraTest {
         }
     }
     
+    func testOptionalStringNilResponse() {
+        performServerTest(router) { expectation in
+            self.performRequest("post", path:"/sendNilString", callback: { response in
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
+                
+                do {
+                    let body = try response?.readString()
+                    XCTAssertNil(body)
+                } catch {
+                    XCTFail("Error reading body")
+                }
+                expectation.fulfill()
+            })
+        }
+    }
+    
     func testOptionalStringResponse() {
-        let router = Router()
-        router.get("/qwer") { _, response, next in
-            response.headers["Content-Type"] = "text/html; charset=utf-8"
-            do {
-                try response.send(nil).end()
-                try response.send("Test").end()
-            } catch {
-                XCTFail("Error sending response. Error=\(error.localizedDescription)")
-            }
+        performServerTest(router) { expectation in
+            self.performRequest("post", path:"/sendNonNilString", callback: { response in
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
+                
+                do {
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "Test")
+                } catch {
+                    XCTFail("Error reading body")
+                }
+                expectation.fulfill()
+            })
         }
     }
 
@@ -1186,6 +1206,22 @@ class TestResponse: KituraTest {
                 var data = Data()
                 let count = try request.read(into: &data)
                 try response.send(data: data).end()
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+            }
+        }
+        
+        router.post("/sendNilString") { request, response, _ in
+            do {
+                try response.send(nil).end()
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+            }
+        }
+        
+        router.post("/sendNonNilString") { request, response, _ in
+            do {
+                try response.send("Test").end()
             } catch {
                 XCTFail("Error sending response. Error=\(error.localizedDescription)")
             }
