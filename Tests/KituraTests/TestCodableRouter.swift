@@ -927,9 +927,9 @@ class TestCodableRouter: KituraTest {
             print("GET on /customCoderArray")
             respondWith([codableDate], nil)
         }
-        customRouter.get("/customCoderTuple") { (respondWith: ([(Int, CodableDate)]?, RequestError?) -> Void) in
+        customRouter.get("/customCoderTuple") { (respondWith: ([(String, CodableDate)]?, RequestError?) -> Void) in
             print("GET on /customCoderTuple")
-            respondWith([(1, codableDate)], nil)
+            respondWith([("1", codableDate)], nil)
         }
         customRouter.get("/customCoderQuery") { (query: SimpleQuery, respondWith: (CodableDate?, RequestError?) -> Void) in
             print("GET on /customCoderQuery")
@@ -974,7 +974,7 @@ class TestCodableRouter: KituraTest {
             .request("get", path: "/customCoderTuple")
             .hasStatus(.OK)
             .hasContentType(withPrefix: "application/json")
-            .hasData([[1: codableDate]], customDecoder: jsonDecoder)
+            .hasData([["1": codableDate]], customDecoder: jsonDecoder)
             
             .request("get", path: "/customCoderQuery?string=hello")
             .hasStatus(.OK)

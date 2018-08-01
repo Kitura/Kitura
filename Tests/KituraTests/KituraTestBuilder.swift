@@ -61,13 +61,16 @@ protocol AssertionTestBuilder: RequestTestBuilder {
     func hasData(_ expected: String) -> Self
     func hasData<T: Decodable & Equatable>(_ expected: [T]) -> Self
     func hasData<T: Decodable & Equatable>(_ expected: T) -> Self
-    func hasData<T: Decodable & Equatable>(_ expected: T, customDecoder: @escaping () -> BodyDecoder) -> Self
     func hasData<T: Decodable & Equatable>(_ expected: [[String: T]]) -> Self
+    func hasData<T: Decodable & Equatable>(_ expected: [T], customDecoder: @escaping () -> BodyDecoder) -> Self
+    func hasData<T: Decodable & Equatable>(_ expected: T, customDecoder: @escaping () -> BodyDecoder) -> Self
+    func hasData<T: Decodable & Equatable>(_ expected: [[String: T]], customDecoder: @escaping () -> BodyDecoder) -> Self
 }
 
 // A builder object for constructing tests made up of one or more
 // requests on which multiple assertions can be applied
 class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
+    
     // An object to keep track of a request and store up a list of
     // assertions to be applied when the request is complete
     private class Request {
@@ -248,27 +251,25 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
             XCTAssertEqual(expected, actual, "Response data does not match expected value:\nexpected: \(expected)\nactual: \(actual)")
         }
     }
-
+    
     public func hasData<T: Decodable & Equatable>(_ expected: [T]) -> Self {
+        return hasData(expected, customDecoder: { return JSONDecoder() })
+    }
+    public func hasData<T: Decodable & Equatable>(_ expected: T) -> Self {
+        return hasData(expected, customDecoder: { return JSONDecoder() })
+    }
+    public func hasData<T: Decodable & Equatable>(_ expected: [[String : T]]) -> Self {
+        return hasData(expected, customDecoder: { return JSONDecoder() })
+    }
+    
+    public func hasData<T: Decodable & Equatable>(_ expected: [T], customDecoder: @escaping () -> BodyDecoder) -> Self {
         return has { response in
             guard let (_, data) = self.readDataOrFail(from: response) else { return }
             do {
-                let actual = try JSONDecoder().decode([T].self, from: data)
+                let actual = try customDecoder().decode([T].self, from: data)
                 XCTAssertEqual(expected, actual, "Response data does not match expected value:\nexpected: \(expected)\nactual: \(actual)")
             } catch {
                 XCTFail("Failed to decode response data into type \([T].self): \(error)")
-            }
-        }
-    }
-
-    public func hasData<T: Decodable & Equatable>(_ expected: T) -> Self {
-        return has { response in
-            guard let (_, data) = self.readDataOrFail(from: response) else { return }
-            do {
-                let actual = try JSONDecoder().decode(T.self, from: data)
-                XCTAssertEqual(expected, actual, "Response data does not match expected value:\nexpected: \(expected)\nactual: \(actual)")
-            } catch {
-                XCTFail("Failed to decode response data into type \(T.self): \(error)")
             }
         }
     }
@@ -285,11 +286,11 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
         }
     }
     
-    func hasData<T: Decodable & Equatable>(_ expected: [[String : T]]) -> Self {
+    func hasData<T: Decodable & Equatable>(_ expected: [[String : T]], customDecoder: @escaping () -> BodyDecoder) -> Self {
         return has { response in
             guard let (_, data) = self.readDataOrFail(from: response) else { return }
             do {
-                let actual = try JSONDecoder().decode([[String : T]].self, from: data)
+                let actual = try customDecoder().decode([[String : T]].self, from: data)
                 for (index, tuple) in actual.enumerated() {
                     let tupleKey = Array(tuple.keys)[0]
                     let expectedKey = Array(expected[index].keys)[0]

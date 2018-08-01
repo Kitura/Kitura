@@ -76,6 +76,17 @@ class TestTypeSafeMiddleware: KituraTest {
             return lhs.id == rhs.id && lhs.name == rhs.name
         }
     }
+    
+    struct CodableDate: Codable, Equatable {
+        let date: Date
+        
+        init(date: Date) {
+            self.date = date
+        }
+        static func == (lhs: CodableDate, rhs: CodableDate) -> Bool {
+            return lhs.date == rhs.date
+        }
+    }
 
     struct MyQuery: QueryParams {
         let id: Int
@@ -858,15 +869,6 @@ class TestTypeSafeMiddleware: KituraTest {
         struct SimpleQuery: QueryParams {
             let string: String
         }
-        struct CodableDate: Codable, Equatable {
-            let date: Date
-            init(date: Date) {
-                self.date = date
-            }
-            public static func == (lhs: CodableDate, rhs: CodableDate) -> Bool {
-                return lhs.date == rhs.date
-            }
-        }
         let jsonEncoder: () -> BodyEncoder = {
             let encoder = JSONEncoder()
             encoder.dateEncodingStrategy = .secondsSince1970
@@ -1039,17 +1041,17 @@ class TestTypeSafeMiddleware: KituraTest {
             .request("get", path: "/customCoderTuple1", headers: ["TestHeader": "Hello"])
             .hasStatus(.OK)
             .hasContentType(withPrefix: "application/json")
-            .hasData([[1: codableDate]], customDecoder: jsonDecoder)
+            .hasData([["1": codableDate]], customDecoder: jsonDecoder)
             
             .request("get", path: "/customCoderTuple2", headers: ["TestHeader": "Hello"])
             .hasStatus(.OK)
             .hasContentType(withPrefix: "application/json")
-            .hasData([[1: codableDate]], customDecoder: jsonDecoder)
+            .hasData([["1": codableDate]], customDecoder: jsonDecoder)
             
             .request("get", path: "/customCoderTuple3", headers: ["TestHeader": "Hello"])
             .hasStatus(.OK)
             .hasContentType(withPrefix: "application/json")
-            .hasData([[1: codableDate]], customDecoder: jsonDecoder)
+            .hasData([["1": codableDate]], customDecoder: jsonDecoder)
             
             .request("get", path: "/customCoderQuery1?string=hello", headers: ["TestHeader": "Hello"])
             .hasStatus(.OK)
