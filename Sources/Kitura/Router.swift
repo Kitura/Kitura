@@ -125,7 +125,7 @@ public class Router {
     public init(mergeParameters: Bool = false) {
         self.swagger = SwaggerDocument()
         self.mergeParameters = mergeParameters
-        
+
         Log.verbose("Router initialized")
     }
 
@@ -498,7 +498,11 @@ extension Router : ServerDelegate {
     /// - Parameter response: The `ServerResponse` object used to send responses to the
     ///                      HTTP request at the [Kitura-net](http://ibm-swift.github.io/Kitura-net/) API level.
     public func handle(request: ServerRequest, response: ServerResponse) {
-        let routeReq = RouterRequest(request: request)
+        // TODO: fix by making contentType not string
+        let contentType = request.headers["Content-Type"]?[0]
+        let contentTypeComponents = contentType?.components(separatedBy: ";")
+        let decoder = decoders[(contentTypeComponents?[0]) ?? ""]
+        let routeReq = RouterRequest(request: request, decoder: decoder)
         //TODO fix the stack
         var routerStack = Stack<Router>()
         routerStack.push(self)

@@ -360,7 +360,7 @@ extension Router {
         registerPostRoute(route: route, inputType: I.self, outputType: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
-            guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response, decoders: self.decoders) else {
+            guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
                 next()
                 return
             }
@@ -374,7 +374,7 @@ extension Router {
         registerPostRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
-            guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response, decoders: self.decoders) else {
+            guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
                 next()
                 return
             }
@@ -392,7 +392,7 @@ extension Router {
         put(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PUT type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
-                  let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response, decoders: self.decoders)
+                  let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
             else {
                 next()
                 return
@@ -411,7 +411,7 @@ extension Router {
         patch(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PATCH type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
-                  let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response, decoders: self.decoders)
+                  let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
             else {
                 next()
                 return
@@ -795,7 +795,7 @@ public struct CodableHelpers {
                 do {
                     if let codableOutput = codableOutput {
                         let json = try encoder.encode(codableOutput)
-                        response.headers.setType(encoder.contentType)
+                        response.headers.setType("json")
                         response.send(data: json)
                     } else {
                         Log.debug("Note: successful response ('\(status)') delivers no data.")
@@ -858,7 +858,7 @@ public struct CodableHelpers {
                     if let codableOutput = codableOutput {
                         let entries = codableOutput.map({ [$0.value: $1] })
                         let encoded = try encoder.encode(entries)
-                        response.headers.setType(encoder.contentType)
+                        response.headers.setType("json")
                         response.send(data: encoded)
                     } else {
                         Log.debug("Note: successful response ('\(status)') delivers no data.")
@@ -923,7 +923,7 @@ public struct CodableHelpers {
                 do {
                     if let codableOutput = codableOutput {
                         let json = try encoder.encode(codableOutput)
-                        response.headers.setType(encoder.contentType)
+                        response.headers.setType("json")
                         response.send(data: json)
                     } else {
                         Log.debug("Note: successful response ('\(status)') delivers no data.")
@@ -955,10 +955,8 @@ public struct CodableHelpers {
      *                       cases where reading or decoding the data fails.
      * - Returns: An instance of `InputType` representing the decoded body data.
      */
-    public static func readCodableOrSetResponseStatus<InputType: Codable>(_ inputCodableType: InputType.Type, from request: RouterRequest, response: RouterResponse, decoders: [String: () -> BodyDecoder] = defaultDecoders) -> InputType? {
-        guard let contentType = request.headers["Content-Type"],
-              let decoder = decoders[contentType.components(separatedBy: ";")[0]]
-        else {
+    public static func readCodableOrSetResponseStatus<InputType: Codable>(_ inputCodableType: InputType.Type, from request: RouterRequest, response: RouterResponse) -> InputType? {
+        guard request.decoder != nil else {
             response.status(.unsupportedMediaType)
             return nil
         }
@@ -968,15 +966,15 @@ public struct CodableHelpers {
             return nil
         }
         do {
-            return try request.read(as: InputType.self, decoder: decoder())
+            return try request.read(as: InputType.self)
         } catch {
             Log.error("Failed to read Codable input from request: \(error)")
             response.status(.unprocessableEntity)
             if let decodingError = error as? DecodingError {
-                response.send("Could not decode received \(decoder().contentType): \(decodingError.humanReadableDescription)")
+                response.send("Could not decode received data: \(decodingError.humanReadableDescription)")
             } else {
                 // Linux Swift does not send a DecodingError when the JSON is invalid, instead it sends Error "The operation could not be completed"
-                response.send("Could not decode received \(decoder().contentType).")
+                response.send("Could not decode received data.")
             }
             return nil
         }

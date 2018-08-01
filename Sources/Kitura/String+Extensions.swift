@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import Foundation
 import LoggerAPI
+
 /// String Utils
 extension String {
+    
     /// Parses percent encoded string into query parameters with comma-separated
     /// values.
     var urlDecodedFieldValuePairs: [String: String] {
@@ -35,16 +38,19 @@ extension String {
         }
         return result
     }
+    
     /// Parses percent encoded string int query parameters with values as an
     /// array rather than a concatcenated string.
     var urlDecodedFieldMultiValuePairs: [String: [String]] {
         var result: [String: [String]] = [:]
+        
         for item in self.components(separatedBy: "&") {
             let (key, value) = item.keyAndDecodedValue
             if let value = value {
                 result[key, default: []].append(value)
             }
         }
+        
         return result
     }
     /// Splits a URL-encoded key and value pair (e.g. "foo=bar") into a tuple
@@ -56,6 +62,7 @@ extension String {
         }
         let key = String(self[..<range.lowerBound])
         let value = String(self[range.upperBound...])
+        
         let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
         let decodedValue = valueReplacingPlus.removingPercentEncoding
         if decodedValue == nil {
@@ -63,4 +70,5 @@ extension String {
         }
         return (key: key, value: decodedValue ?? valueReplacingPlus)
     }
+
 }

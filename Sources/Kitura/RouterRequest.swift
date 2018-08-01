@@ -27,6 +27,9 @@ public class RouterRequest {
 
     /// The server request.
     let serverRequest: ServerRequest
+    
+    /// The Data decoder generator for the request content-type
+    let decoder: (() -> BodyDecoder)?
 
     /// The hostname of the request.
     public var hostname: String {
@@ -161,12 +164,27 @@ public class RouterRequest {
     /// Initializes a `RouterRequest` instance
     ///
     /// - Parameter request: the server request
-    init(request: ServerRequest) {
+    convenience init(request: ServerRequest) {
+        let contentType = request.headers["Content-Type"]?[0]
+        if contentType?.hasPrefix("application/x-www-form-urlencoded") ?? false {
+            self.init(request: request, decoder: { return QueryDecoder() })
+        } else if contentType?.hasPrefix("application/json") ?? false{
+            self.init(request: request, decoder: { return JSONDecoder() })
+        } else {
+            self.init(request: request, decoder: nil)
+        }
+    }
+    
+    /// Initializes a `RouterRequest` instance
+    ///
+    /// - Parameter request: the server request
+    init(request: ServerRequest, decoder: (() -> BodyDecoder)?) {
         serverRequest = request
         parsedURLPath = URLParser(url: request.url, isConnect: false)
         httpVersion = HTTPVersion(major: serverRequest.httpVersionMajor ?? 1, minor: serverRequest.httpVersionMinor ?? 1)
         method = RouterMethod(fromRawValue: serverRequest.method)
         headers = Headers(headers: serverRequest.headers)
+        self.decoder = decoder
     }
 
     /// Convert query parameters into a QueryParam type
@@ -185,28 +203,6 @@ public class RouterRequest {
     public func read(into data: inout Data) throws -> Int {
         return try serverRequest.read(into: &data)
     }
-
-    /// Read the body of the request as a Codable object. It can decode JSON or URLEncoded forms.
-    /// It chooses the decoder by looking up the Content-Type header.
-    /// If there is no header it defaults to JSONDecoder.
-    /// - Parameter as: Codable object to which the body of the request will be converted.
-    /// - Throws: Socket.Error if an error occurred while reading from a socket.
-    /// - Throws: `DecodingError.dataCorrupted` if values requested from the payload are corrupted, or if the given data is not valid JSON.
-    /// - Throws: An error if any value throws an error during decoding.
-    /// - Returns: The instantiated Codable object
-    public func read<T: Decodable>(as type: T.Type) throws -> T {
-        // FIXME: RouterRequest should cache the content type, so that this is just a lookup
-        if CodableHelpers.isContentTypeURLEncoded(self) {
-            let body = try self.readString()
-            guard let urlKeyValuePairs = body?.urlDecodedFieldValuePairs else {
-                throw Error.failedToParseRequestBody(body: body ?? "Failed to read body as String")
-            }
-            return try QueryDecoder(dictionary: urlKeyValuePairs).decode(type)
-        }
-        var data = Data()
-        _ = try serverRequest.read(into: &data)
-        return try JSONDecoder().decode(type, from: data)
-    }
     
     /// Read the body of the request as a Codable object using the given `BodyDecoder`
     /// - Parameter as: Codable object to which the body of the request will be converted.
@@ -215,10 +211,11 @@ public class RouterRequest {
     /// - Throws: `DecodingError.dataCorrupted` if values requested from the payload are corrupted, or if the given data is not valid JSON.
     /// - Throws: An error if any value throws an error during decoding.
     /// - Returns: The instantiated Codable object
-    public func read<T: Decodable>(as type: T.Type, decoder: BodyDecoder) throws -> T {
+    public func read<T: Decodable>(as type: T.Type) throws -> T {
         var data = Data()
         _ = try serverRequest.read(into: &data)
-        return try decoder.decode(type, from: data)
+        let decoderInstance = decoder?() ?? JSONDecoder()
+        return try decoderInstance.decode(type, from: data)
     }
     
     /// Read the body of the request as String.
