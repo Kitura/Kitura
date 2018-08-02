@@ -168,7 +168,7 @@ public class RouterRequest {
         let contentType = request.headers["Content-Type"]?[0]
         if contentType?.hasPrefix("application/x-www-form-urlencoded") ?? false {
             self.init(request: request, decoder: { return QueryDecoder() })
-        } else if contentType?.hasPrefix("application/json") ?? false{
+        } else if contentType?.hasPrefix("json") ?? false{
             self.init(request: request, decoder: { return JSONDecoder() })
         } else {
             self.init(request: request, decoder: nil)

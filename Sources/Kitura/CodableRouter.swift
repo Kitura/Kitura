@@ -364,8 +364,7 @@ extension Router {
                 next()
                 return
             }
-            let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-            handler(codableInput, CodableHelpers.constructOutResultHandler(successStatus: .created, response: response, encoder: encoder, completion: next))
+            handler(codableInput, CodableHelpers.constructOutResultHandler(successStatus: .created, response: response, completion: next))
         }
     }
 
@@ -378,8 +377,7 @@ extension Router {
                 next()
                 return
             }
-            let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-            handler(codableInput, CodableHelpers.constructIdentOutResultHandler(successStatus: .created, response: response, encoder: encoder, completion: next))
+            handler(codableInput, CodableHelpers.constructIdentOutResultHandler(successStatus: .created, response: response, completion: next))
         }
     }
 
@@ -397,8 +395,8 @@ extension Router {
                 next()
                 return
             }
-            let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-            handler(identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+            
+            handler(identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, completion: next))
         }
     }
 
@@ -416,8 +414,8 @@ extension Router {
                 next()
                 return
             }
-            let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-            handler(identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+            
+            handler(identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, completion: next))
         }
     }
 
@@ -426,8 +424,8 @@ extension Router {
         registerGetRoute(route: route, outputType: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (single no-identifier) type-safe request")
-            let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-            handler(CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+            
+            handler(CodableHelpers.constructOutResultHandler(response: response, completion: next))
         }
     }
 
@@ -436,8 +434,8 @@ extension Router {
         registerGetRoute(route: route, outputType: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request")
-            let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-            handler(CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+            
+            handler(CodableHelpers.constructOutResultHandler(response: response, completion: next))
         }
     }
     
@@ -446,8 +444,8 @@ extension Router {
         registerGetRoute(route: route, id: Id.self, outputType: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural with identifier) type-safe request")
-            let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-            handler(CodableHelpers.constructTupleArrayOutResultHandler(response: response, encoder: encoder, completion: next))
+            
+            handler(CodableHelpers.constructTupleArrayOutResultHandler(response: response, completion: next))
         }
     }
 
@@ -459,8 +457,7 @@ extension Router {
             Log.verbose("Query Parameters: \(request.queryParameters)")
             do {
                 let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(query, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                handler(query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
             } catch {
                 // Http 400 error
                 response.status(.badRequest)
@@ -478,8 +475,7 @@ extension Router {
             // Define result handler
             do {
                 let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(query, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                handler(query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
             } catch {
                 // Http 400 error
                 response.status(.badRequest)
@@ -500,8 +496,7 @@ extension Router {
                 if queryParameters.count > 0 {
                     query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(query, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                handler(query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
             } catch {
                 // Http 400 error
                 response.status(.badRequest)
@@ -523,8 +518,7 @@ extension Router {
                 if queryParameters.count > 0 {
                     query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(query, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                handler(query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
             } catch {
                 // Http 400 error
                 response.status(.badRequest)
@@ -544,8 +538,8 @@ extension Router {
                 next()
                 return
             }
-            let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-            handler(identifier, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+            
+            handler(identifier, CodableHelpers.constructOutResultHandler(response: response, completion: next))
         }
     }
 
@@ -633,10 +627,7 @@ extension Router {
 // Building blocks for Codable routing
 //
 public struct CodableHelpers {
-    
-    /// The default decoders which will be used by `readCodableOrSetResponseStatus` to decode the content type if no decoders are provided.
-    public static var defaultDecoders: [String: () -> BodyDecoder] = ["application/json": {return JSONDecoder()}, "application/x-www-form-urlencoded": {return QueryDecoder()}]
-    
+
     /**
      * Check if the given request has content type JSON
      *
@@ -663,30 +654,6 @@ public struct CodableHelpers {
             return false
         }
         return contentType.hasPrefix("application/x-www-form-urlencoded")
-    }
-    
-    /**
-     * Return the highest rated encoder using the request's Accepts header
-     *
-     * ### Usage Example: ###
-     * ```swift
-     * let encoders: [String: () -> BodyEncoder] = ["application/json": {return JSONEncoder()}]
-     * let encoder = CodableHelpers.selectResponseEncoder(request, encoders: encoders)
-     * ```
-     * - Parameter request: The RouterRequest to check
-     * - Parameter encoders: A dictionary of Content-type to BodyEncoder generators
-     * - Returns: The highest rated Encoder, or a JSONEncoder() if no encoders match the Accepts header.
-     */
-    public static func selectResponseEncoder(_ request: RouterRequest, encoders: [String: () -> BodyEncoder]) -> BodyEncoder {
-        let encoderAcceptsTypes = Array(encoders.keys)
-        guard let bestAccepts = request.accepts(types: encoderAcceptsTypes), let bestEncoder = encoders[bestAccepts] else {
-            if let jsonEncoder = encoders["application/json"] {
-                return jsonEncoder()
-            } else {
-                return JSONEncoder()
-            }
-        }
-        return bestEncoder()
     }
     
     /**
@@ -774,7 +741,7 @@ public struct CodableHelpers {
      *            `HTTPStatusCode.unknown` otherwise. If the `RequestError` has a codable `body` then
      *            it will be encoded and sent as the body of the response.
      */
-    public static func constructOutResultHandler<OutputType: Codable>(successStatus: HTTPStatusCode = .OK, response: RouterResponse, encoder: BodyEncoder = JSONEncoder(), completion: @escaping () -> Void) -> CodableResultClosure<OutputType> {
+    public static func constructOutResultHandler<OutputType: Codable>(successStatus: HTTPStatusCode = .OK, response: RouterResponse, completion: @escaping () -> Void) -> CodableResultClosure<OutputType> {
         return { codableOutput, error in
             var status = successStatus
             if let error = error {
@@ -792,17 +759,10 @@ public struct CodableHelpers {
                     response.status(.internalServerError)
                 }
             } else {
-                do {
-                    if let codableOutput = codableOutput {
-                        let json = try encoder.encode(codableOutput)
-                        response.headers.setType("json")
-                        response.send(data: json)
-                    } else {
-                        Log.debug("Note: successful response ('\(status)') delivers no data.")
-                    }
-                } catch {
-                    Log.error("Could not encode result: \(error)")
-                    response.status(.internalServerError)
+                if let codableOutput = codableOutput {
+                    response.send(codableOutput)
+                } else {
+                    Log.debug("Note: successful response ('\(status)') delivers no data.")
                 }
             }
             completion()
@@ -836,7 +796,7 @@ public struct CodableHelpers {
      *            `HTTPStatusCode.unknown` otherwise. If the `RequestError` has a codable `body` then
      *            it will be encoded and sent as the body of the response.
      */
-    public static func constructTupleArrayOutResultHandler<Id: Identifier, OutputType: Codable>(successStatus: HTTPStatusCode = .OK, response: RouterResponse, encoder: BodyEncoder = JSONEncoder(), completion: @escaping () -> Void) -> IdentifierCodableArrayResultClosure<Id, OutputType> {
+    public static func constructTupleArrayOutResultHandler<Id: Identifier, OutputType: Codable>(successStatus: HTTPStatusCode = .OK, response: RouterResponse, completion: @escaping () -> Void) -> IdentifierCodableArrayResultClosure<Id, OutputType> {
         return { codableOutput, error in
             var status = successStatus
             if let error = error {
@@ -854,18 +814,11 @@ public struct CodableHelpers {
                     response.status(.internalServerError)
                 }
             } else {
-                do {
-                    if let codableOutput = codableOutput {
-                        let entries = codableOutput.map({ [$0.value: $1] })
-                        let encoded = try encoder.encode(entries)
-                        response.headers.setType("json")
-                        response.send(data: encoded)
-                    } else {
-                        Log.debug("Note: successful response ('\(status)') delivers no data.")
-                    }
-                } catch {
-                    Log.error("Could not encode result: \(error)")
-                    response.status(.internalServerError)
+                if let codableOutput = codableOutput {
+                    let entries = codableOutput.map({ [$0.value: $1] })
+                    response.send(entries)
+                } else {
+                    Log.debug("Note: successful response ('\(status)') delivers no data.")
                 }
             }
             completion()
@@ -901,7 +854,7 @@ public struct CodableHelpers {
      *            `HTTPStatusCode.unknown` otherwise. If the `RequestError` has a codable `body` then
      *            it will be encoded and sent as the body of the response.
      */
-    public static func constructIdentOutResultHandler<IdType: Identifier, OutputType: Codable>(successStatus: HTTPStatusCode = .OK, response: RouterResponse, encoder: BodyEncoder = JSONEncoder(), completion: @escaping () -> Void) -> IdentifierCodableResultClosure<IdType, OutputType> {
+    public static func constructIdentOutResultHandler<IdType: Identifier, OutputType: Codable>(successStatus: HTTPStatusCode = .OK, response: RouterResponse, completion: @escaping () -> Void) -> IdentifierCodableResultClosure<IdType, OutputType> {
         return { id, codableOutput, error in
             var status = successStatus
             if let error = error {
@@ -920,17 +873,10 @@ public struct CodableHelpers {
                 }
             } else if let id = id {
                 response.headers["Location"] = String(id.value)
-                do {
-                    if let codableOutput = codableOutput {
-                        let json = try encoder.encode(codableOutput)
-                        response.headers.setType("json")
-                        response.send(data: json)
-                    } else {
-                        Log.debug("Note: successful response ('\(status)') delivers no data.")
-                    }
-                } catch {
-                    Log.error("Could not encode result: \(error)")
-                    response.status(.internalServerError)
+                if let codableOutput = codableOutput {
+                    response.send(codableOutput)
+                } else {
+                    Log.debug("Note: successful response ('\(status)') delivers no data.")
                 }
             } else {
                 Log.error("No id (unique identifier) value provided.")

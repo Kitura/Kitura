@@ -35,9 +35,9 @@ import KituraContracts
 public class Router {
 
     /// A dictionary of Content-type to BodyEncoder generators
-    public var encoders: [String: () -> BodyEncoder] = ["application/json": {return JSONEncoder()}]
+    public var encoders: [String: () -> BodyEncoder] = ["json": {return JSONEncoder()}]
     /// A dictionary of Content-type to BodyDecoder generators
-    public var decoders: [String: () -> BodyDecoder] = ["application/json": {return JSONDecoder()}, "application/x-www-form-urlencoded": {return QueryDecoder()}]
+    public var decoders: [String: () -> BodyDecoder] = ["json": {return JSONDecoder()}, "application/x-www-form-urlencoded": {return QueryDecoder()}]
     
     /// Contains the list of routing elements
     var elements: [RouterElement] = []
@@ -436,6 +436,29 @@ public class Router {
         }
         return self
     }
+    
+    /**
+     * Return the highest rated encoder using the request's Accepts header
+     *
+     * ### Usage Example: ###
+     * ```swift
+     * let encoders: [String: () -> BodyEncoder] = ["json": {return JSONEncoder()}]
+     * let (contentType, encoder) = CodableHelpers.selectResponseEncoder(encoders: encoders)
+     * ```
+     * - Parameter request: The RouterRequest to check
+     * - Returns: A tuple of the highest rated Encoder, or a JSONEncoder() if no encoders match the Accepts header and it's corresponding contentType.
+     */
+    func selectResponseEncoder(_ request: RouterRequest) -> (String, BodyEncoder) {
+        let encoderAcceptsTypes = Array(encoders.keys)
+        guard let bestAccepts = request.accepts(types: encoderAcceptsTypes), let bestEncoder = encoders[bestAccepts] else {
+            if let jsonEncoder = encoders["json"] {
+                return ("json", jsonEncoder())
+            } else {
+                return ("json", JSONEncoder())
+            }
+        }
+        return (bestAccepts, bestEncoder())
+    }
 }
 
 
@@ -500,13 +523,17 @@ extension Router : ServerDelegate {
     public func handle(request: ServerRequest, response: ServerResponse) {
         // TODO: fix by making contentType not string
         let contentType = request.headers["Content-Type"]?[0]
-        let contentTypeComponents = contentType?.components(separatedBy: ";")
+        var contentTypeComponents = contentType?.components(separatedBy: ";")
+        if contentTypeComponents?[0] == "application/json" {
+            contentTypeComponents?[0] = "json"
+        }
         let decoder = decoders[(contentTypeComponents?[0]) ?? ""]
         let routeReq = RouterRequest(request: request, decoder: decoder)
         //TODO fix the stack
         var routerStack = Stack<Router>()
         routerStack.push(self)
-        let routeResp = RouterResponse(response: response, routerStack: routerStack, request: routeReq)
+        let (respContentType, encoder) = selectResponseEncoder(routeReq)
+        let routeResp = RouterResponse(response: response, routerStack: routerStack, request: routeReq, encoder: encoder, contentType: respContentType)
 
         process(request: routeReq, response: routeResp) { [weak self, weak routeReq, weak routeResp] () in
             guard let strongSelf = self else {

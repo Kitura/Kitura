@@ -85,7 +85,9 @@ public class RouterResponse {
 
     private var lifecycle = Lifecycle()
 
-    private let encoder = JSONEncoder()
+    let encoder: BodyEncoder
+    
+    let contentType: String
 
     // regex used to sanitize javascript identifiers
     fileprivate static let sanitizeJSIdentifierRegex: NSRegularExpression! = {
@@ -128,10 +130,12 @@ public class RouterResponse {
     ///                    working with.
     /// - Parameter request: The `RouterRequest` object that is paired with this
     ///                     `RouterResponse` object.
-    init(response: ServerResponse, routerStack: Stack<Router>, request: RouterRequest) {
+    init(response: ServerResponse, routerStack: Stack<Router>, request: RouterRequest, encoder: BodyEncoder = JSONEncoder(), contentType: String = "json") {
         self.response = response
         self.routerStack = routerStack
         self.request = request
+        self.encoder = encoder
+        self.contentType = contentType
         headers = Headers(headers: response.headers)
         statusCode = .unknown
         state.response = self
@@ -520,22 +524,35 @@ extension RouterResponse {
             return self
         }
         do {
-            headers.setType("json")
+            headers.setType(contentType)
             send(data: try encoder.encode(obj))
         } catch {
             Log.warning("Failed to encode Codable object for sending: \(error.localizedDescription)")
+            status(.internalServerError)
         }
 
         return self
     }
 
-    /// Send Encodable Object JSON Convienence Method
+    /// Send JSON Encodable Object
     ///
-    /// - Parameter json: the Encodable object to send.
+    /// - Parameter json: the JSON Encodable object to send.
     /// - Returns: this RouterResponse.
     @discardableResult
     public func send<T : Encodable>(json: T) -> RouterResponse {
-        return send(json)
+        guard !state.invokedEnd else {
+            Log.warning("RouterResponse send(_ obj:) invoked after end() for \(self.request.urlURL)")
+            return self
+        }
+        do {
+            headers.setType("json")
+            send(data: try JSONEncoder().encode(json))
+        } catch {
+            Log.warning("Failed to encode Codable object for sending: \(error.localizedDescription)")
+            status(.internalServerError)
+        }
+        
+        return self
     }
 
     /// Send JSON with JSONP callback.
@@ -572,7 +589,7 @@ extension RouterResponse {
                 .replacingOccurrences(of: "\u{2029}", with: "\\u2029")
         }
 
-        let jsonStr = String(data: try encoder.encode(jsonp), encoding: .utf8)!
+        let jsonStr = String(data: try JSONEncoder().encode(jsonp), encoding: .utf8)!
 
         let taintedJSCallbackName = request.queryParameters[callbackParameter]
 

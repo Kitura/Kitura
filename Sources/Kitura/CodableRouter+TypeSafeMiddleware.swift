@@ -60,8 +60,7 @@ extension Router {
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
                     return next()
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(typeSafeMiddleware, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                handler(typeSafeMiddleware, CodableHelpers.constructOutResultHandler(response: response, completion: next))
             }
         }
     }
@@ -96,8 +95,7 @@ extension Router {
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
                     return next()
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(typeSafeMiddleware1, typeSafeMiddleware2, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                handler(typeSafeMiddleware1, typeSafeMiddleware2, CodableHelpers.constructOutResultHandler(response: response, completion: next))
             }
         }
     }
@@ -132,8 +130,7 @@ extension Router {
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
                     return next()
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, CodableHelpers.constructOutResultHandler(response: response, completion: next))
             }
         }
     }
@@ -173,8 +170,7 @@ extension Router {
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
                     return next()
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(typeSafeMiddleware, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                handler(typeSafeMiddleware, CodableHelpers.constructOutResultHandler(response: response, completion: next))
             }
         }
     }
@@ -209,8 +205,7 @@ extension Router {
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
                     return next()
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(typeSafeMiddleware1, typeSafeMiddleware2, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                handler(typeSafeMiddleware1, typeSafeMiddleware2, CodableHelpers.constructOutResultHandler(response: response, completion: next))
             }
         }
     }
@@ -245,8 +240,7 @@ extension Router {
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
                     return next()
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, CodableHelpers.constructOutResultHandler(response: response, completion: next))
             }
         }
     }
@@ -293,8 +287,7 @@ extension Router {
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
                     return next()
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(typeSafeMiddleware, identifier, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                handler(typeSafeMiddleware, identifier, CodableHelpers.constructOutResultHandler(response: response, completion: next))
             }
         }
     }
@@ -336,8 +329,7 @@ extension Router {
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
                     return next()
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(typeSafeMiddleware1, typeSafeMiddleware2, identifier, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                handler(typeSafeMiddleware1, typeSafeMiddleware2, identifier, CodableHelpers.constructOutResultHandler(response: response, completion: next))
             }
         }
     }
@@ -379,8 +371,8 @@ extension Router {
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
                     return next()
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, identifier, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                
+                handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, identifier, CodableHelpers.constructOutResultHandler(response: response, completion: next))
             }
         }
     }
@@ -420,8 +412,8 @@ extension Router {
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
                     return next()
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(typeSafeMiddleware, CodableHelpers.constructTupleArrayOutResultHandler(response: response, encoder: encoder, completion: next))
+                
+                handler(typeSafeMiddleware, CodableHelpers.constructTupleArrayOutResultHandler(response: response, completion: next))
             }
         }
     }
@@ -456,8 +448,8 @@ extension Router {
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
                     return next()
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(typeSafeMiddleware1, typeSafeMiddleware2, CodableHelpers.constructTupleArrayOutResultHandler(response: response, encoder: encoder, completion: next))
+                
+                handler(typeSafeMiddleware1, typeSafeMiddleware2, CodableHelpers.constructTupleArrayOutResultHandler(response: response, completion: next))
             }
         }
     }
@@ -492,8 +484,8 @@ extension Router {
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
                     return next()
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, CodableHelpers.constructTupleArrayOutResultHandler(response: response, encoder: encoder, completion: next))
+                
+                handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, CodableHelpers.constructTupleArrayOutResultHandler(response: response, completion: next))
             }
         }
     }
@@ -540,8 +532,8 @@ extension Router {
                     guard let typeSafeMiddleware = typeSafeMiddleware else {
                         return next()
                     }
-                    let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                    handler(typeSafeMiddleware, query, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                    
+                    handler(typeSafeMiddleware, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
                 }
             } catch {
                 // Http 400 error
@@ -588,8 +580,8 @@ extension Router {
                     guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
                         return next()
                     }
-                    let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                    handler(typeSafeMiddleware1, typeSafeMiddleware2, query, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                    
+                    handler(typeSafeMiddleware1, typeSafeMiddleware2, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
                 }
             } catch {
                 // Http 400 error
@@ -636,8 +628,8 @@ extension Router {
                     guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
                         return next()
                     }
-                    let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                    handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, query, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                    
+                    handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
                 }
             } catch {
                 // Http 400 error
@@ -688,8 +680,8 @@ extension Router {
                     guard let typeSafeMiddleware = typeSafeMiddleware else {
                         return next()
                     }
-                    let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                    handler(typeSafeMiddleware, query, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                    
+                    handler(typeSafeMiddleware, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
                 }
             } catch {
                 // Http 400 error
@@ -735,8 +727,8 @@ extension Router {
                     guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
                         return next()
                     }
-                    let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                    handler(typeSafeMiddleware1, typeSafeMiddleware2, query, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                    
+                    handler(typeSafeMiddleware1, typeSafeMiddleware2, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
                 }
             } catch {
                 // Http 400 error
@@ -782,8 +774,8 @@ extension Router {
                     guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
                         return next()
                     }
-                    let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                    handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, query, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                    
+                    handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
                 }
             } catch {
                 // Http 400 error
@@ -1199,8 +1191,8 @@ extension Router {
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
                     return next()
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(typeSafeMiddleware, codableInput, CodableHelpers.constructOutResultHandler(successStatus: .created, response: response, encoder: encoder, completion: next))
+                
+                handler(typeSafeMiddleware, codableInput, CodableHelpers.constructOutResultHandler(successStatus: .created, response: response, completion: next))
             }
         }
     }
@@ -1241,8 +1233,8 @@ extension Router {
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
                     return next()
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(typeSafeMiddleware1, typeSafeMiddleware2, codableInput, CodableHelpers.constructOutResultHandler(successStatus: .created, response: response, encoder: encoder, completion: next))
+                
+                handler(typeSafeMiddleware1, typeSafeMiddleware2, codableInput, CodableHelpers.constructOutResultHandler(successStatus: .created, response: response, completion: next))
             }
         }
     }
@@ -1283,8 +1275,8 @@ extension Router {
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
                     return next()
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, codableInput, CodableHelpers.constructOutResultHandler(successStatus: .created, response: response, encoder: encoder, completion: next))
+                
+                handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, codableInput, CodableHelpers.constructOutResultHandler(successStatus: .created, response: response, completion: next))
             }
         }
     }
@@ -1326,8 +1318,8 @@ extension Router {
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
                     return next()
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(typeSafeMiddleware, codableInput, CodableHelpers.constructIdentOutResultHandler(successStatus: .created, response: response, encoder: encoder, completion: next))
+                
+                handler(typeSafeMiddleware, codableInput, CodableHelpers.constructIdentOutResultHandler(successStatus: .created, response: response, completion: next))
             }
         }
     }
@@ -1365,8 +1357,8 @@ extension Router {
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
                     return next()
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(typeSafeMiddleware1, typeSafeMiddleware2, codableInput, CodableHelpers.constructIdentOutResultHandler(successStatus: .created, response: response, encoder: encoder, completion: next))
+                
+                handler(typeSafeMiddleware1, typeSafeMiddleware2, codableInput, CodableHelpers.constructIdentOutResultHandler(successStatus: .created, response: response, completion: next))
             }
         }
     }
@@ -1404,8 +1396,8 @@ extension Router {
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
                     return next()
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, codableInput, CodableHelpers.constructIdentOutResultHandler(successStatus: .created, response: response, encoder: encoder, completion: next))
+                
+                handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, codableInput, CodableHelpers.constructIdentOutResultHandler(successStatus: .created, response: response, completion: next))
             }
         }
     }
@@ -1452,8 +1444,8 @@ extension Router {
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
                     return next()
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(typeSafeMiddleware, identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                
+                handler(typeSafeMiddleware, identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, completion: next))
             }
         }
     }
@@ -1495,8 +1487,8 @@ extension Router {
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
                     return next()
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(typeSafeMiddleware1, typeSafeMiddleware2, identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                
+                handler(typeSafeMiddleware1, typeSafeMiddleware2, identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, completion: next))
             }
         }
     }
@@ -1538,8 +1530,8 @@ extension Router {
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
                     return next()
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                
+                handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, completion: next))
             }
         }
     }
@@ -1591,8 +1583,8 @@ extension Router {
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
                     return next()
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(typeSafeMiddleware, identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                
+                handler(typeSafeMiddleware, identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, completion: next))
 
             }
         }
@@ -1640,8 +1632,8 @@ extension Router {
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
                     return next()
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(typeSafeMiddleware1, typeSafeMiddleware2, identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                
+                handler(typeSafeMiddleware1, typeSafeMiddleware2, identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, completion: next))
 
             }
         }
@@ -1689,8 +1681,8 @@ extension Router {
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
                     return next()
                 }
-                let encoder = CodableHelpers.selectResponseEncoder(request, encoders: self.encoders)
-                handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, encoder: encoder, completion: next))
+                
+                handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, completion: next))
 
             }
         }

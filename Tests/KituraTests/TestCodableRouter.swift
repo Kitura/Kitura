@@ -913,8 +913,8 @@ class TestCodableRouter: KituraTest {
             return decoder
         }
         let customRouter = Router()
-        customRouter.decoders["application/json"] = jsonDecoder
-        customRouter.encoders["application/json"] = jsonEncoder
+        customRouter.decoders["json"] = jsonDecoder
+        customRouter.encoders["json"] = jsonEncoder
         
         let date = Date(timeIntervalSince1970: 1519206456)
         let codableDate = CodableDate(date: date)
