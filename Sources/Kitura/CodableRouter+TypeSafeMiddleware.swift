@@ -1419,10 +1419,10 @@ extension Router {
         put(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PUT type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
-                  let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
-            else {
-                next()
-                return
+                let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
+                else {
+                    next()
+                    return
             }
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
@@ -1461,10 +1461,10 @@ extension Router {
         put(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PUT type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
-                  let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
-            else {
-                next()
-                return
+                let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
+                else {
+                    next()
+                    return
             }
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
@@ -1503,10 +1503,10 @@ extension Router {
         put(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PUT type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
-                  let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
-            else {
-                next()
-                return
+                let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
+                else {
+                    next()
+                    return
             }
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
@@ -1555,10 +1555,10 @@ extension Router {
         patch(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PATCH type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
-                  let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
-            else {
-                next()
-                return
+                let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
+                else {
+                    next()
+                    return
             }
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
@@ -1603,10 +1603,10 @@ extension Router {
         patch(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PATCH type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
-                  let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
-            else {
-                next()
-                return
+                let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
+                else {
+                    next()
+                    return
             }
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
@@ -1651,10 +1651,10 @@ extension Router {
         patch(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PATCH type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
-                  let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
-            else {
-                next()
-                return
+                let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
+                else {
+                    next()
+                    return
             }
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
