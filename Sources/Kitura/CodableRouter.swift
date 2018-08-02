@@ -395,7 +395,6 @@ extension Router {
                 next()
                 return
             }
-            
             handler(identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, completion: next))
         }
     }
@@ -414,7 +413,6 @@ extension Router {
                 next()
                 return
             }
-            
             handler(identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, completion: next))
         }
     }
@@ -424,7 +422,6 @@ extension Router {
         registerGetRoute(route: route, outputType: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (single no-identifier) type-safe request")
-            
             handler(CodableHelpers.constructOutResultHandler(response: response, completion: next))
         }
     }
@@ -434,7 +431,6 @@ extension Router {
         registerGetRoute(route: route, outputType: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request")
-            
             handler(CodableHelpers.constructOutResultHandler(response: response, completion: next))
         }
     }
@@ -444,7 +440,6 @@ extension Router {
         registerGetRoute(route: route, id: Id.self, outputType: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural with identifier) type-safe request")
-            
             handler(CodableHelpers.constructTupleArrayOutResultHandler(response: response, completion: next))
         }
     }
@@ -538,7 +533,6 @@ extension Router {
                 next()
                 return
             }
-            
             handler(identifier, CodableHelpers.constructOutResultHandler(response: response, completion: next))
         }
     }
@@ -627,7 +621,6 @@ extension Router {
 // Building blocks for Codable routing
 //
 public struct CodableHelpers {
-
     /**
      * Check if the given request has content type JSON
      *

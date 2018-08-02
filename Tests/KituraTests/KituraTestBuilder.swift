@@ -70,7 +70,6 @@ protocol AssertionTestBuilder: RequestTestBuilder {
 // A builder object for constructing tests made up of one or more
 // requests on which multiple assertions can be applied
 class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
-    
     // An object to keep track of a request and store up a list of
     // assertions to be applied when the request is complete
     private class Request {
@@ -251,7 +250,7 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
             XCTAssertEqual(expected, actual, "Response data does not match expected value:\nexpected: \(expected)\nactual: \(actual)")
         }
     }
-    
+
     public func hasData<T: Decodable & Equatable>(_ expected: [T]) -> Self {
         return hasData(expected, customDecoder: { return JSONDecoder() })
     }
@@ -273,7 +272,7 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
             }
         }
     }
-    
+
     public func hasData<T: Decodable & Equatable>(_ expected: T, customDecoder: @escaping () -> BodyDecoder) -> Self {
         return has { response in
             guard let (_, data) = self.readDataOrFail(from: response) else { return }
