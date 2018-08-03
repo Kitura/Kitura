@@ -27,62 +27,7 @@ extension String {
     }
 }
 
-struct QueryStringParam: QueryParams {
-    public let stringField: String
-}
-
-struct QueryIntFieldParam: QueryParams {
-    public let intField: Int32
-}
-
-struct QueryIntFieldOptionalParam: QueryParams {
-    public let intField: Int?
-}
-
-struct QueryIntFieldArrayParam: QueryParams {
-    public let intField: [Int32]
-}
-
-struct QueryThreeParams: QueryParams {
-    public let intArrayField: [Int32]?
-    public let intField: Int32
-    public let stringField: String
-}
-
 // handler to use in the tests
-func getQueryUglifruitHandler1(query: QueryStringParam, completion: (Uglifruit?, RequestError?) -> Void ) -> Void {
-    let ugli = Uglifruit(auth: "hi", colour: "red", flavour: "tangy", test: nil)
-    completion(ugli, nil)
-}
-
-func getQueryUglifruitHandler2(query: QueryIntFieldParam, completion: (Uglifruit?, RequestError?) -> Void ) -> Void {
-    let ugli = Uglifruit(auth: "hi", colour: "red", flavour: "tangy", test: nil)
-    completion(ugli, nil)
-}
-
-func getQueryUglifruitHandler3(query: QueryIntFieldOptionalParam, completion: (Uglifruit?, RequestError?) -> Void ) -> Void {
-    let ugli = Uglifruit(auth: "hi", colour: "red", flavour: "tangy", test: nil)
-    completion(ugli, nil)
-}
-
-func getQueryUglifruitHandler4(query: QueryIntFieldArrayParam, completion: (Uglifruit?, RequestError?) -> Void ) -> Void {
-    let ugli = Uglifruit(auth: "hi", colour: "red", flavour: "tangy", test: nil)
-    completion(ugli, nil)
-}
-
-func getQueryUglifruitHandler5(query: QueryThreeParams, completion: (Uglifruit?, RequestError?) -> Void ) -> Void {
-    let ugli = Uglifruit(auth: "hi", colour: "red", flavour: "tangy", test: nil)
-    completion(ugli, nil)
-}
-
-func deleteQueryUglifruitHandler1(query: QueryIntFieldParam, completion: (RequestError?) -> Void) {
-    completion(nil)
-}
-
-func deleteQueryUglifruitHandler2(query: QueryIntFieldParam?, completion: (RequestError?) -> Void) {
-    completion(nil)
-}
-
 func deleteHandler(completion: (RequestError?) -> Void ) -> Void {
     completion(nil)
 }
@@ -134,7 +79,6 @@ class TestSwaggerGeneration: KituraTest {
             ("testSwaggerDefinitions", testSwaggerDefinitions),
             ("testSwaggerSections", testSwaggerSections),
             ("testSwaggerContent", testSwaggerContent),
-            ("testSwaggerQueryParams", testSwaggerQueryParams),
         ]
     }
 
@@ -150,13 +94,6 @@ class TestSwaggerGeneration: KituraTest {
         router.get("/me/getarray", handler: getArrayAppleHandler)
         router.get("/me/getarray", handler: getSingleArrayAppleHandler)
         router.get("/me/getid", handler: getSingleAppleHandler)
-        router.get("/me/getugli1", handler: getQueryUglifruitHandler1)
-        router.get("/me/getugli2", handler: getQueryUglifruitHandler2)
-        router.get("/me/getugli3", handler: getQueryUglifruitHandler3)
-        router.get("/me/getugli4", handler: getQueryUglifruitHandler4)
-        router.get("/me/getugli5", handler: getQueryUglifruitHandler5)
-        router.delete("/me/delugli1", handler: deleteQueryUglifruitHandler1)
-        router.delete("/me/delugli2", handler: deleteQueryUglifruitHandler2)
 
         router.patch("/me/patch", handler: patchSingleAppleHandler)
 
@@ -521,13 +458,21 @@ class TestSwaggerGeneration: KituraTest {
         if let path = paths["/me/pear"] as? [String: Any] {
             // test for delete method
             if let delete = path["delete"] as? [String: Any] {
-                XCTAssertTrue(delete["parameters"] == nil, "path /me/pear: delete parameters found when they should not exist")
+                if let parameters = delete["parameters"] as? [[String: Any]] {
+                    XCTAssertTrue(parameters.count == 0, "path /me/pear: delete parameters.count is incorrect")
+                } else {
+                    XCTFail("path /me/pear: delete parameters are missing")
+                }
             } else {
                 XCTFail("path /me/pear: delete method is missing")
             }
             // test for get method
             if let get = path["get"] as? [String: Any] {
-                XCTAssertTrue(get["parameters"] == nil, "path /me/pear: get parameters found when they should not exist")
+                if let parameters = get["parameters"] as? [[String: Any]] {
+                    XCTAssertTrue(parameters.count == 0, "path /me/pear: get parameters.count is incorrect")
+                } else {
+                    XCTFail("path /me/pear: get parameters are missing")
+                }
             } else {
                 XCTFail("path /me/pear: get method is missing")
             }
@@ -574,268 +519,6 @@ class TestSwaggerGeneration: KituraTest {
             }
         } else {
             XCTFail("path /me/puti/{id} is missing")
-        }
-    }
-
-    func pathGetQueryParams1(paths: [String: Any]) {
-        // test for path contents
-        if let path = paths["/me/getugli1"] as? [String: Any] {
-            // test for put method
-            if let get = path["get"] as? [String: Any] {
-                // test for parameters section
-                if let parameters = get["parameters"] as? [[String: Any]] {
-                    XCTAssertTrue(parameters.count == 1, "path /me/getugli1: query parameters.count is incorrect")
-                    // test for 1st parameter block
-                    let param = parameters[0]
-                    if let inval = param["in"] as? String {
-                        XCTAssertTrue(inval == "query", "path /me/getugli1: query param 'in' value is incorrect")
-                    } else {
-                        XCTFail("path /me/getugli1: query parameters 'in' value is missing")
-                    }
-                    if let name = param["name"] as? String {
-                        XCTAssertTrue(name == "stringField", "path /me/getugli1: query param 'name' value is incorrect")
-                    } else {
-                        XCTFail("path /me/getugli1: query parameters 'name' value is missing")
-                    }
-                    if let required = param["required"] as? Bool {
-                        XCTAssertTrue(required, "path /me/getugli1: query param 'required' value is incorrect")
-                    } else {
-                        XCTFail("path /me/getugli1: query parameters 'required' value is missing")
-                    }
-                    if let type = param["type"] as? String {
-                        XCTAssertTrue(type == "string", "path /me/getugli1: query param 'type' value is incorrect")
-                    } else {
-                        XCTFail("path /me/getugli1: query parameters 'type' value is missing")
-                    }
-                } else {
-                    XCTFail("path /me/getugli1: query parameters are missing")
-                }
-            } else {
-                XCTFail("path /me/getugli1: get method is missing")
-            }
-        } else {
-            XCTFail("path /me/getugli1 is missing")
-        }
-    }
-
-    func pathGetQueryParams2(paths: [String: Any]) {
-        // test for path contents
-        if let path = paths["/me/getugli2"] as? [String: Any] {
-            // test for put method
-            if let get = path["get"] as? [String: Any] {
-                // test for parameters section
-                if let parameters = get["parameters"] as? [[String: Any]] {
-                    XCTAssertTrue(parameters.count == 1, "path /me/getugli2: query parameters.count is incorrect")
-                    // test for 1st parameter block
-                    let param = parameters[0]
-                    if let inval = param["in"] as? String {
-                        XCTAssertTrue(inval == "query", "path /me/getugli2: query param 'in' value is incorrect")
-                    } else {
-                        XCTFail("path /me/getugli2: query parameters 'in' value is missing")
-                    }
-                    if let name = param["name"] as? String {
-                        XCTAssertTrue(name == "intField", "path /me/getugli2: query param 'name' value is incorrect")
-                    } else {
-                        XCTFail("path /me/getugli2: query parameters 'name' value is missing")
-                    }
-                    if let format = param["format"] as? String {
-                        XCTAssertTrue(format == "int32", "path /me/getugli2: query param 'format' value is incorrect")
-                    } else {
-                        XCTFail("path /me/getugli2: query parameters 'format' value is missing")
-                    }
-                    if let required = param["required"] as? Bool {
-                        XCTAssertTrue(required, "path /me/getugli2: query param 'required' value is incorrect")
-                    } else {
-                        XCTFail("path /me/getugli2: query parameters 'required' value is missing")
-                    }
-                    if let type = param["type"] as? String {
-                        XCTAssertTrue(type == "integer", "path /me/getugli2: query param 'type' value is incorrect")
-                    } else {
-                        XCTFail("path /me/getugli2: query parameters 'type' value is missing")
-                    }
-                } else {
-                    XCTFail("path /me/getugli2: query parameters are missing")
-                }
-            } else {
-                XCTFail("path /me/getugli2: get method is missing")
-            }
-        } else {
-            XCTFail("path /me/getugli2 is missing")
-        }
-    }
-
-    func pathGetQueryParams3(paths: [String: Any]) {
-        // test for path contents
-        if let path = paths["/me/getugli3"] as? [String: Any] {
-            // test for put method
-            if let get = path["get"] as? [String: Any] {
-                // test for parameters section
-                if let parameters = get["parameters"] as? [[String: Any]] {
-                    XCTAssertTrue(parameters.count == 1, "path /me/getugli3: query parameters.count is incorrect")
-                    // test for 1st parameter block
-                    let param = parameters[0]
-                    if let inval = param["in"] as? String {
-                        XCTAssertTrue(inval == "query", "path /me/getugli3: query param 'in' value is incorrect")
-                    } else {
-                        XCTFail("path /me/getugli3: query parameters 'in' value is missing")
-                    }
-                    if let name = param["name"] as? String {
-                        XCTAssertTrue(name == "intField", "path /me/getugli3: query param 'name' value is incorrect")
-                    } else {
-                        XCTFail("path /me/getugli3: query parameters 'name' value is missing")
-                    }
-                    if let required = param["required"] as? Bool {
-                        XCTAssertFalse(required, "path /me/getugli3: query param 'required' value is incorrect")
-                    } else {
-                        XCTFail("path /me/getugli3: query parameters 'required' value is missing")
-                    }
-                    if let type = param["type"] as? String {
-                        XCTAssertTrue(type == "integer", "path /me/getugli3: query param 'type' value is incorrect")
-                    } else {
-                        XCTFail("path /me/getugli3: query parameters 'type' value is missing")
-                    }
-                    XCTAssertTrue(param["format"] == nil, "path /me/getugli3: query parameters 'format' value is found when it should not exist")
-                } else {
-                    XCTFail("path /me/getugli3: query parameters are missing")
-                }
-            } else {
-                XCTFail("path /me/getugli3: get method is missing")
-            }
-        } else {
-            XCTFail("path /me/getugli3 is missing")
-        }
-    }
-
-    func pathGetQueryParams4(paths: [String: Any]) {
-        // test for path contents
-        if let path = paths["/me/getugli4"] as? [String: Any] {
-            // test for put method
-            if let get = path["get"] as? [String: Any] {
-                // test for parameters section
-                if let parameters = get["parameters"] as? [[String: Any]] {
-                    XCTAssertTrue(parameters.count == 1, "path /me/getugli4: query parameters.count is incorrect")
-                    // test for 1st parameter block
-                    let param = parameters[0]
-                    if let inval = param["in"] as? String {
-                        XCTAssertTrue(inval == "query", "path /me/getugli4: query param 'in' value is incorrect")
-                    } else {
-                        XCTFail("path /me/getugli4: query parameters 'in' value is missing")
-                    }
-                    if let name = param["name"] as? String {
-                        XCTAssertTrue(name == "intField", "path /me/getugli4: query param 'name' value is incorrect")
-                    } else {
-                        XCTFail("path /me/getugli4: query parameters 'name' value is missing")
-                    }
-                    if let items = param["items"] as? [String: Any] {
-                        if let type = items["type"] as? String {
-                            XCTAssertTrue(type == "integer", "path /me/getugli4: query param 'items[type]' value is incorrect")
-                        } else {
-                            XCTFail("path /me/getugli4: query parameters 'items[type]' value is missing")
-                        }
-                        if let format = items["format"] as? String {
-                            XCTAssertTrue(format == "int32", "path /me/getugli4: query param 'items[format]' value is incorrect")
-                        } else {
-                            XCTFail("path /me/getugli4: query parameters 'items[format]' value is missing")
-                        }
-                    } else {
-                        XCTFail("path /me/getugli4: query parameters 'items' value is missing")
-                    }
-                    if let collectionFormat = param["collectionFormat"] as? String {
-                        XCTAssertTrue(collectionFormat == "csv", "path /me/getugli4: query param 'collectionFormat' value is incorrect")
-                    } else {
-                        XCTFail("path /me/getugli4: query parameters 'collectionFormat' value is missing")
-                    }
-                    if let required = param["required"] as? Bool {
-                        XCTAssertTrue(required, "path /me/getugli4: query param 'required' value is incorrect")
-                    } else {
-                        XCTFail("path /me/getugli4: query parameters 'required' value is missing")
-                    }
-                    if let type = param["type"] as? String {
-                        XCTAssertTrue(type == "array", "path /me/getugli4: query param 'type' value is incorrect")
-                    } else {
-                        XCTFail("path /me/getugli4: query parameters 'type' value is missing")
-                    }
-                } else {
-                    XCTFail("path /me/getugli4: query parameters are missing")
-                }
-            } else {
-                XCTFail("path /me/getugli4: get method is missing")
-            }
-        } else {
-            XCTFail("path /me/getugli4 is missing")
-        }
-    }
-
-    func pathGetQueryParams5(paths: [String: Any]) {
-        if let path = paths["/me/getugli5"] as? [String: Any] {
-            // test for put method
-            if let get = path["get"] as? [String: Any] {
-                // test for parameters section
-                if let parameters = get["parameters"] as? [[String: Any]] {
-                    XCTAssertTrue(parameters.count == 3, "path /me/getugli5: get parameters.count is incorrect")
-                    // test for 1st parameter block
-                    let param = parameters[0]
-                    if let inval = param["in"] as? String {
-                        XCTAssertTrue(inval == "query", "path /me/getugli5: get parameters 'in' value is incorrect")
-                    } else {
-                        XCTFail("path /me/getugli5: get parameters 'in' value is missing")
-                    }
-                } else {
-                    XCTFail("path /me/getugli5: get parameters are missing")
-                }
-            } else {
-                XCTFail("path /me/getugli5: get method is missing")
-            }
-        } else {
-            XCTFail("path /me/getugli5 is missing")
-        }
-    }
-
-    func pathDeleteQueryParams(paths: [String: Any]) {
-        if let path = paths["/me/delugli1"] as? [String: Any] {
-            // test for put method
-            if let delete = path["delete"] as? [String: Any] {
-                // test for parameters section
-                if let parameters = delete["parameters"] as? [[String: Any]] {
-                    XCTAssertTrue(parameters.count == 1, "path /me/delugli1: get parameters.count is incorrect")
-                    // test for 1st parameter block
-                    let param = parameters[0]
-                    if let inval = param["in"] as? String {
-                        XCTAssertTrue(inval == "query", "path /me/delugli1: delete parameters 'in' value is incorrect")
-                    } else {
-                        XCTFail("path /me/delugli1: delete parameters 'in' value is missing")
-                    }
-                } else {
-                    XCTFail("path /me/delugli1: delete parameters are missing")
-                }
-            } else {
-                XCTFail("path /me/delugli1: delete method is missing")
-            }
-        } else {
-            XCTFail("path /me/delugli1 is missing")
-        }
-
-        if let path = paths["/me/delugli2"] as? [String: Any] {
-            // test for put method
-            if let delete = path["delete"] as? [String: Any] {
-                // test for parameters section
-                if let parameters = delete["parameters"] as? [[String: Any]] {
-                    XCTAssertTrue(parameters.count == 1, "path /me/delugli2: get parameters.count is incorrect")
-                    // test for 1st parameter block
-                    let param = parameters[0]
-                    if let inval = param["in"] as? String {
-                        XCTAssertTrue(inval == "query", "path /me/delugli2: delete parameters 'in' value is incorrect")
-                    } else {
-                        XCTFail("path /me/delugli2: delete parameters 'in' value is missing")
-                    }
-                } else {
-                    XCTFail("path /me/delugli2: delete parameters are missing")
-                }
-            } else {
-                XCTFail("path /me/delugli2: delete method is missing")
-            }
-        } else {
-            XCTFail("path /me/delugli2 is missing")
         }
     }
 
@@ -908,53 +591,6 @@ class TestSwaggerGeneration: KituraTest {
                 pathContentAssertions2(paths: paths)
                 pathContentAssertions3(paths: paths)
                 pathContentAssertions4(paths: paths)
-            } else {
-                XCTFail("paths is missing")
-            }
-        } else {
-            XCTFail("got unexpected nil from router.swaggerJSON")
-        }
-
-        requestQueue.async() {
-            Kitura.stop()
-        }
-
-        waitForExpectations(timeout: 10) { error in
-            XCTAssertNil(error)
-        }
-    }
-
-    func testSwaggerQueryParams() {
-        // test correct values returned from JsonApiDoc property
-        setupServerAndExpectations(router: router, expectStart: true, expectStop: true, expectFail: false)
-
-        let requestQueue = DispatchQueue(label: "Request queue")
-        requestQueue.async() {
-            Kitura.start()
-        }
-
-        if let jsonString = router.swaggerJSON {
-            guard let data = jsonString.data(using: String.Encoding.utf8, allowLossyConversion: false) else {
-                XCTFail("got unexpected nil from router.swaggerJSON")
-                return
-            }
-            guard let json = try? JSONSerialization.jsonObject(with: data, options: []) else {
-                XCTFail("got unexpected nil from router.swaggerJSON")
-                return
-            }
-            guard let dict = json as? [String: Any] else {
-                XCTFail("got unexpected nil from router.swaggerJSON")
-                return
-            }
-
-            // test for paths section
-            if let paths = dict["paths"] as? [String: Any] {
-                pathGetQueryParams1(paths: paths)
-                pathGetQueryParams2(paths: paths)
-                pathGetQueryParams3(paths: paths)
-                pathGetQueryParams4(paths: paths)
-                pathGetQueryParams5(paths: paths)
-                pathDeleteQueryParams(paths: paths)
             } else {
                 XCTFail("paths is missing")
             }
