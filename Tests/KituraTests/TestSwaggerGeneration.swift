@@ -458,21 +458,13 @@ class TestSwaggerGeneration: KituraTest {
         if let path = paths["/me/pear"] as? [String: Any] {
             // test for delete method
             if let delete = path["delete"] as? [String: Any] {
-                if let parameters = delete["parameters"] as? [[String: Any]] {
-                    XCTAssertTrue(parameters.count == 0, "path /me/pear: delete parameters.count is incorrect")
-                } else {
-                    XCTFail("path /me/pear: delete parameters are missing")
-                }
+                XCTAssertTrue(delete["parameters"] == nil, "path /me/pear: delete parameters found when they should not exist")
             } else {
                 XCTFail("path /me/pear: delete method is missing")
             }
             // test for get method
             if let get = path["get"] as? [String: Any] {
-                if let parameters = get["parameters"] as? [[String: Any]] {
-                    XCTAssertTrue(parameters.count == 0, "path /me/pear: get parameters.count is incorrect")
-                } else {
-                    XCTFail("path /me/pear: get parameters are missing")
-                }
+                XCTAssertTrue(get["parameters"] == nil, "path /me/pear: get parameters found when they should not exist")
             } else {
                 XCTFail("path /me/pear: get method is missing")
             }
