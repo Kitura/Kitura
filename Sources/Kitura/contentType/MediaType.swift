@@ -27,7 +27,7 @@ import KituraNet
  // Prints ("application/json")
  ```
  */
-public struct MediaType: CustomStringConvertible {
+public struct MediaType: CustomStringConvertible, Equatable, Hashable {
     
     /// An enum of all media type's top level types.
     public enum TopLevelType: String {
@@ -96,20 +96,6 @@ public struct MediaType: CustomStringConvertible {
         self.init(contentTypeComponents[0])
     }
     
-    // MARK: String representation
-    
-    /**
-     Returns the media type, as a String structured: `topLevelType`/`subtype`.
-     ### Usage Example: ###
-     ```swift
-     print(mediaType.description)
-     // Prints ("application/json")
-     ```
-     */
-    public var description: String {
-        return "\(topLevelType)/\(subtype)"
-    }
-    
     // MARK: Helper Constructors
     
     /**
@@ -133,6 +119,29 @@ public struct MediaType: CustomStringConvertible {
      ```
      */
     public static let urlEncoded = MediaType(type: .application, subtype: "x-www-form-urlencoded")
-
+    
+    // MARK: Protocol conformance
+    
+    /**
+     Returns the media type, as a String structured: `topLevelType`/`subtype`. Required for CustomStringConvertible conformance.
+     ### Usage Example: ###
+     ```swift
+     print(mediaType.description)
+     // Prints ("application/json")
+     ```
+     */
+    public var description: String {
+        return "\(topLevelType)/\(subtype)"
+    }
+    
+    /// Compares two MediaTypes returning true if they are equal. Required for Equatable conformance.
+    public static func == (lhs: MediaType, rhs: MediaType) -> Bool {
+        return lhs.description == rhs.description
+    }
+    
+    /// The hashValue for the MediaTypes. Required for Hashable conformance.
+    public var hashValue: Int {
+        return description.hashValue
+    }
 }
 
