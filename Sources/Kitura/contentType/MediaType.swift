@@ -16,30 +16,55 @@
 
 import KituraNet
 
+/**
+ The media type (formerly known as MIME type) is a standardized way to indicate the nature and format of a document.
+ This struct consists of a catagorical `topLevelType` and specific `subtype` seperated by a "/" (e.g. "text/plain").
+ In HTTP, The media type is sent as the first section of the "Content-Type" header and is case insensitive.
+ ### Usage Example: ###
+ ```swift
+ let mediaType = MediaType(type: .application, subtype: "json")
+ print(mediaType.description)
+ // Prints ("application/json")
+ ```
+ */
 public struct MediaType: CustomStringConvertible {
     
+    /// An enum of all media type's top level types.
     public enum TopLevelType: String {
-        case application = "application"
-        case audio = "audio"
-        case font = "font"
-        case image = "image"
-        case message = "message"
-        case model = "model"
-        case multipart = "multipart"
-        case text = "text"
-        case video = "video"
+        case application, audio, font, image, message, model, multipart, text, video
     }
     
-    let topLevelType: TopLevelType
+    // MARK: Media type components
     
-    let subtype: String
+    /// The topLevelType represents the category of the MediaType (e.g. "audio").
+    public let topLevelType: TopLevelType
     
-    init(type: TopLevelType, subtype: String = "*") {
+    /// The subtype is the specific MediaType (e.g. "html").
+    public let subtype: String
+    
+    // MARK: Initializers
+    
+    /**
+     Initialize a `MediaType` instance with a `TopLevelType` type and `String` subtype. If no subtype is provided it will default to "*" representing all subtypes.
+     ### Usage Example: ###
+     ```swift
+     let mediaType = MediaType(type: .application, subtype: "json")
+     ```
+     */
+    public init(type: TopLevelType, subtype: String = "*") {
         self.topLevelType = type
         self.subtype = subtype.lowercased()
     }
     
-    init? (_ mimeType: String) {
+    /**
+     Initialize a `MediaType` instance from a `String`. If no subtype is provided it will default to "*" representing all subtypes.
+     If the string preceding the first "/" is not a valid `TopLevelType` the initializer will return nil.
+     ### Usage Example: ###
+     ```swift
+     let mediaType = MediaType("application/json")
+     ```
+     */
+    public init? (_ mimeType: String) {
         let mimeComponents = mimeType
             .lowercased()
             .components(separatedBy: "/")
@@ -54,7 +79,16 @@ public struct MediaType: CustomStringConvertible {
         }
     }
     
-    init? (headers: HeadersContainer) {
+    /**
+     Initialize a `MediaType` instance from a `KituraNet` `HeadersContainer`. This will extract the media type String from the first section of the "Content-type" header and use this to initialize itself. If the string preceding the first "/" is not a valid `TopLevelType` the initializer will return nil.
+     ### Usage Example: ###
+     ```swift
+     let headers = HeadersContainer()
+     headers.append("Content-Type", value: ["application/json"])
+     let mediaType = MediaType(headers: headers)
+     ```
+     */
+    public init? (headers: HeadersContainer) {
         let contentType = headers["Content-Type"]?[0]
         guard let contentTypeComponents = contentType?.components(separatedBy: ";") else {
             return nil
@@ -62,17 +96,43 @@ public struct MediaType: CustomStringConvertible {
         self.init(contentTypeComponents[0])
     }
     
+    // MARK: String representation
+    
+    /**
+     Returns the media type, as a String structured: `topLevelType`/`subtype`.
+     ### Usage Example: ###
+     ```swift
+     print(mediaType.description)
+     // Prints ("application/json")
+     ```
+     */
     public var description: String {
         return "\(topLevelType)/\(subtype)"
     }
     
-    /// "application/json" content type
+    // MARK: Helper Constructors
+    
+    /**
+     Helper constructor for the "application/json" media type
+     ### Usage Example: ###
+     ```swift
+     let mediaType = MediaType.json
+     print(mediaType.description)
+     // Prints ("application/json")
+     ```
+     */
     public static let json = MediaType(type: .application, subtype: "json")
     
-    /// "application/x-www-form-urlencoded" content type
+    /**
+     Helper constructor for the "application/x-www-form-urlencoded" media type
+     ### Usage Example: ###
+     ```swift
+     let mediaType = MediaType.urlEncoded
+     print(mediaType.description)
+     // Prints ("application/x-www-form-urlencoded")
+     ```
+     */
     public static let urlEncoded = MediaType(type: .application, subtype: "x-www-form-urlencoded")
-    
-    /// "application/json" content type
-    public static let html = MediaType(type: .text, subtype: "html")
+
 }
 

@@ -63,5 +63,6 @@ XCTMain([
     testCase(TestBridgingHTTPStatusCode.allTests.shuffled()),
     testCase(TestBridgingRequestError.allTests.shuffled()),
     testCase(TestSwaggerGeneration.allTests.shuffled()),
+    testCase(TestMediaType.allTests.shuffled()),
 //    testCase(TestCRUDTypeRouter.allTests.shuffled()),
     ].shuffled())
