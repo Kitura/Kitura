@@ -25,7 +25,7 @@ class TestContentType: KituraTest {
         return [
             ("testInitialize", testInitialize),
             ("testFilename", testFilename),
-            ("testIsContentType", testIsContentType),
+            ("testIsContentType", testIsContentType)
         ]
     }
 
