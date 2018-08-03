@@ -30,8 +30,52 @@ import LoggerAPI
  // Prints Optional("image/png")
  ```
  */
-public class ContentType {
+public class ContentType: CustomStringConvertible {
 
+    let mediaType: MediaType
+
+    let charset: String?
+
+    let boundary: String?
+    
+    public init (mediaType: MediaType, charset: String? = nil, boundary: String? = nil) {
+        self.mediaType = mediaType
+        self.charset = charset
+        self.boundary = boundary
+    }
+    
+    public convenience init? (_ contentType: String) {
+        let contentTypeComponents = contentType
+            .replacingOccurrences(of: " ", with: "")
+            .components(separatedBy: ";")
+        guard let mediaType = MediaType(contentTypeComponents[0]) else {
+            return nil
+        }
+        let charsetParameter = contentTypeComponents.filter {$0.lowercased().hasPrefix(("charset="))}
+        let charset =
+            charsetParameter.count == 1
+            ? charsetParameter[0].dropFirst(8).lowercased()
+            : nil
+        let boundaryParameter = contentTypeComponents.filter {$0.hasPrefix("boundary=")}
+        let boundary =
+            boundaryParameter.count == 1
+            ? String(boundaryParameter[0].dropFirst(9))
+            : nil
+        self.init(mediaType: mediaType, charset: charset, boundary: boundary)
+    }
+    
+    public var description: String {
+        var charsetString = ""
+        var boundaryString = ""
+        if let charset = charset {
+            charsetString = "; charset=\(charset)"
+        }
+        if let boundary = boundary {
+            boundaryString = "; boundary=\(boundary)"
+        }
+        return "\(mediaType.description)\(charsetString)\(boundaryString)"
+    }
+    
     /// A dictionary of extensions to MIME type descriptions
     private var extToContentType = [String:String]()
 
@@ -40,20 +84,17 @@ public class ContentType {
 
     /// The following function loads the MIME types from an external file
     private init () {
-        let contentTypesData = contentTypesString.data(using: .utf8)
-        guard contentTypesData != nil else {
+        self.mediaType = MediaType(type: .application, subtype: "json")
+        self.charset = nil
+        self.boundary = nil
+        guard let contentTypesData = contentTypesString.data(using: .utf8) else {
             Log.error("Error parsing \(contentTypesString)")
             return
         }
 
         let jsonParseOptions = JSONSerialization.ReadingOptions.mutableContainers
-        let parsedObject = try? JSONSerialization.jsonObject(with: contentTypesData!,
-                                                             options: jsonParseOptions)
-
-        // MARK: Linux Foundation will return an Any instead of an AnyObject
-        // Need to test if this breaks the Linux build.
-        guard parsedObject != nil,
-            let jsonData = parsedObject as? [String : [String]] else {
+        guard let parsedObject = try? JSONSerialization.jsonObject(with: contentTypesData, options: jsonParseOptions),
+              let jsonData = parsedObject as? [String : [String]] else {
                 Log.error("JSON could not be parsed")
                 return
         }
@@ -182,5 +223,4 @@ public class ContentType {
             return type
         }
     }
-
 }
