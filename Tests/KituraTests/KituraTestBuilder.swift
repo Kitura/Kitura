@@ -95,13 +95,12 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
             }
         }
         
-        init<T: Encodable>(_ test: KituraTest, _ method: String, _ path: String, _ data: T, headers: [String:String]? = nil, encoder: @escaping () -> BodyEncoder) {
+        init<T: Encodable>(_ test: KituraTest, _ method: String, _ path: String, _ data: T, headers: [String:String]? = nil, encoder: @escaping () -> BodyEncoder, mediaType: MediaType = .json) {
             self.test = test
             self.invoker = { callback in
                 let data = try encoder().encode(data)
                 test.performRequest(method, path: path, callback: callback, headers: headers, requestModifier: { request in
-                    let encoderType = ContentType.sharedInstance.getContentType(forExtension: encoder().contentType) ?? "application/json"
-                    request.headers["Content-Type"] = "\(encoderType); charset=utf-8"
+                    request.headers["Content-Type"] = "\(mediaType.description); charset=utf-8"
                     request.write(from: data)
                 })
             }

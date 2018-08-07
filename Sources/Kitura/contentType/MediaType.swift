@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * Copyright IBM Corporation 2018
  *
@@ -16,6 +17,9 @@
 
 import KituraNet
 
+=======
+import KituraNet
+>>>>>>> use MediaType Class
 /**
  The media type (formerly known as MIME type) is a standardized way to indicate the nature and format of a document.
  This struct consists of a catagorical `topLevelType` and specific `subtype` seperated by a "/" (e.g. "text/plain").
@@ -144,4 +148,3 @@ public struct MediaType: CustomStringConvertible, Equatable, Hashable {
     /// The hashValue for the MediaTypes. Required for Hashable conformance.
     public let hashValue: Int
 }
-

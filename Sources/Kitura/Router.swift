@@ -35,9 +35,11 @@ import KituraContracts
 public class Router {
 
     /// A dictionary of Content-type to BodyEncoder generators
-    public var encoders: [String: () -> BodyEncoder] = ["json": {return JSONEncoder()}]
+    public var encoders: [MediaType: () -> BodyEncoder] = [.json: {return JSONEncoder()}]
     /// A dictionary of Content-type to BodyDecoder generators
-    public var decoders: [String: () -> BodyDecoder] = ["json": {return JSONDecoder()}, "application/x-www-form-urlencoded": {return QueryDecoder()}]
+//    public var decoders: [String: () -> BodyDecoder] = ["json": {return JSONDecoder()}, "application/x-www-form-urlencoded": {return QueryDecoder()}]
+    /// A dictionary of Content-type to BodyDecoder generators
+    public var decoders: [MediaType: () -> BodyDecoder] = [.json: {return JSONDecoder()}, .urlEncoded: {return QueryDecoder()}]
     
     /// Contains the list of routing elements
     var elements: [RouterElement] = []
@@ -438,26 +440,25 @@ public class Router {
     }
     
     /**
-     * Return the highest rated encoder using the request's Accepts header
+     * Return the highest rated encoder for the request's Accepts header. Defaults to a JSON encoder if no successful match.
      *
      * ### Usage Example: ###
      * ```swift
-     * let encoders: [String: () -> BodyEncoder] = ["json": {return JSONEncoder()}]
-     * let (contentType, encoder) = CodableHelpers.selectResponseEncoder(encoders: encoders)
+     * let (mediaType, encoder) = selectResponseEncoder(request)
      * ```
      * - Parameter request: The RouterRequest to check
-     * - Returns: A tuple of the highest rated Encoder, or a JSONEncoder() if no encoders match the Accepts header and it's corresponding contentType.
+     * - Returns: A tuple of the highest rated Encoder, or a JSONEncoder() if no encoders match the Accepts header and it's corresponding MediaType.
      */
-    func selectResponseEncoder(_ request: RouterRequest) -> (String, BodyEncoder) {
-        let encoderAcceptsTypes = Array(encoders.keys)
-        guard let bestAccepts = request.accepts(types: encoderAcceptsTypes), let bestEncoder = encoders[bestAccepts] else {
-            if let jsonEncoder = encoders["json"] {
-                return ("json", jsonEncoder())
-            } else {
-                return ("json", JSONEncoder())
-            }
+    func selectResponseEncoder(_ request: RouterRequest) -> (MediaType, BodyEncoder) {
+        let encoderAcceptsTypes = Array(encoders.keys).map { $0.description }
+        guard let bestAccepts = request.accepts(types: encoderAcceptsTypes),
+              let bestMediaType = MediaType(bestAccepts),
+              let bestEncoder = encoders[bestMediaType]
+        else {
+            let jsonEncoder = encoders[.json] ?? { return JSONEncoder() }
+            return (.json, jsonEncoder())
         }
-        return (bestAccepts, bestEncoder())
+        return (bestMediaType, bestEncoder())
     }
 }
 
@@ -521,19 +522,16 @@ extension Router : ServerDelegate {
     /// - Parameter response: The `ServerResponse` object used to send responses to the
     ///                      HTTP request at the [Kitura-net](http://ibm-swift.github.io/Kitura-net/) API level.
     public func handle(request: ServerRequest, response: ServerResponse) {
-        // TODO: fix by making contentType not string
-        let contentType = request.headers["Content-Type"]?[0]
-        var contentTypeComponents = contentType?.components(separatedBy: ";")
-        if contentTypeComponents?[0] == "application/json" {
-            contentTypeComponents?[0] = "json"
+        var decoder: (() -> BodyDecoder)?
+        if let mediaType = MediaType(headers: request.headers) {
+            decoder = decoders[mediaType]
         }
-        let decoder = decoders[(contentTypeComponents?[0]) ?? ""]
         let routeReq = RouterRequest(request: request, decoder: decoder)
         //TODO fix the stack
         var routerStack = Stack<Router>()
         routerStack.push(self)
-        let (respContentType, encoder) = selectResponseEncoder(routeReq)
-        let routeResp = RouterResponse(response: response, routerStack: routerStack, request: routeReq, encoder: encoder, contentType: respContentType)
+        let (respMediaType, encoder) = selectResponseEncoder(routeReq)
+        let routeResp = RouterResponse(response: response, routerStack: routerStack, request: routeReq, encoder: encoder, mediaType: respMediaType)
 
         process(request: routeReq, response: routeResp) { [weak self, weak routeReq, weak routeResp] () in
             guard let strongSelf = self else {

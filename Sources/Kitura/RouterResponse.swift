@@ -87,7 +87,7 @@ public class RouterResponse {
 
     let encoder: BodyEncoder
     
-    let contentType: String
+    let mediaType: MediaType
 
     // regex used to sanitize javascript identifiers
     fileprivate static let sanitizeJSIdentifierRegex: NSRegularExpression! = {
@@ -130,12 +130,12 @@ public class RouterResponse {
     ///                    working with.
     /// - Parameter request: The `RouterRequest` object that is paired with this
     ///                     `RouterResponse` object.
-    init(response: ServerResponse, routerStack: Stack<Router>, request: RouterRequest, encoder: BodyEncoder = JSONEncoder(), contentType: String = "json") {
+    init(response: ServerResponse, routerStack: Stack<Router>, request: RouterRequest, encoder: BodyEncoder = JSONEncoder(), mediaType: MediaType = .json) {
         self.response = response
         self.routerStack = routerStack
         self.request = request
         self.encoder = encoder
-        self.contentType = contentType
+        self.mediaType = mediaType
         headers = Headers(headers: response.headers)
         statusCode = .unknown
         state.response = self
@@ -524,7 +524,7 @@ extension RouterResponse {
             return self
         }
         do {
-            headers.setType(contentType)
+            headers["Content-Type"] = mediaType.description
             send(data: try encoder.encode(obj))
         } catch {
             Log.warning("Failed to encode Codable object for sending: \(error.localizedDescription)")
