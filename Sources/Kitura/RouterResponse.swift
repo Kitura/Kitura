@@ -130,6 +130,8 @@ public class RouterResponse {
     ///                    working with.
     /// - Parameter request: The `RouterRequest` object that is paired with this
     ///                     `RouterResponse` object.
+    /// - Parameter encoder: The `BodyEncoder` that will be used the encode the request body.
+    /// - Parameter mediaType: The `MediaType` the media type which will be sent in the response "Content-Type" header.
     init(response: ServerResponse, routerStack: Stack<Router>, request: RouterRequest, encoder: BodyEncoder = JSONEncoder(), mediaType: MediaType = .json) {
         self.response = response
         self.routerStack = routerStack

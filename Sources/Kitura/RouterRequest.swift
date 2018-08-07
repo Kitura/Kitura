@@ -29,7 +29,7 @@ public class RouterRequest {
     let serverRequest: ServerRequest
     
     /// The Data decoder generator for the request content-type
-    let decoder: (() -> BodyDecoder)?
+    let decoder: BodyDecoder?
 
     /// The hostname of the request.
     public var hostname: String {
@@ -167,9 +167,9 @@ public class RouterRequest {
     convenience init(request: ServerRequest) {
         let contentType = request.headers["Content-Type"]?[0]
         if contentType?.hasPrefix("application/x-www-form-urlencoded") ?? false {
-            self.init(request: request, decoder: { return QueryDecoder() })
-        } else if contentType?.hasPrefix("json") ?? false{
-            self.init(request: request, decoder: { return JSONDecoder() })
+            self.init(request: request, decoder: QueryDecoder())
+        } else if contentType?.hasPrefix("application/json") ?? false {
+            self.init(request: request, decoder: JSONDecoder())
         } else {
             self.init(request: request, decoder: nil)
         }
@@ -178,7 +178,8 @@ public class RouterRequest {
     /// Initializes a `RouterRequest` instance
     ///
     /// - Parameter request: the server request
-    init(request: ServerRequest, decoder: (() -> BodyDecoder)?) {
+    /// - Parameter decoder: the decoder generator to use when decoding the request body.
+    init(request: ServerRequest, decoder: BodyDecoder?) {
         serverRequest = request
         parsedURLPath = URLParser(url: request.url, isConnect: false)
         httpVersion = HTTPVersion(major: serverRequest.httpVersionMajor ?? 1, minor: serverRequest.httpVersionMinor ?? 1)
@@ -204,7 +205,8 @@ public class RouterRequest {
         return try serverRequest.read(into: &data)
     }
     
-    /// Read the body of the request as a Codable object using the given `BodyDecoder`
+    /// Read the body of the request as a Codable object using the requests `BodyDecoder`.
+    /// Defaults to `JSONDecoder()` if no decoder is provided.
     /// - Parameter as: Codable object to which the body of the request will be converted.
     /// - Parameter decoder: The BodyDecoder which will be used to decode the request as the Codable object.
     /// - Throws: Socket.Error if an error occurred while reading from a socket.
@@ -214,7 +216,7 @@ public class RouterRequest {
     public func read<T: Decodable>(as type: T.Type) throws -> T {
         var data = Data()
         _ = try serverRequest.read(into: &data)
-        let decoderInstance = decoder?() ?? JSONDecoder()
+        let decoderInstance = decoder ?? JSONDecoder()
         return try decoderInstance.decode(type, from: data)
     }
     

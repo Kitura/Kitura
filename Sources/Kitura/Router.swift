@@ -34,11 +34,37 @@ import KituraContracts
 
 public class Router {
 
-    /// A dictionary of Content-type to BodyEncoder generators
+    /**
+     A dictionary of MediaType to BodyEncoder generators.
+     Initalized with `{ return JSONEncoder() }` for "application/json".
+     ### Usage Example: ###
+     The example below replaces the default JSON encoder with a new encoder that has a different date encoding strategy.
+     ```swift
+     let router = Router()
+     let newJSONEncoder: () -> BodyEncoder = {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .secondsSince1970
+        return encoder
+     }
+     router.encoders[.json] = newJSONEncoder
+     ```
+     */
     public var encoders: [MediaType: () -> BodyEncoder] = [.json: {return JSONEncoder()}]
-    /// A dictionary of Content-type to BodyDecoder generators
-//    public var decoders: [String: () -> BodyDecoder] = ["json": {return JSONDecoder()}, "application/x-www-form-urlencoded": {return QueryDecoder()}]
-    /// A dictionary of Content-type to BodyDecoder generators
+    
+    /**
+     A dictionary of MediaType to BodyDecoder generators. Includes a JSONDecoder and QueryDecoder by default.
+     ### Usage Example: ###
+     The example below replaces the default JSON decoder with a new decoder that has a different date decoding strategy.
+     ```swift
+     let router = Router()
+     let newJSONDecoder: () -> BodyDecoder = {
+         let decoder = JSONDecoder()
+         decoder.dateEncodingStrategy = .secondsSince1970
+         return decoder
+     }
+     router.decoders[.json] = newJSONDecoder
+     ```
+    */
     public var decoders: [MediaType: () -> BodyDecoder] = [.json: {return JSONDecoder()}, .urlEncoded: {return QueryDecoder()}]
     
     /// Contains the list of routing elements
@@ -526,7 +552,7 @@ extension Router : ServerDelegate {
         if let mediaType = MediaType(headers: request.headers) {
             decoder = decoders[mediaType]
         }
-        let routeReq = RouterRequest(request: request, decoder: decoder)
+        let routeReq = RouterRequest(request: request, decoder: decoder?())
         //TODO fix the stack
         var routerStack = Stack<Router>()
         routerStack.push(self)
