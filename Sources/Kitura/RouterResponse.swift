@@ -174,7 +174,10 @@ public class RouterResponse {
         if  contentLength == nil {
             headers["Content-Length"] = String(content.count)
         }
-        addCookies()
+
+        if cookies.count > 0 {
+            addCookies()
+        }
 
         if  request.method != .head {
             try response.write(from: content)
