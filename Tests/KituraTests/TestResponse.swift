@@ -582,11 +582,11 @@ class TestResponse: KituraTest {
 
     func testRedirect() {
         performServerTest(router) { expectation in
-            self.performRequest("get", path: "/redir", callback: {response in
+            self.performRequest("get", path: "/redirect", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response?.readString()
-                    XCTAssertNotNil(body?.range(of: "ibm"), "response does not contain IBM")
+                    XCTAssertEqual(body, "redirected to new route")
                 } catch {
                     XCTFail("Error reading body")
                 }
@@ -1251,14 +1251,23 @@ class TestResponse: KituraTest {
             next()
         }
 
-        router.get("/redir") { _, response, next in
+        router.get("/redirect") { _, response, next in
             do {
-                try response.redirect("http://www.ibm.com")
+                try response.redirect("/redirected")
             } catch {
                 XCTFail("Error sending response. Error=\(error.localizedDescription)")
             }
 
             next()
+        }
+        
+        router.get("/redirected") { _, response, next in
+            do {
+                try response.send("redirected to new route").end()
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+                next()
+            }
         }
 
         // Error handling example
