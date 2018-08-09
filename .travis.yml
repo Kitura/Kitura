@@ -47,5 +47,8 @@ matrix:
       sudo: required
       env: SWIFT_SNAPSHOT=swift-4.2-DEVELOPMENT-SNAPSHOT-2018-06-04-a
 
+before_install:
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update && brew install libressl ; fi
+
 script:
   - ./build.sh
