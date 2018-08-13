@@ -31,6 +31,8 @@ class TestResponse: KituraTest {
     static var allTests: [(String, (TestResponse) -> () throws -> Void)] {
         return [
             ("testSimpleResponse", testSimpleResponse),
+            ("testOptionalStringNilResponse", testOptionalStringNilResponse),
+            ("testOptionalStringResponse", testOptionalStringResponse),
             ("testLargeGet", testLargeGet),
             ("testLargePost", testLargePost),
             ("testResponseNoEndOrNext", testResponseNoEndOrNext),
@@ -94,6 +96,39 @@ class TestResponse: KituraTest {
                 do {
                     let body = try response?.readString()
                     XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Received</b></body></html>\n\n")
+                } catch {
+                    XCTFail("Error reading body")
+                }
+                expectation.fulfill()
+            })
+        }
+    }
+    
+    func testOptionalStringNilResponse() {
+        performServerTest(router) { expectation in
+            self.performRequest("post", path:"/sendNilString", callback: { response in
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
+                
+                do {
+                    var data = Data()
+                    let body = try response?.readAllData(into: &data)
+                    XCTAssertEqual(body, 0, "Expected 0 bytes, received \(String(describing: body)).")
+                } catch {
+                    XCTFail("Error reading body")
+                }
+                expectation.fulfill()
+            })
+        }
+    }
+    
+    func testOptionalStringResponse() {
+        performServerTest(router) { expectation in
+            self.performRequest("post", path:"/sendNonNilString", callback: { response in
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
+                
+                do {
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "Test")
                 } catch {
                     XCTFail("Error reading body")
                 }
@@ -547,11 +582,11 @@ class TestResponse: KituraTest {
 
     func testRedirect() {
         performServerTest(router) { expectation in
-            self.performRequest("get", path: "/redir", callback: {response in
+            self.performRequest("get", path: "/redirect", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response?.readString()
-                    XCTAssertNotNil(body?.range(of: "ibm"), "response does not contain IBM")
+                    XCTAssertEqual(body, "redirected to new route")
                 } catch {
                     XCTFail("Error reading body")
                 }
@@ -1176,6 +1211,24 @@ class TestResponse: KituraTest {
                 XCTFail("Error sending response. Error=\(error.localizedDescription)")
             }
         }
+        
+        router.post("/sendNilString") { request, response, _ in
+            do {
+                let str: String? = nil
+                try response.send(str).end()
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+            }
+        }
+        
+        router.post("/sendNonNilString") { request, response, _ in
+            do {
+                let str: String? = "Test"
+                try response.send(str).end()
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+            }
+        }
 
         router.get("/noEndOrNext") { _, response, _ in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
@@ -1198,14 +1251,23 @@ class TestResponse: KituraTest {
             next()
         }
 
-        router.get("/redir") { _, response, next in
+        router.get("/redirect") { _, response, next in
             do {
-                try response.redirect("http://www.ibm.com")
+                try response.redirect("/redirected")
             } catch {
                 XCTFail("Error sending response. Error=\(error.localizedDescription)")
             }
 
             next()
+        }
+        
+        router.get("/redirected") { _, response, next in
+            do {
+                try response.send("redirected to new route").end()
+            } catch {
+                XCTFail("Error sending response. Error=\(error.localizedDescription)")
+                next()
+            }
         }
 
         // Error handling example
@@ -1493,6 +1555,8 @@ class TestResponse: KituraTest {
 
                 try response.send(status: HTTPStatusCode.forbidden).send(data: "<!DOCTYPE html><html><body><b>forbidden</b></body></html>\n\n".data(using: .utf8)!).end()
                 try response.send(status: HTTPStatusCode.OK).end()
+                let nilString: String? = nil
+                response.send(nilString)
                 response.send("string")
                 response.send(json: json)
                 response.send(json: ["some": "json"])
