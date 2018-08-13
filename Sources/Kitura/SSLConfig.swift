@@ -39,7 +39,6 @@ public struct SSLConfig {
 
         config = SSLService.Configuration(withCACertificateFilePath: caCertificateFilePath, usingCertificateFile: certificateFilePath, withKeyFile:keyFilePath, usingSelfSignedCerts: selfSigned, cipherSuite: cipherSuite)
     }
-    #endif // os(Linux)
 
     /// Initialize an `SSLService.Configuration` instance using a CA certificate directory.
     ///
@@ -55,6 +54,8 @@ public struct SSLConfig {
 
         config = SSLService.Configuration(withCACertificateDirectory:caCertificateDirPath, usingCertificateFile: certificateFilePath, withKeyFile: keyFilePath, usingSelfSignedCerts: selfSigned, cipherSuite: cipherSuite)
     }
+
+    #endif // os(Linux)
 
     //MARK: For MacOS
     /// Initialize an `SSLService.Configuration` instance using a certificate chain file.
