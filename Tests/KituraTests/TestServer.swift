@@ -33,6 +33,7 @@ class TestServer: KituraTest {
 
     let httpPort = 8080
     let fastCgiPort = 9000
+    let useNIO = ProcessInfo.processInfo.environment["KITURA_NIO"] != nil
 
     override func setUp() {
         super.setUp()
@@ -42,7 +43,7 @@ class TestServer: KituraTest {
     private func setupServerAndExpectations(expectStart: Bool, expectStop: Bool, expectFail: Bool, httpPort: Int?=nil, fastCgiPort: Int?=nil) {
         let router = Router()
         let httpServer = Kitura.addHTTPServer(onPort: httpPort ?? self.httpPort, with: router)
-        let fastCgiServer = Kitura.addFastCGIServer(onPort: fastCgiPort ?? self.fastCgiPort, with: router)
+        let fastCgiServer = useNIO ? FastCGIServer() : Kitura.addFastCGIServer(onPort: fastCgiPort ?? self.fastCgiPort, with: router)
 
         if expectStart {
             let httpStarted = expectation(description: "HTTPServer started()")
@@ -51,15 +52,24 @@ class TestServer: KituraTest {
             httpServer.started {
                 httpStarted.fulfill()
             }
-            fastCgiServer.started {
+
+            if useNIO {
                 fastCgiStarted.fulfill()
+            } else {
+                fastCgiServer.started {
+                    fastCgiStarted.fulfill()
+                }
             }
+
         } else {
             httpServer.started {
                 XCTFail("httpServer.started should not have been called")
             }
-            fastCgiServer.started {
-                XCTFail("fastCgiServer.started should not have been called")
+
+            if !useNIO {
+                fastCgiServer.started {
+                    XCTFail("fastCgiServer.started should not have been called")
+                }
             }
         }
 
@@ -70,8 +80,13 @@ class TestServer: KituraTest {
             httpServer.stopped {
                 httpStopped.fulfill()
             }
-            fastCgiServer.stopped {
+
+            if useNIO {
                 fastCgiStopped.fulfill()
+            } else {
+                fastCgiServer.stopped {
+                    fastCgiStopped.fulfill()
+                }
             }
         }
 
@@ -82,15 +97,24 @@ class TestServer: KituraTest {
             httpServer.failed { error in
                 httpFailed.fulfill()
             }
-            fastCgiServer.failed { error in
+
+            if useNIO {
                 fastCgiFailed.fulfill()
+            } else {
+                fastCgiServer.failed { error in
+                    fastCgiFailed.fulfill()
+                }
             }
+
         } else {
             httpServer.failed { error in
                 XCTFail("\(error)")
             }
-            fastCgiServer.failed { error in
-                XCTFail("\(error)")
+
+            if !useNIO {
+                fastCgiServer.failed { error in
+                    XCTFail("\(error)")
+                }
             }
         }
     }
