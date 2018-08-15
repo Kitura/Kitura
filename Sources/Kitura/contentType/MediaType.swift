@@ -88,7 +88,7 @@ public struct MediaType: CustomStringConvertible, Equatable, Hashable {
      let mediaType = MediaType(headers: headers)
      ```
      */
-    public init? (headers: HeadersContainer) {
+    init? (headers: HeadersContainer) {
         let contentType = headers["Content-Type"]?[0]
         guard let contentTypeComponents = contentType?.components(separatedBy: ";") else {
             return nil
