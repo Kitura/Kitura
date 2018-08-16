@@ -574,7 +574,7 @@ struct SwaggerDocument: Encodable {
 
         if case .keyed(_, let properties) = typeInfo {
             for (k, v) in properties {
-                Log.debug("found: key:\(k), value:\(v)")
+                // Log.debug("found: key:\(k), value:\(v)")
                 let (prop, reqd) = decomposeType(v, name: k)
                 if reqd {
                     required.insert(k)
