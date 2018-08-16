@@ -174,7 +174,10 @@ public class RouterResponse {
         if  contentLength == nil {
             headers["Content-Length"] = String(content.count)
         }
-        addCookies()
+
+        if cookies.count > 0 {
+            addCookies()
+        }
 
         if  request.method != .head {
             try response.write(from: content)
@@ -221,6 +224,23 @@ public class RouterResponse {
             state.invokedSend = true
         }
         return self
+    }
+    
+    /// Send an optional string.
+    ///
+    /// - Parameter str: the string to send.
+    /// - Returns: this RouterResponse.
+    @discardableResult
+    public func send(_ str: String?) -> RouterResponse {
+        guard !state.invokedEnd else {
+            Log.warning("RouterResponse send(str:) invoked after end() for \(self.request.urlURL)")
+            return self
+        }
+        guard let str = str else {
+            Log.warning("RouterResponse send(str:) invoked with a nil value")
+            return send("")
+        }
+        return send(str)
     }
 
     /// Send data.

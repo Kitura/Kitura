@@ -61,7 +61,7 @@ public struct SSLConfig {
     /// *Note:* If using a certificate chain file, the certificates must be in PEM format and must be sorted starting with the subject's certificate (actual client or server certificate), followed by intermediate CA certificates if applicable, and ending at the highest level (root) CA.
     ///
     /// For testing purposes you will most likely want to create and use some self-signed certificates. Follow the
-    /// instructions in our [Enabling SSL/TLS On Your Kitura Server](http://www.kitura.io/en/resources/tutorials/ssl.html) tutorial.
+    /// instructions in our [Enabling SSL/TLS On Your Kitura Server](https://www.kitura.io/guides/building/ssl.html) tutorial.
     /// ### Usage Example: ###
     /// This example initializes an `SSLConfig` instance and then associates this SSL configuration with the Kitura HTTP
     /// server registration.
