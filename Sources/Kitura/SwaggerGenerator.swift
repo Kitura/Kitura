@@ -19,6 +19,8 @@ import KituraNet
 import KituraContracts
 import TypeDecoder
 
+typealias QParams = OrderedDictionary<String, TypeInfo>
+
 // Definition of document output formats.
 enum SwaggerDocumentFormat {
     case json
@@ -46,20 +48,9 @@ struct SwaggerInfo: Encodable {
     var title: String
 }
 
-typealias SwaggerRef = String
-
-// Container for a single reference.
-struct SingleRefSchema: Encodable {
-    let ref: SwaggerRef
-
-    enum CodingKeys: String, CodingKey {
-        case ref = "$ref"
-    }
-}
-
-// Container for an array reference.
-struct ArrayRefItems: Encodable {
-    let ref: SwaggerRef
+// Container for a reference.
+struct SingleReference: Encodable {
+    let ref: String
 
     enum CodingKeys: String, CodingKey {
         case ref = "$ref"
@@ -70,37 +61,127 @@ struct ArrayRefItems: Encodable {
 // within responses.
 // Note: By internally referenced, a reference in the definitions section of the
 // Swagger document is inferred.
-struct ArrayRefSchema: Encodable {
-    let type: String
-    let items: ArrayRefItems
+struct ArrayReference: Encodable {
+    let type: String = "array"
+    let items: SingleReference
 }
 
 // enum ResponseSchema describes all types of response:
 // 1. An array of an internally referenced model
 // 2. A single internally referenced model.
 enum ResponseSchema: Encodable {
-    case array(ArrayRefSchema)
-    case single(SingleRefSchema)
+    case array(ArrayReference)
+    case single(SingleReference)
 
     func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         switch self {
-        case .array(let arrayRefSchema): try container.encode(arrayRefSchema)
-        case .single(let singleRefSchema): try container.encode(singleRefSchema)
+        case .array(let arrayRef): try container.encode(arrayRef)
+        case .single(let singleRef): try container.encode(singleRef)
+        }
+    }
+}
+
+// enum CollectionFormat describes all types of array collections.
+enum CollectionFormat: String, Encodable {
+    case csv, ssv, tsv, pipes, multi
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(self.rawValue)
+    }
+}
+
+// struct BodyParameter: container for body parameter fields.
+struct BodyParameter: Encodable {
+    let invalue: String = "body"
+    let name: String
+    let required: Bool = true
+    let schema: SingleReference?
+
+    enum CodingKeys: String, CodingKey {
+        case invalue = "in", name, required, schema
+    }
+}
+
+// struct PathParameter: container for path parameter fields.
+struct PathParameter: Encodable {
+    let invalue: String = "path"
+    let name: String
+    let required: Bool = true
+    let type: String
+
+    enum CodingKeys: String, CodingKey {
+        case invalue = "in", name, required, type
+    }
+}
+
+// struct QueryParamArrayItems: container for query parameter array items fields.
+struct QueryParamArrayItems: Encodable {
+    let type: String
+    let format: String?
+
+    enum CodingKeys: String, CodingKey {
+        case type, format
+    }
+}
+
+// struct QueryParamArray: container for query parameter array fields.
+struct QueryParamArray: Encodable {
+    let invalue: String = "query"
+    let name: String
+    let required: Bool
+    let type: String = "array"
+    let items: QueryParamArrayItems
+    let collectionFormat: CollectionFormat
+
+    enum CodingKeys: String, CodingKey {
+        case invalue = "in", name, required, type, items, collectionFormat
+    }
+}
+
+// struct QueryParamArray: container for query parameter single fields.
+struct QueryParamSingle: Encodable {
+    let invalue: String = "query"
+    let name: String
+    let required: Bool
+    let type: String
+    let format: String?
+
+    enum CodingKeys: String, CodingKey {
+        case invalue = "in", name, required, type, format
+    }
+}
+
+// struct QueryParamArray: container for query parameter fields.
+enum QueryParameter: Encodable {
+    case array(QueryParamArray)
+    case single(QueryParamSingle)
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+
+        switch self {
+        case .array(let queryParamArray): try container.encode(queryParamArray)
+        case .single(let queryParamSingle): try container.encode(queryParamSingle)
         }
     }
 }
 
 // Container for Swagger Parameters.
-struct SwaggerParameter: Encodable {
-    let invalue: String
-    let name: String
-    let required: Bool
-    let schema: SingleRefSchema?
-    let type: String?
+enum SwaggerParameter: Encodable {
+    case body(BodyParameter)
+    case path(PathParameter)
+    case query(QueryParameter)
 
-    enum CodingKeys: String, CodingKey {
-        case invalue = "in", name, required, schema, type
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+
+        switch self {
+        case .body(let bodyParameter): try container.encode(bodyParameter)
+        case .path(let pathParameter): try container.encode(pathParameter)
+        case .query(let queryParameter): try container.encode(queryParameter)
+        }
     }
 }
 
@@ -110,17 +191,14 @@ struct SwaggerResponse: Encodable {
     let schema: ResponseSchema?
 }
 
-// Container for Swagger Parameters.
-typealias SwaggerParameters = [SwaggerParameter]
-
 // Container for Swagger Responses.
 typealias SwaggerResponses = Dictionary<String, SwaggerResponse>
 
 // Container for Swagger Method.
 struct SwaggerMethod: Encodable {
-    var consumes: [String]
-    var produces: [String]
-    var parameters: SwaggerParameters
+    var consumes: [String]?
+    var produces: [String]?
+    var parameters: [SwaggerParameter]?
     var responses: SwaggerResponses
 }
 
@@ -145,17 +223,17 @@ struct NativeArraySchema: Encodable {
 
 // enum PropertyValue describes all types of Property.
 enum PropertyValue: Encodable {
-    case arrayref(ArrayRefItems)
+    case arrayref(SingleReference)
     case nativearray(NativeArraySchema)
-    case singleref(SingleRefSchema)
+    case singleref(SingleReference)
     case string(String)
     case dict(SwaggerProperty)
 
     func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         switch self {
-        case .arrayref(let arrayRefItems): try container.encode(arrayRefItems)
-        case .singleref(let singleRefSchema): try container.encode(singleRefSchema)
+        case .arrayref(let reference): try container.encode(reference)
+        case .singleref(let reference): try container.encode(reference)
         case .nativearray(let nativeArraySchema): try container.encode(nativeArraySchema)
         case .string(let stringValue): try container.encode(stringValue)
         case .dict(let dictSchema): try container.encode(dictSchema)
@@ -181,20 +259,8 @@ struct SwaggerModel {
 enum SwiftType: String {
     case Bool
     case Dictionary
-    case Double
-    case Float
-    case Float32
-    case Float64
-    case Int
-    case UInt
-    case Int8
-    case UInt8
-    case Int16
-    case UInt16
-    case Int32
-    case UInt32
-    case Int64
-    case UInt64
+    case Double, Float, Float32, Float64
+    case Int, UInt, Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64
     case String
 
     // Return the OpenApi (Swagger) type that maps to the Swift type.
@@ -218,28 +284,8 @@ enum SwiftType: String {
     // a type for an application that uses the generated Swagger doc.
     func swaggerFormat() -> String? {
         switch self {
-        case .Float:
-            return "float"
-        case .Float32:
-            return "float32"
-        case .Float64:
-            return "float64"
-        case .Int8:
-            return "int8"
-        case .UInt8:
-            return "uint8"
-        case .Int16:
-            return "int16"
-        case .UInt16:
-            return "uint16"
-        case .Int32:
-            return "int32"
-        case .UInt32:
-            return "uint32"
-        case .Int64:
-            return "int64"
-        case .UInt64:
-            return "uint64"
+        case .Float, .Float32, .Float64, .Int8, .UInt8, .Int16, .UInt16, .Int32, .UInt32, .Int64, .UInt64:
+            return self.rawValue.lowercased()
         default:
             return nil
         }
@@ -318,25 +364,69 @@ struct SwaggerDocument: Encodable {
         if name == "id" {
             // id can only be string or integer. so force the type to string if
             // it is neither.
-            var idType = "string"
+            var idtype = "string"
             if let ptype = SwiftType(rawValue: parametertype) {
-                idType = ptype.swaggerType()
-                if idType != "integer" && idType != "string" {
-                    idType = "string"
+                idtype = ptype.swaggerType()
+                if idtype != "integer" && idtype != "string" {
+                    idtype = "string"
                 }
             }
 
-            return SwaggerParameter(invalue: "path",
-                                    name: name,
-                                    required: true,
-                                    schema: nil,
-                                    type: idType)
+            let pParam = PathParameter(name: name, type: idtype)
+            return SwaggerParameter.path(pParam)
         }
-        return SwaggerParameter(invalue: "body",
-                                name: name,
-                                required: true,
-                                schema: SingleRefSchema(ref: "#/definitions/\(parametertype)"),
-                                type: nil)
+        let schema = SingleReference(ref: "#/definitions/\(parametertype)")
+        let bParam = BodyParameter(name: name, schema: schema)
+        return SwaggerParameter.body(bParam)
+    }
+
+    // Process a query parameter
+    //
+    // - Parameter name: The name of the parameter.
+    // - Parameter typeInfo: The TypeInfo that represents this parameter.
+    // - Parameter parameters: An array of parameters to append to.
+    // - Parameter isArray: A boolean to indicate that this parameter is an array.
+    // - Parameter isRequired: A boolean to indicate that this parameter is required.
+    func processQueryParameter(name: String, typeInfo: TypeInfo, parameters: inout [SwaggerParameter], isArray array: Bool=false, isRequired required: Bool=true) {
+        var property = [String: String]()
+        var sp: SwaggerParameter
+
+        if case .unkeyed(_, let elementTypeInfo) = typeInfo {
+            // An array container.
+            processQueryParameter(name: name, typeInfo: elementTypeInfo, parameters: &parameters, isArray: true, isRequired: required)
+        } else if case .optional(let wrappedTypeInfo) = typeInfo {
+            // An optional container.
+            processQueryParameter(name: name, typeInfo: wrappedTypeInfo, parameters: &parameters, isArray: array, isRequired: false)
+        } else if case .single(_, let typeInfo) = typeInfo {
+            // A native type.
+            if let swifttype = SwiftType(rawValue: String(describing: typeInfo)) {
+                property["type"] = swifttype.swaggerType()
+                if let format = swifttype.swaggerFormat() {
+                    property["format"] = format
+                }
+                if let paramType = property["type"] {
+                    if array {
+                        let items = QueryParamArrayItems(type: paramType, format: property["format"])
+                        let qpa = QueryParamArray(name: name, required: required, items: items, collectionFormat: CollectionFormat.csv)
+                        sp = SwaggerParameter.query(QueryParameter.array(qpa))
+                    } else {
+                        let qps = QueryParamSingle(name: name, required: required, type: paramType, format: property["format"])
+                        sp = SwaggerParameter.query(QueryParameter.single(qps))
+                    }
+                    parameters.append(sp)
+                }
+            }
+        }
+    }
+
+    // Add query parameters.
+    //
+    // - Parameter qparams: A QueryParams object.
+    // - Parameter parameters: An array of parameters to append to.
+    func addQueryParameters(qparams: QParams, allOptQParams: Bool, parameters: inout [SwaggerParameter]) {
+        for (name, typeInfo) in qparams {
+            processQueryParameter(name: name, typeInfo: typeInfo, parameters: &parameters, isRequired: !allOptQParams)
+        }
     }
 
     // Build a SwaggerResponse from a description and a response type.
@@ -345,13 +435,11 @@ struct SwaggerDocument: Encodable {
     // - Parameter responsetype: Either an array or a single response.
     // - Returns: SwaggerResponse.
     func buildResponse(description: String, responsetype: SwaggerResponseType) -> SwaggerResponse {
+        let reference = SingleReference(ref: "#/definitions/\(responsetype.type)")
         if responsetype.array {
-            return SwaggerResponse(description: description,
-                                   schema: .array(ArrayRefSchema(type: "array",
-                                                                 items: ArrayRefItems(ref: "#/definitions/\(responsetype.type)"))))
+            return SwaggerResponse(description: description, schema: .array(ArrayReference(items: reference)))
         }
-        return SwaggerResponse(description: description,
-                               schema: .single(SingleRefSchema(ref: "#/definitions/\(responsetype.type)")))
+        return SwaggerResponse(description: description, schema: .single(reference))
     }
 
     // Determine if the type passed is a Dictionary.
@@ -419,22 +507,21 @@ struct SwaggerDocument: Encodable {
     // - Parameter isArray: indicate whether this is an array type.
     // - Parameter isOptional: indicate whether this is an optional type.
     // - Returns: Tuple containing  a SwaggerProperty that represents the type, and an optional flag.
-    mutating func decomposeType(_ t: TypeInfo, name: String, isArray: Bool=false, isOptional: Bool=false) -> (SwaggerProperty, Bool) {
+    mutating func decomposeType(_ t: TypeInfo, name: String, isArray array: Bool=false, isRequired required: Bool=true) -> (SwaggerProperty, Bool) {
         var property = SwaggerProperty()
-        let required = false
 
         switch t {
         case .keyed(let type, _):
             // found a keyed item, this is an embedded model that needs to be
             // turned into a separate definition and a ref to it placed here.
-            add(model: t)
+            addModel(model: t)
             let typeName = String(describing: type)
             property["$ref"] = .string("#/definitions/\(typeName)")
-            return (property, isOptional == false)
+            return (property, required == true)
         case .dynamicKeyed(_, _ /*let keyTypeInfo*/, let valueTypeInfo):
             // found a Dictionary, this needs to be mapped to an "object" type with additionalProperties
             property["type"] = .string("object")
-            let (prop, optional) = decomposeType(valueTypeInfo, name: name, isArray: isArray, isOptional: isOptional)
+            let (prop, optional) = decomposeType(valueTypeInfo, name: name, isArray: array, isRequired: required)
             property["additionalProperties"] = .dict(prop)
             return (property, optional)
         case .unkeyed(_, let elementTypeInfo):
@@ -450,7 +537,7 @@ struct SwaggerDocument: Encodable {
                     }
                 }
             } else {
-                property["items"] = .arrayref(ArrayRefItems(ref: String(describing: "#/definitions/\(typeName)")))
+                property["items"] = .arrayref(SingleReference(ref: String(describing: "#/definitions/\(typeName)")))
             }
             property["type"] = .string("array")
 
@@ -458,19 +545,19 @@ struct SwaggerDocument: Encodable {
             if self.processedSet.contains(elementTypeInfo) == false {
                 self.unprocessedSet.insert(elementTypeInfo)
             }
-            return (property, isOptional == false)
+            return (property, required == true)
         case .cyclic(let type):
             property["type"] = .string(String(describing: type))
-            return (property, isOptional == false)
+            return (property, required == true)
         case .single(_, let type):
             if let property = try? swaggerPropertyFromSwiftType(type) {
-                return (property, isOptional == false)
+                return (property, required == true)
             }
         case .optional(let wrappedTypeInfo):
-            return decomposeType(wrappedTypeInfo, name: name, isArray: isArray, isOptional: true)
+            return decomposeType(wrappedTypeInfo, name: name, isArray: array, isRequired: false)
         case .opaque(let type):
             if let property = try? swaggerPropertyFromSwiftType(type) {
-                return (property, isOptional == false)
+                return (property, required == true)
             }
         }
         return (property, required)
@@ -504,17 +591,17 @@ struct SwaggerDocument: Encodable {
     /// add a model into the OpenAPI (swagger) document
     ///
     /// - Parameter model: TypeInfo object that describes a model
-    public mutating func add(model typeinfo: TypeInfo) {
+    public mutating func addModel(model typeinfo: TypeInfo) {
         // from the typeinfo we can extract the model name and all subordinate structures.
 
         // get the model name.
-        if case let .keyed(o, _) = typeinfo {
-            let model = String(describing: o)
+        if case .keyed(let name, _) = typeinfo {
+            let model = String(describing: name)
             var modelDefinition: SwaggerModel
 
             // then build all it
             if let modelInfo = try? buildModel(typeinfo) {
-                Log.debug("in add(model: \(model))")
+                Log.debug("in addModel(model: \(model))")
                 if modelInfo.required.count > 0 {
                     modelDefinition = SwaggerModel(type: "object", properties: modelInfo.properties, required: Array(modelInfo.required))
                 } else {
@@ -530,8 +617,8 @@ struct SwaggerDocument: Encodable {
     /// - Parameter path: The API path to register.
     /// - Parameter method: The method the will be called on this path.
     /// - Parameter responselist: An array of response types that can be returned from this path.
-    public mutating func add(path: String, method: String, id: String?, inputtype: String?, responselist: [SwaggerResponseType]?) {
-        Log.debug("in add(path: \(path))")
+    public mutating func addPath(path: String, method: String, id: String?, qparams: QParams?, allOptQParams: Bool=false, inputtype: String?, responselist: [SwaggerResponseType]?) {
+        Log.debug("in addPath(path: \(path))")
         // split the path into its components:
         // - route path.
         // - parameters.
@@ -556,7 +643,7 @@ struct SwaggerDocument: Encodable {
                 }
 
                 // handle the input parameter here: turn it into a parameters object.
-                var parameters = SwaggerParameters()
+                var parameters = [SwaggerParameter]()
                 if let id = id {
                     parameters.append(buildParameter(name: "id", parametertype: id))
                 }
@@ -565,14 +652,20 @@ struct SwaggerDocument: Encodable {
                     parameters.append(buildParameter(name: "input", parametertype: paramtype))
                 }
 
+                if let qparams = qparams {
+                    // add any query parameters
+                    addQueryParameters(qparams: qparams, allOptQParams: allOptQParams, parameters: &parameters)
+                }
+
                 // not going to use the default response for now as this refers to
                 // ResponseError which is part of Kitura, so we would not want to
                 // recreate it in the Models dir.
                 // responses["default"] = buildResponse(description: "default response", responsetype: responselist[1]).
 
+                // build the method definition, note that parameters are optional.
                 let methodDefinition = SwaggerMethod(consumes: ["application/json"],
                                                      produces: ["application/json"],
-                                                     parameters: parameters,
+                                                     parameters: parameters.count > 0 ? parameters : nil,
                                                      responses: responses)
                 if var methods = self.paths[swaggerPath] {
                     // entry exists, so add the method.
@@ -781,14 +874,57 @@ extension Router {
         }
 
         // insert the path information into the document structure.
-        swagger.add(path: route, method: method, id: nil, inputtype: nil, responselist: responsetypes)
+        swagger.addPath(path: route, method: method, id: nil, qparams: nil, inputtype: nil, responselist: responsetypes)
 
         // add model information into the document structure.
-        swagger.add(model: t)
+        swagger.addModel(model: t)
 
         // now walk all the unprocessed models and ensure they are processed.
         for t in Array(swagger.unprocessedTypes) {
-            swagger.add(model: t)
+            swagger.addModel(model: t)
+        }
+    }
+
+    // Register a route in the SwaggerDocument.
+    //
+    // - Parameter route: The route to be registered.
+    // - Parameter method: The http method name: one of 'get', 'patch', 'post', 'put'.
+    // - Parameter querytypes: The types of the query parameters.
+    // - Parameter allOptQParams: The type of the model to register.
+    // - Parameter outputtype: The type of the model to register.
+    // - Parameter responsetypes: array of expected swagger response type objects.
+    func registerRoute<Q: QueryParams, O: Codable>(route: String, method: String, querytype: Q.Type, allOptQParams: Bool, outputtype: O.Type, responsetypes: [SwaggerResponseType]) {
+        Log.debug("Registering \(route) for \(method) method")
+
+        let t: TypeInfo
+        do {
+            t = try TypeDecoder.decode(outputtype)
+        } catch {
+            Log.debug("type decode error")
+            return
+        }
+
+        let q: TypeInfo
+        var params: OrderedDictionary<String, TypeInfo>? = nil
+        do {
+            q = try TypeDecoder.decode(querytype)
+            if case .keyed(_, let dict) = q {
+                params = dict
+            }
+        } catch {
+            Log.debug("type decode error")
+            return
+        }
+
+        // insert the path information into the document structure.
+        swagger.addPath(path: route, method: method, id: nil, qparams: params, allOptQParams: allOptQParams, inputtype: nil, responselist: responsetypes)
+
+        // add model information into the document structure.
+        swagger.addModel(model: t)
+
+        // now walk all the unprocessed models and ensure they are processed.
+        for t in Array(swagger.unprocessedTypes) {
+            swagger.addModel(model: t)
         }
     }
 
@@ -811,14 +947,14 @@ extension Router {
         }
 
         // insert the path information into the document structure.
-        swagger.add(path: route, method: method, id: nil, inputtype: "\(inputtype)", responselist: responsetypes)
+        swagger.addPath(path: route, method: method, id: nil, qparams: nil, inputtype: "\(inputtype)", responselist: responsetypes)
 
         // add model information into the document structure.
-        swagger.add(model: t)
+        swagger.addModel(model: t)
 
         // now walk all the unprocessed models and ensure they are processed.
         for t in Array(swagger.unprocessedTypes) {
-            swagger.add(model: t)
+            swagger.addModel(model: t)
         }
     }
 
@@ -841,14 +977,14 @@ extension Router {
         }
 
         // insert the path information into the document structure.
-        swagger.add(path: route, method: method, id: "\(id)", inputtype: nil, responselist: responsetypes)
+        swagger.addPath(path: route, method: method, id: "\(id)", qparams: nil, inputtype: nil, responselist: responsetypes)
 
         // add model information into the document structure.
-        swagger.add(model: t)
+        swagger.addModel(model: t)
 
         // now walk all the unprocessed models and ensure they are processed.
         for t in Array(swagger.unprocessedTypes) {
-            swagger.add(model: t)
+            swagger.addModel(model: t)
         }
     }
 
@@ -882,17 +1018,17 @@ extension Router {
         }
 
         // insert the path information into the document structure
-        swagger.add(path: route, method: method, id: "\(id)", inputtype: "\(inputtype)", responselist: responsetypes)
+        swagger.addPath(path: route, method: method, id: "\(id)", qparams: nil, inputtype: "\(inputtype)", responselist: responsetypes)
 
         // add model information into the document structure.
-        swagger.add(model: t1)
+        swagger.addModel(model: t1)
         if let t2 = t2 {
-            swagger.add(model: t2)
+            swagger.addModel(model: t2)
         }
 
         // now walk all the unprocessed models and ensure they are processed.
         for t in Array(swagger.unprocessedTypes) {
-            swagger.add(model: t)
+            swagger.addModel(model: t)
         }
     }
 
@@ -903,7 +1039,30 @@ extension Router {
         Log.debug("Registering \(route) for delete method")
 
         // insert the path information into the document structure.
-        swagger.add(path: route, method: "delete", id: nil, inputtype: nil, responselist: responsetypes)
+        swagger.addPath(path: route, method: "delete", id: nil, qparams: nil, inputtype: nil, responselist: responsetypes)
+    }
+
+    // Register a delete route in the SwaggerDocument.
+    //
+    // - Parameter route: The route to be registered.
+    // - Parameter allOptQParams: Flag to indicate that the parameters are optional.
+    func registerDelete<Q: QueryParams>(route: String, querytype: Q.Type, allOptQParams: Bool, responsetypes: [SwaggerResponseType]) {
+        Log.debug("Registering \(route) for delete method")
+
+        let q: TypeInfo
+        var params: OrderedDictionary<String, TypeInfo>? = nil
+        do {
+            q = try TypeDecoder.decode(querytype)
+            if case .keyed(_, let dict) = q {
+                params = dict
+            }
+        } catch {
+            Log.debug("type decode error")
+            return
+        }
+
+        // insert the path information into the document structure.
+        swagger.addPath(path: route, method: "delete", id: nil, qparams: params, allOptQParams: allOptQParams, inputtype: nil, responselist: responsetypes)
     }
 
     // Register a delete route in the SwaggerDocument.
@@ -914,7 +1073,7 @@ extension Router {
         Log.debug("Registering \(route) for delete method")
 
         // insert the path information into the document structure.
-        swagger.add(path: route, method: "delete", id: "\(id)", inputtype: nil, responselist: responsetypes)
+        swagger.addPath(path: route, method: "delete", id: "\(id)", qparams: nil, inputtype: nil, responselist: responsetypes)
     }
 
     /// Register GET route
@@ -940,6 +1099,18 @@ extension Router {
         registerRoute(route: route, method: "get", id: Id.self, outputtype: O.self, responsetypes: responseTypes)
     }
 
+    /// Register GET route
+    ///
+    /// - Parameter route: The route to register.
+    /// - Parameter id: The id type.
+    /// - Parameter outputtype: The output object type.
+    public func registerGetRoute<Q: QueryParams, O: Codable>(route: String, queryparams: Q.Type, optionalQParam: Bool, outputtype: O.Type) {
+        var responseTypes = [SwaggerResponseType]()
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "\(O.self)"))
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
+        registerRoute(route: route, method: "get", querytype: Q.self, allOptQParams: optionalQParam, outputtype: O.self, responsetypes: responseTypes)
+    }
+
     /// Register DELETE route
     ///
     /// - Parameter route: The route to register.
@@ -948,6 +1119,17 @@ extension Router {
         responseTypes.append(SwaggerResponseType(optional: true, array: false, type: ""))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
         registerDelete(route: route, responsetypes: responseTypes)
+    }
+
+    /// Register DELETE route
+    ///
+    /// - Parameter route: The route to register.
+    /// - Parameter optionalQParam: Flag to indicate that the query params are all optional.
+    public func registerDeleteRoute<Q: QueryParams>(route: String, queryparams: Q.Type, optionalQParam: Bool) {
+        var responseTypes = [SwaggerResponseType]()
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: ""))
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
+        registerDelete(route: route, querytype: Q.self, allOptQParams: optionalQParam, responsetypes: responseTypes)
     }
 
     /// Register DELETE route
