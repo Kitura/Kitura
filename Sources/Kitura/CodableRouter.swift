@@ -605,8 +605,8 @@ extension Router {
 
     func pathSyntaxIsValid(_ path: String, identifierExpected: Bool) -> Bool {
         let identifierSupplied = path.contains(":")
-        switch(identifierExpected, identifierSupplied) {
-        case(false, true) :
+        switch (identifierExpected, identifierSupplied) {
+        case (false, true):
             Log.error("Path '\(path)' is not allowed: Codable routes do not allow path parameters.")
             return false
         case (true, false):
@@ -617,11 +617,11 @@ extension Router {
             func pathHasSingleParamIdAsSuffix(_ path: String) -> Bool {
                 let parameterString = path.split(separator: ":", maxSplits: 1, omittingEmptySubsequences: false)
                 let parameter = parameterString.count > 0 ? parameterString[1] : ""
-                return parameter.isEmpty || parameter.elementsEqual("id")
+                return parameter.isEmpty || parameter == "id"
             }
 
             guard pathHasSingleParamIdAsSuffix(path) else {
-            Log.error("Erroneous path '\(path)' is not allowed. Codable routes support a trailing id parameter only.")
+                Log.error("Erroneous path '\(path)' is not allowed. Codable routes support a trailing id parameter only.")
             return false
             }
             return true
