@@ -15,7 +15,13 @@
  */
 
 import Foundation
+
+#if KITURA_NIO
+import KituraNIO
+#else
 import KituraNet
+#endif
+
 import Socket
 import LoggerAPI
 import KituraContracts

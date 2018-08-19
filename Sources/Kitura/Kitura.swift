@@ -13,8 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#if KITURA_NIO 
+import KituraNIO
+#else
 import KituraNet
+#endif
+
 import LoggerAPI
 
 import Foundation

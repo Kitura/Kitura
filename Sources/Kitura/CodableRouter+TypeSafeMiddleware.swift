@@ -16,8 +16,13 @@
 
 import Foundation
 import LoggerAPI
-import KituraNet
 import KituraContracts
+
+#if KITURA_NIO
+import KituraNIO
+#else
+import KituraNet
+#endif
 
 // Type-safe middleware Codable router
 

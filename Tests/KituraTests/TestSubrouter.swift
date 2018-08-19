@@ -18,7 +18,12 @@ import XCTest
 import Foundation
 
 @testable import Kitura
+
+#if KITURA_NIO
+@testable import KituraNIO
+#else
 @testable import KituraNet
+#endif
 
 #if os(Linux)
     import Foundation

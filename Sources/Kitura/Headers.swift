@@ -15,7 +15,12 @@
  */
 
 import Foundation
+
+#if KITURA_NIO
+import KituraNIO
+#else
 import KituraNet
+#endif
 
 /// The struct containing the HTTP headers and implements the headers APIs for the
 /// `RouterRequest` and `RouterResponse` classes.

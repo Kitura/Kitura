@@ -1,7 +1,12 @@
 /// For use with TestSubrouter.swift
 
 import Kitura
+
+#if KITURA_NIO
+import KituraNIO
+#else
 import KituraNet
+#endif
 
 class ExternSubrouter {
 	static func getRouter() -> Router {

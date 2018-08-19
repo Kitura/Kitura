@@ -17,7 +17,12 @@
 import XCTest
 import Dispatch
 
+#if KITURA_NIO
+import KituraNIO
+#else
 import KituraNet
+#endif
+
 import KituraContracts
 @testable import Kitura
 
@@ -180,6 +185,10 @@ class TestSwaggerGeneration: KituraTest {
 
     private func setupServerAndExpectations(router: Router, expectStart: Bool, expectStop: Bool, expectFail: Bool, httpPort: Int?=nil) {
         let httpServer = Kitura.addHTTPServer(onPort: httpPort ?? self.httpPort, with: router)
+
+        #if KITURA_NIO
+        httpServer.allowPortReuse = true
+        #endif
 
         if expectStart {
             let httpStarted = expectation(description: "HTTPServer started()")

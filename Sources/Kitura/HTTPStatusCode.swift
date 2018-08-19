@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
+#if KITURA_NIO
+import KituraNIO
+#else
 import KituraNet
+#endif
 
 /// A dummy class to get the documentation for the HTTPStatusCode below to be emitted.
 private class DummyHTTPStatusCodeClass {}
@@ -22,4 +26,8 @@ private class DummyHTTPStatusCodeClass {}
 /// Bridge [HTTPStatusCode](http://ibm-swift.github.io/Kitura-net/Enums/HTTPStatusCode.html)
 /// from [KituraNet](http://ibm-swift.github.io/Kitura-net) so that you only need to import
 /// `Kitura` to access it.
+#if KITURA_NIO
+public typealias HTTPStatusCode = KituraNIO.HTTPStatusCode
+#else
 public typealias HTTPStatusCode = KituraNet.HTTPStatusCode
+#endif

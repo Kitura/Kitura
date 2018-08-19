@@ -18,7 +18,12 @@ import XCTest
 import Foundation
 
 @testable import Kitura
+
+#if KITURA_NIO
+@testable import KituraNIO
+#else
 @testable import KituraNet
+#endif
 
 let cookie1Name = "KituraTest1"
 let cookie1Value = "Testing-Testing-1-2-3"
