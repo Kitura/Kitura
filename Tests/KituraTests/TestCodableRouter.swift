@@ -46,6 +46,8 @@ class TestCodableRouter: KituraTest {
             ("testNoDataDefaultStatus", testNoDataDefaultStatus),
             ("testInvalidIdentifierSupplied", testInvalidIdentifierSupplied),
             ("testIdentifierNotExpected", testIdentifierNotExpected),
+            ("testPartialIdentifierSupplied", testPartialIdentifierSupplied),
+            ("testIdentifierNotSupplied", testIdentifierNotSupplied),
         ]
     }
 
@@ -894,7 +896,7 @@ class TestCodableRouter: KituraTest {
     func testInvalidIdentifierSupplied() {
         //Add this erroneous route with invalid identifier, should log an error but we can't test the log so we check for a 404 not found.
         router.delete("/status/:myid") { (id: Int, respondWith: (RequestError?) -> Void) in
-            print("DELETE on /status/:id that should not happen")
+            print("DELETE on /status/:myid that should not happen")
             respondWith(RequestError(.badRequest, body: Conflict(on: "id")))
         }
 
@@ -909,12 +911,40 @@ class TestCodableRouter: KituraTest {
         //Add this erroneous route which should not be hit by the test, should log an error but we can't test the log so we check for a 404 not found.
         router.delete("/users/:id") { (respondWith: (RequestError?) -> Void) in
             print("DELETE on /users")
-             respondWith(RequestError(.badRequest, body: Conflict(on: "id")))
+            respondWith(RequestError(.badRequest, body: Conflict(on: "id")))
         }
+
         buildServerTest(router, timeout: 30)
             .request("delete", path: "/users/1")
             .hasStatus(.notFound)
             .hasData()
+            .run()
+    }
+
+    func testPartialIdentifierSupplied() {
+        //Add this route with partial identifier. should log an error but we can't test the log so we check for a 404 not found.
+        router.delete("/status/:") { (id: Int, respondWith: (RequestError?) -> Void) in
+            print("DELETE on /status/: that should not happen")
+            respondWith(RequestError(.badRequest, body: Conflict(on: "id")))
+        }
+
+        buildServerTest(router, timeout: 30)
+            .request("delete", path: "/status/1")
+            .hasStatus(.notFound)
+            .hasData()
+            .run()
+    }
+
+    func testIdentifierNotSupplied() {
+        router.delete("/status/") { (id: Int, respondWith: (RequestError?) -> Void) in
+            print("DELETE on /status")
+            respondWith(nil)
+        }
+
+        buildServerTest(router, timeout: 30)
+            .request("delete", path: "/status/1")
+            .hasStatus(.noContent)
+            .hasNoData()
             .run()
     }
 }

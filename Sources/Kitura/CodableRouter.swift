@@ -617,12 +617,12 @@ extension Router {
             func pathHasSingleParamIdAsSuffix(_ path: String) -> Bool {
                 let parameterString = path.split(separator: ":", maxSplits: 1, omittingEmptySubsequences: false)
                 let parameter = parameterString.count > 0 ? parameterString[1] : ""
-                return parameter.isEmpty || parameter == "id"
+                return parameter == "id"
             }
 
             guard pathHasSingleParamIdAsSuffix(path) else {
                 Log.error("Erroneous path '\(path)' is not allowed. Codable routes support a trailing id parameter only.")
-            return false
+                return false
             }
             return true
         case (false, false):
