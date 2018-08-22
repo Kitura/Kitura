@@ -40,7 +40,7 @@ public struct MediaType: CustomStringConvertible, Equatable, Hashable {
     public let topLevelType: TopLevelType
     
     /// The subtype is the specific MediaType (e.g. "html").
-    public let subtype: String
+    public let subType: String
     
     // MARK: Initializers
     
@@ -51,9 +51,11 @@ public struct MediaType: CustomStringConvertible, Equatable, Hashable {
      let mediaType = MediaType(type: .application, subtype: "json")
      ```
      */
-    public init(type: TopLevelType, subtype: String = "*") {
+    public init(type: TopLevelType, subType: String = "*") {
         self.topLevelType = type
-        self.subtype = subtype.lowercased()
+        self.subType = subType.lowercased()
+        self.description = "\(self.topLevelType)/\(self.subType)"
+        self.hashValue = description.hashValue
     }
     
     /**
@@ -73,10 +75,12 @@ public struct MediaType: CustomStringConvertible, Equatable, Hashable {
         }
         self.topLevelType = topLevelType
         if mimeComponents.indices.contains(1) && !mimeComponents[1].isEmpty {
-            self.subtype = mimeComponents[1]
+            self.subType = mimeComponents[1]
         } else {
-            self.subtype = "*"
+            self.subType = "*"
         }
+        self.description = "\(self.topLevelType)/\(self.subType)"
+        self.hashValue = description.hashValue
     }
     
     /**
@@ -107,7 +111,7 @@ public struct MediaType: CustomStringConvertible, Equatable, Hashable {
      // Prints ("application/json")
      ```
      */
-    public static let json = MediaType(type: .application, subtype: "json")
+    public static let json = MediaType(type: .application, subType: "json")
     
     /**
      Helper constructor for the "application/x-www-form-urlencoded" media type
@@ -118,7 +122,7 @@ public struct MediaType: CustomStringConvertible, Equatable, Hashable {
      // Prints ("application/x-www-form-urlencoded")
      ```
      */
-    public static let urlEncoded = MediaType(type: .application, subtype: "x-www-form-urlencoded")
+    public static let urlEncoded = MediaType(type: .application, subType: "x-www-form-urlencoded")
     
     // MARK: Protocol conformance
     
@@ -130,9 +134,7 @@ public struct MediaType: CustomStringConvertible, Equatable, Hashable {
      // Prints ("application/json")
      ```
      */
-    public var description: String {
-        return "\(topLevelType)/\(subtype)"
-    }
+    public let description: String
     
     /// Compares two MediaTypes returning true if they are equal. Required for Equatable conformance.
     public static func == (lhs: MediaType, rhs: MediaType) -> Bool {
@@ -140,8 +142,6 @@ public struct MediaType: CustomStringConvertible, Equatable, Hashable {
     }
     
     /// The hashValue for the MediaTypes. Required for Hashable conformance.
-    public var hashValue: Int {
-        return description.hashValue
-    }
+    public let hashValue: Int
 }
 

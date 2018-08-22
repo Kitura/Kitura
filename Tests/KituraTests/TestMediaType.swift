@@ -42,28 +42,28 @@ class TestMediaType: KituraTest {
         let textMediaType = MediaType("text")
         XCTAssertEqual(textMediaType?.description, "text/*")
         XCTAssertEqual(textMediaType?.topLevelType, .text)
-        XCTAssertEqual(textMediaType?.subtype, "*")
+        XCTAssertEqual(textMediaType?.subType, "*")
     }
     
     func testAllTextSlashMediaTypeBuilder() {
         let textMediaType = MediaType("text/")
         XCTAssertEqual(textMediaType?.description, "text/*")
         XCTAssertEqual(textMediaType?.topLevelType, .text)
-        XCTAssertEqual(textMediaType?.subtype, "*")
+        XCTAssertEqual(textMediaType?.subType, "*")
     }
     
     func testHTMLMediaTypeBuilder() {
         let textMediaType = MediaType("text/html")
         XCTAssertEqual(textMediaType?.description, "text/html")
         XCTAssertEqual(textMediaType?.topLevelType, .text)
-        XCTAssertEqual(textMediaType?.subtype, "html")
+        XCTAssertEqual(textMediaType?.subType, "html")
     }
     
     func testMediaCaseInsensitive() {
         let textMediaType = MediaType("TexT/HTml")
         XCTAssertEqual(textMediaType?.description, "text/html")
         XCTAssertEqual(textMediaType?.topLevelType, .text)
-        XCTAssertEqual(textMediaType?.subtype, "html")
+        XCTAssertEqual(textMediaType?.subType, "html")
     }
     
     func testIncorrectTopLevelType() {
@@ -74,21 +74,21 @@ class TestMediaType: KituraTest {
         let textMediaType = MediaType(type: .text)
         XCTAssertEqual(textMediaType.description, "text/*")
         XCTAssertEqual(textMediaType.topLevelType, .text)
-        XCTAssertEqual(textMediaType.subtype, "*")
+        XCTAssertEqual(textMediaType.subType, "*")
     }
     
     func testPartsHTMLMediaTypeBuilder() {
-        let textMediaType = MediaType(type: .text, subtype: "html")
+        let textMediaType = MediaType(type: .text, subType: "html")
         XCTAssertEqual(textMediaType.description, "text/html")
         XCTAssertEqual(textMediaType.topLevelType, .text)
-        XCTAssertEqual(textMediaType.subtype, "html")
+        XCTAssertEqual(textMediaType.subType, "html")
     }
     
     func testPartsMediaCaseInsensitive() {
-        let textMediaType = MediaType(type: .text , subtype: "hTmL")
+        let textMediaType = MediaType(type: .text , subType: "hTmL")
         XCTAssertEqual(textMediaType.description, "text/html")
         XCTAssertEqual(textMediaType.topLevelType, .text)
-        XCTAssertEqual(textMediaType.subtype, "html")
+        XCTAssertEqual(textMediaType.subType, "html")
     }
     
     func testNoHeaderMediaType() {
@@ -102,7 +102,7 @@ class TestMediaType: KituraTest {
         let textMediaType = MediaType(headers: headers)
         XCTAssertEqual(textMediaType?.description, "text/html")
         XCTAssertEqual(textMediaType?.topLevelType, .text)
-        XCTAssertEqual(textMediaType?.subtype, "html")
+        XCTAssertEqual(textMediaType?.subType, "html")
     }
     
     func testTwoHeaderMediaType() {
@@ -111,7 +111,7 @@ class TestMediaType: KituraTest {
         let textMediaType = MediaType(headers: headers)
         XCTAssertEqual(textMediaType?.description, "text/html")
         XCTAssertEqual(textMediaType?.topLevelType, .text)
-        XCTAssertEqual(textMediaType?.subtype, "html")
+        XCTAssertEqual(textMediaType?.subType, "html")
     }
     
     func testWrongHeaderMediaType() {
