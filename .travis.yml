@@ -33,19 +33,19 @@ matrix:
     - os: linux
       dist: trusty
       sudo: required
-      env: SWIFT_SNAPSHOT=swift-4.2-DEVELOPMENT-SNAPSHOT-2018-05-29-a
+      env: SWIFT_SNAPSHOT=swift-4.2-DEVELOPMENT-SNAPSHOT-2018-06-19-a
     - os: osx
       osx_image: xcode9.2
       sudo: required
       env: SWIFT_SNAPSHOT=4.0.3
     - os: osx
-      osx_image: xcode9.3
+      osx_image: xcode9.4
       sudo: required
-      env: SWIFT_SNAPSHOT=4.1 JAZZY_ELIGIBLE=true
+      env: JAZZY_ELIGIBLE=true
     - os: osx
-      osx_image: xcode9.3
+      osx_image: xcode10
       sudo: required
-      env: SWIFT_SNAPSHOT=swift-4.2-DEVELOPMENT-SNAPSHOT-2018-05-29-a
+      env: SWIFT_SNAPSHOT=4.2
 
 script:
   - ./build.sh
