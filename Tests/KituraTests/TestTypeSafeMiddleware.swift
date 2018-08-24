@@ -50,6 +50,7 @@ class TestTypeSafeMiddleware: KituraTest {
             ("testSingleMiddlewarePatch", testSingleMiddlewarePatch),
             ("testMultipleMiddlewarePatch", testMultipleMiddlewarePatch),
             ("testCustomCoder", testCustomCoder),
+            ("testCustomCoderGet", testCustomCoderGet),
         ]
     }
 
@@ -865,7 +866,7 @@ class TestTypeSafeMiddleware: KituraTest {
             .run()
     }
     
-    func testCustomCoder() {
+    func testCustomCoderGet() {
         struct SimpleQuery: QueryParams {
             let string: String
         }
@@ -882,129 +883,68 @@ class TestTypeSafeMiddleware: KituraTest {
         let customRouter = Router()
         customRouter.decoders[.json] = jsonDecoder
         customRouter.encoders[.json] = jsonEncoder
-        
+
         let date = Date(timeIntervalSince1970: 1519206456)
         let codableDate = CodableDate(date: date)
-        print("codableDate \(codableDate)")
         customRouter.get("/customCoder1") { (middleware: UserMiddleware, respondWith: (CodableDate?, RequestError?) -> Void) in
-            print("GET on /customCoder")
-            respondWith(codableDate, nil)
+        print("GET on /customCoder")
+        respondWith(codableDate, nil)
         }
         customRouter.get("/customCoder2") { (middleware: UserMiddleware, middleware2: UserMiddleware, respondWith: (CodableDate?, RequestError?) -> Void) in
-            print("GET on /customCoder")
-            respondWith(codableDate, nil)
+        print("GET on /customCoder")
+        respondWith(codableDate, nil)
         }
         customRouter.get("/customCoder3") { (middleware: UserMiddleware, middleware2: UserMiddleware, middleware3: UserMiddleware, respondWith: (CodableDate?, RequestError?) -> Void) in
-            print("GET on /customCoder")
-            respondWith(codableDate, nil)
+        print("GET on /customCoder")
+        respondWith(codableDate, nil)
         }
         customRouter.get("/customCoderArray1") { (middleware: UserMiddleware, respondWith: ([CodableDate]?, RequestError?) -> Void) in
-            print("GET on /customCoderArray")
-            respondWith([codableDate], nil)
+        print("GET on /customCoderArray")
+        respondWith([codableDate], nil)
         }
         customRouter.get("/customCoderArray2") { (middleware: UserMiddleware, middleware2: UserMiddleware, respondWith: ([CodableDate]?, RequestError?) -> Void) in
-            print("GET on /customCoderArray")
-            respondWith([codableDate], nil)
+        print("GET on /customCoderArray")
+        respondWith([codableDate], nil)
         }
         customRouter.get("/customCoderArray3") { (middleware: UserMiddleware, middleware2: UserMiddleware, middleware3: UserMiddleware, respondWith: ([CodableDate]?, RequestError?) -> Void) in
-            print("GET on /customCoderArray")
-            respondWith([codableDate], nil)
+        print("GET on /customCoderArray")
+        respondWith([codableDate], nil)
         }
         customRouter.get("/customCoderTuple1") { (middleware: UserMiddleware, respondWith: ([(Int, CodableDate)]?, RequestError?) -> Void) in
-            print("GET on /customCoderTuple")
-            respondWith([(1, codableDate)], nil)
+        print("GET on /customCoderTuple")
+        respondWith([(1, codableDate)], nil)
         }
         customRouter.get("/customCoderTuple2") { (middleware: UserMiddleware, middleware2: UserMiddleware, respondWith: ([(Int, CodableDate)]?, RequestError?) -> Void) in
-            print("GET on /customCoderTuple")
-            respondWith([(1, codableDate)], nil)
+        print("GET on /customCoderTuple")
+        respondWith([(1, codableDate)], nil)
         }
         customRouter.get("/customCoderTuple3") { (middleware: UserMiddleware, middleware2: UserMiddleware, middleware3: UserMiddleware, respondWith: ([(Int, CodableDate)]?, RequestError?) -> Void) in
-            print("GET on /customCoderTuple")
-            respondWith([(1, codableDate)], nil)
+        print("GET on /customCoderTuple")
+        respondWith([(1, codableDate)], nil)
         }
         customRouter.get("/customCoderQuery1") { (middleware: UserMiddleware, query: SimpleQuery, respondWith: (CodableDate?, RequestError?) -> Void) in
-            print("GET on /customCoderQuery")
-            respondWith(codableDate, nil)
+        print("GET on /customCoderQuery")
+        respondWith(codableDate, nil)
         }
         customRouter.get("/customCoderQuery2") { (middleware: UserMiddleware, middleware2: UserMiddleware, query: SimpleQuery, respondWith: (CodableDate?, RequestError?) -> Void) in
-            print("GET on /customCoderQuery")
-            respondWith(codableDate, nil)
+        print("GET on /customCoderQuery")
+        respondWith(codableDate, nil)
         }
         customRouter.get("/customCoderQuery3") { (middleware: UserMiddleware, middleware2: UserMiddleware, middleware3: UserMiddleware, query: SimpleQuery, respondWith: (CodableDate?, RequestError?) -> Void) in
-            print("GET on /customCoderQuery")
-            respondWith(codableDate, nil)
+        print("GET on /customCoderQuery")
+        respondWith(codableDate, nil)
         }
         customRouter.get("/customCoderQueryArray1") { (middleware: UserMiddleware, query: SimpleQuery, respondWith: ([CodableDate]?, RequestError?) -> Void) in
-            print("GET on /customCoderQueryArray")
-            respondWith([codableDate], nil)
+        print("GET on /customCoderQueryArray")
+        respondWith([codableDate], nil)
         }
         customRouter.get("/customCoderQueryArray2") { (middleware: UserMiddleware, middleware2: UserMiddleware, query: SimpleQuery, respondWith: ([CodableDate]?, RequestError?) -> Void) in
-            print("GET on /customCoderQueryArray")
-            respondWith([codableDate], nil)
+        print("GET on /customCoderQueryArray")
+        respondWith([codableDate], nil)
         }
         customRouter.get("/customCoderQueryArray3") { (middleware: UserMiddleware, middleware2: UserMiddleware, middleware3: UserMiddleware, query: SimpleQuery, respondWith: ([CodableDate]?, RequestError?) -> Void) in
-            print("GET on /customCoderQueryArray")
-            respondWith([codableDate], nil)
-        }
-        customRouter.post("/customCoder1") { (middleware: UserMiddleware, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
-            print("POST on /customCoder for date \(inDate)")
-            XCTAssertEqual(inDate, codableDate)
-            respondWith(codableDate, nil)
-        }
-        customRouter.post("/customCoder2") { (middleware: UserMiddleware, middleware2: UserMiddleware, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
-            print("POST on /customCoder for date \(inDate)")
-            XCTAssertEqual(inDate, codableDate)
-            respondWith(codableDate, nil)
-        }
-        customRouter.post("/customCoder3") { (middleware: UserMiddleware, middleware2: UserMiddleware, middleware3: UserMiddleware, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
-            print("POST on /customCoder for date \(inDate)")
-            XCTAssertEqual(inDate, codableDate)
-            respondWith(codableDate, nil)
-        }
-        customRouter.post("/customCoderId1") { (middleware: UserMiddleware, inDate: CodableDate, respondWith: (Int?, CodableDate?, RequestError?) -> Void) in
-            print("POST on /customCoderId for user \(inDate)")
-            XCTAssertEqual(inDate, codableDate)
-            respondWith(1, codableDate, nil)
-        }
-        customRouter.post("/customCoderId2") { (middleware: UserMiddleware, middleware2: UserMiddleware, inDate: CodableDate, respondWith: (Int?, CodableDate?, RequestError?) -> Void) in
-            print("POST on /customCoderId for user \(inDate)")
-            XCTAssertEqual(inDate, codableDate)
-            respondWith(1, codableDate, nil)
-        }
-        customRouter.post("/customCoderId3") { (middleware: UserMiddleware, middleware2: UserMiddleware, middleware3: UserMiddleware, inDate: CodableDate, respondWith: (Int?, CodableDate?, RequestError?) -> Void) in
-            print("POST on /customCoderId for user \(inDate)")
-            XCTAssertEqual(inDate, codableDate)
-            respondWith(1, codableDate, nil)
-        }
-        customRouter.put("/customCoder1") { (middleware: UserMiddleware, id: Int, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
-            print("PUT on /customCoder/\(id)")
-            XCTAssertEqual(inDate, codableDate)
-            respondWith(codableDate, nil)
-        }
-        customRouter.put("/customCoder2") { (middleware: UserMiddleware, middleware2: UserMiddleware, id: Int, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
-            print("PUT on /customCoder/\(id)")
-            XCTAssertEqual(inDate, codableDate)
-            respondWith(codableDate, nil)
-        }
-        customRouter.put("/customCoder3") { (middleware: UserMiddleware, middleware2: UserMiddleware, middleware3: UserMiddleware, id: Int, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
-            print("PUT on /customCoder/\(id)")
-            XCTAssertEqual(inDate, codableDate)
-            respondWith(codableDate, nil)
-        }
-        customRouter.patch("/customCoder1") { (middleware: UserMiddleware, id: Int, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
-            print("PATCH on /customCoder/\(id)")
-            XCTAssertEqual(inDate, codableDate)
-            respondWith(codableDate, nil)
-        }
-        customRouter.patch("/customCoder2") { (middleware: UserMiddleware, middleware2: UserMiddleware, id: Int, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
-            print("PATCH on /customCoder/\(id)")
-            XCTAssertEqual(inDate, codableDate)
-            respondWith(codableDate, nil)
-        }
-        customRouter.patch("/customCoder3") { (middleware: UserMiddleware, middleware2: UserMiddleware, middleware3: UserMiddleware, id: Int, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
-            print("PATCH on /customCoder/\(id)")
-            XCTAssertEqual(inDate, codableDate)
-            respondWith(codableDate, nil)
+        print("GET on /customCoderQueryArray")
+        respondWith([codableDate], nil)
         }
         
         buildServerTest(customRouter, timeout: 30)
@@ -1082,6 +1022,93 @@ class TestTypeSafeMiddleware: KituraTest {
             .hasStatus(.OK)
             .hasContentType(withPrefix: "application/json")
             .hasData([codableDate], customDecoder: jsonDecoder)
+            
+            .run()
+    }
+    
+    func testCustomCoder() {
+        struct SimpleQuery: QueryParams {
+            let string: String
+        }
+        let jsonEncoder: () -> BodyEncoder = {
+            let encoder = JSONEncoder()
+            encoder.dateEncodingStrategy = .secondsSince1970
+            return encoder
+        }
+        let jsonDecoder: () -> BodyDecoder = {
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .secondsSince1970
+            return decoder
+        }
+        let customRouter = Router()
+        customRouter.decoders[.json] = jsonDecoder
+        customRouter.encoders[.json] = jsonEncoder
+        
+        let date = Date(timeIntervalSince1970: 1519206456)
+        let codableDate = CodableDate(date: date)
+       
+        customRouter.post("/customCoder1") { (middleware: UserMiddleware, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("POST on /customCoder for date \(inDate)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(codableDate, nil)
+        }
+        customRouter.post("/customCoder2") { (middleware: UserMiddleware, middleware2: UserMiddleware, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("POST on /customCoder for date \(inDate)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(codableDate, nil)
+        }
+        customRouter.post("/customCoder3") { (middleware: UserMiddleware, middleware2: UserMiddleware, middleware3: UserMiddleware, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("POST on /customCoder for date \(inDate)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(codableDate, nil)
+        }
+        customRouter.post("/customCoderId1") { (middleware: UserMiddleware, inDate: CodableDate, respondWith: (Int?, CodableDate?, RequestError?) -> Void) in
+            print("POST on /customCoderId for user \(inDate)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(1, codableDate, nil)
+        }
+        customRouter.post("/customCoderId2") { (middleware: UserMiddleware, middleware2: UserMiddleware, inDate: CodableDate, respondWith: (Int?, CodableDate?, RequestError?) -> Void) in
+            print("POST on /customCoderId for user \(inDate)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(1, codableDate, nil)
+        }
+        customRouter.post("/customCoderId3") { (middleware: UserMiddleware, middleware2: UserMiddleware, middleware3: UserMiddleware, inDate: CodableDate, respondWith: (Int?, CodableDate?, RequestError?) -> Void) in
+            print("POST on /customCoderId for user \(inDate)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(1, codableDate, nil)
+        }
+        customRouter.put("/customCoder1") { (middleware: UserMiddleware, id: Int, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("PUT on /customCoder/\(id)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(codableDate, nil)
+        }
+        customRouter.put("/customCoder2") { (middleware: UserMiddleware, middleware2: UserMiddleware, id: Int, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("PUT on /customCoder/\(id)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(codableDate, nil)
+        }
+        customRouter.put("/customCoder3") { (middleware: UserMiddleware, middleware2: UserMiddleware, middleware3: UserMiddleware, id: Int, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("PUT on /customCoder/\(id)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(codableDate, nil)
+        }
+        customRouter.patch("/customCoder1") { (middleware: UserMiddleware, id: Int, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("PATCH on /customCoder/\(id)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(codableDate, nil)
+        }
+        customRouter.patch("/customCoder2") { (middleware: UserMiddleware, middleware2: UserMiddleware, id: Int, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("PATCH on /customCoder/\(id)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(codableDate, nil)
+        }
+        customRouter.patch("/customCoder3") { (middleware: UserMiddleware, middleware2: UserMiddleware, middleware3: UserMiddleware, id: Int, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("PATCH on /customCoder/\(id)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(codableDate, nil)
+        }
+        
+        buildServerTest(customRouter, timeout: 30)
             
             .request("post", path: "/customCoder1", data: codableDate, headers: ["TestHeader": "Hello"], encoder: jsonEncoder)
             .hasStatus(.created)
