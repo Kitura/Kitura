@@ -52,6 +52,17 @@ public class Router {
     public var encoders: [MediaType: () -> BodyEncoder] = [.json: {return JSONEncoder()}]
     
     /**
+     The media type to be used by the `RouterResponse` to select a `BodyEncoder` if no Accepts header is set or if the Media type of Accepts header does not match an encoder. Is set to "application/json" by default.
+     ### Usage Example: ###
+     The example below sets the `defaultResponseMediaType` as "application/x-yaml".
+     ```swift
+     let router = Router()
+     router.defaultResponseMediaType = MediaType(type: .application, subtype: "x-yaml")
+     ```
+     */
+    public var defaultResponseMediaType: MediaType = .json
+    
+    /**
      A dictionary of MediaType to BodyDecoder generators. Includes a JSONDecoder and QueryDecoder by default.
      ### Usage Example: ###
      The example below replaces the default JSON decoder with a new decoder that has a different date decoding strategy.
@@ -466,14 +477,16 @@ public class Router {
     }
     
     /**
-     * Return the highest rated encoder for the request's Accepts header. Defaults to a JSON encoder if no successful match.
+     * Return the highest rated encoder for the request's Accepts header.
+     * Defaults to the `defaultResponseMediaType` if there no successful match.
+     * If there is no encoder for the `defaultResponseMediaType`, a JSONEncoder() is used.
      *
      * ### Usage Example: ###
      * ```swift
      * let (mediaType, encoder) = selectResponseEncoder(request)
      * ```
      * - Parameter request: The RouterRequest to check
-     * - Returns: A tuple of the highest rated Encoder, or a JSONEncoder() if no encoders match the Accepts header and it's corresponding MediaType.
+     * - Returns: A tuple of the highest rated MediaType and it's corresponding Encoder, or a JSONEncoder() if no encoders match the Accepts header and it's corresponding .
      */
     func selectResponseEncoder(_ request: RouterRequest) -> (MediaType, BodyEncoder) {
         let encoderAcceptsTypes = Array(encoders.keys).map { $0.description }
@@ -481,8 +494,11 @@ public class Router {
               let bestMediaType = MediaType(bestAccepts),
               let bestEncoder = encoders[bestMediaType]
         else {
-            let jsonEncoder = encoders[.json] ?? { return JSONEncoder() }
-            return (.json, jsonEncoder())
+            if let defaultEncoder = encoders[defaultResponseMediaType] {
+                return (defaultResponseMediaType, defaultEncoder())
+            } else {
+                return (.json, JSONEncoder())
+            }
         }
         return (bestMediaType, bestEncoder())
     }
@@ -556,8 +572,8 @@ extension Router : ServerDelegate {
         //TODO fix the stack
         var routerStack = Stack<Router>()
         routerStack.push(self)
-        let (respMediaType, encoder) = selectResponseEncoder(routeReq)
-        let routeResp = RouterResponse(response: response, routerStack: routerStack, request: routeReq, encoder: encoder, mediaType: respMediaType)
+        let encoder = selectResponseEncoder(routeReq)
+        let routeResp = RouterResponse(response: response, routerStack: routerStack, request: routeReq, encoder: encoder)
 
         process(request: routeReq, response: routeResp) { [weak self, weak routeReq, weak routeResp] () in
             guard let strongSelf = self else {

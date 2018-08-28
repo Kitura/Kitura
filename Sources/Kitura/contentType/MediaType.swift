@@ -144,3 +144,4 @@ public struct MediaType: CustomStringConvertible, Equatable, Hashable {
     /// The hashValue for the MediaTypes. Required for Hashable conformance.
     public let hashValue: Int
 }
+

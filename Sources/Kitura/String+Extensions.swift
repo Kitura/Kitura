@@ -53,6 +53,7 @@ extension String {
 
         return result
     }
+    
     /// Splits a URL-encoded key and value pair (e.g. "foo=bar") into a tuple
     /// with corresponding "key" and "value" values, with the value being URL
     /// unencoded.

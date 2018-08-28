@@ -160,20 +160,6 @@ public class RouterRequest {
     internal var handledNamedParameters = Set<String>()
 
     internal var hasBodyParserBeenUsed = false
-
-    /// Initializes a `RouterRequest` instance
-    ///
-    /// - Parameter request: the server request
-    convenience init(request: ServerRequest) {
-        let contentType = request.headers["Content-Type"]?[0]
-        if contentType?.hasPrefix("application/x-www-form-urlencoded") ?? false {
-            self.init(request: request, decoder: QueryDecoder())
-        } else if contentType?.hasPrefix("application/json") ?? false {
-            self.init(request: request, decoder: JSONDecoder())
-        } else {
-            self.init(request: request, decoder: nil)
-        }
-    }
     
     /// Initializes a `RouterRequest` instance
     ///
@@ -216,8 +202,8 @@ public class RouterRequest {
     public func read<T: Decodable>(as type: T.Type) throws -> T {
         var data = Data()
         _ = try serverRequest.read(into: &data)
-        let decoderInstance = decoder ?? JSONDecoder()
-        return try decoderInstance.decode(type, from: data)
+        let decoder = self.decoder ?? JSONDecoder()
+        return try decoder.decode(type, from: data)
     }
     
     /// Read the body of the request as String.
