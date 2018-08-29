@@ -33,6 +33,11 @@ matrix:
     - os: linux
       dist: trusty
       sudo: required
+      services: docker
+      env: DOCKER_IMAGE=ubuntu:16.04 KITURA_NIO=1
+    - os: linux
+      dist: trusty
+      sudo: required
       env: SWIFT_SNAPSHOT=swift-4.2-DEVELOPMENT-SNAPSHOT-2018-06-19-a
     - os: linux
       dist: trusty
