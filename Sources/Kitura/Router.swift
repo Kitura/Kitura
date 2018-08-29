@@ -475,33 +475,6 @@ public class Router {
         }
         return self
     }
-    
-    /**
-     * Return the highest rated encoder for the request's Accepts header.
-     * Defaults to the `defaultResponseMediaType` if there no successful match.
-     * If there is no encoder for the `defaultResponseMediaType`, a JSONEncoder() is used.
-     *
-     * ### Usage Example: ###
-     * ```swift
-     * let (mediaType, encoder) = selectResponseEncoder(request)
-     * ```
-     * - Parameter request: The RouterRequest to check
-     * - Returns: A tuple of the highest rated MediaType and it's corresponding Encoder, or a JSONEncoder() if no encoders match the Accepts header and it's corresponding .
-     */
-    func selectResponseEncoder(_ request: RouterRequest) -> (MediaType, BodyEncoder) {
-        let encoderAcceptsTypes = Array(encoders.keys).map { $0.description }
-        guard let bestAccepts = request.accepts(types: encoderAcceptsTypes),
-              let bestMediaType = MediaType(bestAccepts),
-              let bestEncoder = encoders[bestMediaType]
-        else {
-            if let defaultEncoder = encoders[defaultResponseMediaType] {
-                return (defaultResponseMediaType, defaultEncoder())
-            } else {
-                return (.json, JSONEncoder())
-            }
-        }
-        return (bestMediaType, bestEncoder())
-    }
 }
 
 
@@ -572,8 +545,7 @@ extension Router : ServerDelegate {
         //TODO fix the stack
         var routerStack = Stack<Router>()
         routerStack.push(self)
-        let encoder = selectResponseEncoder(routeReq)
-        let routeResp = RouterResponse(response: response, routerStack: routerStack, request: routeReq, encoder: encoder)
+        let routeResp = RouterResponse(response: response, routerStack: routerStack, request: routeReq, encoders: encoders, defaultResponseMediaType: defaultResponseMediaType)
 
         process(request: routeReq, response: routeResp) { [weak self, weak routeReq, weak routeResp] () in
             guard let strongSelf = self else {

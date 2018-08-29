@@ -85,7 +85,9 @@ public class RouterResponse {
 
     private var lifecycle = Lifecycle()
 
-    private let encoder: (mediaType: MediaType, bodyEncoder: BodyEncoder)
+    private let encoders: [MediaType: () -> BodyEncoder]
+    
+    private let defaultResponseMediaType: MediaType
     
     // regex used to sanitize javascript identifiers
     fileprivate static let sanitizeJSIdentifierRegex: NSRegularExpression! = {
@@ -130,11 +132,12 @@ public class RouterResponse {
     ///                     `RouterResponse` object.
     /// - Parameter encoder: The `BodyEncoder` that will be used the encode the request body.
     /// - Parameter mediaType: The `MediaType` the media type which will be sent in the response "Content-Type" header.
-    init(response: ServerResponse, routerStack: Stack<Router>, request: RouterRequest, encoder: (MediaType, BodyEncoder) = (.json, JSONEncoder())) {
+    init(response: ServerResponse, routerStack: Stack<Router>, request: RouterRequest, encoders: [MediaType: () -> BodyEncoder], defaultResponseMediaType: MediaType) {
         self.response = response
         self.routerStack = routerStack
         self.request = request
-        self.encoder = encoder
+        self.encoders = encoders
+        self.defaultResponseMediaType = defaultResponseMediaType
         headers = Headers(headers: response.headers)
         statusCode = .unknown
         state.response = self
@@ -208,6 +211,43 @@ public class RouterResponse {
         response.headers.append("Set-Cookie", value: cookieStrings)
     }
 
+    /**
+     * Return the highest rated encoder for the request's Accepts header.
+     * Defaults to the `defaultResponseMediaType` if there no successful match.
+     * If there is no encoder for the `defaultResponseMediaType`, a JSONEncoder() is used.
+     *
+     * ### Usage Example: ###
+     * ```swift
+     * let (mediaType, encoder) = selectResponseEncoder(request)
+     * ```
+     * - Parameter request: The RouterRequest to check
+     * - Returns: A tuple of the highest rated MediaType and it's corresponding Encoder, or a JSONEncoder() if no encoders match the Accepts header and it's corresponding .
+     */
+    private func selectResponseEncoder(_ request: RouterRequest) -> (MediaType, BodyEncoder) {
+        let acceptHeader = request.headers["accept"]
+        if acceptHeader == nil ||
+            acceptHeader == "*" ||
+            acceptHeader == "*/*" {
+            if let defaultEncoder = encoders[defaultResponseMediaType] {
+                return (defaultResponseMediaType, defaultEncoder())
+            } else {
+                return (.json, JSONEncoder())
+            }
+        }
+        let encoderAcceptsTypes = Array(encoders.keys).map { $0.description }
+        guard let bestAccepts = request.accepts(types: encoderAcceptsTypes),
+            let bestMediaType = MediaType(bestAccepts),
+            let bestEncoder = encoders[bestMediaType]
+            else {
+                if let defaultEncoder = encoders[defaultResponseMediaType] {
+                    return (defaultResponseMediaType, defaultEncoder())
+                } else {
+                    return (.json, JSONEncoder())
+                }
+        }
+        return (bestMediaType, bestEncoder())
+    }
+    
     /// Send a string.
     ///
     /// - Parameter str: the string to send.
@@ -523,8 +563,9 @@ extension RouterResponse {
             return self
         }
         do {
-            headers["Content-Type"] = encoder.mediaType.description
-            send(data: try encoder.bodyEncoder.encode(obj))
+            let (mediaType, encoder) = selectResponseEncoder(request)
+            headers["Content-Type"] = mediaType.description
+            send(data: try encoder.encode(obj))
         } catch {
             Log.warning("Failed to encode Codable object for sending: \(error.localizedDescription)")
             status(.internalServerError)
@@ -545,11 +586,7 @@ extension RouterResponse {
         }
         do {
             headers.setType("json")
-            if encoder.mediaType == .json {
-                send(data: try encoder.bodyEncoder.encode(json))
-            } else {
-                send(data: try JSONEncoder().encode(json))
-            }
+            send(data: try (encoders[.json]?() ?? JSONEncoder()).encode(json))
         } catch {
             Log.warning("Failed to encode Codable object for sending: \(error.localizedDescription)")
             status(.internalServerError)
@@ -591,9 +628,7 @@ extension RouterResponse {
             return json.replacingOccurrences(of: "\u{2028}", with: "\\u2028")
                 .replacingOccurrences(of: "\u{2029}", with: "\\u2029")
         }
-        let jsonStr = encoder.mediaType == .json ?
-            String(data: try encoder.bodyEncoder.encode(jsonp), encoding: .utf8)! :
-            String(data: try JSONEncoder().encode(jsonp), encoding: .utf8)!
+        let jsonStr = String(data: try (encoders[.json]?() ?? JSONEncoder()).encode(jsonp), encoding: .utf8)!
 
         let taintedJSCallbackName = request.queryParameters[callbackParameter]
 
