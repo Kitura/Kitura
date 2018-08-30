@@ -31,10 +31,8 @@ class TestMediaType: KituraTest {
             ("testPartsAllTextMediaTypeBuilder", testPartsAllTextMediaTypeBuilder),
             ("testPartsHTMLMediaTypeBuilder", testPartsHTMLMediaTypeBuilder),
             ("testPartsMediaCaseInsensitive", testPartsMediaCaseInsensitive),
-            ("testNoHeaderMediaType", testNoHeaderMediaType),
-            ("testSingleHeaderMediaType", testSingleHeaderMediaType),
-            ("testTwoHeaderMediaType", testTwoHeaderMediaType),
-            ("testWrongHeaderMediaType", testWrongHeaderMediaType),
+            ("testValidMediaType", testValidMediaType),
+            ("testInvalidMediaType", testInvalidMediaType),
         ]
     }
     
@@ -91,32 +89,14 @@ class TestMediaType: KituraTest {
         XCTAssertEqual(textMediaType.subType, "html")
     }
     
-    func testNoHeaderMediaType() {
-        let headers = HeadersContainer()
-        XCTAssertNil(MediaType(headers: headers))
-    }
-    
-    func testSingleHeaderMediaType() {
-        let headers = HeadersContainer()
-        headers.append("Content-Type", value: ["text/html"])
-        let textMediaType = MediaType(headers: headers)
+    func testValidMediaType() {
+        let textMediaType = MediaType(contentTypeHeader: "tExT/hTmL; charset=utf-8")
         XCTAssertEqual(textMediaType?.description, "text/html")
         XCTAssertEqual(textMediaType?.topLevelType, .text)
         XCTAssertEqual(textMediaType?.subType, "html")
     }
-    
-    func testTwoHeaderMediaType() {
-        let headers = HeadersContainer()
-        headers.append("Content-Type", value: ["text/html", "application/json"])
-        let textMediaType = MediaType(headers: headers)
-        XCTAssertEqual(textMediaType?.description, "text/html")
-        XCTAssertEqual(textMediaType?.topLevelType, .text)
-        XCTAssertEqual(textMediaType?.subType, "html")
-    }
-    
-    func testWrongHeaderMediaType() {
-        let headers = HeadersContainer()
-        headers.append("Content-Type", value: "incorrect/html")
-        XCTAssertNil(MediaType(headers: headers))
+
+    func testInvalidMediaType() {
+        XCTAssertNil(MediaType(contentTypeHeader: "incorrect/html; charset=banana"))
     }
 }

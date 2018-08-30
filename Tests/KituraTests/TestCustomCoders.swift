@@ -24,6 +24,8 @@ class TestCustomCoders: KituraTest {
     static var allTests: [(String, (TestCustomCoders) -> () throws -> Void)] {
         return [
             ("testCustomCoder", testCustomCoder),
+            ("testRawCustomCoder", testRawCustomCoder),
+            ("testCustomQueryEncoder", testCustomQueryEncoder),
         ]
     }
 

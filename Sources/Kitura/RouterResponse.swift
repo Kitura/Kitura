@@ -225,7 +225,8 @@ public class RouterResponse {
      */
     private func selectResponseEncoder(_ request: RouterRequest) -> (MediaType, BodyEncoder) {
         let acceptHeader = request.headers["accept"]
-        if acceptHeader == nil ||
+        if encoders.count == 1 ||
+            acceptHeader == nil ||
             acceptHeader == "*" ||
             acceptHeader == "*/*" {
             if let defaultEncoder = encoders[defaultResponseMediaType] {
