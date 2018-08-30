@@ -112,8 +112,11 @@ class TestCustomCoders: KituraTest {
         
         performServerTest(customRouter) { expectation in
             self.performRequest("get", path: "/rawget", callback: { response in
-                let responseString = try? response?.readString()
-                XCTAssertEqual(responseString, "{\"date\":1519206456}")
+                if let response = response, let responseString = try? response.readString() {
+                    XCTAssertEqual(responseString, "{\"date\":1519206456}")
+                } else {
+                    XCTFail("Unable to read response string")
+                }
                 expectation.fulfill()
             })
         }
@@ -147,16 +150,22 @@ class TestCustomCoders: KituraTest {
         
         performServerTest(customRouter) { expectation in
             self.performRequest("get", path: "/rawget", callback: { response in
-                let responseString = try? response?.readString()
-                XCTAssertEqual(responseString, "&date=2018-02-21T09:47:36%2B0000")
+                if let response = response, let responseString = try? response.readString() {
+                    XCTAssertEqual(responseString, "&date=2018-02-21T09:47:36%2B0000")
+                } else {
+                    XCTFail("Unable to read response string")
+                }
                 expectation.fulfill()
             }, headers: ["Accept": "application/x-www-form-urlencoded"])
         }
         
         performServerTest(customRouter) { expectation in
             self.performRequest("get", path: "/rawget", callback: { response in
-                let responseString = try? response?.readString()
-                XCTAssertEqual(responseString, "{\"date\":540899256}")
+                if let response = response, let responseString = try? response.readString() {
+                    XCTAssertEqual(responseString, "{\"date\":540899256}")
+                } else {
+                    XCTFail("Unable to read response string")
+                }
                 expectation.fulfill()
             })
         }
@@ -165,16 +174,22 @@ class TestCustomCoders: KituraTest {
 
         performServerTest(customRouter) { expectation in
             self.performRequest("get", path: "/rawget", callback: { response in
-                let responseString = try? response?.readString()
-                XCTAssertEqual(responseString, "&date=2018-02-21T09:47:36%2B0000")
+                if let response = response, let responseString = try? response.readString() {
+                    XCTAssertEqual(responseString, "&date=2018-02-21T09:47:36%2B0000")
+                } else {
+                    XCTFail("Unable to read response string")
+                }
                 expectation.fulfill()
             })
         }
         
         performServerTest(customRouter) { expectation in
             self.performRequest("get", path: "/sendjson", callback: { response in
-                let responseString = try? response?.readString()
-                XCTAssertEqual(responseString, "{\"date\":540899256}")
+                if let response = response, let responseString = try? response.readString() {
+                    XCTAssertEqual(responseString, "{\"date\":540899256}")
+                } else {
+                    XCTFail("Unable to read response string")
+                }
                 expectation.fulfill()
             })
         }
@@ -188,8 +203,11 @@ class TestCustomCoders: KituraTest {
         
         performServerTest(customRouter) { expectation in
             self.performRequest("get", path: "/sendjson", callback: { response in
-                let responseString = try? response?.readString()
-                XCTAssertEqual(responseString, "{\"date\":1519206456}")
+                if let response = response, let responseString = try? response.readString() {
+                    XCTAssertEqual(responseString, "{\"date\":1519206456}")
+                } else {
+                    XCTFail("Unable to read response string")
+                }
                 expectation.fulfill()
             })
         }
