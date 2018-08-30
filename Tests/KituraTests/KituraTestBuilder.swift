@@ -45,6 +45,7 @@ protocol RequestTestBuilder {
     func request(_ method: String, path: String, headers: [String:String]?) -> AssertionTestBuilder
     func request<T: Encodable>(_ method: String, path: String, data: T) -> AssertionTestBuilder
     func request<T: Encodable>(_ method: String, path: String, data: T, headers: [String:String]?) -> AssertionTestBuilder
+    func request<T: Encodable>(_ method: String, path: String, data: T, headers: [String:String]?, encoder: @escaping () -> BodyEncoder) -> AssertionTestBuilder
     func request(_ method: String, path: String, urlEncodedString: String) -> AssertionTestBuilder
     func request(_ method: String, path: String, urlEncodedString: String, headers: [String:String]?) -> AssertionTestBuilder
     func run()
@@ -61,6 +62,9 @@ protocol AssertionTestBuilder: RequestTestBuilder {
     func hasData<T: Decodable & Equatable>(_ expected: [T]) -> Self
     func hasData<T: Decodable & Equatable>(_ expected: T) -> Self
     func hasData<T: Decodable & Equatable>(_ expected: [[String: T]]) -> Self
+    func hasData<T: Decodable & Equatable>(_ expected: [T], customDecoder: @escaping () -> BodyDecoder) -> Self
+    func hasData<T: Decodable & Equatable>(_ expected: T, customDecoder: @escaping () -> BodyDecoder) -> Self
+    func hasData<T: Decodable & Equatable>(_ expected: [[String: T]], customDecoder: @escaping () -> BodyDecoder) -> Self
 }
 
 // A builder object for constructing tests made up of one or more
@@ -86,6 +90,17 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
                 let data = try JSONEncoder().encode(data)
                 test.performRequest(method, path: path, callback: callback, headers: headers, requestModifier: { request in
                     request.headers["Content-Type"] = "application/json; charset=utf-8"
+                    request.write(from: data)
+                })
+            }
+        }
+        
+        init<T: Encodable>(_ test: KituraTest, _ method: String, _ path: String, _ data: T, headers: [String:String]? = nil, encoder: @escaping () -> BodyEncoder, mediaType: MediaType = .json) {
+            self.test = test
+            self.invoker = { callback in
+                let data = try encoder().encode(data)
+                test.performRequest(method, path: path, callback: callback, headers: headers, requestModifier: { request in
+                    request.headers["Content-Type"] = "\(mediaType.description); charset=utf-8"
                     request.write(from: data)
                 })
             }
@@ -132,6 +147,11 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
     
     public func request<T: Encodable>(_ method: String, path: String, data: T, headers: [String:String]?) -> AssertionTestBuilder {
         requests.append(Request(test, method, path, data, headers: headers))
+        return self
+    }
+    
+    public func request<T: Encodable>(_ method: String, path: String, data: T, headers: [String:String]?, encoder: @escaping () -> BodyEncoder) -> AssertionTestBuilder {
+        requests.append(Request(test, method, path, data, headers: headers, encoder: encoder))
         return self
     }
     
@@ -231,10 +251,20 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
     }
 
     public func hasData<T: Decodable & Equatable>(_ expected: [T]) -> Self {
+        return hasData(expected, customDecoder: { return JSONDecoder() })
+    }
+    public func hasData<T: Decodable & Equatable>(_ expected: T) -> Self {
+        return hasData(expected, customDecoder: { return JSONDecoder() })
+    }
+    public func hasData<T: Decodable & Equatable>(_ expected: [[String : T]]) -> Self {
+        return hasData(expected, customDecoder: { return JSONDecoder() })
+    }
+    
+    public func hasData<T: Decodable & Equatable>(_ expected: [T], customDecoder: @escaping () -> BodyDecoder) -> Self {
         return has { response in
             guard let (_, data) = self.readDataOrFail(from: response) else { return }
             do {
-                let actual = try JSONDecoder().decode([T].self, from: data)
+                let actual = try customDecoder().decode([T].self, from: data)
                 XCTAssertEqual(expected, actual, "Response data does not match expected value:\nexpected: \(expected)\nactual: \(actual)")
             } catch {
                 XCTFail("Failed to decode response data into type \([T].self): \(error)")
@@ -242,11 +272,11 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
         }
     }
 
-    public func hasData<T: Decodable & Equatable>(_ expected: T) -> Self {
+    public func hasData<T: Decodable & Equatable>(_ expected: T, customDecoder: @escaping () -> BodyDecoder) -> Self {
         return has { response in
             guard let (_, data) = self.readDataOrFail(from: response) else { return }
             do {
-                let actual = try JSONDecoder().decode(T.self, from: data)
+                let actual = try customDecoder().decode(T.self, from: data)
                 XCTAssertEqual(expected, actual, "Response data does not match expected value:\nexpected: \(expected)\nactual: \(actual)")
             } catch {
                 XCTFail("Failed to decode response data into type \(T.self): \(error)")
@@ -254,11 +284,11 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
         }
     }
     
-    func hasData<T: Decodable & Equatable>(_ expected: [[String : T]]) -> Self {
+    func hasData<T: Decodable & Equatable>(_ expected: [[String : T]], customDecoder: @escaping () -> BodyDecoder) -> Self {
         return has { response in
             guard let (_, data) = self.readDataOrFail(from: response) else { return }
             do {
-                let actual = try JSONDecoder().decode([[String : T]].self, from: data)
+                let actual = try customDecoder().decode([[String : T]].self, from: data)
                 for (index, tuple) in actual.enumerated() {
                     let tupleKey = Array(tuple.keys)[0]
                     let expectedKey = Array(expected[index].keys)[0]

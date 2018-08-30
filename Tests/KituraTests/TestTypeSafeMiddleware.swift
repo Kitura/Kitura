@@ -49,6 +49,8 @@ class TestTypeSafeMiddleware: KituraTest {
             ("testMultipleMiddlewarePut", testMultipleMiddlewarePut),
             ("testSingleMiddlewarePatch", testSingleMiddlewarePatch),
             ("testMultipleMiddlewarePatch", testMultipleMiddlewarePatch),
+            ("testCustomCoder", testCustomCoder),
+            ("testCustomCoderGet", testCustomCoderGet),
         ]
     }
 
@@ -73,6 +75,17 @@ class TestTypeSafeMiddleware: KituraTest {
 
         static func == (lhs: User, rhs: User) -> Bool {
             return lhs.id == rhs.id && lhs.name == rhs.name
+        }
+    }
+    
+    struct CodableDate: Codable, Equatable {
+        let date: Date
+        
+        init(date: Date) {
+            self.date = date
+        }
+        static func == (lhs: CodableDate, rhs: CodableDate) -> Bool {
+            return lhs.date == rhs.date
         }
     }
 
@@ -849,6 +862,146 @@ class TestTypeSafeMiddleware: KituraTest {
             .request("patch", path: "/userMultiMiddleware/1", data: user, headers: missing3rdHeader)
             .hasStatus(.badRequest)
             .hasNoData()
+
+            .run()
+    }
+    
+    func testCustomCoderGet() {
+        struct SimpleQuery: QueryParams {
+            let string: String
+        }
+        let jsonEncoder: () -> BodyEncoder = {
+            let encoder = JSONEncoder()
+            encoder.dateEncodingStrategy = .secondsSince1970
+            return encoder
+        }
+        let jsonDecoder: () -> BodyDecoder = {
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .secondsSince1970
+            return decoder
+        }
+        let customRouter = Router()
+        customRouter.decoders[.json] = jsonDecoder
+        customRouter.encoders[.json] = jsonEncoder
+
+        let date = Date(timeIntervalSince1970: 1519206456)
+        let codableDate = CodableDate(date: date)
+
+        customRouter.get("/customCoder2") { (middleware: UserMiddleware, middleware2: UserMiddleware, respondWith: (CodableDate?, RequestError?) -> Void) in
+        print("GET on /customCoder")
+        respondWith(codableDate, nil)
+        }
+        customRouter.get("/customCoderArray2") { (middleware: UserMiddleware, middleware2: UserMiddleware, respondWith: ([CodableDate]?, RequestError?) -> Void) in
+        print("GET on /customCoderArray")
+        respondWith([codableDate], nil)
+        }
+        customRouter.get("/customCoderTuple2") { (middleware: UserMiddleware, middleware2: UserMiddleware, respondWith: ([(Int, CodableDate)]?, RequestError?) -> Void) in
+        print("GET on /customCoderTuple")
+        respondWith([(1, codableDate)], nil)
+        }
+        customRouter.get("/customCoderQuery2") { (middleware: UserMiddleware, middleware2: UserMiddleware, query: SimpleQuery, respondWith: (CodableDate?, RequestError?) -> Void) in
+        print("GET on /customCoderQuery")
+        respondWith(codableDate, nil)
+        }
+        customRouter.get("/customCoderQueryArray2") { (middleware: UserMiddleware, middleware2: UserMiddleware, query: SimpleQuery, respondWith: ([CodableDate]?, RequestError?) -> Void) in
+        print("GET on /customCoderQueryArray")
+        respondWith([codableDate], nil)
+        }
+
+        
+        buildServerTest(customRouter, timeout: 30)
+
+            .request("get", path: "/customCoder2", headers: ["TestHeader": "Hello"])
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+
+            .request("get", path: "/customCoderArray2", headers: ["TestHeader": "Hello"])
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData([codableDate], customDecoder: jsonDecoder)
+
+            .request("get", path: "/customCoderTuple2", headers: ["TestHeader": "Hello"])
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData([["1": codableDate]], customDecoder: jsonDecoder)
+
+            .request("get", path: "/customCoderQuery2?string=hello", headers: ["TestHeader": "Hello"])
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+
+            .request("get", path: "/customCoderQueryArray2?string=hello", headers: ["TestHeader": "Hello"])
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData([codableDate], customDecoder: jsonDecoder)
+
+            .run()
+    }
+    
+    func testCustomCoder() {
+        struct SimpleQuery: QueryParams {
+            let string: String
+        }
+        let jsonEncoder: () -> BodyEncoder = {
+            let encoder = JSONEncoder()
+            encoder.dateEncodingStrategy = .secondsSince1970
+            return encoder
+        }
+        let jsonDecoder: () -> BodyDecoder = {
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .secondsSince1970
+            return decoder
+        }
+        let customRouter = Router()
+        customRouter.decoders[.json] = jsonDecoder
+        customRouter.encoders[.json] = jsonEncoder
+        
+        let date = Date(timeIntervalSince1970: 1519206456)
+        let codableDate = CodableDate(date: date)
+
+        customRouter.post("/customCoder2") { (middleware: UserMiddleware, middleware2: UserMiddleware, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("POST on /customCoder for date \(inDate)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(codableDate, nil)
+        }
+        customRouter.post("/customCoderId2") { (middleware: UserMiddleware, middleware2: UserMiddleware, inDate: CodableDate, respondWith: (Int?, CodableDate?, RequestError?) -> Void) in
+            print("POST on /customCoderId for user \(inDate)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(1, codableDate, nil)
+        }
+        customRouter.put("/customCoder2") { (middleware: UserMiddleware, middleware2: UserMiddleware, id: Int, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("PUT on /customCoder/\(id)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(codableDate, nil)
+        }
+        customRouter.patch("/customCoder2") { (middleware: UserMiddleware, middleware2: UserMiddleware, id: Int, inDate: CodableDate, respondWith: (CodableDate?, RequestError?) -> Void) in
+            print("PATCH on /customCoder/\(id)")
+            XCTAssertEqual(inDate, codableDate)
+            respondWith(codableDate, nil)
+        }
+        
+        buildServerTest(customRouter, timeout: 30)
+
+            .request("post", path: "/customCoder2", data: codableDate, headers: ["TestHeader": "Hello"], encoder: jsonEncoder)
+            .hasStatus(.created)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+
+            .request("post", path: "/customCoderId2", data: codableDate, headers: ["TestHeader": "Hello"], encoder: jsonEncoder)
+            .hasStatus(.created)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+
+            .request("put", path: "/customCoder2/1", data: codableDate, headers: ["TestHeader": "Hello"], encoder: jsonEncoder)
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
+
+            .request("patch", path: "/customCoder2/1", data: codableDate, headers: ["TestHeader": "Hello"], encoder: jsonEncoder)
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(codableDate, customDecoder: jsonDecoder)
 
             .run()
     }

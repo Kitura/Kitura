@@ -43,7 +43,7 @@ class TestCodableRouter: KituraTest {
             ("testCodableDeleteQueryParameters", testCodableDeleteQueryParameters),
             ("testCodablePostSuccessStatuses", testCodablePostSuccessStatuses),
             ("testNoDataCustomStatus", testNoDataCustomStatus),
-            ("testNoDataDefaultStatus", testNoDataDefaultStatus)
+            ("testNoDataDefaultStatus", testNoDataDefaultStatus),
         ]
     }
 
@@ -108,6 +108,8 @@ class TestCodableRouter: KituraTest {
             return lhs.description == rhs.description
         }
     }
+    
+
 
     struct MyQuery: QueryParams, Equatable {
         public let intField: Int
@@ -176,16 +178,16 @@ class TestCodableRouter: KituraTest {
             .hasStatus(.created)
             .hasContentType(withPrefix: "application/json")
             .hasData(user)
-            
+
             .request("post", path: "/urlencoded", urlEncodedString: "id=4&name=David&extra=yes")
             .hasStatus(.created)
             .hasContentType(withPrefix: "application/json")
             .hasData(user)
-            
+
             .request("post", path: "/urlencoded", urlEncodedString: "encoding=valid&failed=match")
             .hasStatus(.unprocessableEntity)
             .hasData()
-            
+
             .request("post", path: "/urlencoded", urlEncodedString: "invalidEncoding")
             .hasStatus(.unprocessableEntity)
             .hasData()

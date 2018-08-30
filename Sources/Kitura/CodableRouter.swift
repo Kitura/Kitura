@@ -752,17 +752,10 @@ public struct CodableHelpers {
                     response.status(.internalServerError)
                 }
             } else {
-                do {
-                    if let codableOutput = codableOutput {
-                        let json = try JSONEncoder().encode(codableOutput)
-                        response.headers.setType("json")
-                        response.send(data: json)
-                    } else {
-                        Log.debug("Note: successful response ('\(status)') delivers no data.")
-                    }
-                } catch {
-                    Log.error("Could not encode result: \(error)")
-                    response.status(.internalServerError)
+                if let codableOutput = codableOutput {
+                    response.send(codableOutput)
+                } else {
+                    Log.debug("Note: successful response ('\(status)') delivers no data.")
                 }
             }
             completion()
@@ -814,18 +807,11 @@ public struct CodableHelpers {
                     response.status(.internalServerError)
                 }
             } else {
-                do {
-                    if let codableOutput = codableOutput {
-                        let entries = codableOutput.map({ [$0.value: $1] })
-                        let encoded = try JSONEncoder().encode(entries)
-                        response.headers.setType("json")
-                        response.send(data: encoded)
-                    } else {
-                        Log.debug("Note: successful response ('\(status)') delivers no data.")
-                    }
-                } catch {
-                    Log.error("Could not encode result: \(error)")
-                    response.status(.internalServerError)
+                if let codableOutput = codableOutput {
+                    let entries = codableOutput.map({ [$0.value: $1] })
+                    response.send(entries)
+                } else {
+                    Log.debug("Note: successful response ('\(status)') delivers no data.")
                 }
             }
             completion()
@@ -880,17 +866,10 @@ public struct CodableHelpers {
                 }
             } else if let id = id {
                 response.headers["Location"] = String(id.value)
-                do {
-                    if let codableOutput = codableOutput {
-                        let json = try JSONEncoder().encode(codableOutput)
-                        response.headers.setType("json")
-                        response.send(data: json)
-                    } else {
-                        Log.debug("Note: successful response ('\(status)') delivers no data.")
-                    }
-                } catch {
-                    Log.error("Could not encode result: \(error)")
-                    response.status(.internalServerError)
+                if let codableOutput = codableOutput {
+                    response.send(codableOutput)
+                } else {
+                    Log.debug("Note: successful response ('\(status)') delivers no data.")
                 }
             } else {
                 Log.error("No id (unique identifier) value provided.")
@@ -916,7 +895,7 @@ public struct CodableHelpers {
      * - Returns: An instance of `InputType` representing the decoded body data.
      */
     public static func readCodableOrSetResponseStatus<InputType: Codable>(_ inputCodableType: InputType.Type, from request: RouterRequest, response: RouterResponse) -> InputType? {
-        guard CodableHelpers.isContentTypeJSON(request) || CodableHelpers.isContentTypeURLEncoded(request) else {
+        guard request.decoder != nil else {
             response.status(.unsupportedMediaType)
             return nil
         }
@@ -931,10 +910,10 @@ public struct CodableHelpers {
             Log.error("Failed to read Codable input from request: \(error)")
             response.status(.unprocessableEntity)
             if let decodingError = error as? DecodingError {
-                response.send("Could not decode received JSON: \(decodingError.humanReadableDescription)")
+                response.send("Could not decode received data: \(decodingError.humanReadableDescription)")
             } else {
                 // Linux Swift does not send a DecodingError when the JSON is invalid, instead it sends Error "The operation could not be completed"
-                response.send("Could not decode received JSON.")
+                response.send("Could not decode received data.")
             }
             return nil
         }

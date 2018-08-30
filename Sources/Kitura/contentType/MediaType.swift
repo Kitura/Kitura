@@ -69,35 +69,34 @@ public struct MediaType: CustomStringConvertible, Equatable, Hashable {
     public init? (_ mimeType: String) {
         let mimeComponents = mimeType
             .lowercased()
-            .components(separatedBy: "/")
-        guard let topLevelType = TopLevelType(rawValue: mimeComponents[0]) else {
+            .split(separator: "/", maxSplits: 1)
+        guard let topLevelType = TopLevelType(rawValue: String(mimeComponents[0])) else {
             return nil
         }
         self.topLevelType = topLevelType
         if mimeComponents.indices.contains(1) && !mimeComponents[1].isEmpty {
-            self.subType = mimeComponents[1]
+            self.subType = String(mimeComponents[1])
         } else {
             self.subType = "*"
         }
-        self.description = "\(self.topLevelType)/\(self.subType)"
+        //self.description = "\(self.topLevelType)/\(self.subType)"
+        self.description = self.topLevelType.rawValue.appending("/").appending(self.subType)
         self.hashValue = description.hashValue
     }
     
     /**
-     Initialize a `MediaType` instance from a `KituraNet` `HeadersContainer`. This will extract the media type String from the first section of the "Content-type" header and use this to initialize itself. If the string preceding the first "/" is not a valid `TopLevelType` the initializer will return nil.
+     Initialize a `MediaType` instance from a Content-Type header. This will extract the media type String from the first section of the header and use this to initialize itself. If the string preceding the first "/" is not a valid `TopLevelType` the initializer will return nil.
      ### Usage Example: ###
      ```swift
-     let headers = HeadersContainer()
-     headers.append("Content-Type", value: ["application/json"])
-     let mediaType = MediaType(headers: headers)
+     let mediaType = MediaType(contentTypeHeader: "text/plain; charset=utf-8")
      ```
      */
-    init? (headers: HeadersContainer) {
-        let contentType = headers["Content-Type"]?[0]
-        guard let contentTypeComponents = contentType?.components(separatedBy: ";") else {
-            return nil
+    init? (contentTypeHeader: String) {
+        let mediaType = contentTypeHeader.prefix {
+            char in
+            return char != ";"
         }
-        self.init(contentTypeComponents[0])
+        self.init(String(mediaType))
     }
     
     // MARK: Helper Constructors

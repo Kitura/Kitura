@@ -18,6 +18,7 @@ import KituraNet
 import LoggerAPI
 import Foundation
 import KituraTemplateEngine
+import KituraContracts
 
 // MARK Router
 
@@ -33,6 +34,50 @@ import KituraTemplateEngine
 
 public class Router {
 
+    /**
+     A dictionary of MediaType to BodyEncoder generators.
+     Initalized with `{ return JSONEncoder() }` for "application/json".
+     ### Usage Example: ###
+     The example below replaces the default JSON encoder with a new encoder that has a different date encoding strategy.
+     ```swift
+     let router = Router()
+     let newJSONEncoder: () -> BodyEncoder = {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .secondsSince1970
+        return encoder
+     }
+     router.encoders[.json] = newJSONEncoder
+     ```
+     */
+    public var encoders: [MediaType: () -> BodyEncoder] = [.json: {return JSONEncoder()}]
+    
+    /**
+     The media type to be used by the `RouterResponse` to select a `BodyEncoder` if no Accepts header is set or if the Media type of Accepts header does not match an encoder. Is set to "application/json" by default.
+     ### Usage Example: ###
+     The example below sets the `defaultResponseMediaType` as "application/x-yaml".
+     ```swift
+     let router = Router()
+     router.defaultResponseMediaType = MediaType(type: .application, subtype: "x-yaml")
+     ```
+     */
+    public var defaultResponseMediaType: MediaType = .json
+    
+    /**
+     A dictionary of MediaType to BodyDecoder generators. Includes a JSONDecoder and QueryDecoder by default.
+     ### Usage Example: ###
+     The example below replaces the default JSON decoder with a new decoder that has a different date decoding strategy.
+     ```swift
+     let router = Router()
+     let newJSONDecoder: () -> BodyDecoder = {
+         let decoder = JSONDecoder()
+         decoder.dateEncodingStrategy = .secondsSince1970
+         return decoder
+     }
+     router.decoders[.json] = newJSONDecoder
+     ```
+    */
+    public var decoders: [MediaType: () -> BodyDecoder] = [.json: {return JSONDecoder()}, .urlEncoded: {return QueryDecoder()}]
+    
     /// Contains the list of routing elements
     var elements: [RouterElement] = []
 
@@ -492,11 +537,15 @@ extension Router : ServerDelegate {
     /// - Parameter response: The `ServerResponse` object used to send responses to the
     ///                      HTTP request at the [Kitura-net](http://ibm-swift.github.io/Kitura-net/) API level.
     public func handle(request: ServerRequest, response: ServerResponse) {
-        let routeReq = RouterRequest(request: request)
+        var decoder: (() -> BodyDecoder)?
+        if let contentType = request.headers["Content-Type"]?[0], let mediaType = MediaType(contentTypeHeader: contentType) {
+            decoder = decoders[mediaType]
+        }
+        let routeReq = RouterRequest(request: request, decoder: decoder?())
         //TODO fix the stack
         var routerStack = Stack<Router>()
         routerStack.push(self)
-        let routeResp = RouterResponse(response: response, routerStack: routerStack, request: routeReq)
+        let routeResp = RouterResponse(response: response, routerStack: routerStack, request: routeReq, encoders: encoders, defaultResponseMediaType: defaultResponseMediaType)
 
         process(request: routeReq, response: routeResp) { [weak self, weak routeReq, weak routeResp] () in
             guard let strongSelf = self else {
