@@ -196,6 +196,15 @@ public class BodyParser: RouterMiddleware {
     }
 }
 
+/// The `BodyParserMultiValue` is a subclass of `BodyParser`, which differs in behaviour
+/// when decoding urlencoded parameters with multiple values (such as `&a=1&a=2`).
+///
+/// Whereas `BodyParser` will produce a comma-separated list of values: `["a": "1,2"]`
+/// which may be accessed by `ParsedBody.urlEncoded`, `BodyParserMultiValue` will
+/// produce an array of values: `["a": ["1", "2"]]`, accessed by `ParsedBody.urlEncodedMultiValue`.
+///
+/// This enables you to accept multiple values which may themselves contain commas.
+///
 public class BodyParserMultiValue: BodyParser {
     override class func getParser(contentType: String) -> BodyParserProtocol? {
         if contentType.hasPrefix("application/x-www-form-urlencoded") {
