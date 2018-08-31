@@ -72,6 +72,8 @@ open class StaticFileServer: RouterMiddleware {
         }
     }
 
+    /// The absolute (fully qualified) root serving path for this `StaticFileServer`,
+    /// for example: `/Users/Dave/MyKituraProj/./public`
     public let absoluteRootPath: String
 
     let fileServer: FileServer

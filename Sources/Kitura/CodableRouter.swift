@@ -617,9 +617,10 @@ extension Router {
     }
 }
 
-//
-// Building blocks for Codable routing
-//
+/**
+ * Building blocks for Codable routing, intended for convenience when implementing
+ * extensions to the `Router` that interoperate with `Codable` types.
+ */
 public struct CodableHelpers {
     /**
      * Check if the given request has content type JSON
