@@ -1,26 +1,6 @@
 {
   "warnings": [
-    {
-      "file": "/Users/travis/build/IBM-Swift/Kitura/Sources/Kitura/CodableRouter.swift",
-      "line": 623,
-      "symbol": "CodableHelpers",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/travis/build/IBM-Swift/Kitura/Sources/Kitura/bodyParser/BodyParser.swift",
-      "line": 199,
-      "symbol": "BodyParserMultiValue",
-      "symbol_kind": "source.lang.swift.decl.class",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/travis/build/IBM-Swift/Kitura/Sources/Kitura/staticFileServer/StaticFileServer.swift",
-      "line": 75,
-      "symbol": "StaticFileServer.absoluteRootPath",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    }
+
   ],
   "source_directory": "/Users/travis/build/IBM-Swift/Kitura"
 }
