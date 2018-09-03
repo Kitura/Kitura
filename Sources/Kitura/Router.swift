@@ -33,50 +33,6 @@ import KituraContracts
 ///
 
 public class Router {
-
-    /**
-     A dictionary of MediaType to BodyEncoder generators.
-     Initalized with `{ return JSONEncoder() }` for "application/json".
-     ### Usage Example: ###
-     The example below replaces the default JSON encoder with a new encoder that has a different date encoding strategy.
-     ```swift
-     let router = Router()
-     let newJSONEncoder: () -> BodyEncoder = {
-        let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = .secondsSince1970
-        return encoder
-     }
-     router.encoders[.json] = newJSONEncoder
-     ```
-     */
-    public var encoders: [MediaType: () -> BodyEncoder] = [.json: {return JSONEncoder()}]
-    
-    /**
-     The media type to be used by the `RouterResponse` to select a `BodyEncoder` if no Accepts header is set or if the Media type of Accepts header does not match an encoder. Is set to "application/json" by default.
-     ### Usage Example: ###
-     The example below sets the `defaultResponseMediaType` as "application/x-yaml".
-     ```swift
-     let router = Router()
-     router.defaultResponseMediaType = MediaType(type: .application, subtype: "x-yaml")
-     ```
-     */
-    public var defaultResponseMediaType: MediaType = .json
-    
-    /**
-     A dictionary of MediaType to BodyDecoder generators. Includes a JSONDecoder and QueryDecoder by default.
-     ### Usage Example: ###
-     The example below replaces the default JSON decoder with a new decoder that has a different date decoding strategy.
-     ```swift
-     let router = Router()
-     let newJSONDecoder: () -> BodyDecoder = {
-         let decoder = JSONDecoder()
-         decoder.dateEncodingStrategy = .secondsSince1970
-         return decoder
-     }
-     router.decoders[.json] = newJSONDecoder
-     ```
-    */
-    public var decoders: [MediaType: () -> BodyDecoder] = [.json: {return JSONDecoder()}, .urlEncoded: {return QueryDecoder()}]
     
     /// Contains the list of routing elements
     var elements: [RouterElement] = []
@@ -86,23 +42,6 @@ public class Router {
 
     /// Default template engine extension
     private var defaultEngineFileExtension: String?
-
-    /// The root directory where template files should be placed in order to be automatically handed
-    /// over to an appropriate templating engine for content generation. The directory should sit at the
-    /// same level as the project's "Sources" directory. Defaults to "./Views/".
-    /// ### Usage Example: ###
-    /// The example below changes the directory where template files should be placed to be "./myViews/"
-    /// ```swift
-    /// let router = Router()
-    /// router.viewsPath = "./myViews/"
-    /// ```
-    public var viewsPath = "./Views/" {
-        didSet {
-            for (_, templateEngine) in templateEngines {
-                setRootPaths(forTemplateEngine: templateEngine)
-            }
-        }
-    }
 
     /// Prefix for special page resources
     fileprivate let kituraResourcePrefix = "/@@Kitura-router@@/"
@@ -118,20 +57,8 @@ public class Router {
     /// and used to handle request's url parameters.
     fileprivate var parameterHandlers = [String : [RouterParameterHandler]]()
 
-    /// Contains the structures needed for swagger document generation
-    var swagger: SwaggerDocument
-
-    /// Returns the current in-memory representation of Codable routes as a
-    /// Swagger document in JSON format, or nil if the document cannot be
-    /// generated.
-    public var swaggerJSON: String? {
-        do {
-            return try self.swagger.serializeAPI(format: .json)
-        } catch {
-            return nil
-        }
-    }
-
+    // MARK: Initializer
+    
     /// Initialize a `Router` instance.
     /// ### Usage Example: ###
     /// ```swift
@@ -185,8 +112,89 @@ public class Router {
         return self
     }
 
+    // MARK: Swagger
+    
+    /// Contains the structures needed for swagger document generation
+    var swagger: SwaggerDocument
+    
+    /// Returns the current in-memory representation of Codable routes as a
+    /// Swagger document in JSON format, or nil if the document cannot be
+    /// generated.
+    public var swaggerJSON: String? {
+        do {
+            return try self.swagger.serializeAPI(format: .json)
+        } catch {
+            return nil
+        }
+    }
+    
+    // MARK: Custom encoder/decoder
+    
+    /**
+     A dictionary of `MediaType` to `BodyEncoder` generators.
+     Initalized with `{ return JSONEncoder() }` for "application/json".
+     When a Codable object is sent as a response, an encoder will be generated based on the "Accepts" header
+     or using the `defaultResponseMediaType` if no matching encoder is found.
+     ### Usage Example: ###
+     The example below replaces the default JSON encoder with a new encoder that has a different date encoding strategy.
+     ```swift
+     let router = Router()
+     let newJSONEncoder: () -> BodyEncoder = {
+         let encoder = JSONEncoder()
+         encoder.dateEncodingStrategy = .secondsSince1970
+         return encoder
+     }
+     router.encoders[.json] = newJSONEncoder
+     ```
+     */
+    public var encoders: [MediaType: () -> BodyEncoder] = [.json: {return JSONEncoder()}]
+    
+    /**
+     The media type to be used by the `RouterResponse` to select a `BodyEncoder` if no Accepts header is set or if the Media type of Accepts header does not match an encoder. Is set to "application/json" by default.
+     ### Usage Example: ###
+     The example below sets the `defaultResponseMediaType` as "application/x-yaml".
+     ```swift
+     let router = Router()
+     router.defaultResponseMediaType = MediaType(type: .application, subtype: "x-yaml")
+     ```
+     */
+    public var defaultResponseMediaType: MediaType = .json
+    
+    /**
+     A dictionary of `MediaType` to `BodyDecoder` generators. Includes `JSONDecoder` generator for "application/json" and `QueryDecoder` for "application/x-www-form-urlencoded" by default. When a Codable object is read from the body of a request a decoder will be generated based on the "Content-Type" header.
+     ### Usage Example: ###
+     The example below replaces the default JSON decoder with a new decoder that has a different date encoding strategy.
+     ```swift
+     let router = Router()
+     let newJSONDecoder: () -> BodyDecoder = {
+         let decoder = JSONDecoder()
+         decoder.dateDecodingStrategy = .secondsSince1970
+         return decoder
+     }
+     router.decoders[.json] = newJSONDecoder
+     ```
+     */
+    public var decoders: [MediaType: () -> BodyDecoder] = [.json: {return JSONDecoder()}, .urlEncoded: {return QueryDecoder()}]
+    
     // MARK: Template Engine
 
+    /// The root directory where template files should be placed in order to be automatically handed
+    /// over to an appropriate templating engine for content generation. The directory should sit at the
+    /// same level as the project's "Sources" directory. Defaults to "./Views/".
+    /// ### Usage Example: ###
+    /// The example below changes the directory where template files should be placed to be "./myViews/"
+    /// ```swift
+    /// let router = Router()
+    /// router.viewsPath = "./myViews/"
+    /// ```
+    public var viewsPath = "./Views/" {
+        didSet {
+            for (_, templateEngine) in templateEngines {
+                setRootPaths(forTemplateEngine: templateEngine)
+            }
+        }
+    }
+    
     /// Register a template engine to a given router instance.
     /// A template engine allows rendering of documents using static templates.
     ///
