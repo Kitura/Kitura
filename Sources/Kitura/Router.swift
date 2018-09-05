@@ -132,7 +132,7 @@ public class Router {
     
     /**
      A dictionary of `MediaType` to `BodyEncoder` generators.
-     Initalized with `{ return JSONEncoder() }` for "application/json".
+     By default this includes `JSONEncoder` generator for "application/json".
      When a Codable object is sent as a response, an encoder will be generated based on the "Accepts" header
      or using the `defaultResponseMediaType` if no matching encoder is found.
      ### Usage Example: ###
@@ -150,7 +150,9 @@ public class Router {
     public var encoders: [MediaType: () -> BodyEncoder] = [.json: {return JSONEncoder()}]
     
     /**
-     The media type to be used by the `RouterResponse` to select a `BodyEncoder` if no Accepts header is set or if the Media type of Accepts header does not match an encoder. Is set to "application/json" by default.
+     if the request's Accept header does not match an encoder,
+     this media type will be used by the `RouterResponse` to select a `BodyEncoder`.
+     By default, this is set to "application/json".
      ### Usage Example: ###
      The example below sets the `defaultResponseMediaType` as "application/x-yaml".
      ```swift
@@ -161,7 +163,7 @@ public class Router {
     public var defaultResponseMediaType: MediaType = .json
     
     /**
-     A dictionary of `MediaType` to `BodyDecoder` generators. Includes `JSONDecoder` generator for "application/json" and `QueryDecoder` for "application/x-www-form-urlencoded" by default. When a Codable object is read from the body of a request a decoder will be generated based on the "Content-Type" header.
+     A dictionary of `MediaType` to `BodyDecoder` generators. By default this includes `JSONDecoder` generator for "application/json" and `QueryDecoder` for "application/x-www-form-urlencoded". When a Codable object is read from the body of a request a decoder will be generated based on the "Content-Type" header.
      ### Usage Example: ###
      The example below replaces the default JSON decoder with a new decoder that has a different date encoding strategy.
      ```swift

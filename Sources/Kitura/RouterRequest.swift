@@ -28,7 +28,7 @@ import KituraContracts
  It can also perform content negotiation based on the request’s "Accept" header.
  ### Usage Example: ###
  In this example "request" is an instance of the class `RouterRequest`.
- It is used by the server to read the Body of the request as a String and send it back to the user.
+ It is used by the server to read the body of the request as a String and send it back to the user.
  ```swift
  let router = Router()
  router.post("/") { request, response, next in
@@ -219,7 +219,8 @@ public class RouterRequest {
     }
     
     /**
-     Read the body of the request as a Codable object using a `BodyDecoder` that was selected by the `Router` based on the Content-Type header.
+     Read the body of the request as a Codable object using a `BodyDecoder`
+     that was selected based on the Content-Type header.
      Defaults to `JSONDecoder()` if no decoder is provided.
      ### Usage Example: ###
      The example below defines a `User` struct and then decodes a `User` from the body of a request.
