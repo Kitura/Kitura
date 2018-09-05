@@ -23,17 +23,17 @@ import Dispatch
 // MARK Kitura
 
 /**
- A set of helper functions to make it easier to create, start, and stop Kitura based servers.
+ A set of class functions to create, start, and stop Kitura based servers.
  ### Usage Example: ###
- In this example, a function called run is created, inside a server `Application.swift` file. This will create a Kitura server on the specified port, using the given router and run this created server. This `Application.run` function would then be called in your `main.swift` file as a non-returning function to initilize your Kitura server.
+ In this example, a `Router` that sends "Hello world" is initilized. The `Kitura` class then adds a server on port 8080 with that router and is run. The route can then be accessed by viewing http://localhost:8080.
  ```swift
  let router = Router()
- let port: Int = 8080
- public func run() throws{
- ...
-    Kitura.addHTTPServer(onPort: port, with: router)
-    Kitura.run()
+ router.get("/") { request, response, next in
+     response.send("Hello world")
+     next()
  }
+ Kitura.addHTTPServer(onPort: 8080, with: router)
+ Kitura.run()
  ```
  */
 public class Kitura {
@@ -45,7 +45,8 @@ public class Kitura {
     ///
     ///### Usage Example: ###
     ///```swift
-    /// Kitura.addHTTPServer(onPort: port, with: router)
+    /// let router = Router()
+    /// Kitura.addHTTPServer(onPort: 8080, with: router)
     ///```
     /// - Parameter onPort: The port to listen on.
     /// - Parameter with: The `ServerDelegate` to use.
@@ -75,7 +76,8 @@ public class Kitura {
     ///
     ///### Usage Example: ###
     ///```swift
-    /// Kitura.addFastCGIServer(onPort: port, with: router)
+    /// let router = Router()
+    /// Kitura.addFastCGIServer(onPort: 8080, with: router)
     ///```
     /// - Parameter onPort: The port to listen on.
     /// - Parameter with: The `ServerDelegate` to use.
@@ -97,6 +99,8 @@ public class Kitura {
     ///### Usage Example: ###
     /// Make all registered servers start listening on their port.
     ///```swift
+    /// let router = Router()
+    /// Kitura.addHTTPServer(onPort: 8080, with: router)
     /// Kitura.run()
     ///```
     /// - note: This function never returns - it should be the last call in your `main.swift` file.
@@ -111,6 +115,8 @@ public class Kitura {
     ///### Usage Example: ###
     /// Make all registered servers start listening on their port.
     ///```swift
+    /// let router = Router()
+    /// Kitura.addHTTPServer(onPort: 8080, with: router)
     /// Kitura.start()
     ///```
     public class func start() {
@@ -137,6 +143,9 @@ public class Kitura {
     ///### Usage Example: ###
     /// Make all registered servers stop listening on their port.
     ///```swift
+    /// let router = Router()
+    /// Kitura.addHTTPServer(onPort: 8080, with: router)
+    /// Kitura.start()
     /// Kitura.stop()
     ///```
     ///

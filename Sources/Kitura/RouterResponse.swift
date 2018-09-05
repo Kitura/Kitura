@@ -23,9 +23,25 @@ import KituraContracts
 
 // MARK: RouterResponse
 
-/// Router response that the server sends as a reply to `RouterRequest`.
+/**
+ The RouterResponse class is used to define and work with the response that will be sent by the `Router`.
+ It contains and allows access to the HTTP response code (e.g. 404 notfound), the HTTP `Headers`
+ and the body of the response.
+ It can also render template files, using a template engine registered to the router.
+ ### Usage Example: ###
+ In this example "response" is an instance of the class `RouterResponse`. The content type and status code of the response are set. The String "Hello world" is added to the body and the response is sent by calling end().
+ ```swift
+ router.get("/example") { _, response, next in
+     response.headers["Content-Type"] = "text/html"
+     response.status(.OK)
+     try response.send("Hello world").end()
+ }
+ ```
+ */
 public class RouterResponse {
 
+    // MARK: Properties
+    
     struct State {
         weak var response: RouterResponse?
 
@@ -157,6 +173,8 @@ public class RouterResponse {
         }
     }
 
+    // MARK: End
+    
     /// End the response.
     ///
     /// - Throws: Socket.Error if an error occurred while writing to a socket.
@@ -248,131 +266,8 @@ public class RouterResponse {
         }
         return (bestMediaType, bestEncoder())
     }
-    
-    /// Send a string.
-    ///
-    /// - Parameter str: the string to send.
-    /// - Returns: this RouterResponse.
-    @discardableResult
-    public func send(_ str: String) -> RouterResponse {
-        guard !state.invokedEnd else {
-            Log.warning("RouterResponse send(str:) invoked after end() for \(self.request.urlURL)")
-            return self
-        }
-        let utf8Length = str.lengthOfBytes(using: .utf8)
-        let bufferLength = utf8Length + 1  // Add room for the NULL terminator
-        var utf8: [CChar] = [CChar](repeating: 0, count: bufferLength)
-        if str.getCString(&utf8, maxLength: bufferLength, encoding: .utf8) {
-            let rawBytes = UnsafeRawPointer(UnsafePointer(utf8))
-            buffer.append(bytes: rawBytes.assumingMemoryBound(to: UInt8.self), length: utf8Length)
-            state.invokedSend = true
-        }
-        return self
-    }
-    
-    /// Send an optional string.
-    ///
-    /// - Parameter str: the string to send.
-    /// - Returns: this RouterResponse.
-    @discardableResult
-    public func send(_ str: String?) -> RouterResponse {
-        guard !state.invokedEnd else {
-            Log.warning("RouterResponse send(str:) invoked after end() for \(self.request.urlURL)")
-            return self
-        }
-        guard let str = str else {
-            Log.warning("RouterResponse send(str:) invoked with a nil value")
-            return send("")
-        }
-        return send(str)
-    }
 
-    /// Send data.
-    ///
-    /// - Parameter data: the data to send.
-    /// - Returns: this RouterResponse.
-    @discardableResult
-    public func send(data: Data) -> RouterResponse {
-        guard !state.invokedEnd else {
-            Log.warning("RouterResponse send(data:) invoked after end() for \(self.request.urlURL)")
-            return self
-        }
-        buffer.append(data: data)
-        state.invokedSend = true
-        return self
-    }
-
-    /// Send a file.
-    ///
-    /// - Parameter fileName: the name of the file to send.
-    /// - Throws: An error in the Cocoa domain, if the file cannot be read.
-    /// - Returns: this RouterResponse.
-    ///
-    /// - Note: Sets the Content-Type header based on the "extension" of the file.
-    ///       If the fileName is relative, it is relative to the current directory.
-    @discardableResult
-    public func send(fileName: String) throws -> RouterResponse {
-        guard !state.invokedEnd else {
-            Log.warning("RouterResponse send(fileName:) invoked after end() for \(self.request.urlURL)")
-            return self
-        }
-        let data = try Data(contentsOf: URL(fileURLWithPath: fileName))
-
-        let contentType = ContentType.sharedInstance.getContentType(forFileName: fileName)
-        if  let contentType = contentType {
-            headers["Content-Type"] = contentType
-        }
-
-        send(data: data)
-
-        return self
-    }
-
-    typealias JSONSerializationType = JSONSerialization
-
-    /// Send JSON.
-    ///
-    /// - Parameter json: The array to send in JSON format.
-    /// - Returns: this RouterResponse.
-    @discardableResult
-    public func send(json: [Any]) -> RouterResponse {
-        guard !state.invokedEnd else {
-            Log.warning("RouterResponse send(json:) invoked after end() for \(self.request.urlURL)")
-            return self
-        }
-
-        do {
-            let jsonData = try JSONSerializationType.data(withJSONObject: json, options:.prettyPrinted)
-            headers.setType("json")
-            send(data: jsonData)
-        } catch {
-            Log.warning("Failed to convert JSON for sending: \(error.localizedDescription)")
-        }
-        
-        return self
-    }
-
-    /// Send JSON.
-    ///
-    /// - Parameter json: The Dictionary to send in JSON format as a hash.
-    /// - Returns: this RouterResponse.
-    @discardableResult
-    public func send(json: [String: Any]) -> RouterResponse {
-        guard !state.invokedEnd else {
-            Log.warning("RouterResponse send(json:) invoked after end() for \(self.request.urlURL)")
-            return self
-        }
-
-        do {
-            let jsonData = try JSONSerializationType.data(withJSONObject: json, options:.prettyPrinted)
-            headers.setType("json")
-            send(data: jsonData)
-        } catch {
-            Log.warning("Failed to convert JSON for sending: \(error.localizedDescription)")
-        }
-
-        return self
-    }
+    // MARK: Status Code
 
     /// Set the status code.
     ///
@@ -384,20 +279,8 @@ public class RouterResponse {
         return self
     }
 
-    /// Send the HTTP status code.
-    ///
-    /// - Parameter status: the HTTP status code.
-    /// - Returns: this RouterResponse.
-    public func send(status: HTTPStatusCode) -> RouterResponse {
-        guard !state.invokedEnd else {
-            Log.warning("RouterResponse send(status:) invoked after end() for \(self.request.urlURL)")
-            return self
-        }
-        self.status(status)
-        send(HTTPURLResponse.localizedString(forStatusCode: status.rawValue))
-        return self
-    }
-
+    // MARK: Redirect
+    
     /// Redirect to path with status code.
     ///
     /// - Parameter: the path for the redirect.
@@ -411,6 +294,8 @@ public class RouterResponse {
         return self
     }
 
+    // MARK: Render
+    
     // influenced by http://expressjs.com/en/4x/api.html#app.render
     /// Render a resource using Router's template engine.
     ///
@@ -495,19 +380,8 @@ public class RouterResponse {
     func popRouter() {
         let _ = routerStack.pop()
     }
-
-    /// Set headers and attach file for downloading.
-    ///
-    /// - Parameter download: the file to download.
-    /// - Throws: An error in the Cocoa domain, if the file cannot be read.
-    public func send(download: String) throws {
-        guard !state.invokedEnd else {
-            Log.warning("RouterResponse send(download:) invoked after end() for \(self.request.urlURL)")
-            return
-        }
-        try send(fileName: StaticFileServer.ResourcePathHandler.getAbsolutePath(for: download))
-        headers.addAttachment(for: download)
-    }
+    
+    // MARK: Set Properties
 
     /// Set the pre-flush lifecycle handler and return the previous one.
     ///
@@ -529,6 +403,8 @@ public class RouterResponse {
         return oldWrittenDataFilter
     }
 
+    // MARK: Content Negotiation
+    
     /// Perform content-negotiation on the Accept HTTP header on the request, when present.
     ///
     /// Uses request.accepts() to select a handler for the request, based on the acceptable types ordered by their
@@ -549,10 +425,169 @@ public class RouterResponse {
             try status(.notAcceptable).end()
         }
     }
+    
+    // MARK: Send String
+    
+    /// Send a string.
+    ///
+    /// - Parameter str: the string to send.
+    /// - Returns: this RouterResponse.
+    @discardableResult
+    public func send(_ str: String) -> RouterResponse {
+        guard !state.invokedEnd else {
+            Log.warning("RouterResponse send(str:) invoked after end() for \(self.request.urlURL)")
+            return self
+        }
+        let utf8Length = str.lengthOfBytes(using: .utf8)
+        let bufferLength = utf8Length + 1  // Add room for the NULL terminator
+        var utf8: [CChar] = [CChar](repeating: 0, count: bufferLength)
+        if str.getCString(&utf8, maxLength: bufferLength, encoding: .utf8) {
+            let rawBytes = UnsafeRawPointer(UnsafePointer(utf8))
+            buffer.append(bytes: rawBytes.assumingMemoryBound(to: UInt8.self), length: utf8Length)
+            state.invokedSend = true
+        }
+        return self
+    }
+    
+    /// Send an optional string.
+    ///
+    /// - Parameter str: the string to send.
+    /// - Returns: this RouterResponse.
+    @discardableResult
+    public func send(_ str: String?) -> RouterResponse {
+        guard !state.invokedEnd else {
+            Log.warning("RouterResponse send(str:) invoked after end() for \(self.request.urlURL)")
+            return self
+        }
+        guard let str = str else {
+            Log.warning("RouterResponse send(str:) invoked with a nil value")
+            return send("")
+        }
+        return send(str)
+    }
+    
+    /// Send the HTTP status code.
+    ///
+    /// - Parameter status: the HTTP status code.
+    /// - Returns: this RouterResponse.
+    public func send(status: HTTPStatusCode) -> RouterResponse {
+        guard !state.invokedEnd else {
+            Log.warning("RouterResponse send(status:) invoked after end() for \(self.request.urlURL)")
+            return self
+        }
+        self.status(status)
+        send(HTTPURLResponse.localizedString(forStatusCode: status.rawValue))
+        return self
+    }
+    
+    // MARK: Send Data
+    
+    /// Send data.
+    ///
+    /// - Parameter data: the data to send.
+    /// - Returns: this RouterResponse.
+    @discardableResult
+    public func send(data: Data) -> RouterResponse {
+        guard !state.invokedEnd else {
+            Log.warning("RouterResponse send(data:) invoked after end() for \(self.request.urlURL)")
+            return self
+        }
+        buffer.append(data: data)
+        state.invokedSend = true
+        return self
+    }
+    
+    /// Send a file.
+    ///
+    /// - Parameter fileName: the name of the file to send.
+    /// - Throws: An error in the Cocoa domain, if the file cannot be read.
+    /// - Returns: this RouterResponse.
+    ///
+    /// - Note: Sets the Content-Type header based on the "extension" of the file.
+    ///       If the fileName is relative, it is relative to the current directory.
+    @discardableResult
+    public func send(fileName: String) throws -> RouterResponse {
+        guard !state.invokedEnd else {
+            Log.warning("RouterResponse send(fileName:) invoked after end() for \(self.request.urlURL)")
+            return self
+        }
+        let data = try Data(contentsOf: URL(fileURLWithPath: fileName))
+        
+        let contentType = ContentType.sharedInstance.getContentType(forFileName: fileName)
+        if  let contentType = contentType {
+            headers["Content-Type"] = contentType
+        }
+        
+        send(data: data)
+        
+        return self
+    }
+    
+    /// Set headers and attach file for downloading.
+    ///
+    /// - Parameter download: the file to download.
+    /// - Throws: An error in the Cocoa domain, if the file cannot be read.
+    public func send(download: String) throws {
+        guard !state.invokedEnd else {
+            Log.warning("RouterResponse send(download:) invoked after end() for \(self.request.urlURL)")
+            return
+        }
+        try send(fileName: StaticFileServer.ResourcePathHandler.getAbsolutePath(for: download))
+        headers.addAttachment(for: download)
+    }
+    
+    typealias JSONSerializationType = JSONSerialization
+    
+    /// Send JSON.
+    ///
+    /// - Parameter json: The array to send in JSON format.
+    /// - Returns: this RouterResponse.
+    @discardableResult
+    public func send(json: [Any]) -> RouterResponse {
+        guard !state.invokedEnd else {
+            Log.warning("RouterResponse send(json:) invoked after end() for \(self.request.urlURL)")
+            return self
+        }
+        
+        do {
+            let jsonData = try JSONSerializationType.data(withJSONObject: json, options:.prettyPrinted)
+            headers.setType("json")
+            send(data: jsonData)
+        } catch {
+            Log.warning("Failed to convert JSON for sending: \(error.localizedDescription)")
+        }
+        
+        return self
+    }
+    
+    /// Send JSON.
+    ///
+    /// - Parameter json: The Dictionary to send in JSON format as a hash.
+    /// - Returns: this RouterResponse.
+    @discardableResult
+    public func send(json: [String: Any]) -> RouterResponse {
+        guard !state.invokedEnd else {
+            Log.warning("RouterResponse send(json:) invoked after end() for \(self.request.urlURL)")
+            return self
+        }
+        
+        do {
+            let jsonData = try JSONSerializationType.data(withJSONObject: json, options:.prettyPrinted)
+            headers.setType("json")
+            send(data: jsonData)
+        } catch {
+            Log.warning("Failed to convert JSON for sending: \(error.localizedDescription)")
+        }
+        
+        return self
+    }
+
 }
 
 extension RouterResponse {
 
+    // MARK: Send Encodable
+    
     /// Send Encodable Object.
     ///
     /// - Parameter obj: the Codable object to send.
