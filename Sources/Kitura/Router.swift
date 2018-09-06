@@ -132,7 +132,7 @@ public class Router {
     
     /**
      A dictionary of `MediaType` to `BodyEncoder` generators.
-     By default this includes `JSONEncoder` generator for "application/json".
+     By default this includes an entry mapping the "application/json" media type to a JSONEncoder generator.
      When a Codable object is sent as a response, an encoder will be generated based on the "Accepts" header
      or using the `defaultResponseMediaType` if no matching encoder is found.
      ### Usage Example: ###
@@ -163,7 +163,9 @@ public class Router {
     public var defaultResponseMediaType: MediaType = .json
     
     /**
-     A dictionary of `MediaType` to `BodyDecoder` generators. By default this includes `JSONDecoder` generator for "application/json" and `QueryDecoder` for "application/x-www-form-urlencoded". When a Codable object is read from the body of a request a decoder will be generated based on the "Content-Type" header.
+     A dictionary of `MediaType` to `BodyDecoder` generators.
+     By default this includes an entry mapping the "application/json" media type to a JSONDecoder generator and an entry mapping "application/x-www-form-urlencoded" media type to `QueryDecoder`
+     When a Codable object is read from the body of a request, a decoder will be generated based on the "Content-Type" header.
      ### Usage Example: ###
      The example below replaces the default JSON decoder with a new decoder that has a different date encoding strategy.
      ```swift
