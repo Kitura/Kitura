@@ -38,6 +38,8 @@ import Dispatch
  */
 public class Kitura {
 
+    // MARK: Create Server
+    
     /// Add an HTTPServer on a port with a delegate.
     ///
     /// The server is only registered with the framework, it does not start listening
@@ -94,6 +96,8 @@ public class Kitura {
         return server
     }
 
+    // MARK: Start Servers
+    
     /// Start the Kitura framework.
     ///
     ///### Usage Example: ###
@@ -138,6 +142,8 @@ public class Kitura {
         }
     }
 
+    // MARK: Stop Servers
+    
     /// Stop all registered servers.
     ///
     ///### Usage Example: ###

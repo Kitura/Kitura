@@ -20,6 +20,8 @@ import Foundation
 
 // MARK RouteRegex
 
+/// :nodoc:
+/// This class has no public functions and in only used internally within RouterElement.
 /// A set of helper functions for router path matching using regular expression.
 public class RouteRegex {
     /// A shared instance of RouteRegex.
