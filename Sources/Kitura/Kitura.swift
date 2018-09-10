@@ -25,7 +25,7 @@ import Dispatch
 /**
  A set of class functions to create, start, and stop Kitura based servers.
  ### Usage Example: ###
- In this example, a `Router` that sends "Hello world" is initilized. The `Kitura` class then adds a server on port 8080 with that router and is run. The route can then be accessed by viewing http://localhost:8080.
+ In this example, a `Router` that sends "Hello world" is initialized. The `Kitura` class then adds a server on port 8080 with that router and is run. The route can then be accessed by viewing http://localhost:8080.
  ```swift
  let router = Router()
  router.get("/") { request, response, next in

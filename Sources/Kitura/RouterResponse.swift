@@ -25,11 +25,11 @@ import KituraContracts
 
 /**
  The RouterResponse class is used to define and work with the response that will be sent by the `Router`.
- It contains and allows access to the HTTP response code (e.g. 404 notfound), the HTTP `Headers`
+ It contains and allows access to the HTTP response code (e.g. 404 "Not Found"), the HTTP `Headers`
  and the body of the response.
  It can also render template files, using a template engine registered to the router.
  ### Usage Example: ###
- In this example "response" is an instance of the class `RouterResponse`. The content type and status code of the response are set. The String "Hello world" is added to the body and the response is sent by calling end().
+ In this example "response" is an instance of the class `RouterResponse`. The content type and status code of the response are set. The String "Hello world" is added to the body and the response is sent by calling `end()`.
  ```swift
  router.get("/example") { _, response, next in
      response.headers["Content-Type"] = "text/html"
@@ -271,8 +271,8 @@ public class RouterResponse {
 
     /// Set the status code.
     ///
-    /// - Parameter status: the HTTP status code object.
-    /// - Returns: this RouterResponse.
+    /// - Parameter status: The HTTP status code object.
+    /// - Returns: This RouterResponse.
     @discardableResult
     public func status(_ status: HTTPStatusCode) -> RouterResponse {
         response.statusCode = status
@@ -283,10 +283,10 @@ public class RouterResponse {
     
     /// Redirect to path with status code.
     ///
-    /// - Parameter: the path for the redirect.
-    /// - Parameter: the status code for the redirect.
+    /// - Parameter: The path for the redirect.
+    /// - Parameter: TThe status code for the redirect.
     /// - Throws: Socket.Error if an error occurred while writing to a socket.
-    /// - Returns: this RouterResponse.
+    /// - Returns: This RouterResponse.
     @discardableResult
     public func redirect(_ path: String, status: HTTPStatusCode = .movedTemporarily) throws -> RouterResponse {
         headers.setLocation(path)
@@ -299,11 +299,11 @@ public class RouterResponse {
     // influenced by http://expressjs.com/en/4x/api.html#app.render
     /// Render a resource using Router's template engine.
     ///
-    /// - Parameter resource: the resource name without extension.
-    /// - Parameter context: a dictionary of local variables of the resource.
-    /// - Parameter options: rendering options, specific per template engine
+    /// - Parameter resource: The resource name without extension.
+    /// - Parameter context: A dictionary of local variables of the resource.
+    /// - Parameter options: Rendering options, specific per template engine
     /// - Throws: TemplatingError if no file extension was specified or there is no template engine defined for the extension.
-    /// - Returns: this RouterResponse.
+    /// - Returns: This RouterResponse.
     @discardableResult
     public func render(_ resource: String, context: [String:Any],
                        options: RenderingOptions = NullRenderingOptions()) throws -> RouterResponse {
@@ -316,13 +316,13 @@ public class RouterResponse {
     
     /// Render a resource using Router's template engine.
     ///
-    /// - Parameter resource: the resource name without extension.
-    /// - Parameter with: a value that conforms to Encodable that is used to generate the content.
+    /// - Parameter resource: The resource name without extension.
+    /// - Parameter with: A value that conforms to Encodable that is used to generate the content.
     /// - Parameter forKey: A value used to match the Encodable value to the correct variable in a template file.
     ///                                 The `forKey` value should match the desired variable in the template file.
-    /// - Parameter options: rendering options, specific per template engine
+    /// - Parameter options: Rendering options, specific per template engine
     /// - Throws: TemplatingError if no file extension was specified or there is no template engine defined for the extension.
-    /// - Returns: this RouterResponse.
+    /// - Returns: This RouterResponse.
     @discardableResult
     public func render<T: Encodable>(_ resource: String, with value: T, forKey key: String? = nil,
                        options: RenderingOptions = NullRenderingOptions()) throws -> RouterResponse {
@@ -337,13 +337,13 @@ public class RouterResponse {
     
     /// Render a resource using Router's template engine.
     ///
-    /// - Parameter resource: the resource name without extension.
-    /// - Parameter with: an array of tuples of type (Identifier, Encodable). The Encodable values are used to generate the content.
+    /// - Parameter resource: The resource name without extension.
+    /// - Parameter with: An array of tuples of type (Identifier, Encodable). The Encodable values are used to generate the content.
     /// - Parameter forKey: A value used to match the Encodable values to the correct variable in a template file.
     ///                                 The `forKey` value should match the desired variable in the template file.
-    /// - Parameter options: rendering options, specific per template engine
+    /// - Parameter options: Rendering options, specific per template engine
     /// - Throws: TemplatingError if no file extension was specified or there is no template engine defined for the extension.
-    /// - Returns: this RouterResponse.
+    /// - Returns: This RouterResponse.
     @discardableResult
     public func render<I: Identifier, T: Encodable>(_ resource: String, with values: [(I, T)], forKey key: String,
                                    options: RenderingOptions = NullRenderingOptions()) throws -> RouterResponse {
@@ -412,7 +412,7 @@ public class RouterResponse {
     /// the server invokes the default callback if exists, or responds with 406 “Not Acceptable”.
     /// The Content-Type response header is set when a callback is selected.
     ///
-    /// - Parameter callbacks: a dictionary that maps content types to handlers.
+    /// - Parameter callbacks: A dictionary that maps content types to handlers.
     /// - Throws: Socket.Error if an error occurred while writing to a socket.
     public func format(callbacks: [String : ((RouterRequest, RouterResponse) -> Void)]) throws {
         let callbackTypes = Array(callbacks.keys)
@@ -430,8 +430,8 @@ public class RouterResponse {
     
     /// Send a string.
     ///
-    /// - Parameter str: the string to send.
-    /// - Returns: this RouterResponse.
+    /// - Parameter str: The string to send.
+    /// - Returns: This RouterResponse.
     @discardableResult
     public func send(_ str: String) -> RouterResponse {
         guard !state.invokedEnd else {
@@ -451,8 +451,8 @@ public class RouterResponse {
     
     /// Send an optional string.
     ///
-    /// - Parameter str: the string to send.
-    /// - Returns: this RouterResponse.
+    /// - Parameter str: The string to send.
+    /// - Returns: This RouterResponse.
     @discardableResult
     public func send(_ str: String?) -> RouterResponse {
         guard !state.invokedEnd else {
@@ -468,8 +468,8 @@ public class RouterResponse {
     
     /// Send the HTTP status code.
     ///
-    /// - Parameter status: the HTTP status code.
-    /// - Returns: this RouterResponse.
+    /// - Parameter status: The HTTP status code.
+    /// - Returns: This RouterResponse.
     public func send(status: HTTPStatusCode) -> RouterResponse {
         guard !state.invokedEnd else {
             Log.warning("RouterResponse send(status:) invoked after end() for \(self.request.urlURL)")
@@ -484,8 +484,8 @@ public class RouterResponse {
     
     /// Send data.
     ///
-    /// - Parameter data: the data to send.
-    /// - Returns: this RouterResponse.
+    /// - Parameter data: The data to send.
+    /// - Returns: This RouterResponse.
     @discardableResult
     public func send(data: Data) -> RouterResponse {
         guard !state.invokedEnd else {
@@ -499,9 +499,9 @@ public class RouterResponse {
     
     /// Send a file.
     ///
-    /// - Parameter fileName: the name of the file to send.
+    /// - Parameter fileName: The name of the file to send.
     /// - Throws: An error in the Cocoa domain, if the file cannot be read.
-    /// - Returns: this RouterResponse.
+    /// - Returns: This RouterResponse.
     ///
     /// - Note: Sets the Content-Type header based on the "extension" of the file.
     ///       If the fileName is relative, it is relative to the current directory.
@@ -525,7 +525,7 @@ public class RouterResponse {
     
     /// Set headers and attach file for downloading.
     ///
-    /// - Parameter download: the file to download.
+    /// - Parameter download: The file to download.
     /// - Throws: An error in the Cocoa domain, if the file cannot be read.
     public func send(download: String) throws {
         guard !state.invokedEnd else {
@@ -541,7 +541,7 @@ public class RouterResponse {
     /// Send JSON.
     ///
     /// - Parameter json: The array to send in JSON format.
-    /// - Returns: this RouterResponse.
+    /// - Returns: This RouterResponse.
     @discardableResult
     public func send(json: [Any]) -> RouterResponse {
         guard !state.invokedEnd else {
@@ -563,7 +563,7 @@ public class RouterResponse {
     /// Send JSON.
     ///
     /// - Parameter json: The Dictionary to send in JSON format as a hash.
-    /// - Returns: this RouterResponse.
+    /// - Returns: This RouterResponse.
     @discardableResult
     public func send(json: [String: Any]) -> RouterResponse {
         guard !state.invokedEnd else {
@@ -590,8 +590,8 @@ extension RouterResponse {
     
     /// Send Encodable Object.
     ///
-    /// - Parameter obj: the Codable object to send.
-    /// - Returns: this RouterResponse.
+    /// - Parameter obj: The Codable object to send.
+    /// - Returns: This RouterResponse.
     @discardableResult
     public func send<T : Encodable>(_ obj: T) -> RouterResponse {
         guard !state.invokedEnd else {
@@ -612,8 +612,8 @@ extension RouterResponse {
 
     /// Send JSON Encodable Object
     ///
-    /// - Parameter json: the JSON Encodable object to send.
-    /// - Returns: this RouterResponse.
+    /// - Parameter json: The JSON Encodable object to send.
+    /// - Returns: This RouterResponse.
     @discardableResult
     public func send<T : Encodable>(json: T) -> RouterResponse {
         guard !state.invokedEnd else {
@@ -633,15 +633,15 @@ extension RouterResponse {
 
     /// Send JSON with JSONP callback.
     ///
-    /// - Parameter json: the JSON object to send.
-    /// - Parameter callbackParameter: the name of the URL query
+    /// - Parameter json: The JSON object to send.
+    /// - Parameter callbackParameter: The name of the URL query
     /// parameter whose value contains the JSONP callback function.
     ///
     /// - Throws: `JSONPError.invalidCallbackName` if the the callback
     /// query parameter of the request URL is missing or its value is
     /// empty or contains invalid characters (the set of valid characters
     /// is the alphanumeric characters and `[]$._`).
-    /// - Returns: this RouterResponse.
+    /// - Returns: This RouterResponse.
     public func send<T : Encodable>(jsonp: T, callbackParameter: String = "callback") throws -> RouterResponse {
         guard !state.invokedEnd else {
             Log.warning("RouterResponse send(jsonp:) invoked after end() for \(self.request.urlURL)")
