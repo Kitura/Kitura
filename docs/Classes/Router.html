@@ -212,181 +212,14 @@ the appropriate code to handle them. This includes:</p>
         <section class="section">
           <div class="section-content">
             <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Initializer"></a>
+                <a name="//apple_ref/swift/Section/Initializer" class="dashAnchor"></a>
+                <a href="#/Initializer">
+                  <h3 class="section-name">Initializer</h3>
+                </a>
+              </div>
               <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura6RouterC8encoderss10DictionaryVyAA9MediaTypeV0A9Contracts11BodyEncoder_pycGvp"></a>
-                    <a name="//apple_ref/swift/Property/encoders" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC8encoderss10DictionaryVyAA9MediaTypeV0A9Contracts11BodyEncoder_pycGvp">encoders</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>A dictionary of MediaType to BodyEncoder generators.
-Initalized with <code>{ return JSONEncoder() }</code> for <q>application/json</q>.</p>
-<h3 id='usage-example' class='heading'>Usage Example:</h3>
-
-<p>The example below replaces the default JSON encoder with a new encoder that has a different date encoding strategy.</p>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
-<span class="k">let</span> <span class="nv">newJSONEncoder</span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">BodyEncoder</span> <span class="o">=</span> <span class="p">{</span>
-   <span class="k">let</span> <span class="nv">encoder</span> <span class="o">=</span> <span class="kt">JSONEncoder</span><span class="p">()</span>
-   <span class="n">encoder</span><span class="o">.</span><span class="n">dateEncodingStrategy</span> <span class="o">=</span> <span class="o">.</span><span class="n">secondsSince1970</span>
-   <span class="k">return</span> <span class="n">encoder</span>
-<span class="p">}</span>
-<span class="n">router</span><span class="o">.</span><span class="n">encoders</span><span class="p">[</span><span class="o">.</span><span class="n">json</span><span class="p">]</span> <span class="o">=</span> <span class="n">newJSONEncoder</span>
-</code></pre>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">encoders</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Structs/MediaType.html">MediaType</a></span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">BodyEncoder</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="nv">json</span><span class="p">:</span> <span class="p">{</span><span class="k">return</span> <span class="kt">JSONEncoder</span><span class="p">()}]</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura6RouterC24defaultResponseMediaTypeAA0eF0Vvp"></a>
-                    <a name="//apple_ref/swift/Property/defaultResponseMediaType" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC24defaultResponseMediaTypeAA0eF0Vvp">defaultResponseMediaType</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The media type to be used by the <code><a href="../Classes/RouterResponse.html">RouterResponse</a></code> to select a <code>BodyEncoder</code> if no Accepts header is set or if the Media type of Accepts header does not match an encoder. Is set to <q>application/json</q> by default.</p>
-<h3 id='usage-example' class='heading'>Usage Example:</h3>
-
-<p>The example below sets the <code>defaultResponseMediaType</code> as <q>application/x-yaml</q>.</p>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
-<span class="n">router</span><span class="o">.</span><span class="n">defaultResponseMediaType</span> <span class="o">=</span> <span class="kt">MediaType</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="o">.</span><span class="n">application</span><span class="p">,</span> <span class="nv">subtype</span><span class="p">:</span> <span class="s">"x-yaml"</span><span class="p">)</span>
-</code></pre>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">defaultResponseMediaType</span><span class="p">:</span> <span class="kt"><a href="../Structs/MediaType.html">MediaType</a></span> <span class="o">=</span> <span class="o">.</span><span class="n">json</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura6RouterC8decoderss10DictionaryVyAA9MediaTypeV0A9Contracts11BodyDecoder_pycGvp"></a>
-                    <a name="//apple_ref/swift/Property/decoders" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC8decoderss10DictionaryVyAA9MediaTypeV0A9Contracts11BodyDecoder_pycGvp">decoders</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>A dictionary of MediaType to BodyDecoder generators. Includes a JSONDecoder and QueryDecoder by default.</p>
-<h3 id='usage-example' class='heading'>Usage Example:</h3>
-
-<p>The example below replaces the default JSON decoder with a new decoder that has a different date decoding strategy.</p>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
-<span class="k">let</span> <span class="nv">newJSONDecoder</span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">BodyDecoder</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="k">let</span> <span class="nv">decoder</span> <span class="o">=</span> <span class="kt">JSONDecoder</span><span class="p">()</span>
-    <span class="n">decoder</span><span class="o">.</span><span class="n">dateEncodingStrategy</span> <span class="o">=</span> <span class="o">.</span><span class="n">secondsSince1970</span>
-    <span class="k">return</span> <span class="n">decoder</span>
-<span class="p">}</span>
-<span class="n">router</span><span class="o">.</span><span class="n">decoders</span><span class="p">[</span><span class="o">.</span><span class="n">json</span><span class="p">]</span> <span class="o">=</span> <span class="n">newJSONDecoder</span>
-</code></pre>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">decoders</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Structs/MediaType.html">MediaType</a></span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">BodyDecoder</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="nv">json</span><span class="p">:</span> <span class="p">{</span><span class="k">return</span> <span class="kt">JSONDecoder</span><span class="p">()},</span> <span class="o">.</span><span class="nv">urlEncoded</span><span class="p">:</span> <span class="p">{</span><span class="k">return</span> <span class="kt">QueryDecoder</span><span class="p">()}]</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura6RouterC9viewsPathSSvp"></a>
-                    <a name="//apple_ref/swift/Property/viewsPath" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC9viewsPathSSvp">viewsPath</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The root directory where template files should be placed in order to be automatically handed
-over to an appropriate templating engine for content generation. The directory should sit at the
-same level as the project&rsquo;s <q>Sources</q> directory. Defaults to <q>./Views/</q>.</p>
-<h3 id='usage-example' class='heading'>Usage Example:</h3>
-
-<p>The example below changes the directory where template files should be placed to be <q>./myViews/</q></p>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
-<span class="n">router</span><span class="o">.</span><span class="n">viewsPath</span> <span class="o">=</span> <span class="s">"./myViews/"</span>
-</code></pre>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">viewsPath</span> <span class="o">=</span> <span class="s">"./Views/"</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura6RouterC11swaggerJSONSSSgvp"></a>
-                    <a name="//apple_ref/swift/Property/swaggerJSON" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC11swaggerJSONSSSgvp">swaggerJSON</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Returns the current in-memory representation of Codable routes as a
-Swagger document in JSON format, or nil if the document cannot be
-generated.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">swaggerJSON</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
                 <li class="item">
                   <div>
                     <code>
@@ -463,6 +296,173 @@ the <code>greeting</code> parameter will not be accessible and it will return ju
             </div>
             <div class="task-group">
               <div class="task-name-container">
+                <a name="/Swagger"></a>
+                <a name="//apple_ref/swift/Section/Swagger" class="dashAnchor"></a>
+                <a href="#/Swagger">
+                  <h3 class="section-name">Swagger</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC11swaggerJSONSSSgvp"></a>
+                    <a name="//apple_ref/swift/Property/swaggerJSON" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC11swaggerJSONSSSgvp">swaggerJSON</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the current in-memory representation of Codable routes as a
+Swagger document in JSON format, or nil if the document cannot be
+generated.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">swaggerJSON</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Custom%20encoder/decoder"></a>
+                <a name="//apple_ref/swift/Section/Custom encoder/decoder" class="dashAnchor"></a>
+                <a href="#/Custom%20encoder/decoder">
+                  <h3 class="section-name">Custom encoder/decoder</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC8encoderss10DictionaryVyAA9MediaTypeV0A9Contracts11BodyEncoder_pycGvp"></a>
+                    <a name="//apple_ref/swift/Property/encoders" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC8encoderss10DictionaryVyAA9MediaTypeV0A9Contracts11BodyEncoder_pycGvp">encoders</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A dictionary of <code><a href="../Structs/MediaType.html">MediaType</a></code> to <code>BodyEncoder</code> generators.
+By default this includes an entry mapping the <q>application/json</q> media type to a JSONEncoder generator.
+When a Codable object is sent as a response, an encoder will be generated based on the <q>Accepts</q> header
+or using the <code><a href="../Classes/Router.html#/s:6Kitura6RouterC24defaultResponseMediaTypeAA0eF0Vvp">defaultResponseMediaType</a></code> if no matching encoder is found.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>The example below replaces the default JSON encoder with a new encoder that has a different date encoding strategy.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">newJSONEncoder</span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">BodyEncoder</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">encoder</span> <span class="o">=</span> <span class="kt">JSONEncoder</span><span class="p">()</span>
+    <span class="n">encoder</span><span class="o">.</span><span class="n">dateEncodingStrategy</span> <span class="o">=</span> <span class="o">.</span><span class="n">secondsSince1970</span>
+    <span class="k">return</span> <span class="n">encoder</span>
+<span class="p">}</span>
+<span class="n">router</span><span class="o">.</span><span class="n">encoders</span><span class="p">[</span><span class="o">.</span><span class="n">json</span><span class="p">]</span> <span class="o">=</span> <span class="n">newJSONEncoder</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">encoders</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Structs/MediaType.html">MediaType</a></span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">BodyEncoder</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="nv">json</span><span class="p">:</span> <span class="p">{</span><span class="k">return</span> <span class="kt">JSONEncoder</span><span class="p">()}]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC24defaultResponseMediaTypeAA0eF0Vvp"></a>
+                    <a name="//apple_ref/swift/Property/defaultResponseMediaType" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC24defaultResponseMediaTypeAA0eF0Vvp">defaultResponseMediaType</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>if the request&rsquo;s Accept header does not match an encoder,
+this media type will be used by the <code><a href="../Classes/RouterResponse.html">RouterResponse</a></code> to select a <code>BodyEncoder</code>.
+By default, this is set to <q>application/json</q>.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>The example below sets the <code>defaultResponseMediaType</code> as <q>application/x-yaml</q>.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="n">router</span><span class="o">.</span><span class="n">defaultResponseMediaType</span> <span class="o">=</span> <span class="kt">MediaType</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="o">.</span><span class="n">application</span><span class="p">,</span> <span class="nv">subtype</span><span class="p">:</span> <span class="s">"x-yaml"</span><span class="p">)</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">defaultResponseMediaType</span><span class="p">:</span> <span class="kt"><a href="../Structs/MediaType.html">MediaType</a></span> <span class="o">=</span> <span class="o">.</span><span class="n">json</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC8decoderss10DictionaryVyAA9MediaTypeV0A9Contracts11BodyDecoder_pycGvp"></a>
+                    <a name="//apple_ref/swift/Property/decoders" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC8decoderss10DictionaryVyAA9MediaTypeV0A9Contracts11BodyDecoder_pycGvp">decoders</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A dictionary of <code><a href="../Structs/MediaType.html">MediaType</a></code> to <code>BodyDecoder</code> generators.
+By default this includes an entry mapping the <q>application/json</q> media type to a JSONDecoder generator and an entry mapping <q>application/x-www-form-urlencoded</q> media type to <code>QueryDecoder</code>
+When a Codable object is read from the body of a request, a decoder will be generated based on the <q>Content-Type</q> header.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>The example below replaces the default JSON decoder with a new decoder that has a different date encoding strategy.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">newJSONDecoder</span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">BodyDecoder</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">decoder</span> <span class="o">=</span> <span class="kt">JSONDecoder</span><span class="p">()</span>
+    <span class="n">decoder</span><span class="o">.</span><span class="n">dateDecodingStrategy</span> <span class="o">=</span> <span class="o">.</span><span class="n">secondsSince1970</span>
+    <span class="k">return</span> <span class="n">decoder</span>
+<span class="p">}</span>
+<span class="n">router</span><span class="o">.</span><span class="n">decoders</span><span class="p">[</span><span class="o">.</span><span class="n">json</span><span class="p">]</span> <span class="o">=</span> <span class="n">newJSONDecoder</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">decoders</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Structs/MediaType.html">MediaType</a></span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">BodyDecoder</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="nv">json</span><span class="p">:</span> <span class="p">{</span><span class="k">return</span> <span class="kt">JSONDecoder</span><span class="p">()},</span> <span class="o">.</span><span class="nv">urlEncoded</span><span class="p">:</span> <span class="p">{</span><span class="k">return</span> <span class="kt">QueryDecoder</span><span class="p">()}]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
                 <a name="/Template%20Engine"></a>
                 <a name="//apple_ref/swift/Section/Template Engine" class="dashAnchor"></a>
                 <a href="#/Template%20Engine">
@@ -470,6 +470,41 @@ the <code>greeting</code> parameter will not be accessible and it will return ju
                 </a>
               </div>
               <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC9viewsPathSSvp"></a>
+                    <a name="//apple_ref/swift/Property/viewsPath" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC9viewsPathSSvp">viewsPath</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The root directory where template files should be placed in order to be automatically handed
+over to an appropriate templating engine for content generation. The directory should sit at the
+same level as the project&rsquo;s <q>Sources</q> directory. Defaults to <q>./Views/</q>.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>The example below changes the directory where template files should be placed to be <q>./myViews/</q></p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="n">router</span><span class="o">.</span><span class="n">viewsPath</span> <span class="o">=</span> <span class="s">"./myViews/"</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">viewsPath</span> <span class="o">=</span> <span class="s">"./Views/"</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
                 <li class="item">
                   <div>
                     <code>
@@ -3283,10 +3318,10 @@ in the location HTTP header).</p>
             </div>
             <div class="task-group">
               <div class="task-name-container">
-                <a name="/error"></a>
-                <a name="//apple_ref/swift/Section/error" class="dashAnchor"></a>
-                <a href="#/error">
-                  <h3 class="section-name">error</h3>
+                <a name="/Error"></a>
+                <a name="//apple_ref/swift/Section/Error" class="dashAnchor"></a>
+                <a href="#/Error">
+                  <h3 class="section-name">Error</h3>
                 </a>
               </div>
               <ul class="item-container">
@@ -11889,7 +11924,7 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-08-31)</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-09-10)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

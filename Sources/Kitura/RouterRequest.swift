@@ -22,7 +22,22 @@ import KituraContracts
 
 // MARK: RouterRequest
 
-/// Router request.
+/**
+ The `RouterRequest` class is used to interact with incoming HTTP requests to the Router.
+ It contains and allows access to the request's `Headers` and `Body` as well as other properties of the request.
+ It can also perform content negotiation based on the request’s "Accept" header.
+ ### Usage Example: ###
+ In this example "request" is an instance of the class `RouterRequest`.
+ It is used by the server to read the body of the request as a String and send it back to the user.
+ ```swift
+ let router = Router()
+ router.post("/") { request, response, next in
+     let body = request.readString()
+     response.send(body)
+     next()
+ }
+ ```
+ */
 public class RouterRequest {
 
     /// The server request.
@@ -31,6 +46,8 @@ public class RouterRequest {
     /// The Data decoder generator for the request content-type
     let decoder: BodyDecoder?
 
+    // MARK: Properties
+    
     /// The hostname of the request.
     public var hostname: String {
         return urlURL.host ?? ""
@@ -82,6 +99,14 @@ public class RouterRequest {
     /// The method of the request.
     public let method: RouterMethod
 
+    /// The router as a String.
+    public internal(set) var route: String?
+    
+    /// IP address string of server.
+    public var remoteAddress: String { return serverRequest.remoteAddress }
+    
+    // MARK: URL
+    
     private var _parsedURL: URLParser?
     internal let parsedURLPath: URLParser
 
@@ -95,9 +120,6 @@ public class RouterRequest {
             return result
         }
         }()
-
-    /// The router as a String.
-    public internal(set) var route: String?
 
     /// The currently matched section of the URL.
     public internal(set) var matchedPath = ""
@@ -125,20 +147,21 @@ public class RouterRequest {
 
     /// The URL from the request
     public var urlURL: URL { return serverRequest.urlURL }
+    
+    /// List of URL parameters.
+    public internal(set) var parameters: [String:String] = [:]
+    
+    // MARK: Headers
 
     /// List of HTTP headers with simple String values.
     public let headers: Headers
-
-    /// IP address string of server.
-    public var remoteAddress: String { return serverRequest.remoteAddress }
 
     /// Parsed Cookies, used to do a lazy parsing of the appropriate headers.
     public lazy var cookies: [String: HTTPCookie] = { [unowned self] in
         return Cookies.parse(headers: self.serverRequest.headers)
         }()
 
-    /// List of URL parameters.
-    public internal(set) var parameters: [String:String] = [:]
+    // MARK: Query parameters
 
     /// List of query parameters and comma-separated values.
     public lazy var queryParameters: [String:String] = { [unowned self] in
@@ -150,10 +173,22 @@ public class RouterRequest {
         return self.urlURL.query?.urlDecodedFieldMultiValuePairs ?? [:]
     }()
 
+    /// Convert query parameters into a QueryParam type
+    ///
+    /// - Parameter type: The QueryParam type describing the expected query parameters
+    /// - Returns: The route's Query parameters as a QueryParam object
+    public func getQueryParameters<T: QueryParams>(as type: T.Type) -> T? {
+        return try? QueryDecoder(dictionary: self.queryParameters).decode(type)
+    }
+    
+    // MARK: Shared dictionary
+    
     /// User info.
     /// Can be used by middlewares and handlers to store and pass information on to subsequent handlers.
     public var userInfo: [String: Any] = [:]
 
+    // MARK: Request Body
+    
     /// Body of the message.
     public internal(set) var body: ParsedBody?
 
@@ -174,14 +209,6 @@ public class RouterRequest {
         self.decoder = decoder
     }
 
-    /// Convert query parameters into a QueryParam type
-    ///
-    /// - Parameter type: The QueryParam type describing the expected query parameters
-    /// - Returns: The route's Query parameters as a QueryParam object
-    public func getQueryParameters<T: QueryParams>(as type: T.Type) -> T? {
-        return try? QueryDecoder(dictionary: self.queryParameters).decode(type)
-    }
-
     /// Read the body of the request as Data.
     ///
     /// - Parameter into: Data object in which the body of the request is returned.
@@ -191,14 +218,29 @@ public class RouterRequest {
         return try serverRequest.read(into: &data)
     }
     
-    /// Read the body of the request as a Codable object using the requests `BodyDecoder`.
-    /// Defaults to `JSONDecoder()` if no decoder is provided.
-    /// - Parameter as: Codable object to which the body of the request will be converted.
-    /// - Parameter decoder: The BodyDecoder which will be used to decode the request as the Codable object.
-    /// - Throws: Socket.Error if an error occurred while reading from a socket.
-    /// - Throws: `DecodingError.dataCorrupted` if values requested from the payload are corrupted, or if the given data is not valid JSON.
-    /// - Throws: An error if any value throws an error during decoding.
-    /// - Returns: The instantiated Codable object
+    /**
+     Read the body of the request as a Codable object using a `BodyDecoder`
+     that was selected based on the Content-Type header.
+     Defaults to `JSONDecoder()` if no decoder is provided.
+     ### Usage Example: ###
+     The example below defines a `User` struct and then decodes a `User` from the body of a request.
+     ```swift
+     public struct User: Codable {
+        let name: String
+     }
+     let router = Router()
+     router.post("/example") { request, response, next in
+         let user = try request.read(as: User.self)
+         print(user.name)
+         next()
+     }
+     ```
+     - Parameter as: Codable object to which the body of the request will be converted.
+     - Throws: Socket.Error if an error occurred while reading from a socket.
+     - Throws: `DecodingError.dataCorrupted` if values requested from the payload are corrupted, or if the given data is not valid JSON.
+     - Throws: An error if any value throws an error during decoding.
+     - Returns: The instantiated Codable object
+     */
     public func read<T: Decodable>(as type: T.Type) throws -> T {
         var data = Data()
         _ = try serverRequest.read(into: &data)
@@ -214,6 +256,8 @@ public class RouterRequest {
         return try serverRequest.readString()
     }
 
+    // MARK: Accepts
+    
     /// Check if passed in types are acceptable based on the request's header field
     /// specified in the first parameter.
     ///
