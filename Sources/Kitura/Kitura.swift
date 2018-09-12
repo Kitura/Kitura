@@ -23,9 +23,11 @@ import Dispatch
 // MARK Kitura
 
 /**
- A set of class functions to create, start, and stop Kitura based servers.
+ Facilities for creating, starting and stopping Kitura-based servers.
  ### Usage Example: ###
- In this example, a `Router` that sends "Hello world" is initialized. The `Kitura` class then adds a server on port 8080 with that router and is run. The route can then be accessed by viewing http://localhost:8080.
+ In this example, a `Router` is created, and a single route registered that responds to an HTTP GET request on "/" with a plain text response.
+ An HTTP server is created on port 8080, and is started with the `Kitura.run()` function (note that this function does not return).
+ The route can then be accessed by visiting `http://localhost:8080`.
  ```swift
  let router = Router()
  router.get("/") { request, response, next in

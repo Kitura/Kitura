@@ -29,7 +29,9 @@ import KituraContracts
  and the body of the response.
  It can also render template files, using a template engine registered to the router.
  ### Usage Example: ###
- In this example "response" is an instance of the class `RouterResponse`. The content type and status code of the response are set. The String "Hello world" is added to the body and the response is sent by calling `end()`.
+ In this example "response" is an instance of the class `RouterResponse`.
+ The content type and status code of the response are set.
+ The String "Hello world" is added to the body and the response is transmitted.
  ```swift
  router.get("/example") { _, response, next in
      response.headers["Content-Type"] = "text/html"
@@ -284,7 +286,7 @@ public class RouterResponse {
     /// Redirect to path with status code.
     ///
     /// - Parameter: The path for the redirect.
-    /// - Parameter: TThe status code for the redirect.
+    /// - Parameter: The status code for the redirect.
     /// - Throws: Socket.Error if an error occurred while writing to a socket.
     /// - Returns: This RouterResponse.
     @discardableResult
@@ -428,7 +430,7 @@ public class RouterResponse {
     
     // MARK: Send String
     
-    /// Send a string.
+    /// Send a UTF-8 encoded string.
     ///
     /// - Parameter str: The string to send.
     /// - Returns: This RouterResponse.
@@ -450,6 +452,7 @@ public class RouterResponse {
     }
     
     /// Send an optional string.
+    /// If the `String?` can be unwrapped it is sent as a String, otherwise the empty string ("") is sent.
     ///
     /// - Parameter str: The string to send.
     /// - Returns: This RouterResponse.
@@ -466,7 +469,7 @@ public class RouterResponse {
         return send(str)
     }
     
-    /// Send the HTTP status code.
+    /// Set the HTTP status code of the RouterResponse and send the String description of the HTTP status code.
     ///
     /// - Parameter status: The HTTP status code.
     /// - Returns: This RouterResponse.
@@ -538,7 +541,8 @@ public class RouterResponse {
     
     typealias JSONSerializationType = JSONSerialization
     
-    /// Send JSON.
+    /// Sets the Content-Type header as application/json, Serializes an array into JSON data and sends the data.
+    /// If the data is not a valid JSON structure, it will not be sent and a warning will be logged.
     ///
     /// - Parameter json: The array to send in JSON format.
     /// - Returns: This RouterResponse.
@@ -560,7 +564,9 @@ public class RouterResponse {
         return self
     }
     
-    /// Send JSON.
+    /// Sets the Content-Type header as "application/json",
+    /// Serializes a dictionary into JSON data and sends the data.
+    /// If the data is not a valid JSON structure, it will not be sent and a warning will be logged.
     ///
     /// - Parameter json: The Dictionary to send in JSON format as a hash.
     /// - Returns: This RouterResponse.
@@ -588,7 +594,9 @@ extension RouterResponse {
 
     // MARK: Send Encodable
     
-    /// Send Encodable Object.
+    /// Selects the best `BodyEncoder` using the request's "Accepts" header.
+    /// Sets the response "Content-Type" header to the `MediaType` that maps to the chosen encoder.
+    /// Encodes an Encodable object into data using the `BodyEncoder` and sends the data.
     ///
     /// - Parameter obj: The Codable object to send.
     /// - Returns: This RouterResponse.
@@ -610,7 +618,8 @@ extension RouterResponse {
         return self
     }
 
-    /// Send JSON Encodable Object
+    /// Sets the Content-Type header as "application/json",
+    /// Encodes an Encodable object into data using a `JSONEncoder()` and sends the data.
     ///
     /// - Parameter json: The JSON Encodable object to send.
     /// - Returns: This RouterResponse.
@@ -631,7 +640,8 @@ extension RouterResponse {
         return self
     }
 
-    /// Send JSON with JSONP callback.
+    /// Encodes an Encodable object into data using a `JSONEncoder()`
+    /// and sends the data with JSONP callback.
     ///
     /// - Parameter json: The JSON object to send.
     /// - Parameter callbackParameter: The name of the URL query
