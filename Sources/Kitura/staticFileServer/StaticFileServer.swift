@@ -24,7 +24,7 @@ import Foundation
  ### Usage Example: ###
  The example below creates and registers a `StaticFileServer` on the "/example" route.
  When the router is running, A user can make a request that matches the "/example" path (e.g. localhost:8080/example/hello.html).
- The static file server would look inside it's "/files" folder for a file with the same name as the path following "/example"  (e.g. "hello.html").
+ The static file server would look inside its "/files" folder for a file with the same name as the path following "/example"  (e.g. "hello.html").
  If a file is found it is sent as a response to that request, otherwise the next handler is called.
  ```swift
  let router = Router()
