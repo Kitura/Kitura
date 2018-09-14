@@ -594,9 +594,9 @@ extension RouterResponse {
 
     // MARK: Send Encodable
     
-    /// Selects the best `BodyEncoder` using the request's "Accepts" header.
-    /// Sets the response "Content-Type" header to the `MediaType` that maps to the chosen encoder.
-    /// Encodes an Encodable object into data using the `BodyEncoder` and sends the data.
+    /// Sends an Encodable type, encoded using the preferred `BodyEncoder` based on the "Accept" header sent in the request, and sets the Content-Type header appropriately.
+    
+    /// If no Accept header was provided, or if no suitable encoder is registered with the router, the encoder corresponding to the `defaultResponseMediaType` will be used.
     ///
     /// - Parameter obj: The Codable object to send.
     /// - Returns: This RouterResponse.
