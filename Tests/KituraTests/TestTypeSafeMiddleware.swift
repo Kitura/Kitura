@@ -34,13 +34,17 @@ class TestTypeSafeMiddleware: KituraTest {
             ("testSingleMiddlewareGetSingletonParameters", testSingleMiddlewareGetSingletonParameters),
             ("testMultipleMiddlewareGetSingletonParameters", testMultipleMiddlewareGetSingletonParameters),
             ("testSingleMiddlewareGetArrayParameters", testSingleMiddlewareGetArrayParameters),
+            ("testSingleMiddlewareGetArrayOptionalParameters", testSingleMiddlewareGetArrayOptionalParameters),
             ("testMultipleMiddlewareGetArrayParameters", testMultipleMiddlewareGetArrayParameters),
+            ("testMultipleMiddlewareGetArrayOptionalParameters", testMultipleMiddlewareGetArrayOptionalParameters),
             ("testSingleMiddlewareDelete", testSingleMiddlewareDelete),
             ("testMultipleMiddlewareDelete", testMultipleMiddlewareDelete),
             ("testSingleMiddlewareDeleteIdentifier", testSingleMiddlewareDeleteIdentifier),
             ("testMultipleMiddlewareDeleteIdentifier", testMultipleMiddlewareDeleteIdentifier),
             ("testSingleMiddlewareDeleteParameters", testSingleMiddlewareDeleteParameters),
+            ("testSingleMiddlewareDeleteOptionalParameters", testSingleMiddlewareDeleteOptionalParameters),
             ("testMultipleMiddlewareDeleteParameters", testMultipleMiddlewareDeleteParameters),
+            ("testMultipleMiddlewareDeleteOptionalParameters", testMultipleMiddlewareDeleteOptionalParameters),
             ("testSingleMiddlewarePost", testSingleMiddlewarePost),
             ("testMultipleMiddlewarePost", testMultipleMiddlewarePost),
             ("testSingleMiddlewarePostIdentifier", testSingleMiddlewarePostIdentifier),
@@ -431,6 +435,38 @@ class TestTypeSafeMiddleware: KituraTest {
 
             .run()
     }
+    
+    func testSingleMiddlewareGetArrayOptionalParameters() {
+        let userArray = [User(id: 1, name: "Andy"), User(id: 2, name: "Dave"), User(id: 3, name: "Ian")]
+        let expectedArray = [User(id: 2, name: "Dave")]
+        
+        router.get("/userMiddleware") { (middleware: UserMiddleware, query: MyQuery?, respondWith: ([User]?, RequestError?) -> Void) in
+            print("GET array with optional parameters on /userMiddleware - received header \(middleware.header)")
+            if let query = query {
+                let matchedUsers = userArray.filter { $0.id == query.id }
+                respondWith(matchedUsers, nil)
+            } else {
+                respondWith(userArray, nil)
+            }
+        }
+        
+        buildServerTest(router, timeout: 30)
+            .request("get", path: "/userMiddleware?id=2", headers: ["TestHeader": "Hello"])
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(expectedArray)
+            
+            .request("get", path: "/userMiddleware", headers: ["TestHeader": "Hello"])
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(userArray)
+            
+            .request("get", path: "/userMiddleware?id=2")
+            .hasStatus(.badRequest)
+            .hasNoData()
+            
+            .run()
+    }
 
     func testMultipleMiddlewareGetArrayParameters() {
         let userArray = [User(id: 1, name: "Andy"), User(id: 2, name: "Dave"), User(id: 3, name: "Ian")]
@@ -463,6 +499,40 @@ class TestTypeSafeMiddleware: KituraTest {
             .hasStatus(.badRequest)
             .hasNoData()
 
+            .run()
+    }
+    
+    func testMultipleMiddlewareGetArrayOptionalParameters() {
+        let userArray = [User(id: 1, name: "Andy"), User(id: 2, name: "Dave"), User(id: 3, name: "Ian")]
+        let expectedArray = [User(id: 2, name: "Dave")]
+        
+        router.get("/userMultiMiddleware") { (middleware: UserMiddleware, middleware2: UserMiddleware2, middleware3: UserMiddleware3, query: MyQuery?, respondWith: ([User]?, RequestError?) -> Void) in
+            print("GET array with optional parameters on /userMultiMiddleware - received headers \(middleware.header), \(middleware2.header), \(middleware3.header)")
+            if let query = query {
+                let matchedUsers = userArray.filter { $0.id == query.id }
+                respondWith(matchedUsers, nil)
+            } else {
+                respondWith(userArray, nil)
+            }
+        }
+        
+        let goodHeaders = ["TestHeader": "Foo", "TestHeader2": "Bar", "TestHeader3": "Baz"]
+        
+        buildServerTest(router, timeout: 30)
+            .request("get", path: "/userMultiMiddleware?id=2", headers: goodHeaders)
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(expectedArray)
+            
+            .request("get", path: "/userMultiMiddleware", headers: goodHeaders)
+            .hasStatus(.OK)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(userArray)
+            
+            .request("get", path: "/userMultiMiddleware?id=2")
+            .hasStatus(.badRequest)
+            .hasNoData()
+            
             .run()
     }
 
@@ -601,6 +671,38 @@ class TestTypeSafeMiddleware: KituraTest {
 
             .run()
     }
+    
+    func testSingleMiddlewareDeleteOptionalParameters() {
+        var userArray1 = [User(id: 1, name: "Andy"), User(id: 2, name: "Dave"), User(id: 3, name: "Ian")]
+        var userArray2 = [User(id: 1, name: "Andy"), User(id: 2, name: "Dave"), User(id: 3, name: "Ian")]
+        
+        router.delete("/userMiddleware") { (middleware: UserMiddleware, query: MyQuery?, respondWith: (RequestError?) -> Void) in
+            print("MY DELETE on /userMiddleware - received header \(middleware.header)")
+            if let query = query {
+                userArray1 = userArray1.filter { $0.id != query.id }
+                respondWith(nil)
+            } else {
+                userArray2 = []
+                respondWith(nil)
+            }
+        }
+        
+        buildServerTest(router, timeout: 30)
+            .request("delete", path: "/userMiddleware?id=1", headers: ["TestHeader": "Hello"])
+            .hasStatus(.noContent)
+            .hasNoData()
+            .has { _ in XCTAssertEqual(0, userArray1.filter { $0.id == 1 }.count) }
+            .has { _ in XCTAssertEqual(1, userArray1.filter { $0.id == 2 }.count) }
+            .has { _ in XCTAssertEqual(1, userArray1.filter { $0.id == 3 }.count) }
+            
+            .request("delete", path: "/userMiddleware", headers: ["TestHeader": "Hello"])
+            .hasStatus(.noContent)
+            .hasNoData()
+            .has { _ in XCTAssertEqual(0, userArray2.filter { $0.id == 2 }.count) }
+            .has { _ in XCTAssertEqual(0, userArray2.filter { $0.id == 3 }.count) }
+            
+            .run()
+    }
 
     func testMultipleMiddlewareDeleteParameters() {
 
@@ -634,6 +736,41 @@ class TestTypeSafeMiddleware: KituraTest {
             .hasStatus(.badRequest)
             .hasNoData()
 
+            .run()
+    }
+    
+    func testMultipleMiddlewareDeleteOptionalParameters() {
+        var userArray1 = [User(id: 1, name: "Andy"), User(id: 2, name: "Dave"), User(id: 3, name: "Ian")]
+        var userArray2 = [User(id: 1, name: "Andy"), User(id: 2, name: "Dave"), User(id: 3, name: "Ian")]
+        
+        router.delete("/userMultiMiddleware") { (middleware: UserMiddleware, middleware2: UserMiddleware2, middleware3: UserMiddleware3, query: MyQuery?, respondWith: (RequestError?) -> Void) in
+            print("DELETE on /userMultiMiddleware - received headers \(middleware.header), \(middleware2.header), \(middleware3.header)")
+            if let query = query {
+                userArray1 = userArray1.filter { $0.id != query.id }
+                respondWith(nil)
+            } else {
+                userArray2 = []
+                respondWith(nil)
+            }
+        }
+        
+        let goodHeaders = ["TestHeader": "Foo", "TestHeader2": "Bar", "TestHeader3": "Baz"]
+        
+        buildServerTest(router, timeout: 30)
+            // Test that handler is invoked successfully when all middlewares are satisfied
+            .request("delete", path: "/userMultiMiddleware?id=1", headers: goodHeaders)
+            .hasStatus(.noContent)
+            .hasNoData()
+            .has { _ in XCTAssertEqual(0, userArray1.filter { $0.id == 1 }.count) }
+            .has { _ in XCTAssertEqual(1, userArray1.filter { $0.id == 2 }.count) }
+            .has { _ in XCTAssertEqual(1, userArray1.filter { $0.id == 3 }.count) }
+            
+            .request("delete", path: "/userMultiMiddleware", headers: goodHeaders)
+            .hasStatus(.noContent)
+            .hasNoData()
+            .has { _ in XCTAssertEqual(0, userArray2.filter { $0.id == 2 }.count) }
+            .has { _ in XCTAssertEqual(0, userArray2.filter { $0.id == 3 }.count) }
+            
             .run()
     }
 
