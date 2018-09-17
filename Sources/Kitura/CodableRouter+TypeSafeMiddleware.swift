@@ -108,7 +108,7 @@ extension Router {
      ### Usage Example: ###
      In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an optional `User`, where `User` conforms to Codable.
      ```swift
-     router.get("/user") { (session: MySession, middle2: Middle2, middle3: Middle3, rrespondWith: (User?, RequestError?) -> Void) in
+     router.get("/user") { (session: MySession, middle2: Middle2, middle3: Middle3, respondWith: (User?, RequestError?) -> Void) in
         guard let user: User = session.user else {
             return respondWith(nil, .notFound)
         }
@@ -163,7 +163,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T, @escaping CodableArrayResultClosure<O>) -> Void
     ) {
-        registerGetRoute(route: route, outputType: O.self)
+        registerGetRoute(route: route, outputType: O.self, outputIsArray: true)
         get(route) { request, response, next in
             Log.verbose("Received GET(Array) typed middleware request")
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
@@ -198,7 +198,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, @escaping CodableArrayResultClosure<O>) -> Void
     ) {
-        registerGetRoute(route: route, outputType: O.self)
+        registerGetRoute(route: route, outputType: O.self, outputIsArray: true)
         get(route) { request, response, next in
             Log.verbose("Received GET(Array) typed middleware request")
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
@@ -233,7 +233,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, T3, @escaping CodableArrayResultClosure<O>) -> Void
     ) {
-        registerGetRoute(route: route, outputType: O.self)
+        registerGetRoute(route: route, outputType: O.self, outputIsArray: true)
         get(route) { request, response, next in
             Log.verbose("Received GET(Array) typed middleware request")
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
@@ -404,7 +404,9 @@ extension Router {
         _ route: String,
         handler: @escaping (T, @escaping IdentifierCodableArrayResultClosure<Id, O>) -> Void
     ) {
-        registerGetRoute(route: route, id: Id.self, outputType: O.self)
+        // FIXME: The ID is returned in a tuple, it is not an input parameter
+        // https://github.com/IBM-Swift/Kitura/issues/1336
+        registerGetRoute(route: route, id: Id.self, outputType: O.self, outputIsArray: true)
         get(route) { request, response, next in
             Log.verbose("Received GET(Array) with identifier typed middleware request")
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
@@ -439,7 +441,9 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, @escaping IdentifierCodableArrayResultClosure<Id, O>) -> Void
     ) {
-        registerGetRoute(route: route, id: Id.self, outputType: O.self)
+        // FIXME: The ID is returned in a tuple, it is not an input parameter
+        // https://github.com/IBM-Swift/Kitura/issues/1336
+        registerGetRoute(route: route, id: Id.self, outputType: O.self, outputIsArray: true)
         get(route) { request, response, next in
             Log.verbose("Received GET(Array) with identifier typed middleware request")
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
@@ -459,7 +463,7 @@ extension Router {
      ### Usage Example: ###
      In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an [(Int, User)] dictionary, where `User` conforms to Codable.
      ```swift
-     router.get("/user") { (session: MySession, middle2: Middle2, middle3: Middle3, rrespondWith: ([(Int, User)]?, RequestError?) -> Void) in
+     router.get("/user") { (session: MySession, middle2: Middle2, middle3: Middle3, respondWith: ([(Int, User)]?, RequestError?) -> Void) in
         guard let users: [(Int, User)] = session.users else {
             return respondWith(nil, .notFound)
         }
@@ -474,7 +478,9 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, T3, @escaping IdentifierCodableArrayResultClosure<Id, O>) -> Void
     ) {
-        registerGetRoute(route: route, id: Id.self, outputType: O.self)
+        // FIXME: The ID is returned in a tuple, it is not an input parameter
+        // https://github.com/IBM-Swift/Kitura/issues/1336
+        registerGetRoute(route: route, id: Id.self, outputType: O.self, outputIsArray: true)
         get(route) { request, response, next in
             Log.verbose("Received GET(Array) with identifier typed middleware request")
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
@@ -663,7 +669,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T, Q, @escaping CodableArrayResultClosure<O>) -> Void
     ) {
-        registerGetRoute(route: route, queryParams: Q.self, optionalQParam: false, outputType: O.self)
+        registerGetRoute(route: route, queryParams: Q.self, optionalQParam: false, outputType: O.self, outputIsArray: true)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -709,7 +715,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, Q, @escaping CodableArrayResultClosure<O>) -> Void
     ) {
-        registerGetRoute(route: route, queryParams: Q.self, optionalQParam: false, outputType: O.self)
+        registerGetRoute(route: route, queryParams: Q.self, optionalQParam: false, outputType: O.self, outputIsArray: true)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -755,7 +761,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, T3, Q, @escaping CodableArrayResultClosure<O>) -> Void
     ) {
-        registerGetRoute(route: route, queryParams: Q.self, optionalQParam: false, outputType: O.self)
+        registerGetRoute(route: route, queryParams: Q.self, optionalQParam: false, outputType: O.self, outputIsArray: true)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -853,7 +859,7 @@ extension Router {
      ### Usage Example: ###
      In this example, `MySession` is a struct that conforms to the `TypeSafeMiddleware` protocol and specifies an optional `User`, where `User` conforms to Codable.
      ```swift
-     router.delete("/user") { (session: MySession, middle2: Middle2, middle3: Middle3, rrespondWith: (RequestError?) -> Void) in
+     router.delete("/user") { (session: MySession, middle2: Middle2, middle3: Middle3, respondWith: (RequestError?) -> Void) in
         session.user: User? = nil
         respondWith(nil)
      }
@@ -1295,6 +1301,8 @@ extension Router {
         _ route: String,
         handler: @escaping (T, I, @escaping IdentifierCodableResultClosure<Id, O>) -> Void
     ) {
+        // FIXME: The ID is returned in the Location header, it is not an input parameter
+        // https://github.com/IBM-Swift/Kitura/issues/1336
         registerPostRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
@@ -1333,6 +1341,8 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, I, @escaping IdentifierCodableResultClosure<Id, O>) -> Void
     ) {
+        // FIXME: The ID is returned in the Location header, it is not an input parameter
+        // https://github.com/IBM-Swift/Kitura/issues/1336
         registerPostRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
@@ -1371,6 +1381,8 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, T3, I, @escaping IdentifierCodableResultClosure<Id, O>) -> Void
     ) {
+        // FIXME: The ID is returned in the Location header, it is not an input parameter
+        // https://github.com/IBM-Swift/Kitura/issues/1336
         registerPostRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
