@@ -38,13 +38,13 @@ extension DecodingError {
             return "The required key '\(prefixString)\(type.stringValue)' not found."
         case .dataCorrupted(let context):
             // Linux does not get to this state but sends an Error "The operation could not be completed" instead. Future proofing this though just in case.
-            #if os(Linux)
-            // Linux wants a force downcast, MacOS doesn't.
-            if let nsError = context.underlyingError as? NSError, let detailedError = nsError.userInfo["NSDebugDescription"] as? String {
+            #if !os(Linux) || swift(>=4.2)
+            if let nsError = context.underlyingError as NSError?, let detailedError = nsError.userInfo["NSDebugDescription"] as? String {
                 return "The JSON appears to be malformed. \(detailedError)"
             }
             #else
-            if let nsError = context.underlyingError as NSError?, let detailedError = nsError.userInfo["NSDebugDescription"] as? String {
+            // Linux (prior to 4.2) needs a conditional downcast
+            if let nsError = context.underlyingError as? NSError, let detailedError = nsError.userInfo["NSDebugDescription"] as? String {
                 return "The JSON appears to be malformed. \(detailedError)"
             }
             #endif
