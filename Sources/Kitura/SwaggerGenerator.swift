@@ -1102,9 +1102,9 @@ extension Router {
     ///
     /// - Parameter route: The route to register.
     /// - Parameter outputtype: The output object type.
-    public func registerGetRoute<O: Codable>(route: String, outputType: O.Type) {
+    public func registerGetRoute<O: Codable>(route: String, outputType: O.Type, outputIsArray: Bool = false) {
         var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "\(O.self)"))
+        responseTypes.append(SwaggerResponseType(optional: true, array: outputIsArray, type: "\(O.self)"))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
         registerRoute(route: route, method: "get", outputType: O.self, responseTypes: responseTypes)
     }
@@ -1114,9 +1114,9 @@ extension Router {
     /// - Parameter route: The route to register.
     /// - Parameter id: The id type.
     /// - Parameter outputtype: The output object type.
-    public func registerGetRoute<Id: Identifier, O: Codable>(route: String, id: Id.Type, outputType: O.Type) {
+    public func registerGetRoute<Id: Identifier, O: Codable>(route: String, id: Id.Type, outputType: O.Type, outputIsArray: Bool = false) {
         var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "\(O.self)"))
+        responseTypes.append(SwaggerResponseType(optional: true, array: outputIsArray, type: "\(O.self)"))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
         registerRoute(route: route, method: "get", id: Id.self, outputType: O.self, responseTypes: responseTypes)
     }
@@ -1127,9 +1127,9 @@ extension Router {
     /// - Parameter queryParams: The query parameters.
     /// - Parameter optionalQParam: Flag to indicate that the query params are all optional.
     /// - Parameter outputType: The output object type.
-    public func registerGetRoute<Q: QueryParams, O: Codable>(route: String, queryParams: Q.Type, optionalQParam: Bool, outputType: O.Type) {
+    public func registerGetRoute<Q: QueryParams, O: Codable>(route: String, queryParams: Q.Type, optionalQParam: Bool, outputType: O.Type, outputIsArray: Bool = false) {
         var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "\(O.self)"))
+        responseTypes.append(SwaggerResponseType(optional: true, array: outputIsArray, type: "\(O.self)"))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
         registerRoute(route: route, method: "get", queryType: Q.self, allOptQParams: optionalQParam, outputType: O.self, responseTypes: responseTypes)
     }

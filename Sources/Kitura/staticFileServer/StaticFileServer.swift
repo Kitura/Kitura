@@ -18,9 +18,23 @@ import Foundation
 
 // MARK: StaticFileServer
 
-/// A router middleware that serves static files from a given path.
+/**
+ A router middleware that serves static files from a given path.
+ By default, it will serve files from the "/public" directory.
+ ### Usage Example: ###
+ The example below creates and registers a `StaticFileServer` on the "/example" route.
+ When the router is running, A user can make a request that matches the "/example" path (e.g. localhost:8080/example/hello.html).
+ The static file server would look inside its "/files" folder for a file with the same name as the path following "/example"  (e.g. "hello.html").
+ If a file is found it is sent as a response to that request, otherwise the next handler is called.
+ ```swift
+ let router = Router()
+ router.all("/example", middleware: StaticFileServer(path: "./files"))
+ ```
+ */
 open class StaticFileServer: RouterMiddleware {
 
+    // MARK: Configuration Options
+    
     /// Cache configuration options for StaticFileServer.
     public struct CacheOptions {
         let addLastModifiedHeader: Bool
@@ -78,6 +92,8 @@ open class StaticFileServer: RouterMiddleware {
 
     let fileServer: FileServer
 
+    // MARK: Initializer
+    
     /// Initializes a `StaticFileServer` instance.
     ///
     /// - Parameter path: a root directory for file serving.
@@ -101,6 +117,8 @@ open class StaticFileServer: RouterMiddleware {
         fileServer = FileServer(servingFilesPath: absoluteRootPath, options: options,
                                 responseHeadersSetter: responseHeadersSetter)
     }
+
+    // MARK: Serve file
 
     /// Handle the request - serve static file.
     ///
