@@ -688,6 +688,63 @@ extension Router {
             }
         }
     }
+    
+    /**
+     Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+     The closure accepts a successfully executed instance of `TypeSafeMiddleware`, the parsed query parameters,
+     and a handler which responds with an array of Codable objects or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MyHTTPAuth` is a struct that conforms to the `TypeSafeHTTPBasic` protocol from `Kitura-CredentialsHTTP` to provide basic HTTP authentication.
+     ```swift
+     struct Query: QueryParams {
+         let id: Int
+     }
+     router.get("/user") { (auth: MyHTTPAuth, query: Query?, respondWith: ([User]?, RequestError?) -> Void) in
+         if let query = query {
+             let matchedUsers = userArray.filter { $0.id <=  query.id }
+             return respondWith(matchedUsers, nil)
+         } else {
+             respondWith(userArray, nil)
+         }
+     }
+     ```
+     #### Multiple Middleware: ####
+     The closure can process up to three `TypeSafeMiddleware` objects by defining them in the handler:
+     ```swift
+     router.get("/user") { (middle1: Middle1, middle2: Middle2, middle3: Middle3, query: Query,
+     respondWith: ([User]?, RequestError?) -> Void) in
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives a TypeSafeMiddleware instance and a QueryParams instance, and returns an array of Codable objects or a RequestError.
+     */
+    public func get<T: TypeSafeMiddleware, Q: QueryParams, O: Codable>(
+        _ route: String,
+        handler: @escaping (T, Q?, @escaping CodableArrayResultClosure<O>) -> Void
+        ) {
+        registerGetRoute(route: route, queryParams: Q.self, optionalQParam: true, outputType: O.self)
+        get(route) { request, response, next in
+            Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
+            Log.verbose("Query Parameters: \(request.queryParameters)")
+            do {
+                var query: Q? = nil
+                let queryParameters = request.queryParameters
+                if queryParameters.count > 0 {
+                    query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
+                }
+                self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
+                    guard let typeSafeMiddleware = typeSafeMiddleware else {
+                        return next()
+                    }
+                    handler(typeSafeMiddleware, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+                }
+            } catch {
+                // Http 400 error
+                response.status(.badRequest)
+                next()
+            }
+        }
+    }
 
     /**
      Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
@@ -734,6 +791,58 @@ extension Router {
             }
         }
     }
+    
+    /**
+     Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+     The closure accepts two successfully executed instances of `TypeSafeMiddleware`, the parsed query parameters,
+     and a handler which responds with an array of Codable objects or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MyHTTPAuth` is a struct that conforms to the `TypeSafeHTTPBasic` protocol from `Kitura-CredentialsHTTP` to provide basic HTTP authentication.
+     ```swift
+     struct Query: QueryParams {
+         let id: Int
+     }
+     router.get("/user") { (auth: MyHTTPAuth, middle2: Middle2, query: Query?, respondWith: ([User]?, RequestError?) -> Void) in
+         if let query = query {
+             let matchedUsers = userArray.filter { $0.id <=  query.id }
+             return respondWith(matchedUsers, nil)
+         } else {
+             return respondWith(userArray, nil)
+         }
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives two TypeSafeMiddleware instances and a QueryParams instance, and returns an array of Codable objects or a RequestError.
+     :nodoc:
+     */
+    public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Q: QueryParams, O: Codable>(
+        _ route: String,
+        handler: @escaping (T1, T2, Q?, @escaping CodableArrayResultClosure<O>) -> Void
+        ) {
+        registerGetRoute(route: route, queryParams: Q.self, optionalQParam: true, outputType: O.self)
+        get(route) { request, response, next in
+            Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
+            Log.verbose("Query Parameters: \(request.queryParameters)")
+            do {
+                var query: Q? = nil
+                let queryParameters = request.queryParameters
+                if queryParameters.count > 0 {
+                    query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
+                }
+                self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
+                    guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
+                        return next()
+                    }
+                    handler(typeSafeMiddleware1, typeSafeMiddleware2, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+                }
+            } catch {
+                // Http 400 error
+                response.status(.badRequest)
+                next()
+            }
+        }
+    }
 
     /**
      Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
@@ -746,7 +855,7 @@ extension Router {
      struct Query: QueryParams {
         let id: Int
      }
-     router.get("/user") { (session: MySession, middle2: Middle2, middle3: Middle3, rquery: Query, respondWith: ([User]?, RequestError?) -> Void) in
+     router.get("/user") { (session: MySession, middle2: Middle2, middle3: Middle3, query: Query, respondWith: ([User]?, RequestError?) -> Void) in
         guard let user: [User] = session.user[query.id] else {
             return respondWith(nil, .notFound)
         }
@@ -778,7 +887,60 @@ extension Router {
                 response.status(.badRequest)
                 next()
             }
-        }    }
+        }
+    }
+    
+    /**
+     Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+     The closure accepts three successfully executed instances of `TypeSafeMiddleware`, the parsed query parameters,
+     and a handler which responds with an array of Codable objects or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MyHTTPAuth` is a struct that conforms to the `TypeSafeHTTPBasic` protocol from `Kitura-CredentialsHTTP` to provide basic HTTP authentication.
+     ```swift
+     struct Query: QueryParams {
+         let id: Int
+     }
+     router.get("/user") { (auth: MyHTTPAuth, middle2: Middle2, middle3: Middle3, query: Query?, respondWith: ([User]?, RequestError?) -> Void) in
+         if let query = query {
+             let matchedUsers = userArray.filter { $0.id <=  query.id }
+             return respondWith(matchedUsers, nil)
+         } else {
+             return respondWith(userArray, nil)
+         }
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives three TypeSafeMiddleware instances and a QueryParams instance, and returns an array of Codable objects or a RequestError.
+     :nodoc:
+     */
+    public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Q: QueryParams, O: Codable>(
+        _ route: String,
+        handler: @escaping (T1, T2, T3, Q?, @escaping CodableArrayResultClosure<O>) -> Void
+        ) {
+        registerGetRoute(route: route, queryParams: Q.self, optionalQParam: true, outputType: O.self)
+        get(route) { request, response, next in
+            Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
+            Log.verbose("Query Parameters: \(request.queryParameters)")
+            do {
+                var query: Q? = nil
+                let queryParameters = request.queryParameters
+                if queryParameters.count > 0 {
+                    query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
+                }
+                self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
+                    guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
+                        return next()
+                    }
+                    handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+                }
+            } catch {
+                // Http 400 error
+                response.status(.badRequest)
+                next()
+            }
+        }
+    }
 
     /**
      Sets up a closure that will be invoked when a DELETE request to the provided route is received by the server.
@@ -1057,6 +1219,64 @@ extension Router {
             }
         }
     }
+    
+    /**
+     Sets up a closure that will be invoked when a DELETE request to the provided route is received by the server.
+     The closure accepts a successfully executed instance of `TypeSafeMiddleware`, the parsed query parameters,
+     and a handler which responds with nil on success, or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MyHTTPAuth` is a struct that conforms to the `TypeSafeHTTPBasic` protocol from `Kitura-CredentialsHTTP` to provide basic HTTP authentication.
+     ```swift
+     struct Query: QueryParams {
+         let id: Int
+     }
+     router.delete("/user") { (auth: MyHTTPAuth, query: Query?, respondWith: (RequestError?) -> Void) in
+         if let query = query {
+             userArray = userArray.filter { $0.id != query.id }
+             return respondWith(nil)
+         } else {
+             userArray = []
+             return respondWith(nil)
+         }
+     }
+     ```
+     #### Multiple Middleware: ####
+     The closure can process up to three `TypeSafeMiddleware` objects by defining them in the handler:
+     ```swift
+     router.delete("/user") { (middle1: Middle1, middle2: Middle2, middle3: Middle3, query: Query?,
+     respondWith: (RequestError?) -> Void) in
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives a TypeSafeMiddleware and Identifier, and returns nil on success, or a `RequestError`.
+     */
+    public func delete<T: TypeSafeMiddleware, Q: QueryParams>(
+        _ route: String,
+        handler: @escaping (T, Q?, @escaping ResultClosure) -> Void
+        ) {
+        registerDeleteRoute(route: route, queryParams: Q.self, optionalQParam: true)
+        delete(route) { request, response, next in
+            Log.verbose("Received DELETE type-safe request with middleware and Query Parameters")
+            Log.verbose("Query Parameters: \(request.queryParameters)")
+            do {
+                var query: Q? = nil
+                let queryParameters = request.queryParameters
+                if queryParameters.count > 0 {
+                    query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
+                }
+                self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
+                    guard let typeSafeMiddleware = typeSafeMiddleware else {
+                        return next()
+                    }
+                    handler(typeSafeMiddleware, query, CodableHelpers.constructResultHandler(response: response, completion: next))
+                }
+            } catch {
+                // Http 400 error
+                response.status(.badRequest)
+                next()
+            }
+        }
+    }
 
     /**
      Sets up a closure that will be invoked when a DELETE request to the provided route is received by the server.
@@ -1101,6 +1321,59 @@ extension Router {
             }
         }
     }
+    
+    /**
+     Sets up a closure that will be invoked when a DELETE request to the provided route is received by the server.
+     The closure accepts two successfully executed instances of `TypeSafeMiddleware`, the parsed query parameters,
+     and a handler which responds with nil on success, or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MyHTTPAuth` is a struct that conforms to the `TypeSafeHTTPBasic` protocol from `Kitura-CredentialsHTTP` to provide basic HTTP authentication.
+     ```swift
+     struct Query: QueryParams {
+         let id: Int
+     }
+     router.delete("/user") { (auth: MyHTTPAuth, middle2, Middle2, query: Query?, respondWith: (RequestError?) -> Void) in
+         if let query = query {
+             userArray = userArray.filter { $0.id != query.id }
+             return respondWith(nil)
+         } else {
+             userArray = []
+             return respondWith(nil)
+         }
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives a TypeSafeMiddleware and Identifier, and returns nil on success, or a `RequestError`.
+     :nodoc:
+     */
+    public func delete<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Q: QueryParams>(
+        _ route: String,
+        handler: @escaping (T1, T2, Q?, @escaping ResultClosure) -> Void
+        ) {
+        registerDeleteRoute(route: route, queryParams: Q.self, optionalQParam: true)
+        delete(route) { request, response, next in
+            Log.verbose("Received DELETE type-safe request with middleware and Query Parameters")
+            Log.verbose("Query Parameters: \(request.queryParameters)")
+            do {
+                var query: Q? = nil
+                let queryParameters = request.queryParameters
+                if queryParameters.count > 0 {
+                    query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
+                }
+                self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
+                    guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
+                        return next()
+                    }
+                    handler(typeSafeMiddleware1, typeSafeMiddleware2, query, CodableHelpers.constructResultHandler(response: response, completion: next))
+                }
+            } catch {
+                // Http 400 error
+                response.status(.badRequest)
+                next()
+            }
+        }
+    }
 
     /**
      Sets up a closure that will be invoked when a DELETE request to the provided route is received by the server.
@@ -1132,6 +1405,59 @@ extension Router {
             Log.verbose("Query Parameters: \(request.queryParameters)")
             do {
                 let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
+                self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
+                    guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
+                        return next()
+                    }
+                    handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, query, CodableHelpers.constructResultHandler(response: response, completion: next))
+                }
+            } catch {
+                // Http 400 error
+                response.status(.badRequest)
+                next()
+            }
+        }
+    }
+    
+    /**
+     Sets up a closure that will be invoked when a DELETE request to the provided route is received by the server.
+     The closure accepts three successfully executed instances of `TypeSafeMiddleware`, the parsed query parameters,
+     and a handler which responds with nil on success, or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     ### Usage Example: ###
+     In this example, `MyHTTPAuth` is a struct that conforms to the `TypeSafeHTTPBasic` protocol from `Kitura-CredentialsHTTP` to provide basic HTTP authentication.
+     ```swift
+     struct Query: QueryParams {
+         let id: Int
+     }
+     router.delete("/user") { (auth: MyHTTPAuth, middle2, Middle2, middle3, Middle3, query: Query?, respondWith: (RequestError?) -> Void) in
+         if let query = query {
+             userArray = userArray.filter { $0.id != query.id }
+             return respondWith(nil)
+         } else {
+             userArray = []
+             return respondWith(nil)
+         }
+     }
+     ```
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives a TypeSafeMiddleware and Identifier, and returns nil on success, or a `RequestError`.
+     :nodoc:
+     */
+    public func delete<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Q: QueryParams>(
+        _ route: String,
+        handler: @escaping (T1, T2, T3, Q?, @escaping ResultClosure) -> Void
+        ) {
+        registerDeleteRoute(route: route, queryParams: Q.self, optionalQParam: true)
+        delete(route) { request, response, next in
+            Log.verbose("Received DELETE type-safe request with middleware and Query Parameters")
+            Log.verbose("Query Parameters: \(request.queryParameters)")
+            do {
+                var query: Q? = nil
+                let queryParameters = request.queryParameters
+                if queryParameters.count > 0 {
+                    query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
+                }
                 self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
                     guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
                         return next()
