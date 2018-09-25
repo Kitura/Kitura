@@ -645,7 +645,6 @@ struct SwaggerDocument: Encodable {
     /// - Parameter optQParams: Qg indicating that all the query parameters in qParams are to be treated as optional.
     /// - Parameter responseList: An array of response types that can be returned from this path.
     public mutating func addPath(path: String, method: String, id: String?, qParams: QParams?, allOptQParams: Bool=false, inputType: String?, responseList: [SwaggerResponseType]?) {
-        Log.verbose("Building '\(method)' path: '\(path)'")
         // split the path into its components:
         // - route path.
         // - parameters.
@@ -690,19 +689,20 @@ struct SwaggerDocument: Encodable {
                 // responses["default"] = buildResponse(description: "default response", responseType: responseList[1]).
 
                 // build the method definition, note that parameters are optional.
+                Log.verbose("Building method definition for '\(method)' on path '\(swaggerPath)'")
                 let methodDefinition = SwaggerMethod(consumes: ["application/json"],
                                                      produces: ["application/json"],
                                                      parameters: parameters.count > 0 ? parameters : nil,
                                                      responses: responses)
                 if var methods = self.paths[swaggerPath] {
                     // entry exists, so add the method.
-                    Log.debug("Method definition for path '\(swaggerPath)' already exists")
+                    Log.debug("Appending method definition to existing path '\(swaggerPath)'")
 
                     methods[method] = methodDefinition
                     self.paths[swaggerPath] = methods
                 } else {
                     // no entry exists, so create one for this path.
-                    Log.verbose("Building method definition for '\(method)' on path '\(swaggerPath)'")
+                    Log.debug("Creating new methods definition for path '\(swaggerPath)'")
 
                     // first create a methods dict to hold all the methods for this path.
                     var methods = SwaggerMethods()
