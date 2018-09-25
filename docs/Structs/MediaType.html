@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>ParsedBody Enumeration Reference</title>
+    <title>MediaType Structure Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Enum/ParsedBody" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Struct/MediaType" class="dashAnchor"></a>
 
-    <a title="ParsedBody Enumeration Reference"></a>
+    <a title="MediaType Structure Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -44,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html">Kitura Reference</a>
       <img class="carat" src="../img/carat.png" />
-      ParsedBody Enumeration Reference
+      MediaType Structure Reference
     </p>
 
     <div class="content-wrapper">
@@ -188,17 +188,21 @@
 
         <section class="section">
           <div class="section-content">
-            <h1>ParsedBody</h1>
+            <h1>MediaType</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">indirect</span> <span class="kd">enum</span> <span class="kt">ParsedBody</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">MediaType</span><span class="p">:</span> <span class="kt">CustomStringConvertible</span><span class="p">,</span> <span class="kt">Equatable</span><span class="p">,</span> <span class="kt">Hashable</span></code></pre>
 
                 </div>
               </div>
-            <p>The result of parsing the body of the request.</p>
-
-<p>When a body of a request is parsed the results of the parsing are placed
-in the associated value of the enum case based on Content-Type</p>
+            <p>The media type (formerly known as MIME type) is a standardized way to indicate the nature and format of a document.
+This struct consists of a catagorical <code>topLevelType</code> and specific <code>subtype</code> seperated by a <q>/</q> (e.g. <q>text/plain</q>).
+In HTTP, The media type is sent as the first section of the <q>Content-Type</q> header and is case insensitive.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">mediaType</span> <span class="o">=</span> <span class="kt">MediaType</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="o">.</span><span class="n">application</span><span class="p">,</span> <span class="nv">subtype</span><span class="p">:</span> <span class="s">"json"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">mediaType</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+<span class="c1">// Prints ("application/json")</span>
+</code></pre>
 
           </div>
         </section>
@@ -210,9 +214,9 @@ in the associated value of the enum case based on Content-Type</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura10ParsedBodyO10urlEncodedACs10DictionaryVyS2SGcACmF"></a>
-                    <a name="//apple_ref/swift/Element/urlEncoded" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura10ParsedBodyO10urlEncodedACs10DictionaryVyS2SGcACmF">urlEncoded</a>
+                    <a name="/s:6Kitura9MediaTypeV08TopLevelC0O"></a>
+                    <a name="//apple_ref/swift/Enum/TopLevelType" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura9MediaTypeV08TopLevelC0O">TopLevelType</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -220,16 +224,16 @@ in the associated value of the enum case based on Content-Type</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>If the content type was <q>application/x-www-form-urlencoded</q> this
-associated value will contain a representation of the body as a
-dictionary of key-value pairs.</p>
+                        <p>An enum of all recognized top-level media types (categories). See:
+<a href="https://www.iana.org/assignments/media-types/media-types.xhtml">https://www.iana.org/assignments/media-types/media-types.xhtml</a></p>
 
+                        <a href="../Structs/MediaType/TopLevelType.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">urlEncoded</span><span class="p">([</span><span class="kt">String</span><span class="p">:</span><span class="kt">String</span><span class="p">])</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">TopLevelType</span><span class="p">:</span> <span class="kt">String</span></code></pre>
 
                         </div>
                       </div>
@@ -239,13 +243,20 @@ dictionary of key-value pairs.</p>
               </ul>
             </div>
             <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Media%20type%20components"></a>
+                <a name="//apple_ref/swift/Section/Media type components" class="dashAnchor"></a>
+                <a href="#/Media%20type%20components">
+                  <h3 class="section-name">Media type components</h3>
+                </a>
+              </div>
               <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura10ParsedBodyO20urlEncodedMultiValueACs10DictionaryVySSSaySSGGcACmF"></a>
-                    <a name="//apple_ref/swift/Element/urlEncodedMultiValue" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura10ParsedBodyO20urlEncodedMultiValueACs10DictionaryVySSSaySSGGcACmF">urlEncodedMultiValue</a>
+                    <a name="/s:6Kitura9MediaTypeV08topLevelC0AC03TopeC0Ovp"></a>
+                    <a name="//apple_ref/swift/Property/topLevelType" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura9MediaTypeV08topLevelC0AC03TopeC0Ovp">topLevelType</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -253,16 +264,41 @@ dictionary of key-value pairs.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>If the content type was <q>application/x-www-form-urlencoded</q> this
-associated value will contain a representation of the body as a
-dictionary of key-[value] pairs.</p>
+                        <p>The topLevelType represents the category of the MediaType (e.g. <q>audio</q>).</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">urlEncodedMultiValue</span><span class="p">([</span><span class="kt">String</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]])</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">topLevelType</span><span class="p">:</span> <span class="kt"><a href="../Structs/MediaType/TopLevelType.html">TopLevelType</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura9MediaTypeV03subC0SSvp"></a>
+                    <a name="//apple_ref/swift/Property/subType" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura9MediaTypeV03subC0SSvp">subType</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The subtype is the specific MediaType (e.g. <q>html</q>).</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">subType</span><span class="p">:</span> <span class="kt">String</span></code></pre>
 
                         </div>
                       </div>
@@ -272,13 +308,20 @@ dictionary of key-[value] pairs.</p>
               </ul>
             </div>
             <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Initializers"></a>
+                <a name="//apple_ref/swift/Section/Initializers" class="dashAnchor"></a>
+                <a href="#/Initializers">
+                  <h3 class="section-name">Initializers</h3>
+                </a>
+              </div>
               <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura10ParsedBodyO4textACSScACmF"></a>
-                    <a name="//apple_ref/swift/Element/text" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura10ParsedBodyO4textACSScACmF">text</a>
+                    <a name="/s:6Kitura9MediaTypeVA2C08TopLevelC0O4type_SS03subC0tcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(type:subType:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura9MediaTypeVA2C08TopLevelC0O4type_SS03subC0tcfc">init(type:subType:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -286,15 +329,48 @@ dictionary of key-[value] pairs.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>If the content type was <q>text</q> this associated value will contain a
-representation of the body as a String.</p>
+                        <p>Initialize a <code>MediaType</code> instance with a <code><a href="../Structs/MediaType/TopLevelType.html">TopLevelType</a></code> type and <code>String</code> subtype. If no subtype is provided it will default to <q>*</q> representing all subtypes.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">mediaType</span> <span class="o">=</span> <span class="kt">MediaType</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="o">.</span><span class="n">application</span><span class="p">,</span> <span class="nv">subtype</span><span class="p">:</span> <span class="s">"json"</span><span class="p">)</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">text</span><span class="p">(</span><span class="kt">String</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="kt"><a href="../Structs/MediaType/TopLevelType.html">TopLevelType</a></span><span class="p">,</span> <span class="nv">subType</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">"*"</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura9MediaTypeVACSgSScfc"></a>
+                    <a name="//apple_ref/swift/Method/init(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura9MediaTypeVACSgSScfc">init(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Initialize a <code>MediaType</code> instance from a <code>String</code>. If no subtype is provided it will default to <q>*</q> representing all subtypes.
+If the string preceding the first <q>/</q> is not a valid <code><a href="../Structs/MediaType/TopLevelType.html">TopLevelType</a></code> the initializer will return nil.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">mediaType</span> <span class="o">=</span> <span class="kt">MediaType</span><span class="p">(</span><span class="s">"application/json"</span><span class="p">)</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">?</span> <span class="p">(</span><span class="n">_</span> <span class="nv">mimeType</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -304,13 +380,20 @@ representation of the body as a String.</p>
               </ul>
             </div>
             <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Helper%20Constructors"></a>
+                <a name="//apple_ref/swift/Section/Helper Constructors" class="dashAnchor"></a>
+                <a href="#/Helper%20Constructors">
+                  <h3 class="section-name">Helper Constructors</h3>
+                </a>
+              </div>
               <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura10ParsedBodyO3rawAC10Foundation4DataVcACmF"></a>
-                    <a name="//apple_ref/swift/Element/raw" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura10ParsedBodyO3rawAC10Foundation4DataVcACmF">raw</a>
+                    <a name="/s:6Kitura9MediaTypeV4jsonACvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/json" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura9MediaTypeV4jsonACvpZ">json</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -318,14 +401,51 @@ representation of the body as a String.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A raw representation of the body as a Data struct.</p>
+                        <p>Helper constructor for the <q>application/json</q> media type</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">mediaType</span> <span class="o">=</span> <span class="kt">MediaType</span><span class="o">.</span><span class="n">json</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">mediaType</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+<span class="c1">// Prints ("application/json")</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">raw</span><span class="p">(</span><span class="kt">Data</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">json</span> <span class="o">=</span> <span class="kt">MediaType</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="o">.</span><span class="n">application</span><span class="p">,</span> <span class="nv">subType</span><span class="p">:</span> <span class="s">"json"</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura9MediaTypeV10urlEncodedACvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/urlEncoded" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura9MediaTypeV10urlEncodedACvpZ">urlEncoded</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Helper constructor for the <q>application/x-www-form-urlencoded</q> media type</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">mediaType</span> <span class="o">=</span> <span class="kt">MediaType</span><span class="o">.</span><span class="n">urlEncoded</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">mediaType</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+<span class="c1">// Prints ("application/x-www-form-urlencoded")</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">urlEncoded</span> <span class="o">=</span> <span class="kt">MediaType</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="o">.</span><span class="n">application</span><span class="p">,</span> <span class="nv">subType</span><span class="p">:</span> <span class="s">"x-www-form-urlencoded"</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -335,13 +455,20 @@ representation of the body as a String.</p>
               </ul>
             </div>
             <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Protocol%20conformance"></a>
+                <a name="//apple_ref/swift/Section/Protocol conformance" class="dashAnchor"></a>
+                <a href="#/Protocol%20conformance">
+                  <h3 class="section-name">Protocol conformance</h3>
+                </a>
+              </div>
               <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura10ParsedBodyO9multipartACSayAA4PartVGcACmF"></a>
-                    <a name="//apple_ref/swift/Element/multipart" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura10ParsedBodyO9multipartACSayAA4PartVGcACmF">multipart</a>
+                    <a name="/s:6Kitura9MediaTypeV11descriptionSSvp"></a>
+                    <a name="//apple_ref/swift/Property/description" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura9MediaTypeV11descriptionSSvp">description</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -349,85 +476,20 @@ representation of the body as a String.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>If the content type was <q>multipart/form-data</q> this associated value will
-contain an array of parts of multi-part respresentation of the body.</p>
+                        <p>Returns the media type, as a String structured: <code>topLevelType</code>/<code>subtype</code>. Required for CustomStringConvertible conformance.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code><span class="nf">print</span><span class="p">(</span><span class="n">mediaType</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+<span class="c1">// Prints ("application/json")</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">multipart</span><span class="p">([</span><span class="kt"><a href="../Structs/Part.html">Part</a></span><span class="p">])</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">description</span><span class="p">:</span> <span class="kt">String</span></code></pre>
 
                         </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura10ParsedBodyO4jsonACs10DictionaryVySSypGcACmF"></a>
-                    <a name="//apple_ref/swift/Element/json" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura10ParsedBodyO4jsonACs10DictionaryVySSypGcACmF">json</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>If the content type was <q>application/json</q> this associated value will
-contain the body of a [String: Any] json dictionary object.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">json</span><span class="p">([</span><span class="kt">String</span><span class="p">:</span> <span class="kt">Any</span><span class="p">])</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura10ParsedBodyO6asJSONs10DictionaryVySSypGSgvp"></a>
-                    <a name="//apple_ref/swift/Property/asJSON" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura10ParsedBodyO6asJSONs10DictionaryVySSypGSgvp">asJSON</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Extract a <q>JSON</q> body from the <code>ParsedBody</code> enum</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">asJSON</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">Any</span><span class="p">]?</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Return Value</h4>
-                        <p>The parsed body as a [String: Any] object, or nil if the body wasn&rsquo;t in
-      JSON format.</p>
                       </div>
                     </section>
                   </div>
@@ -435,9 +497,9 @@ contain the body of a [String: Any] json dictionary object.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura10ParsedBodyO11asMultiPartSayAA0F0VGSgvp"></a>
-                    <a name="//apple_ref/swift/Property/asMultiPart" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura10ParsedBodyO11asMultiPartSayAA0F0VGSgvp">asMultiPart</a>
+                    <a name="/s:6Kitura9MediaTypeV2eeoiSbAC_ACtFZ"></a>
+                    <a name="//apple_ref/swift/Method/==(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura9MediaTypeV2eeoiSbAC_ACtFZ">==(_:_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -445,21 +507,16 @@ contain the body of a [String: Any] json dictionary object.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Extract a <q>multipart</q> body from the <code>ParsedBody</code> enum</p>
+                        <p>Compares two MediaTypes returning true if they are equal. Required for Equatable conformance.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">asMultiPart</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Structs/Part.html">Part</a></span><span class="p">]?</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="o">==</span> <span class="p">(</span><span class="nv">lhs</span><span class="p">:</span> <span class="kt">MediaType</span><span class="p">,</span> <span class="nv">rhs</span><span class="p">:</span> <span class="kt">MediaType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
 
                         </div>
-                      </div>
-                      <div>
-                        <h4>Return Value</h4>
-                        <p>The parsed body as an array of <code><a href="../Structs/Part.html">Part</a></code> structs, or nil if the body wasn&rsquo;t in
-      multi-part form format.</p>
                       </div>
                     </section>
                   </div>
@@ -467,9 +524,9 @@ contain the body of a [String: Any] json dictionary object.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura10ParsedBodyO5asRaw10Foundation4DataVSgvp"></a>
-                    <a name="//apple_ref/swift/Property/asRaw" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura10ParsedBodyO5asRaw10Foundation4DataVSgvp">asRaw</a>
+                    <a name="/s:6Kitura9MediaTypeV9hashValueSivp"></a>
+                    <a name="//apple_ref/swift/Property/hashValue" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura9MediaTypeV9hashValueSivp">hashValue</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -477,117 +534,16 @@ contain the body of a [String: Any] json dictionary object.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Extract a <q>raw</q> body from the <code>ParsedBody</code> enum</p>
+                        <p>The hashValue for the MediaTypes. Required for Hashable conformance.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">asRaw</span><span class="p">:</span> <span class="kt">Data</span><span class="p">?</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">hashValue</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
 
                         </div>
-                      </div>
-                      <div>
-                        <h4>Return Value</h4>
-                        <p>The <q>raw</q> body as a Data, or nil if the body wasn&rsquo;t in raw format.</p>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura10ParsedBodyO6asTextSSSgvp"></a>
-                    <a name="//apple_ref/swift/Property/asText" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura10ParsedBodyO6asTextSSSgvp">asText</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Extract a <q>text</q> body from the <code>ParsedBody</code> enum</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">asText</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Return Value</h4>
-                        <p>The <q>text</q> body as a String, or nil if the body wasn&rsquo;t in text format.</p>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura10ParsedBodyO12asURLEncodeds10DictionaryVyS2SGSgvp"></a>
-                    <a name="//apple_ref/swift/Property/asURLEncoded" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura10ParsedBodyO12asURLEncodeds10DictionaryVyS2SGSgvp">asURLEncoded</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Extract a <q>urlEncoded</q> body from the <code>ParsedBody</code> enum with comma-
-separated values.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">asURLEncoded</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span><span class="kt">String</span><span class="p">]?</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Return Value</h4>
-                        <p>The parsed body as a Dictionary<String, String>, or nil if the body wasn&rsquo;t in
-      url encoded form format.</p>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura10ParsedBodyO22asURLEncodedMultiValues10DictionaryVySSSaySSGGSgvp"></a>
-                    <a name="//apple_ref/swift/Property/asURLEncodedMultiValue" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura10ParsedBodyO22asURLEncodedMultiValues10DictionaryVySSSaySSGGSgvp">asURLEncodedMultiValue</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Extract a <q>urlEncoded</q> body from the <code>ParsedBody</code> enum with values in
-an array..</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">asURLEncodedMultiValue</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]]?</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Return Value</h4>
-                        <p>The parsed body as a Dictionary<String, Array<String>&gt;, or
-       nil if the body wasn&rsquo;t in url encoded form format.</p>
                       </div>
                     </section>
                   </div>

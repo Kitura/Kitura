@@ -598,6 +598,12 @@ struct SwaggerDocument: Encodable {
             let model = String(describing: name)
             var modelDefinition: SwaggerModel
 
+            // Check to see if we have already built this model
+            guard self.definitions[model] == nil else {
+                Log.debug("Already generated model \(model)")
+                return
+            }
+
             // then build all it
             if let modelInfo = try? buildModel(typeInfo) {
                 Log.debug("in addModel(model: \(model))")
@@ -938,19 +944,32 @@ extension Router {
     func registerRoute<I: Codable, O: Codable>(route: String, method: String, inputType: I.Type, outputType: O.Type, responseTypes: [SwaggerResponseType]) {
         Log.debug("Registering \(route) for \(method) method")
 
-        let typeInfo: TypeInfo
+        let inputTypeInfo: TypeInfo
         do {
-            typeInfo = try TypeDecoder.decode(outputType)
+            inputTypeInfo = try TypeDecoder.decode(inputType)
         } catch {
-            Log.debug("type decode error")
+            Log.debug("Failed to decode input type \(inputType)")
             return
+        }
+
+        var outputTypeInfo: TypeInfo? = nil
+        if inputType != outputType {
+            do {
+                outputTypeInfo = try TypeDecoder.decode(outputType)
+            } catch {
+                Log.debug("Failed to decode output type \(outputType)")
+                return
+            }
         }
 
         // insert the path information into the document structure.
         swagger.addPath(path: route, method: method, id: nil, qParams: nil, inputType: "\(inputType)", responseList: responseTypes)
 
         // add model information into the document structure.
-        swagger.addModel(model: typeInfo)
+        swagger.addModel(model: inputTypeInfo)
+        if let outputTypeInfo = outputTypeInfo {
+            swagger.addModel(model: outputTypeInfo)
+        }
 
         // now walk all the unprocessed models and ensure they are processed.
         for unprocessed in Array(swagger.unprocessedTypes) {
@@ -999,20 +1018,20 @@ extension Router {
     func registerRoute<Id: Identifier, I: Codable, O: Codable>(route: String, method: String, id: Id.Type, inputType: I.Type, outputType: O.Type, responseTypes: [SwaggerResponseType]) {
         Log.debug("Registering \(route) for \(method) method")
 
-        let typeInfo1: TypeInfo
+        let inputTypeInfo: TypeInfo
         do {
-            typeInfo1 = try TypeDecoder.decode(inputType)
+            inputTypeInfo = try TypeDecoder.decode(inputType)
         } catch {
-            Log.debug("failed to decode input type")
+            Log.debug("Failed to decode input type \(inputType)")
             return
         }
 
-        var typeInfo2: TypeInfo? = nil
+        var outputTypeInfo: TypeInfo? = nil
         if inputType != outputType {
             do {
-                typeInfo2 = try TypeDecoder.decode(outputType)
+                outputTypeInfo = try TypeDecoder.decode(outputType)
             } catch {
-                Log.debug("failed to decode output type")
+                Log.debug("Failed to decode output type \(outputType)")
                 return
             }
         }
@@ -1021,9 +1040,9 @@ extension Router {
         swagger.addPath(path: route, method: method, id: "\(id)", qParams: nil, inputType: "\(inputType)", responseList: responseTypes)
 
         // add model information into the document structure.
-        swagger.addModel(model: typeInfo1)
-        if let typeInfo2 = typeInfo2 {
-            swagger.addModel(model: typeInfo2)
+        swagger.addModel(model: inputTypeInfo)
+        if let outputTypeInfo = outputTypeInfo {
+            swagger.addModel(model: outputTypeInfo)
         }
 
         // now walk all the unprocessed models and ensure they are processed.
@@ -1083,9 +1102,9 @@ extension Router {
     ///
     /// - Parameter route: The route to register.
     /// - Parameter outputtype: The output object type.
-    public func registerGetRoute<O: Codable>(route: String, outputType: O.Type) {
+    public func registerGetRoute<O: Codable>(route: String, outputType: O.Type, outputIsArray: Bool = false) {
         var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "\(O.self)"))
+        responseTypes.append(SwaggerResponseType(optional: true, array: outputIsArray, type: "\(O.self)"))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
         registerRoute(route: route, method: "get", outputType: O.self, responseTypes: responseTypes)
     }
@@ -1095,9 +1114,9 @@ extension Router {
     /// - Parameter route: The route to register.
     /// - Parameter id: The id type.
     /// - Parameter outputtype: The output object type.
-    public func registerGetRoute<Id: Identifier, O: Codable>(route: String, id: Id.Type, outputType: O.Type) {
+    public func registerGetRoute<Id: Identifier, O: Codable>(route: String, id: Id.Type, outputType: O.Type, outputIsArray: Bool = false) {
         var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "\(O.self)"))
+        responseTypes.append(SwaggerResponseType(optional: true, array: outputIsArray, type: "\(O.self)"))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
         registerRoute(route: route, method: "get", id: Id.self, outputType: O.self, responseTypes: responseTypes)
     }
@@ -1108,9 +1127,9 @@ extension Router {
     /// - Parameter queryParams: The query parameters.
     /// - Parameter optionalQParam: Flag to indicate that the query params are all optional.
     /// - Parameter outputType: The output object type.
-    public func registerGetRoute<Q: QueryParams, O: Codable>(route: String, queryParams: Q.Type, optionalQParam: Bool, outputType: O.Type) {
+    public func registerGetRoute<Q: QueryParams, O: Codable>(route: String, queryParams: Q.Type, optionalQParam: Bool, outputType: O.Type, outputIsArray: Bool = false) {
         var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "\(O.self)"))
+        responseTypes.append(SwaggerResponseType(optional: true, array: outputIsArray, type: "\(O.self)"))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
         registerRoute(route: route, method: "get", queryType: Q.self, allOptQParams: optionalQParam, outputType: O.self, responseTypes: responseTypes)
     }

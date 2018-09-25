@@ -370,6 +370,8 @@ extension Router {
 
     // POST
     fileprivate func postSafelyWithId<I: Codable, Id: Identifier, O: Codable>(_ route: String, handler: @escaping CodableIdentifierClosure<I, Id, O>) {
+        // FIXME: The ID is returned in the Location header, it is not an input parameter
+        // https://github.com/IBM-Swift/Kitura/issues/1336
         registerPostRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
@@ -428,7 +430,7 @@ extension Router {
 
     // Get array
     fileprivate func getSafely<O: Codable>(_ route: String, handler: @escaping CodableArrayClosure<O>) {
-        registerGetRoute(route: route, outputType: O.self)
+        registerGetRoute(route: route, outputType: O.self, outputIsArray: true)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request")
             handler(CodableHelpers.constructOutResultHandler(response: response, completion: next))
@@ -437,7 +439,9 @@ extension Router {
     
     // Get array of (Id, Codable) tuples
     fileprivate func getSafely<Id: Identifier, O: Codable>(_ route: String, handler: @escaping IdentifierCodableArrayClosure<Id, O>) {
-        registerGetRoute(route: route, id: Id.self, outputType: O.self)
+        // FIXME: The ID is returned in a tuple, it is not an input parameter
+        // https://github.com/IBM-Swift/Kitura/issues/1336
+        registerGetRoute(route: route, id: Id.self, outputType: O.self, outputIsArray: true)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural with identifier) type-safe request")
             handler(CodableHelpers.constructTupleArrayOutResultHandler(response: response, completion: next))
@@ -446,7 +450,7 @@ extension Router {
 
     // Get w/Query Parameters
     fileprivate func getSafely<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q, @escaping CodableArrayResultClosure<O>) -> Void) {
-        registerGetRoute(route: route, queryParams: Q.self, optionalQParam: false, outputType: O.self)
+        registerGetRoute(route: route, queryParams: Q.self, optionalQParam: false, outputType: O.self, outputIsArray: true)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -481,7 +485,7 @@ extension Router {
 
     // Get w/Optional Query Parameters
     fileprivate func getSafely<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q?, @escaping CodableArrayResultClosure<O>) -> Void) {
-        registerGetRoute(route: route, queryParams: Q.self, optionalQParam: true, outputType: O.self)
+        registerGetRoute(route: route, queryParams: Q.self, optionalQParam: true, outputType: O.self, outputIsArray: true)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -639,9 +643,10 @@ extension Router {
     }
 }
 
-//
-// Building blocks for Codable routing
-//
+/**
+ * Building blocks for Codable routing, intended for convenience when implementing
+ * extensions to the `Router` that interoperate with `Codable` types.
+ */
 public struct CodableHelpers {
     /**
      * Check if the given request has content type JSON
