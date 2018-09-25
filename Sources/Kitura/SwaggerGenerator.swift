@@ -449,9 +449,12 @@ struct SwaggerDocument: Encodable {
     func isDictEncodedAsTuple(_ type: Any) -> Bool {
         let typeStr = "\(type)"
         let pattern = "^\\(Optional\\(Swift\\.String\\), Optional\\(Swift\\.[a-zA-Z0-9]+\\)\\)$"
-        if let regex = try? NSRegularExpression(pattern: pattern, options: []) {
+        do {
+            let regex = try NSRegularExpression(pattern: pattern, options: [])
             let match = regex.matches(in: typeStr, options: [], range: NSRange(location: 0, length: typeStr.count))
             return match.count == 1
+        } catch {
+            Log.error("Failed to build regular expression: \(error)")
         }
         return false
     }
@@ -465,12 +468,15 @@ struct SwaggerDocument: Encodable {
         var arrayType = ""
         let nsType = NSString(string: type)
         let pattern = "^([^{\\]]+)"
-        if let regex = try? NSRegularExpression(pattern: pattern, options: []) {
+        do {
+            let regex = try NSRegularExpression(pattern: pattern, options: [])
             let match = regex.matches(in: type, options: [], range: NSRange(location: 0, length: type.count))
             if match.count > 0 {
                 let arrayTypeRange = match[0].range(at: 1)
                 arrayType = nsType.substring(with: arrayTypeRange) as String
             }
+        } catch {
+            Log.error("Failed to build regular expression: \(error)")
         }
         return arrayType
     }
@@ -549,14 +555,20 @@ struct SwaggerDocument: Encodable {
             property["type"] = .string(String(describing: type))
             return (property, required == true)
         case .single(_, let type):
-            if let property = try? swaggerPropertyFromSwiftType(type) {
+            do {
+                let property = try swaggerPropertyFromSwiftType(type)
                 return (property, required == true)
+            } catch {
+                Log.error("Failed to derive a SwaggerProperty from type '\(type)': \(error)")
             }
         case .optional(let wrappedTypeInfo):
             return decomposeType(wrappedTypeInfo, name: name, isArray: array, isRequired: false)
         case .opaque(let type):
-            if let property = try? swaggerPropertyFromSwiftType(type) {
+            do {
+                let property = try swaggerPropertyFromSwiftType(type)
                 return (property, required == true)
+            } catch {
+                Log.error("Failed to derive a SwaggerProperty from type '\(type)': \(error)")
             }
         }
         return (property, required)
@@ -583,6 +595,8 @@ struct SwaggerDocument: Encodable {
             }
             unprocessedSet.remove(typeInfo)
             processedSet.insert(typeInfo)
+        } else {
+            Log.error("Expected a top-level (keyed) type, but received: \(typeInfo.debugDescription)")
         }
         return (modelProperties, required)
     }
@@ -600,20 +614,25 @@ struct SwaggerDocument: Encodable {
 
             // Check to see if we have already built this model
             guard self.definitions[model] == nil else {
-                Log.debug("Already generated model \(model)")
+                Log.debug("Already generated model '\(model)'")
                 return
             }
 
             // then build all it
-            if let modelInfo = try? buildModel(typeInfo) {
-                Log.debug("in addModel(model: \(model))")
+            do {
+                Log.verbose("Building model: '\(model)'")
+                let modelInfo = try buildModel(typeInfo)
                 if modelInfo.required.count > 0 {
                     modelDefinition = SwaggerModel(type: "object", properties: modelInfo.properties, required: Array(modelInfo.required))
                 } else {
                     modelDefinition = SwaggerModel(type: "object", properties: modelInfo.properties, required: [])
                 }
                 self.definitions[model] = modelDefinition
+            } catch {
+                Log.error("Failed to build model '\(model)': \(error)")
             }
+        } else {
+            Log.debug("Model not required for type '\(typeInfo.debugDescription)'")
         }
     }
 
@@ -626,7 +645,7 @@ struct SwaggerDocument: Encodable {
     /// - Parameter optQParams: Qg indicating that all the query parameters in qParams are to be treated as optional.
     /// - Parameter responseList: An array of response types that can be returned from this path.
     public mutating func addPath(path: String, method: String, id: String?, qParams: QParams?, allOptQParams: Bool=false, inputType: String?, responseList: [SwaggerResponseType]?) {
-        Log.debug("in addPath(path: \(path))")
+        Log.verbose("Building '\(method)' path: '\(path)'")
         // split the path into its components:
         // - route path.
         // - parameters.
@@ -677,13 +696,13 @@ struct SwaggerDocument: Encodable {
                                                      responses: responses)
                 if var methods = self.paths[swaggerPath] {
                     // entry exists, so add the method.
-                    Log.debug("found swagger methods definition for path \"\(swaggerPath)\"")
+                    Log.debug("Method definition for path '\(swaggerPath)' already exists")
 
                     methods[method] = methodDefinition
                     self.paths[swaggerPath] = methods
                 } else {
                     // no entry exists, so create one for this path.
-                    Log.debug("no swagger method definition for \"\(method)\" on path \"\(swaggerPath)\", creating one")
+                    Log.verbose("Building method definition for '\(method)' on path '\(swaggerPath)'")
 
                     // first create a methods dict to hold all the methods for this path.
                     var methods = SwaggerMethods()
@@ -722,6 +741,7 @@ struct SwaggerDocument: Encodable {
                     throw SwaggerGenerationError.encodingError
                 }
             } catch {
+                Log.error("Error encoding model properties: \(error)")
                 throw SwaggerGenerationError.encodingError
             }
         }
@@ -758,6 +778,7 @@ struct SwaggerDocument: Encodable {
                 throw SwaggerGenerationError.encodingError
             }
         } catch {
+            Log.error("Error encoding model content: \(error)")
             throw SwaggerGenerationError.encodingError
         }
         return contentStr
@@ -774,11 +795,13 @@ struct SwaggerDocument: Encodable {
         let sp = String(repeating: "  ", count: depth)
         let nl = pretty ? "\n" : ""
 
-        if let modelContent = try? JSONEncodeModelContent(model: model, pretty: pretty, depth: depth + 1) {
+        do {
+            let modelContent = try JSONEncodeModelContent(model: model, pretty: pretty, depth: depth + 1)
             modelStr.append("\(sp)\"\(model)\": {\(nl)")
             modelStr.append(modelContent)
             modelStr.append("\(sp)}")
-        } else {
+        } catch {
+            Log.error("Error encoding model content: \(error)")
             throw SwaggerGenerationError.encodingError
         }
         return modelStr
@@ -806,13 +829,15 @@ struct SwaggerDocument: Encodable {
         var modelCount = 0
         for model in self.definitions.keys {
             modelCount += 1
-            if let encodedModel = try? JSONEncodeModel(model: model, pretty: pretty, depth: depth + 1) {
+            do {
+                let encodedModel = try JSONEncodeModel(model: model, pretty: pretty, depth: depth + 1)
                 definitionsStr.append(encodedModel)
                 if modelCount < definitions.count {
                     definitionsStr.append(",")
                 }
                 definitionsStr.append("\(nl)")
-            } else {
+            } catch {
+                Log.error("Error encoding model: \(error)")
                 throw SwaggerGenerationError.encodingError
             }
         }
@@ -835,9 +860,11 @@ struct SwaggerDocument: Encodable {
                 search = "\n}"
             }
             if let insertionIndex = unwrappedJson.range(of: search, options: .backwards)?.lowerBound {
-                if let definitions = try? JSONEncodeDefinitions(pretty: encoder.outputFormatting == .prettyPrinted) {
+                do {
+                    let definitions = try JSONEncodeDefinitions(pretty: encoder.outputFormatting == .prettyPrinted)
                     unwrappedJson.replaceSubrange(insertionIndex..., with: definitions)
-                } else {
+                } catch {
+                    Log.error("Error JSON encoding definitions: \(error)")
                     throw SwaggerGenerationError.encodingError
                 }
             }
@@ -877,7 +904,7 @@ extension Router {
         do {
             typeInfo = try TypeDecoder.decode(outputType)
         } catch {
-            Log.debug("type decode error")
+            Log.error("Type decode error: \(error)")
             return
         }
 
@@ -908,7 +935,7 @@ extension Router {
         do {
             typeInfo = try TypeDecoder.decode(outputType)
         } catch {
-            Log.debug("type decode error")
+            Log.error("Type decode error: \(error)")
             return
         }
 
@@ -918,7 +945,7 @@ extension Router {
                 params = dict
             }
         } catch {
-            Log.debug("type decode error")
+            Log.error("Type decode error: \(error)")
             return
         }
 
@@ -948,7 +975,7 @@ extension Router {
         do {
             inputTypeInfo = try TypeDecoder.decode(inputType)
         } catch {
-            Log.debug("Failed to decode input type \(inputType)")
+            Log.error("Failed to decode input type \(inputType): \(error)")
             return
         }
 
@@ -957,7 +984,7 @@ extension Router {
             do {
                 outputTypeInfo = try TypeDecoder.decode(outputType)
             } catch {
-                Log.debug("Failed to decode output type \(outputType)")
+                Log.error("Failed to decode output type \(outputType): \(error)")
                 return
             }
         }
@@ -991,7 +1018,7 @@ extension Router {
         do {
             typeInfo = try TypeDecoder.decode(outputType)
         } catch {
-            Log.debug("type decode error")
+            Log.error("Type decode error: \(error)")
             return
         }
 
@@ -1022,7 +1049,7 @@ extension Router {
         do {
             inputTypeInfo = try TypeDecoder.decode(inputType)
         } catch {
-            Log.debug("Failed to decode input type \(inputType)")
+            Log.error("Failed to decode input type \(inputType): \(error)")
             return
         }
 
@@ -1031,7 +1058,7 @@ extension Router {
             do {
                 outputTypeInfo = try TypeDecoder.decode(outputType)
             } catch {
-                Log.debug("Failed to decode output type \(outputType)")
+                Log.error("Failed to decode output type \(outputType): \(error)")
                 return
             }
         }
@@ -1079,7 +1106,7 @@ extension Router {
                 params = dict
             }
         } catch {
-            Log.debug("type decode error")
+            Log.error("Type decode error: \(error)")
             return
         }
 
