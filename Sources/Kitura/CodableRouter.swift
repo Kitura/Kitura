@@ -616,10 +616,10 @@ extension Router {
             /// Precondition: Path is known to contain a : character
             func pathHasSingleParamIdAsSuffix(_ path: String) -> Bool {
                 let pathArray = path.split(separator: ":", maxSplits: 1)
-				if pathArray.count > 1 {
-					return pathArray[1] == "id"
-				}
-				return false
+                if pathArray.count > 1 {
+                    return pathArray[1] == "id"
+                }
+                return false
             }
 
             guard pathHasSingleParamIdAsSuffix(path) else {
