@@ -39,6 +39,7 @@ class TestStaticFileServer: KituraTest {
             ("testGetMissingKituraResource", testGetMissingKituraResource),
             ("testGetTraversedFileKituraResource", testGetTraversedFileKituraResource),
             ("testGetTraversedFile", testGetTraversedFile),
+            ("testNoResourceWhenHandlerPresent", testNoResourceWhenHandlerPresent),
             ("testAbsolutePathFunction", testAbsolutePathFunction),
             ("testAbsoluteRootPath", testAbsoluteRootPath),
             ("testRangeRequests", testRangeRequests),
@@ -192,8 +193,9 @@ class TestStaticFileServer: KituraTest {
     private typealias BodyChecker =  (String) -> Void
     private func runGetResponseTest(path: String, expectedResponseText: String? = nil,
                                     expectedStatusCode: HTTPStatusCode = HTTPStatusCode.OK,
-                                    bodyChecker: BodyChecker? = nil) {
-        performServerTest(router) { expectation in
+                                    bodyChecker: BodyChecker? = nil,
+                                    useBlankRouter: Bool = false) {
+        performServerTest(useBlankRouter ? Router() : router) { expectation in
             self.performRequest("get", path: path, callback: { response in
                 guard let response = response else {
                     XCTFail("ClientRequest response object was nil")
@@ -228,23 +230,27 @@ class TestStaticFileServer: KituraTest {
     }
 
     func testGetKituraResource() {
-        runGetResponseTest(path: "/@@Kitura-router@@/")
+        runGetResponseTest(path: "/@@Kitura-router@@/", useBlankRouter: true)
     }
 
     func testGetDefaultResponse() {
-        runGetResponseTest(path: "/", expectedStatusCode: HTTPStatusCode.OK)
+        runGetResponseTest(path: "/", expectedStatusCode: HTTPStatusCode.OK, useBlankRouter: true)
     }
 
     func testGetMissingKituraResource() {
-        runGetResponseTest(path: "/@@Kitura-router@@/missing.file", expectedStatusCode: HTTPStatusCode.notFound)
+        runGetResponseTest(path: "/@@Kitura-router@@/missing.file", expectedStatusCode: HTTPStatusCode.notFound, useBlankRouter: true)
     }
 
     func testGetTraversedFileKituraResource() {
-        runGetResponseTest(path: "/@@Kitura-router@@/../../../Tests/KituraTests/TestStaticFileServer.swift", expectedStatusCode: HTTPStatusCode.notFound)
+        runGetResponseTest(path: "/@@Kitura-router@@/../../../Tests/KituraTests/TestStaticFileServer.swift", expectedStatusCode: HTTPStatusCode.notFound, useBlankRouter: true)
     }
 
     func testGetTraversedFile() {
-        runGetResponseTest(path: "../Tests/KituraTests/TestStaticFileServer.swift", expectedStatusCode: HTTPStatusCode.notFound)
+        runGetResponseTest(path: "../Tests/KituraTests/TestStaticFileServer.swift", expectedStatusCode: HTTPStatusCode.notFound, useBlankRouter: true)
+    }
+
+    func testNoResourceWhenHandlerPresent() {
+        runGetResponseTest(path: "/@@Kitura-router@@/", expectedStatusCode: HTTPStatusCode.notFound)
     }
 
     func testAbsolutePathFunction() {
