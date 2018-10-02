@@ -47,7 +47,7 @@ public class Router {
     fileprivate let kituraResourcePrefix = "/@@Kitura-router@@/"
 
     /// Helper for serving file resources
-    fileprivate let fileResourceServer = FileResourceServer()
+    fileprivate lazy var fileResourceServer = FileResourceServer()
 
     /// Flag to enable/disable access to parent router's params
     private let mergeParameters: Bool
@@ -603,7 +603,7 @@ extension Router : ServerDelegate {
             return
         }
 
-        if  urlPath.hasPrefix(kituraResourcePrefix) {
+        if  elements.isEmpty && urlPath.hasPrefix(kituraResourcePrefix) {
             let resource = String(urlPath[kituraResourcePrefix.endIndex...])
             fileResourceServer.sendIfFound(resource: resource, usingResponse: response)
         } else {
@@ -625,7 +625,7 @@ extension Router : ServerDelegate {
     /// - Parameter response: The `RouterResponse` object used to respond to the
     ///                     HTTP request.
     private func sendDefaultResponse(request: RouterRequest, response: RouterResponse) {
-        if request.parsedURLPath.path == "/" {
+        if elements.isEmpty && request.parsedURLPath.path == "/" {
             fileResourceServer.sendIfFound(resource: "index.html", usingResponse: response)
         } else {
             do {
