@@ -163,6 +163,7 @@ class TestStaticFileServer: KituraTest {
 
     static func setupRouter(useResourceServer: Bool = false) -> Router {
         let router = Router(useResourceServer: useResourceServer)
+
         // The route below ensures that the static file server does not prevent all routes being walked
         router.all("/", middleware: StaticFileServer())
 
@@ -191,7 +192,7 @@ class TestStaticFileServer: KituraTest {
     }
 
     private typealias BodyChecker =  (String) -> Void
-private func runGetResponseTest(path: String, expectedResponseText: String? = nil,
+    private func runGetResponseTest(path: String, expectedResponseText: String? = nil,
                                     expectedStatusCode: HTTPStatusCode = HTTPStatusCode.OK,
                                     bodyChecker: BodyChecker? = nil,
                                     withRouter: Router? = nil) {
