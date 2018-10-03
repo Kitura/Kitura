@@ -47,7 +47,7 @@ public class Router {
     fileprivate let kituraResourcePrefix = "/@@Kitura-router@@/"
 
     /// Helper for serving file resources
-    fileprivate let fileResourceServer = FileResourceServer()
+    fileprivate let fileResourceServer: FileResourceServer?
 
     /// Flag to enable/disable access to parent router's params
     private let mergeParameters: Bool
@@ -88,9 +88,14 @@ public class Router {
     /// ```
     /// - Parameter mergeParameters: Optional parameter to specify if the router should be able to access parameters
     ///                                 from its parent router. Defaults to `false` if not specified.
-    public init(mergeParameters: Bool = false) {
+    /// - Parameter useResourceServer: Optional parameter to start and use the
+    ///                                FileResourceServer to serve the default
+    ///                                "Welcome to Kitura" page and related
+    ///                                assets.
+    public init(mergeParameters: Bool = false, useResourceServer: Bool = false) {
         self.swagger = SwaggerDocument()
         self.mergeParameters = mergeParameters
+        fileResourceServer = useResourceServer ? FileResourceServer() : nil
 
         Log.verbose("Router initialized")
     }
@@ -603,7 +608,7 @@ extension Router : ServerDelegate {
             return
         }
 
-        if  urlPath.hasPrefix(kituraResourcePrefix) {
+        if  urlPath.hasPrefix(kituraResourcePrefix), let fileResourceServer = fileResourceServer {
             let resource = String(urlPath[kituraResourcePrefix.endIndex...])
             fileResourceServer.sendIfFound(resource: resource, usingResponse: response)
         } else {
@@ -625,7 +630,7 @@ extension Router : ServerDelegate {
     /// - Parameter response: The `RouterResponse` object used to respond to the
     ///                     HTTP request.
     private func sendDefaultResponse(request: RouterRequest, response: RouterResponse) {
-        if request.parsedURLPath.path == "/" {
+        if request.parsedURLPath.path == "/", let fileResourceServer = fileResourceServer {
             fileResourceServer.sendIfFound(resource: "index.html", usingResponse: response)
         } else {
             do {
