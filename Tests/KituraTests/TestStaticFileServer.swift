@@ -34,7 +34,7 @@ class TestStaticFileServer: KituraTest {
             ("testGetWithWhiteSpaces", testGetWithWhiteSpaces),
             ("testGetWithSpecialCharacters", testGetWithSpecialCharacters),
             ("testGetWithSpecialCharactersEncoded", testGetWithSpecialCharactersEncoded),
-            ("testNoResourcesByDefault", testNoResourcesByDefault),
+            ("testWelcomePageCanBeDisabled", testWelcomePageCanBeDisabled),
             ("testGetKituraResource", testGetKituraResource),
             ("testGetDefaultResponse", testGetDefaultResponse),
             ("testGetMissingKituraResource", testGetMissingKituraResource),
@@ -58,7 +58,7 @@ class TestStaticFileServer: KituraTest {
     }
 
     let router = TestStaticFileServer.setupRouter()
-    let routerWithResources = TestStaticFileServer.setupRouter(useResourceServer: true)
+    let routerWithoutWelcome = TestStaticFileServer.setupRouter(enableWelcomePage: false)
 
     func testFileServer() {
         performServerTest(router, asyncTasks: { expectation in
@@ -161,8 +161,8 @@ class TestStaticFileServer: KituraTest {
         })
     }
 
-    static func setupRouter(useResourceServer: Bool = false) -> Router {
-        let router = Router(useResourceServer: useResourceServer)
+    static func setupRouter(enableWelcomePage: Bool = true) -> Router {
+        let router = Router(enableWelcomePage: enableWelcomePage)
 
         // The route below ensures that the static file server does not prevent all routes being walked
         router.all("/", middleware: StaticFileServer())
@@ -230,16 +230,16 @@ class TestStaticFileServer: KituraTest {
         runGetResponseTest(path: "/qwer/index%2B%40%2C.html", expectedResponseText: "<!DOCTYPE html><html><body><b>Index with plus at comma</b></body></html>\n")
     }
 
-    func testNoResourcesByDefault() {
-        runGetResponseTest(path: "/", expectedStatusCode: HTTPStatusCode.notFound)
+    func testWelcomePageCanBeDisabled() {
+        runGetResponseTest(path: "/", expectedStatusCode: HTTPStatusCode.notFound, withRouter: routerWithoutWelcome)
     }
 
     func testGetKituraResource() {
-        runGetResponseTest(path: "/@@Kitura-router@@/", withRouter: routerWithResources)
+        runGetResponseTest(path: "/@@Kitura-router@@/")
     }
 
     func testGetDefaultResponse() {
-        runGetResponseTest(path: "/", withRouter: routerWithResources)
+        runGetResponseTest(path: "/")
     }
 
     func testGetMissingKituraResource() {

@@ -88,14 +88,14 @@ public class Router {
     /// ```
     /// - Parameter mergeParameters: Optional parameter to specify if the router should be able to access parameters
     ///                                 from its parent router. Defaults to `false` if not specified.
-    /// - Parameter useResourceServer: Optional parameter to start and use the
+    /// - Parameter enableWelcomePage: Optional parameter to start and use the
     ///                                FileResourceServer to serve the default
     ///                                "Welcome to Kitura" page and related
     ///                                assets.
-    public init(mergeParameters: Bool = false, useResourceServer: Bool = false) {
+    public init(mergeParameters: Bool = false, enableWelcomePage: Bool = true) {
         self.swagger = SwaggerDocument()
         self.mergeParameters = mergeParameters
-        fileResourceServer = useResourceServer ? FileResourceServer() : nil
+        fileResourceServer = enableWelcomePage ? FileResourceServer() : nil
 
         Log.verbose("Router initialized")
     }
