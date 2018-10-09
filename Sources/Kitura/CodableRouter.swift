@@ -446,7 +446,7 @@ extension Router {
     // Get array of (Id, Codable) tuples
     fileprivate func getSafely<Id: Identifier, O: Codable>(_ route: String, handler: @escaping
         IdentifierCodableArrayClosure<Id, O>) {
-        if !pathSyntaxIsValid(route, identifierExpected: true) {
+        if !pathSyntaxIsValid(route, identifierExpected: false) {
             return
         }
         registerGetRoute(route: route, id: Id.self, outputType: O.self)
