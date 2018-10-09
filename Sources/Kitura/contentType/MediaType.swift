@@ -29,9 +29,27 @@ import KituraNet
  */
 public struct MediaType: CustomStringConvertible, Equatable, Hashable {
     
-    /// An enum of all media type's top level types.
+    /// An enum of all recognized top-level media types (categories). See:
+    /// https://www.iana.org/assignments/media-types/media-types.xhtml
     public enum TopLevelType: String {
-        case application, audio, font, image, message, model, multipart, text, video
+        /// The top-level type for application, eg. `application/json`
+        case application
+        /// The top-level type for audio, eg. `audio/mpeg`
+        case audio
+        /// The top-level type for font, eg. `font/ttf`
+        case font
+        /// The top-level type for image, eg. `image/jpeg`
+        case image
+        /// The top-level type for message, eg. `message/global`
+        case message
+        /// The top-level type for model, eg. `model/vrml`
+        case model
+        /// The top-level type for multipart, eg. `multipart/form-data`
+        case multipart
+        /// The top-level type for text, eg. `text/csv`
+        case text
+        /// The top-level type for video, eg. `video/mp4`
+        case video
     }
     
     // MARK: Media type components

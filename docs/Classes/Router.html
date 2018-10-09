@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (99% documented)
+         (100% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -143,6 +143,12 @@
                 <a class="nav-group-task-link" href="../Structs/Headers.html">Headers</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/MediaType.html">MediaType</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/MediaType/TopLevelType.html">– TopLevelType</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/Part.html">Part</a>
               </li>
               <li class="nav-group-task">
@@ -206,71 +212,14 @@ the appropriate code to handle them. This includes:</p>
         <section class="section">
           <div class="section-content">
             <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Initializer"></a>
+                <a name="//apple_ref/swift/Section/Initializer" class="dashAnchor"></a>
+                <a href="#/Initializer">
+                  <h3 class="section-name">Initializer</h3>
+                </a>
+              </div>
               <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura6RouterC9viewsPathSSvp"></a>
-                    <a name="//apple_ref/swift/Property/viewsPath" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC9viewsPathSSvp">viewsPath</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The root directory where template files should be placed in order to be automatically handed
-over to an appropriate templating engine for content generation. The directory should sit at the
-same level as the project&rsquo;s <q>Sources</q> directory. Defaults to <q>./Views/</q>.</p>
-<h3 id='usage-example' class='heading'>Usage Example:</h3>
-
-<p>The example below changes the directory where template files should be placed to be <q>./myViews/</q></p>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
-<span class="n">router</span><span class="o">.</span><span class="n">viewsPath</span> <span class="o">=</span> <span class="s">"./myViews/"</span>
-</code></pre>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">viewsPath</span> <span class="o">=</span> <span class="s">"./Views/"</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura6RouterC11swaggerJSONSSSgvp"></a>
-                    <a name="//apple_ref/swift/Property/swaggerJSON" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC11swaggerJSONSSSgvp">swaggerJSON</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Returns the current in-memory representation of Codable routes as a
-Swagger document in JSON format, or nil if the document cannot be
-generated.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">swaggerJSON</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
                 <li class="item">
                   <div>
                     <code>
@@ -347,6 +296,173 @@ the <code>greeting</code> parameter will not be accessible and it will return ju
             </div>
             <div class="task-group">
               <div class="task-name-container">
+                <a name="/Swagger"></a>
+                <a name="//apple_ref/swift/Section/Swagger" class="dashAnchor"></a>
+                <a href="#/Swagger">
+                  <h3 class="section-name">Swagger</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC11swaggerJSONSSSgvp"></a>
+                    <a name="//apple_ref/swift/Property/swaggerJSON" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC11swaggerJSONSSSgvp">swaggerJSON</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the current in-memory representation of Codable routes as a
+Swagger document in JSON format, or nil if the document cannot be
+generated.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">swaggerJSON</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Custom%20encoder/decoder"></a>
+                <a name="//apple_ref/swift/Section/Custom encoder/decoder" class="dashAnchor"></a>
+                <a href="#/Custom%20encoder/decoder">
+                  <h3 class="section-name">Custom encoder/decoder</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC8encoderss10DictionaryVyAA9MediaTypeV0A9Contracts11BodyEncoder_pycGvp"></a>
+                    <a name="//apple_ref/swift/Property/encoders" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC8encoderss10DictionaryVyAA9MediaTypeV0A9Contracts11BodyEncoder_pycGvp">encoders</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A dictionary of <code><a href="../Structs/MediaType.html">MediaType</a></code> to <code>BodyEncoder</code> generators.
+By default this includes an entry mapping the <q>application/json</q> media type to a JSONEncoder generator.
+When a Codable object is sent as a response, an encoder will be generated based on the <q>Accepts</q> header
+or using the <code><a href="../Classes/Router.html#/s:6Kitura6RouterC24defaultResponseMediaTypeAA0eF0Vvp">defaultResponseMediaType</a></code> if no matching encoder is found.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>The example below replaces the default JSON encoder with a new encoder that has a different date encoding strategy.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">newJSONEncoder</span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">BodyEncoder</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">encoder</span> <span class="o">=</span> <span class="kt">JSONEncoder</span><span class="p">()</span>
+    <span class="n">encoder</span><span class="o">.</span><span class="n">dateEncodingStrategy</span> <span class="o">=</span> <span class="o">.</span><span class="n">secondsSince1970</span>
+    <span class="k">return</span> <span class="n">encoder</span>
+<span class="p">}</span>
+<span class="n">router</span><span class="o">.</span><span class="n">encoders</span><span class="p">[</span><span class="o">.</span><span class="n">json</span><span class="p">]</span> <span class="o">=</span> <span class="n">newJSONEncoder</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">encoders</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Structs/MediaType.html">MediaType</a></span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">BodyEncoder</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="nv">json</span><span class="p">:</span> <span class="p">{</span><span class="k">return</span> <span class="kt">JSONEncoder</span><span class="p">()}]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC24defaultResponseMediaTypeAA0eF0Vvp"></a>
+                    <a name="//apple_ref/swift/Property/defaultResponseMediaType" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC24defaultResponseMediaTypeAA0eF0Vvp">defaultResponseMediaType</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>if the request&rsquo;s Accept header does not match an encoder,
+this media type will be used by the <code><a href="../Classes/RouterResponse.html">RouterResponse</a></code> to select a <code>BodyEncoder</code>.
+By default, this is set to <q>application/json</q>.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>The example below sets the <code>defaultResponseMediaType</code> as <q>application/x-yaml</q>.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="n">router</span><span class="o">.</span><span class="n">defaultResponseMediaType</span> <span class="o">=</span> <span class="kt">MediaType</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="o">.</span><span class="n">application</span><span class="p">,</span> <span class="nv">subtype</span><span class="p">:</span> <span class="s">"x-yaml"</span><span class="p">)</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">defaultResponseMediaType</span><span class="p">:</span> <span class="kt"><a href="../Structs/MediaType.html">MediaType</a></span> <span class="o">=</span> <span class="o">.</span><span class="n">json</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC8decoderss10DictionaryVyAA9MediaTypeV0A9Contracts11BodyDecoder_pycGvp"></a>
+                    <a name="//apple_ref/swift/Property/decoders" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC8decoderss10DictionaryVyAA9MediaTypeV0A9Contracts11BodyDecoder_pycGvp">decoders</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A dictionary of <code><a href="../Structs/MediaType.html">MediaType</a></code> to <code>BodyDecoder</code> generators.
+By default this includes an entry mapping the <q>application/json</q> media type to a JSONDecoder generator and an entry mapping <q>application/x-www-form-urlencoded</q> media type to <code>QueryDecoder</code>
+When a Codable object is read from the body of a request, a decoder will be generated based on the <q>Content-Type</q> header.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>The example below replaces the default JSON decoder with a new decoder that has a different date encoding strategy.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">newJSONDecoder</span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">BodyDecoder</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">decoder</span> <span class="o">=</span> <span class="kt">JSONDecoder</span><span class="p">()</span>
+    <span class="n">decoder</span><span class="o">.</span><span class="n">dateDecodingStrategy</span> <span class="o">=</span> <span class="o">.</span><span class="n">secondsSince1970</span>
+    <span class="k">return</span> <span class="n">decoder</span>
+<span class="p">}</span>
+<span class="n">router</span><span class="o">.</span><span class="n">decoders</span><span class="p">[</span><span class="o">.</span><span class="n">json</span><span class="p">]</span> <span class="o">=</span> <span class="n">newJSONDecoder</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">decoders</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Structs/MediaType.html">MediaType</a></span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">BodyDecoder</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="nv">json</span><span class="p">:</span> <span class="p">{</span><span class="k">return</span> <span class="kt">JSONDecoder</span><span class="p">()},</span> <span class="o">.</span><span class="nv">urlEncoded</span><span class="p">:</span> <span class="p">{</span><span class="k">return</span> <span class="kt">QueryDecoder</span><span class="p">()}]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
                 <a name="/Template%20Engine"></a>
                 <a name="//apple_ref/swift/Section/Template Engine" class="dashAnchor"></a>
                 <a href="#/Template%20Engine">
@@ -354,6 +470,41 @@ the <code>greeting</code> parameter will not be accessible and it will return ju
                 </a>
               </div>
               <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC9viewsPathSSvp"></a>
+                    <a name="//apple_ref/swift/Property/viewsPath" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC9viewsPathSSvp">viewsPath</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The root directory where template files should be placed in order to be automatically handed
+over to an appropriate templating engine for content generation. The directory should sit at the
+same level as the project&rsquo;s <q>Sources</q> directory. Defaults to <q>./Views/</q>.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>The example below changes the directory where template files should be placed to be <q>./myViews/</q></p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="n">router</span><span class="o">.</span><span class="n">viewsPath</span> <span class="o">=</span> <span class="s">"./myViews/"</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">viewsPath</span> <span class="o">=</span> <span class="s">"./Views/"</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
                 <li class="item">
                   <div>
                     <code>
@@ -908,7 +1059,7 @@ The handler contains the developer&rsquo;s logic, which determines the server&rs
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="k">get</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span>
     <span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
-    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">CodableResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kd">@escaping</span> <span class="kt">CodableResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
 <span class="p">)</span></code></pre>
 
                         </div>
@@ -988,7 +1139,7 @@ The handler contains the developer&rsquo;s logic, which determines the server&rs
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="k">get</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span>
     <span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
-    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">CodableArrayResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kd">@escaping</span> <span class="kt">CodableArrayResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
 <span class="p">)</span></code></pre>
 
                         </div>
@@ -1068,7 +1219,7 @@ The handler contains the developer&rsquo;s logic, which determines the server&rs
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="k">get</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></span><span class="p">,</span> <span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span>
     <span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
-    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">Id</span><span class="p">,</span> <span class="kt">CodableResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">Id</span><span class="p">,</span> <span class="kd">@escaping</span> <span class="kt">CodableResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
 <span class="p">)</span></code></pre>
 
                         </div>
@@ -1148,7 +1299,7 @@ The handler contains the developer&rsquo;s logic, which determines the server&rs
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="k">get</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></span><span class="p">,</span> <span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span>
     <span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
-    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">IdentifierCodableArrayResultClosure</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">,</span> <span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kd">@escaping</span> <span class="kt">IdentifierCodableArrayResultClosure</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">,</span> <span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
 <span class="p">)</span></code></pre>
 
                         </div>
@@ -1392,7 +1543,7 @@ The handler contains the developer&rsquo;s logic, which determines the server&rs
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">delete</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></span><span class="o">&gt;</span><span class="p">(</span>
     <span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
-    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">ResultClosure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kd">@escaping</span> <span class="kt">ResultClosure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
 <span class="p">)</span></code></pre>
 
                         </div>
@@ -1470,7 +1621,7 @@ The handler contains the developer&rsquo;s logic, which determines the server&rs
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">delete</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></span><span class="p">,</span> <span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="o">&gt;</span><span class="p">(</span>
     <span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
-    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">Id</span><span class="p">,</span> <span class="kt">ResultClosure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">Id</span><span class="p">,</span> <span class="kd">@escaping</span> <span class="kt">ResultClosure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
 <span class="p">)</span></code></pre>
 
                         </div>
@@ -1633,7 +1784,7 @@ The handler contains the developer&rsquo;s logic, which determines the server&rs
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">post</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></span><span class="p">,</span> <span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span>
     <span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
-    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">I</span><span class="p">,</span> <span class="kt">CodableResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">I</span><span class="p">,</span> <span class="kd">@escaping</span> <span class="kt">CodableResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
 <span class="p">)</span></code></pre>
 
                         </div>
@@ -1712,7 +1863,7 @@ The handler contains the developer&rsquo;s logic, which determines the server&rs
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">post</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></span><span class="p">,</span> <span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span>
     <span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
-    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">I</span><span class="p">,</span> <span class="kt">IdentifierCodableResultClosure</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">,</span> <span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">I</span><span class="p">,</span> <span class="kd">@escaping</span> <span class="kt">IdentifierCodableResultClosure</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">,</span> <span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
 <span class="p">)</span></code></pre>
 
                         </div>
@@ -1790,7 +1941,7 @@ The handler contains the developer&rsquo;s logic, which determines the server&rs
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">put</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></span><span class="p">,</span> <span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span>
     <span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
-    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">Id</span><span class="p">,</span> <span class="kt">I</span><span class="p">,</span> <span class="kt">CodableResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">Id</span><span class="p">,</span> <span class="kt">I</span><span class="p">,</span> <span class="kd">@escaping</span> <span class="kt">CodableResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
 <span class="p">)</span></code></pre>
 
                         </div>
@@ -1873,7 +2024,7 @@ The handler contains the developer&rsquo;s logic, which determines the server&rs
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">patch</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TypeSafeMiddleware.html">TypeSafeMiddleware</a></span><span class="p">,</span> <span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span>
     <span class="n">_</span> <span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
-    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">Id</span><span class="p">,</span> <span class="kt">I</span><span class="p">,</span> <span class="kt">CodableResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+    <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">Id</span><span class="p">,</span> <span class="kt">I</span><span class="p">,</span> <span class="kd">@escaping</span> <span class="kt">CodableResultClosure</span><span class="o">&lt;</span><span class="kt">O</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
 <span class="p">)</span></code></pre>
 
                         </div>
@@ -3167,10 +3318,10 @@ in the location HTTP header).</p>
             </div>
             <div class="task-group">
               <div class="task-name-container">
-                <a name="/error"></a>
-                <a name="//apple_ref/swift/Section/error" class="dashAnchor"></a>
-                <a href="#/error">
-                  <h3 class="section-name">error</h3>
+                <a name="/Error"></a>
+                <a name="//apple_ref/swift/Section/Error" class="dashAnchor"></a>
+                <a href="#/Error">
+                  <h3 class="section-name">Error</h3>
                 </a>
               </div>
               <ul class="item-container">
@@ -11068,9 +11219,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idxm10outputtypets9DecodableRzs9EncodableRzlF"></a>
-                    <a name="//apple_ref/swift/Method/registerGetRoute(route:id:outputtype:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC16registerGetRouteySS5route_Sb2idxm10outputtypets9DecodableRzs9EncodableRzlF">registerGetRoute(route:id:outputtype:)</a>
+                    <a name="/s:6Kitura6RouterC16registerGetRouteySS5route_xm10outputTypets9DecodableRzs9EncodableRzlF"></a>
+                    <a name="//apple_ref/swift/Method/registerGetRoute(route:outputType:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC16registerGetRouteySS5route_xm10outputTypets9DecodableRzs9EncodableRzlF">registerGetRoute(route:outputType:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -11085,7 +11236,65 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerGetRoute</span><span class="o">&lt;</span><span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerGetRoute</span><span class="o">&lt;</span><span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">outputType</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The route to register.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>outputtype</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The output object type.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC16registerGetRouteySS5route_xm2idq_m10outputTypet0A9Contracts10IdentifierRzs9DecodableR_s9EncodableR_r0_lF"></a>
+                    <a name="//apple_ref/swift/Method/registerGetRoute(route:id:outputType:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC16registerGetRouteySS5route_xm2idq_m10outputTypet0A9Contracts10IdentifierRzs9DecodableR_s9EncodableR_r0_lF">registerGetRoute(route:id:outputType:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Register GET route</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerGetRoute</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Id</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">outputType</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -11113,7 +11322,7 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                               </td>
                               <td>
                                 <div>
-                                  <p>Boolean to indicate if id is used.</p>
+                                  <p>The id type.</p>
                                 </div>
                               </td>
                             </tr>
@@ -11138,9 +11347,91 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC19registerDeleteRouteySS5route_Sb2idtF"></a>
-                    <a name="//apple_ref/swift/Method/registerDeleteRoute(route:id:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC19registerDeleteRouteySS5route_Sb2idtF">registerDeleteRoute(route:id:)</a>
+                    <a name="/s:6Kitura6RouterC16registerGetRouteySS5route_xm11queryParamsSb14optionalQParamq_m10outputTypet0A9Contracts05QueryH0Rzs9DecodableR_s9EncodableR_r0_lF"></a>
+                    <a name="//apple_ref/swift/Method/registerGetRoute(route:queryParams:optionalQParam:outputType:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC16registerGetRouteySS5route_xm11queryParamsSb14optionalQParamq_m10outputTypet0A9Contracts05QueryH0Rzs9DecodableR_s9EncodableR_r0_lF">registerGetRoute(route:queryParams:optionalQParam:outputType:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Register GET route</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerGetRoute</span><span class="o">&lt;</span><span class="kt">Q</span><span class="p">:</span> <span class="kt">QueryParams</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">queryParams</span><span class="p">:</span> <span class="kt">Q</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">optionalQParam</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">outputType</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The route to register.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>queryParams</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The query parameters.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>optionalQParam</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Flag to indicate that the query params are all optional.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>outputType</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The output object type.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC19registerDeleteRouteySS5route_tF"></a>
+                    <a name="//apple_ref/swift/Method/registerDeleteRoute(route:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC19registerDeleteRouteySS5route_tF">registerDeleteRoute(route:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -11155,7 +11446,123 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">registerDeleteRoute</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">registerDeleteRoute</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The route to register.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC19registerDeleteRouteySS5route_xm11queryParamsSb14optionalQParamt0A9Contracts05QueryH0RzlF"></a>
+                    <a name="//apple_ref/swift/Method/registerDeleteRoute(route:queryParams:optionalQParam:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC19registerDeleteRouteySS5route_xm11queryParamsSb14optionalQParamt0A9Contracts05QueryH0RzlF">registerDeleteRoute(route:queryParams:optionalQParam:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Register DELETE route</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerDeleteRoute</span><span class="o">&lt;</span><span class="kt">Q</span><span class="p">:</span> <span class="kt">QueryParams</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">queryParams</span><span class="p">:</span> <span class="kt">Q</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">optionalQParam</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The route to register.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>queryParams</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The query parameters.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>optionalQParam</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Flag to indicate that the query params are all optional.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC19registerDeleteRouteySS5route_xm2idt0A9Contracts10IdentifierRzlF"></a>
+                    <a name="//apple_ref/swift/Method/registerDeleteRoute(route:id:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC19registerDeleteRouteySS5route_xm2idt0A9Contracts10IdentifierRzlF">registerDeleteRoute(route:id:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Register DELETE route</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerDeleteRoute</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Id</span><span class="o">.</span><span class="k">Type</span> <span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -11183,7 +11590,7 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                               </td>
                               <td>
                                 <div>
-                                  <p>Boolean to indicate if id is used.</p>
+                                  <p>The id type.</p>
                                 </div>
                               </td>
                             </tr>
@@ -11196,9 +11603,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC17registerPostRouteySS5route_Sb2idxm9inputtypeq_m10outputtypets9DecodableRzs9EncodableRzsAIR_sAJR_r0_lF"></a>
-                    <a name="//apple_ref/swift/Method/registerPostRoute(route:id:inputtype:outputtype:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC17registerPostRouteySS5route_Sb2idxm9inputtypeq_m10outputtypets9DecodableRzs9EncodableRzsAIR_sAJR_r0_lF">registerPostRoute(route:id:inputtype:outputtype:)</a>
+                    <a name="/s:6Kitura6RouterC17registerPostRouteySS5route_xm9inputTypeq_m06outputH0ts9DecodableRzs9EncodableRzsAHR_sAIR_r0_lF"></a>
+                    <a name="//apple_ref/swift/Method/registerPostRoute(route:inputType:outputType:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC17registerPostRouteySS5route_xm9inputTypeq_m06outputH0ts9DecodableRzs9EncodableRzsAHR_sAIR_r0_lF">registerPostRoute(route:inputType:outputType:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -11213,7 +11620,77 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerPostRoute</span><span class="o">&lt;</span><span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">inputtype</span><span class="p">:</span> <span class="kt">I</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerPostRoute</span><span class="o">&lt;</span><span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">inputType</span><span class="p">:</span> <span class="kt">I</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">outputType</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>route</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The route to register.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>inputType</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The input object type.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>outputType</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The output object type.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura6RouterC17registerPostRouteySS5route_q_m2idxm9inputTypeq0_m06outputI0ts9DecodableRzs9EncodableRz0A9Contracts10IdentifierR_sAIR0_sAJR0_r1_lF"></a>
+                    <a name="//apple_ref/swift/Method/registerPostRoute(route:id:inputType:outputType:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC17registerPostRouteySS5route_q_m2idxm9inputTypeq0_m06outputI0ts9DecodableRzs9EncodableRz0A9Contracts10IdentifierR_sAIR0_sAJR0_r1_lF">registerPostRoute(route:id:inputType:outputType:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Register POST route that is handled by a CodableIdentifierClosure.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerPostRoute</span><span class="o">&lt;</span><span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Id</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">inputType</span><span class="p">:</span> <span class="kt">I</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">outputType</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -11241,14 +11718,14 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                               </td>
                               <td>
                                 <div>
-                                  <p>Boolean to indicate if id is used.</p>
+                                  <p>The id type.</p>
                                 </div>
                               </td>
                             </tr>
                             <tr>
                               <td>
                                 <code>
-                                <em>inputtype</em>
+                                <em>inputType</em>
                                 </code>
                               </td>
                               <td>
@@ -11260,7 +11737,7 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                             <tr>
                               <td>
                                 <code>
-                                <em>outputtype</em>
+                                <em>outputType</em>
                                 </code>
                               </td>
                               <td>
@@ -11278,9 +11755,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC16registerPutRouteySS5route_Sb2idxm9inputtypeq_m10outputtypets9DecodableRzs9EncodableRzsAIR_sAJR_r0_lF"></a>
-                    <a name="//apple_ref/swift/Method/registerPutRoute(route:id:inputtype:outputtype:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC16registerPutRouteySS5route_Sb2idxm9inputtypeq_m10outputtypets9DecodableRzs9EncodableRzsAIR_sAJR_r0_lF">registerPutRoute(route:id:inputtype:outputtype:)</a>
+                    <a name="/s:6Kitura6RouterC16registerPutRouteySS5route_xm2idq_m9inputTypeq0_m06outputI0t0A9Contracts10IdentifierRzs9DecodableR_s9EncodableR_sAKR0_sALR0_r1_lF"></a>
+                    <a name="//apple_ref/swift/Method/registerPutRoute(route:id:inputType:outputType:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC16registerPutRouteySS5route_xm2idq_m9inputTypeq0_m06outputI0t0A9Contracts10IdentifierRzs9DecodableR_s9EncodableR_sAKR0_sALR0_r1_lF">registerPutRoute(route:id:inputType:outputType:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -11295,7 +11772,7 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerPutRoute</span><span class="o">&lt;</span><span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">inputtype</span><span class="p">:</span> <span class="kt">I</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerPutRoute</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Id</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">inputType</span><span class="p">:</span> <span class="kt">I</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">outputType</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -11323,14 +11800,14 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                               </td>
                               <td>
                                 <div>
-                                  <p>Boolean to indicate if id is used.</p>
+                                  <p>The id type.</p>
                                 </div>
                               </td>
                             </tr>
                             <tr>
                               <td>
                                 <code>
-                                <em>inputtype</em>
+                                <em>inputType</em>
                                 </code>
                               </td>
                               <td>
@@ -11342,7 +11819,7 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                             <tr>
                               <td>
                                 <code>
-                                <em>outputtype</em>
+                                <em>outputType</em>
                                 </code>
                               </td>
                               <td>
@@ -11360,9 +11837,9 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura6RouterC18registerPatchRouteySS5route_Sb2idxm9inputtypeq_m10outputtypets9DecodableRzs9EncodableRzsAIR_sAJR_r0_lF"></a>
-                    <a name="//apple_ref/swift/Method/registerPatchRoute(route:id:inputtype:outputtype:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura6RouterC18registerPatchRouteySS5route_Sb2idxm9inputtypeq_m10outputtypets9DecodableRzs9EncodableRzsAIR_sAJR_r0_lF">registerPatchRoute(route:id:inputtype:outputtype:)</a>
+                    <a name="/s:6Kitura6RouterC18registerPatchRouteySS5route_xm2idq_m9inputTypeq0_m06outputI0t0A9Contracts10IdentifierRzs9DecodableR_s9EncodableR_sAKR0_sALR0_r1_lF"></a>
+                    <a name="//apple_ref/swift/Method/registerPatchRoute(route:id:inputType:outputType:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura6RouterC18registerPatchRouteySS5route_xm2idq_m9inputTypeq0_m06outputI0t0A9Contracts10IdentifierRzs9DecodableR_s9EncodableR_sAKR0_sALR0_r1_lF">registerPatchRoute(route:id:inputType:outputType:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -11377,7 +11854,7 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerPatchRoute</span><span class="o">&lt;</span><span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">inputtype</span><span class="p">:</span> <span class="kt">I</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">outputtype</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">registerPatchRoute</span><span class="o">&lt;</span><span class="kt">Id</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">I</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">O</span><span class="p">:</span> <span class="kt">Codable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">route</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Id</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">inputType</span><span class="p">:</span> <span class="kt">I</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">outputType</span><span class="p">:</span> <span class="kt">O</span><span class="o">.</span><span class="k">Type</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -11405,14 +11882,14 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                               </td>
                               <td>
                                 <div>
-                                  <p>Boolean to indicate if id is used.</p>
+                                  <p>The id type.</p>
                                 </div>
                               </td>
                             </tr>
                             <tr>
                               <td>
                                 <code>
-                                <em>inputtype</em>
+                                <em>inputType</em>
                                 </code>
                               </td>
                               <td>
@@ -11424,7 +11901,7 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
                             <tr>
                               <td>
                                 <code>
-                                <em>outputtype</em>
+                                <em>outputType</em>
                                 </code>
                               </td>
                               <td>
@@ -11447,7 +11924,7 @@ specified, the <code><a href="../Protocols/RouterMiddleware.html">RouterMiddlewa
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-06-01)</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-09-10)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

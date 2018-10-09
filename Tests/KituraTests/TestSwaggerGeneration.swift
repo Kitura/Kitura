@@ -112,7 +112,7 @@ func getSingleAppleHandler(id: Int, completion: (Apple?, RequestError?) -> Void)
     completion(nil, nil)
 }
 
-func getSingleArrayAppleHandler(completion: ([(Int, Apple)]?, RequestError?) -> Void) -> Void {
+func getTupleArrayAppleHandler(completion: ([(Int, Apple)]?, RequestError?) -> Void) -> Void {
     completion(nil, nil)
 }
 
@@ -136,28 +136,40 @@ func patchSingleAppleHandler(id: Int, posted: Apple, completion: (Apple?, Reques
     completion(nil, nil)
 }
 
+// A route that has an input type (Banana) that is never used as an output type
+func postBananaHandler(posted: Banana, completion: (Apple?, RequestError?) -> Void) -> Void {
+    completion(nil, nil)
+}
+
 class TestSwaggerGeneration: KituraTest {
 
     static var allTests: [(String, (TestSwaggerGeneration) -> () throws -> Void)] {
         return [
+            ("testSwaggerVersion", testSwaggerVersion),
+            ("testBasePath", testBasePath),
+            ("testSchemes", testSchemes),
+            ("testInfo", testInfo),
             ("testSwaggerDefinitions", testSwaggerDefinitions),
-            ("testSwaggerSections", testSwaggerSections),
             ("testSwaggerContent", testSwaggerContent),
             ("testSwaggerQueryParams", testSwaggerQueryParams),
+            ("testArrayReturnTypes", testArrayReturnTypes),
+//            FIXME: https://github.com/IBM-Swift/Kitura/issues/1336
+//            ("testTupleArrayReturnTypes", testTupleArrayReturnTypes),
+//            ("testPostReturningId", testPostReturningId),
+            ("testInputTypesModelled", testInputTypesModelled),
+            ("testNestedTypesModelled", testNestedTypesModelled),
         ]
     }
 
-    let httpPort = 8080
     let router = Router()
 
     override func setUp() {
         super.setUp()
-        stopServer() // stop common server so we can run these tests
         router.delete("/me/pear", handler: deleteHandler)
         router.get("/me/pear", handler: getPearHandler)
         router.get("/me/apple", handler: getAppleHandler)
-        router.get("/me/getarray", handler: getArrayAppleHandler)
-        router.get("/me/getarray", handler: getSingleArrayAppleHandler)
+        router.get("/me/getArray", handler: getArrayAppleHandler)
+        router.get("/me/getTupleArray", handler: getTupleArrayAppleHandler)
         router.get("/me/getid", handler: getSingleAppleHandler)
         router.get("/me/getugli1", handler: getQueryUglifruitHandler1)
         router.get("/me/getugli2", handler: getQueryUglifruitHandler2)
@@ -176,50 +188,17 @@ class TestSwaggerGeneration: KituraTest {
 
         router.put("/me/puts", handler: putSingleAppleHandlerStringId)
         router.put("/me/puti", handler: putSingleAppleHandlerIntId)
-    }
 
-    private func setupServerAndExpectations(router: Router, expectStart: Bool, expectStop: Bool, expectFail: Bool, httpPort: Int?=nil) {
-        let httpServer = Kitura.addHTTPServer(onPort: httpPort ?? self.httpPort, with: router)
-
-        if expectStart {
-            let httpStarted = expectation(description: "HTTPServer started()")
-
-            httpServer.started {
-                httpStarted.fulfill()
-            }
-        } else {
-            httpServer.started {
-                XCTFail("httpServer.started should not have been called")
-            }
-        }
-
-        if expectStop {
-            let httpStopped = expectation(description: "HTTPServer stopped()")
-
-            httpServer.stopped {
-                httpStopped.fulfill()
-            }
-        }
-
-        if expectFail {
-            let httpFailed = expectation(description: "HTTPServer failed()")
-
-            httpServer.failed { error in
-                httpFailed.fulfill()
-            }
-        } else {
-            httpServer.failed { error in
-                XCTFail("\(error)")
-            }
-        }
+        router.post("/banana", handler: postBananaHandler)
     }
 
     func pathAssertions(paths: [String: Any]) {
         // test for path existence
         XCTAssertTrue(paths["/me/post"] != nil, "path /me/post is missing")
-        XCTAssertTrue(paths["/me/getarray/{id}"] != nil, "path /me/getarray/{id} is missing")
-        XCTAssertTrue(paths["/me/postid/{id}"] != nil, "path /me/postid/{id} is missing")
-        XCTAssertTrue(paths["/me/getarray"] != nil, "path /me/getarray is missing")
+// FIXME: https://github.com/IBM-Swift/Kitura/issues/1336
+//        XCTAssertTrue(paths["/me/getTupleArray"] != nil, "path /me/getTupleArray is missing")
+//        XCTAssertTrue(paths["/me/postid"] != nil, "path /me/postid is missing")
+        XCTAssertTrue(paths["/me/getArray"] != nil, "path /me/getArray is missing")
         XCTAssertTrue(paths["/me/apple"] != nil, "path /me/apple is missing")
         XCTAssertTrue(paths["/me/getid/{id}"] != nil, "path /me/getid/{id} is missing")
         XCTAssertTrue(paths["/me/patch/{id}"] != nil, "path /me/patch/{id} is missing")
@@ -337,6 +316,53 @@ class TestSwaggerGeneration: KituraTest {
         }
     }
 
+    // Check that a type that only appears as an input type is defined
+    func bananaDefinitionsAssertions(definitions: [String: Any]) {
+        guard let model = definitions["Banana"] as? [String: Any] else {
+            return XCTFail("Banana model is missing")
+        }
+        if let type = model["type"] as? String {
+            XCTAssertTrue(type == "object", "model Banana: type is incorrect")
+        } else {
+            XCTFail("Model Banana: type is missing")
+        }
+
+        if let required = model["required"] as? [String] {
+            XCTAssertTrue(required.contains("name"), "model Banana: required does not contain 'name'")
+            XCTAssertTrue(required.contains("colour"), "model Banana: required does not contain 'colour'")
+            XCTAssertEqual(required.count, 2, "model Apple: required.count is incorrect")
+        } else {
+            XCTFail("model Banana: required is missing")
+        }
+    }
+
+    // Check that a nested type is correctly referenced and defined in the swagger
+    func nestedModelDefinitionsAssertions(definitions: [String: Any]) {
+        guard let banana = definitions["Banana"] as? [String: Any] else {
+            return XCTFail("Banana model is missing")
+        }
+        if let properties = banana["properties"] as? [String: Any] {
+            if let colour = properties["colour"] as? [String: Any] {
+                if let typeRef = colour["$ref"] as? String {
+                    XCTAssertTrue(typeRef == "#/definitions/FruitColour", "model Banana: property 'colour' has incorrect type reference")
+                } else {
+                    XCTFail("model Banana: property 'colour' has missing type reference")
+                }
+            } else {
+                XCTFail("model Banana: property 'colour' is missing")
+            }
+        }
+        guard let fruitColour = definitions["FruitColour"] as? [String: Any] else {
+            return XCTFail("FruitColour model is missing")
+        }
+        if let required = fruitColour["required"] as? [String] {
+            XCTAssertTrue(required.contains("colour"), "model FruitColour: required does not contain 'colour'")
+            XCTAssertEqual(required.count, 1, "model FruitColour: required.count is incorrect")
+        } else {
+            XCTFail("model FruitColour: required is missing")
+        }
+    }
+
     func uglifruitDefinitionsAssertions(definitions: [String: Any]) {
         if let model = definitions["Uglifruit"] as? [String: Any] {
             if let type = model["type"] as? String {
@@ -346,51 +372,6 @@ class TestSwaggerGeneration: KituraTest {
             }
 
             XCTAssertTrue(model["required"] == nil, "model uglifruit: required should not be here")
-        }
-    }
-
-    func sectionsAssertions(dict: [String: Any]) {
-        // test for swagger version
-        if let swagger = dict["swagger"] as? String {
-            XCTAssertTrue(swagger == "2.0", "swagger version is incorrect")
-        } else {
-            XCTFail("swagger version is missing")
-        }
-
-        // test for basePath
-        if let basepath = dict["basePath"] as? String {
-            XCTAssertTrue(basepath == "/", "basePath is incorrect")
-        } else {
-            XCTFail("basePath is missing")
-        }
-
-        // test for schemes section
-        if let schemes = dict["schemes"] as? [String] {
-            XCTAssertTrue(schemes.contains("http"), "schemes does not contain http")
-            XCTAssertTrue(schemes.count == 1, "schemes.count is incorrect")
-        } else {
-            XCTFail("schemes is missing")
-        }
-
-        // test for info section
-        if let info = dict["info"] as? [String: String] {
-            if let title = info["title"] {
-                XCTAssertTrue(title == "Kitura Project", "title is incorrect")
-            } else {
-                XCTFail("title is missing")
-            }
-
-            if let desc = info["description"] {
-                XCTAssertTrue(desc == "Generated by Kitura", "description is incorrect")
-            } else {
-                XCTFail("description is missing")
-            }
-
-            if let version = info["version"] {
-                XCTAssertTrue(version == "1.0", "version is incorrect")
-            } else {
-                XCTFail("version is missing")
-            }
         }
     }
 
@@ -905,183 +886,268 @@ class TestSwaggerGeneration: KituraTest {
         }
     }
 
-    func testSwaggerSections() {
-        // test correct values returned from JsonApiDoc property
-        setupServerAndExpectations(router: router, expectStart: true, expectStop: true, expectFail: false)
-
-        let requestQueue = DispatchQueue(label: "Request queue")
-        requestQueue.async() {
-            Kitura.start()
+    //
+    // Helper for converting the router's swaggerJSON string to JSON dictionary
+    //
+    private func getSwaggerDictionary() -> [String: Any]? {
+        guard let jsonString = router.swaggerJSON else {
+            XCTFail("Router.swaggerJSON unexpectedly nil")
+            return nil
         }
+        guard let data = jsonString.data(using: String.Encoding.utf8, allowLossyConversion: false) else {
+            XCTFail("Unable to convert swaggerJSON to data")
+            return nil
+        }
+        guard let json = try? JSONSerialization.jsonObject(with: data, options: []) else {
+            XCTFail("Unable to deserialize swaggerJSON data")
+            return nil
+        }
+        guard let dict = json as? [String: Any] else {
+            XCTFail("Deserialized JSON was not a [String: Any] dictionary")
+            return nil
+        }
+        return dict
+    }
 
-        if let jsonString = router.swaggerJSON {
-            guard let data = jsonString.data(using: String.Encoding.utf8, allowLossyConversion: false) else {
-                XCTFail("got unexpected nil from router.swaggerJSON")
-                return
-            }
-            guard let json = try? JSONSerialization.jsonObject(with: data, options: []) else {
-                XCTFail("got unexpected nil from router.swaggerJSON")
-                return
-            }
-            guard let dict = json as? [String: Any] else {
-                XCTFail("got unexpected nil from router.swaggerJSON")
-                return
-            }
-
-            // test for document sections
-            sectionsAssertions(dict: dict)
+    //
+    // Test that our swagger document contains the swagger version.
+    //
+    func testSwaggerVersion() {
+        guard let dict = getSwaggerDictionary() else {
+            return XCTFail("Unable to get swagger dictionary")
+        }
+        if let swagger = dict["swagger"] as? String {
+            XCTAssertTrue(swagger == "2.0", "swagger version is incorrect")
         } else {
-            XCTFail("got unexpected nil from router.swaggerJSON")
-        }
-
-        requestQueue.async() {
-            Kitura.stop()
-        }
-
-        waitForExpectations(timeout: 10) { error in
-            XCTAssertNil(error)
+            XCTFail("swagger version is missing")
         }
     }
 
+    //
+    // Test that our swagger document defines the basePath.
+    //
+    func testBasePath() {
+        guard let dict = getSwaggerDictionary() else {
+            return XCTFail("Unable to get swagger dictionary")
+        }
+        if let basepath = dict["basePath"] as? String {
+            XCTAssertTrue(basepath == "/", "basePath is incorrect")
+        } else {
+            XCTFail("basePath is missing")
+        }
+    }
+
+    //
+    // Test that our swagger document defines the expected schemes.
+    //
+    func testSchemes() {
+        guard let dict = getSwaggerDictionary() else {
+            return XCTFail("Unable to get swagger dictionary")
+        }
+        if let schemes = dict["schemes"] as? [String] {
+            XCTAssertTrue(schemes.contains("http"), "schemes does not contain http")
+            XCTAssertTrue(schemes.count == 1, "schemes.count is incorrect")
+        } else {
+            XCTFail("schemes is missing")
+        }
+    }
+
+    //
+    // Test that our swagger document defines the info section.
+    //
+    func testInfo() {
+        guard let dict = getSwaggerDictionary() else {
+            return XCTFail("Unable to get swagger dictionary")
+        }
+        if let info = dict["info"] as? [String: String] {
+            if let title = info["title"] {
+                XCTAssertTrue(title == "Kitura Project", "title is incorrect")
+            } else {
+                XCTFail("title is missing")
+            }
+
+            if let desc = info["description"] {
+                XCTAssertTrue(desc == "Generated by Kitura", "description is incorrect")
+            } else {
+                XCTFail("description is missing")
+            }
+
+            if let version = info["version"] {
+                XCTAssertTrue(version == "1.0", "version is incorrect")
+            } else {
+                XCTFail("version is missing")
+            }
+        }
+    }
+
+    //
+    // Test that our swagger document contains the expected paths
+    // and that the paths' structure is as expected.
+    //
     func testSwaggerContent() {
-        // test correct values returned from JsonApiDoc property
-        setupServerAndExpectations(router: router, expectStart: true, expectStop: true, expectFail: false)
-
-        let requestQueue = DispatchQueue(label: "Request queue")
-        requestQueue.async() {
-            Kitura.start()
+        guard let dict = getSwaggerDictionary() else {
+            return XCTFail("Unable to get swagger dictionary")
         }
-
-
-        if let jsonString = router.swaggerJSON {
-            guard let data = jsonString.data(using: String.Encoding.utf8, allowLossyConversion: false) else {
-                XCTFail("got unexpected nil from router.swaggerJSON")
-                return
-            }
-            guard let json = try? JSONSerialization.jsonObject(with: data, options: []) else {
-                XCTFail("got unexpected nil from router.swaggerJSON")
-                return
-            }
-            guard let dict = json as? [String: Any] else {
-                XCTFail("got unexpected nil from router.swaggerJSON")
-                return
-            }
-            
-            // test for paths section
-            if let paths = dict["paths"] as? [String: Any] {
-                pathAssertions(paths: paths)
-                pathContentAssertions1(paths: paths)
-                pathContentAssertions2(paths: paths)
-                pathContentAssertions3(paths: paths)
-                pathContentAssertions4(paths: paths)
-            } else {
-                XCTFail("paths is missing")
-            }
+        if let paths = dict["paths"] as? [String: Any] {
+            pathAssertions(paths: paths)
+            pathContentAssertions1(paths: paths)
+            pathContentAssertions2(paths: paths)
+            pathContentAssertions3(paths: paths)
+            pathContentAssertions4(paths: paths)
         } else {
-            XCTFail("got unexpected nil from router.swaggerJSON")
-        }
-
-        requestQueue.async() {
-            Kitura.stop()
-        }
-
-        waitForExpectations(timeout: 10) { error in
-            XCTAssertNil(error)
+            XCTFail("paths is missing")
         }
     }
 
+    //
+    // Test that query parameters are correctly represented.
+    //
     func testSwaggerQueryParams() {
-        // test correct values returned from JsonApiDoc property
-        setupServerAndExpectations(router: router, expectStart: true, expectStop: true, expectFail: false)
-
-        let requestQueue = DispatchQueue(label: "Request queue")
-        requestQueue.async() {
-            Kitura.start()
+        guard let dict = getSwaggerDictionary() else {
+            return XCTFail("Unable to get swagger dictionary")
         }
-
-        if let jsonString = router.swaggerJSON {
-            guard let data = jsonString.data(using: String.Encoding.utf8, allowLossyConversion: false) else {
-                XCTFail("got unexpected nil from router.swaggerJSON")
-                return
-            }
-            guard let json = try? JSONSerialization.jsonObject(with: data, options: []) else {
-                XCTFail("got unexpected nil from router.swaggerJSON")
-                return
-            }
-            guard let dict = json as? [String: Any] else {
-                XCTFail("got unexpected nil from router.swaggerJSON")
-                return
-            }
-
-            // test for paths section
-            if let paths = dict["paths"] as? [String: Any] {
-                pathGetQueryParams1(paths: paths)
-                pathGetQueryParams2(paths: paths)
-                pathGetQueryParams3(paths: paths)
-                pathGetQueryParams4(paths: paths)
-                pathGetQueryParams5(paths: paths)
-                pathOptionalQueryParams(paths: paths)
-                pathDeleteQueryParams(paths: paths)
-            } else {
-                XCTFail("paths is missing")
-            }
+        if let paths = dict["paths"] as? [String: Any] {
+            pathGetQueryParams1(paths: paths)
+            pathGetQueryParams2(paths: paths)
+            pathGetQueryParams3(paths: paths)
+            pathGetQueryParams4(paths: paths)
+            pathGetQueryParams5(paths: paths)
+            pathOptionalQueryParams(paths: paths)
+            pathDeleteQueryParams(paths: paths)
         } else {
-            XCTFail("got unexpected nil from router.swaggerJSON")
-        }
-
-        requestQueue.async() {
-            Kitura.stop()
-        }
-
-        waitForExpectations(timeout: 10) { error in
-            XCTAssertNil(error)
+            XCTFail("paths is missing")
         }
     }
 
+    //
+    // Test that our swagger document contains the expected model definitions.
+    //
     func testSwaggerDefinitions() {
-        // test correct values returned from JsonApiDoc property
-        setupServerAndExpectations(router: router, expectStart: true, expectStop: true, expectFail: false)
-
-        let requestQueue = DispatchQueue(label: "Request queue")
-        requestQueue.async() {
-            Kitura.start()
+        guard let dict = getSwaggerDictionary() else {
+            return XCTFail("Unable to get swagger dictionary")
         }
-
-        if let jsonString = router.swaggerJSON {
-            guard let data = jsonString.data(using: String.Encoding.utf8, allowLossyConversion: false) else {
-                XCTFail("got unexpected nil from router.swaggerJSON")
-                return
-            }
-            guard let json = try? JSONSerialization.jsonObject(with: data, options: []) else {
-                XCTFail("got unexpected nil from router.swaggerJSON")
-                return
-            }
-            guard let dict = json as? [String: Any] else {
-                XCTFail("got unexpected nil from router.swaggerJSON")
-                return
-            }
-
-            // test for document sections
-            sectionsAssertions(dict: dict)
-
-            // test for definitions section
-            if let definitions = dict["definitions"] as? [String: Any] {
-                appleDefinitionsAssertions(definitions: definitions)
-                pearDefinitionsAssertions(definitions: definitions)
-                uglifruitDefinitionsAssertions(definitions: definitions)
-            } else {
-                XCTFail("definitions section is missing")
-            }
+        if let definitions = dict["definitions"] as? [String: Any] {
+            appleDefinitionsAssertions(definitions: definitions)
+            pearDefinitionsAssertions(definitions: definitions)
+            uglifruitDefinitionsAssertions(definitions: definitions)
         } else {
-            XCTFail("got unexpected nil from router.swaggerJSON")
-        }
-
-        requestQueue.async() {
-            Kitura.stop()
-        }
-
-        waitForExpectations(timeout: 10) { error in
-            XCTAssertNil(error)
+            XCTFail("definitions section is missing")
         }
     }
+
+    //
+    // Test that array return types are correctly represented.
+    //
+    func testArrayReturnTypes() {
+        guard let dict = getSwaggerDictionary() else {
+            return XCTFail("Unable to get swagger dictionary")
+        }
+        guard let paths = dict["paths"] as? [String: Any] else {
+            return XCTFail("Paths section is missing")
+        }
+        let arrayPath = "/me/getArray"
+        guard let path = paths[arrayPath] as? [String: Any] else {
+            return XCTFail("Path \(arrayPath) is missing")
+        }
+        guard let get = path["get"] as? [String: Any] else {
+            return XCTFail("Path \(arrayPath): GET method missing")
+        }
+        guard let responses = get["responses"] as? [String: Any] else {
+            return XCTFail("Path \(arrayPath): GET responses missing")
+        }
+        guard let okResponse = responses["200"] as? [String: Any] else {
+            return XCTFail("Path \(arrayPath): GET response 200 missing")
+        }
+        guard let okSchema = okResponse["schema"] as? [String: Any] else {
+            return XCTFail("Path \(arrayPath): GET schema missing")
+        }
+        guard let okReturnType = okSchema["type"] as? String else {
+            return XCTFail("Path \(arrayPath): GET schema type missing")
+        }
+        XCTAssertEqual(okReturnType, "array", "Return type for GET on path \(arrayPath) should be 'array', but was \(okReturnType)")
+        guard let returnItems = okSchema["items"] as? [String: Any] else {
+            return XCTFail("Path \(arrayPath): GET schema items missing")
+        }
+        guard let ref = returnItems["$ref"] as? String else {
+            return XCTFail("Path \(arrayPath): GET schema items did not contain '$ref'")
+        }
+        XCTAssertEqual(ref, "#/definitions/Apple")
+    }
+
+    //
+    // Test that tuple array return types are correctly represented.
+    // FIXME: https://github.com/IBM-Swift/Kitura/issues/1336
+    //
+//    func testTupleArrayReturnTypes() {
+//        guard let dict = getSwaggerDictionary() else {
+//            return XCTFail("Unable to get swagger dictionary")
+//        }
+//        guard let paths = dict["paths"] as? [String: Any] else {
+//            return XCTFail("Paths section is missing")
+//        }
+//        let tupleArrayPath = "/me/getTupleArray"
+//        guard let path = paths[tupleArrayPath] as? [String: Any] else {
+//            return XCTFail("Path \(tupleArrayPath) is missing")
+//        }
+//        guard let get = path["get"] as? [String: Any] else {
+//            return XCTFail("Path \(tupleArrayPath): GET method missing")
+//        }
+//        guard let responses = get["responses"] as? [String: Any] else {
+//            return XCTFail("Path \(tupleArrayPath): GET responses missing")
+//        }
+//        guard let okResponse = responses["200"] as? [String: Any] else {
+//            return XCTFail("Path \(tupleArrayPath): GET response 200 missing")
+//        }
+//        guard let okSchema = okResponse["schema"] as? [String: Any] else {
+//            return XCTFail("Path \(tupleArrayPath): GET schema missing")
+//        }
+//        guard let okReturnType = okSchema["type"] as? String else {
+//            return XCTFail("Path \(tupleArrayPath): GET schema type missing")
+//        }
+//        XCTAssertEqual(okReturnType, "array", "Return type for GET on path \(tupleArrayPath) should be 'array', but was \(okReturnType)")
+//        guard let returnItems = okSchema["items"] as? [String: Any] else {
+//            return XCTFail("Path \(tupleArrayPath): GET schema items missing")
+//        }
+//        // FIXME: Test tuple array return structure
+//    }
+
+    //
+    // Test that a POST that returns an Identifier is correctly defined as having
+    // a single Codable input type, and returns a single Codable output type plus
+    // a Location header containing the Identifier.
+    // FIXME: https://github.com/IBM-Swift/Kitura/issues/1336
+    //
+//    func testPostReturningId() {
+//        // FIXME: Test that Location header is defined
+//    }
+
+    //
+    // Test that input types that do not also appear as output types are
+    // correctly modelled.
+    //
+    func testInputTypesModelled() {
+        guard let dict = getSwaggerDictionary() else {
+            return XCTFail("Unable to get swagger dictionary")
+        }
+        guard let definitions = dict["definitions"] as? [String: Any] else {
+            return XCTFail("Definitions section is missing")
+        }
+        bananaDefinitionsAssertions(definitions: definitions)
+    }
+
+    //
+    // Test that types that do not appear directly as top-level input or output parameters,
+    // but are referenced by such top-level types, are modelled in the swagger.
+    //
+    func testNestedTypesModelled() {
+        guard let dict = getSwaggerDictionary() else {
+            return XCTFail("Unable to get swagger dictionary")
+        }
+        guard let definitions = dict["definitions"] as? [String: Any] else {
+            return XCTFail("Definitions section is missing")
+        }
+        nestedModelDefinitionsAssertions(definitions: definitions)
+    }
+
+
 }

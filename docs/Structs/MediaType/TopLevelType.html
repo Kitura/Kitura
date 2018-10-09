@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>HeaderType Enumeration Reference</title>
+    <title>TopLevelType Enumeration Reference</title>
     <link rel="stylesheet" type="text/css" href="../../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Enum/HeaderType" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Enum/TopLevelType" class="dashAnchor"></a>
 
-    <a title="HeaderType Enumeration Reference"></a>
+    <a title="TopLevelType Enumeration Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -44,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../../index.html">Kitura Reference</a>
       <img class="carat" src="../../img/carat.png" />
-      HeaderType Enumeration Reference
+      TopLevelType Enumeration Reference
     </p>
 
     <div class="content-wrapper">
@@ -188,14 +188,15 @@
 
         <section class="section">
           <div class="section-content">
-            <h1>HeaderType</h1>
+            <h1>TopLevelType</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">HeaderType</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">TopLevelType</span><span class="p">:</span> <span class="kt">String</span></code></pre>
 
                 </div>
               </div>
-            <p>Possible header types that can be found in a part of multi-part body.</p>
+            <p>An enum of all recognized top-level media types (categories). See:
+<a href="https://www.iana.org/assignments/media-types/media-types.xhtml">https://www.iana.org/assignments/media-types/media-types.xhtml</a></p>
 
           </div>
         </section>
@@ -207,9 +208,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura4PartV10HeaderTypeO11dispositionA2EmF"></a>
-                    <a name="//apple_ref/swift/Element/disposition" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura4PartV10HeaderTypeO11dispositionA2EmF">disposition</a>
+                    <a name="/s:6Kitura9MediaTypeV08TopLevelC0O11applicationA2EmF"></a>
+                    <a name="//apple_ref/swift/Element/application" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura9MediaTypeV08TopLevelC0O11applicationA2EmF">application</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -217,14 +218,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A Content-Disposition header (multipart/form-data bodies).</p>
+                        <p>The top-level type for application, eg. <code>application/json</code></p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">disposition</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">application</span></code></pre>
 
                         </div>
                       </div>
@@ -238,9 +239,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura4PartV10HeaderTypeO4typeA2EmF"></a>
-                    <a name="//apple_ref/swift/Element/type" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura4PartV10HeaderTypeO4typeA2EmF">type</a>
+                    <a name="/s:6Kitura9MediaTypeV08TopLevelC0O5audioA2EmF"></a>
+                    <a name="//apple_ref/swift/Element/audio" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura9MediaTypeV08TopLevelC0O5audioA2EmF">audio</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -248,14 +249,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A Content-Type header (multipart/form-data bodies).</p>
+                        <p>The top-level type for audio, eg. <code>audio/mpeg</code></p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">type</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">audio</span></code></pre>
 
                         </div>
                       </div>
@@ -269,9 +270,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura4PartV10HeaderTypeO16transferEncodingA2EmF"></a>
-                    <a name="//apple_ref/swift/Element/transferEncoding" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura4PartV10HeaderTypeO16transferEncodingA2EmF">transferEncoding</a>
+                    <a name="/s:6Kitura9MediaTypeV08TopLevelC0O4fontA2EmF"></a>
+                    <a name="//apple_ref/swift/Element/font" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura9MediaTypeV08TopLevelC0O4fontA2EmF">font</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -279,14 +280,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A Content-Transfer-Encoding header (multipart/form-data bodies).</p>
+                        <p>The top-level type for font, eg. <code>font/ttf</code></p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">transferEncoding</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">font</span></code></pre>
 
                         </div>
                       </div>
@@ -300,9 +301,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura4PartV10HeaderTypeO12contentRangeA2EmF"></a>
-                    <a name="//apple_ref/swift/Element/contentRange" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura4PartV10HeaderTypeO12contentRangeA2EmF">contentRange</a>
+                    <a name="/s:6Kitura9MediaTypeV08TopLevelC0O5imageA2EmF"></a>
+                    <a name="//apple_ref/swift/Element/image" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura9MediaTypeV08TopLevelC0O5imageA2EmF">image</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -310,14 +311,169 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A Content-Range header (multipart/byteranges bodies).</p>
+                        <p>The top-level type for image, eg. <code>image/jpeg</code></p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">contentRange</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">image</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura9MediaTypeV08TopLevelC0O7messageA2EmF"></a>
+                    <a name="//apple_ref/swift/Element/message" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura9MediaTypeV08TopLevelC0O7messageA2EmF">message</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The top-level type for message, eg. <code>message/global</code></p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">message</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura9MediaTypeV08TopLevelC0O5modelA2EmF"></a>
+                    <a name="//apple_ref/swift/Element/model" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura9MediaTypeV08TopLevelC0O5modelA2EmF">model</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The top-level type for model, eg. <code>model/vrml</code></p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">model</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura9MediaTypeV08TopLevelC0O9multipartA2EmF"></a>
+                    <a name="//apple_ref/swift/Element/multipart" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura9MediaTypeV08TopLevelC0O9multipartA2EmF">multipart</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The top-level type for multipart, eg. <code>multipart/form-data</code></p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">multipart</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura9MediaTypeV08TopLevelC0O4textA2EmF"></a>
+                    <a name="//apple_ref/swift/Element/text" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura9MediaTypeV08TopLevelC0O4textA2EmF">text</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The top-level type for text, eg. <code>text/csv</code></p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">text</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura9MediaTypeV08TopLevelC0O5videoA2EmF"></a>
+                    <a name="//apple_ref/swift/Element/video" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura9MediaTypeV08TopLevelC0O5videoA2EmF">video</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The top-level type for video, eg. <code>video/mp4</code></p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">video</span></code></pre>
 
                         </div>
                       </div>
