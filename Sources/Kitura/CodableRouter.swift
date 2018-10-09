@@ -419,6 +419,9 @@ extension Router {
 
     // Get single
     fileprivate func getSafely<O: Codable>(_ route: String, handler: @escaping SimpleCodableClosure<O>) {
+        if !pathSyntaxIsValid(route, identifierExpected: false) {
+            return
+        }
         registerGetRoute(route: route, outputType: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (single no-identifier) type-safe request")
@@ -428,6 +431,9 @@ extension Router {
 
     // Get array
     fileprivate func getSafely<O: Codable>(_ route: String, handler: @escaping CodableArrayClosure<O>) {
+        if !pathSyntaxIsValid(route, identifierExpected: false) {
+            return
+        }
         registerGetRoute(route: route, outputType: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request")
@@ -436,7 +442,11 @@ extension Router {
     }
     
     // Get array of (Id, Codable) tuples
-    fileprivate func getSafely<Id: Identifier, O: Codable>(_ route: String, handler: @escaping IdentifierCodableArrayClosure<Id, O>) {
+    fileprivate func getSafely<Id: Identifier, O: Codable>(_ route: String, handler: @escaping
+        IdentifierCodableArrayClosure<Id, O>) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
+            return
+        }
         registerGetRoute(route: route, id: Id.self, outputType: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural with identifier) type-safe request")
@@ -603,6 +613,15 @@ extension Router {
         }
     }
 
+    /// Precondition: Path is known to contain a : character
+    func pathHasSingleParamIdAsSuffix(_ path: String) -> Bool {
+        let pathArray = path.split(separator: ":", maxSplits: 1)
+        if pathArray.count > 1 {
+            return pathArray[1] == "id"
+        }
+        return false
+    }
+    
     func pathSyntaxIsValid(_ path: String, identifierExpected: Bool) -> Bool {
         let identifierSupplied = path.contains(":")
         switch (identifierExpected, identifierSupplied) {
@@ -610,18 +629,9 @@ extension Router {
             Log.error("Path '\(path)' is not allowed: Codable routes do not allow path parameters.")
             return false
         case (true, false):
-            Log.warning("Identifier expected for '\(path)'. :id will be automatically appended to the path.")
+            Log.info("Identifier expected for '\(path)'. :id will be automatically appended to the path.")
             return true
         case (true, true):
-            /// Precondition: Path is known to contain a : character
-            func pathHasSingleParamIdAsSuffix(_ path: String) -> Bool {
-                let pathArray = path.split(separator: ":", maxSplits: 1)
-                if pathArray.count > 1 {
-                    return pathArray[1] == "id"
-                }
-                return false
-            }
-
             guard pathHasSingleParamIdAsSuffix(path) else {
                 Log.error("Erroneous path '\(path)' is not allowed. Codable routes support a trailing id parameter only.")
                 return false
