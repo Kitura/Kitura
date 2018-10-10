@@ -436,7 +436,7 @@ extension Router {
         if !pathSyntaxIsValid(route, identifierExpected: false) {
             return
         }
-        registerGetRoute(route: route, outputType: O.self)
+        registerGetRoute(route: route, outputType: O.self, outputIsArray: true)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request")
             handler(CodableHelpers.constructOutResultHandler(response: response, completion: next))
@@ -449,7 +449,7 @@ extension Router {
         if !pathSyntaxIsValid(route, identifierExpected: false) {
             return
         }
-        registerGetRoute(route: route, id: Id.self, outputType: O.self)
+        registerGetRoute(route: route, id: Id.self, outputType: O.self, outputIsArray: true)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural with identifier) type-safe request")
             handler(CodableHelpers.constructTupleArrayOutResultHandler(response: response, completion: next))
