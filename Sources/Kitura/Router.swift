@@ -95,7 +95,7 @@ public class Router {
     public init(mergeParameters: Bool = false, enableWelcomePage: Bool = true) {
         self.swagger = SwaggerDocument()
         self.mergeParameters = mergeParameters
-        fileResourceServer = enableWelcomePage ? FileResourceServer() : nil
+        self.fileResourceServer = enableWelcomePage ? FileResourceServer() : nil
 
         Log.verbose("Router initialized")
     }
@@ -608,7 +608,7 @@ extension Router : ServerDelegate {
             return
         }
 
-        if  urlPath.hasPrefix(kituraResourcePrefix), let fileResourceServer = fileResourceServer {
+        if  let fileResourceServer = fileResourceServer, urlPath.hasPrefix(kituraResourcePrefix) {
             let resource = String(urlPath[kituraResourcePrefix.endIndex...])
             fileResourceServer.sendIfFound(resource: resource, usingResponse: response)
         } else {
@@ -630,7 +630,7 @@ extension Router : ServerDelegate {
     /// - Parameter response: The `RouterResponse` object used to respond to the
     ///                     HTTP request.
     private func sendDefaultResponse(request: RouterRequest, response: RouterResponse) {
-        if request.parsedURLPath.path == "/", let fileResourceServer = fileResourceServer {
+        if let fileResourceServer = fileResourceServer, request.parsedURLPath.path == "/" {
             fileResourceServer.sendIfFound(resource: "index.html", usingResponse: response)
         } else {
             do {
