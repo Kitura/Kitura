@@ -442,6 +442,8 @@ struct SwaggerDocument: Encodable {
         return SwaggerResponse(description: description, schema: .single(reference))
     }
 
+    // Force-try is okay because we are compiling a known valid regex.
+    // swiftlint:disable:next force_try
     private let tupleRegex = try! NSRegularExpression(pattern: "^\\(Optional\\(Swift\\.String\\), Optional\\(Swift\\.[a-zA-Z0-9]+\\)\\)$", options: [])
 
 
@@ -455,6 +457,8 @@ struct SwaggerDocument: Encodable {
         return match.count == 1
     }
 
+    // Force-try is okay because we are compiling a known valid regex.
+    // swiftlint:disable:next force_try
     private let unkeyedTypeRegex = try! NSRegularExpression(pattern: "^([^{\\]]+)", options: [])
 
     // Takes a type name for an unKeyed type (an Array) and strips the array
