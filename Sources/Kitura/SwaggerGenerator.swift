@@ -472,8 +472,16 @@ struct SwaggerDocument: Encodable {
         guard let type = responseType.type else {
             return SwaggerResponse(description: description, schema: nil, headers: headers)
         }
+        var isArrayType = responseType.array
+        var definition = "\(type)"
+        // FIXME: Detect arrays Array<
+        if definition.starts(with: "Array<") {
+            definition = String(definition.split(separator: "<")[1].split(separator: ">")[0])
+            isArrayType = true
+        }
+
         let reference = SingleReference(ref: "#/definitions/\(type)")
-        if responseType.array {
+        if isArrayType {
             if responseType.tuple {
                 let additionalRef = AdditionalReference(additionalProperties: reference)
                 let tupleRef = TupleReference(items: additionalRef)
@@ -589,8 +597,20 @@ struct SwaggerDocument: Encodable {
             property["type"] = .string("array")
 
             // check that this model has been processed, if not add it to the notProcessed set.
-            if self.processedSet.contains(elementTypeInfo) == false {
-                self.unprocessedSet.insert(elementTypeInfo)
+            switch elementTypeInfo {
+            case .single(_, let lowLevelType):
+                // Array contains a simple type
+                Log.debug("No need to process: \(lowLevelType)")
+            case .cyclic(let cyclicType):
+                Log.debug("No need to process: \(cyclicType)")
+            default:
+                // Array contains a complex type: check whether this model needs processing
+                if self.processedSet.contains(elementTypeInfo) == false {
+                    Log.debug("Adding unprocessed model: \(elementTypeInfo.debugDescription)")
+                    self.unprocessedSet.insert(elementTypeInfo)
+                } else {
+                    Log.debug("Already processed \(elementTypeInfo.debugDescription)")
+                }
             }
             return (property, required == true)
         case .cyclic(let type):
@@ -651,7 +671,8 @@ struct SwaggerDocument: Encodable {
         // from the typeinfo we can extract the model name and all subordinate structures.
 
         // get the model name.
-        if case .keyed(let name, _) = typeInfo {
+        switch typeInfo {
+        case .keyed(let name, _):
             let model = String(describing: name)
             var modelDefinition: SwaggerModel
 
@@ -674,8 +695,15 @@ struct SwaggerDocument: Encodable {
             } catch {
                 Log.warning("Failed to build model '\(model)': \(error)")
             }
-        } else {
+        case .unkeyed(_, let arrayType):
+            Log.debug("Model nested in array, type = \(arrayType.debugDescription)")
+            self.unprocessedSet.insert(arrayType)
+        case .dynamicKeyed(_, _, let dictionaryValueType):
+            Log.debug("Model nested in dictionary, type = \(dictionaryValueType.debugDescription)")
+            self.unprocessedSet.insert(dictionaryValueType)
+        default:
             Log.debug("Model not required for type '\(typeInfo.debugDescription)'")
+            self.unprocessedSet.remove(typeInfo)
         }
     }
 
