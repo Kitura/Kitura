@@ -442,19 +442,24 @@ struct SwaggerDocument: Encodable {
         return SwaggerResponse(description: description, schema: .single(reference))
     }
 
+    // Force-try is okay because we are compiling a known valid regex.
+    // swiftlint:disable:next force_try
+    private let tupleRegex = try! NSRegularExpression(pattern: "^\\(Optional\\(Swift\\.String\\), Optional\\(Swift\\.[a-zA-Z0-9]+\\)\\)$", options: [])
+
+
     // Determine if the type passed is a Dictionary.
     //
     // - Parameter _: Any swift type.
     // - Returns: Bool, True if the type passed in was originally a Swift dictionary.
     func isDictEncodedAsTuple(_ type: Any) -> Bool {
         let typeStr = "\(type)"
-        let pattern = "^\\(Optional\\(Swift\\.String\\), Optional\\(Swift\\.[a-zA-Z0-9]+\\)\\)$"
-        if let regex = try? NSRegularExpression(pattern: pattern, options: []) {
-            let match = regex.matches(in: typeStr, options: [], range: NSRange(location: 0, length: typeStr.count))
-            return match.count == 1
-        }
-        return false
+        let match = tupleRegex.matches(in: typeStr, options: [], range: NSRange(location: 0, length: typeStr.count))
+        return match.count == 1
     }
+
+    // Force-try is okay because we are compiling a known valid regex.
+    // swiftlint:disable:next force_try
+    private let unkeyedTypeRegex = try! NSRegularExpression(pattern: "^([^{\\]]+)", options: [])
 
     // Takes a type name for an unKeyed type (an Array) and strips the array
     // square brackets to give the type contained within the array.
@@ -464,13 +469,10 @@ struct SwaggerDocument: Encodable {
     func getUnkeyedTypeName(_ type: String) -> String {
         var arrayType = ""
         let nsType = NSString(string: type)
-        let pattern = "^([^{\\]]+)"
-        if let regex = try? NSRegularExpression(pattern: pattern, options: []) {
-            let match = regex.matches(in: type, options: [], range: NSRange(location: 0, length: type.count))
-            if match.count > 0 {
-                let arrayTypeRange = match[0].range(at: 1)
-                arrayType = nsType.substring(with: arrayTypeRange) as String
-            }
+        let match = unkeyedTypeRegex.matches(in: type, options: [], range: NSRange(location: 0, length: type.count))
+        if match.count > 0 {
+            let arrayTypeRange = match[0].range(at: 1)
+            arrayType = nsType.substring(with: arrayTypeRange) as String
         }
         return arrayType
     }
@@ -549,14 +551,20 @@ struct SwaggerDocument: Encodable {
             property["type"] = .string(String(describing: type))
             return (property, required == true)
         case .single(_, let type):
-            if let property = try? swaggerPropertyFromSwiftType(type) {
+            do {
+                let property = try swaggerPropertyFromSwiftType(type)
                 return (property, required == true)
+            } catch {
+                Log.warning("Failed to derive a SwaggerProperty from type '\(type)': \(error)")
             }
         case .optional(let wrappedTypeInfo):
             return decomposeType(wrappedTypeInfo, name: name, isArray: array, isRequired: false)
         case .opaque(let type):
-            if let property = try? swaggerPropertyFromSwiftType(type) {
+            do {
+                let property = try swaggerPropertyFromSwiftType(type)
                 return (property, required == true)
+            } catch {
+                Log.warning("Failed to derive a SwaggerProperty from type '\(type)': \(error)")
             }
         }
         return (property, required)
@@ -583,6 +591,9 @@ struct SwaggerDocument: Encodable {
             }
             unprocessedSet.remove(typeInfo)
             processedSet.insert(typeInfo)
+        } else {
+            // This should not occur: addModel should only call buildModel for a keyed type
+            Log.error("Expected a top-level (keyed) type, but received: \(typeInfo.debugDescription)")
         }
         return (modelProperties, required)
     }
@@ -600,20 +611,25 @@ struct SwaggerDocument: Encodable {
 
             // Check to see if we have already built this model
             guard self.definitions[model] == nil else {
-                Log.debug("Already generated model \(model)")
+                Log.debug("Already generated model '\(model)'")
                 return
             }
 
             // then build all it
-            if let modelInfo = try? buildModel(typeInfo) {
-                Log.debug("in addModel(model: \(model))")
+            do {
+                Log.verbose("Building model: '\(model)'")
+                let modelInfo = try buildModel(typeInfo)
                 if modelInfo.required.count > 0 {
                     modelDefinition = SwaggerModel(type: "object", properties: modelInfo.properties, required: Array(modelInfo.required))
                 } else {
                     modelDefinition = SwaggerModel(type: "object", properties: modelInfo.properties, required: [])
                 }
                 self.definitions[model] = modelDefinition
+            } catch {
+                Log.warning("Failed to build model '\(model)': \(error)")
             }
+        } else {
+            Log.debug("Model not required for type '\(typeInfo.debugDescription)'")
         }
     }
 
@@ -623,10 +639,9 @@ struct SwaggerDocument: Encodable {
     /// - Parameter method: The method the will be called on this path.
     /// - Parameter id: The name of the id parameter.
     /// - Parameter qParams: Query Parameters passed on the REST call.
-    /// - Parameter optQParams: Qg indicating that all the query parameters in qParams are to be treated as optional.
+    /// - Parameter optQParams: Whether all the query parameters in qParams are to be treated as optional.
     /// - Parameter responseList: An array of response types that can be returned from this path.
     public mutating func addPath(path: String, method: String, id: String?, qParams: QParams?, allOptQParams: Bool=false, inputType: String?, responseList: [SwaggerResponseType]?) {
-        Log.debug("in addPath(path: \(path))")
         // split the path into its components:
         // - route path.
         // - parameters.
@@ -671,19 +686,20 @@ struct SwaggerDocument: Encodable {
                 // responses["default"] = buildResponse(description: "default response", responseType: responseList[1]).
 
                 // build the method definition, note that parameters are optional.
+                Log.verbose("Building method definition for '\(method)' on path '\(swaggerPath)'")
                 let methodDefinition = SwaggerMethod(consumes: ["application/json"],
                                                      produces: ["application/json"],
                                                      parameters: parameters.count > 0 ? parameters : nil,
                                                      responses: responses)
                 if var methods = self.paths[swaggerPath] {
                     // entry exists, so add the method.
-                    Log.debug("found swagger methods definition for path \"\(swaggerPath)\"")
+                    Log.debug("Appending method definition to existing path '\(swaggerPath)'")
 
                     methods[method] = methodDefinition
                     self.paths[swaggerPath] = methods
                 } else {
                     // no entry exists, so create one for this path.
-                    Log.debug("no swagger method definition for \"\(method)\" on path \"\(swaggerPath)\", creating one")
+                    Log.debug("Creating new methods definition for path '\(swaggerPath)'")
 
                     // first create a methods dict to hold all the methods for this path.
                     var methods = SwaggerMethods()
@@ -709,19 +725,16 @@ struct SwaggerDocument: Encodable {
         var fieldCount = 1
         for (field, fieldProps) in properties {
             propertyStr.append("\(sp)\"\(field)\": ")
-            do {
-                let encodedData = try encoder.encode(fieldProps)
-                if let json = String(data: encodedData, encoding: .utf8) {
-                    propertyStr.append("\(json)")
-                    if fieldCount < properties.count {
-                        propertyStr.append(",")
-                    }
-                    propertyStr.append("\(nl)")
-                    fieldCount += 1
-                } else {
-                    throw SwaggerGenerationError.encodingError
+            let encodedData = try encoder.encode(fieldProps)
+            if let json = String(data: encodedData, encoding: .utf8) {
+                propertyStr.append("\(json)")
+                if fieldCount < properties.count {
+                    propertyStr.append(",")
                 }
-            } catch {
+                propertyStr.append("\(nl)")
+                fieldCount += 1
+            } else {
+                Log.warning("Failed to generate utf8 String from JSON encoded data")
                 throw SwaggerGenerationError.encodingError
             }
         }
@@ -739,25 +752,32 @@ struct SwaggerDocument: Encodable {
         let sp = String(repeating: "  ", count: depth)
         let nl = pretty ? "\n" : ""
 
-        do {
-            if let modelRef = self.definitions[model] {
-                contentStr.append("\(sp)\"type\": \"\(modelRef.type)\",\(nl)")
-                if modelRef.required.count > 0 {
-                    let encoder = JSONEncoder()
+        if let modelRef = self.definitions[model] {
+            contentStr.append("\(sp)\"type\": \"\(modelRef.type)\",\(nl)")
+            if modelRef.required.count > 0 {
+                let encoder = JSONEncoder()
+                do {
                     let encodedData = try encoder.encode(modelRef.required)
                     if let json = String(data: encodedData, encoding: .utf8) {
                         contentStr.append("\(sp)\"required\": \(json),\(nl)")
                     } else {
                         throw SwaggerGenerationError.encodingError
                     }
+                } catch let error as EncodingError {
+                    Log.warning("Unable to encode required model references for model \(model): \(error)")
+                    throw SwaggerGenerationError.encodingError
                 }
-                contentStr.append("\(sp)\"properties\": {\(nl)")
+            }
+            contentStr.append("\(sp)\"properties\": {\(nl)")
+            do {
                 contentStr.append(try JSONEncodeModelProperties(properties: modelRef.properties, pretty: pretty, depth: depth + 1))
-                contentStr.append("\(sp)}\(nl)")
-            } else {
+            } catch let error as EncodingError {
+                Log.warning("Error encoding model properties for model \(model): \(error)")
                 throw SwaggerGenerationError.encodingError
             }
-        } catch {
+            contentStr.append("\(sp)}\(nl)")
+        } else {
+            Log.warning("Model definition not found for \(model)")
             throw SwaggerGenerationError.encodingError
         }
         return contentStr
@@ -774,13 +794,10 @@ struct SwaggerDocument: Encodable {
         let sp = String(repeating: "  ", count: depth)
         let nl = pretty ? "\n" : ""
 
-        if let modelContent = try? JSONEncodeModelContent(model: model, pretty: pretty, depth: depth + 1) {
-            modelStr.append("\(sp)\"\(model)\": {\(nl)")
-            modelStr.append(modelContent)
-            modelStr.append("\(sp)}")
-        } else {
-            throw SwaggerGenerationError.encodingError
-        }
+        let modelContent = try JSONEncodeModelContent(model: model, pretty: pretty, depth: depth + 1)
+        modelStr.append("\(sp)\"\(model)\": {\(nl)")
+        modelStr.append(modelContent)
+        modelStr.append("\(sp)}")
         return modelStr
     }
 
@@ -806,15 +823,12 @@ struct SwaggerDocument: Encodable {
         var modelCount = 0
         for model in self.definitions.keys {
             modelCount += 1
-            if let encodedModel = try? JSONEncodeModel(model: model, pretty: pretty, depth: depth + 1) {
-                definitionsStr.append(encodedModel)
-                if modelCount < definitions.count {
-                    definitionsStr.append(",")
-                }
-                definitionsStr.append("\(nl)")
-            } else {
-                throw SwaggerGenerationError.encodingError
+            let encodedModel = try JSONEncodeModel(model: model, pretty: pretty, depth: depth + 1)
+            definitionsStr.append(encodedModel)
+            if modelCount < definitions.count {
+                definitionsStr.append(",")
             }
+            definitionsStr.append("\(nl)")
         }
 
         definitionsStr.append("\(sp)}\(nl)")
@@ -835,11 +849,8 @@ struct SwaggerDocument: Encodable {
                 search = "\n}"
             }
             if let insertionIndex = unwrappedJson.range(of: search, options: .backwards)?.lowerBound {
-                if let definitions = try? JSONEncodeDefinitions(pretty: encoder.outputFormatting == .prettyPrinted) {
-                    unwrappedJson.replaceSubrange(insertionIndex..., with: definitions)
-                } else {
-                    throw SwaggerGenerationError.encodingError
-                }
+                let definitions = try JSONEncodeDefinitions(pretty: encoder.outputFormatting == .prettyPrinted)
+                unwrappedJson.replaceSubrange(insertionIndex..., with: definitions)
             }
             json = unwrappedJson
         }
@@ -864,6 +875,27 @@ struct SwaggerDocument: Encodable {
 }
 
 extension Router {
+
+    // Describes the type of a parameter in a log message
+    private enum ParamType: String {
+        case outputType = "Output"
+        case inputType = "Input"
+        case queryParamType = "Query parameters"
+    }
+
+    // Log information about the circumstances of a TypeDecodeError
+    private func logTypeDecodeError<T: Codable>(_ error: Swift.Error, for type: T.Type, on route: String, as param: ParamType) {
+        if let error = error as? TypeDecodingError {
+            var underlyingErrorString = ""
+            if let underlyingError = error.context.underlyingError {
+                underlyingErrorString = "Underlying error: \(underlyingError)"
+            }
+            Log.warning("\(param.rawValue) type `\(type)` on path `\(route)` could not be decoded: \(error.context.debugDescription) \(underlyingErrorString)")
+        } else {
+            Log.warning("\(param.rawValue) type `\(type)` on path `\(route)` could not be decoded: \(error)")
+        }
+    }
+
     // Register a route in the SwaggerDocument.
     //
     // - Parameter route: The route to be registered.
@@ -877,8 +909,7 @@ extension Router {
         do {
             typeInfo = try TypeDecoder.decode(outputType)
         } catch {
-            Log.debug("type decode error")
-            return
+            return logTypeDecodeError(error, for: outputType, on: route, as: .outputType)
         }
 
         // insert the path information into the document structure.
@@ -889,6 +920,7 @@ extension Router {
 
         // now walk all the unprocessed models and ensure they are processed.
         for unprocessed in Array(swagger.unprocessedTypes) {
+            Log.debug("Processing unprocessed model: \(unprocessed.debugDescription)")
             swagger.addModel(model: unprocessed)
         }
     }
@@ -908,8 +940,7 @@ extension Router {
         do {
             typeInfo = try TypeDecoder.decode(outputType)
         } catch {
-            Log.debug("type decode error")
-            return
+            return logTypeDecodeError(error, for: outputType, on: route, as: .outputType)
         }
 
         var params: OrderedDictionary<String, TypeInfo>? = nil
@@ -918,8 +949,7 @@ extension Router {
                 params = dict
             }
         } catch {
-            Log.debug("type decode error")
-            return
+            return logTypeDecodeError(error, for: queryType, on: route, as: .queryParamType)
         }
 
         // insert the path information into the document structure.
@@ -930,6 +960,7 @@ extension Router {
 
         // now walk all the unprocessed models and ensure they are processed.
         for unprocessed in Array(swagger.unprocessedTypes) {
+            Log.debug("Processing unprocessed model: \(unprocessed.debugDescription)")
             swagger.addModel(model: unprocessed)
         }
     }
@@ -948,8 +979,7 @@ extension Router {
         do {
             inputTypeInfo = try TypeDecoder.decode(inputType)
         } catch {
-            Log.debug("Failed to decode input type \(inputType)")
-            return
+            return logTypeDecodeError(error, for: inputType, on: route, as: .inputType)
         }
 
         var outputTypeInfo: TypeInfo? = nil
@@ -957,8 +987,7 @@ extension Router {
             do {
                 outputTypeInfo = try TypeDecoder.decode(outputType)
             } catch {
-                Log.debug("Failed to decode output type \(outputType)")
-                return
+                return logTypeDecodeError(error, for: outputType, on: route, as: .outputType)
             }
         }
 
@@ -973,6 +1002,7 @@ extension Router {
 
         // now walk all the unprocessed models and ensure they are processed.
         for unprocessed in Array(swagger.unprocessedTypes) {
+            Log.debug("Processing unprocessed model: \(unprocessed.debugDescription)")
             swagger.addModel(model: unprocessed)
         }
     }
@@ -991,8 +1021,7 @@ extension Router {
         do {
             typeInfo = try TypeDecoder.decode(outputType)
         } catch {
-            Log.debug("type decode error")
-            return
+            return logTypeDecodeError(error, for: outputType, on: route, as: .outputType)
         }
 
         // insert the path information into the document structure.
@@ -1003,6 +1032,7 @@ extension Router {
 
         // now walk all the unprocessed models and ensure they are processed.
         for unprocessed in Array(swagger.unprocessedTypes) {
+            Log.debug("Processing unprocessed model: \(unprocessed.debugDescription)")
             swagger.addModel(model: unprocessed)
         }
     }
@@ -1022,8 +1052,7 @@ extension Router {
         do {
             inputTypeInfo = try TypeDecoder.decode(inputType)
         } catch {
-            Log.debug("Failed to decode input type \(inputType)")
-            return
+            return logTypeDecodeError(error, for: inputType, on: route, as: .inputType)
         }
 
         var outputTypeInfo: TypeInfo? = nil
@@ -1031,8 +1060,7 @@ extension Router {
             do {
                 outputTypeInfo = try TypeDecoder.decode(outputType)
             } catch {
-                Log.debug("Failed to decode output type \(outputType)")
-                return
+                return logTypeDecodeError(error, for: outputType, on: route, as: .outputType)
             }
         }
 
@@ -1047,6 +1075,7 @@ extension Router {
 
         // now walk all the unprocessed models and ensure they are processed.
         for unprocessed in Array(swagger.unprocessedTypes) {
+            Log.debug("Processing unprocessed model: \(unprocessed.debugDescription)")
             swagger.addModel(model: unprocessed)
         }
     }
@@ -1079,8 +1108,7 @@ extension Router {
                 params = dict
             }
         } catch {
-            Log.debug("type decode error")
-            return
+            return logTypeDecodeError(error, for: queryType, on: route, as: .queryParamType)
         }
 
         // insert the path information into the document structure.
