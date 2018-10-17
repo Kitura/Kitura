@@ -34,6 +34,7 @@ class TestStaticFileServer: KituraTest {
             ("testGetWithWhiteSpaces", testGetWithWhiteSpaces),
             ("testGetWithSpecialCharacters", testGetWithSpecialCharacters),
             ("testGetWithSpecialCharactersEncoded", testGetWithSpecialCharactersEncoded),
+            ("testWelcomePageCanBeDisabled", testWelcomePageCanBeDisabled),
             ("testGetKituraResource", testGetKituraResource),
             ("testGetDefaultResponse", testGetDefaultResponse),
             ("testGetMissingKituraResource", testGetMissingKituraResource),
@@ -57,6 +58,7 @@ class TestStaticFileServer: KituraTest {
     }
 
     let router = TestStaticFileServer.setupRouter()
+    let routerWithoutWelcome = TestStaticFileServer.setupRouter(enableWelcomePage: false)
 
     func testFileServer() {
         performServerTest(router, asyncTasks: { expectation in
@@ -159,8 +161,8 @@ class TestStaticFileServer: KituraTest {
         })
     }
 
-    static func setupRouter() -> Router {
-        let router = Router()
+    static func setupRouter(enableWelcomePage: Bool = true) -> Router {
+        let router = Router(enableWelcomePage: enableWelcomePage)
 
         // The route below ensures that the static file server does not prevent all routes being walked
         router.all("/", middleware: StaticFileServer())
@@ -192,8 +194,9 @@ class TestStaticFileServer: KituraTest {
     private typealias BodyChecker =  (String) -> Void
     private func runGetResponseTest(path: String, expectedResponseText: String? = nil,
                                     expectedStatusCode: HTTPStatusCode = HTTPStatusCode.OK,
-                                    bodyChecker: BodyChecker? = nil) {
-        performServerTest(router) { expectation in
+                                    bodyChecker: BodyChecker? = nil,
+                                    withRouter: Router? = nil) {
+        performServerTest(withRouter ?? router) { expectation in
             self.performRequest("get", path: path, callback: { response in
                 guard let response = response else {
                     XCTFail("ClientRequest response object was nil")
@@ -227,12 +230,16 @@ class TestStaticFileServer: KituraTest {
         runGetResponseTest(path: "/qwer/index%2B%40%2C.html", expectedResponseText: "<!DOCTYPE html><html><body><b>Index with plus at comma</b></body></html>\n")
     }
 
+    func testWelcomePageCanBeDisabled() {
+        runGetResponseTest(path: "/", expectedStatusCode: HTTPStatusCode.notFound, withRouter: routerWithoutWelcome)
+    }
+
     func testGetKituraResource() {
         runGetResponseTest(path: "/@@Kitura-router@@/")
     }
 
     func testGetDefaultResponse() {
-        runGetResponseTest(path: "/", expectedStatusCode: HTTPStatusCode.OK)
+        runGetResponseTest(path: "/")
     }
 
     func testGetMissingKituraResource() {
