@@ -446,6 +446,8 @@ extension Router {
     // Get array of (Id, Codable) tuples
     fileprivate func getSafely<Id: Identifier, O: Codable>(_ route: String, handler: @escaping
         IdentifierCodableArrayClosure<Id, O>) {
+        // FIXME: The ID is returned in a tuple, it is not an input parameter
+        // https://github.com/IBM-Swift/Kitura/issues/1336
         if !pathSyntaxIsValid(route, identifierExpected: false) {
             return
         }
