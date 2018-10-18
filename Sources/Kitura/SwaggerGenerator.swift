@@ -570,7 +570,7 @@ struct SwaggerDocument: Encodable {
         case .keyed(let type, _):
             // found a keyed item, this is an embedded model that needs to be
             // turned into a separate definition and a ref to it placed here.
-            addModel(model: typeInfo)
+            addModel(model: typeInfo, forSwiftType: type)
             let typeName = String(describing: type)
             property["$ref"] = .string("#/definitions/\(typeName)")
             return (property, required == true)
@@ -667,13 +667,21 @@ struct SwaggerDocument: Encodable {
     /// add a model into the OpenAPI (swagger) document
     ///
     /// - Parameter model: TypeInfo object that describes a model
-    public mutating func addModel(model typeInfo: TypeInfo) {
+    mutating func addModel(model typeInfo: TypeInfo, forSwiftType: Any.Type? = nil) {
         // from the typeinfo we can extract the model name and all subordinate structures.
 
         // get the model name.
         switch typeInfo {
         case .keyed(let name, _):
-            let model = String(describing: name)
+            let model: String
+            if let swiftType = forSwiftType {
+                model = String(describing: swiftType)
+                if model != String(describing: name) {
+                    Log.debug("Note: Model name '\(model)' differs from TypeDecoded name '\(name)'. This probably indicates that it is a keyed container that encodes as a single value, complex type.")
+                }
+            } else {
+                model = String(describing: name)
+            }
             var modelDefinition: SwaggerModel
 
             // Check to see if we have already built this model
@@ -699,8 +707,16 @@ struct SwaggerDocument: Encodable {
             Log.debug("Model nested in array, type = \(arrayType.debugDescription)")
             self.unprocessedSet.insert(arrayType)
         case .dynamicKeyed(_, _, let dictionaryValueType):
+            // Handle models that are nested within a dictionary
             Log.debug("Model nested in dictionary, type = \(dictionaryValueType.debugDescription)")
             self.unprocessedSet.insert(dictionaryValueType)
+        case .single(let swiftType, let encodedType):
+            let model = String(describing: swiftType)
+            if swiftType == encodedType {
+                Log.debug("Model not required for type '\(typeInfo.debugDescription)'")
+            } else {
+                Log.debug("Model '\(model)' has a single encoded value of type: '\(encodedType)'")
+            }
         default:
             Log.debug("Model not required for type '\(typeInfo.debugDescription)'")
             self.unprocessedSet.remove(typeInfo)
@@ -733,7 +749,7 @@ struct SwaggerDocument: Encodable {
     /// - Parameter qParams: Query Parameters passed on the REST call.
     /// - Parameter optQParams: Whether all the query parameters in qParams are to be treated as optional.
     /// - Parameter responseList: An array of response types that can be returned from this path.
-    public mutating func addPath(path: String, method: String, id: String?, idReturned: Bool, qParams: QParams?, allOptQParams: Bool=false, inputType: String?, responseList: [SwaggerResponseType]?) {
+    mutating func addPath(path: String, method: String, id: String?, idReturned: Bool, qParams: QParams?, allOptQParams: Bool=false, inputType: String?, responseList: [SwaggerResponseType]?) {
         // split the path into its components:
         // - route path.
         // - parameters.
@@ -960,7 +976,7 @@ struct SwaggerDocument: Encodable {
 
     /// Convert this object into a JSON formatted string.
     ///
-    public func serializeAPIToJSON() throws -> String? {
+    func serializeAPIToJSON() throws -> String? {
         let encoder = JSONEncoder()
         if #available(OSX 10.13, *) {
             encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
@@ -987,7 +1003,7 @@ struct SwaggerDocument: Encodable {
     /// Convert this object into a serialized document.
     ///
     /// - Parameter format: The serialization format of the document.
-    mutating public func serializeAPI(format: SwaggerDocumentFormat) throws -> String? {
+    mutating func serializeAPI(format: SwaggerDocumentFormat) throws -> String? {
         var document: String?
 
         Kitura.serverLock.lock()
@@ -1053,7 +1069,7 @@ extension Router {
         swagger.addPath(path: route, method: method, id: nil, idReturned: false, qParams: nil, inputType: nil, responseList: responseTypes)
 
         // add model information into the document structure.
-        swagger.addModel(model: typeInfo)
+        swagger.addModel(model: typeInfo, forSwiftType: outputType)
 
         // now walk all the unprocessed models and ensure they are processed.
         for unprocessed in Array(swagger.unprocessedTypes) {
@@ -1093,7 +1109,7 @@ extension Router {
         swagger.addPath(path: route, method: method, id: nil, idReturned: false, qParams: params, allOptQParams: allOptQParams, inputType: nil, responseList: responseTypes)
 
         // add model information into the document structure.
-        swagger.addModel(model: typeInfo)
+        swagger.addModel(model: typeInfo, forSwiftType: outputType)
 
         // now walk all the unprocessed models and ensure they are processed.
         for unprocessed in Array(swagger.unprocessedTypes) {
@@ -1132,9 +1148,9 @@ extension Router {
         swagger.addPath(path: route, method: method, id: nil, idReturned: false, qParams: nil, inputType: "\(inputType)", responseList: responseTypes)
 
         // add model information into the document structure.
-        swagger.addModel(model: inputTypeInfo)
+        swagger.addModel(model: inputTypeInfo, forSwiftType: inputType)
         if let outputTypeInfo = outputTypeInfo {
-            swagger.addModel(model: outputTypeInfo)
+            swagger.addModel(model: outputTypeInfo, forSwiftType: outputType)
         }
 
         // now walk all the unprocessed models and ensure they are processed.
@@ -1166,7 +1182,7 @@ extension Router {
         swagger.addPath(path: route, method: method, id: "\(id)", idReturned: idReturned, qParams: nil, inputType: nil, responseList: responseTypes)
 
         // add model information into the document structure.
-        swagger.addModel(model: typeInfo)
+        swagger.addModel(model: typeInfo, forSwiftType: outputType)
 
         // now walk all the unprocessed models and ensure they are processed.
         for unprocessed in Array(swagger.unprocessedTypes) {
@@ -1207,9 +1223,9 @@ extension Router {
         swagger.addPath(path: route, method: method, id: "\(id)", idReturned: idReturned, qParams: nil, inputType: "\(inputType)", responseList: responseTypes)
 
         // add model information into the document structure.
-        swagger.addModel(model: inputTypeInfo)
+        swagger.addModel(model: inputTypeInfo, forSwiftType: inputType)
         if let outputTypeInfo = outputTypeInfo {
-            swagger.addModel(model: outputTypeInfo)
+            swagger.addModel(model: outputTypeInfo, forSwiftType: outputType)
         }
 
         // now walk all the unprocessed models and ensure they are processed.
