@@ -279,13 +279,12 @@ extension Router {
         registerGetRoute(route: route, id: Id.self, outputType: O.self)
         get(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received GET (singular with identifier and middleware) type-safe request")
-            guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
-                next()
-                return
-            }
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
                     return next()
+                }
+                guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
+                   return next()
                 }
                 handler(typeSafeMiddleware, identifier, CodableHelpers.constructOutResultHandler(response: response, completion: next))
             }
@@ -321,12 +320,11 @@ extension Router {
         registerGetRoute(route: route, id: Id.self, outputType: O.self)
         get(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received GET (singular with identifier and middleware) type-safe request")
-            guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
-                next()
-                return
-            }
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
+                    return next()
+                }
+                guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
                     return next()
                 }
                 handler(typeSafeMiddleware1, typeSafeMiddleware2, identifier, CodableHelpers.constructOutResultHandler(response: response, completion: next))
@@ -363,12 +361,11 @@ extension Router {
         registerGetRoute(route: route, id: Id.self, outputType: O.self)
         get(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received GET (singular with identifier and middleware) type-safe request")
-            guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
-                next()
-                return
-            }
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
+                    return next()
+                }
+                guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
                     return next()
                 }
                 handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, identifier, CodableHelpers.constructOutResultHandler(response: response, completion: next))
@@ -528,19 +525,20 @@ extension Router {
             Log.verbose("Received GET (singular) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
             // Define result handler
-            do {
-                let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
-                self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
-                    guard let typeSafeMiddleware = typeSafeMiddleware else {
-                        return next()
-                    }
-                    handler(typeSafeMiddleware, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+            self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
+                guard let typeSafeMiddleware = typeSafeMiddleware else {
+                    return next()
                 }
-            } catch {
-                // Http 400 error
-                response.status(.badRequest)
-                next()
+                do {
+                    let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
+                    handler(typeSafeMiddleware, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+                } catch {
+                    // Http 400 error
+                    response.status(.badRequest)
+                    next()
+                }
             }
+
         }
     }
 
@@ -575,19 +573,20 @@ extension Router {
             Log.verbose("Received GET (singular) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
             // Define result handler
-            do {
-                let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
-                self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
-                    guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
-                        return next()
-                    }
-                    handler(typeSafeMiddleware1, typeSafeMiddleware2, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+            self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
+                guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
+                    return next()
                 }
-            } catch {
-                // Http 400 error
-                response.status(.badRequest)
-                next()
+                do {
+                    let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
+                    handler(typeSafeMiddleware1, typeSafeMiddleware2, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+                } catch {
+                    // Http 400 error
+                    response.status(.badRequest)
+                    next()
+                }
             }
+
         }
     }
 
@@ -622,18 +621,18 @@ extension Router {
             Log.verbose("Received GET (singular) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
             // Define result handler
-            do {
-                let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
-                self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
-                    guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
-                        return next()
-                    }
-                    handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+            self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
+                guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
+                    return next()
                 }
-            } catch {
-                // Http 400 error
-                response.status(.badRequest)
-                next()
+                do {
+                    let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
+                    handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+                } catch {
+                    // Http 400 error
+                    response.status(.badRequest)
+                    next()
+                }
             }
         }
     }
@@ -673,18 +672,18 @@ extension Router {
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
-            do {
-                let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
-                self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
-                    guard let typeSafeMiddleware = typeSafeMiddleware else {
-                        return next()
-                    }
-                    handler(typeSafeMiddleware, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+            self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
+                guard let typeSafeMiddleware = typeSafeMiddleware else {
+                    return next()
                 }
-            } catch {
-                // Http 400 error
-                response.status(.badRequest)
-                next()
+                do {
+                    let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
+                    handler(typeSafeMiddleware, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+                } catch {
+                    // Http 400 error
+                    response.status(.badRequest)
+                    next()
+                }
             }
         }
     }
@@ -726,22 +725,22 @@ extension Router {
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
-            do {
-                var query: Q? = nil
-                let queryParameters = request.queryParameters
-                if queryParameters.count > 0 {
-                    query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
+            self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
+                guard let typeSafeMiddleware = typeSafeMiddleware else {
+                    return next()
                 }
-                self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
-                    guard let typeSafeMiddleware = typeSafeMiddleware else {
-                        return next()
+                do {
+                    var query: Q? = nil
+                    let queryParameters = request.queryParameters
+                    if queryParameters.count > 0 {
+                        query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
                     }
                     handler(typeSafeMiddleware, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+                } catch {
+                    // Http 400 error
+                    response.status(.badRequest)
+                    next()
                 }
-            } catch {
-                // Http 400 error
-                response.status(.badRequest)
-                next()
             }
         }
     }
@@ -776,18 +775,18 @@ extension Router {
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
-            do {
-                let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
-                self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
-                    guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
-                        return next()
-                    }
-                    handler(typeSafeMiddleware1, typeSafeMiddleware2, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+            self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
+                guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
+                    return next()
                 }
-            } catch {
-                // Http 400 error
-                response.status(.badRequest)
-                next()
+                do {
+                    let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
+                    handler(typeSafeMiddleware1, typeSafeMiddleware2, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+                } catch {
+                    // Http 400 error
+                    response.status(.badRequest)
+                    next()
+                }
             }
         }
     }
@@ -824,22 +823,22 @@ extension Router {
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
-            do {
-                var query: Q? = nil
-                let queryParameters = request.queryParameters
-                if queryParameters.count > 0 {
-                    query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
+            self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
+                guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
+                    return next()
                 }
-                self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
-                    guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
-                        return next()
+                do {
+                    var query: Q? = nil
+                    let queryParameters = request.queryParameters
+                    if queryParameters.count > 0 {
+                        query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
                     }
                     handler(typeSafeMiddleware1, typeSafeMiddleware2, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+                } catch {
+                    // Http 400 error
+                    response.status(.badRequest)
+                    next()
                 }
-            } catch {
-                // Http 400 error
-                response.status(.badRequest)
-                next()
             }
         }
     }
@@ -874,18 +873,18 @@ extension Router {
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
-            do {
-                let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
-                self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
-                    guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
-                        return next()
-                    }
-                    handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+            self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
+                guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
+                    return next()
                 }
-            } catch {
-                // Http 400 error
-                response.status(.badRequest)
-                next()
+                do {
+                    let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
+                handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+                } catch {
+                    // Http 400 error
+                    response.status(.badRequest)
+                    next()
+                }
             }
         }
     }
@@ -922,22 +921,22 @@ extension Router {
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
-            do {
-                var query: Q? = nil
-                let queryParameters = request.queryParameters
-                if queryParameters.count > 0 {
-                    query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
+            self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
+                guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
+                    return next()
                 }
-                self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
-                    guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
-                        return next()
+                do {
+                    var query: Q? = nil
+                    let queryParameters = request.queryParameters
+                    if queryParameters.count > 0 {
+                        query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
                     }
-                    handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+                handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+                } catch {
+                    // Http 400 error
+                    response.status(.badRequest)
+                    next()
                 }
-            } catch {
-                // Http 400 error
-                response.status(.badRequest)
-                next()
             }
         }
     }
@@ -1078,12 +1077,11 @@ extension Router {
         registerDeleteRoute(route: route, id: Id.self)
         delete(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received DELETE (singular with middleware) type-safe request")
-            guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
-                next()
-                return
-            }
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
+                    return next()
+                }
+                guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
                     return next()
                 }
                 handler(typeSafeMiddleware, identifier, CodableHelpers.constructResultHandler(response: response, completion: next))
@@ -1118,12 +1116,11 @@ extension Router {
         registerDeleteRoute(route: route, id: Id.self)
         delete(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received DELETE (singular with middleware) type-safe request")
-            guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
-                next()
-                return
-            }
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
+                    return next()
+                }
+                guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
                     return next()
                 }
                 handler(typeSafeMiddleware1, typeSafeMiddleware2, identifier, CodableHelpers.constructResultHandler(response: response, completion: next))
@@ -1158,12 +1155,11 @@ extension Router {
         registerDeleteRoute(route: route, id: Id.self)
         delete(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received DELETE (singular with middleware) type-safe request")
-            guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
-                next()
-                return
-            }
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
+                    return next()
+                }
+                guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
                     return next()
                 }
                 handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, identifier, CodableHelpers.constructResultHandler(response: response, completion: next))
@@ -1204,18 +1200,18 @@ extension Router {
         delete(route) { request, response, next in
             Log.verbose("Received DELETE type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
-            do {
-                let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
-                self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
-                    guard let typeSafeMiddleware = typeSafeMiddleware else {
-                        return next()
-                    }
-                    handler(typeSafeMiddleware, query, CodableHelpers.constructResultHandler(response: response, completion: next))
+            self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
+                guard let typeSafeMiddleware = typeSafeMiddleware else {
+                    return next()
                 }
-            } catch {
-                // Http 400 error
-                response.status(.badRequest)
-                next()
+                do {
+                    let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
+                    handler(typeSafeMiddleware, query, CodableHelpers.constructResultHandler(response: response, completion: next))
+                } catch {
+                    // Http 400 error
+                    response.status(.badRequest)
+                    next()
+                }
             }
         }
     }
@@ -1258,22 +1254,22 @@ extension Router {
         delete(route) { request, response, next in
             Log.verbose("Received DELETE type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
-            do {
-                var query: Q? = nil
-                let queryParameters = request.queryParameters
-                if queryParameters.count > 0 {
-                    query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
+            self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
+                guard let typeSafeMiddleware = typeSafeMiddleware else {
+                    return next()
                 }
-                self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
-                    guard let typeSafeMiddleware = typeSafeMiddleware else {
-                        return next()
+                do {
+                    var query: Q? = nil
+                    let queryParameters = request.queryParameters
+                    if queryParameters.count > 0 {
+                        query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
                     }
                     handler(typeSafeMiddleware, query, CodableHelpers.constructResultHandler(response: response, completion: next))
+                } catch {
+                    // Http 400 error
+                    response.status(.badRequest)
+                    next()
                 }
-            } catch {
-                // Http 400 error
-                response.status(.badRequest)
-                next()
             }
         }
     }
@@ -1306,18 +1302,18 @@ extension Router {
         delete(route) { request, response, next in
             Log.verbose("Received DELETE type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
-            do {
-                let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
-                self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
-                    guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
-                        return next()
-                    }
-                    handler(typeSafeMiddleware1, typeSafeMiddleware2, query, CodableHelpers.constructResultHandler(response: response, completion: next))
+            self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
+                guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
+                    return next()
                 }
-            } catch {
-                // Http 400 error
-                response.status(.badRequest)
-                next()
+                do {
+                    let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
+                    handler(typeSafeMiddleware1, typeSafeMiddleware2, query, CodableHelpers.constructResultHandler(response: response, completion: next))
+                } catch {
+                    // Http 400 error
+                    response.status(.badRequest)
+                    next()
+                }
             }
         }
     }
@@ -1355,22 +1351,22 @@ extension Router {
         delete(route) { request, response, next in
             Log.verbose("Received DELETE type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
-            do {
-                var query: Q? = nil
-                let queryParameters = request.queryParameters
-                if queryParameters.count > 0 {
-                    query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
+            self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
+                guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
+                    return next()
                 }
-                self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
-                    guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
-                        return next()
+                do {
+                    var query: Q? = nil
+                    let queryParameters = request.queryParameters
+                    if queryParameters.count > 0 {
+                        query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
                     }
                     handler(typeSafeMiddleware1, typeSafeMiddleware2, query, CodableHelpers.constructResultHandler(response: response, completion: next))
+                } catch {
+                    // Http 400 error
+                    response.status(.badRequest)
+                    next()
                 }
-            } catch {
-                // Http 400 error
-                response.status(.badRequest)
-                next()
             }
         }
     }
@@ -1403,18 +1399,18 @@ extension Router {
         delete(route) { request, response, next in
             Log.verbose("Received DELETE type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
-            do {
-                let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
-                self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
-                    guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
-                        return next()
-                    }
-                    handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, query, CodableHelpers.constructResultHandler(response: response, completion: next))
+            self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
+                guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
+                    return next()
                 }
-            } catch {
-                // Http 400 error
-                response.status(.badRequest)
-                next()
+                do {
+                    let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
+                    handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, query, CodableHelpers.constructResultHandler(response: response, completion: next))
+                } catch {
+                    // Http 400 error
+                    response.status(.badRequest)
+                    next()
+                }
             }
         }
     }
@@ -1452,22 +1448,22 @@ extension Router {
         delete(route) { request, response, next in
             Log.verbose("Received DELETE type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
-            do {
-                var query: Q? = nil
-                let queryParameters = request.queryParameters
-                if queryParameters.count > 0 {
-                    query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
+            self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
+                guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
+                    return next()
                 }
-                self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
-                    guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
-                        return next()
+                do {
+                    var query: Q? = nil
+                    let queryParameters = request.queryParameters
+                    if queryParameters.count > 0 {
+                        query = try QueryDecoder(dictionary: queryParameters).decode(Q.self)
                     }
                     handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, query, CodableHelpers.constructResultHandler(response: response, completion: next))
+                } catch {
+                    // Http 400 error
+                    response.status(.badRequest)
+                    next()
                 }
-            } catch {
-                // Http 400 error
-                response.status(.badRequest)
-                next()
             }
         }
     }
@@ -1505,13 +1501,13 @@ extension Router {
         registerPostRoute(route: route, inputType: I.self, outputType: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
-            guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
-                next()
-                return
-            }
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
                     return next()
+                }
+                guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
+                    next()
+                    return
                 }
                 handler(typeSafeMiddleware, codableInput, CodableHelpers.constructOutResultHandler(successStatus: .created, response: response, completion: next))
             }
@@ -1546,13 +1542,13 @@ extension Router {
         registerPostRoute(route: route, inputType: I.self, outputType: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
-            guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
-                next()
-                return
-            }
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
                     return next()
+                }
+                guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
+                    next()
+                    return
                 }
                 handler(typeSafeMiddleware1, typeSafeMiddleware2, codableInput, CodableHelpers.constructOutResultHandler(successStatus: .created, response: response, completion: next))
             }
@@ -1587,13 +1583,13 @@ extension Router {
         registerPostRoute(route: route, inputType: I.self, outputType: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
-            guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
-                next()
-                return
-            }
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
                     return next()
+                }
+                guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
+                    next()
+                    return
                 }
                 handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, codableInput, CodableHelpers.constructOutResultHandler(successStatus: .created, response: response, completion: next))
             }
@@ -1632,11 +1628,11 @@ extension Router {
         registerPostRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
-            guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
-                return next()
-            }
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
+                    return next()
+                }
+                guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
                     return next()
                 }
                 handler(typeSafeMiddleware, codableInput, CodableHelpers.constructIdentOutResultHandler(successStatus: .created, response: response, completion: next))
@@ -1672,11 +1668,11 @@ extension Router {
         registerPostRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
-            guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
-                return next()
-            }
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
+                    return next()
+                }
+                guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
                     return next()
                 }
                 handler(typeSafeMiddleware1, typeSafeMiddleware2, codableInput, CodableHelpers.constructIdentOutResultHandler(successStatus: .created, response: response, completion: next))
@@ -1712,11 +1708,11 @@ extension Router {
         registerPostRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
-            guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
-                return next()
-            }
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
+                    return next()
+                }
+                guard let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response) else {
                     return next()
                 }
                 handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, codableInput, CodableHelpers.constructIdentOutResultHandler(successStatus: .created, response: response, completion: next))
@@ -1756,14 +1752,13 @@ extension Router {
         registerPutRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
         put(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PUT type-safe request")
-            guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
-                let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
-                else {
-                    next()
-                    return
-            }
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
+                    return next()
+                }
+                guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
+                    let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
+                else {
                     return next()
                 }
                 handler(typeSafeMiddleware, identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, completion: next))
@@ -1798,14 +1793,13 @@ extension Router {
         registerPutRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
         put(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PUT type-safe request")
-            guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
-                let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
-                else {
-                    next()
-                    return
-            }
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
+                    return next()
+                }
+                guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
+                    let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
+                else {
                     return next()
                 }
                 handler(typeSafeMiddleware1, typeSafeMiddleware2, identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, completion: next))
@@ -1840,15 +1834,15 @@ extension Router {
         registerPutRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
         put(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PUT type-safe request")
-            guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
-                let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
-                else {
-                    next()
-                    return
-            }
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
                     return next()
+                }
+                guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
+                    let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
+                else {
+                    return next()
+                    
                 }
                 handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, completion: next))
             }
@@ -1892,14 +1886,13 @@ extension Router {
         registerPatchRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
         patch(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PATCH type-safe request")
-            guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
-                let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
-                else {
-                    next()
-                    return
-            }
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
+                    return next()
+                }
+                guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
+                    let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
+                else {
                     return next()
                 }
                 handler(typeSafeMiddleware, identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, completion: next))
@@ -1940,18 +1933,16 @@ extension Router {
         registerPatchRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
         patch(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PATCH type-safe request")
-            guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
-                let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
-                else {
-                    next()
-                    return
-            }
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
                     return next()
                 }
+                guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
+                    let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
+                else {
+                    return next()
+                }
                 handler(typeSafeMiddleware1, typeSafeMiddleware2, identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, completion: next))
-
             }
         }
     }
@@ -1988,14 +1979,13 @@ extension Router {
         registerPatchRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
         patch(join(path: route, with: ":id")) { request, response, next in
             Log.verbose("Received PATCH type-safe request")
-            guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
-                let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
-                else {
-                    next()
-                    return
-            }
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
+                    return next()
+                }
+                guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
+                    let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
+                else {
                     return next()
                 }
                 handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, completion: next))
