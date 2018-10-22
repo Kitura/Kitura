@@ -103,9 +103,13 @@ public class RouterResponse {
 
     private var lifecycle = Lifecycle()
 
-    private let encoders: [MediaType: () -> BodyEncoder]
+    /// A dictionary of MediaType to BodyEncoder.
+    /// When encoding a Codable type to data the BodyEncoder will be selected from this dictionary using the Accept header.
+    public var encoders: [MediaType: () -> BodyEncoder]
     
-    private let defaultResponseMediaType: MediaType
+    /// The MediaType that will be used to select a BodyEncoder
+    /// if there isn't as encoder for the Accept header/no Accept header is provided.
+    public var defaultResponseMediaType: MediaType
     
     // regex used to sanitize javascript identifiers
     fileprivate static let sanitizeJSIdentifierRegex: NSRegularExpression! = {

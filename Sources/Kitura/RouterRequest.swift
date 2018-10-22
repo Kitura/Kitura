@@ -42,11 +42,11 @@ public class RouterRequest {
 
     /// The server request.
     let serverRequest: ServerRequest
-    
-    /// The Data decoder generator for the request content-type
-    let decoder: BodyDecoder?
 
     // MARK: Properties
+    
+    /// The BodyDecoder that will be used to decode Data into a Codable type.
+    public var decoder: BodyDecoder?
     
     /// The hostname of the request.
     public var hostname: String {
