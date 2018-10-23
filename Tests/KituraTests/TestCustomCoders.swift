@@ -26,6 +26,7 @@ class TestCustomCoders: KituraTest {
             ("testCustomCoder", testCustomCoder),
             ("testRawCustomCoder", testRawCustomCoder),
             ("testCustomQueryEncoder", testCustomQueryEncoder),
+            ("testPerRouteCustomCoder", testPerRouteCustomCoder),
         ]
     }
 
@@ -210,6 +211,55 @@ class TestCustomCoders: KituraTest {
                 } else {
                     XCTFail("Unable to read response string")
                 }
+                expectation.fulfill()
+            })
+        }
+    }
+    
+    func testPerRouteCustomCoder() {
+        // Set up router for this test
+        let customRouter = Router()
+        let jsonDecoder: () -> BodyDecoder = {
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .secondsSince1970
+            return decoder
+        }
+        let jsonEncoder: () -> BodyEncoder = {
+            let encoder = JSONEncoder()
+            encoder.dateEncodingStrategy = .secondsSince1970
+            return encoder
+        }
+        let date = Date(timeIntervalSince1970: 1519206456)
+        let codableDate = CodableDate(date: date)
+        
+        customRouter.get("/rawget") { _, response, next in
+            response.encoders[.json] = jsonEncoder
+            let date = Date(timeIntervalSince1970: 1519206456)
+            let codableDate = CodableDate(date: date)
+            response.send(codableDate)
+            next()
+        }
+        
+        customRouter.post("/rawpost") { request, _, next in
+            request.decoder = jsonDecoder()
+            let decodedDate = try request.read(as: CodableDate.self)
+            XCTAssertEqual(decodedDate, codableDate)
+            next()
+        }
+        
+        performServerTest(customRouter) { expectation in
+            self.performRequest("get", path: "/rawget", callback: { response in
+                if let response = response, let responseString = try? response.readString() {
+                    XCTAssertEqual(responseString, "{\"date\":1519206456}")
+                } else {
+                    XCTFail("Unable to read response string")
+                }
+                expectation.fulfill()
+            })
+        }
+        
+        performServerTest(customRouter) { expectation in
+            self.performRequest("post", path: "/rawpost", callback: { response in
                 expectation.fulfill()
             })
         }
