@@ -141,7 +141,7 @@ open class StaticFileServer: RouterMiddleware {
             return
         }
 
-        guard let requestPath = request.parsedURLPath.path else {
+        guard let requestPath = request.parsedURL.path else {
             return
         }
 
