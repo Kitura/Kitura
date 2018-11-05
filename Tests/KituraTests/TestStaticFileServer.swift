@@ -42,6 +42,12 @@ class TestStaticFileServer: KituraTest {
             ("testGetTraversedFile", testGetTraversedFile),
             ("testAbsolutePathFunction", testAbsolutePathFunction),
             ("testAbsoluteRootPath", testAbsoluteRootPath),
+            ("testSubRouterStaticFileServer", testSubRouterStaticFileServer),
+            ("testSubRouterSubFolderStaticFileServer", testSubRouterSubFolderStaticFileServer),
+            ("testSubRouterStaticFileServerRedirect", testSubRouterStaticFileServerRedirect),
+            ("testSubRouterSubFolderStaticFileServerRedirect", testSubRouterSubFolderStaticFileServerRedirect),
+            ("testParameterizedSubRouterSubFolderStaticFileServer", testParameterizedSubRouterSubFolderStaticFileServer),
+            ("testParameterizedSubRouterSubFolderStaticFileServerRedirect", testParameterizedSubRouterSubFolderStaticFileServerRedirect),
             ("testRangeRequests", testRangeRequests),
             ("testRangeRequestsWithLargeLastBytePos", testRangeRequestsWithLargeLastBytePos),
             ("testRangeRequestIsIgnoredOnOptionOff", testRangeRequestIsIgnoredOnOptionOff),
@@ -181,6 +187,12 @@ class TestStaticFileServer: KituraTest {
 
         options = StaticFileServer.Options(possibleExtensions: ["exe", "html"], cacheOptions: cacheOptions, acceptRanges: false)
         router.all("/tyui", middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options:options, customResponseHeadersSetter: HeaderSetter()))
+        
+        options = StaticFileServer.Options(serveIndexForDirectory: true, redirect: true, cacheOptions: cacheOptions)
+        router.route("/ghjk").all(middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options: options))
+        
+        options = StaticFileServer.Options(serveIndexForDirectory: true, redirect: true, cacheOptions: cacheOptions)
+        router.route("/opnm/:parameter").all(middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/subfolder", options: options))
 
         return router
     }
@@ -263,8 +275,33 @@ class TestStaticFileServer: KituraTest {
     }
 
     let indexHtmlContents = "<!DOCTYPE html><html><body><b>Index</b></body></html>" // contents of index.html
+    let subfolderIndexHtmlContents = "<!DOCTYPE html><html><body><b>Sub Folder Index</b></body></html>" // contents of subfolder/index.html
     let indexHtmlCount = 54 // index.html file data length
 
+    func testSubRouterStaticFileServer() {
+        runGetResponseTest(path: "/ghjk/", expectedResponseText: indexHtmlContents + "\n")
+    }
+    
+    func testSubRouterSubFolderStaticFileServer() {
+        runGetResponseTest(path: "/ghjk/subfolder/", expectedResponseText: subfolderIndexHtmlContents + "\n")
+    }
+    
+    func testSubRouterStaticFileServerRedirect() {
+        runGetResponseTest(path: "/ghjk", expectedResponseText: indexHtmlContents + "\n")
+    }
+    
+    func testSubRouterSubFolderStaticFileServerRedirect() {
+        runGetResponseTest(path: "/ghjk/subfolder", expectedResponseText: subfolderIndexHtmlContents + "\n")
+    }
+    
+    func testParameterizedSubRouterSubFolderStaticFileServer() {
+        runGetResponseTest(path: "/opnm/xxxx/", expectedResponseText: subfolderIndexHtmlContents + "\n")
+    }
+    
+    func testParameterizedSubRouterSubFolderStaticFileServerRedirect() {
+        runGetResponseTest(path: "/opnm/xxxx", expectedResponseText: subfolderIndexHtmlContents + "\n")
+    }
+    
     func testRangeRequests() {
         let requestingBytes = 10
         performServerTest(router) { expectation in
