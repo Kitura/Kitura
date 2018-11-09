@@ -9,7 +9,6 @@
 branches:
   only:
     - master
-    - develop
     - /^issue.*$/
     - /^kitura.*$/
 
