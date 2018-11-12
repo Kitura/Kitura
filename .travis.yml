@@ -25,6 +25,14 @@ matrix:
     - os: linux
       dist: trusty
       sudo: required
+      env: SWIFT_SNAPSHOT=4.1.3
+    - os: linux
+      dist: trusty
+      sudo: required
+    - os: linux
+      dist: trusty
+      sudo: required
+      env: KITURA_NIO=1
     - os: linux
       dist: trusty
       sudo: required
@@ -38,11 +46,13 @@ matrix:
     - os: linux
       dist: trusty
       sudo: required
-      env: SWIFT_SNAPSHOT=swift-4.2-DEVELOPMENT-SNAPSHOT-2018-06-19-a
+      services: docker
+      env: DOCKER_IMAGE=ubuntu:18.04
     - os: linux
       dist: trusty
       sudo: required
-      env: SWIFT_SNAPSHOT=swift-4.2-DEVELOPMENT-SNAPSHOT-2018-06-19-a KITURA_NIO=1
+      services: docker
+      env: DOCKER_IMAGE=ubuntu:18.04 KITURA_NIO=1
     - os: osx
       osx_image: xcode9.2
       sudo: required
@@ -50,18 +60,17 @@ matrix:
     - os: osx
       osx_image: xcode9.4
       sudo: required
-      env: JAZZY_ELIGIBLE=true
+      env: SWIFT_SNAPSHOT=4.1.2 JAZZY_ELIGIBLE=true
     - os: osx
       osx_image: xcode10
       sudo: required
-      env: SWIFT_SNAPSHOT=4.2
     - os: osx
       osx_image: xcode10
       sudo: required
-      env: SWIFT_SNAPSHOT=4.2 KITURA_NIO=1
+      env: KITURA_NIO=1
 
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update && brew install libressl ; fi
+  - git clone https://github.com/IBM-Swift/Package-Builder.git
 
 script:
-  - ./build.sh
+  - ./Package-Builder/build-package.sh -projectDir $TRAVIS_BUILD_DIR
