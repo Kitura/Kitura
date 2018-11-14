@@ -110,12 +110,15 @@ public class RouterRequest {
     private var _parsedURL: URLParser?
     internal let parsedURLPath: URLParser
 
+    private static var urlParsers: [String: URLParser] = [:]
+
     /// The parsed URL.
     public private(set) lazy var parsedURL: URLParser = { [unowned self] in
         if let result = self._parsedURL {
             return result
         } else {
-            let result = URLParser(url: self.serverRequest.urlURL.absoluteString.data(using: .utf8)!, isConnect: false)
+            let urlString = self.serverRequest.urlURL.absoluteString
+            let result = RouterRequest.urlParsers[urlString] ?? URLParser(url: urlString.data(using: .utf8)!, isConnect: false)
             self._parsedURL = result
             return result
         }
