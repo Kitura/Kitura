@@ -39,6 +39,8 @@ class TestCustomCoders: KituraTest {
         }
     }
     
+    let dateFormatter = DateFormatter()
+    
     func testCustomCoder() {
         let jsonEncoder: () -> BodyEncoder = {
             let encoder = JSONEncoder()
@@ -152,8 +154,14 @@ class TestCustomCoders: KituraTest {
         
         performServerTest(customRouter) { expectation in
             self.performRequest("get", path: "/rawget", callback: { response in
-                if let response = response, let responseString = try? response.readString() {
-                    XCTAssertEqual(responseString, "&date=2018-02-21T09:47:36%2B0000")
+                if let response = response,
+                   let responseString = try? response.readString(),
+                   let unwrappedString = responseString
+                {
+                    // Drop first 6 characters from response String to remove "&date=" and just leave the date String.
+                    let responseDate = self.dateFormatter.date(from: String((unwrappedString.dropFirst(6))))
+                    let expectedDate = self.dateFormatter.date(from: "2018-02-21T09:47:36%2B0000")
+                    XCTAssertEqual(responseDate, expectedDate)
                 } else {
                     XCTFail("Unable to read response string")
                 }
@@ -176,8 +184,14 @@ class TestCustomCoders: KituraTest {
 
         performServerTest(customRouter) { expectation in
             self.performRequest("get", path: "/rawget", callback: { response in
-                if let response = response, let responseString = try? response.readString() {
-                    XCTAssertEqual(responseString, "&date=2018-02-21T09:47:36%2B0000")
+                if let response = response,
+                   let responseString = try? response.readString(),
+                   let unwrappedString = responseString
+                {
+                    // Drop first 6 characters from response String to remove "&date=" and just leave the date String.
+                    let responseDate = self.dateFormatter.date(from: String((unwrappedString.dropFirst(6))))
+                    let expectedDate = self.dateFormatter.date(from: "2018-02-21T09:47:36%2B0000")
+                    XCTAssertEqual(responseDate, expectedDate)
                 } else {
                     XCTFail("Unable to read response string")
                 }
