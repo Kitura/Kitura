@@ -41,6 +41,11 @@ matrix:
       dist: trusty
       sudo: required
       services: docker
+      env: DOCKER_IMAGE=ubuntu:16.04 SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT
+    - os: linux
+      dist: trusty
+      sudo: required
+      services: docker
       env: DOCKER_IMAGE=ubuntu:16.04 KITURA_NIO=1
     - os: linux
       dist: trusty
@@ -61,10 +66,14 @@ matrix:
       sudo: required
       env: SWIFT_SNAPSHOT=4.1.2 JAZZY_ELIGIBLE=true
     - os: osx
-      osx_image: xcode10
+      osx_image: xcode10.1
       sudo: required
     - os: osx
-      osx_image: xcode10
+      osx_image: xcode10.1
+      sudo: required
+      env: SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT
+    - os: osx
+      osx_image: xcode10.1
       sudo: required
       env: KITURA_NIO=1
 
