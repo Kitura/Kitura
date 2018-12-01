@@ -370,6 +370,8 @@ extension Router {
 
     // POST
     fileprivate func postSafelyWithId<I: Codable, Id: Identifier, O: Codable>(_ route: String, handler: @escaping CodableIdentifierClosure<I, Id, O>) {
+        // FIXME: The ID is returned in the Location header, it is not an input parameter
+        // https://github.com/IBM-Swift/Kitura/issues/1336
         registerPostRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
@@ -383,7 +385,7 @@ extension Router {
 
     // PUT with Identifier
     fileprivate func putSafely<Id: Identifier, I: Codable, O: Codable>(_ route: String, handler: @escaping IdentifierCodableClosure<Id, I, O>) {
-        if parameterIsPresent(in: route) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
             return
         }
         registerPutRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
@@ -401,7 +403,7 @@ extension Router {
 
     // PATCH
     fileprivate func patchSafely<Id: Identifier, I: Codable, O: Codable>(_ route: String, handler: @escaping IdentifierCodableClosure<Id, I, O>) {
-        if parameterIsPresent(in: route) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
             return
         }
         registerPatchRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
@@ -419,6 +421,9 @@ extension Router {
 
     // Get single
     fileprivate func getSafely<O: Codable>(_ route: String, handler: @escaping SimpleCodableClosure<O>) {
+        if !pathSyntaxIsValid(route, identifierExpected: false) {
+            return
+        }
         registerGetRoute(route: route, outputType: O.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (single no-identifier) type-safe request")
@@ -428,7 +433,10 @@ extension Router {
 
     // Get array
     fileprivate func getSafely<O: Codable>(_ route: String, handler: @escaping CodableArrayClosure<O>) {
-        registerGetRoute(route: route, outputType: O.self)
+        if !pathSyntaxIsValid(route, identifierExpected: false) {
+            return
+        }
+        registerGetRoute(route: route, outputType: O.self, outputIsArray: true)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request")
             handler(CodableHelpers.constructOutResultHandler(response: response, completion: next))
@@ -437,7 +445,12 @@ extension Router {
     
     // Get array of (Id, Codable) tuples
     fileprivate func getSafely<Id: Identifier, O: Codable>(_ route: String, handler: @escaping IdentifierCodableArrayClosure<Id, O>) {
-        registerGetRoute(route: route, id: Id.self, outputType: O.self)
+        // FIXME: The ID is returned in a tuple, it is not an input parameter
+        // https://github.com/IBM-Swift/Kitura/issues/1336
+        if !pathSyntaxIsValid(route, identifierExpected: false) {
+            return
+        }
+        registerGetRoute(route: route, id: Id.self, outputType: O.self, outputIsArray: true)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural with identifier) type-safe request")
             handler(CodableHelpers.constructTupleArrayOutResultHandler(response: response, completion: next))
@@ -446,7 +459,7 @@ extension Router {
 
     // Get w/Query Parameters
     fileprivate func getSafely<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q, @escaping CodableArrayResultClosure<O>) -> Void) {
-        registerGetRoute(route: route, queryParams: Q.self, optionalQParam: false, outputType: O.self)
+        registerGetRoute(route: route, queryParams: Q.self, optionalQParam: false, outputType: O.self, outputIsArray: true)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -481,7 +494,7 @@ extension Router {
 
     // Get w/Optional Query Parameters
     fileprivate func getSafely<Q: QueryParams, O: Codable>(_ route: String, handler: @escaping (Q?, @escaping CodableArrayResultClosure<O>) -> Void) {
-        registerGetRoute(route: route, queryParams: Q.self, optionalQParam: true, outputType: O.self)
+        registerGetRoute(route: route, queryParams: Q.self, optionalQParam: true, outputType: O.self, outputIsArray: true)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -523,7 +536,7 @@ extension Router {
     }
     // GET single identified element
     fileprivate func getSafely<Id: Identifier, O: Codable>(_ route: String, handler: @escaping IdentifierSimpleCodableClosure<Id, O>) {
-        if parameterIsPresent(in: route) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
             return
         }
         registerGetRoute(route: route, id: Id.self, outputType: O.self)
@@ -539,6 +552,9 @@ extension Router {
 
     // DELETE
     fileprivate func deleteSafely(_ route: String, handler: @escaping NonCodableClosure) {
+        if !pathSyntaxIsValid(route, identifierExpected: false) {
+            return
+        }
         registerDeleteRoute(route: route)
         delete(route) { request, response, next in
             Log.verbose("Received DELETE (plural) type-safe request")
@@ -548,7 +564,7 @@ extension Router {
 
     // DELETE single element
     fileprivate func deleteSafely<Id: Identifier>(_ route: String, handler: @escaping IdentifierNonCodableClosure<Id>) {
-        if parameterIsPresent(in: route) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
             return
         }
         registerDeleteRoute(route: route, id: Id.self)
@@ -600,14 +616,33 @@ extension Router {
         }
     }
 
-    internal func parameterIsPresent(in route: String) -> Bool {
-        if route.contains(":") {
-            let paramaterString = route.split(separator: ":", maxSplits: 1, omittingEmptySubsequences: false)
-            let parameter = paramaterString.count > 0 ? paramaterString[1] : ""
-            Log.error("Erroneous path '\(route)', parameter ':\(parameter)' is not allowed. Codable routes do not allow parameters.")
-            return true
+    /// Precondition: Path is known to contain a : character
+    func pathHasSingleParamIdAsSuffix(_ path: String) -> Bool {
+        let pathArray = path.split(separator: ":", maxSplits: 1)
+        if pathArray.count > 1 {
+            return pathArray[1] == "id"
         }
         return false
+    }
+    
+    func pathSyntaxIsValid(_ path: String, identifierExpected: Bool) -> Bool {
+        let identifierSupplied = path.contains(":")
+        switch (identifierExpected, identifierSupplied) {
+        case (false, true):
+            Log.error("Path '\(path)' is not allowed: Codable routes do not allow path parameters.")
+            return false
+        case (true, false):
+            Log.info("Identifier expected for '\(path)'. :id will be automatically appended to the path.")
+            return true
+        case (true, true):
+            guard pathHasSingleParamIdAsSuffix(path) else {
+                Log.error("Erroneous path '\(path)' is not allowed. Codable routes support a trailing id parameter only.")
+                return false
+            }
+            return true
+        case (false, false):
+            return true
+        }
     }
 
     internal func join(path base: String, with component: String) -> String {
