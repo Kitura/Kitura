@@ -190,7 +190,6 @@ extension StaticFileServer {
                         if let etag = request.headers["If-None-Match"],
                           etag == CacheRelatedHeadersSetter.calculateETag(from: fileAttributes) {
                             response.statusCode = .notModified
-                            response.send("")
                         } else {
                             // Send the entire file
                             try response.send(fileName: filePath)
