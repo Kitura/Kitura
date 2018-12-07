@@ -54,12 +54,15 @@ class TestCodableRouter: KituraTest {
     // Need to initialise to avoid compiler error
     var router = Router()
     var userStore: [Int: User] = [:]
+    var userStoreArray: [User] = []
 
     // Reset for each test
     override func setUp() {
         super.setUp()           // Initialize logging
         router = Router()
         userStore = [1: User(id: 1, name: "Mike"), 2: User(id: 2, name: "Chris"), 3: User(id: 3, name: "Ricardo")]
+        // Swift 5: Dictionary ordering is randomized on each creation due to hashing changes. We cannot rely on the ordering of elements from `userStore` when comparing arrays.
+        userStoreArray = [User(id: 1, name: "Mike"), User(id: 2, name: "Chris"), User(id: 3, name: "Ricardo")]
     }
 
     struct Conflict: Codable, Equatable {
@@ -270,7 +273,7 @@ class TestCodableRouter: KituraTest {
     func testBasicGetArray() {
         router.get("/users") { (respondWith: ([User]?, RequestError?) -> Void) in
             print("GET on /users")
-            respondWith(self.userStore.map({ $0.value }), nil)
+            respondWith(self.userStoreArray, nil)
         }
         router.get("/error/users") { (respondWith: ([User]?, RequestError?) -> Void) in
             print("GET on /error/users")
@@ -285,7 +288,7 @@ class TestCodableRouter: KituraTest {
             .request("get", path: "/users")
             .hasStatus(.OK)
             .hasContentType(withPrefix: "application/json")
-            .hasData(self.userStore.map({ $0.value }))
+            .hasData(self.userStoreArray)
 
             .request("get", path: "/error/users")
             .hasStatus(.serviceUnavailable)
