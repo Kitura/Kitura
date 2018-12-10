@@ -300,12 +300,12 @@ class TestCodableRouter: KituraTest {
     }
 
     func testBasicGetIdentifiersArray() {
-        var intTuple = [(Int, User)]()
-        self.userStore.forEach { intTuple.append(($0.0, $0.1)) }
+        let intTuple: [(Int, User)] = [(1, User(id: 1, name: "Andy")), (2, User(id: 2, name: "Dave")), (3, User(id: 3, name: "Ian"))]
+        // expectedIntData = [["1": User(id: 1, name: "Andy")], ["2": User(id: 2, name: "Dave")], ["3": User(id: 3, name: "Ian")]]
         let expectedIntData: [[String: User]] = intTuple.map({ [$0.value: $1] })
         
-        var stringTuple = [(String, User)]()
-        self.userStore.forEach { stringTuple.append((String($0.0), $0.1)) }
+        let stringTuple: [(String, User)] = [("1", User(id: 1, name: "Andy")), ("2", User(id: 2, name: "Dave")), ("3", User(id: 3, name: "Ian"))]
+        // expectedStringData = [["1": User(id: 1, name: "Andy")], ["2": User(id: 2, name: "Dave")], ["3": User(id: 3, name: "Ian")]]
         let expectedStringData: [[String: User]] = stringTuple.map({ [$0.value: $1] })
         
         router.get("/int/users") { (respondWith: ([(Int, User)]?, RequestError?) -> Void) in
