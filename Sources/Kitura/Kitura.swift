@@ -69,7 +69,9 @@ public class Kitura {
         server.sslConfig = sslConfig?.config
         server.keepAliveState = keepAliveState
         server.allowPortReuse = allowPortReuse
-        Kitura.appendHTTP(server: server, port: port)
+        serverLock.lock()
+        httpServersAndPorts.append((server: server, port: port))
+        serverLock.unlock()
         return server
     }
 
@@ -94,7 +96,9 @@ public class Kitura {
         let server = FastCGI.createServer()
         server.delegate = delegate
         server.allowPortReuse = allowPortReuse
-        Kitura.appendFastCGI(server: server, port: port)
+        serverLock.lock()
+        fastCGIServersAndPorts.append((server: server, port: port))
+        serverLock.unlock()
         return server
     }
 
@@ -126,7 +130,8 @@ public class Kitura {
     /// Kitura.start()
     ///```
     public class func start() {
-        for (server, port) in getHTTPServersAndPorts() {
+        serverLock.lock()
+        for (server, port) in httpServersAndPorts {
             Log.verbose("Starting an HTTP Server on port \(port)...")
             do {
                 try server.listen(on: port)
@@ -134,7 +139,7 @@ public class Kitura {
                 Log.error("Error listening on port \(port): \(error). Use server.failed(callback:) to handle")
             }
         }
-        for (server, port) in getFastCGIServersAndPorts() {
+        for (server, port) in fastCGIServersAndPorts {
             Log.verbose("Starting a FastCGI Server on port \(port)...")
             do {
                 try server.listen(on: port)
@@ -142,6 +147,7 @@ public class Kitura {
                 Log.error("Error listening on port \(port): \(error). Use server.failed(callback:) to handle")
             }
         }
+        serverLock.unlock()
     }
 
     // MARK: Stop Servers
@@ -159,64 +165,25 @@ public class Kitura {
     ///
     /// - Parameter unregister: If servers should be unregistered after they are stopped (default true).
     public class func stop(unregister: Bool = true) {
-        for (server, port) in getHTTPServersAndPorts() {
+        serverLock.lock()
+        for (server, port) in httpServersAndPorts {
             Log.verbose("Stopping HTTP Server on port \(port)...")
             server.stop()
         }
-
-        for (server, port) in getFastCGIServersAndPorts() {
+        for (server, port) in fastCGIServersAndPorts {
             Log.verbose("Stopping FastCGI Server on port \(port)...")
             server.stop()
         }
-
         if unregister {
-            removeAllHTTP()
-            removeAllFastCGI()
+            httpServersAndPorts.removeAll()
+            fastCGIServersAndPorts.removeAll()
         }
+        serverLock.unlock()
     }
 
     typealias Port = Int
     
-    static private let httpLock = NSLock()
-    
-    private static func getHTTPServersAndPorts() -> [(HTTPServer, Port)] {
-        httpLock.lock()
-        let serversAndPorts = httpServersAndPorts
-        httpLock.unlock()
-        return serversAndPorts
-    }
-    
-    private static func appendHTTP(server: HTTPServer, port: Port) {
-        httpLock.lock()
-        httpServersAndPorts.append((server: server, port: port))
-        httpLock.unlock()
-    }
-    
-    private static func removeAllHTTP() {
-        httpLock.lock()
-        httpServersAndPorts.removeAll()
-        httpLock.unlock()
-    }
-    
-    static private let fastCGILock = NSLock()
-    
-    private static func getFastCGIServersAndPorts() -> [(FastCGIServer, Port)] {
-        fastCGILock.lock()
-        let serversAndPorts = fastCGIServersAndPorts
-        fastCGILock.unlock()
-        return serversAndPorts
-    }
-    
-    private static func appendFastCGI(server: FastCGIServer, port: Port) {
-        fastCGILock.lock()
-        fastCGIServersAndPorts.append((server: server, port: port))
-        fastCGILock.unlock()
-    }
-    private static func removeAllFastCGI() {
-        fastCGILock.lock()
-        fastCGIServersAndPorts.removeAll()
-        fastCGILock.unlock()
-    }
+    static private let serverLock = NSLock()
     internal private(set) static var httpServersAndPorts = [(server: HTTPServer, port: Port)]()
     internal private(set) static var fastCGIServersAndPorts = [(server: FastCGIServer, port: Port)]()
 }
