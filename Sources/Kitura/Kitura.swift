@@ -170,10 +170,12 @@ public class Kitura {
             Log.verbose("Stopping HTTP Server on port \(port)...")
             server.stop()
         }
+        
         for (server, port) in fastCGIServersAndPorts {
             Log.verbose("Stopping FastCGI Server on port \(port)...")
             server.stop()
         }
+        
         if unregister {
             httpServersAndPorts.removeAll()
             fastCGIServersAndPorts.removeAll()
