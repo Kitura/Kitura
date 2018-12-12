@@ -170,12 +170,12 @@ public class Kitura {
             Log.verbose("Stopping HTTP Server on port \(port)...")
             server.stop()
         }
-        
+
         for (server, port) in fastCGIServersAndPorts {
             Log.verbose("Stopping FastCGI Server on port \(port)...")
             server.stop()
         }
-        
+
         if unregister {
             httpServersAndPorts.removeAll()
             fastCGIServersAndPorts.removeAll()
@@ -184,7 +184,6 @@ public class Kitura {
     }
 
     typealias Port = Int
-    
     private static let serverLock = NSLock()
     internal private(set) static var httpServersAndPorts = [(server: HTTPServer, port: Port)]()
     internal private(set) static var fastCGIServersAndPorts = [(server: FastCGIServer, port: Port)]()
