@@ -185,7 +185,7 @@ public class Kitura {
 
     typealias Port = Int
     
-    static private let serverLock = NSLock()
+    private static let serverLock = NSLock()
     internal private(set) static var httpServersAndPorts = [(server: HTTPServer, port: Port)]()
     internal private(set) static var fastCGIServersAndPorts = [(server: FastCGIServer, port: Port)]()
 }
