@@ -187,9 +187,14 @@ extension StaticFileServer {
                         // Send only headers
                         _ = response.send(status: .OK)
                     } else {
-                        // Send the entire file
-                        try response.send(fileName: filePath)
-                        response.statusCode = .OK
+                        if let etag = request.headers["If-None-Match"],
+                          etag == CacheRelatedHeadersSetter.calculateETag(from: fileAttributes) {
+                            response.statusCode = .notModified
+                        } else {
+                            // Send the entire file
+                            try response.send(fileName: filePath)
+                            response.statusCode = .OK
+                        }
                     }
                 }
             } catch {

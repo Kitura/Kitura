@@ -45,7 +45,7 @@ open class StaticFileServer: RouterMiddleware {
         ///
         /// - Parameter addLastModifiedHeader: an indication whether to set
         /// "Last-Modified" header in the response.
-        /// - Parameter maxAgeCacheControlHeader: a max-age in milliseconds for
+        /// - Parameter maxAgeCacheControlHeader: a max-age in seconds for
         /// "max-age" value in "Cache-Control" header in the response
         /// - Parameter generateETag: an indication whether to set "Etag"
         /// header in the response.
