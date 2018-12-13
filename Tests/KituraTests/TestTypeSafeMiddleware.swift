@@ -55,6 +55,7 @@ class TestTypeSafeMiddleware: KituraTest {
             ("testMultipleMiddlewarePatch", testMultipleMiddlewarePatch),
             ("testCustomCoder", testCustomCoder),
             ("testCustomCoderGet", testCustomCoderGet),
+            ("testMiddlewareLogging", testMiddlewareLogging),
         ]
     }
 
@@ -1141,6 +1142,29 @@ class TestTypeSafeMiddleware: KituraTest {
             .hasData(codableDate, customDecoder: jsonDecoder)
 
             .run()
+    }
+    
+    func testMiddlewareLogging() {
+        router.get("/logging") { (middleware: LoggingMiddleware, query: MyQuery, respondWith: (User?, RequestError?) -> Void) in
+            XCTFail("Query parameters were decoded")
+            respondWith(nil, .internalServerError)
+        }
+        
+        buildServerTest(router, timeout: 30)
+            .request("get", path: "/logging?param=incorrect")
+            .hasStatus(.OK)
+            .hasNoData()
+            
+            .run()
+    }
+}
+
+struct LoggingMiddleware: TypeSafeMiddleware {
+    static func handle(request: RouterRequest, response: RouterResponse, completion: @escaping (LoggingMiddleware?, RequestError?) -> Void) {
+        print("Logging of users \(request.queryParameters)")
+        // Test considered passed since logging called. Skip the incorrect handler:
+        try? response.end()
+        completion(LoggingMiddleware(), nil)
     }
 }
 
