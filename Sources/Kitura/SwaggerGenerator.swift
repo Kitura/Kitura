@@ -864,6 +864,7 @@ struct SwaggerDocument: Encodable {
         var document: String?
 
         Kitura.serverLock.lock()
+        self.schemes = []
         if !Kitura.httpServersAndPorts.filter({ $0.server.sslConfig == nil }).isEmpty {
             self.schemes.append("http")
         }
