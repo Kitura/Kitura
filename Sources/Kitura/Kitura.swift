@@ -69,7 +69,9 @@ public class Kitura {
         server.sslConfig = sslConfig?.config
         server.keepAliveState = keepAliveState
         server.allowPortReuse = allowPortReuse
+        serverLock.lock()
         httpServersAndPorts.append((server: server, port: port))
+        serverLock.unlock()
         return server
     }
 
@@ -94,7 +96,9 @@ public class Kitura {
         let server = FastCGI.createServer()
         server.delegate = delegate
         server.allowPortReuse = allowPortReuse
+        serverLock.lock()
         fastCGIServersAndPorts.append((server: server, port: port))
+        serverLock.unlock()
         return server
     }
 
@@ -126,6 +130,7 @@ public class Kitura {
     /// Kitura.start()
     ///```
     public class func start() {
+        serverLock.lock()
         for (server, port) in httpServersAndPorts {
             Log.verbose("Starting an HTTP Server on port \(port)...")
             do {
@@ -142,6 +147,7 @@ public class Kitura {
                 Log.error("Error listening on port \(port): \(error). Use server.failed(callback:) to handle")
             }
         }
+        serverLock.unlock()
     }
 
     // MARK: Stop Servers
@@ -159,6 +165,7 @@ public class Kitura {
     ///
     /// - Parameter unregister: If servers should be unregistered after they are stopped (default true).
     public class func stop(unregister: Bool = true) {
+        serverLock.lock()
         for (server, port) in httpServersAndPorts {
             Log.verbose("Stopping HTTP Server on port \(port)...")
             server.stop()
@@ -173,9 +180,11 @@ public class Kitura {
             httpServersAndPorts.removeAll()
             fastCGIServersAndPorts.removeAll()
         }
+        serverLock.unlock()
     }
 
     typealias Port = Int
+    private static let serverLock = NSLock()
     internal private(set) static var httpServersAndPorts = [(server: HTTPServer, port: Port)]()
     internal private(set) static var fastCGIServersAndPorts = [(server: FastCGIServer, port: Port)]()
 }
