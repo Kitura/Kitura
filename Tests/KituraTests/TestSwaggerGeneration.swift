@@ -147,7 +147,6 @@ class TestSwaggerGeneration: KituraTest {
         return [
             ("testSwaggerVersion", testSwaggerVersion),
             ("testBasePath", testBasePath),
-            ("testSchemes", testSchemes),
             ("testInfo", testInfo),
             ("testSwaggerDefinitions", testSwaggerDefinitions),
             ("testSwaggerContent", testSwaggerContent),
@@ -934,21 +933,6 @@ class TestSwaggerGeneration: KituraTest {
             XCTAssertTrue(basepath == "/", "basePath is incorrect")
         } else {
             XCTFail("basePath is missing")
-        }
-    }
-
-    //
-    // Test that our swagger document defines the expected schemes.
-    //
-    func testSchemes() {
-        guard let dict = getSwaggerDictionary() else {
-            return XCTFail("Unable to get swagger dictionary")
-        }
-        if let schemes = dict["schemes"] as? [String] {
-            XCTAssertTrue(schemes.contains("http"), "schemes does not contain http")
-            XCTAssertTrue(schemes.count == 1, "schemes.count is incorrect")
-        } else {
-            XCTFail("schemes is missing")
         }
     }
 
