@@ -145,6 +145,14 @@ open class StaticFileServer: RouterMiddleware {
             return
         }
 
-        fileServer.serveFile(filePath, requestPath: requestPath, response: response)
+        let queryString: String = {
+            if let queryString = request.parsedURL.query {
+                return "?\(queryString)"
+            }
+            return ""
+        }()
+        
+        fileServer.serveFile(filePath, requestPath: requestPath,
+                             queryString: queryString, response: response)
     }
 }
