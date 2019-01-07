@@ -65,9 +65,6 @@
                 <a class="nav-group-task-link" href="Classes/Kitura.html">Kitura</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Classes/RouteRegex.html">RouteRegex</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Classes/Router.html">Router</a>
               </li>
               <li class="nav-group-task">
@@ -251,17 +248,19 @@ the appropriate code to handle them. This includes:</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A set of helper functions to make it easier to create, start, and stop Kitura based servers.</p>
+                        <p>Facilities for creating, starting and stopping Kitura-based servers.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 
-<p>In this example, a function called run is created, inside a server <code>Application.swift</code> file. This will create a Kitura server on the specified port, using the given router and run this created server. This <code>Application.run</code> function would then be called in your <code>main.swift</code> file as a non-returning function to initilize your Kitura server.</p>
+<p>In this example, a <code><a href="Classes/Router.html">Router</a></code> is created, and a single route registered that responds to an HTTP GET request on <q>/</q> with a plain text response.
+An HTTP server is created on port 8080, and is started with the <code><a href="Classes/Kitura.html#/s:6KituraAAC3runyyFZ">Kitura.run()</a></code> function (note that this function does not return).
+The route can then be accessed by visiting <code>http://localhost:8080</code>.</p>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
-<span class="k">let</span> <span class="nv">port</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">8080</span>
-<span class="kd">public</span> <span class="kd">func</span> <span class="nf">run</span><span class="p">()</span> <span class="k">throws</span><span class="p">{</span>
-<span class="o">...</span>
-   <span class="kt">Kitura</span><span class="o">.</span><span class="nf">addHTTPServer</span><span class="p">(</span><span class="nv">onPort</span><span class="p">:</span> <span class="n">port</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="n">router</span><span class="p">)</span>
-   <span class="kt">Kitura</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
+    <span class="n">response</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"Hello world"</span><span class="p">)</span>
+    <span class="nf">next</span><span class="p">()</span>
 <span class="p">}</span>
+<span class="kt">Kitura</span><span class="o">.</span><span class="nf">addHTTPServer</span><span class="p">(</span><span class="nv">onPort</span><span class="p">:</span> <span class="mi">8080</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="n">router</span><span class="p">)</span>
+<span class="kt">Kitura</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
 </code></pre>
 
                         <a href="Classes/Kitura.html" class="slightly-smaller">See more</a>
@@ -271,38 +270,6 @@ the appropriate code to handle them. This includes:</p>
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Kitura</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura10RouteRegexC"></a>
-                    <a name="//apple_ref/swift/Class/RouteRegex" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura10RouteRegexC">RouteRegex</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>A set of helper functions for router path matching using regular expression.</p>
-
-                        <a href="Classes/RouteRegex.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">RouteRegex</span></code></pre>
 
                         </div>
                       </div>
@@ -424,7 +391,21 @@ It is used by the server to read the body of the request as a String and send it
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Router response that the server sends as a reply to <code><a href="Classes/RouterRequest.html">RouterRequest</a></code>.</p>
+                        <p>The RouterResponse class is used to define and work with the response that will be sent by the <code><a href="Classes/Router.html">Router</a></code>.
+It contains and allows access to the HTTP response code (e.g. 404 <q>Not Found</q>), the HTTP <code><a href="Structs/Headers.html">Headers</a></code>
+and the body of the response.
+It can also render template files, using a template engine registered to the router.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example <q>response</q> is an instance of the class <code>RouterResponse</code>.
+The content type and status code of the response are set.
+The String <q>Hello world</q> is added to the body and the response is transmitted.</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/example"</span><span class="p">)</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s">"Content-Type"</span><span class="p">]</span> <span class="o">=</span> <span class="s">"text/html"</span>
+    <span class="n">response</span><span class="o">.</span><span class="nf">status</span><span class="p">(</span><span class="o">.</span><span class="kt">OK</span><span class="p">)</span>
+    <span class="k">try</span> <span class="n">response</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"Hello world"</span><span class="p">)</span><span class="o">.</span><span class="nf">end</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre>
 
                         <a href="Classes/RouterResponse.html" class="slightly-smaller">See more</a>
                       </div>
@@ -614,7 +595,17 @@ produce an array of values: <code>[&quot;a&quot;: [&quot;1&quot;, &quot;2&quot;]
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A router middleware that serves static files from a given path.</p>
+                        <p>A router middleware that serves static files from a given path.
+By default, it will serve files from the <q>/public</q> directory.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>The example below creates and registers a <code>StaticFileServer</code> on the <q>/example</q> route.
+When the router is running, A user can make a request that matches the <q>/example</q> path (e.g. localhost:8080/example/hello.html).
+The static file server would look inside its <q>/files</q> folder for a file with the same name as the path following <q>/example</q>  (e.g. <q>hello.html</q>).
+If a file is found it is sent as a response to that request, otherwise the next handler is called.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/example"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="kt">StaticFileServer</span><span class="p">(</span><span class="nv">path</span><span class="p">:</span> <span class="s">"./files"</span><span class="p">))</span>
+</code></pre>
 
                         <a href="Classes/StaticFileServer.html" class="slightly-smaller">See more</a>
                       </div>
@@ -637,7 +628,7 @@ produce an array of values: <code>[&quot;a&quot;: [&quot;1&quot;, &quot;2&quot;]
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-09-10)</p>
+      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-01-07)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
