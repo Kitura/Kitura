@@ -93,11 +93,11 @@ class KituraTest: XCTestCase {
 
     func doPerformServerTest(router: ServerDelegate, timeout: TimeInterval, line: Int, asyncTasks: [(XCTestExpectation) -> Void]) {
 
-        guard startServer(router: router) else {
-            XCTFail("Error starting server on port \(port). useSSL:\(useSSL)")
+        guard let port = startServer(router: router) else {
+            XCTFail("Error starting server. useSSL:\(useSSL)")
             return
         }
-
+        self.port = port
         let requestQueue = DispatchQueue(label: "Request queue")
         for (index, asyncTask) in asyncTasks.enumerated() {
             let expectation = self.expectation(line: line, index: index)
@@ -112,16 +112,16 @@ class KituraTest: XCTestCase {
         }
     }
 
-    private func startServer(router: ServerDelegate) -> Bool {
+    private func startServer(router: ServerDelegate) -> Int? {
         if useSSL {
             if let server = KituraTest.httpsServer {
                 server.delegate = router
-                return true
+                return server.port
             }
         } else {
             if let server = KituraTest.httpServer {
                 server.delegate = router
-                return true
+                return server.port
             }
         }
 
@@ -132,17 +132,17 @@ class KituraTest: XCTestCase {
         }
 
         do {
-            try server.listen(on: port)
+            try server.listen(on: 0)
 
             if useSSL {
                 KituraTest.httpsServer = server
             } else {
                 KituraTest.httpServer = server
             }
-            return true
+            return server.port
         } catch {
             XCTFail("Error starting server: \(error)")
-            return false
+            return nil
         }
     }
 
@@ -158,7 +158,7 @@ class KituraTest: XCTestCase {
                         callback: @escaping ClientRequest.Callback, headers: [String: String]? = nil,
                         requestModifier: ((ClientRequest) -> Void)? = nil) {
 
-        let port = Int16(port ?? self.port)
+        let port = port ?? self.port
         let useSSL = useSSL ?? self.useSSL
 
         var allHeaders = [String: String]()
@@ -173,7 +173,7 @@ class KituraTest: XCTestCase {
 
         let schema = useSSL ? "https" : "http"
         var options: [ClientRequest.Options] =
-            [.method(method), .schema(schema), .hostname("localhost"), .port(port), .path(path),
+            [.method(method), .schema(schema), .hostname("localhost"), .port(UInt16(port).toInt16()), .path(path),
              .headers(allHeaders)]
         if useSSL {
             options.append(.disableSSLVerification)
@@ -188,5 +188,11 @@ class KituraTest: XCTestCase {
 
     func expectation(line: Int, index: Int) -> XCTestExpectation {
         return self.expectation(description: "\(type(of: self)):\(line)[\(index)](ssl:\(useSSL))")
+    }
+}
+
+fileprivate extension UInt16 {
+    func toInt16() -> Int16 {
+        return Int16(bitPattern: self)
     }
 }

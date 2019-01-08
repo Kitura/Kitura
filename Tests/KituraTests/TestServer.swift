@@ -31,7 +31,7 @@ class TestServer: KituraTest {
         ]
     }
 
-    let httpPort = 8080
+    var httpPort = 8080
     let fastCgiPort = 9000
     let useNIO = ProcessInfo.processInfo.environment["KITURA_NIO"] != nil
 
@@ -42,7 +42,7 @@ class TestServer: KituraTest {
 
     private func setupServerAndExpectations(expectStart: Bool, expectStop: Bool, expectFail: Bool, httpPort: Int?=nil, fastCgiPort: Int?=nil) {
         let router = Router()
-        let httpServer = Kitura.addHTTPServer(onPort: httpPort ?? self.httpPort, with: router)
+        let httpServer = Kitura.addHTTPServer(onPort: httpPort ?? 0, with: router)
         let fastCgiServer = useNIO ? FastCGIServer() : Kitura.addFastCGIServer(onPort: fastCgiPort ?? self.fastCgiPort, with: router)
 
         if expectStart {
@@ -164,7 +164,7 @@ class TestServer: KituraTest {
     }
 
     func testServerRestart() {
-        let port = httpPort
+        var port = httpPort
         let path = "/testServerRestart"
         let body = "Server is running."
 
@@ -174,7 +174,7 @@ class TestServer: KituraTest {
             next()
         }
 
-        let server = Kitura.addHTTPServer(onPort: port, with: router)
+        let server = Kitura.addHTTPServer(onPort: 0, with: router)
         server.sslConfig = KituraTest.sslConfig.config
 
         let stopped = DispatchSemaphore(value: 0)
@@ -183,6 +183,7 @@ class TestServer: KituraTest {
         }
 
         Kitura.start()
+        port = server.port!
         testResponse(port: port, path: path, expectedBody: body)
         Kitura.stop(unregister: false)
         stopped.wait()
@@ -191,6 +192,7 @@ class TestServer: KituraTest {
         testResponse(port: port, path: path, expectedBody: nil, expectedStatus: nil)
 
         Kitura.start()
+        port = server.port!
         testResponse(port: port, path: path, expectedBody: body)
         Kitura.stop() // default for unregister is true
 
