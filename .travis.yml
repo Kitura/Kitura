@@ -28,14 +28,7 @@ matrix:
     - os: linux
       dist: trusty
       sudo: required
-    - os: linux
-      dist: trusty
-      sudo: required
       env: CUSTOM_TEST_SCRIPT=.swift-test-parallel
-    - os: linux
-      dist: trusty
-      sudo: required
-      env: KITURA_NIO=1
     - os: linux
       dist: trusty
       sudo: required
@@ -71,14 +64,7 @@ matrix:
     - os: osx
       osx_image: xcode10
       sudo: required
-    - os: osx
-      osx_image: xcode10
-      sudo: required
       env: CUSTOM_TEST_SCRIPT=.swift-test-parallel
-    - os: osx
-      osx_image: xcode10
-      sudo: required
-      env: KITURA_NIO=1
     - os: osx
       osx_image: xcode10
       sudo: required
