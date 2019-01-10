@@ -28,35 +28,28 @@ matrix:
     - os: linux
       dist: trusty
       sudo: required
-    - os: linux
-      dist: trusty
-      sudo: required
-      env: KITURA_NIO=1
+      services: docker
+      env: DOCKER_IMAGE=ubuntu:16.04 SWIFT_TEST_ARGS="--parallel"
     - os: linux
       dist: trusty
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=ubuntu:16.04
+      env: DOCKER_IMAGE=ubuntu:16.04 KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
     - os: linux
       dist: trusty
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=ubuntu:16.04 SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT
+      env: DOCKER_IMAGE=ubuntu:16.04 SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT SWIFT_TEST_ARGS="--parallel --num-workers=16"
     - os: linux
       dist: trusty
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=ubuntu:16.04 KITURA_NIO=1
+      env: DOCKER_IMAGE=ubuntu:18.04 SWIFT_TEST_ARGS="--parallel"
     - os: linux
       dist: trusty
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=ubuntu:18.04
-    - os: linux
-      dist: trusty
-      sudo: required
-      services: docker
-      env: DOCKER_IMAGE=ubuntu:18.04 KITURA_NIO=1
+      env: DOCKER_IMAGE=ubuntu:18.04 KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
     - os: osx
       osx_image: xcode9.2
       sudo: required
@@ -68,14 +61,15 @@ matrix:
     - os: osx
       osx_image: xcode10.1
       sudo: required
+      env: SWIFT_TEST_ARGS="--parallel"
     - os: osx
       osx_image: xcode10.1
       sudo: required
-      env: SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT
+      env: KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
     - os: osx
       osx_image: xcode10.1
       sudo: required
-      env: KITURA_NIO=1
+      env: SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT SWIFT_TEST_ARGS="--parallel --num-workers=16"
 
 before_install:
   - git clone https://github.com/IBM-Swift/Package-Builder.git
