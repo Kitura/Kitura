@@ -65,6 +65,7 @@ public class Kitura {
     /// - Parameter withSSL: The `sslConfig` to use.
     /// - Parameter keepAlive: The maximum number of additional requests to permit per Keep-Alive connection. Defaults to `.unlimited`. If set to `.disabled`, Keep-Alive will not be permitted.
     /// - Parameter allowPortReuse: Determines whether the listener port may be shared with other Kitura instances (`SO_REUSEPORT`). Defaults to `false`. If the specified port is already in use by another listener that has not allowed sharing, the server will fail to start.
+    /// - Parameter connectionPolicy: Controls whether connections and requests are accepted.
     /// - Returns: The created `HTTPServer`.
     @discardableResult
     public class func addHTTPServer(onPort port: Int,
@@ -104,12 +105,16 @@ public class Kitura {
                                     with delegate: ServerDelegate,
                                     withSSL sslConfig: SSLConfig?=nil,
                                     keepAlive keepAliveState: KeepAliveState = .unlimited,
-                                    allowPortReuse: Bool = false) -> HTTPServer {
+                                    allowPortReuse: Bool = false,
+                                    connectionPolicy: IncomingSocketOptions? = nil) -> HTTPServer {
         let server = HTTP.createServer()
         server.delegate = delegate
         server.sslConfig = sslConfig?.config
         server.keepAliveState = keepAliveState
         server.allowPortReuse = allowPortReuse
+        if let connectionPolicy = connectionPolicy {
+            server.connectionPolicy = connectionPolicy
+        }
         serverLock.lock()
         switch listenType {
         case .inet(let port, let address):
@@ -300,3 +305,24 @@ public class Kitura {
     internal private(set) static var httpServersAndUnixSocketPaths = [(server: HTTPServer, socketPath: String)]()
     internal private(set) static var fastCGIServersAndPorts = [(server: FastCGIServer, port: Port, address: String?)]()
 }
+
+// MARK: IncomingSocketOptions
+
+/**
+ Bridge [IncomingSocketOptions](http://ibm-swift.github.io/Kitura-net/Structs/IncomingSocketOptions.html) from [KituraNet](http://ibm-swift.github.io/Kitura-net) so that you only need to import `Kitura` to access it.
+
+ IncomingSocketOptions allows customization of default connection policies, including:
+
+ - `requestSizeLimit`: Defines the maximum size of an incoming request, in bytes. If requests are received that are larger than this limit, they will be rejected and the connection will be closed. A value of `nil` means no limit.
+ - `connectionLimit`: Defines the maximum number of concurrent connections that a server should accept. Clients attempting to connect when this limit has been reached will be rejected. A value of `nil` means no limit.
+
+ Example usage:
+ ```
+ let port = 8080
+ let router = Router()
+ let connectionPolicy = IncomingSocketOptions(requestSizeLimit: 1000, connectionLimit: 10)
+ Kitura.addHTTPServer(onPort: port, with: router, connectionPolicy: connectionPolicy)
+ ```
+ */
+public typealias IncomingSocketOptions = KituraNet.IncomingSocketOptions
+
