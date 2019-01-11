@@ -1,5 +1,4 @@
 // swift-tools-version:4.2
-// The swift-tools-version declares the minimum version of Swift required to build this package.
 
 /**
  * Copyright IBM Corporation 2016, 2017
@@ -31,7 +30,6 @@ if ProcessInfo.processInfo.environment["KITURA_NIO"] != nil {
 let package = Package(
     name: "Kitura",
     products: [
-        // Products define the executables and libraries produced by a package, and make them visible to other packages.
         .library(
             name: "Kitura",
             targets: ["Kitura"]
@@ -44,8 +42,6 @@ let package = Package(
         .package(url: "https://github.com/IBM-Swift/TypeDecoder.git", from: "1.3.0"),
     ],
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
             name: "Kitura",
             dependencies: ["KituraNet", "KituraTemplateEngine", "KituraContracts", "TypeDecoder"]

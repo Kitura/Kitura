@@ -290,15 +290,12 @@ class TestTypeSafeMiddleware: KituraTest {
     }
 
     func testSingleMiddlewareGetIdentifierCodableArray() {
-        // Expected tuples [[1: User(id: 1, name: "Andy")], [2: User(id: 2, name: "Dave")], [3: User(id: 3, name: "Ian")]]
-        var intTuple = [(Int, User)]()
-        self.userStore.forEach { intTuple.append(($0.0, $0.1)) }
+        let intTuple: [(Int, User)] = [(1, User(id: 1, name: "Andy")), (2, User(id: 2, name: "Dave")), (3, User(id: 3, name: "Ian"))]
+        // expectedIntData = [["1": User(id: 1, name: "Andy")], ["2": User(id: 2, name: "Dave")], ["3": User(id: 3, name: "Ian")]]
         let expectedIntData: [[String: User]] = intTuple.map({ [$0.value: $1] })
 
         router.get("/userMiddleware") { (middleware: UserMiddleware, respondWith: ([(Int, User)]?, RequestError?) -> Void) in
             print("GET Identifier Codable tuple on /userMiddleware - received header \(middleware.header)")
-            var intTuple = [(Int, User)]()
-            self.userStore.forEach { intTuple.append(($0.0, $0.1)) }
             respondWith(intTuple, nil)
         }
 
@@ -316,15 +313,12 @@ class TestTypeSafeMiddleware: KituraTest {
     }
 
     func testMultipleMiddlewareGetIdentifierCodableArray() {
-        // Expected tuples [[1: User(id: 1, name: "Andy")], [2: User(id: 2, name: "Dave")], [3: User(id: 3, name: "Ian")]]
-        var intTuple = [(Int, User)]()
-        self.userStore.forEach { intTuple.append(($0.0, $0.1)) }
+        let intTuple: [(Int, User)] = [(1, User(id: 1, name: "Andy")), (2, User(id: 2, name: "Dave")), (3, User(id: 3, name: "Ian"))]
+        // expectedIntData = [["1": User(id: 1, name: "Andy")], ["2": User(id: 2, name: "Dave")], ["3": User(id: 3, name: "Ian")]]
         let expectedIntData: [[String: User]] = intTuple.map({ [$0.value: $1] })
 
         router.get("/userMultiMiddleware") { (middleware: UserMiddleware, middleware2: UserMiddleware2, middleware3: UserMiddleware3, respondWith: ([(Int, User)]?, RequestError?) -> Void) in
             print("GET Identifier Codable on /userMultiMiddleware - received headers \(middleware.header), \(middleware2.header), \(middleware3.header)")
-            var intTuple = [(Int, User)]()
-            self.userStore.forEach { intTuple.append(($0.0, $0.1)) }
             respondWith(intTuple, nil)
         }
 
