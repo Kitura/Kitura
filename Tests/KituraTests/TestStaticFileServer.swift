@@ -171,28 +171,28 @@ class TestStaticFileServer: KituraTest {
         let router = Router(enableWelcomePage: enableWelcomePage)
 
         // The route below ensures that the static file server does not prevent all routes being walked
-        router.all("/", middleware: StaticFileServer())
+        router.all("/", middleware: StaticFileServer()!)
 
         var cacheOptions = StaticFileServer.CacheOptions(maxAgeCacheControlHeader: 2)
         var options = StaticFileServer.Options(possibleExtensions: ["exe", "html"], cacheOptions: cacheOptions)
-        router.all("/qwer", middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options:options, customResponseHeadersSetter: HeaderSetter()))
+        router.all("/qwer", middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options:options, customResponseHeadersSetter: HeaderSetter())!)
 
         cacheOptions = StaticFileServer.CacheOptions(addLastModifiedHeader: false, generateETag: false)
         options = StaticFileServer.Options(serveIndexForDirectory: false, cacheOptions: cacheOptions)
-        router.all("/zxcv", middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options:options))
+        router.all("/zxcv", middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options:options)!)
 
         options = StaticFileServer.Options(redirect: false)
         let directoryURL = URL(fileURLWithPath: #file + "/../TestStaticFileServer").standardizedFileURL
-        router.all("/asdf", middleware: StaticFileServer(path: directoryURL.path, options:options))
+        router.all("/asdf", middleware: StaticFileServer(path: directoryURL.path, options:options)!)
 
         options = StaticFileServer.Options(possibleExtensions: ["exe", "html"], cacheOptions: cacheOptions, acceptRanges: false)
-        router.all("/tyui", middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options:options, customResponseHeadersSetter: HeaderSetter()))
+        router.all("/tyui", middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options:options, customResponseHeadersSetter: HeaderSetter())!)
         
         options = StaticFileServer.Options(serveIndexForDirectory: true, redirect: true, cacheOptions: cacheOptions)
-        router.route("/ghjk").all(middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options: options))
+        router.route("/ghjk").all(middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options: options)!)
         
         options = StaticFileServer.Options(serveIndexForDirectory: true, redirect: true, cacheOptions: cacheOptions)
-        router.route("/opnm/:parameter").all(middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/subfolder", options: options))
+        router.route("/opnm/:parameter").all(middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/subfolder", options: options)!)
 
         return router
     }
@@ -271,7 +271,7 @@ class TestStaticFileServer: KituraTest {
     }
 
     func testAbsoluteRootPath() {
-        XCTAssertEqual(StaticFileServer(path: "/").absoluteRootPath, "/", "Absolute root path did not resolve to system root")
+        XCTAssertEqual(StaticFileServer(path: "/")!.absoluteRootPath, "/", "Absolute root path did not resolve to system root")
     }
 
     let indexHtmlContents = "<!DOCTYPE html><html><body><b>Index</b></body></html>" // contents of index.html

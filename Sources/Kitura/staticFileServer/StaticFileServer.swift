@@ -101,7 +101,7 @@ open class StaticFileServer: RouterMiddleware {
     /// - Parameter customResponseHeadersSetter: an object of a class that
     /// implements `ResponseHeadersSetter` protocol providing a custom method to set
     /// the headers of the response.
-    public init(path: String = "./public", options: Options = Options(),
+    public init?(path: String = "./public", options: Options = Options(),
                  customResponseHeadersSetter: ResponseHeadersSetter? = nil) {
         absoluteRootPath = StaticFileServer.ResourcePathHandler.getAbsolutePath(for: path)
 
