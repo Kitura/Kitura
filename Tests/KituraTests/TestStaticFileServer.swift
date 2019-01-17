@@ -589,4 +589,14 @@ class TestStaticFileServer: KituraTest {
             expectation.fulfill()
         }
     }
+
+    // Test the StaticFileServer can not be initialised when passed a file path rather than folder.
+    func testRejectFile() {
+        let filePath = #file
+        guard let _ = StaticFileServer(path: filePath) else {
+            return
+        }
+        XCTFail("Static file server initialised for file path")
+        return
+    }
 }
