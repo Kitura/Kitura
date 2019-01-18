@@ -104,6 +104,12 @@ open class StaticFileServer: RouterMiddleware {
     public init?(path: String = "./public", options: Options = Options(),
                  customResponseHeadersSetter: ResponseHeadersSetter? = nil) {
         absoluteRootPath = StaticFileServer.ResourcePathHandler.getAbsolutePath(for: path)
+        // Check the supplied path is a directory and if not fail initialisation
+        var isDirectory = ObjCBool(booleanLiteral: false)
+        let pathExists = FileManager.default.fileExists(atPath: absoluteRootPath, isDirectory: &isDirectory)
+        guard pathExists, isDirectory.boolValue else {
+            return nil
+        }
 
         let cacheOptions = options.cacheOptions
         let cacheRelatedHeadersSetter =
