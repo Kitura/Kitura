@@ -105,9 +105,15 @@ open class StaticFileServer: RouterMiddleware {
                  customResponseHeadersSetter: ResponseHeadersSetter? = nil) {
         absoluteRootPath = StaticFileServer.ResourcePathHandler.getAbsolutePath(for: path)
         // Check the supplied path is a directory and if not fail initialisation
-        var isDirectory = ObjCBool(booleanLiteral: false)
+        var isDirectory = ObjCBool(false)
+
         let pathExists = FileManager.default.fileExists(atPath: absoluteRootPath, isDirectory: &isDirectory)
-        guard pathExists, isDirectory.boolValue else {
+        #if !os(Linux) || swift(>=4.1)
+        let isDirectoryBool = isDirectory.boolValue
+        #else
+        let isDirectoryBool = isDirectory
+        #endif
+        guard pathExists, isDirectoryBool else {
             return nil
         }
 
