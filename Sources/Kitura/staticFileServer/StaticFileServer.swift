@@ -15,6 +15,7 @@
  */
 
 import Foundation
+import LoggerAPI
 
 // MARK: StaticFileServer
 
@@ -103,7 +104,8 @@ open class StaticFileServer: RouterMiddleware {
     /// the headers of the response.
     public init?(path: String = "./public", options: Options = Options(),
                  customResponseHeadersSetter: ResponseHeadersSetter? = nil) {
-        absoluteRootPath = StaticFileServer.ResourcePathHandler.getAbsolutePath(for: path)
+        let rootPathAbsolute = StaticFileServer.ResourcePathHandler.getAbsolutePath(for: path)
+        absoluteRootPath = rootPathAbsolute
         // Check the supplied path is a directory and if not fail initialisation
         var isDirectory = ObjCBool(false)
 
@@ -113,7 +115,10 @@ open class StaticFileServer: RouterMiddleware {
         #else
         let isDirectoryBool = isDirectory
         #endif
-        guard pathExists, isDirectoryBool else {
+        if !pathExists {
+            Log.warning("StaticFileServer being initialised with invalid path: \(rootPathAbsolute)")
+        } else if !isDirectoryBool {
+            Log.error("StaticFileServer cannot be intialised with a file")
             return nil
         }
 
