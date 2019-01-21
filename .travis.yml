@@ -65,7 +65,7 @@ matrix:
     - os: osx
       osx_image: xcode10.1
       sudo: required
-      env: KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
+      env: KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel" BREW_INSTALL_PACKAGES="libressl"
     - os: osx
       osx_image: xcode10.1
       sudo: required
