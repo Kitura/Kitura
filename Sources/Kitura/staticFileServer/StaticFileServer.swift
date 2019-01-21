@@ -102,7 +102,7 @@ open class StaticFileServer: RouterMiddleware {
     /// - Parameter customResponseHeadersSetter: an object of a class that
     /// implements `ResponseHeadersSetter` protocol providing a custom method to set
     /// the headers of the response.
-    public init?(path: String = "./public", options: Options = Options(),
+    public init(path: String = "./public", options: Options = Options(),
                  customResponseHeadersSetter: ResponseHeadersSetter? = nil) {
         let rootPathAbsolute = StaticFileServer.ResourcePathHandler.getAbsolutePath(for: path)
         absoluteRootPath = rootPathAbsolute
@@ -118,8 +118,7 @@ open class StaticFileServer: RouterMiddleware {
         if !pathExists {
             Log.warning("StaticFileServer being initialised with invalid path: \(rootPathAbsolute)")
         } else if !isDirectoryBool {
-            Log.error("StaticFileServer cannot be intialised with a file")
-            return nil
+            Log.error("StaticFileServer should not be intialised with a path which resolves to a file")
         }
 
         let cacheOptions = options.cacheOptions
