@@ -722,6 +722,11 @@ struct SwaggerDocument: Encodable {
         let nl = pretty ? "\n" : ""
 
         let encoder = JSONEncoder()
+        if #available(OSX 10.13, *) {
+            encoder.outputFormatting = .sortedKeys
+        } else {
+            // Fallback on earlier versions
+        }
         var fieldCount = 1
         for (field, fieldProps) in properties {
             propertyStr.append("\(sp)\"\(field)\": ")
@@ -756,6 +761,11 @@ struct SwaggerDocument: Encodable {
             contentStr.append("\(sp)\"type\": \"\(modelRef.type)\",\(nl)")
             if modelRef.required.count > 0 {
                 let encoder = JSONEncoder()
+                if #available(OSX 10.13, *) {
+                    encoder.outputFormatting = .sortedKeys
+                } else {
+                    // Fallback on earlier versions
+                }
                 do {
                     let encodedData = try encoder.encode(modelRef.required)
                     if let json = String(data: encodedData, encoding: .utf8) {
@@ -840,12 +850,17 @@ struct SwaggerDocument: Encodable {
     ///
     public func serializeAPIToJSON() throws -> String? {
         let encoder = JSONEncoder()
-        encoder.outputFormatting = .prettyPrinted
+        if #available(OSX 10.13, *) {
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        } else {
+            // Fallback on earlier versions
+            encoder.outputFormatting = .prettyPrinted
+        }
         let encodedData = try encoder.encode(self)
         var search = "}"
         var json = String(data: encodedData, encoding: .utf8)
         if var unwrappedJson = json {
-            if encoder.outputFormatting == .prettyPrinted {
+            if encoder.outputFormatting.contains(.prettyPrinted) {
                 search = "\n}"
             }
             if let insertionIndex = unwrappedJson.range(of: search, options: .backwards)?.lowerBound {
