@@ -106,7 +106,8 @@ open class StaticFileServer: RouterMiddleware {
                  customResponseHeadersSetter: ResponseHeadersSetter? = nil) {
         let rootPathAbsolute = StaticFileServer.ResourcePathHandler.getAbsolutePath(for: path)
         absoluteRootPath = rootPathAbsolute
-        // Check the supplied path is a directory and if not fail initialisation
+        // If the supplied path does not exist log a warning as the path could be created dynamically at runtime.
+        // If the supplied path exists and is not a directory then log an error.
         var isDirectory = ObjCBool(false)
 
         let pathExists = FileManager.default.fileExists(atPath: absoluteRootPath, isDirectory: &isDirectory)
@@ -118,7 +119,7 @@ open class StaticFileServer: RouterMiddleware {
         if !pathExists {
             Log.warning("StaticFileServer being initialised with invalid path: \(rootPathAbsolute)")
         } else if !isDirectoryBool {
-            Log.error("StaticFileServer should not be intialised with a path which resolves to a file")
+            Log.error("StaticFileServer should not be initialised with a path that resolves to a file")
         }
 
         let cacheOptions = options.cacheOptions
