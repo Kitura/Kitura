@@ -767,7 +767,7 @@ struct SwaggerDocument: Encodable {
                     // Fallback on earlier versions
                 }
                 do {
-                    let encodedData = try encoder.encode(modelRef.required)
+                    let encodedData = try encoder.encode(modelRef.required.sorted())
                     if let json = String(data: encodedData, encoding: .utf8) {
                         contentStr.append("\(sp)\"required\": \(json),\(nl)")
                     } else {
@@ -831,7 +831,7 @@ struct SwaggerDocument: Encodable {
         definitionsStr = ",\(nl)"
         definitionsStr.append("\(sp)\"definitions\": {\(nl)")
         var modelCount = 0
-        for model in self.definitions.keys {
+        for model in self.definitions.keys.sorted() {
             modelCount += 1
             let encodedModel = try JSONEncodeModel(model: model, pretty: pretty, depth: depth + 1)
             definitionsStr.append(encodedModel)
@@ -864,7 +864,7 @@ struct SwaggerDocument: Encodable {
                 search = "\n}"
             }
             if let insertionIndex = unwrappedJson.range(of: search, options: .backwards)?.lowerBound {
-                let definitions = try JSONEncodeDefinitions(pretty: encoder.outputFormatting == .prettyPrinted)
+                let definitions = try JSONEncodeDefinitions(pretty: encoder.outputFormatting.contains(.prettyPrinted))
                 unwrappedJson.replaceSubrange(insertionIndex..., with: definitions)
             }
             json = unwrappedJson
