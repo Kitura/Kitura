@@ -65,7 +65,7 @@ public class Kitura {
     /// - Parameter withSSL: The `sslConfig` to use.
     /// - Parameter keepAlive: The maximum number of additional requests to permit per Keep-Alive connection. Defaults to `.unlimited`. If set to `.disabled`, Keep-Alive will not be permitted.
     /// - Parameter allowPortReuse: Determines whether the listener port may be shared with other Kitura instances (`SO_REUSEPORT`). Defaults to `false`. If the specified port is already in use by another listener that has not allowed sharing, the server will fail to start.
-    /// - Parameter connectionPolicy: Controls whether connections and requests are accepted.
+    /// - Parameter options: Allows customization of default policies for this server.
     /// - Returns: The created `HTTPServer`.
     @discardableResult
     public class func addHTTPServer(onPort port: Int,
@@ -106,14 +106,14 @@ public class Kitura {
                                     withSSL sslConfig: SSLConfig?=nil,
                                     keepAlive keepAliveState: KeepAliveState = .unlimited,
                                     allowPortReuse: Bool = false,
-                                    connectionPolicy: IncomingSocketOptions? = nil) -> HTTPServer {
+                                    options: ServerOptions? = nil) -> HTTPServer {
         let server = HTTP.createServer()
         server.delegate = delegate
         server.sslConfig = sslConfig?.config
         server.keepAliveState = keepAliveState
         server.allowPortReuse = allowPortReuse
-        if let connectionPolicy = connectionPolicy {
-            server.connectionPolicy = connectionPolicy
+        if let options = options {
+            server.options = options
         }
         serverLock.lock()
         switch listenType {
@@ -306,23 +306,29 @@ public class Kitura {
     internal private(set) static var fastCGIServersAndPorts = [(server: FastCGIServer, port: Port, address: String?)]()
 }
 
-// MARK: IncomingSocketOptions
+// MARK: ServerOptions
 
 /**
- Bridge [IncomingSocketOptions](http://ibm-swift.github.io/Kitura-net/Structs/IncomingSocketOptions.html) from [KituraNet](http://ibm-swift.github.io/Kitura-net) so that you only need to import `Kitura` to access it.
+ Bridge [ServerOptions](http://ibm-swift.github.io/Kitura-net/Structs/ServerOptions.html) from [KituraNet](http://ibm-swift.github.io/Kitura-net) so that you only need to import `Kitura` to access it.
 
- IncomingSocketOptions allows customization of default connection policies, including:
+ ServerOptions allows customization of default connection policies, including:
 
  - `requestSizeLimit`: Defines the maximum size of an incoming request, in bytes. If requests are received that are larger than this limit, they will be rejected and the connection will be closed. A value of `nil` means no limit.
  - `connectionLimit`: Defines the maximum number of concurrent connections that a server should accept. Clients attempting to connect when this limit has been reached will be rejected. A value of `nil` means no limit.
+
+ The server can optionally respond to the client with a message in either of these cases. This message can be customized by defining `requestSizeResponseGenerator` and `connectionResponseGenerator`.
 
  Example usage:
  ```
  let port = 8080
  let router = Router()
- let connectionPolicy = IncomingSocketOptions(requestSizeLimit: 1000, connectionLimit: 10)
- Kitura.addHTTPServer(onPort: port, with: router, connectionPolicy: connectionPolicy)
+ let connectionResponse: (Int, String) -> (HTTPStatusCode, String)? = { (limit, client) in
+     Log.debug("Rejecting request from \(client): Connection limit \(limit) reached")
+     return (.serviceUnavailable, "Service busy - please try again later.\r\n")
+ }
+ let serverOptions = ServerOptions(requestSizeLimit: 1000, connectionLimit: 10, connectionResponseGenerator: connectionResponse)
+ Kitura.addHTTPServer(onPort: port, with: router, options: serverOptions)
  ```
  */
-public typealias IncomingSocketOptions = KituraNet.IncomingSocketOptions
+public typealias ServerOptions = KituraNet.ServerOptions
 
