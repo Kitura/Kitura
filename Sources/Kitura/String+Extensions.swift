@@ -24,7 +24,7 @@ extension String {
     /// values.
     var urlDecodedFieldValuePairs: [String: String] {
         var result: [String: String] = [:]
-        for item in self.components(separatedBy: "&") {
+        for item in self.split(separator: "&") {
             let (key, value) = item.keyAndDecodedValue
             if let value = value {
                 // If value already exists for this key, append it
@@ -44,7 +44,7 @@ extension String {
     var urlDecodedFieldMultiValuePairs: [String: [String]] {
         var result: [String: [String]] = [:]
 
-        for item in self.components(separatedBy: "&") {
+        for item in self.split(separator: "&") {
             let (key, value) = item.keyAndDecodedValue
             if let value = value {
                 result[key, default: []].append(value)
@@ -53,23 +53,34 @@ extension String {
 
         return result
     }
+}
 
+extension Substring {
     /// Splits a URL-encoded key and value pair (e.g. "foo=bar") into a tuple
     /// with corresponding "key" and "value" values, with the value being URL
     /// unencoded.
     var keyAndDecodedValue: (key: String, value: String?) {
-        guard let range = self.range(of: "=") else {
-            return (key: self, value: nil)
+        guard let index = self.firstIndex(of: "=") else {
+            return (key: String(self), value: nil)
         }
-        let key = String(self[..<range.lowerBound])
-        let value = String(self[range.upperBound...])
+        // substring up to index
+        let key = String(self[..<index])
+        // substring from index
+        var value = String(self[self.index(after: index)...])
 
-        let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
-        let decodedValue = valueReplacingPlus.removingPercentEncoding
+        repeat {
+            guard let startIndex = value.firstIndex(of: "+") else {
+                break
+            }
+            value.replaceSubrange(startIndex...startIndex, with: " ")
+        } while true
+
+        //let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
+        let decodedValue = value.removingPercentEncoding
         if decodedValue == nil {
-            Log.warning("Unable to decode query parameter \(key) (coded value: \(valueReplacingPlus)")
+            Log.warning("Unable to decode query parameter \(key) (coded value: \(value)")
         }
-        return (key: key, value: decodedValue ?? valueReplacingPlus)
+        return (key: key, value: decodedValue ?? value)
     }
 
 }
