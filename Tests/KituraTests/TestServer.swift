@@ -32,7 +32,6 @@ class TestServer: KituraTest {
     }
 
     var httpPort = 8080
-    let fastCgiPort = 9000
     let useNIO = ProcessInfo.processInfo.environment["KITURA_NIO"] != nil
 
     override func setUp() {
@@ -43,7 +42,7 @@ class TestServer: KituraTest {
     private func setupServerAndExpectations(expectStart: Bool, expectStop: Bool, expectFail: Bool, httpPort: Int?=nil, fastCgiPort: Int?=nil) {
         let router = Router()
         let httpServer = Kitura.addHTTPServer(onPort: httpPort ?? 0, with: router)
-        let fastCgiServer = useNIO ? FastCGIServer() : Kitura.addFastCGIServer(onPort: fastCgiPort ?? self.fastCgiPort, with: router)
+        let fastCgiServer = useNIO ? FastCGIServer() : Kitura.addFastCGIServer(onPort: fastCgiPort ?? 0, with: router)
 
         if expectStart {
             let httpStarted = expectation(description: "HTTPServer started()")
