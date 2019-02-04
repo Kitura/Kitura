@@ -66,7 +66,7 @@ matrix:
     - os: osx
       osx_image: xcode10
       sudo: required
-      env: KITURA_NIO=1
+      env: KITURA_NIO=1 BREW_INSTALL_PACKAGES="libressl"
 
 before_install:
   - git clone https://github.com/IBM-Swift/Package-Builder.git
