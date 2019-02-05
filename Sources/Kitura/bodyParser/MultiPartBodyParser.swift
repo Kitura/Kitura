@@ -19,24 +19,13 @@ import LoggerAPI
 
 class MultiPartBodyParser: BodyParserProtocol {
     let boundaryData: Data
-    let endBoundaryData: Data
-    let newLineData: Data
-    let endHeaderData: Data
+    let endBoundaryData = Data("--".utf8)
+    let newLineData = Data("\r\n".utf8)
+    let endHeaderData = Data("\r\n\r\n".utf8)
 
     init(boundary: String) {
-        guard let boundaryData = String("--" + boundary).data(using: .utf8),
-            let endBoundaryData = "--".data(using: .utf8),
-            let newLineData = "\r\n".data(using: .utf8),
-            let endHeaderData = "\r\n\r\n".data(using: .utf8)
-            else {
-                Log.error("Error converting strings to data for multipart parsing")
-                exit(1)
-        }
-
-        self.boundaryData = boundaryData
-        self.endBoundaryData = endBoundaryData
-        self.newLineData = newLineData
-        self.endHeaderData = endHeaderData
+        let str = "--" + boundary
+        self.boundaryData = Data(str.utf8)
     }
 
     func parse(_ data: Data) -> ParsedBody? {

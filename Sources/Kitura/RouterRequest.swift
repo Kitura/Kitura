@@ -115,7 +115,7 @@ public class RouterRequest {
         if let result = self._parsedURL {
             return result
         } else {
-            let result = URLParser(url: self.serverRequest.urlURL.absoluteString.data(using: .utf8)!, isConnect: false)
+            let result = URLParser(url: Data(self.serverRequest.urlURL.absoluteString.utf8), isConnect: false)
             self._parsedURL = result
             return result
         }

@@ -40,15 +40,10 @@ public class ContentType {
 
     /// The following function loads the MIME types from an external file
     private init () {
-        let contentTypesData = contentTypesString.data(using: .utf8)
-        guard contentTypesData != nil else {
-            Log.error("Error parsing \(contentTypesString)")
-            return
-        }
+        let contentTypesData = Data(contentTypesString.utf8)
 
-        let jsonParseOptions = JSONSerialization.ReadingOptions.mutableContainers
-        let parsedObject = try? JSONSerialization.jsonObject(with: contentTypesData!,
-                                                             options: jsonParseOptions)
+        let parsedObject = try? JSONSerialization.jsonObject(with: contentTypesData,
+                                                             options: .mutableContainers)
 
         // MARK: Linux Foundation will return an Any instead of an AnyObject
         // Need to test if this breaks the Linux build.
