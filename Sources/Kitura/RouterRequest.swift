@@ -313,8 +313,8 @@ private class Cookies {
         }
 
         for cookieHeader in cookieHeaders {
-            for cookie in cookieHeader.components(separatedBy: ";") {
-                let trimmedCookie = cookie.trimmingCharacters(in: .whitespaces)
+            for cookie in cookieHeader.split(separator: ";") {
+                let trimmedCookie = String(cookie.trimAsciiWhitespace())
                 if let cookie = getCookie(cookie: trimmedCookie) {
                     cookies[cookie.name] = cookie
                 }
@@ -324,19 +324,12 @@ private class Cookies {
     }
 
     private static func getCookie(cookie: String) -> HTTPCookie? {
-        guard let range = cookie.range(of: "=") else {
+        guard let index = cookie.firstIndex(of: "=") else {
             return nil
         }
 
-        #if os(Linux)
-            // https://bugs.swift.org/browse/SR-5727
-            // ETA post-4.0
-            let name = String(cookie[..<range.lowerBound]).trimmingCharacters(in: .whitespaces)
-            var value = String(cookie[range.upperBound...]).trimmingCharacters(in: .whitespaces)
-        #else
-            let name = cookie[..<range.lowerBound].trimmingCharacters(in: .whitespaces)
-            var value = cookie[range.upperBound...].trimmingCharacters(in: .whitespaces)
-        #endif
+        let name = cookie[..<index].trimAsciiWhitespace()
+        var value = cookie[cookie.index(after: index)...].trimAsciiWhitespace()
 
         let chars = value
         if chars.count >= 2 && chars.first == "\"" && chars.last == "\"" {
