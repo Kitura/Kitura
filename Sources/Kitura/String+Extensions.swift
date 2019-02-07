@@ -63,8 +63,12 @@ extension String {
     /// It is expected that the provided String will already be lowercased,
     /// for example, a hard-coded constant.
     func equalsLowercased(_ aString: String) -> Bool {
+    #if os(Linux)
         assert(aString == aString.lowercased(), "equalsLowercased() should be passed a lowercased string, not '\(aString)'")
         return self.lowercased() == aString
+    #else
+        return self.caseInsensitiveCompare(aString) == .orderedSame
+    #endif
     }
 }
 
