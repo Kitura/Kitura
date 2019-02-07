@@ -328,8 +328,8 @@ private class Cookies {
             return nil
         }
 
-        let name = cookie[..<index].trimAsciiWhitespace()
-        var value = cookie[cookie.index(after: index)...].trimAsciiWhitespace()
+        let name = String(cookie[..<index].trimAsciiWhitespace())
+        var value = String(cookie[cookie.index(after: index)...].trimAsciiWhitespace())
 
         let chars = value
         if chars.count >= 2 && chars.first == "\"" && chars.last == "\"" {
