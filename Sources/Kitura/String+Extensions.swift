@@ -57,6 +57,15 @@ extension String {
 
         return result
     }
+
+    /// Performs a comparison of a provided String to this String lowercased, as
+    /// an alternative to caseInsensitiveCompare() avoiding NSString conversion.
+    /// It is expected that the provided String will already be lowercased,
+    /// for example, a hard-coded constant.
+    func equalsLowercased(_ aString: String) -> Bool {
+        assert(aString == aString.lowercased(), "equalsLowercased() should be passed a lowercased string, not '\(aString)'")
+        return self.lowercased() == aString
+    }
 }
 
 extension Substring {

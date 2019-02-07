@@ -272,7 +272,10 @@ public class RouterRequest {
         let headerValues = acceptHeaderValue.split(separator: ",").map(String.init)
         // special header value that matches all types
         let matchAllPattern: String
-        if header.caseInsensitiveCompare("Accept") == .orderedSame {
+        // This function can perform content negotiation for the various Accept* headers.
+        // Check whether this is the 'Accept' header, which has a type/subtype structure,
+        // or another (eg. 'Accept-Charset'), which is has single values.
+        if header.equalsLowercased("accept") {
             matchAllPattern = "*/*"
         } else {
             matchAllPattern = "*"
