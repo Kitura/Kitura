@@ -64,9 +64,15 @@ extension Substring {
     /// with corresponding "key" and "value" values, with the value being URL
     /// unencoded.
     var keyAndDecodedValue: (key: Substring, value: Substring?) {
+        #if swift(>=4.2)
         guard let index = self.firstIndex(of: "=") else {
             return (key: self, value: nil)
         }
+        #else
+        guard let index = self.index(of: "=") else {
+            return (key: self, value: nil)
+        }
+        #endif
         // substring up to index
         let key = self[..<index]
         // substring from index
@@ -88,9 +94,15 @@ extension Substring {
     @inline(__always)
     private mutating func replaceCharacters(_ src: Character, with dst: Substring) {
         repeat {
+            #if swift(>=4.2)
             guard let startIndex = self.firstIndex(of: src) else {
                 break
             }
+            #else
+            guard let startIndex = self.index(of: src) else {
+                break
+            }
+            #endif
             self.replaceSubrange(startIndex...startIndex, with: dst)
         } while true
     }
