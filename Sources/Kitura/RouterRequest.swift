@@ -324,9 +324,15 @@ private class Cookies {
     }
 
     private static func getCookie(cookie: String) -> HTTPCookie? {
+        #if swift(>=4.2)
         guard let index = cookie.firstIndex(of: "=") else {
             return nil
         }
+        #else
+        guard let index = cookie.index(of: "=") else {
+            return nil
+        }
+        #endif
 
         let name = String(cookie[..<index].trimAsciiWhitespace())
         var value = String(cookie[cookie.index(after: index)...].trimAsciiWhitespace())
