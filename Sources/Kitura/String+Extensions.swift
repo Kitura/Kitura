@@ -72,17 +72,15 @@ extension Substring {
         // substring from index
         var value = self[self.index(after: index)...]
 
-        //let valueReplacingPlus = value.replacingOccurrences(of: "+", with: " ")
         // Faster way to replace '+' with ' ' that does not involve conversion to NSString
         value.replaceCharacters("+", with: " ")
 
-// TEMPORARY - evaluate benefit of removing this NSString method
-        let decodedValue = value.removingPercentEncoding
-        //let decodedValue: Substring? = nil
-        if decodedValue == nil {
+        // Note: Foundation processing function
+        guard let decodedValue = value.removingPercentEncoding else {
             Log.warning("Unable to decode query parameter \(key) (coded value: \(value)")
+            return (key: key, value: value)
         }
-        return (key: key, value: decodedValue != nil ? Substring(decodedValue!) : value)
+        return (key: key, value: Substring(decodedValue))
     }
 
     /// Finds and replaces all occurrences of a character with the provided substring
