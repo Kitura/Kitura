@@ -99,4 +99,8 @@ class TestMediaType: KituraTest {
     func testInvalidMediaType() {
         XCTAssertNil(MediaType(contentTypeHeader: "incorrect/html; charset=banana"))
     }
+
+    func testEmptyMediaType() {
+        XCTAssertNil(MediaType(contentTypeHeader: ""))
+    }
 }

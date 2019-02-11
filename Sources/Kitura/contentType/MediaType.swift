@@ -88,7 +88,8 @@ public struct MediaType: CustomStringConvertible, Equatable, Hashable {
         let mimeComponents = mimeType
             .lowercased()
             .split(separator: "/", maxSplits: 1)
-        guard let topLevelType = TopLevelType(rawValue: String(mimeComponents[0])) else {
+        guard !mimeComponents.isEmpty,
+          let topLevelType = TopLevelType(rawValue: String(mimeComponents[0])) else {
             return nil
         }
         self.topLevelType = topLevelType
