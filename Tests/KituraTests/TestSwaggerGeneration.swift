@@ -1086,7 +1086,11 @@ class TestSwaggerGeneration: KituraTest {
     }
 
     //
-    // Test that tuple array return types are correctly represented.
+    // Test that tuple array return types are correctly represented, such as from a
+    // GET (plural) where the identity of the entity being returned is external to
+    // the entity.
+    // We represent these tuples in Swagger as a dictionary with a string to model
+    // mapping. This is okay, because Identifier must be expressable as a String.
     //
     func testTupleArrayReturnTypes() {
         guard let dict = getSwaggerDictionary() else {
@@ -1121,6 +1125,8 @@ class TestSwaggerGeneration: KituraTest {
         guard let returnType = returnItems["type"] as? String else {
             return XCTFail("Path \(tupleArrayPath): GET schema type missing")
         }
+        // Dictionaries are represented as an 'object' type containing 'additionalProperties'.
+        XCTAssertEqual(returnType, "object", "Array type should be 'object', but was \(returnType)")
         guard let additionalProperties = returnItems["additionalProperties"] as? [String: String] else {
             return XCTFail("Path \(tupleArrayPath): GET schema additionalProperties missing")
         }
@@ -1152,23 +1158,23 @@ class TestSwaggerGeneration: KituraTest {
         guard let responses = get["responses"] as? [String: Any] else {
             return XCTFail("Path \(postSinglePath): POST responses missing")
         }
-        guard let okResponse = responses["200"] as? [String: Any] else {
-            return XCTFail("Path \(postSinglePath): POST response 200 missing")
+        guard let createdResponse = responses["201"] as? [String: Any] else {
+            return XCTFail("Path \(postSinglePath): POST response 201 missing")
         }
-        guard let okHeaders = okResponse["headers"] as? [String: Any] else {
+        guard let createdHeaders = createdResponse["headers"] as? [String: Any] else {
             return XCTFail("Path \(postSinglePath): POST headers missing")
         }
-        guard let okLocation = okHeaders["Location"] as? [String: Any] else {
+        guard let createdLocation = createdHeaders["Location"] as? [String: Any] else {
             return XCTFail("Path \(postSinglePath): POST Location header missing")
         }
-        guard let okDescription = okLocation["description"] as? String else {
+        guard let createdDescription = createdLocation["description"] as? String else {
             return XCTFail("Path \(postSinglePath): POST Location header description missing")
         }
-        guard let okType = okLocation["type"] as? String else {
+        guard let createdType = createdLocation["type"] as? String else {
             return XCTFail("Path \(postSinglePath): POST Location header type missing")
         }
-        XCTAssertEqual(okDescription, "Identity of resource", "Location header description for POST on path \(postSinglePath) should be 'Identity of resource', but was \(okDescription)")
-        XCTAssertEqual(okType, "integer", "type of Location id for POST on path \(postSinglePath) should be 'integer', but was \(okType)")
+        XCTAssertEqual(createdDescription, "Identity of resource", "Location header description for POST on path \(postSinglePath) should be 'Identity of resource', but was \(createdDescription)")
+        XCTAssertEqual(createdType, "integer", "type of Location id for POST on path \(postSinglePath) should be 'integer', but was \(createdType)")
     }
 
     //
