@@ -65,11 +65,11 @@ public class RouteRegex {
         var keys = [String]()
         var nonKeyIndex = 0
 
-        let paths = pattern.components(separatedBy: "/")
+        let paths = pattern.split(separator: "/")
 
         for path in paths {
             (regexStr, keys, nonKeyIndex) =
-                handlePath(path, regexStr: regexStr, keys: keys, nonKeyIndex: nonKeyIndex)
+                handlePath(String(path), regexStr: regexStr, keys: keys, nonKeyIndex: nonKeyIndex)
         }
 
         if allowPartialMatch {
