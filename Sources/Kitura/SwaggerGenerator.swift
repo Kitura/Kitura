@@ -36,9 +36,14 @@ enum SwaggerGenerationError: Swift.Error {
 
 // Container for Swagger response type.
 struct SwaggerResponseType {
+    // Indicates whether the response payload is optional
     var optional: Bool
+    // Indicates whether the response should be declared as an array type
     var array: Bool
-    var type: String
+    // The Swift type corresponding to the response type, or `nil` if there is no response payload
+    var type: Decodable.Type?
+    // The HTTP status code to associate with this response, or `nil` to define the 'default' response
+    var statusCode: HTTPStatusCode?
 }
 
 // Container for Swagger document information.
@@ -435,7 +440,10 @@ struct SwaggerDocument: Encodable {
     // - Parameter responseType: Either an array or a single response.
     // - Returns: SwaggerResponse.
     func buildResponse(description: String, responseType: SwaggerResponseType) -> SwaggerResponse {
-        let reference = SingleReference(ref: "#/definitions/\(responseType.type)")
+        guard let type = responseType.type else {
+            return SwaggerResponse(description: description, schema: nil)
+        }
+        let reference = SingleReference(ref: "#/definitions/\(type)")
         if responseType.array {
             return SwaggerResponse(description: description, schema: .array(ArrayReference(items: reference)))
         }
@@ -633,6 +641,23 @@ struct SwaggerDocument: Encodable {
         }
     }
 
+    /// Generates a standard description based on an HTTPStatusCode,
+    /// or nil which indicates that the response is user-defined (in
+    /// lieu of a capability of users describing their own responses)
+    static func responseDescription(for status: HTTPStatusCode?) -> String {
+        guard let status = status else {
+            return "A user-defined response."
+        }
+        switch status {
+        case .badRequest: return "An error occurred while decoding an input type."
+        case .created: return "The resource was successfully created."
+        case .unsupportedMediaType: return "The incoming content type cannot be handled."
+        case .unprocessableEntity: return "The incoming payload could not be decoded."
+        case .internalServerError: return "An unexpected error, such as a misconfiguration of the server."
+        default: return "A successful response."
+        }
+    }
+
     /// add a path into the OpenAPI (swagger) document
     ///
     /// - Parameter path: The API path to register.
@@ -657,12 +682,15 @@ struct SwaggerDocument: Encodable {
             }
             var responses = SwaggerResponses()
             if let responseTypes = responseList {
-                if method == "delete" {
-                    // special case for delete methods as they don't return codable objects, so a simple successful
-                    // response statement is sufficient.
-                    responses["200"] = SwaggerResponse(description: "successful response", schema: nil)
-                } else {
-                    responses["200"] = buildResponse(description: "successful response", responseType: responseTypes[0])
+                for responseType in responseTypes {
+                    // Response is keyed by String, as it may be non-numeric (eg: 'default')
+                    let responseCode: String
+                    if let statusCode = responseType.statusCode {
+                        responseCode = String(statusCode.rawValue)
+                    } else {
+                        responseCode = "default"
+                    }
+                    responses[responseCode] = buildResponse(description: SwaggerDocument.responseDescription(for: responseType.statusCode), responseType: responseType)
                 }
 
                 // handle the input parameter here: turn it into a parameters object.
@@ -1157,8 +1185,7 @@ extension Router {
     /// - Parameter outputtype: The output object type.
     public func registerGetRoute<O: Codable>(route: String, outputType: O.Type, outputIsArray: Bool = false) {
         var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: outputIsArray, type: "\(O.self)"))
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
+        responseTypes.append(SwaggerResponseType(optional: true, array: outputIsArray, type: O.self, statusCode: .OK))
         registerRoute(route: route, method: "get", outputType: O.self, responseTypes: responseTypes)
     }
 
@@ -1169,8 +1196,7 @@ extension Router {
     /// - Parameter outputtype: The output object type.
     public func registerGetRoute<Id: Identifier, O: Codable>(route: String, id: Id.Type, outputType: O.Type, outputIsArray: Bool = false) {
         var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: outputIsArray, type: "\(O.self)"))
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
+        responseTypes.append(SwaggerResponseType(optional: true, array: outputIsArray, type: O.self, statusCode: .OK))
         registerRoute(route: route, method: "get", id: Id.self, outputType: O.self, responseTypes: responseTypes)
     }
 
@@ -1182,8 +1208,8 @@ extension Router {
     /// - Parameter outputType: The output object type.
     public func registerGetRoute<Q: QueryParams, O: Codable>(route: String, queryParams: Q.Type, optionalQParam: Bool, outputType: O.Type, outputIsArray: Bool = false) {
         var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: outputIsArray, type: "\(O.self)"))
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
+        responseTypes.append(SwaggerResponseType(optional: true, array: outputIsArray, type: O.self, statusCode: .OK))
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: nil, statusCode: .badRequest))
         registerRoute(route: route, method: "get", queryType: Q.self, allOptQParams: optionalQParam, outputType: O.self, responseTypes: responseTypes)
     }
 
@@ -1192,8 +1218,7 @@ extension Router {
     /// - Parameter route: The route to register.
     public func registerDeleteRoute(route: String) {
         var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: ""))
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: nil, statusCode: .OK))
         registerDelete(route: route, responseTypes: responseTypes)
     }
 
@@ -1204,8 +1229,8 @@ extension Router {
     /// - Parameter optionalQParam: Flag to indicate that the query params are all optional.
     public func registerDeleteRoute<Q: QueryParams>(route: String, queryParams: Q.Type, optionalQParam: Bool) {
         var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: ""))
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: nil, statusCode: .OK))
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: nil, statusCode: .badRequest))
         registerDelete(route: route, queryType: Q.self, allOptQParams: optionalQParam, responseTypes: responseTypes)
     }
 
@@ -1215,8 +1240,7 @@ extension Router {
     /// - Parameter id: The id type.
     public func registerDeleteRoute<Id: Identifier>(route: String, id: Id.Type ) {
         var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: ""))
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: nil, statusCode: .OK))
         registerDelete(route: route, id: Id.self, responseTypes: responseTypes)
     }
 
@@ -1227,8 +1251,10 @@ extension Router {
     /// - Parameter outputType: The output object type.
     public func registerPostRoute<I: Codable, O: Codable>(route: String, inputType: I.Type, outputType: O.Type) {
         var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "\(O.self)"))
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: O.self, statusCode: .created))
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: nil, statusCode: .unsupportedMediaType))
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: nil, statusCode: .internalServerError))
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: nil, statusCode: .unprocessableEntity))
         registerRoute(route: route, method: "post", inputType: I.self, outputType: O.self, responseTypes: responseTypes)
     }
 
@@ -1240,8 +1266,10 @@ extension Router {
     /// - Parameter outputType: The output object type.
     public func registerPostRoute<I: Codable, Id: Identifier, O: Codable>(route: String, id: Id.Type, inputType: I.Type, outputType: O.Type) {
         var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "\(O.self)"))
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: O.self, statusCode: .created))
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: nil, statusCode: .unsupportedMediaType))
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: nil, statusCode: .internalServerError))
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: nil, statusCode: .unprocessableEntity))
         registerRoute(route: route, method: "post", id: Id.self, inputType: I.self, outputType: O.self, responseTypes: responseTypes)
     }
 
@@ -1253,8 +1281,13 @@ extension Router {
     /// - Parameter outputType: The output object type.
     public func registerPutRoute<Id: Identifier, I: Codable, O: Codable>(route: String, id: Id.Type, inputType: I.Type, outputType: O.Type) {
         var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "\(O.self)"))
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: O.self, statusCode: .OK))
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: nil, statusCode: .unsupportedMediaType))
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: nil, statusCode: .internalServerError))
+        // There are two cases where an unprocessableEntity can be returned:
+        // 1. If we cannot decode the input type from the request,
+        // 2. If we cannot decode the Identifier value supplied (for example, a missing or non-numeric value is supplied for a numeric Identifier)
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: nil, statusCode: .unprocessableEntity))
         registerRoute(route: route, method: "put", id: Id.self, inputType: I.self, outputType: O.self, responseTypes: responseTypes)
     }
 
@@ -1266,8 +1299,13 @@ extension Router {
     /// - Parameter outputType: The output object type.
     public func registerPatchRoute<Id: Identifier, I: Codable, O: Codable>(route: String, id: Id.Type, inputType: I.Type, outputType: O.Type) {
         var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "\(O.self)"))
-        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: "RequestError"))
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: O.self, statusCode: .OK))
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: nil, statusCode: .unsupportedMediaType))
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: nil, statusCode: .internalServerError))
+        // There are two cases where an unprocessableEntity can be returned:
+        // 1. If we cannot decode the input type from the request,
+        // 2. If we cannot decode the Identifier value supplied (for example, a missing or non-numeric value is supplied for a numeric Identifier)
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, type: nil, statusCode: .unprocessableEntity))
         registerRoute(route: route, method: "patch", id: Id.self, inputType: I.self, outputType: O.self, responseTypes: responseTypes)
     }
 }
