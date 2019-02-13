@@ -73,9 +73,6 @@ public struct MediaType: CustomStringConvertible, Equatable, Hashable {
         self.topLevelType = type
         self.subType = subType.lowercased()
         self.description = "\(self.topLevelType)/\(self.subType)"
-        #if !swift(>=4.2)
-        self.hashValue = description.hashValue
-        #endif
     }
     
     /**
@@ -101,9 +98,6 @@ public struct MediaType: CustomStringConvertible, Equatable, Hashable {
         }
         //self.description = "\(self.topLevelType)/\(self.subType)"
         self.description = self.topLevelType.rawValue.appending("/").appending(self.subType)
-        #if !swift(>=4.2)
-        self.hashValue = description.hashValue
-        #endif
     }
     
     /**
@@ -157,13 +151,19 @@ public struct MediaType: CustomStringConvertible, Equatable, Hashable {
      */
     public let description: String
     
+
+}
+
+#if !swift(>=4.2)
+extension MediaType {
     /// Compares two MediaTypes returning true if they are equal. Required for Equatable conformance.
     public static func == (lhs: MediaType, rhs: MediaType) -> Bool {
         return lhs.description == rhs.description
     }
-    #if !swift(>=4.2)
-    /// The hashValue for the MediaTypes. Required for Hashable conformance.
-    public let hashValue: Int
-    #endif
-}
 
+    // A unique integer produced by hashing the MediaType. Required for Hashable conformance.
+    public var hashValue: Int {
+        return description.hashValue
+    }
+}
+#endif
