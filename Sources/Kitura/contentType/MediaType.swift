@@ -27,7 +27,7 @@ import KituraNet
  // Prints ("application/json")
  ```
  */
-public struct MediaType: CustomStringConvertible, Equatable, Hashable {
+public struct MediaType: CustomStringConvertible {
     
     /// An enum of all recognized top-level media types (categories). See:
     /// https://www.iana.org/assignments/media-types/media-types.xhtml
@@ -154,16 +154,20 @@ public struct MediaType: CustomStringConvertible, Equatable, Hashable {
 
 }
 
-#if !swift(>=4.2)
-extension MediaType {
+extension MediaType: Equatable {
+    #if !swift(>=4.1)
     /// Compares two MediaTypes returning true if they are equal. Required for Equatable conformance.
     public static func == (lhs: MediaType, rhs: MediaType) -> Bool {
         return lhs.description == rhs.description
     }
+    #endif
+}
 
+extension MediaType: Hashable {
+    #if !swift(>=4.1)
     // A unique integer produced by hashing the MediaType. Required for Hashable conformance.
     public var hashValue: Int {
         return description.hashValue
     }
+    #endif
 }
-#endif
