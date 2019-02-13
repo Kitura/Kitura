@@ -314,7 +314,7 @@ private class Cookies {
 
         for cookieHeader in cookieHeaders {
             for cookie in cookieHeader.split(separator: ";") {
-                let trimmedCookie = String(cookie.trimAsciiWhitespace())
+                let trimmedCookie = String(cookie.trimASCIIWhitespace())
                 if let cookie = getCookie(cookie: trimmedCookie) {
                     cookies[cookie.name] = cookie
                 }
@@ -334,8 +334,8 @@ private class Cookies {
         }
         #endif
 
-        let name = String(cookie[..<index].trimAsciiWhitespace())
-        var value = String(cookie[cookie.index(after: index)...].trimAsciiWhitespace())
+        let name = String(cookie[..<index].trimASCIIWhitespace())
+        var value = String(cookie[cookie.index(after: index)...].trimASCIIWhitespace())
 
         let chars = value
         if chars.count >= 2 && chars.first == "\"" && chars.last == "\"" {

@@ -63,12 +63,11 @@ extension String {
     /// It is expected that the provided String will already be lowercased,
     /// for example, a hard-coded constant.
     func equalsLowercased(_ aString: String) -> Bool {
-    #if os(Linux)
         assert(aString == aString.lowercased(), "equalsLowercased() should be passed a lowercased string, not '\(aString)'")
         return self.lowercased() == aString
-    #else
-        return self.caseInsensitiveCompare(aString) == .orderedSame
-    #endif
+        // Note: The following is faster on Darwin, but we are choosing to keep
+        // our code consistent across platforms.
+        // return self.caseInsensitiveCompare(aString) == .orderedSame
     }
 }
 
@@ -124,12 +123,9 @@ extension Substring {
     /// equivalent to String.trimmingCharacters(in: .whitespaces) for ASCII strings.
     /// This function should *not* be used for strings that may be padded by exotic
     /// Unicode whitespaces.
-    func trimAsciiWhitespace() -> Substring {
-        // Trim whitespace from the front of a string
-        let trimmedPrefix = self.drop {
-            char in
-            return char == " " || char == "\u{0009}"
-        }
+    func trimASCIIWhitespace() -> Substring {
+        // Trim whitespace (Space or TAB) from the front of a string
+        let trimmedPrefix = self.drop(while: { $0 == " " || $0 == "\u{0009}" })
         // If the string is now empty, return early
         guard !trimmedPrefix.isEmpty else {
             return trimmedPrefix
