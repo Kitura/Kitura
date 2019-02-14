@@ -465,7 +465,7 @@ class TestSwaggerGeneration: KituraTest {
                 if let responses = put["responses"] as? [String: Any] {
                     if let twohundred = responses["200"] as? [String: Any] {
                         if let description = twohundred["description"] as? String {
-                            XCTAssertTrue(description == "successful response", "path /me/puts/{id}: put responses 200 description is incorrect")
+                            XCTAssertTrue(description == SwaggerDocument.responseDescription(for: HTTPStatusCode(rawValue: 200)), "path /me/puts/{id}: put responses 200 description is incorrect")
                         } else {
                             XCTFail("path /me/puts/{id}: put 200 response does not contain a description")
                         }
@@ -481,7 +481,11 @@ class TestSwaggerGeneration: KituraTest {
                     } else {
                         XCTFail("path /me/puts/{id}: put 200 response is missing")
                     }
-                    XCTAssertTrue(responses.count == 1, "path /me/puts/{id}: put responses.count is incorrect")
+                    // There should be _at least_ two responses:
+                    // A successful (OK) response and an error
+                    // (unprocessableEntity). Other errors may
+                    // also be enumerated.
+                    XCTAssertGreaterThan(responses.count, 1, "path /me/puts/{id}: put responses.count is incorrect")
                 } else {
                     XCTFail("path /me/puts/{id}: put responses is missing")
                 }
