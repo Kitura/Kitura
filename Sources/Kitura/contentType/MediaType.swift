@@ -155,7 +155,7 @@ public struct MediaType: CustomStringConvertible {
 }
 
 extension MediaType: Equatable {
-    #if !swift(>=4.1)
+    #if !swift(>=4.2)
     /// Compares two MediaTypes returning true if they are equal. Required for Equatable conformance.
     public static func == (lhs: MediaType, rhs: MediaType) -> Bool {
         return lhs.description == rhs.description
@@ -164,7 +164,7 @@ extension MediaType: Equatable {
 }
 
 extension MediaType: Hashable {
-    #if !swift(>=4.1)
+    #if !swift(>=4.2)
     // A unique integer produced by hashing the MediaType. Required for Hashable conformance.
     public var hashValue: Int {
         return description.hashValue
