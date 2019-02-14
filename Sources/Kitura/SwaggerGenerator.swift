@@ -731,10 +731,10 @@ struct SwaggerDocument: Encodable {
                         responseCode = "default"
                     }
                     var headers = SwaggerHeaders()
-                    if idReturned, method == "post", let id = id {
-                        // POST Response contains the identifier of an entity, which should be encoded
-                        // in a Location header. Note the returning an id may also occur for GET (plural),
-                        // but this is returned as a tuple array, and is handled by buildResponse.
+                    if idReturned, method == "post", responseType.statusCode?.class == .successful, let id = id {
+                        // A successful POST response can contain the identifier of an entity, which should
+                        // be encoded in a Location header. Note the returning an id may also occur for GET
+                        // (plural), but this is returned as a tuple array, and is handled by buildResponse.
                         var idtype: String
                         if let unwrappedIdType = SwiftType(rawValue: id) {
                             idtype = unwrappedIdType.swaggerType()
