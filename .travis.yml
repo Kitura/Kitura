@@ -20,10 +20,12 @@ matrix:
     - os: linux
       dist: xenial
       sudo: required
+      services: docker
       env: DOCKER_IMAGE=swift:4.0.3 SWIFT_SNAPSHOT=4.0.3
     - os: linux
       dist: xenial
       sudo: required
+      services: docker
       env: DOCKER_IMAGE=swift:4.1.3 SWIFT_SNAPSHOT=4.1.3
     - os: linux
       dist: xenial
