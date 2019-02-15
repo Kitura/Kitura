@@ -152,9 +152,8 @@ class TestSwaggerGeneration: KituraTest {
             ("testSwaggerContent", testSwaggerContent),
             ("testSwaggerQueryParams", testSwaggerQueryParams),
             ("testArrayReturnTypes", testArrayReturnTypes),
-//            FIXME: https://github.com/IBM-Swift/Kitura/issues/1336
-//            ("testTupleArrayReturnTypes", testTupleArrayReturnTypes),
-//            ("testPostReturningId", testPostReturningId),
+            ("testTupleArrayReturnTypes", testTupleArrayReturnTypes),
+            ("testPostReturningId", testPostReturningId),
             ("testInputTypesModelled", testInputTypesModelled),
             ("testNestedTypesModelled", testNestedTypesModelled),
         ]
@@ -194,12 +193,11 @@ class TestSwaggerGeneration: KituraTest {
     func pathAssertions(paths: [String: Any]) {
         // test for path existence
         XCTAssertTrue(paths["/me/post"] != nil, "path /me/post is missing")
-// FIXME: https://github.com/IBM-Swift/Kitura/issues/1336
-//        XCTAssertTrue(paths["/me/getTupleArray"] != nil, "path /me/getTupleArray is missing")
-//        XCTAssertTrue(paths["/me/postid"] != nil, "path /me/postid is missing")
+        XCTAssertTrue(paths["/me/getTupleArray"] != nil, "path /me/getTupleArray is missing")
+        XCTAssertTrue(paths["/me/postid"] != nil, "path /me/postid is missing")
         XCTAssertTrue(paths["/me/getArray"] != nil, "path /me/getArray is missing")
         XCTAssertTrue(paths["/me/apple"] != nil, "path /me/apple is missing")
-        XCTAssertTrue(paths["/me/getid/{id}"] != nil, "path /me/getid/{id} is missing")
+        XCTAssertTrue(paths["/me/getid"] != nil, "path /me/getid is missing")
         XCTAssertTrue(paths["/me/patch/{id}"] != nil, "path /me/patch/{id} is missing")
         XCTAssertTrue(paths["/me/pear"] != nil, "path /me/pear is missing")
         XCTAssertTrue(paths["/me/puts/{id}"] != nil, "path /me/puts/{id} is missing")
@@ -362,6 +360,31 @@ class TestSwaggerGeneration: KituraTest {
         }
     }
 
+    func personDefinitionsAssertions(definitions: [String: Any]) {
+        guard let person = definitions["Person"] as? [String: Any] else {
+            return XCTFail("Person  model is missing")
+        }
+
+        if let name = person["name"] as? String {
+            XCTAssertTrue(name == "string", "model Person: name is incorrect")
+        } else {
+            XCTFail("model Person: name is missing")
+        }
+        if let age = person["age"] as? String {
+            XCTAssertTrue(age == "integer", "model Person: age is incorrect")
+        } else {
+            XCTFail("model Person: age is missing")
+        }
+
+        if let required = person["required"] as? [String] {
+            XCTAssertTrue(required.contains("name"), "model Person: required does not contain 'name'")
+            XCTAssertTrue(required.contains("age"), "model Person: required does not contain 'age'")
+            XCTAssertEqual(required.count, 2, "model Person: required.count is incorrect")
+        } else {
+            XCTFail("model Person: required is missing")
+        }
+    }
+
     func uglifruitDefinitionsAssertions(definitions: [String: Any]) {
         if let model = definitions["Uglifruit"] as? [String: Any] {
             if let type = model["type"] as? String {
@@ -465,7 +488,7 @@ class TestSwaggerGeneration: KituraTest {
                 if let responses = put["responses"] as? [String: Any] {
                     if let twohundred = responses["200"] as? [String: Any] {
                         if let description = twohundred["description"] as? String {
-                            XCTAssertTrue(description == "successful response", "path /me/puts/{id}: put responses 200 description is incorrect")
+                            XCTAssertTrue(description == SwaggerDocument.responseDescription(for: HTTPStatusCode(rawValue: 200)), "path /me/puts/{id}: put responses 200 description is incorrect")
                         } else {
                             XCTFail("path /me/puts/{id}: put 200 response does not contain a description")
                         }
@@ -481,7 +504,11 @@ class TestSwaggerGeneration: KituraTest {
                     } else {
                         XCTFail("path /me/puts/{id}: put 200 response is missing")
                     }
-                    XCTAssertTrue(responses.count == 1, "path /me/puts/{id}: put responses.count is incorrect")
+                    // There should be _at least_ two responses:
+                    // A successful (OK) response and an error
+                    // (unprocessableEntity). Other errors may
+                    // also be enumerated.
+                    XCTAssertGreaterThan(responses.count, 1, "path /me/puts/{id}: put responses.count is incorrect")
                 } else {
                     XCTFail("path /me/puts/{id}: put responses is missing")
                 }
@@ -1059,51 +1086,96 @@ class TestSwaggerGeneration: KituraTest {
     }
 
     //
-    // Test that tuple array return types are correctly represented.
-    // FIXME: https://github.com/IBM-Swift/Kitura/issues/1336
+    // Test that tuple array return types are correctly represented, such as from a
+    // GET (plural) where the identity of the entity being returned is external to
+    // the entity.
+    // We represent these tuples in Swagger as a dictionary with a string to model
+    // mapping. This is okay, because Identifier must be expressable as a String.
     //
-//    func testTupleArrayReturnTypes() {
-//        guard let dict = getSwaggerDictionary() else {
-//            return XCTFail("Unable to get swagger dictionary")
-//        }
-//        guard let paths = dict["paths"] as? [String: Any] else {
-//            return XCTFail("Paths section is missing")
-//        }
-//        let tupleArrayPath = "/me/getTupleArray"
-//        guard let path = paths[tupleArrayPath] as? [String: Any] else {
-//            return XCTFail("Path \(tupleArrayPath) is missing")
-//        }
-//        guard let get = path["get"] as? [String: Any] else {
-//            return XCTFail("Path \(tupleArrayPath): GET method missing")
-//        }
-//        guard let responses = get["responses"] as? [String: Any] else {
-//            return XCTFail("Path \(tupleArrayPath): GET responses missing")
-//        }
-//        guard let okResponse = responses["200"] as? [String: Any] else {
-//            return XCTFail("Path \(tupleArrayPath): GET response 200 missing")
-//        }
-//        guard let okSchema = okResponse["schema"] as? [String: Any] else {
-//            return XCTFail("Path \(tupleArrayPath): GET schema missing")
-//        }
-//        guard let okReturnType = okSchema["type"] as? String else {
-//            return XCTFail("Path \(tupleArrayPath): GET schema type missing")
-//        }
-//        XCTAssertEqual(okReturnType, "array", "Return type for GET on path \(tupleArrayPath) should be 'array', but was \(okReturnType)")
-//        guard let returnItems = okSchema["items"] as? [String: Any] else {
-//            return XCTFail("Path \(tupleArrayPath): GET schema items missing")
-//        }
-//        // FIXME: Test tuple array return structure
-//    }
+    func testTupleArrayReturnTypes() {
+        guard let dict = getSwaggerDictionary() else {
+            return XCTFail("Unable to get swagger dictionary")
+        }
+        guard let paths = dict["paths"] as? [String: Any] else {
+            return XCTFail("Paths section is missing")
+        }
+        let tupleArrayPath = "/me/getTupleArray"
+        guard let path = paths[tupleArrayPath] as? [String: Any] else {
+            return XCTFail("Path \(tupleArrayPath) is missing")
+        }
+        guard let get = path["get"] as? [String: Any] else {
+            return XCTFail("Path \(tupleArrayPath): GET method missing")
+        }
+        guard let responses = get["responses"] as? [String: Any] else {
+            return XCTFail("Path \(tupleArrayPath): GET responses missing")
+        }
+        guard let okResponse = responses["200"] as? [String: Any] else {
+            return XCTFail("Path \(tupleArrayPath): GET response 200 missing")
+        }
+        guard let okSchema = okResponse["schema"] as? [String: Any] else {
+            return XCTFail("Path \(tupleArrayPath): GET schema missing")
+        }
+        guard let okReturnType = okSchema["type"] as? String else {
+            return XCTFail("Path \(tupleArrayPath): GET schema type missing")
+        }
+        XCTAssertEqual(okReturnType, "array", "Return type for GET on path \(tupleArrayPath) should be 'array', but was \(okReturnType)")
+        guard let returnItems = okSchema["items"] as? [String: Any] else {
+            return XCTFail("Path \(tupleArrayPath): GET schema items missing")
+        }
+        guard let returnType = returnItems["type"] as? String else {
+            return XCTFail("Path \(tupleArrayPath): GET schema type missing")
+        }
+        // Dictionaries are represented as an 'object' type containing 'additionalProperties'.
+        XCTAssertEqual(returnType, "object", "Array type should be 'object', but was \(returnType)")
+        guard let additionalProperties = returnItems["additionalProperties"] as? [String: String] else {
+            return XCTFail("Path \(tupleArrayPath): GET schema additionalProperties missing")
+        }
+        guard let ref = additionalProperties["$ref"] else {
+            return XCTFail("Path \(tupleArrayPath): GET schema $ref missing")
+        }
+        XCTAssertEqual(ref, "#/definitions/Apple", "schema ref type for GET on path \(tupleArrayPath) should be '#/definitions/Apple', but was \(ref)")
+    }
 
     //
     // Test that a POST that returns an Identifier is correctly defined as having
     // a single Codable input type, and returns a single Codable output type plus
     // a Location header containing the Identifier.
-    // FIXME: https://github.com/IBM-Swift/Kitura/issues/1336
     //
-//    func testPostReturningId() {
-//        // FIXME: Test that Location header is defined
-//    }
+    func testPostReturningId() {
+        guard let dict = getSwaggerDictionary() else {
+            return XCTFail("Unable to get swagger dictionary")
+        }
+        guard let paths = dict["paths"] as? [String: Any] else {
+            return XCTFail("Paths section is missing")
+        }
+        let postSinglePath = "/me/postid"
+        guard let path = paths[postSinglePath] as? [String: Any] else {
+            return XCTFail("Path \(postSinglePath) is missing")
+        }
+        guard let get = path["post"] as? [String: Any] else {
+            return XCTFail("Path \(postSinglePath): POST method missing")
+        }
+        guard let responses = get["responses"] as? [String: Any] else {
+            return XCTFail("Path \(postSinglePath): POST responses missing")
+        }
+        guard let createdResponse = responses["201"] as? [String: Any] else {
+            return XCTFail("Path \(postSinglePath): POST response 201 missing")
+        }
+        guard let createdHeaders = createdResponse["headers"] as? [String: Any] else {
+            return XCTFail("Path \(postSinglePath): POST headers missing")
+        }
+        guard let createdLocation = createdHeaders["Location"] as? [String: Any] else {
+            return XCTFail("Path \(postSinglePath): POST Location header missing")
+        }
+        guard let createdDescription = createdLocation["description"] as? String else {
+            return XCTFail("Path \(postSinglePath): POST Location header description missing")
+        }
+        guard let createdType = createdLocation["type"] as? String else {
+            return XCTFail("Path \(postSinglePath): POST Location header type missing")
+        }
+        XCTAssertEqual(createdDescription, "Identity of resource", "Location header description for POST on path \(postSinglePath) should be 'Identity of resource', but was \(createdDescription)")
+        XCTAssertEqual(createdType, "integer", "type of Location id for POST on path \(postSinglePath) should be 'integer', but was \(createdType)")
+    }
 
     //
     // Test that input types that do not also appear as output types are
