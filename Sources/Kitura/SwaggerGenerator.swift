@@ -667,6 +667,7 @@ struct SwaggerDocument: Encodable {
     /// add a model into the OpenAPI (swagger) document
     ///
     /// - Parameter model: TypeInfo object that describes a model
+    /// - Parameter forSwiftType: The Swift Type of the model
     mutating func addModel(model typeInfo: TypeInfo, forSwiftType: Any.Type? = nil) {
         // from the typeinfo we can extract the model name and all subordinate structures.
 
@@ -677,6 +678,7 @@ struct SwaggerDocument: Encodable {
             if let swiftType = forSwiftType {
                 model = String(describing: swiftType)
                 if model != String(describing: name) {
+                    // TODO: provide example of this situation in comment
                     Log.debug("Note: Model name '\(model)' differs from TypeDecoded name '\(name)'. This probably indicates that it is a keyed container that encodes as a single value, complex type.")
                 }
             } else {
@@ -713,8 +715,12 @@ struct SwaggerDocument: Encodable {
         case .single(let swiftType, let encodedType):
             let model = String(describing: swiftType)
             if swiftType == encodedType {
+                // TODO: do we need to remove from unprocessedSet?
+                // TODO: provide example of this situation in comment
                 Log.debug("Model not required for type '\(typeInfo.debugDescription)'")
             } else {
+                // TODO: do we need to remove from unprocessedSet?
+                // TODO: provide example of this situation in comment
                 Log.debug("Model '\(model)' has a single encoded value of type: '\(encodedType)'")
             }
         default:
