@@ -480,7 +480,7 @@ struct SwaggerDocument: Encodable {
             isArrayType = true
         }
 
-        let reference = SingleReference(ref: "#/definitions/\(type)")
+        let reference = SingleReference(ref: "#/definitions/\(definition)")
         if isArrayType {
             if responseType.tuple {
                 let additionalRef = AdditionalReference(additionalProperties: reference)
