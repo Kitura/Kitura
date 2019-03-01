@@ -18,35 +18,37 @@ branches:
 matrix:
   include:
     - os: linux
-      dist: trusty
-      sudo: required
-      env: SWIFT_SNAPSHOT=4.0.3
-    - os: linux
-      dist: trusty
-      sudo: required
-      env: SWIFT_SNAPSHOT=4.1.3
-    - os: linux
-      dist: trusty
+      dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=ubuntu:16.04 SWIFT_TEST_ARGS="--parallel"
+      env: DOCKER_IMAGE=swift:4.0.3 SWIFT_SNAPSHOT=4.0.3
     - os: linux
-      dist: trusty
+      dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=ubuntu:16.04 KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
+      env: DOCKER_IMAGE=swift:4.1.3 SWIFT_SNAPSHOT=4.1.3
     - os: linux
-      dist: trusty
+      dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=ubuntu:16.04 SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT SWIFT_TEST_ARGS="--parallel --num-workers=16"
+      env: DOCKER_IMAGE=swift:4.2.2 SWIFT_TEST_ARGS="--parallel"
     - os: linux
-      dist: trusty
+      dist: xenial
+      sudo: required
+      services: docker
+      env: DOCKER_IMAGE=swift:4.2.2 KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
+    - os: linux
+      dist: xenial
+      sudo: required
+      services: docker
+      env: DOCKER_IMAGE=swift:4.2.2 SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT SWIFT_TEST_ARGS="--parallel --num-workers=16"
+    - os: linux
+      dist: xenial
       sudo: required
       services: docker
       env: DOCKER_IMAGE=ubuntu:18.04 SWIFT_TEST_ARGS="--parallel"
     - os: linux
-      dist: trusty
+      dist: xenial
       sudo: required
       services: docker
       env: DOCKER_IMAGE=ubuntu:18.04 KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
