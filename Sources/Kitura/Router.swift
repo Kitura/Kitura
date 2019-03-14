@@ -152,8 +152,11 @@ public class Router {
      router.encoders[.json] = newJSONEncoder
      ```
      */
-    public var encoders: [MediaType: () -> BodyEncoder] = [.json: {return JSONEncoder()}]
-    
+    public var encoders: [MediaType: () -> BodyEncoder] = [.json: {return JSONEncoder()}] {
+        didSet {
+            swagger.setEncoders(self.encoders)
+        }
+    }
     /**
      if the request's Accept header does not match an encoder,
      this media type will be used by the `RouterResponse` to select a `BodyEncoder`.
@@ -183,8 +186,12 @@ public class Router {
      router.decoders[.json] = newJSONDecoder
      ```
      */
-    public var decoders: [MediaType: () -> BodyDecoder] = [.json: {return JSONDecoder()}, .urlEncoded: {return QueryDecoder()}]
-    
+    public var decoders: [MediaType: () -> BodyDecoder] = [.json: {return JSONDecoder()}, .urlEncoded: {return QueryDecoder()}] {
+        didSet {
+            swagger.setDecoders(self.decoders)
+        }
+    }
+
     // MARK: Template Engine
 
     /// The root directory where template files should be placed in order to be automatically handed
