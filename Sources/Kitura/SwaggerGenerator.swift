@@ -1344,7 +1344,13 @@ extension Router {
     public func registerGetRoute<Id: Identifier, O: Codable>(route: String, id: Id.Type, outputType: O.Type, outputIsArray: Bool = false) {
         var responseTypes = [SwaggerResponseType]()
         responseTypes.append(SwaggerResponseType(optional: true, array: outputIsArray, tuple: true, type: O.self, statusCode: .OK))
-        registerRoute(route: route, method: "get", id: Id.self, idReturned: true, outputType: O.self, responseTypes: responseTypes)
+        // The supported permutations for GET involving an ID are:
+        // 1) Get (singular) by ID, where the ID is an input parameter (appended to the path)
+        // 2) Get (plural), where the ID of each element is returned
+        // There is no way for the calling function to communicate whether the ID is input or output,
+        // however we can infer it from whether the return type is an array.
+        let idReturned: Bool = outputIsArray
+        registerRoute(route: route, method: "get", id: Id.self, idReturned: idReturned, outputType: O.self, responseTypes: responseTypes)
     }
 
     /// Register GET route
