@@ -197,7 +197,7 @@ class TestSwaggerGeneration: KituraTest {
         XCTAssertTrue(paths["/me/postid"] != nil, "path /me/postid is missing")
         XCTAssertTrue(paths["/me/getArray"] != nil, "path /me/getArray is missing")
         XCTAssertTrue(paths["/me/apple"] != nil, "path /me/apple is missing")
-        XCTAssertTrue(paths["/me/getid"] != nil, "path /me/getid is missing")
+        XCTAssertTrue(paths["/me/getid/{id}"] != nil, "path /me/getid/{id} is missing")
         XCTAssertTrue(paths["/me/patch/{id}"] != nil, "path /me/patch/{id} is missing")
         XCTAssertTrue(paths["/me/pear"] != nil, "path /me/pear is missing")
         XCTAssertTrue(paths["/me/puts/{id}"] != nil, "path /me/puts/{id} is missing")
