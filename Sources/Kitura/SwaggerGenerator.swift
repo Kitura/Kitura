@@ -710,14 +710,19 @@ struct SwaggerDocument: Encodable {
     mutating func addModel(model typeInfo: TypeInfo, forSwiftType: Any.Type? = nil) {
         // from the typeinfo we can extract the model name and all subordinate structures.
 
+        // Remove this typeInfo from the unprocessed set, as we're about to process it
+        self.unprocessedSet.remove(typeInfo)
+
         // get the model name.
         switch typeInfo {
         case .keyed(let name, _):
+            // A composite type (struct, class) that requires a model definition.
             let model: String
             if let swiftType = forSwiftType {
                 model = String(describing: swiftType)
                 if model != String(describing: name) {
-                    // TODO: provide example of this situation in comment
+                    // This composite type A encodes itself to a single value of composite type B.
+                    // The swagger should describe a model of type A with structure of type B.
                     Log.debug("Note: Model name '\(model)' differs from TypeDecoded name '\(name)'. This probably indicates that it is a keyed container that encodes as a single value, complex type.")
                 }
             } else {
@@ -745,26 +750,25 @@ struct SwaggerDocument: Encodable {
                 Log.warning("Failed to build model '\(model)': \(error)")
             }
         case .unkeyed(_, let arrayType):
+            // A type nested in an array. Process the array's type
             Log.debug("Model nested in array, type = \(arrayType.debugDescription)")
             self.unprocessedSet.insert(arrayType)
         case .dynamicKeyed(_, _, let dictionaryValueType):
-            // Handle models that are nested within a dictionary
+            // A type nested within a dictionary. Process the dictionary's value type
             Log.debug("Model nested in dictionary, type = \(dictionaryValueType.debugDescription)")
             self.unprocessedSet.insert(dictionaryValueType)
         case .single(let swiftType, let encodedType):
+            // A type that encodes to a single value: this does not need to be modelled
             let model = String(describing: swiftType)
             if swiftType == encodedType {
-                // TODO: do we need to remove from unprocessedSet?
-                // TODO: provide example of this situation in comment
+                // This Swift type is a basic type, eg. String
                 Log.debug("Model not required for type '\(typeInfo.debugDescription)'")
             } else {
-                // TODO: do we need to remove from unprocessedSet?
-                // TODO: provide example of this situation in comment
+                // This Swift type encodes to a single-value type, eg. UUID -> String
                 Log.debug("Model '\(model)' has a single encoded value of type: '\(encodedType)'")
-            }
+           }
         default:
             Log.debug("Model not required for type '\(typeInfo.debugDescription)'")
-            self.unprocessedSet.remove(typeInfo)
         }
     }
 
