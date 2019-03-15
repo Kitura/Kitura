@@ -136,8 +136,22 @@ func patchSingleAppleHandler(id: Int, posted: Apple, completion: (Apple?, Reques
     completion(nil, nil)
 }
 
-// A route that has an input type (Banana) that is never used as an output type
+// A route that has an input type (Banana) that is never used as an output type.
+// Used to test that swagger describes the input models.
 func postBananaHandler(posted: Banana, completion: (Apple?, RequestError?) -> Void) -> Void {
+    completion(nil, nil)
+}
+
+// A route that has an output type (SingleValueComplexType) whose encoding is a
+// single value of type NestedType. Used to test that swagger correctly generates
+// a model for SingleValueComplexType, whose structure is that of NestedType.
+func getSingleValueComplexType(id: Int, completion: (SingleValueComplexType?, RequestError?) -> Void) -> Void {
+    completion(SingleValueComplexType(content: NestedType(apple: "Apple", banana: 1)), nil)
+}
+
+// A route that accepts an ID and returns a single value, where that value is an
+// Array type.
+func getSingularArrayType(id: Int, completion: ([Apple]?, RequestError?) -> Void) -> Void {
     completion(nil, nil)
 }
 
@@ -156,6 +170,9 @@ class TestSwaggerGeneration: KituraTest {
             ("testPostReturningId", testPostReturningId),
             ("testInputTypesModelled", testInputTypesModelled),
             ("testNestedTypesModelled", testNestedTypesModelled),
+            ("testSingleValueComplexType", testSingleValueComplexType),
+            ("testCustomDateEncoding", testCustomDateEncoding),
+            ("testGetSingularArray", testGetSingularArray),
         ]
     }
 
@@ -188,6 +205,9 @@ class TestSwaggerGeneration: KituraTest {
         router.put("/me/puti", handler: putSingleAppleHandlerIntId)
 
         router.post("/banana", handler: postBananaHandler)
+
+        router.get("/singleValueComplexType", handler: getSingleValueComplexType)
+        router.get("/getSingularArrayType", handler: getSingularArrayType)
     }
 
     func pathAssertions(paths: [String: Any]) {
@@ -915,7 +935,8 @@ class TestSwaggerGeneration: KituraTest {
     //
     // Helper for converting the router's swaggerJSON string to JSON dictionary
     //
-    private func getSwaggerDictionary() -> [String: Any]? {
+    private func getSwaggerDictionary(for theRouter: Router? = nil) -> [String: Any]? {
+        let router = theRouter ?? self.router
         guard let jsonString = router.swaggerJSON else {
             XCTFail("Router.swaggerJSON unexpectedly nil")
             return nil
@@ -1204,6 +1225,134 @@ class TestSwaggerGeneration: KituraTest {
         }
         nestedModelDefinitionsAssertions(definitions: definitions)
     }
+
+    //
+    // Test that a type that encodes to a single value, whose type is a composite (complex)
+    // type, is modelled and is described as the structure of its encoded type. In this
+    // example, we expect SingleValueComplexType to be described with NestedType's structure.
+    //
+    func testSingleValueComplexType() {
+        guard let dict = getSwaggerDictionary() else {
+            return XCTFail("Unable to get swagger dictionary")
+        }
+        guard let definitions = dict["definitions"] as? [String: Any] else {
+            return XCTFail("Definitions section is missing")
+        }
+        // Check that SingleValueComplexType contains NestedType's structure
+        guard let model = definitions["SingleValueComplexType"] as? [String: Any] else {
+            return XCTFail("SingleValueComplexType model is missing")
+        }
+        if let type = model["type"] as? String {
+            XCTAssertTrue(type == "object", "model SingleValueComplexType: type is incorrect")
+        } else {
+            XCTFail("Model SingleValueComplexType: type is missing")
+        }
+
+        if let required = model["required"] as? [String] {
+            XCTAssertTrue(required.contains("apple"), "model SingleValueComplexType: required does not contain 'apple'")
+            XCTAssertTrue(required.contains("banana"), "model SingleValueComplexType: required does not contain 'banana'")
+            XCTAssertEqual(required.count, 2, "model SingleValueComplexType: required.count is incorrect")
+        } else {
+            XCTFail("model SingleValueComplexType: required is missing")
+        }
+        // Check that NestedType is not modelled
+        XCTAssertNil(definitions["NestedType"], "NestedType should not be modelled")
+    }
+
+
+    //
+    // Test that setting a custom Date encoding on the Router's JSON serializer is
+    // reflected in the swagger definition. DateEncodingStrategy of .iso8601 and .formatted
+    // should be represented as a 'string',
+    //
+    func testCustomDateEncoding() {
+        /// Helper function to set date encoding.
+        /// - Parameter router: The router to configure
+        /// - Parameter encodingStrategy: The encoding to use for the Date type
+        func configureDateEncoding(on router: Router, encodingStrategy: JSONEncoder.DateEncodingStrategy, decodingStrategy: JSONDecoder.DateDecodingStrategy) {
+            router.encoders = [.json: {
+                    let encoder = JSONEncoder()
+                    if #available(OSX 10.12, *) {
+                        encoder.dateEncodingStrategy = encodingStrategy
+                    }
+                    return encoder
+                }]
+            router.decoders = [.json: {
+                    let decoder = JSONDecoder()
+                    if #available(OSX 10.12, *) {
+                        decoder.dateDecodingStrategy = decodingStrategy
+                    }
+                    return decoder
+                }]
+        }
+        /// Router handler for getting a person by ID
+        func getPersonHandler(id: Int, respondWith: (Person?, RequestError?) -> Void) {
+            let person = Person(name: "Fred", birthday: Date(timeIntervalSince1970: 1))
+            respondWith(person, nil)
+        }
+        /// Helper function for validating swagger representation of Person.birthday
+        /// - Parameter router: The router to inspect
+        /// - Parameter expectedEncoding: The type description we expect for Date
+        func personEncodingAssertions(for router: Router, expectedEncoding: String) {
+            guard let dict = getSwaggerDictionary(for: router) else {
+                return XCTFail("Unable to get swagger dictionary")
+            }
+            guard let definitions = dict["definitions"] as? [String: Any] else {
+                return XCTFail("Definitions section is missing")
+            }
+            guard let model = definitions["Person"] as? [String: Any] else {
+                return XCTFail("Person model is missing")
+            }
+            if let type = model["type"] as? String {
+                XCTAssertTrue(type == "object", "model Person: type is incorrect")
+            } else {
+                XCTFail("Model Person: type is missing")
+            }
+
+            guard let properties = model["properties"] as? [String: Any] else {
+                return XCTFail("model Person: properties dictionary missing")
+            }
+            guard let birthday = properties["birthday"] as? [String: Any] else {
+                return XCTFail("model Person: properties does not contain 'birthday'")
+            }
+            guard let birthdayType = birthday["type"] as? String else {
+                return XCTFail("model Person: birthday does not contain 'type'")
+            }
+            XCTAssertEqual(birthdayType, expectedEncoding, "model Person: birthday expected to be encoded as \(expectedEncoding), but was \(birthdayType)")
+        }
+
+        // Check that Date is described as 'string' when encoding with ISO8601 strategy
+        if #available(OSX 10.12, *) {
+            let customRouterIso8601 = Router()
+            configureDateEncoding(on: customRouterIso8601, encodingStrategy: .iso8601, decodingStrategy: .iso8601)
+            customRouterIso8601.get("/standardPerson", handler: getPersonHandler)
+            personEncodingAssertions(for: customRouterIso8601, expectedEncoding: "string")
+        }
+
+        // Check that Date is described as 'integer' when encoded as seconds since 1970
+        let customRouterSince1970 = Router()
+        configureDateEncoding(on: customRouterSince1970, encodingStrategy: .secondsSince1970, decodingStrategy: .secondsSince1970)
+        customRouterSince1970.get("/standardPerson", handler: getPersonHandler)
+        personEncodingAssertions(for: customRouterSince1970, expectedEncoding: "integer")
+
+        // Check that Date is described as a 'number' when using the default (Double) encoding
+        let standardRouter = Router()
+        standardRouter.get("/standardPerson", handler: getPersonHandler)
+        personEncodingAssertions(for: standardRouter, expectedEncoding: "number")
+   }
+
+    func testGetSingularArray() {
+        guard let dict = getSwaggerDictionary() else {
+            return XCTFail("Unable to get swagger dictionary")
+        }
+        guard let definitions = dict["definitions"] as? [String: Any] else {
+            return XCTFail("Definitions section is missing")
+        }
+        // TODO: check return type of /getSingularArrayType is an array of Apple refs
+        XCTFail("TODO")
+
+    }
+
 
 
 }
