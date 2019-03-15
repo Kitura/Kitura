@@ -1347,9 +1347,14 @@ extension Router {
     /// - Parameter outputtype: The output object type.
     public func registerGetRoute<Id: Identifier, O: Codable>(route: String, id: Id.Type, outputType: O.Type, outputIsArray: Bool = false) {
         var responseTypes = [SwaggerResponseType]()
-        responseTypes.append(SwaggerResponseType(optional: true, array: outputIsArray, tuple: true, type: O.self, statusCode: .OK))
+        // A GET route involving an ID and an array return type is a GET (plural) request, returning
+        // an array of tuples associating an ID with each item returned.
+        let outputIsArrayOfTuples = outputIsArray
+        responseTypes.append(SwaggerResponseType(optional: true, array: outputIsArray, tuple: outputIsArrayOfTuples, type: O.self, statusCode: .OK))
         // The supported permutations for GET involving an ID are:
-        // 1) Get (singular) by ID, where the ID is an input parameter (appended to the path)
+        // 1) Get (singular) by ID, where the ID is an input parameter (appended to the path), and:
+        //   a) the return type is a single item, or
+        //   b) the return type is an array of items (for situations where an ID identifies an array)
         // 2) Get (plural), where the ID of each element is returned
         // There is no way for the calling function to communicate whether the ID is input or output,
         // however we can infer it from whether the return type is an array.
