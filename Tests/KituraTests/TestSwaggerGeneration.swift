@@ -155,6 +155,12 @@ func getSingularArrayType(id: Int, completion: ([Apple]?, RequestError?) -> Void
     completion(nil, nil)
 }
 
+// A route tht returns a value that embeds models within Array and Dictionary
+// collection types, and where those types do not appear elsewhere within the API.
+func getEmbeddedInCollectionType(id: Int, completion: (EmbeddedInCollection?, RequestError?) -> Void) -> Void {
+    completion(nil, nil)
+}
+
 class TestSwaggerGeneration: KituraTest {
 
     static var allTests: [(String, (TestSwaggerGeneration) -> () throws -> Void)] {
@@ -173,6 +179,7 @@ class TestSwaggerGeneration: KituraTest {
             ("testSingleValueComplexType", testSingleValueComplexType),
             ("testCustomDateEncoding", testCustomDateEncoding),
             ("testGetSingularArray", testGetSingularArray),
+            ("testTypesEmbeddedInCollections", testTypesEmbeddedInCollections),
         ]
     }
 
@@ -208,6 +215,7 @@ class TestSwaggerGeneration: KituraTest {
 
         router.get("/singleValueComplexType", handler: getSingleValueComplexType)
         router.get("/getSingularArrayType", handler: getSingularArrayType)
+        router.get("/getEmbeddedInCollectionType", handler: getEmbeddedInCollectionType)
     }
 
     func pathAssertions(paths: [String: Any]) {
@@ -1341,18 +1349,88 @@ class TestSwaggerGeneration: KituraTest {
         personEncodingAssertions(for: standardRouter, expectedEncoding: "number")
    }
 
+    //
+    // Test that a GET (singular) route returning an Array type is correctly
+    // represented in swagger as an array of refs to the appropriate model.
+    //
     func testGetSingularArray() {
+        guard let dict = getSwaggerDictionary() else {
+            return XCTFail("Unable to get swagger dictionary")
+        }
+        // check return type of /getSingularArrayType/{id} is an array of Apple refs
+        guard let paths = dict["paths"] as? [String: Any] else {
+            return XCTFail("Paths section is missing")
+        }
+        let arrayPath = "/getSingularArrayType/{id}"
+        guard let path = paths[arrayPath] as? [String: Any] else {
+            return XCTFail("Path \(arrayPath) is missing")
+        }
+        // Route should have a 'get' method
+        guard let get = path["get"] as? [String: Any] else {
+            return XCTFail("Path \(arrayPath): GET method missing")
+        }
+        // method should define 'responses'
+        guard let responses = get["responses"] as? [String: Any] else {
+            return XCTFail("Path \(arrayPath): GET responses missing")
+        }
+        // responses should contain '200'
+        guard let okResponse = responses["200"] as? [String: Any] else {
+            return XCTFail("Path \(arrayPath): GET response 200 missing")
+        }
+        // 200 response should contain a schema
+        guard let okSchema = okResponse["schema"] as? [String: Any] else {
+            return XCTFail("Path \(arrayPath): GET schema missing")
+        }
+        // schema should contain a 'type'
+        guard let okReturnType = okSchema["type"] as? String else {
+            return XCTFail("Path \(arrayPath): GET schema type missing")
+        }
+        // schema type should be 'array'
+        XCTAssertEqual(okReturnType, "array", "Return type for GET on path \(arrayPath) should be 'array', but was \(okReturnType)")
+        // schema should contain 'items'
+        guard let returnItems = okSchema["items"] as? [String: Any] else {
+            return XCTFail("Path \(arrayPath): GET schema items missing")
+        }
+        // items should contain a 'ref'
+        guard let ref = returnItems["$ref"] as? String else {
+            return XCTFail("Path \(arrayPath): GET schema items $ref missing")
+        }
+        // ref should be the Apple model
+        XCTAssertEqual(ref, "#/definitions/Apple", "schema ref type for GET on path \(arrayPath) should be '#/definitions/Apple', but was \(ref)")
+    }
+
+    //
+    // Test that types that only appear within collections (Array or Dictionary
+    // values) are defined in the swagger document.
+    // The EmbeddedInCollection type is returned by a route, and defines an Array
+    // of EmbeddedInArrayType, and a Dictionary of Int:EmbeddedInDictionaryType.
+    // These types do not appear elsewhere in the API.
+    //
+    func testTypesEmbeddedInCollections() {
         guard let dict = getSwaggerDictionary() else {
             return XCTFail("Unable to get swagger dictionary")
         }
         guard let definitions = dict["definitions"] as? [String: Any] else {
             return XCTFail("Definitions section is missing")
         }
-        // TODO: check return type of /getSingularArrayType is an array of Apple refs
-        XCTFail("TODO")
-
+        // Check that the EmbeddedInArrayType model exists
+        guard let inArrayModel = definitions["EmbeddedInArrayType"] as? [String: Any] else {
+            return XCTFail("EmbeddedInArrayType model is missing")
+        }
+        if let type = inArrayModel["type"] as? String {
+            XCTAssertTrue(type == "object", "model EmbeddedInArrayType: type is incorrect")
+        } else {
+            XCTFail("Model EmbeddedInArrayType: type is missing")
+        }
+        // Check that the EmbeddedInDictionaryType model exists
+        guard let inDictModel = definitions["EmbeddedInDictionaryType"] as? [String: Any] else {
+            return XCTFail("EmbeddedInDictionaryType model is missing")
+        }
+        if let type = inDictModel["type"] as? String {
+            XCTAssertTrue(type == "object", "model EmbeddedInDictionaryType: type is incorrect")
+        } else {
+            XCTFail("Model EmbeddedInDictionaryType: type is missing")
+        }
     }
-
-
 
 }
