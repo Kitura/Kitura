@@ -806,15 +806,12 @@ struct SwaggerDocument: Encodable {
         let nl = pretty ? "\n" : ""
 
         let encoder = JSONEncoder()
-//        #if os(macOS)
         if #available(OSX 10.13, iOS 11.0, *) {
             encoder.outputFormatting = .sortedKeys
+        } else {
+            // Fallback on earlier versions
         }
-//        #elseif os(iOS)
-//        if #available(iOS 11.0, *) {
-//            encoder.outputFormatting = .sortedKeys
-//        }
-//        #endif
+
 
         var fieldCount = 1
         for (field, fieldProps) in properties {
