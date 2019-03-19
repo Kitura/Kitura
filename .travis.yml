@@ -31,17 +31,17 @@ matrix:
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=swift:4.2.2 SWIFT_TEST_ARGS="--parallel"
+      env: DOCKER_IMAGE=swift:4.2.3 SWIFT_TEST_ARGS="--parallel"
     - os: linux
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=swift:4.2.2 KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
+      env: DOCKER_IMAGE=swift:4.2.3 KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
     - os: linux
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=swift:4.2.2 SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT SWIFT_TEST_ARGS="--parallel --num-workers=16"
+      env: DOCKER_IMAGE=swift:4.2.3 SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT SWIFT_TEST_ARGS="--parallel --num-workers=16"
     - os: linux
       dist: xenial
       sudo: required
