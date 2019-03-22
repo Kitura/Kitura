@@ -100,7 +100,7 @@ public class Router {
         Log.verbose("Router initialized")
     }
 
-    func routingHelper(_ method: RouterMethod, pattern: String?, handler: [RouterHandler]) -> Router {
+    public func routingHelper(_ method: RouterMethod, pattern: String?, handler: [RouterHandler]) -> Router {
         elements.append(RouterElement(method: method,
                                       pattern: pattern,
                                       handler: handler,
@@ -108,7 +108,7 @@ public class Router {
         return self
     }
 
-    func routingHelper(_ method: RouterMethod, pattern: String?, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
+    public func routingHelper(_ method: RouterMethod, pattern: String?, allowPartialMatch: Bool = true, middleware: [RouterMiddleware]) -> Router {
         elements.append(RouterElement(method: method,
                                       pattern: pattern,
                                       middleware: middleware,
