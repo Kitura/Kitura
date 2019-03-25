@@ -401,8 +401,6 @@ extension Router {
         _ route: String,
         handler: @escaping (T, @escaping IdentifierCodableArrayResultClosure<Id, O>) -> Void
     ) {
-        // FIXME: The ID is returned in a tuple, it is not an input parameter
-        // https://github.com/IBM-Swift/Kitura/issues/1336
         registerGetRoute(route: route, id: Id.self, outputType: O.self, outputIsArray: true)
         get(route) { request, response, next in
             Log.verbose("Received GET(Array) with identifier typed middleware request")
@@ -438,8 +436,6 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, @escaping IdentifierCodableArrayResultClosure<Id, O>) -> Void
     ) {
-        // FIXME: The ID is returned in a tuple, it is not an input parameter
-        // https://github.com/IBM-Swift/Kitura/issues/1336
         registerGetRoute(route: route, id: Id.self, outputType: O.self, outputIsArray: true)
         get(route) { request, response, next in
             Log.verbose("Received GET(Array) with identifier typed middleware request")
@@ -475,8 +471,6 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, T3, @escaping IdentifierCodableArrayResultClosure<Id, O>) -> Void
     ) {
-        // FIXME: The ID is returned in a tuple, it is not an input parameter
-        // https://github.com/IBM-Swift/Kitura/issues/1336
         registerGetRoute(route: route, id: Id.self, outputType: O.self, outputIsArray: true)
         get(route) { request, response, next in
             Log.verbose("Received GET(Array) with identifier typed middleware request")
@@ -1623,8 +1617,6 @@ extension Router {
         _ route: String,
         handler: @escaping (T, I, @escaping IdentifierCodableResultClosure<Id, O>) -> Void
     ) {
-        // FIXME: The ID is returned in the Location header, it is not an input parameter
-        // https://github.com/IBM-Swift/Kitura/issues/1336
         registerPostRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
@@ -1663,8 +1655,6 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, I, @escaping IdentifierCodableResultClosure<Id, O>) -> Void
     ) {
-        // FIXME: The ID is returned in the Location header, it is not an input parameter
-        // https://github.com/IBM-Swift/Kitura/issues/1336
         registerPostRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
@@ -1703,8 +1693,6 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, T3, I, @escaping IdentifierCodableResultClosure<Id, O>) -> Void
     ) {
-        // FIXME: The ID is returned in the Location header, it is not an input parameter
-        // https://github.com/IBM-Swift/Kitura/issues/1336
         registerPostRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
         post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")

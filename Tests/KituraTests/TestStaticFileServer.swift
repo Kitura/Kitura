@@ -524,8 +524,10 @@ class TestStaticFileServer: KituraTest {
                 XCTAssertNotNil(response)
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
                 XCTAssertNotNil(response?.headers["Last-Modified"]?.first)
-                XCTAssertNotNil(response?.headers["eTag"]?.first)
-                let eTag = response!.headers["eTag"]!.first!
+                guard let eTag = response?.headers["eTag"]?.first else {
+                    XCTFail("eTag header was missing")
+                    return expectation.fulfill()
+                }
 
                 // if ETag is the same then partial content (206) should be served
                 self.performRequest("get", path: "/qwer/index.html", callback: { response in
@@ -559,9 +561,11 @@ class TestStaticFileServer: KituraTest {
             self.performRequest("get", path: "/qwer/index.html", callback: { response in
                 XCTAssertNotNil(response)
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
-                XCTAssertNotNil(response?.headers["Last-Modified"]?.first)
+                guard let lastModified = response?.headers["Last-Modified"]?.first else {
+                    XCTFail("Last-Modified header was missing")
+                    return expectation.fulfill()
+                }
                 XCTAssertNotNil(response?.headers["eTag"]?.first)
-                let lastModified = response!.headers["Last-Modified"]!.first!
 
                 // if Last-Modified is the same then partial content (206) should be served
                 self.performRequest("get", path: "/qwer/index.html", callback: { response in
