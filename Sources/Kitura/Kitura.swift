@@ -105,6 +105,7 @@ public class Kitura {
     // MARK: Start Servers
     
     /// Start the Kitura framework.
+    /// Can also provide a value for the withStatus param, this will enable the process to exit with an exit code should any of the servers fail to start.
     ///
     ///### Usage Example: ###
     /// Make all registered servers start listening on their port.
@@ -114,9 +115,16 @@ public class Kitura {
     /// Kitura.run()
     ///```
     /// - note: This function never returns - it should be the last call in your `main.swift` file.
-    public class func run() {
+    public class func run(withStatus status: Bool = false) {
         Log.verbose("Starting Kitura framework...")
-        start()
+        if status {
+            let numberOfFailures = startWithStatus()
+            if numberOfFailures > 0 {
+                exit(Int32(numberOfFailures))
+            }
+        } else {
+            start()
+        }
         ListenerGroup.waitForListeners()
     }
 
@@ -148,6 +156,40 @@ public class Kitura {
             }
         }
         serverLock.unlock()
+    }
+    
+    /// Start all registered servers and return the number of servers that failed to start.
+    ///
+    ///### Usage Example: ###
+    /// Make all registered servers start listening on their port.
+    ///```swift
+    /// let router = Router()
+    /// Kitura.addHTTPServer(onPort: 8080, with: router)
+    /// Kitura.startWithStatus() // Returns the number of failed server starts.
+    ///```
+    public class func startWithStatus() -> Int {
+        serverLock.lock()
+        var numberOfFailures = 0
+        for (server, port) in httpServersAndPorts {
+            Log.verbose("Starting an HTTP Server on port \(port)...")
+            do {
+                try server.listen(on: port)
+            } catch {
+                numberOfFailures += 1
+                Log.error("Error listening on port \(port): \(error). Use server.failed(callback:) to handle")
+            }
+        }
+        for (server, port) in fastCGIServersAndPorts {
+            Log.verbose("Starting a FastCGI Server on port \(port)...")
+            do {
+                try server.listen(on: port)
+            } catch {
+                numberOfFailures += 1
+                Log.error("Error listening on port \(port): \(error). Use server.failed(callback:) to handle")
+            }
+        }
+        serverLock.unlock()
+        return numberOfFailures
     }
 
     // MARK: Stop Servers
