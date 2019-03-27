@@ -22,22 +22,51 @@ import Kitura
 import Foundation
 import Dispatch
 
+// The type of transport to use when communicating with the server.
 enum SSLOption {
+    // Tests will be performed over both HTTP and HTTPS.
     case both
+    // Only HTTP will be tested.
     case httpOnly
+    // Only HTTPS will be tested.
     case httpsOnly
+}
+
+// The type of socket to use when connecting to the server.
+enum SocketTypeOption {
+    // Both inet and unix sockets will be tested, in turn
+    case both
+    // Only inet sockets will be tested
+    case inet
+    // Only unix sockets will be tested
+    case unix
 }
 
 class KituraTest: XCTestCase {
 
-    static let httpPort = 8080
-    static let httpsPort = 8443
+    // A singleton Kitura server listening on HTTP on an INET socket
+    static private(set) var httpInetServer: HTTPServer?
+    // A singleton Kitura server listening on HTTPS on an INET socket
+    static private(set) var httpsInetServer: HTTPServer?
+    // A singleton Kitura server listening on HTTP on a Unix socket
+    static private(set) var httpUnixServer: HTTPServer?
+    // A singleton Kitura server listening on HTTPS on a Unix socket
+    static private(set) var httpsUnixServer: HTTPServer?
 
-    static private(set) var httpServer: HTTPServer? 
-    static private(set) var httpsServer: HTTPServer?
-
+    // The port of the server returned by startServer().
     private(set) var port = -1
+    // Whether the server used by doPerformServerTest should use SSL.
     private(set) var useSSL = false
+    // The socket file path of the server returned by startUnixSocketServer().
+    private(set) var socketFilePath: String? = nil
+    // Whether the server used by doPerformServerTest should use a Unix domain socket.
+    private(set) var useUnixSocket = false
+
+    /// The types of listeners we currently support.
+    private enum ListenerType {
+        case inet(Int)
+        case unix(String)
+    }
 
     static let sslConfig: SSLConfig = {
         let sslConfigDir = URL(fileURLWithPath: #file).appendingPathComponent("../SSLConfig")
@@ -63,41 +92,61 @@ class KituraTest: XCTestCase {
         KituraTest.initOnce
     }
 
-    func buildServerTest(_ router: ServerDelegate, sslOption: SSLOption = SSLOption.both, timeout: TimeInterval = 10,
+    func buildServerTest(_ router: ServerDelegate, sslOption: SSLOption = SSLOption.both, socketTypeOption: SocketTypeOption = SocketTypeOption.both, timeout: TimeInterval = 10,
                            line: Int = #line) -> RequestTestBuilder {
-        return ServerTestBuilder(test: self, router: router, sslOption: sslOption, timeout: timeout, line: line)
+        return ServerTestBuilder(test: self, router: router, sslOption: sslOption, socketTypeOption: socketTypeOption, timeout: timeout, line: line)
     }
 
-    func performServerTest(_ router: ServerDelegate, sslOption: SSLOption = SSLOption.both, timeout: TimeInterval = 10,
+    func performServerTest(_ router: ServerDelegate, sslOption: SSLOption = SSLOption.both, socketTypeOption: SocketTypeOption = SocketTypeOption.both, timeout: TimeInterval = 10,
                            line: Int = #line, asyncTasks: (XCTestExpectation) -> Void...) {
-        performServerTest(router, sslOption: sslOption, timeout: timeout, line: line, asyncTasks: asyncTasks)
+        performServerTest(router, sslOption: sslOption, socketTypeOption: socketTypeOption, timeout: timeout, line: line, asyncTasks: asyncTasks)
     }
 
-    func performServerTest(_ router: ServerDelegate, sslOption: SSLOption = SSLOption.both, timeout: TimeInterval = 10,
+    func performServerTest(_ router: ServerDelegate, sslOption: SSLOption = SSLOption.both, socketTypeOption: SocketTypeOption = SocketTypeOption.both, timeout: TimeInterval = 10,
                            line: Int = #line, asyncTasks: [(XCTestExpectation) -> Void]) {
         if sslOption != SSLOption.httpsOnly {
-            self.port = KituraTest.httpPort
             self.useSSL = false
-            doPerformServerTest(router: router, timeout: timeout, line: line, asyncTasks: asyncTasks)
+            if socketTypeOption != SocketTypeOption.unix {
+                self.useUnixSocket = false
+                doPerformServerTest(router: router, timeout: timeout, line: line, asyncTasks: asyncTasks)
+            }
+            setUp()
+            if socketTypeOption != SocketTypeOption.inet {
+                self.useUnixSocket = true
+                doPerformServerTest(router: router, timeout: timeout, line: line, asyncTasks: asyncTasks)
+            }
         }
         
         // Call setUp to start at a known state (ideally, this should have been written as a separate test)
         setUp()
 
         if sslOption != SSLOption.httpOnly {
-            self.port = KituraTest.httpsPort
             self.useSSL = true
-            doPerformServerTest(router: router, timeout: timeout, line: line, asyncTasks: asyncTasks)
+            if socketTypeOption != SocketTypeOption.unix {
+                self.useUnixSocket = false
+                doPerformServerTest(router: router, timeout: timeout, line: line, asyncTasks: asyncTasks)
+            }
+            setUp()
+            if socketTypeOption != SocketTypeOption.inet {
+                self.useUnixSocket = true
+                doPerformServerTest(router: router, timeout: timeout, line: line, asyncTasks: asyncTasks)
+            }
         }
     }
 
     func doPerformServerTest(router: ServerDelegate, timeout: TimeInterval, line: Int, asyncTasks: [(XCTestExpectation) -> Void]) {
 
-        guard let port = startServer(router: router) else {
-            XCTFail("Error starting server. useSSL:\(useSSL)")
-            return
+        if useUnixSocket {
+            guard let socketPath = startUnixSocketServer(router: router) else {
+                return XCTFail("Error starting server. useSSL:\(useSSL), useUnixSocket:\(useUnixSocket)")
+            }
+            XCTAssertEqual(socketPath, self.socketFilePath, "Server is listening on the wrong path")
+        } else {
+            guard let port = startServer(router: router) else {
+                return XCTFail("Error starting server. useSSL:\(useSSL), useUnixSocket:\(useUnixSocket)")
+            }
+            self.port = port
         }
-        self.port = port
         let requestQueue = DispatchQueue(label: "Request queue")
         for (index, asyncTask) in asyncTasks.enumerated() {
             let expectation = self.expectation(line: line, index: index)
@@ -114,12 +163,12 @@ class KituraTest: XCTestCase {
 
     private func startServer(router: ServerDelegate) -> Int? {
         if useSSL {
-            if let server = KituraTest.httpsServer {
+            if let server = KituraTest.httpsInetServer {
                 server.delegate = router
                 return server.port
             }
         } else {
-            if let server = KituraTest.httpServer {
+            if let server = KituraTest.httpInetServer {
                 server.delegate = router
                 return server.port
             }
@@ -135,9 +184,9 @@ class KituraTest: XCTestCase {
             try server.listen(on: 0)
 
             if useSSL {
-                KituraTest.httpsServer = server
+                KituraTest.httpsInetServer = server
             } else {
-                KituraTest.httpServer = server
+                KituraTest.httpInetServer = server
             }
             return server.port
         } catch {
@@ -146,20 +195,90 @@ class KituraTest: XCTestCase {
         }
     }
 
-    func stopServer() {
-        KituraTest.httpServer?.stop()
-        KituraTest.httpServer = nil
+    private func startUnixSocketServer(router: ServerDelegate) -> String? {
+        if useSSL {
+            if let server = KituraTest.httpsUnixServer {
+                server.delegate = router
+                guard let listenPath = server.unixDomainSocketPath else {
+                    XCTFail("Unix socket path missing")
+                    return nil
+                }
+                self.socketFilePath = listenPath
+                return server.unixDomainSocketPath
+            }
+        } else {
+            if let server = KituraTest.httpUnixServer {
+                server.delegate = router
+                guard let listenPath = server.unixDomainSocketPath else {
+                    XCTFail("Unix socket path missing")
+                    return nil
+                }
+                self.socketFilePath = listenPath
+                return server.unixDomainSocketPath
+            }
+        }
+        let server = HTTP.createServer()
+        server.delegate = router
+        if useSSL {
+            server.sslConfig = KituraTest.sslConfig.config
+        }
 
-        KituraTest.httpsServer?.stop()
-        KituraTest.httpsServer = nil
+        // Create a temporary file for Unix domain socket
+        let socketPath = "/tmp/KituraTests.unixSocket.\(UUID())"
+        self.socketFilePath = socketPath
+        let fm = FileManager.default
+        if !fm.createFile(atPath: socketPath, contents: Data()) {
+            XCTFail("Failed to create file \(socketPath)")
+        }
+
+        do {
+            try server.listen(unixDomainSocketPath: socketPath)
+
+            if useSSL {
+                KituraTest.httpsUnixServer = server
+            } else {
+                KituraTest.httpUnixServer = server
+            }
+            return server.unixDomainSocketPath
+        } catch {
+            XCTFail("Error starting server: \(error)")
+            return nil
+        }
     }
 
-    func performRequest(_ method: String, path: String, port: Int? = nil, useSSL: Bool? = nil,
+    func stopServer() {
+        KituraTest.httpInetServer?.stop()
+        KituraTest.httpInetServer = nil
+
+        KituraTest.httpsInetServer?.stop()
+        KituraTest.httpsInetServer = nil
+
+        KituraTest.httpUnixServer?.stop()
+        KituraTest.httpUnixServer = nil
+
+        KituraTest.httpsUnixServer?.stop()
+        KituraTest.httpsUnixServer = nil
+
+        // Clean up temporary file for Unix domain socket
+        if let socketFilePath = socketFilePath {
+            let fileURL = URL(fileURLWithPath: socketFilePath)
+            let fm = FileManager.default
+            do {
+                try fm.removeItem(at: fileURL)
+            } catch {
+                XCTFail("Unable to remove \(socketFilePath): \(error.localizedDescription)")
+            }
+        }
+    }
+
+    func performRequest(_ method: String, path: String, port: Int? = nil, socketPath: String? = nil, useSSL: Bool? = nil, useUnixSocket: Bool? = nil,
                         callback: @escaping ClientRequest.Callback, headers: [String: String]? = nil,
                         requestModifier: ((ClientRequest) -> Void)? = nil) {
 
         let port = port ?? self.port
+        let socketPath = socketPath ?? self.socketFilePath
         let useSSL = useSSL ?? self.useSSL
+        let useUnixSocket = useUnixSocket ?? self.useUnixSocket
 
         var allHeaders = [String: String]()
         if  let headers = headers {
@@ -173,13 +292,17 @@ class KituraTest: XCTestCase {
 
         let schema = useSSL ? "https" : "http"
         var options: [ClientRequest.Options] =
-            [.method(method), .schema(schema), .hostname("localhost"), .port(UInt16(port).toInt16()), .path(path),
-             .headers(allHeaders)]
+            [.method(method), .schema(schema), .hostname("localhost"), .path(path), .headers(allHeaders)]
         if useSSL {
             options.append(.disableSSLVerification)
         }
-
-        let req = HTTP.request(options, callback: callback)
+        let req: ClientRequest
+        if useUnixSocket {
+            req = HTTP.request(options, unixDomainSocketPath: socketPath, callback: callback)
+        } else {
+            options.append(.port(UInt16(port).toInt16()))
+            req = HTTP.request(options, callback: callback)
+        }
         if let requestModifier = requestModifier {
             requestModifier(req)
         }
