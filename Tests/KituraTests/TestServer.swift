@@ -198,9 +198,65 @@ class TestServer: KituraTest {
         XCTAssertEqual(Kitura.httpServersAndPorts.count, 0, "Kitura.httpServersAndPorts.count is \(Kitura.httpServersAndPorts.count), should be 0")
     }
 
-    private func testResponse(port: Int, method: String = "get", path: String, expectedBody: String?, expectedStatus: HTTPStatusCode? = HTTPStatusCode.OK) {
+    func testUnixSocketServerRestart() {
+        let path = "/testSocketServerRestart"
+        let body = "Server is running."
 
-        performRequest(method, path: path, port: port, useSSL: true, callback: { response in
+        // Create a temporary socket path for this server
+        let socketPath = uniqueTemporaryFilePath()
+        defer {
+            removeTemporaryFilePath(socketPath)
+        }
+
+        let router = Router()
+        router.get(path) { _, response, next in
+            response.send(body)
+            next()
+        }
+
+        let server = Kitura.addHTTPServer(onUnixDomainSocket: socketPath, with: router)
+        server.sslConfig = KituraTest.sslConfig.config
+
+        let stopped = DispatchSemaphore(value: 0)
+        let started = DispatchSemaphore(value: 0)
+        server.stopped {
+            stopped.signal()
+        }
+        server.started {
+            started.signal()
+        }
+
+        Kitura.start()
+        if started.wait(timeout: DispatchTime.now() + DispatchTimeInterval.seconds(5)) != DispatchTimeoutResult.success {
+            return XCTFail("Server failed to start")
+        }
+        XCTAssertEqual(server.unixDomainSocketPath, socketPath, "Server listening on wrong path")
+        testResponse(socketPath: socketPath, path: path, expectedBody: body)
+        Kitura.stop(unregister: false)
+        if stopped.wait(timeout: DispatchTime.now() + DispatchTimeInterval.seconds(5)) != DispatchTimeoutResult.success {
+            return XCTFail("Server failed to stop")
+        }
+
+        XCTAssertEqual(Kitura.httpServersAndUnixSocketPaths.count, 1, "Kitura.httpServersAndUnixSocketPaths.count is \(Kitura.httpServersAndUnixSocketPaths.count), should be 1")
+        testResponse(socketPath: socketPath, path: path, expectedBody: nil, expectedStatus: nil)
+
+        Kitura.start()
+        if started.wait(timeout: DispatchTime.now() + DispatchTimeInterval.seconds(5)) != DispatchTimeoutResult.success {
+            return XCTFail("Server failed to start")
+        }
+        XCTAssertEqual(server.unixDomainSocketPath, socketPath, "Server listening on wrong path")
+        testResponse(socketPath: socketPath, path: path, expectedBody: body)
+        Kitura.stop() // default for unregister is true
+        if stopped.wait(timeout: DispatchTime.now() + DispatchTimeInterval.seconds(5)) != DispatchTimeoutResult.success {
+            return XCTFail("Server failed to stop")
+        }
+
+        XCTAssertEqual(Kitura.httpServersAndUnixSocketPaths.count, 0, "Kitura.httpServersAndUnixSocketPaths.count is \(Kitura.httpServersAndUnixSocketPaths.count), should be 0")
+    }
+
+    private func testResponse(port: Int? = nil, socketPath: String? = nil, method: String = "get", path: String, expectedBody: String?, expectedStatus: HTTPStatusCode? = HTTPStatusCode.OK) {
+
+        performRequest(method, path: path, port: port, socketPath: socketPath, useSSL: true, useUnixSocket: (socketPath != nil), callback: { response in
             let status = response?.statusCode
             XCTAssertEqual(status, expectedStatus, "status was \(String(describing: status)), expected \(String(describing: expectedStatus))")
             do {
