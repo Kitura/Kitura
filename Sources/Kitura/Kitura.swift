@@ -64,13 +64,48 @@ public class Kitura {
                                     withSSL sslConfig: SSLConfig?=nil,
                                     keepAlive keepAliveState: KeepAliveState = .unlimited,
                                     allowPortReuse: Bool = false) -> HTTPServer {
+        return Kitura._addHTTPServer(onPort: port, with: delegate, withSSL: sslConfig, keepAlive: keepAliveState, allowPortReuse: allowPortReuse)
+    }
+
+    /// Add an HTTPServer on a Unix domain socket path with a delegate.
+    ///
+    /// The server is only registered with the framework, it does not start listening
+    /// on the Unix socket until `Kitura.run()` or `Kitura.start()` are called.
+    ///
+    ///### Usage Example: ###
+    ///```swift
+    /// let router = Router()
+    /// Kitura.addHTTPServer(onUnixDomainSocket: "/tmp/mySocket", with: router)
+    ///```
+    /// - Parameter onUnixDomainSocket: The path of the Unix domain socket to listen on.
+    /// - Parameter with: The `ServerDelegate` to use.
+    /// - Parameter withSSL: The `sslConfig` to use.
+    /// - Parameter keepAlive: The maximum number of additional requests to permit per Keep-Alive connection. Defaults to `.unlimited`. If set to `.disabled`, Keep-Alive will not be permitted.
+    /// - Returns: The created `HTTPServer`.
+    @discardableResult
+    public class func addHTTPServer(onUnixDomainSocket socketPath: String,
+                                    with delegate: ServerDelegate,
+                                    withSSL sslConfig: SSLConfig?=nil,
+                                    keepAlive keepAliveState: KeepAliveState = .unlimited) -> HTTPServer {
+        return Kitura._addHTTPServer(onUnixDomainSocket: socketPath, with: delegate, withSSL: sslConfig, keepAlive: keepAliveState)
+    }
+
+    private class func _addHTTPServer(onPort port: Int? = nil, onUnixDomainSocket socketPath: String? = nil,
+                                    with delegate: ServerDelegate,
+                                    withSSL sslConfig: SSLConfig?=nil,
+                                    keepAlive keepAliveState: KeepAliveState = .unlimited,
+                                    allowPortReuse: Bool = false) -> HTTPServer {
         let server = HTTP.createServer()
         server.delegate = delegate
         server.sslConfig = sslConfig?.config
         server.keepAliveState = keepAliveState
         server.allowPortReuse = allowPortReuse
         serverLock.lock()
-        httpServersAndPorts.append((server: server, port: port))
+        if let port = port {
+            httpServersAndPorts.append((server: server, port: port))
+        } else if let socketPath = socketPath {
+            httpServersAndUnixSocketPaths.append((server: server, socketPath: socketPath))
+        }
         serverLock.unlock()
         return server
     }
@@ -139,6 +174,14 @@ public class Kitura {
                 Log.error("Error listening on port \(port): \(error). Use server.failed(callback:) to handle")
             }
         }
+        for (server, path) in httpServersAndUnixSocketPaths {
+            Log.verbose("Starting an HTTP Server on path \(path)...")
+            do {
+                try server.listen(unixDomainSocketPath: path)
+            } catch {
+                Log.error("Error listening on path \(path): \(error). Use server.failed(callback:) to handle")
+            }
+        }
         for (server, port) in fastCGIServersAndPorts {
             Log.verbose("Starting a FastCGI Server on port \(port)...")
             do {
@@ -171,6 +214,11 @@ public class Kitura {
             server.stop()
         }
 
+        for (server, path) in httpServersAndUnixSocketPaths {
+            Log.verbose("Stopping HTTP Server on path \(path)...")
+            server.stop()
+        }
+
         for (server, port) in fastCGIServersAndPorts {
             Log.verbose("Stopping FastCGI Server on port \(port)...")
             server.stop()
@@ -178,6 +226,7 @@ public class Kitura {
 
         if unregister {
             httpServersAndPorts.removeAll()
+            httpServersAndUnixSocketPaths.removeAll()
             fastCGIServersAndPorts.removeAll()
         }
         serverLock.unlock()
@@ -186,5 +235,6 @@ public class Kitura {
     typealias Port = Int
     internal static let serverLock = NSLock()
     internal private(set) static var httpServersAndPorts = [(server: HTTPServer, port: Port)]()
+    internal private(set) static var httpServersAndUnixSocketPaths = [(server: HTTPServer, socketPath: String)]()
     internal private(set) static var fastCGIServersAndPorts = [(server: FastCGIServer, port: Port)]()
 }
