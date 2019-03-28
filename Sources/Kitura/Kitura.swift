@@ -82,6 +82,7 @@ public class Kitura {
     /// - Parameter withSSL: The `sslConfig` to use.
     /// - Parameter keepAlive: The maximum number of additional requests to permit per Keep-Alive connection. Defaults to `.unlimited`. If set to `.disabled`, Keep-Alive will not be permitted.
     /// - Returns: The created `HTTPServer`.
+    @discardableResult
     public class func addHTTPServer(onUnixDomainSocket socketPath: String,
                                     with delegate: ServerDelegate,
                                     withSSL sslConfig: SSLConfig?=nil,
@@ -108,14 +109,6 @@ public class Kitura {
         serverLock.unlock()
         return server
     }
-
-//    @discardableResult
-//    public class func addHTTPServer(onUnixDomainPath socketPath: String,
-//                                    with delegate: ServerDelegate,
-//                                    withSSL sslConfig: SSLConfig?=nil,
-//                                    keepAlive keepAliveState: KeepAliveState = .unlimited) -> HTTPServer {
-//        let server = HTTP.createServer()
-//    }
 
     /// Add a FastCGIServer on a port with a delegate.
     ///
