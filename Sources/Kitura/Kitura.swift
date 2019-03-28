@@ -105,7 +105,7 @@ public class Kitura {
     // MARK: Start Servers
     
     /// Start the Kitura framework.
-    /// Can also provide a value for the withStatus param, this will enable the process to exit with an exit code should any of the servers fail to start.
+    /// By default, the Kitura framework process will exit with a code of zero, even if one or more of the servers fails to start. To enable the Kitura framework process to exit with a non-zero exit code set the `withStatus` parameter to true.
     ///
     ///### Usage Example: ###
     /// Make all registered servers start listening on their port.
@@ -114,7 +114,14 @@ public class Kitura {
     /// Kitura.addHTTPServer(onPort: 8080, with: router)
     /// Kitura.run()
     ///```
+    /// Make all registered servers start listening on their port and exit if any fail to start.
+    ///```swift
+    /// let router = Router()
+    /// Kitura.addHTTPServer(onPort: 8080, with: router)
+    /// Kitura.run(withStatus: true)
+    ///```
     /// - note: This function never returns - it should be the last call in your `main.swift` file.
+    /// - Parameter withStatus: Determines whether the Kitura process can return a non-zero exit code should any of the servers fail to start. Defaults to false, indicating it will not return any non-zero exit codes.
     public class func run(withStatus status: Bool = false) {
         Log.verbose("Starting Kitura framework...")
         if status {
