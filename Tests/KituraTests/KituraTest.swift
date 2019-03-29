@@ -223,13 +223,9 @@ class KituraTest: XCTestCase {
             server.sslConfig = KituraTest.sslConfig.config
         }
 
-        // Create a temporary file for Unix domain socket
-        let socketPath = "/tmp/KituraTests.unixSocket.\(UUID())"
+        // Create a temporary path for Unix domain socket
+        let socketPath = uniqueTemporaryFilePath()
         self.socketFilePath = socketPath
-        let fm = FileManager.default
-        if !fm.createFile(atPath: socketPath, contents: Data()) {
-            XCTFail("Failed to create file \(socketPath)")
-        }
 
         do {
             try server.listen(unixDomainSocketPath: socketPath)
@@ -261,13 +257,7 @@ class KituraTest: XCTestCase {
 
         // Clean up temporary file for Unix domain socket
         if let socketFilePath = socketFilePath {
-            let fileURL = URL(fileURLWithPath: socketFilePath)
-            let fm = FileManager.default
-            do {
-                try fm.removeItem(at: fileURL)
-            } catch {
-                XCTFail("Unable to remove \(socketFilePath): \(error.localizedDescription)")
-            }
+            removeTemporaryFilePath(socketFilePath)
         }
     }
 
@@ -311,6 +301,34 @@ class KituraTest: XCTestCase {
 
     func expectation(line: Int, index: Int) -> XCTestExpectation {
         return self.expectation(description: "\(type(of: self)):\(line)[\(index)](ssl:\(useSSL))")
+    }
+
+    // Generates a unique temporary file path suitable for use as a Unix domain socket.
+    // On Linux, a path is returned within /tmp
+    // On MacOS, a path is returned within /var/folders
+    func uniqueTemporaryFilePath() -> String {
+        #if os(Linux)
+        let temporaryDirectory = "/tmp"
+        #else
+        var temporaryDirectory: String
+        if #available(OSX 10.12, *) {
+            temporaryDirectory = FileManager.default.temporaryDirectory.path
+        } else {
+            temporaryDirectory = "/tmp"
+        }
+        #endif
+        return temporaryDirectory + "/" + String(ProcessInfo.processInfo.globallyUniqueString.prefix(20))
+    }
+
+    // Delete a temporary file path.
+    func removeTemporaryFilePath(_ path: String) {
+        let fileURL = URL(fileURLWithPath: path)
+        let fm = FileManager.default
+        do {
+            try fm.removeItem(at: fileURL)
+        } catch {
+            XCTFail("Unable to remove \(path): \(error.localizedDescription)")
+        }
     }
 }
 
