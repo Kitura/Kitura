@@ -1,5 +1,5 @@
 /**
- * Copyright IBM Corporation 2016
+ * Copyright IBM Corporation 2016-2019
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -136,14 +136,14 @@ class KituraTest: XCTestCase {
 
     func doPerformServerTest(router: ServerDelegate, timeout: TimeInterval, line: Int, asyncTasks: [(XCTestExpectation) -> Void]) {
 
-        if useUnixSocket {
+        if self.useUnixSocket {
             guard let socketPath = startUnixSocketServer(router: router) else {
-                return XCTFail("Error starting server. useSSL:\(useSSL), useUnixSocket:\(useUnixSocket)")
+                return XCTFail("Error starting server. useSSL:\(self.useSSL), useUnixSocket:\(self.useUnixSocket)")
             }
             XCTAssertEqual(socketPath, self.socketFilePath, "Server is listening on the wrong path")
         } else {
             guard let port = startServer(router: router) else {
-                return XCTFail("Error starting server. useSSL:\(useSSL), useUnixSocket:\(useUnixSocket)")
+                return XCTFail("Error starting server. useSSL:\(self.useSSL), useUnixSocket:\(self.useUnixSocket)")
             }
             self.port = port
         }
@@ -317,7 +317,7 @@ class KituraTest: XCTestCase {
             temporaryDirectory = "/tmp"
         }
         #endif
-        return temporaryDirectory + "/" + String(ProcessInfo.processInfo.globallyUniqueString.prefix(20))
+        return temporaryDirectory + "/KituraTest." + String(ProcessInfo.processInfo.globallyUniqueString.prefix(20))
     }
 
     // Delete a temporary file path.
