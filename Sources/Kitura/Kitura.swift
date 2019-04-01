@@ -1,5 +1,5 @@
 /*
- * Copyright IBM Corporation 2015
+ * Copyright IBM Corporation 2015-2019
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,12 @@ import Dispatch
  */
 public class Kitura {
 
+    // Socket types that we currently support
+    private enum ListenerType {
+        case inet(Int)
+        case unix(String)
+    }
+
     // MARK: Create Server
     
     /// Add an HTTPServer on a port with a delegate.
@@ -64,7 +70,7 @@ public class Kitura {
                                     withSSL sslConfig: SSLConfig?=nil,
                                     keepAlive keepAliveState: KeepAliveState = .unlimited,
                                     allowPortReuse: Bool = false) -> HTTPServer {
-        return Kitura._addHTTPServer(onPort: port, with: delegate, withSSL: sslConfig, keepAlive: keepAliveState, allowPortReuse: allowPortReuse)
+        return Kitura._addHTTPServer(on: .inet(port), with: delegate, withSSL: sslConfig, keepAlive: keepAliveState, allowPortReuse: allowPortReuse)
     }
 
     /// Add an HTTPServer on a Unix domain socket path with a delegate.
@@ -87,10 +93,10 @@ public class Kitura {
                                     with delegate: ServerDelegate,
                                     withSSL sslConfig: SSLConfig?=nil,
                                     keepAlive keepAliveState: KeepAliveState = .unlimited) -> HTTPServer {
-        return Kitura._addHTTPServer(onUnixDomainSocket: socketPath, with: delegate, withSSL: sslConfig, keepAlive: keepAliveState)
+        return Kitura._addHTTPServer(on: .unix(socketPath), with: delegate, withSSL: sslConfig, keepAlive: keepAliveState)
     }
 
-    private class func _addHTTPServer(onPort port: Int? = nil, onUnixDomainSocket socketPath: String? = nil,
+    private class func _addHTTPServer(on listenType: ListenerType,
                                     with delegate: ServerDelegate,
                                     withSSL sslConfig: SSLConfig?=nil,
                                     keepAlive keepAliveState: KeepAliveState = .unlimited,
@@ -101,9 +107,10 @@ public class Kitura {
         server.keepAliveState = keepAliveState
         server.allowPortReuse = allowPortReuse
         serverLock.lock()
-        if let port = port {
+        switch listenType {
+        case .inet(let port):
             httpServersAndPorts.append((server: server, port: port))
-        } else if let socketPath = socketPath {
+        case .unix(let socketPath):
             httpServersAndUnixSocketPaths.append((server: server, socketPath: socketPath))
         }
         serverLock.unlock()
