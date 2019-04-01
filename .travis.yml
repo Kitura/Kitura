@@ -17,11 +17,11 @@ branches:
 # by .swift-version, unless SWIFT_SNAPSHOT is specified.
 matrix:
   include:
+    # Continue to test one permutation on Trusty (14.04)
     - os: linux
-      dist: xenial
+      dist: trusty
       sudo: required
-      services: docker
-      env: DOCKER_IMAGE=swift:4.0.3 SWIFT_SNAPSHOT=4.0.3
+      env: SWIFT_SNAPSHOT=4.0.3
     - os: linux
       dist: xenial
       sudo: required
