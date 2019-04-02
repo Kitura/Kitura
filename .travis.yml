@@ -21,7 +21,7 @@ matrix:
     - os: linux
       dist: trusty
       sudo: required
-      env: SWIFT_SNAPSHOT=4.0.3
+      env: SWIFT_SNAPSHOT=4.0.3 SWIFT_TEST_ARGS="-Xswiftc -DSKIP_UNIX_SOCKETS"
     - os: linux
       dist: xenial
       sudo: required

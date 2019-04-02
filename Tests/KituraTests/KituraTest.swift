@@ -110,11 +110,13 @@ class KituraTest: XCTestCase {
                 self.useUnixSocket = false
                 doPerformServerTest(router: router, timeout: timeout, line: line, asyncTasks: asyncTasks)
             }
+#if !SKIP_UNIX_SOCKETS
             setUp()
             if socketTypeOption != SocketTypeOption.inet {
                 self.useUnixSocket = true
                 doPerformServerTest(router: router, timeout: timeout, line: line, asyncTasks: asyncTasks)
             }
+#endif
         }
         
         // Call setUp to start at a known state (ideally, this should have been written as a separate test)
@@ -126,11 +128,13 @@ class KituraTest: XCTestCase {
                 self.useUnixSocket = false
                 doPerformServerTest(router: router, timeout: timeout, line: line, asyncTasks: asyncTasks)
             }
+#if !SKIP_UNIX_SOCKETS
             setUp()
             if socketTypeOption != SocketTypeOption.inet {
                 self.useUnixSocket = true
                 doPerformServerTest(router: router, timeout: timeout, line: line, asyncTasks: asyncTasks)
             }
+#endif
         }
     }
 

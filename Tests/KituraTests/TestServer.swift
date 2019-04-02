@@ -23,12 +23,16 @@ import KituraNet
 class TestServer: KituraTest {
 
     static var allTests: [(String, (TestServer) -> () throws -> Void)] {
-        return [
+        var listOfTests: [(String, (TestServer) -> () throws -> Void)] = [
             ("testServerStartStop", testServerStartStop),
             ("testServerRun", testServerRun),
             ("testServerFail", testServerFail),
             ("testServerRestart", testServerRestart)
         ]
+        #if !SKIP_UNIX_SOCKETS
+            listOfTests.append(("testUnixSocketServerRestart", testUnixSocketServerRestart))
+        #endif
+        return listOfTests
     }
 
     var httpPort = 8080
@@ -199,6 +203,7 @@ class TestServer: KituraTest {
     }
 
     func testUnixSocketServerRestart() {
+#if !SKIP_UNIX_SOCKETS
         let path = "/testSocketServerRestart"
         let body = "Server is running."
 
@@ -252,6 +257,7 @@ class TestServer: KituraTest {
         }
 
         XCTAssertEqual(Kitura.httpServersAndUnixSocketPaths.count, 0, "Kitura.httpServersAndUnixSocketPaths.count is \(Kitura.httpServersAndUnixSocketPaths.count), should be 0")
+#endif
     }
 
     private func testResponse(port: Int? = nil, socketPath: String? = nil, method: String = "get", path: String, expectedBody: String?, expectedStatus: HTTPStatusCode? = HTTPStatusCode.OK) {
