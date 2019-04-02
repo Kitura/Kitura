@@ -105,6 +105,7 @@ extension StaticFileServer {
         }
 
         private func tryToServeWithExtensions(_ filePath: String, response: RouterResponse) {
+            Log.debug("Path \(filePath)")
             let filePathWithPossibleExtensions = possibleExtensions.map { filePath + "." + $0 }
             for filePathWithExtension in filePathWithPossibleExtensions {
                 serveIfNonDirectoryFile(atPath: filePathWithExtension, response: response)
@@ -113,6 +114,7 @@ extension StaticFileServer {
 
         private func serveExistingFile(_ filePath: String, requestPath: String, isDirectory: Bool,
                                        response: RouterResponse) {
+            Log.debug("filePath: \(filePath), requestPath: \(requestPath), isDirectory: \(isDirectory), redirect: \(redirect)")
             if isDirectory {
                 if redirect {
                     do {
@@ -145,10 +147,12 @@ extension StaticFileServer {
 
         private func serveNonDirectoryFile(_ filePath: String, response: RouterResponse) {
             if  !isValidFilePath(filePath) {
+                Log.debug("File path \(filePath) is invalid - no file will be served")
                 return
             }
 
             do {
+                Log.debug("Serving file from path \(filePath)")
                 let fileAttributes = try FileManager().attributesOfItem(atPath: filePath)
 
                 // At this point only GET or HEAD are expected
@@ -185,13 +189,16 @@ extension StaticFileServer {
                     // Regular request OR Syntactically invalid range request OR fileSize was not available
                     if method == "HEAD" {
                         // Send only headers
+                        Log.debug("Responding with HEAD for \(filePath)")
                         _ = response.send(status: .OK)
                     } else {
                         if let etag = request.headers["If-None-Match"],
                           etag == CacheRelatedHeadersSetter.calculateETag(from: fileAttributes) {
+                            Log.debug("Responding with Not Modified for \(filePath)")
                             response.statusCode = .notModified
                         } else {
                             // Send the entire file
+                            Log.debug("Responding with file content: \(filePath)")
                             try response.send(fileName: filePath)
                             response.statusCode = .OK
                         }
@@ -211,11 +218,13 @@ extension StaticFileServer {
         }
 
         private func serveNotSatisfiable(_ filePath: String, fileSize: UInt64, response: RouterResponse) {
+            Log.debug("Request for path \(filePath) not satisfiable")
             response.headers["Content-Range"] = "bytes */\(fileSize)"
             _ = response.send(status: .requestedRangeNotSatisfiable)
         }
 
         private func serveNonDirectoryPartialFile(_ filePath: String, fileSize: UInt64, ranges: [Range<UInt64>], response: RouterResponse) {
+            Log.debug("Serving partial file from path \(filePath)")
             let contentType =  ContentType.sharedInstance.getContentType(forFileName: filePath)
             if ranges.count == 1 {
                 let data = FileServer.read(contentsOfFile: filePath, inRange: ranges[0])

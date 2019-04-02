@@ -68,7 +68,9 @@ class TestStaticFileServer: KituraTest {
 
     func testFileServer() {
         performServerTest(router, asyncTasks: { expectation in
+            print("Request 1")
             self.performRequest("get", path:"/qwer", callback: {response in
+                print("Request 1 - handled")
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
@@ -85,7 +87,9 @@ class TestStaticFileServer: KituraTest {
                 expectation.fulfill()
             })
         }, { expectation in
+            print("Request 2")
             self.performRequest("get", path:"/qwer/index.html", callback: {response in
+                print("Request 2 - handled")
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
@@ -97,7 +101,9 @@ class TestStaticFileServer: KituraTest {
                 expectation.fulfill()
             })
         }, { expectation in
+            print("Request 3")
             self.performRequest("get", path:"/qwer/index", callback: {response in
+                print("Request 3 - handled")
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
@@ -109,7 +115,9 @@ class TestStaticFileServer: KituraTest {
                 expectation.fulfill()
             })
             }, { expectation in
+                print("Request 4")
                 self.performRequest("get", path:"/zxcv/index.html", callback: {response in
+                    print("Request 4 - handled")
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                     do {
@@ -125,31 +133,41 @@ class TestStaticFileServer: KituraTest {
                     expectation.fulfill()
                 })
             }, { expectation in
+                print("Request 5")
                 self.performRequest("get", path:"/zxcv", callback: {response in
+                    print("Request 5 - handled")
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
                     expectation.fulfill()
                 })
             }, { expectation in
+                print("Request 6")
                 self.performRequest("get", path:"/zxcv/index", callback: {response in
+                    print("Request 6 - handled")
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
                     expectation.fulfill()
                 })
             }, { expectation in
-                self.performRequest("get", path:"/asdf", callback: {response in
+                print("Request 7")
+               self.performRequest("get", path:"/asdf", callback: {response in
+                print("Request 7 - handled")
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
                     expectation.fulfill()
                 })
             }, { expectation in
+                print("Request 8")
                 self.performRequest("put", path:"/asdf", callback: {response in
+                    print("Request 8 - handled")
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing:response?.statusCode))")
                     expectation.fulfill()
                 })
             }, { expectation in
+                print("Request 9")
                 self.performRequest("get", path:"/asdf/", callback: {response in
+                    print("Request 9 - handled")
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                     do {

@@ -149,7 +149,7 @@ open class StaticFileServer: RouterMiddleware {
         defer {
             next()
         }
-
+        Log.debug("Request: \(request.method) \(request.parsedURL.path ?? "no path")")
         guard request.serverRequest.method == "GET" || request.serverRequest.method == "HEAD" else {
             return
         }

@@ -291,6 +291,7 @@ public class RouterResponse {
     /// - Returns: This RouterResponse.
     @discardableResult
     public func redirect(_ path: String, status: HTTPStatusCode = .movedTemporarily) throws -> RouterResponse {
+        Log.debug("Redirecting to path: \(path), status: \(status)")
         headers.setLocation(path)
         try self.status(status).end()
         return self
