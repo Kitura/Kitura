@@ -20,7 +20,7 @@ import KituraContracts
 
 @testable import Kitura
 
-class TestCustomCoders: KituraTest {
+final class TestCustomCoders: KituraTest, KituraTestSuite {
     static var allTests: [(String, (TestCustomCoders) -> () throws -> Void)] {
         return [
             ("testCustomCoder", testCustomCoder),

@@ -20,7 +20,7 @@ import KituraContracts
 
 @testable import Kitura
 
-class TestCodableRouter: KituraTest {
+final class TestCodableRouter: KituraTest, KituraTestSuite {
     static var allTests: [(String, (TestCodableRouter) -> () throws -> Void)] {
         return [
             ("testBasicPost", testBasicPost),

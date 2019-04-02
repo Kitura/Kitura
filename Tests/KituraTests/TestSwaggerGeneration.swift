@@ -161,7 +161,7 @@ func getEmbeddedInCollectionType(id: Int, completion: (EmbeddedInCollection?, Re
     completion(nil, nil)
 }
 
-class TestSwaggerGeneration: KituraTest {
+final class TestSwaggerGeneration: KituraTest, KituraTestSuite {
 
     static var allTests: [(String, (TestSwaggerGeneration) -> () throws -> Void)] {
         return [

@@ -20,7 +20,7 @@ import Dispatch
 import KituraNet
 @testable import Kitura
 
-class TestServer: KituraTest {
+final class TestServer: KituraTest, KituraTestSuite {
 
     static var allTests: [(String, (TestServer) -> () throws -> Void)] {
         var listOfTests: [(String, (TestServer) -> () throws -> Void)] = [

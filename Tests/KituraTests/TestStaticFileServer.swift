@@ -26,7 +26,7 @@ import Glibc
 import Darwin
 #endif
 
-class TestStaticFileServer: KituraTest {
+final class TestStaticFileServer: KituraTest, KituraTestSuite {
 
     static var allTests: [(String, (TestStaticFileServer) -> () throws -> Void)] {
         return [

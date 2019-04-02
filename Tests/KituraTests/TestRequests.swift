@@ -21,7 +21,7 @@ import KituraContracts
 @testable import Kitura
 @testable import KituraNet
 
-class TestRequests: KituraTest {
+final class TestRequests: KituraTest, KituraTestSuite {
 
     static var allTests: [(String, (TestRequests) -> () throws -> Void)] {
         return [
@@ -30,6 +30,8 @@ class TestRequests: KituraTest {
                    ("testCustomMiddlewareURLParameter", testCustomMiddlewareURLParameter),
                    ("testCustomMiddlewareURLParameterWithQueryParam", testCustomMiddlewareURLParameterWithQueryParam),
                    ("testParameters", testParameters),
+                   ("testOneParameterMultipleHandlers", testOneParameterMultipleHandlers),
+                   ("testMultipleParametersMultipleHandlers", testMultipleParametersMultipleHandlers),
                    ("testParameterExit", testParameterExit)
         ]
     }

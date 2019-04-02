@@ -28,7 +28,7 @@ import Glibc
 import Darwin
 #endif
 
-class TestTemplateEngine: KituraTest {
+final class TestTemplateEngine: KituraTest, KituraTestSuite {
 
     static var allTests: [(String, (TestTemplateEngine) -> () throws -> Void)] {
         return [
@@ -45,7 +45,19 @@ class TestTemplateEngine: KituraTest {
              testRenderWithExtensionAndWithoutDefaultTemplateEngineAfterSettingViewsPath),
             ("testAddWithFileExtensions", testAddWithFileExtensions),
             ("testAddWithFileExtensionsWithoutTheDefaultOne",
-             testAddWithFileExtensionsWithoutTheDefaultOne)
+             testAddWithFileExtensionsWithoutTheDefaultOne),
+            ("testEmptyTemplateNameCodable", testEmptyTemplateNameCodable),
+            ("testMissingExtensionCodable", testMissingExtensionCodable),
+            ("testNoDefaultEngineCodable", testNoDefaultEngineCodable),
+            ("testCodableRender", testCodableRender),
+            ("testCodableRenderWithServer", testCodableRenderWithServer),
+            ("testCodableRenderWithOptionsWithServer", testCodableRenderWithOptionsWithServer),
+            ("testCodableRenderWithServerAndSubRouter", testCodableRenderWithServerAndSubRouter),
+            ("testCodableRenderWithExtensionAndWithoutDefaultTemplateEngine", testCodableRenderWithExtensionAndWithoutDefaultTemplateEngine),
+            ("testCodableRenderWithExtensionAndWithoutDefaultTemplateEngineAfterSettingViewsPath", testCodableRenderWithExtensionAndWithoutDefaultTemplateEngineAfterSettingViewsPath),
+            ("testCodableAddWithFileExtensions", testCodableAddWithFileExtensions),
+            ("testCodableAddWithFileExtensionsWithoutTheDefaultOne", testCodableAddWithFileExtensionsWithoutTheDefaultOne),
+            ("testCodableRenderWithTuple", testCodableRenderWithTuple),
         ]
     }
     
