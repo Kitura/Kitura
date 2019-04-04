@@ -51,6 +51,10 @@ extension DecodingError {
             return "The JSON appears to be malformed."
         case .typeMismatch(_, let context):
             return "Key '\(DecodingError.codingKeyAsPrefixString(from: context.codingPath))' has the wrong type. \(context.debugDescription)"
+#if swift(>=5.0)
+        @unknown default:
+            return "An unknown DecodingError occurred: \(self)"
+#endif
         }
     }
 }
