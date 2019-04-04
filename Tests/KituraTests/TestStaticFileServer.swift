@@ -217,7 +217,8 @@ class TestStaticFileServer: KituraTest {
                 }
                 XCTAssertEqual(response.statusCode, expectedStatusCode,
                                "No success status code returned")
-                if let optionalBody = try? response.readString(), let body = optionalBody {
+
+                if let body = (try? response.readString()).flatMap({ $0 }) {
                     if let expectedResponseText = expectedResponseText {
                         XCTAssertEqual(body, expectedResponseText, "mismatch in body")
                     }
@@ -359,7 +360,7 @@ class TestStaticFileServer: KituraTest {
                 // In this case we expect status code 200, no Content-Range and no body since it is a HEAD request
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
                 XCTAssertNil(response?.headers["Content-Range"])
-                let bodyString = (try? response?.readString()) as? String
+                let bodyString = (try? response?.readString()).flatMap({ $0 })
                 XCTAssertNil(bodyString)
                 expectation.fulfill()
             }, headers: ["Range": "bytes=0-10"])

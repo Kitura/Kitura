@@ -1,7 +1,7 @@
-// swift-tools-version:4.0
+// swift-tools-version:4.2
 
 /**
- * Copyright IBM Corporation 2016, 2017
+ * Copyright IBM Corporation 2016-2019
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ let package = Package(
         .package(url: "https://github.com/IBM-Swift/Kitura-net.git", from: "2.1.0"),
         .package(url: "https://github.com/IBM-Swift/Kitura-TemplateEngine.git", from: "2.0.0"),
         .package(url: "https://github.com/IBM-Swift/KituraContracts.git", from: "1.0.0"),
-        .package(url: "https://github.com/IBM-Swift/TypeDecoder.git", from: "1.1.0")
+        .package(url: "https://github.com/IBM-Swift/TypeDecoder.git", from: "1.3.0"),
     ],
     targets: [
         .target(

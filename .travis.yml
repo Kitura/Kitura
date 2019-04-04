@@ -31,27 +31,27 @@ matrix:
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=swift:4.2.3 SWIFT_TEST_ARGS="--parallel"
+      env: DOCKER_IMAGE=swift:4.2.4 SWIFT_SNAPSHOT=4.2.4 SWIFT_TEST_ARGS="--parallel"
     - os: linux
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=swift:4.2.3 KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
+      env: DOCKER_IMAGE=swift:5.0-xenial SWIFT_TEST_ARGS="--parallel"
     - os: linux
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=swift:4.2.3 SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT SWIFT_TEST_ARGS="--parallel --num-workers=16"
+      env: DOCKER_IMAGE=swift:5.0-xenial KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
     - os: linux
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=ubuntu:18.04 SWIFT_TEST_ARGS="--parallel"
+      env: DOCKER_IMAGE=swift:5.0 KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
     - os: linux
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=ubuntu:18.04 KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
+      env: DOCKER_IMAGE=swift:5.0 SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT SWIFT_TEST_ARGS="--parallel"
     - os: osx
       osx_image: xcode9.2
       sudo: required
@@ -59,19 +59,23 @@ matrix:
     - os: osx
       osx_image: xcode9.4
       sudo: required
-      env: SWIFT_SNAPSHOT=4.1.2 JAZZY_ELIGIBLE=true
+      env: SWIFT_SNAPSHOT=4.1.2
     - os: osx
       osx_image: xcode10.1
+      sudo: required
+      env: SWIFT_SNAPSHOT=4.2.1 JAZZY_ELIGIBLE=true SWIFT_TEST_ARGS="--parallel"
+    - os: osx
+      osx_image: xcode10.2
       sudo: required
       env: SWIFT_TEST_ARGS="--parallel"
     - os: osx
-      osx_image: xcode10.1
+      osx_image: xcode10.2
       sudo: required
-      env: KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel" BREW_INSTALL_PACKAGES="libressl"
+      env: KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
     - os: osx
-      osx_image: xcode10.1
+      osx_image: xcode10.2
       sudo: required
-      env: SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT SWIFT_TEST_ARGS="--parallel --num-workers=16"
+      env: SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT SWIFT_TEST_ARGS="--parallel"
 
 before_install:
   - git clone https://github.com/IBM-Swift/Package-Builder.git

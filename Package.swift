@@ -1,7 +1,7 @@
-// swift-tools-version:4.2
+// swift-tools-version:5.0
 
 /**
- * Copyright IBM Corporation 2016, 2017
+ * Copyright IBM Corporation 2016-2019
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import Foundation
 var kituraNetPackage: Package.Dependency
 
 if ProcessInfo.processInfo.environment["KITURA_NIO"] != nil {
-    kituraNetPackage = .package(url: "https://github.com/IBM-Swift/Kitura-NIO.git", from: "1.0.0")
+    kituraNetPackage = .package(url: "https://github.com/IBM-Swift/Kitura-NIO.git", from: "2.0.0")
 } else {
     kituraNetPackage = .package(url: "https://github.com/IBM-Swift/Kitura-net.git", from: "2.1.0")
 }
