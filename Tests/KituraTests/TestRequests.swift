@@ -58,7 +58,7 @@ class TestRequests: KituraTest {
             next()
         }
 
-        performServerTest(router) { expectation in
+        performServerTest(router, socketTypeOption: .inet) { expectation in
             self.performRequest("get", path: "/zxcv/ploni", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 expectation.fulfill()
