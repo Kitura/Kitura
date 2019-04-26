@@ -16,7 +16,7 @@
 
 import XCTest
 
-class TestDecodingErrorExtension: XCTestCase {
+final class TestDecodingErrorExtension: XCTestCase, KituraTestSuite {
     
     static var allTests: [(String, (TestDecodingErrorExtension) -> () throws -> Void)] {
         return [

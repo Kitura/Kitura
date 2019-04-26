@@ -27,7 +27,7 @@ import Foundation
     import Darwin
 #endif
 
-class TestSubrouter: KituraTest {
+final class TestSubrouter: KituraTest, KituraTestSuite {
 
     static var allTests: [(String, (TestSubrouter) -> () throws -> Void)] {
         return [

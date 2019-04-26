@@ -18,7 +18,7 @@ import XCTest
 
 @testable import Kitura
 
-class TestRangeHeaderParser: XCTestCase {
+final class TestRangeHeaderParser: XCTestCase, KituraTestSuite {
 
     static var allTests: [(String, (TestRangeHeaderParser) -> () throws -> Void)] {
         return [

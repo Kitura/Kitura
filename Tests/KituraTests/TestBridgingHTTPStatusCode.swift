@@ -30,7 +30,7 @@ import Darwin
 // to HTTPStatusCode builds and runs without error. Other existing tests
 // that import KituraNet should be sufficient to show that the typealias does not
 // interfere in that case.
-class TestBridgingHTTPStatusCode: KituraTest {
+final class TestBridgingHTTPStatusCode: KituraTest, KituraTestSuite {
 
     static var allTests: [(String, (TestBridgingHTTPStatusCode) -> () throws -> Void)] {
         return [
