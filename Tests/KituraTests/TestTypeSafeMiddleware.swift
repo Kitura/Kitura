@@ -20,7 +20,7 @@ import KituraContracts
 
 @testable import Kitura
 
-class TestTypeSafeMiddleware: KituraTest {
+final class TestTypeSafeMiddleware: KituraTest, KituraTestSuite {
     static var allTests: [(String, (TestTypeSafeMiddleware) -> () throws -> Void)] {
         return [
             ("testSingleMiddlewareGetSingleton", testSingleMiddlewareGetSingleton),

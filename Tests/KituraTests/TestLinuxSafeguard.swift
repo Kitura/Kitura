@@ -14,92 +14,44 @@
  * limitations under the License.
  **/
 
-// Test disabled on Swift 4 for now due to
+// Test requires Swift 4.1 or higher due to
 // https://bugs.swift.org/browse/SR-5684
-// We will need to renable this once the bug is addressed in Swift
-// TODO: Enable this test case (see above)
-#if os(OSX) && !swift(>=4.0)
+#if os(OSX) && swift(>=4.1)
     import XCTest
 
     class TestLinuxSafeguard: XCTestCase {
+
+        func verifyCount<T: KituraTestSuite>(_ testSuite: T.Type) {
+            let linuxCount = T.allTests.count
+            let darwinCount = Int(T.defaultTestSuite.testCaseCount)
+            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from \(T.self).allTests")
+        }
+
         func testVerifyLinuxTestCount() {
-            var linuxCount: Int
-            var darwinCount: Int
-
-            // MiscellaneousTests
-            linuxCount = MiscellaneousTests.allTests.count
-            darwinCount = Int(MiscellaneousTests.defaultTestSuite.testCaseCount)
-            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from MiscellaneousTests.allTests")
-
-            // TestContentType
-            linuxCount = TestContentType.allTests.count
-            darwinCount = Int(TestContentType.defaultTestSuite.testCaseCount)
-            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestContentType.allTests")
-
-            // TestCookies
-            linuxCount = TestCookies.allTests.count
-            darwinCount = Int(TestCookies.defaultTestSuite.testCaseCount)
-            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestCookies.allTests")
-
-            // TestDecodeErrorExtensions
-            linuxCount = TestDecodingErrorExtension.allTests.count
-            darwinCount = Int(TestDecodingErrorExtension.defaultTestSuite.testCaseCount)
-            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestDecodingErrorExtension.allTests")
-
-            // TestErrors
-            linuxCount = TestErrors.allTests.count
-            darwinCount = Int(TestErrors.defaultTestSuite.testCaseCount)
-            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestErrors.allTests")
-
-            // TestMultiplicity
-            linuxCount = TestMultiplicity.allTests.count
-            darwinCount = Int(TestMultiplicity.defaultTestSuite.testCaseCount)
-            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestMultiplicity.allTests")
-
-            // TestRequests
-            linuxCount = TestRequests.allTests.count
-            darwinCount = Int(TestRequests.defaultTestSuite.testCaseCount)
-            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestRequests.allTests")
-
-            // TestResponse
-            linuxCount = TestResponse.allTests.count
-            darwinCount = Int(TestResponse.defaultTestSuite.testCaseCount)
-            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestResponse.allTests")
-
-            // TestRouteRegex
-            linuxCount = TestRouteRegex.allTests.count
-            darwinCount = Int(TestRouteRegex.defaultTestSuite.testCaseCount)
-            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestRouteRegex.allTests")
-
-            // TestRouterHTTPVerbsGenerated
-            linuxCount = TestRouterHTTPVerbsGenerated.allTests.count
-            darwinCount = Int(TestRouterHTTPVerbsGenerated.defaultTestSuite.testCaseCount)
-            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestRouterHTTPVerbsGenerated.allTests")
-
-            // TestServer
-            linuxCount = TestServer.allTests.count
-            darwinCount = Int(TestServer.defaultTestSuite.testCaseCount)
-            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestServer.allTests")
-
-            // TestStaticFileServer
-            linuxCount = TestStaticFileServer.allTests.count
-            darwinCount = Int(TestStaticFileServer.defaultTestSuite.testCaseCount)
-            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestStaticFileServer.allTests")
-
-            // TestRangeHeader
-            linuxCount = TestRangeHeaderParser.allTests.count
-            darwinCount = Int(TestRangeHeaderParser.defaultTestSuite.testCaseCount)
-            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestRangeHeaderParser.allTests")
-
-            // TestSubrouter
-            linuxCount = TestSubrouter.allTests.count
-            darwinCount = Int(TestSubrouter.defaultTestSuite.testCaseCount)
-            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestSubrouter.allTests")
-
-            // TestTemplateEngine
-            linuxCount = TestTemplateEngine.allTests.count
-            darwinCount = Int(TestTemplateEngine.defaultTestSuite.testCaseCount)
-            XCTAssertEqual(linuxCount, darwinCount, "\(darwinCount - linuxCount) tests are missing from TestTemplateEngine.allTests")
+            verifyCount(MiscellaneousTests.self)
+            verifyCount(TestBridgingHTTPStatusCode.self)
+            verifyCount(TestBridgingRequestError.self)
+            verifyCount(TestCodableRouter.self)
+            verifyCount(TestContentType.self)
+            verifyCount(TestCookies.self)
+            verifyCount(TestCustomCoders.self)
+            verifyCount(TestDecodingErrorExtension.self)
+            verifyCount(TestErrors.self)
+            verifyCount(TestMediaType.self)
+            verifyCount(TestMultiplicity.self)
+            verifyCount(TestRangeHeaderDataExtensions.self)
+            verifyCount(TestRangeHeaderParser.self)
+            verifyCount(TestRequests.self)
+            verifyCount(TestResponse.self)
+            verifyCount(TestRouteRegex.self)
+            verifyCount(TestRouterHTTPVerbsGenerated.self)
+            verifyCount(TestServer.self)
+            verifyCount(TestStack.self)
+            verifyCount(TestStaticFileServer.self)
+            verifyCount(TestSubrouter.self)
+            verifyCount(TestSwaggerGeneration.self)
+            verifyCount(TestTemplateEngine.self)
+            verifyCount(TestTypeSafeMiddleware.self)
         }
     }
   #endif

@@ -42,8 +42,17 @@ enum SocketTypeOption {
     case unix
 }
 
-class KituraTest: XCTestCase {
+// Kitura test suites should conform to this so that TestLinuxSafeguard can
+// access the `allTests` array generically
+protocol KituraTestSuite {
+    static var allTests: [(String, (Self) -> () throws -> Void)] { get }
+    #if os(macOS)
+    // Expose defaultTestSuite from XCTestSuite
+    static var defaultTestSuite: XCTestSuite { get }
+    #endif
+}
 
+class KituraTest: XCTestCase {
     // A singleton Kitura server listening on HTTP on an INET socket
     static private(set) var httpInetServer: HTTPServer?
     // A singleton Kitura server listening on HTTPS on an INET socket

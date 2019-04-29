@@ -20,7 +20,7 @@ import XCTest
 @testable import Kitura
 @testable import KituraNet
 
-class TestMediaType: KituraTest {
+final class TestMediaType: KituraTest, KituraTestSuite {
     
     static var allTests: [(String, (TestMediaType) -> () throws -> Void)] {
         return [
@@ -28,11 +28,13 @@ class TestMediaType: KituraTest {
             ("testAllTextSlashMediaTypeBuilder", testAllTextSlashMediaTypeBuilder),
             ("testHTMLMediaTypeBuilder", testPartsHTMLMediaTypeBuilder),
             ("testMediaCaseInsensitive", testMediaCaseInsensitive),
+            ("testIncorrectTopLevelType", testIncorrectTopLevelType),
             ("testPartsAllTextMediaTypeBuilder", testPartsAllTextMediaTypeBuilder),
             ("testPartsHTMLMediaTypeBuilder", testPartsHTMLMediaTypeBuilder),
             ("testPartsMediaCaseInsensitive", testPartsMediaCaseInsensitive),
             ("testValidMediaType", testValidMediaType),
             ("testInvalidMediaType", testInvalidMediaType),
+            ("testEmptyMediaType", testEmptyMediaType),
         ]
     }
     

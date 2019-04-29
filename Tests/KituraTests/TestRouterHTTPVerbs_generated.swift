@@ -26,7 +26,7 @@ import Glibc
 import Darwin
 #endif
 
-class TestRouterHTTPVerbsGenerated: KituraTest {
+final class TestRouterHTTPVerbsGenerated: KituraTest, KituraTestSuite {
 
     static var allTests: [(String, (TestRouterHTTPVerbsGenerated) -> () throws -> Void)] {
         return [
