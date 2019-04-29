@@ -36,22 +36,22 @@ matrix:
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=swift:5.0-xenial SWIFT_TEST_ARGS="--parallel"
+      env: DOCKER_IMAGE=swift:5.0.1-xenial SWIFT_TEST_ARGS="--parallel"
     - os: linux
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=swift:5.0-xenial KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
+      env: DOCKER_IMAGE=swift:5.0.1-xenial KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
     - os: linux
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=swift:5.0 KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
+      env: DOCKER_IMAGE=swift:5.0.1 KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
     - os: linux
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=swift:5.0 SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT SWIFT_TEST_ARGS="--parallel"
+      env: DOCKER_IMAGE=swift:5.0.1 SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT SWIFT_TEST_ARGS="--parallel"
     - os: osx
       osx_image: xcode9.2
       sudo: required
