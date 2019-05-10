@@ -167,6 +167,26 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
         })
     }
 
+    static func servingPathPrefix() -> String {
+        // this file is at
+        // <original repository directory>/Tests/KituraTests/TestStaticFileServer.swift
+        // the original repository directory is 3 path components up
+        let currentFilePath = #file
+
+        var pathComponents = currentFilePath.split(separator: "/").map(String.init)
+
+        // We need to check whether we have an edited Kitura package, this will be seen from a path containing Packages and Kitura at the relevant indexes
+        let numberOfComponents = pathComponents.count
+        let expectedKituraIndex = pathComponents.count - 4
+        let expectedPackagesIndex = pathComponents.count - 5
+        if pathComponents[expectedKituraIndex] == "Kitura"
+            && pathComponents[expectedPackagesIndex] == "Packages" {
+            return "./Packages/Kitura/"
+        } else {
+            return "./"
+        }
+    }
+
     static func setupRouter(enableWelcomePage: Bool = true) -> Router {
         let router = Router(enableWelcomePage: enableWelcomePage)
 
@@ -175,24 +195,24 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
 
         var cacheOptions = StaticFileServer.CacheOptions(maxAgeCacheControlHeader: 2)
         var options = StaticFileServer.Options(possibleExtensions: ["exe", "html"], cacheOptions: cacheOptions)
-        router.all("/qwer", middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options:options, customResponseHeadersSetter: HeaderSetter()))
+        router.all("/qwer", middleware: StaticFileServer(path: servingPathPrefix() + "Tests/KituraTests/TestStaticFileServer/", options:options, customResponseHeadersSetter: HeaderSetter()))
 
         cacheOptions = StaticFileServer.CacheOptions(addLastModifiedHeader: false, generateETag: false)
         options = StaticFileServer.Options(serveIndexForDirectory: false, cacheOptions: cacheOptions)
-        router.all("/zxcv", middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options:options))
+        router.all("/zxcv", middleware: StaticFileServer(path: servingPathPrefix() + "Tests/KituraTests/TestStaticFileServer/", options:options))
 
         options = StaticFileServer.Options(redirect: false)
         let directoryURL = URL(fileURLWithPath: #file + "/../TestStaticFileServer").standardizedFileURL
         router.all("/asdf", middleware: StaticFileServer(path: directoryURL.path, options:options))
 
         options = StaticFileServer.Options(possibleExtensions: ["exe", "html"], cacheOptions: cacheOptions, acceptRanges: false)
-        router.all("/tyui", middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options:options, customResponseHeadersSetter: HeaderSetter()))
+        router.all("/tyui", middleware: StaticFileServer(path: servingPathPrefix() + "Tests/KituraTests/TestStaticFileServer/", options:options, customResponseHeadersSetter: HeaderSetter()))
         
         options = StaticFileServer.Options(serveIndexForDirectory: true, redirect: true, cacheOptions: cacheOptions)
-        router.route("/ghjk").all(middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options: options))
+        router.route("/ghjk").all(middleware: StaticFileServer(path: servingPathPrefix() + "Tests/KituraTests/TestStaticFileServer/", options: options))
         
         options = StaticFileServer.Options(serveIndexForDirectory: true, redirect: true, cacheOptions: cacheOptions)
-        router.route("/opnm/:parameter").all(middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/subfolder", options: options))
+        router.route("/opnm/:parameter").all(middleware: StaticFileServer(path: servingPathPrefix() + "Tests/KituraTests/TestStaticFileServer/subfolder", options: options))
 
         return router
     }
