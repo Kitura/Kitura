@@ -190,6 +190,11 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
     static func setupRouter(enableWelcomePage: Bool = true) -> Router {
         let router = Router(enableWelcomePage: enableWelcomePage)
 
+        if !enableWelcomePage {
+            // Testing the default welcome page can be disabled does not require a `StaticFileServer` to be configured.
+            return router
+        }
+
         // The route below ensures that the static file server does not prevent all routes being walked
         router.all("/", middleware: StaticFileServer())
 
