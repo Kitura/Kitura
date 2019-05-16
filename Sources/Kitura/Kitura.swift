@@ -34,7 +34,7 @@ import Dispatch
      response.send("Hello world")
      next()
  }
- Kitura.addHTTPServer(onPort: 8080, with: router)
+ Kitura.addHTTPServer(onPort: 8080, with: router, address: "localhost")
  Kitura.run()
  ```
  */
@@ -42,7 +42,7 @@ public class Kitura {
 
     // Socket types that we currently support
     private enum ListenerType {
-        case inet(Int)
+        case inet(Int, String?) // port, address
         case unix(String)
     }
 
@@ -56,10 +56,12 @@ public class Kitura {
     ///### Usage Example: ###
     ///```swift
     /// let router = Router()
-    /// Kitura.addHTTPServer(onPort: 8080, with: router)
+    /// Kitura.addHTTPServer(onPort: 8080, with: router, address: "localhost")
     ///```
     /// - Parameter onPort: The port to listen on.
     /// - Parameter with: The `ServerDelegate` to use.
+    /// - Parameter address: The address to listen on, for example "localhost". The default is nil, which listens on
+    ///             all addresses.
     /// - Parameter withSSL: The `sslConfig` to use.
     /// - Parameter keepAlive: The maximum number of additional requests to permit per Keep-Alive connection. Defaults to `.unlimited`. If set to `.disabled`, Keep-Alive will not be permitted.
     /// - Parameter allowPortReuse: Determines whether the listener port may be shared with other Kitura instances (`SO_REUSEPORT`). Defaults to `false`. If the specified port is already in use by another listener that has not allowed sharing, the server will fail to start.
@@ -67,10 +69,12 @@ public class Kitura {
     @discardableResult
     public class func addHTTPServer(onPort port: Int,
                                     with delegate: ServerDelegate,
+                                    address: String? = nil,
                                     withSSL sslConfig: SSLConfig?=nil,
                                     keepAlive keepAliveState: KeepAliveState = .unlimited,
                                     allowPortReuse: Bool = false) -> HTTPServer {
-        return Kitura._addHTTPServer(on: .inet(port), with: delegate, withSSL: sslConfig, keepAlive: keepAliveState, allowPortReuse: allowPortReuse)
+        return Kitura._addHTTPServer(on: .inet(port, address), with: delegate, withSSL: sslConfig,
+                                     keepAlive: keepAliveState, allowPortReuse: allowPortReuse)
     }
 
     /// Add an HTTPServer on a Unix domain socket path with a delegate.
@@ -108,8 +112,8 @@ public class Kitura {
         server.allowPortReuse = allowPortReuse
         serverLock.lock()
         switch listenType {
-        case .inet(let port):
-            httpServersAndPorts.append((server: server, port: port))
+        case .inet(let port, let address):
+            httpServersAndPorts.append((server: server, port: port, address: address))
         case .unix(let socketPath):
             httpServersAndUnixSocketPaths.append((server: server, socketPath: socketPath))
         }
@@ -129,17 +133,20 @@ public class Kitura {
     ///```
     /// - Parameter onPort: The port to listen on.
     /// - Parameter with: The `ServerDelegate` to use.
+    /// - Parameter address: The address to listen on, for example "localhost". The default is nil, which listens on
+    ///             all addresses.
     /// - Parameter allowPortReuse: Determines whether the listener port may be shared with other Kitura instances (`SO_REUSEPORT`). Defaults to `false`. If the specified port is already in use by another listener that has not allowed sharing, the server will fail to start.
     /// - Returns: The created `FastCGIServer`.
     @discardableResult
     public class func addFastCGIServer(onPort port: Int,
                                        with delegate: ServerDelegate,
+                                       address: String? = nil,
                                        allowPortReuse: Bool = false) -> FastCGIServer {
         let server = FastCGI.createServer()
         server.delegate = delegate
         server.allowPortReuse = allowPortReuse
         serverLock.lock()
-        fastCGIServersAndPorts.append((server: server, port: port))
+        fastCGIServersAndPorts.append((server: server, port: port, address: address))
         serverLock.unlock()
         return server
     }
@@ -153,7 +160,7 @@ public class Kitura {
     /// Make all registered servers start listening on their port.
     ///```swift
     /// let router = Router()
-    /// Kitura.addHTTPServer(onPort: 8080, with: router)
+    /// Kitura.addHTTPServer(onPort: 8080, with: router, address: "localhost")
     /// Kitura.run()
     ///```
     /// Make all registered servers start listening on their port and exit if any fail to start.
@@ -183,7 +190,7 @@ public class Kitura {
     /// Make all registered servers start listening on their port.
     ///```swift
     /// let router = Router()
-    /// Kitura.addHTTPServer(onPort: 8080, with: router)
+    /// Kitura.addHTTPServer(onPort: 8080, with: router, address: "localhost")
     /// Kitura.start()
     ///```
     public class func start() {
@@ -212,16 +219,16 @@ public class Kitura {
     /// Make all registered servers start listening on their port.
     ///```swift
     /// let router = Router()
-    /// Kitura.addHTTPServer(onPort: 8080, with: router)
+    /// Kitura.addHTTPServer(onPort: 8080, with: router, address: "localhost")
     /// Kitura.startWithStatus() // Returns the number of failed server starts.
     ///```
     public class func startWithStatus() -> Int {
         serverLock.lock()
         var numberOfFailures = 0
-        for (server, port) in httpServersAndPorts {
-            Log.verbose("Starting an HTTP Server on port \(port)...")
+        for (server, port, address) in httpServersAndPorts {
+            Log.verbose("Starting an HTTP Server on port \(port) with address \(String(describing: address))...")
             do {
-                try server.listen(on: port)
+                try server.listen(on: port, address: address)
             } catch {
                 numberOfFailures += 1
                 Log.error("Error listening on port \(port): \(error). Use server.failed(callback:) to handle")
@@ -235,10 +242,10 @@ public class Kitura {
                 Log.error("Error listening on path \(path): \(error). Use server.failed(callback:) to handle")
             }
         }
-        for (server, port) in fastCGIServersAndPorts {
+        for (server, port, address) in fastCGIServersAndPorts {
             Log.verbose("Starting a FastCGI Server on port \(port)...")
             do {
-                try server.listen(on: port)
+                try server.listen(on: port, address: address)
             } catch {
                 numberOfFailures += 1
                 Log.error("Error listening on port \(port): \(error). Use server.failed(callback:) to handle")
@@ -256,7 +263,7 @@ public class Kitura {
     /// Make all registered servers stop listening on their port.
     ///```swift
     /// let router = Router()
-    /// Kitura.addHTTPServer(onPort: 8080, with: router)
+    /// Kitura.addHTTPServer(onPort: 8080, with: router, address: "localhost")
     /// Kitura.start()
     /// Kitura.stop()
     ///```
@@ -264,8 +271,8 @@ public class Kitura {
     /// - Parameter unregister: If servers should be unregistered after they are stopped (default true).
     public class func stop(unregister: Bool = true) {
         serverLock.lock()
-        for (server, port) in httpServersAndPorts {
-            Log.verbose("Stopping HTTP Server on port \(port)...")
+        for (server, port, address) in httpServersAndPorts {
+            Log.verbose("Stopping HTTP Server on port \(port) with address \(String(describing: address))...")
             server.stop()
         }
 
@@ -274,8 +281,8 @@ public class Kitura {
             server.stop()
         }
 
-        for (server, port) in fastCGIServersAndPorts {
-            Log.verbose("Stopping FastCGI Server on port \(port)...")
+        for (server, port, address) in fastCGIServersAndPorts {
+            Log.verbose("Stopping FastCGI Server on port \(port) with address \(String(describing: address))...")
             server.stop()
         }
 
@@ -289,7 +296,7 @@ public class Kitura {
 
     typealias Port = Int
     internal static let serverLock = NSLock()
-    internal private(set) static var httpServersAndPorts = [(server: HTTPServer, port: Port)]()
+    internal private(set) static var httpServersAndPorts = [(server: HTTPServer, port: Port, address: String?)]()
     internal private(set) static var httpServersAndUnixSocketPaths = [(server: HTTPServer, socketPath: String)]()
-    internal private(set) static var fastCGIServersAndPorts = [(server: FastCGIServer, port: Port)]()
+    internal private(set) static var fastCGIServersAndPorts = [(server: FastCGIServer, port: Port, address: String?)]()
 }

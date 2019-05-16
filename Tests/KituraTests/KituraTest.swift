@@ -194,7 +194,7 @@ class KituraTest: XCTestCase {
         }
 
         do {
-            try server.listen(on: 0)
+            try server.listen(on: 0, address: "localhost")
 
             if useSSL {
                 KituraTest.httpsInetServer = server
