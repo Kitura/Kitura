@@ -18,7 +18,7 @@ import XCTest
 
 @testable import Kitura
 
-class TestStack: XCTestCase {
+final class TestStack: XCTestCase, KituraTestSuite {
 
     static var allTests: [(String, (TestStack) -> () throws -> Void)] {
         return [

@@ -27,7 +27,7 @@ import XCTest
     import Darwin
 #endif
 
-class TestErrors: KituraTest {
+final class TestErrors: KituraTest, KituraTestSuite {
 
     static var allTests: [(String, (TestErrors) -> () throws -> Void)] {
         return [

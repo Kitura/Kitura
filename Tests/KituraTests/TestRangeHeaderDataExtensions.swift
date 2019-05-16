@@ -19,7 +19,15 @@ import XCTest
 
 @testable import Kitura
 
-class TestRangeHeaderDataExtensions: XCTestCase {
+final class TestRangeHeaderDataExtensions: XCTestCase, KituraTestSuite {
+
+    static var allTests: [(String, (TestRangeHeaderDataExtensions) -> () throws -> Void)] {
+        return [
+            ("testPartialDataReadWithErrorFileNotFound", testPartialDataReadWithErrorFileNotFound),
+            ("testPartialDataRead", testPartialDataRead),
+            ("testPartialDataReadEntireFile", testPartialDataReadEntireFile),
+        ]
+    }
 
     var fileUrl: URL!
 

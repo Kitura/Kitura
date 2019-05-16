@@ -31,7 +31,7 @@ let cookieHost = "localhost"
 
 let responseBodySeparator = "RESPONSE-BODY-SEPARATOR"
 
-class TestCookies: KituraTest {
+final class TestCookies: KituraTest, KituraTestSuite {
 
     static var allTests: [(String, (TestCookies) -> () throws -> Void)] {
         return [
