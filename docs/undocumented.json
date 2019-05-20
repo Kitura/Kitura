@@ -1,12 +1,6 @@
 {
   "warnings": [
-    {
-      "file": "/Users/travis/build/IBM-Swift/Kitura/Sources/Kitura/RouterResponse.swift",
-      "line": 164,
-      "symbol": "RouterResponse.deinit",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    }
+
   ],
   "source_directory": "/Users/travis/build/IBM-Swift/Kitura"
 }
