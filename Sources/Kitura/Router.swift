@@ -151,6 +151,8 @@ public class Router {
      }
      router.encoders[.json] = newJSONEncoder
      ```
+     ### Considerations for use with OpenAPI generation ###
+     In order for your OpenAPI (swagger) document to correctly represent an alternate `Date` encoding that you have chosen, you _must_ configure your encoders before registering routes.
      */
     public var encoders: [MediaType: () -> BodyEncoder] = [.json: {return JSONEncoder()}] {
         didSet {

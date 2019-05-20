@@ -35,9 +35,3 @@ $(".token").click(function(event) {
   }
   event.preventDefault();
 });
-
-// Dumb down quotes within code blocks that delimit strings instead of quotations
-// https://github.com/realm/jazzy/issues/714
-$("code q").replaceWith(function () {
-  return ["\"", $(this).contents(), "\""];
-});
