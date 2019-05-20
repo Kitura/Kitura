@@ -147,6 +147,7 @@ public class Kitura {
     // MARK: Start Servers
     
     /// Start the Kitura framework.
+    /// By default, the Kitura framework process will exit if one or more of the servers fails to start. To prevent the Kitura framework process from exiting with set the `exitOnFailure` parameter to false.
     ///
     ///### Usage Example: ###
     /// Make all registered servers start listening on their port.
@@ -155,10 +156,24 @@ public class Kitura {
     /// Kitura.addHTTPServer(onPort: 8080, with: router)
     /// Kitura.run()
     ///```
+    /// Make all registered servers start listening on their port and exit if any fail to start.
+    ///```swift
+    /// let router = Router()
+    /// Kitura.addHTTPServer(onPort: 8080, with: router)
+    /// Kitura.run(exitOnFailure: false)
+    ///```
     /// - note: This function never returns - it should be the last call in your `main.swift` file.
-    public class func run() {
+    /// - Parameter exitOnFailure: Determines whether the Kitura process can return a non-zero exit code should any of the servers fail to start. Defaults to true, indicating it will exit if any of the servers fail to start.
+    public class func run(exitOnFailure: Bool = true) {
         Log.verbose("Starting Kitura framework...")
-        start()
+        if exitOnFailure {
+            let numberOfFailures = startWithStatus()
+            if numberOfFailures > 0 {
+                exit(Int32(numberOfFailures))
+            }
+        } else {
+            start()
+        }
         ListenerGroup.waitForListeners()
     }
 
@@ -172,12 +187,43 @@ public class Kitura {
     /// Kitura.start()
     ///```
     public class func start() {
+        _ = startWithStatus()
+    }
+    
+    /// Wait on all registered servers.
+    ///
+    ///### Usage Example: ###
+    ///
+    ///```swift
+    /// let failures = Kitura.startWithStatus()
+    /// if failures == 0 {
+    ///   Kitura.wait()
+    /// else {
+    ///   // handle failures
+    /// }
+    ///```
+    public class func wait() {
+        ListenerGroup.waitForListeners()
+    }
+    
+    /// Start all registered servers and return the number of servers that failed to start.
+    ///
+    ///### Usage Example: ###
+    /// Make all registered servers start listening on their port.
+    ///```swift
+    /// let router = Router()
+    /// Kitura.addHTTPServer(onPort: 8080, with: router)
+    /// Kitura.startWithStatus() // Returns the number of failed server starts.
+    ///```
+    public class func startWithStatus() -> Int {
         serverLock.lock()
+        var numberOfFailures = 0
         for (server, port) in httpServersAndPorts {
             Log.verbose("Starting an HTTP Server on port \(port)...")
             do {
                 try server.listen(on: port)
             } catch {
+                numberOfFailures += 1
                 Log.error("Error listening on port \(port): \(error). Use server.failed(callback:) to handle")
             }
         }
@@ -194,10 +240,12 @@ public class Kitura {
             do {
                 try server.listen(on: port)
             } catch {
+                numberOfFailures += 1
                 Log.error("Error listening on port \(port): \(error). Use server.failed(callback:) to handle")
             }
         }
         serverLock.unlock()
+        return numberOfFailures
     }
 
     // MARK: Stop Servers
