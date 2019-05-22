@@ -60,6 +60,7 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
             ("testRangeRequestWithIfRangeHeaderWithOldETag", testRangeRequestWithIfRangeHeaderWithOldETag),
             ("testRangeRequestWithIfRangeHeaderAsLastModified", testRangeRequestWithIfRangeHeaderAsLastModified),
             ("testRangeRequestWithIfRangeHeaderAsOldLastModified", testRangeRequestWithIfRangeHeaderAsOldLastModified),
+            ("testStaticFileServerRedirectPreservingQueryParams", testStaticFileServerRedirectPreservingQueryParams),
         ]
     }
 
