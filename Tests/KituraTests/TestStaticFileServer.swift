@@ -219,6 +219,9 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
         options = StaticFileServer.Options(serveIndexForDirectory: true, redirect: true, cacheOptions: cacheOptions)
         router.route("/opnm/:parameter").all(middleware: StaticFileServer(path: servingPathPrefix() + "Tests/KituraTests/TestStaticFileServer/subfolder", options: options))
 
+        options = StaticFileServer.Options(serveIndexForDirectory: true, redirect: true)
+        router.route("/queryparams").all(middleware: StaticFileServer(path: servingPathPrefix() + "Tests/KituraTests/TestStaticFileServer/", options: options))
+
         return router
     }
 
@@ -617,6 +620,27 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
                 XCTAssertNil(response?.headers["Content-Range"]?.first)
             }, headers: ["Range": "bytes=0-10", "If-Range": "Wed, 01 Jan 2000 00:00:00 GMT"])
             expectation.fulfill()
+        }
+    }
+
+    func testStaticFileServerRedirectPreservingQueryParams() {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/queryparams?a=b&c=d", followRedirects: false, callback: { response in
+                defer {
+                    expectation.fulfill()
+                }
+                guard let response = response else {
+                    return XCTFail()
+                }
+                // We expect StaticFileServer to redirect us. In order to see what location header
+                // has been sent, we have disabled following of redirects, so expect a 3xx response:
+                XCTAssertEqual(response.statusCode.class, HTTPStatusCode.Class.redirection)
+                guard let location = response.headers["Location"] else {
+                    return XCTFail("Location header was missing")
+                }
+                XCTAssertEqual(location, ["/queryparams/?a=b&c=d"])
+
+            })
         }
     }
 }
