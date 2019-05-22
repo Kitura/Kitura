@@ -115,7 +115,7 @@ public class RouterRequest {
         if let result = self._parsedURL {
             return result
         } else {
-            let result = URLParser(url: self.serverRequest.urlURL.absoluteString.data(using: .utf8)!, isConnect: false)
+            let result = URLParser(url: Data(self.serverRequest.urlURL.absoluteString.utf8), isConnect: false)
             self._parsedURL = result
             return result
         }
@@ -272,7 +272,10 @@ public class RouterRequest {
         let headerValues = acceptHeaderValue.split(separator: ",").map(String.init)
         // special header value that matches all types
         let matchAllPattern: String
-        if header.caseInsensitiveCompare("Accept") == .orderedSame {
+        // This function can perform content negotiation for the various Accept* headers.
+        // Check whether this is the 'Accept' header, which has a type/subtype structure,
+        // or another (eg. 'Accept-Charset'), which is has single values.
+        if header.equalsLowercased("accept") {
             matchAllPattern = "*/*"
         } else {
             matchAllPattern = "*"
@@ -310,8 +313,8 @@ private class Cookies {
         }
 
         for cookieHeader in cookieHeaders {
-            for cookie in cookieHeader.components(separatedBy: ";") {
-                let trimmedCookie = cookie.trimmingCharacters(in: .whitespaces)
+            for cookie in cookieHeader.split(separator: ";") {
+                let trimmedCookie = String(cookie.trimASCIIWhitespace())
                 if let cookie = getCookie(cookie: trimmedCookie) {
                     cookies[cookie.name] = cookie
                 }
@@ -321,19 +324,18 @@ private class Cookies {
     }
 
     private static func getCookie(cookie: String) -> HTTPCookie? {
-        guard let range = cookie.range(of: "=") else {
+        #if swift(>=4.2)
+        guard let index = cookie.firstIndex(of: "=") else {
             return nil
         }
-
-        #if os(Linux)
-            // https://bugs.swift.org/browse/SR-5727
-            // ETA post-4.0
-            let name = String(cookie[..<range.lowerBound]).trimmingCharacters(in: .whitespaces)
-            var value = String(cookie[range.upperBound...]).trimmingCharacters(in: .whitespaces)
         #else
-            let name = cookie[..<range.lowerBound].trimmingCharacters(in: .whitespaces)
-            var value = cookie[range.upperBound...].trimmingCharacters(in: .whitespaces)
+        guard let index = cookie.index(of: "=") else {
+            return nil
+        }
         #endif
+
+        let name = String(cookie[..<index].trimASCIIWhitespace())
+        var value = String(cookie[cookie.index(after: index)...].trimASCIIWhitespace())
 
         let chars = value
         if chars.count >= 2 && chars.first == "\"" && chars.last == "\"" {

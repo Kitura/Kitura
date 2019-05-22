@@ -1,5 +1,4 @@
 // swift-tools-version:4.0
-// The swift-tools-version declares the minimum version of Swift required to build this package.
 
 /**
  * Copyright IBM Corporation 2016, 2017
@@ -20,32 +19,21 @@
 import PackageDescription
 import Foundation
 
-var kituraNetPackage: Package.Dependency
-
-if ProcessInfo.processInfo.environment["KITURA_NIO"] != nil {
-    kituraNetPackage = .package(url: "https://github.com/IBM-Swift/Kitura-NIO.git", from: "1.0.0")
-} else {
-    kituraNetPackage = .package(url: "https://github.com/IBM-Swift/Kitura-net.git", from: "2.1.0")
-}
-
 let package = Package(
     name: "Kitura",
     products: [
-        // Products define the executables and libraries produced by a package, and make them visible to other packages.
         .library(
             name: "Kitura",
             targets: ["Kitura"]
         )
     ],
     dependencies: [
-        kituraNetPackage,
+        .package(url: "https://github.com/IBM-Swift/Kitura-net.git", from: "2.2.0"),
         .package(url: "https://github.com/IBM-Swift/Kitura-TemplateEngine.git", from: "2.0.0"),
         .package(url: "https://github.com/IBM-Swift/KituraContracts.git", from: "1.0.0"),
-        .package(url: "https://github.com/IBM-Swift/TypeDecoder.git", from: "1.1.0")
+        .package(url: "https://github.com/IBM-Swift/TypeDecoder.git", from: "1.3.0")
     ],
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
             name: "Kitura",
             dependencies: ["KituraNet", "KituraTemplateEngine", "KituraContracts", "TypeDecoder"]

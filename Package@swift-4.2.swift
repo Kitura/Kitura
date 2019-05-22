@@ -1,4 +1,4 @@
-// swift-tools-version:5.0
+// swift-tools-version:4.2
 
 /**
  * Copyright IBM Corporation 2016-2019
@@ -19,14 +19,6 @@
 import PackageDescription
 import Foundation
 
-var kituraNetPackage: Package.Dependency
-
-if ProcessInfo.processInfo.environment["KITURA_NIO"] != nil {
-    kituraNetPackage = .package(url: "https://github.com/IBM-Swift/Kitura-NIO.git", from: "2.0.0")
-} else {
-    kituraNetPackage = .package(url: "https://github.com/IBM-Swift/Kitura-net.git", from: "2.2.0")
-}
-
 let package = Package(
     name: "Kitura",
     products: [
@@ -36,7 +28,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        kituraNetPackage,
+        .package(url: "https://github.com/IBM-Swift/Kitura-net.git", from: "2.2.0"),
         .package(url: "https://github.com/IBM-Swift/Kitura-TemplateEngine.git", from: "2.0.0"),
         .package(url: "https://github.com/IBM-Swift/KituraContracts.git", from: "1.0.0"),
         .package(url: "https://github.com/IBM-Swift/TypeDecoder.git", from: "1.3.0"),

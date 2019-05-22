@@ -27,7 +27,7 @@ import KituraNet
  // Prints ("application/json")
  ```
  */
-public struct MediaType: CustomStringConvertible, Equatable, Hashable {
+public struct MediaType: CustomStringConvertible {
     
     /// An enum of all recognized top-level media types (categories). See:
     /// https://www.iana.org/assignments/media-types/media-types.xhtml
@@ -73,7 +73,6 @@ public struct MediaType: CustomStringConvertible, Equatable, Hashable {
         self.topLevelType = type
         self.subType = subType.lowercased()
         self.description = "\(self.topLevelType)/\(self.subType)"
-        self.hashValue = description.hashValue
     }
     
     /**
@@ -88,7 +87,8 @@ public struct MediaType: CustomStringConvertible, Equatable, Hashable {
         let mimeComponents = mimeType
             .lowercased()
             .split(separator: "/", maxSplits: 1)
-        guard let topLevelType = TopLevelType(rawValue: String(mimeComponents[0])) else {
+        guard !mimeComponents.isEmpty,
+          let topLevelType = TopLevelType(rawValue: String(mimeComponents[0])) else {
             return nil
         }
         self.topLevelType = topLevelType
@@ -99,7 +99,6 @@ public struct MediaType: CustomStringConvertible, Equatable, Hashable {
         }
         //self.description = "\(self.topLevelType)/\(self.subType)"
         self.description = self.topLevelType.rawValue.appending("/").appending(self.subType)
-        self.hashValue = description.hashValue
     }
     
     /**
@@ -153,12 +152,23 @@ public struct MediaType: CustomStringConvertible, Equatable, Hashable {
      */
     public let description: String
     
+
+}
+
+extension MediaType: Equatable {
+    #if !swift(>=4.2)
     /// Compares two MediaTypes returning true if they are equal. Required for Equatable conformance.
     public static func == (lhs: MediaType, rhs: MediaType) -> Bool {
         return lhs.description == rhs.description
     }
-    
-    /// The hashValue for the MediaTypes. Required for Hashable conformance.
-    public let hashValue: Int
+    #endif
 }
 
+extension MediaType: Hashable {
+    #if !swift(>=4.2)
+    // A unique integer produced by hashing the MediaType. Required for Hashable conformance.
+    public var hashValue: Int {
+        return description.hashValue
+    }
+    #endif
+}

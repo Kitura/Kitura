@@ -30,7 +30,7 @@ import Darwin
 // run without error in the absence of this import. Other existing tests that
 // import KituraContracts should be sufficient to show that the typealias does not
 // interfere in that case.
-class TestBridgingRequestError: KituraTest {
+final class TestBridgingRequestError: KituraTest, KituraTestSuite {
 
     static var allTests: [(String, (TestBridgingRequestError) -> () throws -> Void)] {
         return [

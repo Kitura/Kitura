@@ -66,9 +66,6 @@
                 <a class="nav-group-task-link" href="../Classes/Kitura.html">Kitura</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/RouteRegex.html">RouteRegex</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/Router.html">Router</a>
               </li>
               <li class="nav-group-task">
@@ -195,7 +192,21 @@
 
                 </div>
               </div>
-            <p>Router response that the server sends as a reply to <code><a href="../Classes/RouterRequest.html">RouterRequest</a></code>.</p>
+            <p>The RouterResponse class is used to define and work with the response that will be sent by the <code><a href="../Classes/Router.html">Router</a></code>.
+It contains and allows access to the HTTP response code (e.g. 404 <q>Not Found</q>), the HTTP <code><a href="../Structs/Headers.html">Headers</a></code>
+and the body of the response.
+It can also render template files, using a template engine registered to the router.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+
+<p>In this example <q>response</q> is an instance of the class <code>RouterResponse</code>.
+The content type and status code of the response are set.
+The String <q>Hello world</q> is added to the body and the response is transmitted.</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/example"</span><span class="p">)</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s">"Content-Type"</span><span class="p">]</span> <span class="o">=</span> <span class="s">"text/html"</span>
+    <span class="n">response</span><span class="o">.</span><span class="nf">status</span><span class="p">(</span><span class="o">.</span><span class="kt">OK</span><span class="p">)</span>
+    <span class="k">try</span> <span class="n">response</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"Hello world"</span><span class="p">)</span><span class="o">.</span><span class="nf">end</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre>
 
           </div>
         </section>
@@ -203,13 +214,20 @@
         <section class="section">
           <div class="section-content">
             <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Properties"></a>
+                <a name="//apple_ref/swift/Section/Properties" class="dashAnchor"></a>
+                <a href="#/Properties">
+                  <h3 class="section-name">Properties</h3>
+                </a>
+              </div>
               <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura14RouterResponseC7cookiess10DictionaryVySSSo10HTTPCookieCGvp"></a>
+                    <a name="/s:6Kitura14RouterResponseC7cookiesSDySSSo12NSHTTPCookieCGvp"></a>
                     <a name="//apple_ref/swift/Property/cookies" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC7cookiess10DictionaryVySSSo10HTTPCookieCGvp">cookies</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC7cookiesSDySSSo12NSHTTPCookieCGvp">cookies</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -224,7 +242,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">cookies</span> <span class="o">=</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">HTTPCookie</span><span class="p">]()</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">cookies</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">HTTPCookie</span><span class="p">]</span></code></pre>
 
                         </div>
                       </div>
@@ -251,7 +269,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">error</span><span class="p">:</span> <span class="kt">Swift</span><span class="o">.</span><span class="kt">Error</span><span class="p">?</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">error</span><span class="p">:</span> <span class="kt">Error</span><span class="p">?</span></code></pre>
 
                         </div>
                       </div>
@@ -305,7 +323,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">statusCode</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura14HTTPStatusCodea">HTTPStatusCode</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">statusCode</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura14HTTPStatusCodea">HTTPStatusCode</a></span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -315,9 +333,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura14RouterResponseC8userInfos10DictionaryVySSypGvp"></a>
+                    <a name="/s:6Kitura14RouterResponseC8userInfoSDySSypGvp"></a>
                     <a name="//apple_ref/swift/Property/userInfo" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC8userInfos10DictionaryVySSypGvp">userInfo</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC8userInfoSDySSypGvp">userInfo</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -333,13 +351,24 @@ Can be used by middlewares and handlers to store and pass information on to subs
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">userInfo</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">[:]</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">userInfo</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">]</span></code></pre>
 
                         </div>
                       </div>
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/End"></a>
+                <a name="//apple_ref/swift/Section/End" class="dashAnchor"></a>
+                <a href="#/End">
+                  <h3 class="section-name">End</h3>
+                </a>
+              </div>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -372,323 +401,23 @@ Can be used by middlewares and handlers to store and pass information on to subs
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Status%20Code"></a>
+                <a name="//apple_ref/swift/Section/Status Code" class="dashAnchor"></a>
+                <a href="#/Status%20Code">
+                  <h3 class="section-name">Status Code</h3>
+                </a>
+              </div>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura14RouterResponseC4sendACSSF"></a>
-                    <a name="//apple_ref/swift/Method/send(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendACSSF">send(_:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Send a string.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="n">_</span> <span class="nv">str</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>str</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>the string to send.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div>
-                        <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura14RouterResponseC4sendACSSSgF"></a>
-                    <a name="//apple_ref/swift/Method/send(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendACSSSgF">send(_:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Send an optional string.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="n">_</span> <span class="nv">str</span><span class="p">:</span> <span class="kt">String</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>str</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>the string to send.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div>
-                        <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura14RouterResponseC4sendAC10Foundation4DataV4data_tF"></a>
-                    <a name="//apple_ref/swift/Method/send(data:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendAC10Foundation4DataV4data_tF">send(data:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Send data.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>data</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>the data to send.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div>
-                        <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura14RouterResponseC4sendACSS8fileName_tKF"></a>
-                    <a name="//apple_ref/swift/Method/send(fileName:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendACSS8fileName_tKF">send(fileName:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Send a file.</p>
-<div class="aside aside-throws">
-    <p class="aside-title">Throws</p>
-    An error in the Cocoa domain, if the file cannot be read.
-
-</div>
-<div class="aside aside-note">
-    <p class="aside-title">Note</p>
-    <p>Sets the Content-Type header based on the <q>extension</q> of the file.
-  If the fileName is relative, it is relative to the current directory.</p>
-
-</div>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">fileName</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>fileName</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>the name of the file to send.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div>
-                        <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura14RouterResponseC4sendACSayypG4json_tF"></a>
-                    <a name="//apple_ref/swift/Method/send(json:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendACSayypG4json_tF">send(json:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Send JSON.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">json</span><span class="p">:</span> <span class="p">[</span><span class="kt">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>json</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The array to send in JSON format.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div>
-                        <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura14RouterResponseC4sendACs10DictionaryVySSypG4json_tF"></a>
-                    <a name="//apple_ref/swift/Method/send(json:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendACs10DictionaryVySSypG4json_tF">send(json:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Send JSON.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">json</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>json</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The Dictionary to send in JSON format as a hash.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div>
-                        <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura14RouterResponseC6statusAC0A3Net14HTTPStatusCodeOF"></a>
+                    <a name="/s:6Kitura14RouterResponseC6statusyAC0A3Net14HTTPStatusCodeOF"></a>
                     <a name="//apple_ref/swift/Method/status(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC6statusAC0A3Net14HTTPStatusCodeOF">status(_:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC6statusyAC0A3Net14HTTPStatusCodeOF">status(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -703,7 +432,8 @@ Can be used by middlewares and handlers to store and pass information on to subs
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">status</span><span class="p">(</span><span class="n">_</span> <span class="nv">status</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura14HTTPStatusCodea">HTTPStatusCode</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">status</span><span class="p">(</span><span class="n">_</span> <span class="nv">status</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura14HTTPStatusCodea">HTTPStatusCode</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
 
                         </div>
                       </div>
@@ -719,7 +449,7 @@ Can be used by middlewares and handlers to store and pass information on to subs
                               </td>
                               <td>
                                 <div>
-                                  <p>the HTTP status code object.</p>
+                                  <p>The HTTP status code object.</p>
                                 </div>
                               </td>
                             </tr>
@@ -728,67 +458,28 @@ Can be used by middlewares and handlers to store and pass information on to subs
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
+                        <p>This RouterResponse.</p>
                       </div>
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Redirect"></a>
+                <a name="//apple_ref/swift/Section/Redirect" class="dashAnchor"></a>
+                <a href="#/Redirect">
+                  <h3 class="section-name">Redirect</h3>
+                </a>
+              </div>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura14RouterResponseC4sendAC0A3Net14HTTPStatusCodeO6status_tF"></a>
-                    <a name="//apple_ref/swift/Method/send(status:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendAC0A3Net14HTTPStatusCodeO6status_tF">send(status:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Send the HTTP status code.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">status</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura14HTTPStatusCodea">HTTPStatusCode</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>status</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>the HTTP status code.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div>
-                        <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura14RouterResponseC8redirectACSS_0A3Net14HTTPStatusCodeO6statustKF"></a>
+                    <a name="/s:6Kitura14RouterResponseC8redirect_6statusACSS_0A3Net14HTTPStatusCodeOtKF"></a>
                     <a name="//apple_ref/swift/Method/redirect(_:status:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC8redirectACSS_0A3Net14HTTPStatusCodeO6statustKF">redirect(_:status:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC8redirect_6statusACSS_0A3Net14HTTPStatusCodeOtKF">redirect(_:status:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -808,23 +499,35 @@ Can be used by middlewares and handlers to store and pass information on to subs
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">redirect</span><span class="p">(</span><span class="n">_</span> <span class="nv">path</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">status</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura14HTTPStatusCodea">HTTPStatusCode</a></span> <span class="o">=</span> <span class="o">.</span><span class="n">movedTemporarily</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">redirect</span><span class="p">(</span><span class="n">_</span> <span class="nv">path</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">status</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura14HTTPStatusCodea">HTTPStatusCode</a></span> <span class="o">=</span> <span class="o">.</span><span class="n">movedTemporarily</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
 
                         </div>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
+                        <p>This RouterResponse.</p>
                       </div>
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Render"></a>
+                <a name="//apple_ref/swift/Section/Render" class="dashAnchor"></a>
+                <a href="#/Render">
+                  <h3 class="section-name">Render</h3>
+                </a>
+              </div>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura14RouterResponseC6renderACSS_s10DictionaryVySSypG7context0A14TemplateEngine16RenderingOptions_p7optionstKF"></a>
+                    <a name="/s:6Kitura14RouterResponseC6render_7context7optionsACSS_SDySSypG0A14TemplateEngine16RenderingOptions_ptKF"></a>
                     <a name="//apple_ref/swift/Method/render(_:context:options:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC6renderACSS_s10DictionaryVySSypG7context0A14TemplateEngine16RenderingOptions_p7optionstKF">render(_:context:options:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC6render_7context7optionsACSS_SDySSypG0A14TemplateEngine16RenderingOptions_ptKF">render(_:context:options:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -844,7 +547,8 @@ Can be used by middlewares and handlers to store and pass information on to subs
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">render</span><span class="p">(</span><span class="n">_</span> <span class="nv">resource</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">context</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span><span class="kt">Any</span><span class="p">],</span>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">render</span><span class="p">(</span><span class="n">_</span> <span class="nv">resource</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">context</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span><span class="kt">Any</span><span class="p">],</span>
                    <span class="nv">options</span><span class="p">:</span> <span class="kt">RenderingOptions</span> <span class="o">=</span> <span class="kt">NullRenderingOptions</span><span class="p">())</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
 
                         </div>
@@ -861,7 +565,7 @@ Can be used by middlewares and handlers to store and pass information on to subs
                               </td>
                               <td>
                                 <div>
-                                  <p>the resource name without extension.</p>
+                                  <p>The resource name without extension.</p>
                                 </div>
                               </td>
                             </tr>
@@ -873,7 +577,7 @@ Can be used by middlewares and handlers to store and pass information on to subs
                               </td>
                               <td>
                                 <div>
-                                  <p>a dictionary of local variables of the resource.</p>
+                                  <p>A dictionary of local variables of the resource.</p>
                                 </div>
                               </td>
                             </tr>
@@ -885,7 +589,7 @@ Can be used by middlewares and handlers to store and pass information on to subs
                               </td>
                               <td>
                                 <div>
-                                  <p>rendering options, specific per template engine</p>
+                                  <p>Rendering options, specific per template engine</p>
                                 </div>
                               </td>
                             </tr>
@@ -894,7 +598,7 @@ Can be used by middlewares and handlers to store and pass information on to subs
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
+                        <p>This RouterResponse.</p>
                       </div>
                     </section>
                   </div>
@@ -902,9 +606,9 @@ Can be used by middlewares and handlers to store and pass information on to subs
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura14RouterResponseC6renderACSS_x4withSSSg6forKey0A14TemplateEngine16RenderingOptions_p7optionstKs9EncodableRzlF"></a>
+                    <a name="/s:6Kitura14RouterResponseC6render_4with6forKey7optionsACSS_xSSSg0A14TemplateEngine16RenderingOptions_ptKSERzlF"></a>
                     <a name="//apple_ref/swift/Method/render(_:with:forKey:options:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC6renderACSS_x4withSSSg6forKey0A14TemplateEngine16RenderingOptions_p7optionstKs9EncodableRzlF">render(_:with:forKey:options:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC6render_4with6forKey7optionsACSS_xSSSg0A14TemplateEngine16RenderingOptions_ptKSERzlF">render(_:with:forKey:options:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -924,7 +628,8 @@ Can be used by middlewares and handlers to store and pass information on to subs
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">render</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt">Encodable</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">resource</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="n">with</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">T</span><span class="p">,</span> <span class="n">forKey</span> <span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="n">render</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt">Encodable</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">resource</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="n">with</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">T</span><span class="p">,</span> <span class="n">forKey</span> <span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
                    <span class="nv">options</span><span class="p">:</span> <span class="kt">RenderingOptions</span> <span class="o">=</span> <span class="kt">NullRenderingOptions</span><span class="p">())</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
 
                         </div>
@@ -941,7 +646,7 @@ Can be used by middlewares and handlers to store and pass information on to subs
                               </td>
                               <td>
                                 <div>
-                                  <p>the resource name without extension.</p>
+                                  <p>The resource name without extension.</p>
                                 </div>
                               </td>
                             </tr>
@@ -953,7 +658,7 @@ Can be used by middlewares and handlers to store and pass information on to subs
                               </td>
                               <td>
                                 <div>
-                                  <p>a value that conforms to Encodable that is used to generate the content.</p>
+                                  <p>A value that conforms to Encodable that is used to generate the content.</p>
                                 </div>
                               </td>
                             </tr>
@@ -978,7 +683,7 @@ Can be used by middlewares and handlers to store and pass information on to subs
                               </td>
                               <td>
                                 <div>
-                                  <p>rendering options, specific per template engine</p>
+                                  <p>Rendering options, specific per template engine</p>
                                 </div>
                               </td>
                             </tr>
@@ -987,7 +692,7 @@ Can be used by middlewares and handlers to store and pass information on to subs
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
+                        <p>This RouterResponse.</p>
                       </div>
                     </section>
                   </div>
@@ -995,9 +700,9 @@ Can be used by middlewares and handlers to store and pass information on to subs
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura14RouterResponseC6renderACSS_Sayx_q_tG4withSS6forKey0A14TemplateEngine16RenderingOptions_p7optionstK0A9Contracts10IdentifierRzs9EncodableR_r0_lF"></a>
+                    <a name="/s:6Kitura14RouterResponseC6render_4with6forKey7optionsACSS_Sayx_q_tGSS0A14TemplateEngine16RenderingOptions_ptK0A9Contracts10IdentifierRzSER_r0_lF"></a>
                     <a name="//apple_ref/swift/Method/render(_:with:forKey:options:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC6renderACSS_Sayx_q_tG4withSS6forKey0A14TemplateEngine16RenderingOptions_p7optionstK0A9Contracts10IdentifierRzs9EncodableR_r0_lF">render(_:with:forKey:options:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC6render_4with6forKey7optionsACSS_Sayx_q_tGSS0A14TemplateEngine16RenderingOptions_ptK0A9Contracts10IdentifierRzSER_r0_lF">render(_:with:forKey:options:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1017,7 +722,8 @@ Can be used by middlewares and handlers to store and pass information on to subs
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">render</span><span class="o">&lt;</span><span class="kt">I</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">T</span><span class="p">:</span> <span class="kt">Encodable</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">resource</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="n">with</span> <span class="nv">values</span><span class="p">:</span> <span class="p">[(</span><span class="kt">I</span><span class="p">,</span> <span class="kt">T</span><span class="p">)],</span> <span class="n">forKey</span> <span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="n">render</span><span class="o">&lt;</span><span class="kt">I</span><span class="p">:</span> <span class="kt">Identifier</span><span class="p">,</span> <span class="kt">T</span><span class="p">:</span> <span class="kt">Encodable</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">resource</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="n">with</span> <span class="nv">values</span><span class="p">:</span> <span class="p">[(</span><span class="kt">I</span><span class="p">,</span> <span class="kt">T</span><span class="p">)],</span> <span class="n">forKey</span> <span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
                                <span class="nv">options</span><span class="p">:</span> <span class="kt">RenderingOptions</span> <span class="o">=</span> <span class="kt">NullRenderingOptions</span><span class="p">())</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
 
                         </div>
@@ -1034,7 +740,7 @@ Can be used by middlewares and handlers to store and pass information on to subs
                               </td>
                               <td>
                                 <div>
-                                  <p>the resource name without extension.</p>
+                                  <p>The resource name without extension.</p>
                                 </div>
                               </td>
                             </tr>
@@ -1046,7 +752,7 @@ Can be used by middlewares and handlers to store and pass information on to subs
                               </td>
                               <td>
                                 <div>
-                                  <p>an array of tuples of type (Identifier, Encodable). The Encodable values are used to generate the content.</p>
+                                  <p>An array of tuples of type (Identifier, Encodable). The Encodable values are used to generate the content.</p>
                                 </div>
                               </td>
                             </tr>
@@ -1071,7 +777,7 @@ Can be used by middlewares and handlers to store and pass information on to subs
                               </td>
                               <td>
                                 <div>
-                                  <p>rendering options, specific per template engine</p>
+                                  <p>Rendering options, specific per template engine</p>
                                 </div>
                               </td>
                             </tr>
@@ -1080,68 +786,28 @@ Can be used by middlewares and handlers to store and pass information on to subs
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
+                        <p>This RouterResponse.</p>
                       </div>
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Set%20Properties"></a>
+                <a name="//apple_ref/swift/Section/Set Properties" class="dashAnchor"></a>
+                <a href="#/Set%20Properties">
+                  <h3 class="section-name">Set Properties</h3>
+                </a>
+              </div>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura14RouterResponseC4sendySS8download_tKF"></a>
-                    <a name="//apple_ref/swift/Method/send(download:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendySS8download_tKF">send(download:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Set headers and attach file for downloading.</p>
-<div class="aside aside-throws">
-    <p class="aside-title">Throws</p>
-    An error in the Cocoa domain, if the file cannot be read.
-
-</div>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">download</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="k">throws</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>download</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>the file to download.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:6Kitura14RouterResponseC15setOnEndInvokedyycyycF"></a>
+                    <a name="/s:6Kitura14RouterResponseC15setOnEndInvokedyyycyycF"></a>
                     <a name="//apple_ref/swift/Method/setOnEndInvoked(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC15setOnEndInvokedyycyycF">setOnEndInvoked(_:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC15setOnEndInvokedyyycyycF">setOnEndInvoked(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1189,9 +855,9 @@ Can be used by middlewares and handlers to store and pass information on to subs
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura14RouterResponseC20setWrittenDataFilter10Foundation0F0VAGcA2GcF"></a>
+                    <a name="/s:6Kitura14RouterResponseC20setWrittenDataFiltery10Foundation0F0VAGcA2GcF"></a>
                     <a name="//apple_ref/swift/Method/setWrittenDataFilter(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC20setWrittenDataFilter10Foundation0F0VAGcA2GcF">setWrittenDataFilter(_:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC20setWrittenDataFiltery10Foundation0F0VAGcA2GcF">setWrittenDataFilter(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1236,12 +902,23 @@ Can be used by middlewares and handlers to store and pass information on to subs
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Content%20Negotiation"></a>
+                <a name="//apple_ref/swift/Section/Content Negotiation" class="dashAnchor"></a>
+                <a href="#/Content%20Negotiation">
+                  <h3 class="section-name">Content Negotiation</h3>
+                </a>
+              </div>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura14RouterResponseC6formatys10DictionaryVySSyAA0B7RequestC_ACtcG9callbacks_tKF"></a>
+                    <a name="/s:6Kitura14RouterResponseC6format9callbacksySDySSyAA0B7RequestC_ACtcG_tKF"></a>
                     <a name="//apple_ref/swift/Method/format(callbacks:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC6formatys10DictionaryVySSyAA0B7RequestC_ACtcG9callbacks_tKF">format(callbacks:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC6format9callbacksySDySSyAA0B7RequestC_ACtcG_tKF">format(callbacks:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1282,7 +959,7 @@ The Content-Type response header is set when a callback is selected.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>a dictionary that maps content types to handlers.</p>
+                                  <p>A dictionary that maps content types to handlers.</p>
                                 </div>
                               </td>
                             </tr>
@@ -1295,13 +972,20 @@ The Content-Type response header is set when a callback is selected.</p>
               </ul>
             </div>
             <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Send%20String"></a>
+                <a name="//apple_ref/swift/Section/Send String" class="dashAnchor"></a>
+                <a href="#/Send%20String">
+                  <h3 class="section-name">Send String</h3>
+                </a>
+              </div>
               <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura14RouterResponseC4sendACxs9EncodableRzlF"></a>
+                    <a name="/s:6Kitura14RouterResponseC4sendyACSSF"></a>
                     <a name="//apple_ref/swift/Method/send(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendACxs9EncodableRzlF">send(_:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendyACSSF">send(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1309,14 +993,460 @@ The Content-Type response header is set when a callback is selected.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Send Encodable Object.</p>
+                        <p>Send a UTF-8 encoded string.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">send</span><span class="o">&lt;</span><span class="kt">T</span> <span class="p">:</span> <span class="kt">Encodable</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">obj</span><span class="p">:</span> <span class="kt">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="n">_</span> <span class="nv">str</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>str</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The string to send.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>This RouterResponse.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura14RouterResponseC4sendyACSSSgF"></a>
+                    <a name="//apple_ref/swift/Method/send(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendyACSSSgF">send(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Send an optional string.
+If the <code>String?</code> can be unwrapped it is sent as a String, otherwise the empty string (&ldquo;&rdquo;) is sent.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="n">_</span> <span class="nv">str</span><span class="p">:</span> <span class="kt">String</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>str</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The string to send.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>This RouterResponse.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura14RouterResponseC4send6statusAC0A3Net14HTTPStatusCodeO_tF"></a>
+                    <a name="//apple_ref/swift/Method/send(status:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4send6statusAC0A3Net14HTTPStatusCodeO_tF">send(status:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Set the HTTP status code of the RouterResponse and send the String description of the HTTP status code.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">status</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura14HTTPStatusCodea">HTTPStatusCode</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>status</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The HTTP status code.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>This RouterResponse.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Send%20Data"></a>
+                <a name="//apple_ref/swift/Section/Send Data" class="dashAnchor"></a>
+                <a href="#/Send%20Data">
+                  <h3 class="section-name">Send Data</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura14RouterResponseC4send4dataAC10Foundation4DataV_tF"></a>
+                    <a name="//apple_ref/swift/Method/send(data:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4send4dataAC10Foundation4DataV_tF">send(data:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Send data.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>data</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The data to send.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>This RouterResponse.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura14RouterResponseC4send8fileNameACSS_tKF"></a>
+                    <a name="//apple_ref/swift/Method/send(fileName:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4send8fileNameACSS_tKF">send(fileName:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Send a file.</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    An error in the Cocoa domain, if the file cannot be read.
+
+</div>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    <p>Sets the Content-Type header based on the <q>extension</q> of the file.
+  If the fileName is relative, it is relative to the current directory.</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">fileName</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>fileName</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name of the file to send.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>This RouterResponse.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura14RouterResponseC4send8downloadySS_tKF"></a>
+                    <a name="//apple_ref/swift/Method/send(download:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4send8downloadySS_tKF">send(download:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Set headers and attach file for downloading.</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    An error in the Cocoa domain, if the file cannot be read.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">download</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>download</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The file to download.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura14RouterResponseC4send4jsonACSayypG_tF"></a>
+                    <a name="//apple_ref/swift/Method/send(json:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4send4jsonACSayypG_tF">send(json:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets the Content-Type header as application/json, Serializes an array into JSON data and sends the data.
+If the data is not a valid JSON structure, it will not be sent and a warning will be logged.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">json</span><span class="p">:</span> <span class="p">[</span><span class="kt">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>json</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The array to send in JSON format.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>This RouterResponse.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura14RouterResponseC4send4jsonACSDySSypG_tF"></a>
+                    <a name="//apple_ref/swift/Method/send(json:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4send4jsonACSDySSypG_tF">send(json:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets the Content-Type header as <q>application/json</q>,
+Serializes a dictionary into JSON data and sends the data.
+If the data is not a valid JSON structure, it will not be sent and a warning will be logged.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">json</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>json</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The Dictionary to send in JSON format as a hash.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>This RouterResponse.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Send%20Encodable"></a>
+                <a name="//apple_ref/swift/Section/Send Encodable" class="dashAnchor"></a>
+                <a href="#/Send%20Encodable">
+                  <h3 class="section-name">Send Encodable</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura14RouterResponseC4sendyACxSERzlF"></a>
+                    <a name="//apple_ref/swift/Method/send(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendyACxSERzlF">send(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sends an Encodable type, encoded using the preferred <code>BodyEncoder</code> based on the <q>Accept</q> header sent in the request, and sets the Content-Type header appropriately.
+If no Accept header was provided, or if no suitable encoder is registered with the router, the encoder corresponding to the <code>defaultResponseMediaType</code> will be used.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="n">send</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">obj</span><span class="p">:</span> <span class="kt">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Encodable</span></code></pre>
 
                         </div>
                       </div>
@@ -1332,7 +1462,7 @@ The Content-Type response header is set when a callback is selected.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the Codable object to send.</p>
+                                  <p>The Codable object to send.</p>
                                 </div>
                               </td>
                             </tr>
@@ -1341,7 +1471,7 @@ The Content-Type response header is set when a callback is selected.</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
+                        <p>This RouterResponse.</p>
                       </div>
                     </section>
                   </div>
@@ -1349,9 +1479,9 @@ The Content-Type response header is set when a callback is selected.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura14RouterResponseC4sendACx4json_ts9EncodableRzlF"></a>
+                    <a name="/s:6Kitura14RouterResponseC4send4jsonACx_tSERzlF"></a>
                     <a name="//apple_ref/swift/Method/send(json:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendACx4json_ts9EncodableRzlF">send(json:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4send4jsonACx_tSERzlF">send(json:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1359,14 +1489,16 @@ The Content-Type response header is set when a callback is selected.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Send JSON Encodable Object</p>
+                        <p>Sets the Content-Type header as <q>application/json</q>,
+Encodes an Encodable object into data using a <code>JSONEncoder()</code> and sends the data.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">send</span><span class="o">&lt;</span><span class="kt">T</span> <span class="p">:</span> <span class="kt">Encodable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">json</span><span class="p">:</span> <span class="kt">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="n">send</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">json</span><span class="p">:</span> <span class="kt">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Encodable</span></code></pre>
 
                         </div>
                       </div>
@@ -1382,7 +1514,7 @@ The Content-Type response header is set when a callback is selected.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the JSON Encodable object to send.</p>
+                                  <p>The JSON Encodable object to send.</p>
                                 </div>
                               </td>
                             </tr>
@@ -1391,7 +1523,7 @@ The Content-Type response header is set when a callback is selected.</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
+                        <p>This RouterResponse.</p>
                       </div>
                     </section>
                   </div>
@@ -1399,9 +1531,9 @@ The Content-Type response header is set when a callback is selected.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura14RouterResponseC4sendACx5jsonp_SS17callbackParametertKs9EncodableRzlF"></a>
+                    <a name="/s:6Kitura14RouterResponseC4send5jsonp17callbackParameterACx_SStKSERzlF"></a>
                     <a name="//apple_ref/swift/Method/send(jsonp:callbackParameter:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendACx5jsonp_SS17callbackParametertKs9EncodableRzlF">send(jsonp:callbackParameter:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4send5jsonp17callbackParameterACx_SStKSERzlF">send(jsonp:callbackParameter:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1409,10 +1541,11 @@ The Content-Type response header is set when a callback is selected.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Send JSON with JSONP callback.</p>
+                        <p>Encodes an Encodable object into data using a <code>JSONEncoder()</code>
+and sends the data with JSONP callback.</p>
 <div class="aside aside-throws">
     <p class="aside-title">Throws</p>
-    <p><code><a href="../Enums/JSONPError.html#/s:6Kitura10JSONPErrorO19invalidCallbackNameACSSSg4name_tcACmF">JSONPError.invalidCallbackName</a></code> if the the callback
+    <p><code>JSONPError.invalidCallbackName</code> if the the callback
 query parameter of the request URL is missing or its value is
 empty or contains invalid characters (the set of valid characters
 is the alphanumeric characters and <code>[]$._</code>).</p>
@@ -1424,7 +1557,7 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">send</span><span class="o">&lt;</span><span class="kt">T</span> <span class="p">:</span> <span class="kt">Encodable</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">jsonp</span><span class="p">:</span> <span class="kt">T</span><span class="p">,</span> <span class="nv">callbackParameter</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">"callback"</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">send</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">jsonp</span><span class="p">:</span> <span class="kt">T</span><span class="p">,</span> <span class="nv">callbackParameter</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">"callback"</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Encodable</span></code></pre>
 
                         </div>
                       </div>
@@ -1440,7 +1573,7 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the JSON object to send.</p>
+                                  <p>The JSON object to send.</p>
                                 </div>
                               </td>
                             </tr>
@@ -1452,7 +1585,7 @@ is the alphanumeric characters and <code>[]$._</code>).</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>the name of the URL query
+                                  <p>The name of the URL query
 parameter whose value contains the JSONP callback function.</p>
                                 </div>
                               </td>
@@ -1462,7 +1595,7 @@ parameter whose value contains the JSONP callback function.</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>this RouterResponse.</p>
+                        <p>This RouterResponse.</p>
                       </div>
                     </section>
                   </div>
@@ -1475,8 +1608,8 @@ parameter whose value contains the JSONP callback function.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-09-10)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-05-20)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

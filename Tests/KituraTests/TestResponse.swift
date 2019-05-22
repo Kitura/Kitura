@@ -26,7 +26,7 @@ import Glibc
 import Darwin
 #endif
 
-class TestResponse: KituraTest {
+final class TestResponse: KituraTest, KituraTestSuite {
 
     static var allTests: [(String, (TestResponse) -> () throws -> Void)] {
         return [

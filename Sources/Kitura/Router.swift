@@ -151,9 +151,14 @@ public class Router {
      }
      router.encoders[.json] = newJSONEncoder
      ```
+     ### Considerations for use with OpenAPI generation ###
+     In order for your OpenAPI (swagger) document to correctly represent an alternate `Date` encoding that you have chosen, you _must_ configure your encoders before registering routes.
      */
-    public var encoders: [MediaType: () -> BodyEncoder] = [.json: {return JSONEncoder()}]
-    
+    public var encoders: [MediaType: () -> BodyEncoder] = [.json: {return JSONEncoder()}] {
+        didSet {
+            swagger.setEncoders(self.encoders)
+        }
+    }
     /**
      if the request's Accept header does not match an encoder,
      this media type will be used by the `RouterResponse` to select a `BodyEncoder`.
@@ -183,8 +188,12 @@ public class Router {
      router.decoders[.json] = newJSONDecoder
      ```
      */
-    public var decoders: [MediaType: () -> BodyDecoder] = [.json: {return JSONDecoder()}, .urlEncoded: {return QueryDecoder()}]
-    
+    public var decoders: [MediaType: () -> BodyDecoder] = [.json: {return JSONDecoder()}, .urlEncoded: {return QueryDecoder()}] {
+        didSet {
+            swagger.setDecoders(self.decoders)
+        }
+    }
+
     // MARK: Template Engine
 
     /// The root directory where template files should be placed in order to be automatically handed

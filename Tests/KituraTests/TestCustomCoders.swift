@@ -20,7 +20,7 @@ import KituraContracts
 
 @testable import Kitura
 
-class TestCustomCoders: KituraTest {
+final class TestCustomCoders: KituraTest, KituraTestSuite {
     static var allTests: [(String, (TestCustomCoders) -> () throws -> Void)] {
         return [
             ("testCustomCoder", testCustomCoder),
@@ -155,8 +155,7 @@ class TestCustomCoders: KituraTest {
         performServerTest(customRouter) { expectation in
             self.performRequest("get", path: "/rawget", callback: { response in
                 if let response = response,
-                   let responseString = try? response.readString(),
-                   let unwrappedString = responseString
+                    let unwrappedString = (try? response.readString()).flatMap({ $0 })
                 {
                     // Drop first 6 characters from response String to remove "&date=" and just leave the date String.
                     let responseDate = self.dateFormatter.date(from: String((unwrappedString.dropFirst(6))))
@@ -185,8 +184,7 @@ class TestCustomCoders: KituraTest {
         performServerTest(customRouter) { expectation in
             self.performRequest("get", path: "/rawget", callback: { response in
                 if let response = response,
-                   let responseString = try? response.readString(),
-                   let unwrappedString = responseString
+                    let unwrappedString = (try? response.readString()).flatMap({ $0 })
                 {
                     // Drop first 6 characters from response String to remove "&date=" and just leave the date String.
                     let responseDate = self.dateFormatter.date(from: String((unwrappedString.dropFirst(6))))

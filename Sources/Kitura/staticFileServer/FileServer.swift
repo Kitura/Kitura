@@ -236,11 +236,11 @@ extension StaticFileServer {
                     partHeader += "Content-Range: bytes \(range.lowerBound)-\(range.upperBound)/\(fileSize)\r\n"
                     partHeader += (contentType == nil ? "" : "Content-Type: \(contentType!)\r\n")
                     partHeader += "\r\n"
-                    data.append(partHeader.data(using: .utf8)!)
+                    data.append(Data(partHeader.utf8))
                     data.append(fileData)
-                    data.append("\r\n".data(using: .utf8)!)
+                    data.append(Data("\r\n".utf8))
                 }
-                data.append("--\(boundary)--".data(using: .utf8)!)
+                data.append(Data("--\(boundary)--".utf8))
                 response.send(data: data)
                 response.statusCode = .partialContent
             }

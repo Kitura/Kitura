@@ -66,9 +66,6 @@
                 <a class="nav-group-task-link" href="../Classes/Kitura.html">Kitura</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/RouteRegex.html">RouteRegex</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/Router.html">Router</a>
               </li>
               <li class="nav-group-task">
@@ -195,17 +192,19 @@
 
                 </div>
               </div>
-            <p>A set of helper functions to make it easier to create, start, and stop Kitura based servers.</p>
+            <p>Facilities for creating, starting and stopping Kitura-based servers.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 
-<p>In this example, a function called run is created, inside a server <code>Application.swift</code> file. This will create a Kitura server on the specified port, using the given router and run this created server. This <code>Application.run</code> function would then be called in your <code>main.swift</code> file as a non-returning function to initilize your Kitura server.</p>
+<p>In this example, a <code><a href="../Classes/Router.html">Router</a></code> is created, and a single route registered that responds to an HTTP GET request on <q>/</q> with a plain text response.
+An HTTP server is created on port 8080, and is started with the <code><a href="../Classes/Kitura.html#/s:6KituraAAC3runyyFZ">Kitura.run()</a></code> function (note that this function does not return).
+The route can then be accessed by visiting <code>http://localhost:8080</code>.</p>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
-<span class="k">let</span> <span class="nv">port</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">8080</span>
-<span class="kd">public</span> <span class="kd">func</span> <span class="nf">run</span><span class="p">()</span> <span class="k">throws</span><span class="p">{</span>
-<span class="o">...</span>
-   <span class="kt">Kitura</span><span class="o">.</span><span class="nf">addHTTPServer</span><span class="p">(</span><span class="nv">onPort</span><span class="p">:</span> <span class="n">port</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="n">router</span><span class="p">)</span>
-   <span class="kt">Kitura</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
+    <span class="n">response</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="s">"Hello world"</span><span class="p">)</span>
+    <span class="nf">next</span><span class="p">()</span>
 <span class="p">}</span>
+<span class="kt">Kitura</span><span class="o">.</span><span class="nf">addHTTPServer</span><span class="p">(</span><span class="nv">onPort</span><span class="p">:</span> <span class="mi">8080</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="n">router</span><span class="p">)</span>
+<span class="kt">Kitura</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
 </code></pre>
 
           </div>
@@ -214,13 +213,20 @@
         <section class="section">
           <div class="section-content">
             <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Create%20Server"></a>
+                <a name="//apple_ref/swift/Section/Create Server" class="dashAnchor"></a>
+                <a href="#/Create%20Server">
+                  <h3 class="section-name">Create Server</h3>
+                </a>
+              </div>
               <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6KituraAAC13addHTTPServer0A3Net0C0CSi6onPort_AD14ServerDelegate_p4withAA9SSLConfigVSg0I3SSLAD14KeepAliveStateO04keepM0Sb05allowF5ReusetFZ"></a>
+                    <a name="/s:6KituraAAC13addHTTPServer6onPort4with0F3SSL9keepAlive05allowE5Reuse0A3Net0C0CSi_AI14ServerDelegate_pAA9SSLConfigVSgAI04KeepI5StateOSbtFZ"></a>
                     <a name="//apple_ref/swift/Method/addHTTPServer(onPort:with:withSSL:keepAlive:allowPortReuse:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6KituraAAC13addHTTPServer0A3Net0C0CSi6onPort_AD14ServerDelegate_p4withAA9SSLConfigVSg0I3SSLAD14KeepAliveStateO04keepM0Sb05allowF5ReusetFZ">addHTTPServer(onPort:with:withSSL:keepAlive:allowPortReuse:)</a>
+                    <a class="token" href="#/s:6KituraAAC13addHTTPServer6onPort4with0F3SSL9keepAlive05allowE5Reuse0A3Net0C0CSi_AI14ServerDelegate_pAA9SSLConfigVSgAI04KeepI5StateOSbtFZ">addHTTPServer(onPort:with:withSSL:keepAlive:allowPortReuse:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -233,7 +239,8 @@
 <p>The server is only registered with the framework, it does not start listening
  on the port until <code><a href="../Classes/Kitura.html#/s:6KituraAAC3runyyFZ">Kitura.run()</a></code> or <code><a href="../Classes/Kitura.html#/s:6KituraAAC5startyyFZ">Kitura.start()</a></code> are called.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight swift"><code> <span class="kt">Kitura</span><span class="o">.</span><span class="nf">addHTTPServer</span><span class="p">(</span><span class="nv">onPort</span><span class="p">:</span> <span class="n">port</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="n">router</span><span class="p">)</span>
+<pre class="highlight swift"><code> <span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+ <span class="kt">Kitura</span><span class="o">.</span><span class="nf">addHTTPServer</span><span class="p">(</span><span class="nv">onPort</span><span class="p">:</span> <span class="mi">8080</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="n">router</span><span class="p">)</span>
 </code></pre>
 
                       </div>
@@ -241,7 +248,8 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kd">func</span> <span class="nf">addHTTPServer</span><span class="p">(</span><span class="n">onPort</span> <span class="nv">port</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="kd">func</span> <span class="nf">addHTTPServer</span><span class="p">(</span><span class="n">onPort</span> <span class="nv">port</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span>
                                 <span class="n">with</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt">ServerDelegate</span><span class="p">,</span>
                                 <span class="n">withSSL</span> <span class="nv">sslConfig</span><span class="p">:</span> <span class="kt"><a href="../Structs/SSLConfig.html">SSLConfig</a></span><span class="p">?</span><span class="o">=</span><span class="kc">nil</span><span class="p">,</span>
                                 <span class="n">keepAlive</span> <span class="nv">keepAliveState</span><span class="p">:</span> <span class="kt">KeepAliveState</span> <span class="o">=</span> <span class="o">.</span><span class="n">unlimited</span><span class="p">,</span>
@@ -326,9 +334,106 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6KituraAAC16addFastCGIServer0A3Net0cD0CSi6onPort_AD14ServerDelegate_p4withSb05allowG5ReusetFZ"></a>
+                    <a name="/s:6KituraAAC13addHTTPServer18onUnixDomainSocket4with0H3SSL9keepAlive0A3Net0C0CSS_AH14ServerDelegate_pAA9SSLConfigVSgAH04KeepK5StateOtFZ"></a>
+                    <a name="//apple_ref/swift/Method/addHTTPServer(onUnixDomainSocket:with:withSSL:keepAlive:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6KituraAAC13addHTTPServer18onUnixDomainSocket4with0H3SSL9keepAlive0A3Net0C0CSS_AH14ServerDelegate_pAA9SSLConfigVSgAH04KeepK5StateOtFZ">addHTTPServer(onUnixDomainSocket:with:withSSL:keepAlive:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Add an HTTPServer on a Unix domain socket path with a delegate.</p>
+
+<p>The server is only registered with the framework, it does not start listening
+ on the Unix socket until <code><a href="../Classes/Kitura.html#/s:6KituraAAC3runyyFZ">Kitura.run()</a></code> or <code><a href="../Classes/Kitura.html#/s:6KituraAAC5startyyFZ">Kitura.start()</a></code> are called.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code> <span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+ <span class="kt">Kitura</span><span class="o">.</span><span class="nf">addHTTPServer</span><span class="p">(</span><span class="nv">onUnixDomainSocket</span><span class="p">:</span> <span class="s">"/tmp/mySocket"</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="n">router</span><span class="p">)</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="kd">func</span> <span class="nf">addHTTPServer</span><span class="p">(</span><span class="n">onUnixDomainSocket</span> <span class="nv">socketPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+                                <span class="n">with</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt">ServerDelegate</span><span class="p">,</span>
+                                <span class="n">withSSL</span> <span class="nv">sslConfig</span><span class="p">:</span> <span class="kt"><a href="../Structs/SSLConfig.html">SSLConfig</a></span><span class="p">?</span><span class="o">=</span><span class="kc">nil</span><span class="p">,</span>
+                                <span class="n">keepAlive</span> <span class="nv">keepAliveState</span><span class="p">:</span> <span class="kt">KeepAliveState</span> <span class="o">=</span> <span class="o">.</span><span class="n">unlimited</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">HTTPServer</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>onUnixDomainSocket</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The path of the Unix domain socket to listen on.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>with</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code>ServerDelegate</code> to use.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>withSSL</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code>sslConfig</code> to use.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>keepAlive</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The maximum number of additional requests to permit per Keep-Alive connection. Defaults to <code>.unlimited</code>. If set to <code>.disabled</code>, Keep-Alive will not be permitted.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The created <code>HTTPServer</code>.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6KituraAAC16addFastCGIServer6onPort4with05allowF5Reuse0A3Net0cD0CSi_AG14ServerDelegate_pSbtFZ"></a>
                     <a name="//apple_ref/swift/Method/addFastCGIServer(onPort:with:allowPortReuse:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6KituraAAC16addFastCGIServer0A3Net0cD0CSi6onPort_AD14ServerDelegate_p4withSb05allowG5ReusetFZ">addFastCGIServer(onPort:with:allowPortReuse:)</a>
+                    <a class="token" href="#/s:6KituraAAC16addFastCGIServer6onPort4with05allowF5Reuse0A3Net0cD0CSi_AG14ServerDelegate_pSbtFZ">addFastCGIServer(onPort:with:allowPortReuse:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -341,7 +446,8 @@
 <p>The server is only registered with the framework, it does not start listening
  on the port until <code><a href="../Classes/Kitura.html#/s:6KituraAAC3runyyFZ">Kitura.run()</a></code> or <code><a href="../Classes/Kitura.html#/s:6KituraAAC5startyyFZ">Kitura.start()</a></code> are called.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
-<pre class="highlight swift"><code> <span class="kt">Kitura</span><span class="o">.</span><span class="nf">addFastCGIServer</span><span class="p">(</span><span class="nv">onPort</span><span class="p">:</span> <span class="n">port</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="n">router</span><span class="p">)</span>
+<pre class="highlight swift"><code> <span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+ <span class="kt">Kitura</span><span class="o">.</span><span class="nf">addFastCGIServer</span><span class="p">(</span><span class="nv">onPort</span><span class="p">:</span> <span class="mi">8080</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="n">router</span><span class="p">)</span>
 </code></pre>
 
                       </div>
@@ -349,7 +455,8 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kd">func</span> <span class="nf">addFastCGIServer</span><span class="p">(</span><span class="n">onPort</span> <span class="nv">port</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="kd">func</span> <span class="nf">addFastCGIServer</span><span class="p">(</span><span class="n">onPort</span> <span class="nv">port</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span>
                                    <span class="n">with</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt">ServerDelegate</span><span class="p">,</span>
                                    <span class="nv">allowPortReuse</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">FastCGIServer</span></code></pre>
 
@@ -405,6 +512,17 @@
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Start%20Servers"></a>
+                <a name="//apple_ref/swift/Section/Start Servers" class="dashAnchor"></a>
+                <a href="#/Start%20Servers">
+                  <h3 class="section-name">Start Servers</h3>
+                </a>
+              </div>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -422,7 +540,9 @@
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 
 <p>Make all registered servers start listening on their port.</p>
-<pre class="highlight swift"><code> <span class="kt">Kitura</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
+<pre class="highlight swift"><code> <span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+ <span class="kt">Kitura</span><span class="o">.</span><span class="nf">addHTTPServer</span><span class="p">(</span><span class="nv">onPort</span><span class="p">:</span> <span class="mi">8080</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="n">router</span><span class="p">)</span>
+ <span class="kt">Kitura</span><span class="o">.</span><span class="nf">run</span><span class="p">()</span>
 </code></pre>
 <div class="aside aside-note">
     <p class="aside-title">Note</p>
@@ -459,7 +579,9 @@
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 
 <p>Make all registered servers start listening on their port.</p>
-<pre class="highlight swift"><code> <span class="kt">Kitura</span><span class="o">.</span><span class="nf">start</span><span class="p">()</span>
+<pre class="highlight swift"><code> <span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+ <span class="kt">Kitura</span><span class="o">.</span><span class="nf">addHTTPServer</span><span class="p">(</span><span class="nv">onPort</span><span class="p">:</span> <span class="mi">8080</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="n">router</span><span class="p">)</span>
+ <span class="kt">Kitura</span><span class="o">.</span><span class="nf">start</span><span class="p">()</span>
 </code></pre>
 
                       </div>
@@ -474,12 +596,23 @@
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Stop%20Servers"></a>
+                <a name="//apple_ref/swift/Section/Stop Servers" class="dashAnchor"></a>
+                <a href="#/Stop%20Servers">
+                  <h3 class="section-name">Stop Servers</h3>
+                </a>
+              </div>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6KituraAAC4stopySb10unregister_tFZ"></a>
+                    <a name="/s:6KituraAAC4stop10unregisterySb_tFZ"></a>
                     <a name="//apple_ref/swift/Method/stop(unregister:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6KituraAAC4stopySb10unregister_tFZ">stop(unregister:)</a>
+                    <a class="token" href="#/s:6KituraAAC4stop10unregisterySb_tFZ">stop(unregister:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -491,7 +624,10 @@
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 
 <p>Make all registered servers stop listening on their port.</p>
-<pre class="highlight swift"><code> <span class="kt">Kitura</span><span class="o">.</span><span class="nf">stop</span><span class="p">()</span>
+<pre class="highlight swift"><code> <span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+ <span class="kt">Kitura</span><span class="o">.</span><span class="nf">addHTTPServer</span><span class="p">(</span><span class="nv">onPort</span><span class="p">:</span> <span class="mi">8080</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="n">router</span><span class="p">)</span>
+ <span class="kt">Kitura</span><span class="o">.</span><span class="nf">start</span><span class="p">()</span>
+ <span class="kt">Kitura</span><span class="o">.</span><span class="nf">stop</span><span class="p">()</span>
 </code></pre>
 
                       </div>
@@ -533,8 +669,8 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-09-10)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-05-20)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

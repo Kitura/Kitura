@@ -48,7 +48,7 @@ fileprivate let subrouter = { () -> Router in
     return subrouter
 }()
 
-class TestRouteRegex: KituraTest {
+final class TestRouteRegex: KituraTest, KituraTestSuite {
     static var allTests: [(String, (TestRouteRegex) -> () throws -> Void)] {
         return [
             ("testBuildRegexFromPattern", testBuildRegexFromPattern),

@@ -440,13 +440,12 @@ public class RouterResponse {
             Log.warning("RouterResponse send(str:) invoked after end() for \(self.request.urlURL)")
             return self
         }
-        let utf8Length = str.utf8.count
-        let bufferLength = utf8Length + 1  // Add room for the NULL terminator
-        var utf8: [CChar] = [CChar](repeating: 0, count: bufferLength)
-        if str.getCString(&utf8, maxLength: bufferLength, encoding: .utf8) {
-            let rawBytes = UnsafeRawPointer(UnsafePointer(utf8))
-            buffer.append(bytes: rawBytes.assumingMemoryBound(to: UInt8.self), length: utf8Length)
-            state.invokedSend = true
+        let count = str.utf8.count
+        str.withCString {
+            $0.withMemoryRebound(to: UInt8.self, capacity: count) {
+                buffer.append(bytes: $0, length: count)
+                state.invokedSend = true
+            }
         }
         return self
     }

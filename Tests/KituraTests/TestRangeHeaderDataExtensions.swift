@@ -19,7 +19,15 @@ import XCTest
 
 @testable import Kitura
 
-class TestRangeHeaderDataExtensions: XCTestCase {
+final class TestRangeHeaderDataExtensions: XCTestCase, KituraTestSuite {
+
+    static var allTests: [(String, (TestRangeHeaderDataExtensions) -> () throws -> Void)] {
+        return [
+            ("testPartialDataReadWithErrorFileNotFound", testPartialDataReadWithErrorFileNotFound),
+            ("testPartialDataRead", testPartialDataRead),
+            ("testPartialDataReadEntireFile", testPartialDataReadEntireFile),
+        ]
+    }
 
     var fileUrl: URL!
 
@@ -27,12 +35,11 @@ class TestRangeHeaderDataExtensions: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        // Prepare temporary file url
-        var counter = 0
-        repeat {
-            counter += 1
-            fileUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("dataRange\(counter).txt")
-        } while FileManager.default.fileExists(atPath: fileUrl.path)
+        // Prepare temporary file url based on current test name
+        let fileSuffix = self.name.lowercased().filter { char in
+            return char >= "a" && char <= "z"
+        }
+        fileUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("dataRange_\(fileSuffix).txt")
         // Write temporary file
         try? testData.write(to: fileUrl, atomically: true, encoding: .utf8)
     }

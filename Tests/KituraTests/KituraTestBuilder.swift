@@ -119,15 +119,17 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
     let test: KituraTest
     let router: ServerDelegate
     let sslOption: SSLOption
+    let socketTypeOption: SocketTypeOption
     let timeout: TimeInterval
     let line: Int
     private var requests: [Request] = []
     private var currentRequest: Request? { return requests.last }
 
-    public init(test: KituraTest, router: ServerDelegate, sslOption: SSLOption, timeout: TimeInterval, line: Int) {
+    public init(test: KituraTest, router: ServerDelegate, sslOption: SSLOption, socketTypeOption: SocketTypeOption, timeout: TimeInterval, line: Int) {
         self.test = test
         self.router = router
         self.sslOption = sslOption
+        self.socketTypeOption = socketTypeOption
         self.timeout = timeout
         self.line = line
     }
@@ -324,6 +326,6 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
                 }
             }
         }
-        test.performServerTest(router, sslOption: sslOption, timeout: timeout, line: line, asyncTasks: tasks)
+        test.performServerTest(router, sslOption: sslOption, socketTypeOption: socketTypeOption, timeout: timeout, line: line, asyncTasks: tasks)
     }
 }
