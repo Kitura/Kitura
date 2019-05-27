@@ -226,12 +226,12 @@ public class Kitura {
         serverLock.lock()
         var numberOfFailures = 0
         for (server, port, address) in httpServersAndPorts {
-            Log.verbose("Starting an HTTP Server on port \(port) with address \(String(describing: address))...")
+            Log.verbose("Starting an HTTP Server on \(address ?? "*"):\(port)...")
             do {
                 try server.listen(on: port, address: address)
             } catch {
                 numberOfFailures += 1
-                Log.error("Error listening on port \(port): \(error). Use server.failed(callback:) to handle")
+                Log.error("Error listening on \(address ?? "*"):\(port): \(error). Use server.failed(callback:) to handle")
             }
         }
         for (server, path) in httpServersAndUnixSocketPaths {
@@ -243,12 +243,12 @@ public class Kitura {
             }
         }
         for (server, port, address) in fastCGIServersAndPorts {
-            Log.verbose("Starting a FastCGI Server on port \(port)...")
+            Log.verbose("Starting a FastCGI Server on \(address ?? "*"):\(port)...")
             do {
                 try server.listen(on: port, address: address)
             } catch {
                 numberOfFailures += 1
-                Log.error("Error listening on port \(port): \(error). Use server.failed(callback:) to handle")
+                Log.error("Error listening on \(address ?? "*"):\(port): \(error). Use server.failed(callback:) to handle")
             }
         }
         serverLock.unlock()
@@ -272,7 +272,7 @@ public class Kitura {
     public class func stop(unregister: Bool = true) {
         serverLock.lock()
         for (server, port, address) in httpServersAndPorts {
-            Log.verbose("Stopping HTTP Server on port \(port) with address \(String(describing: address))...")
+            Log.verbose("Stopping HTTP Server on \(address ?? "*"):\(port)...")
             server.stop()
         }
 
@@ -282,7 +282,7 @@ public class Kitura {
         }
 
         for (server, port, address) in fastCGIServersAndPorts {
-            Log.verbose("Stopping FastCGI Server on port \(port) with address \(String(describing: address))...")
+            Log.verbose("Stopping FastCGI Server on \(address ?? "*"):\(port)...")
             server.stop()
         }
 
