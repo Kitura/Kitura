@@ -59,17 +59,17 @@ public class Kitura {
     /// Kitura.addHTTPServer(onPort: 8080, with: router, address: "localhost")
     ///```
     /// - Parameter onPort: The port to listen on.
-    /// - Parameter with: The `ServerDelegate` to use.
-    /// - Parameter address: The address to listen on, for example "localhost". The default is nil, which listens on
+    /// - Parameter onAddress: The address to listen on, for example "localhost". The default is nil, which listens on
     ///             all addresses.
+    /// - Parameter with: The `ServerDelegate` to use.
     /// - Parameter withSSL: The `sslConfig` to use.
     /// - Parameter keepAlive: The maximum number of additional requests to permit per Keep-Alive connection. Defaults to `.unlimited`. If set to `.disabled`, Keep-Alive will not be permitted.
     /// - Parameter allowPortReuse: Determines whether the listener port may be shared with other Kitura instances (`SO_REUSEPORT`). Defaults to `false`. If the specified port is already in use by another listener that has not allowed sharing, the server will fail to start.
     /// - Returns: The created `HTTPServer`.
     @discardableResult
     public class func addHTTPServer(onPort port: Int,
+                                    onAddress address: String? = nil,
                                     with delegate: ServerDelegate,
-                                    address: String? = nil,
                                     withSSL sslConfig: SSLConfig?=nil,
                                     keepAlive keepAliveState: KeepAliveState = .unlimited,
                                     allowPortReuse: Bool = false) -> HTTPServer {
@@ -132,15 +132,15 @@ public class Kitura {
     /// Kitura.addFastCGIServer(onPort: 8080, with: router)
     ///```
     /// - Parameter onPort: The port to listen on.
-    /// - Parameter with: The `ServerDelegate` to use.
-    /// - Parameter address: The address to listen on, for example "localhost". The default is nil, which listens on
+    /// - Parameter onAddress: The address to listen on, for example "localhost". The default is nil, which listens on
     ///             all addresses.
+    /// - Parameter with: The `ServerDelegate` to use.
     /// - Parameter allowPortReuse: Determines whether the listener port may be shared with other Kitura instances (`SO_REUSEPORT`). Defaults to `false`. If the specified port is already in use by another listener that has not allowed sharing, the server will fail to start.
     /// - Returns: The created `FastCGIServer`.
     @discardableResult
     public class func addFastCGIServer(onPort port: Int,
+                                       onAddress address: String? = nil,
                                        with delegate: ServerDelegate,
-                                       address: String? = nil,
                                        allowPortReuse: Bool = false) -> FastCGIServer {
         let server = FastCGI.createServer()
         server.delegate = delegate
