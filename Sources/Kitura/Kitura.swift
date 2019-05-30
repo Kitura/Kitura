@@ -34,7 +34,7 @@ import Dispatch
      response.send("Hello world")
      next()
  }
- Kitura.addHTTPServer(onPort: 8080, with: router, address: "localhost")
+ Kitura.addHTTPServer(onPort: 8080, onAddress: "localhost", with: router)
  Kitura.run()
  ```
  */
@@ -56,7 +56,7 @@ public class Kitura {
     ///### Usage Example: ###
     ///```swift
     /// let router = Router()
-    /// Kitura.addHTTPServer(onPort: 8080, with: router, address: "localhost")
+    /// Kitura.addHTTPServer(onPort: 8080, onAddress: "localhost", with: router)
     ///```
     /// - Parameter onPort: The port to listen on.
     /// - Parameter onAddress: The address to listen on, for example "localhost". The default is nil, which listens on
@@ -129,7 +129,7 @@ public class Kitura {
     ///### Usage Example: ###
     ///```swift
     /// let router = Router()
-    /// Kitura.addFastCGIServer(onPort: 8080, with: router)
+    /// Kitura.addFastCGIServer(onPort: 8080, onAddress: "localhost", with: router)
     ///```
     /// - Parameter onPort: The port to listen on.
     /// - Parameter onAddress: The address to listen on, for example "localhost". The default is nil, which listens on
@@ -160,7 +160,7 @@ public class Kitura {
     /// Make all registered servers start listening on their port.
     ///```swift
     /// let router = Router()
-    /// Kitura.addHTTPServer(onPort: 8080, with: router, address: "localhost")
+    /// Kitura.addHTTPServer(onPort: 8080, onAddress: "localhost", with: router)
     /// Kitura.run()
     ///```
     /// Make all registered servers start listening on their port and exit if any fail to start.
@@ -190,7 +190,7 @@ public class Kitura {
     /// Make all registered servers start listening on their port.
     ///```swift
     /// let router = Router()
-    /// Kitura.addHTTPServer(onPort: 8080, with: router, address: "localhost")
+    /// Kitura.addHTTPServer(onPort: 8080, onAddress: "localhost", with: router)
     /// Kitura.start()
     ///```
     public class func start() {
@@ -219,7 +219,7 @@ public class Kitura {
     /// Make all registered servers start listening on their port.
     ///```swift
     /// let router = Router()
-    /// Kitura.addHTTPServer(onPort: 8080, with: router, address: "localhost")
+    /// Kitura.addHTTPServer(onPort: 8080, onAddress: "localhost", with: router)
     /// Kitura.startWithStatus() // Returns the number of failed server starts.
     ///```
     public class func startWithStatus() -> Int {
