@@ -47,8 +47,9 @@ final class TestServer: KituraTest, KituraTestSuite {
 
     private func setupServerAndExpectations(expectStart: Bool, expectStop: Bool, expectFail: Bool, httpPort: Int?=nil, fastCgiPort: Int?=nil) {
         let router = Router()
-        let httpServer = Kitura.addHTTPServer(onPort: httpPort ?? 0, with: router)
-        let fastCgiServer = useNIO ? FastCGIServer() : Kitura.addFastCGIServer(onPort: fastCgiPort ?? 0, with: router)
+        let httpServer = Kitura.addHTTPServer(onPort: httpPort ?? 0, onAddress: "localhost", with: router)
+        let fastCgiServer = useNIO ? FastCGIServer() : Kitura.addFastCGIServer(onPort: fastCgiPort ?? 0,
+                                                                               onAddress: "localhost", with: router)
 
         if expectStart {
             let httpStarted = expectation(description: "HTTPServer started()")
