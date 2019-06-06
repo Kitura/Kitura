@@ -86,7 +86,7 @@ extension StaticFileServer {
             return filePath
         }
 
-        func serveFile(_ filePath: String, requestPath: String, response: RouterResponse) {
+        func serveFile(_ filePath: String, requestPath: String, queryString: String, response: RouterResponse) {
             let fileManager = FileManager()
             var isDirectory = ObjCBool(false)
 
@@ -96,7 +96,7 @@ extension StaticFileServer {
                 #else
                     let isDirectoryBool = isDirectory
                 #endif
-                serveExistingFile(filePath, requestPath: requestPath,
+                serveExistingFile(filePath, requestPath: requestPath, queryString: queryString,
                                   isDirectory: isDirectoryBool, response: response)
                 return
             }
@@ -111,12 +111,12 @@ extension StaticFileServer {
             }
         }
 
-        private func serveExistingFile(_ filePath: String, requestPath: String, isDirectory: Bool,
-                                       response: RouterResponse) {
+        private func serveExistingFile(_ filePath: String, requestPath: String, queryString: String,
+                                       isDirectory: Bool, response: RouterResponse) {
             if isDirectory {
                 if redirect {
                     do {
-                        try response.redirect(requestPath + "/")
+                        try response.redirect(requestPath + "/" + queryString)
                     } catch {
                         response.error = Error.failedToRedirectRequest(path: requestPath + "/", chainedError: error)
                     }

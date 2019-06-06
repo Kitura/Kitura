@@ -60,6 +60,7 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
             ("testRangeRequestWithIfRangeHeaderWithOldETag", testRangeRequestWithIfRangeHeaderWithOldETag),
             ("testRangeRequestWithIfRangeHeaderAsLastModified", testRangeRequestWithIfRangeHeaderAsLastModified),
             ("testRangeRequestWithIfRangeHeaderAsOldLastModified", testRangeRequestWithIfRangeHeaderAsOldLastModified),
+            ("testStaticFileServerRedirectPreservingQueryParams", testStaticFileServerRedirectPreservingQueryParams),
         ]
     }
 
@@ -167,32 +168,60 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
         })
     }
 
+    static func servingPathPrefix() -> String {
+        // this file is at
+        // <original repository directory>/Tests/KituraTests/TestStaticFileServer.swift
+        // the original repository directory is 3 path components up
+        let currentFilePath = #file
+
+        var pathComponents = currentFilePath.split(separator: "/").map(String.init)
+
+        // We need to check whether we have an edited Kitura package, this will be seen from a path containing Packages and Kitura at the relevant indexes
+        let numberOfComponents = pathComponents.count
+        let expectedKituraIndex = pathComponents.count - 4
+        let expectedPackagesIndex = pathComponents.count - 5
+        if pathComponents[expectedKituraIndex] == "Kitura"
+            && pathComponents[expectedPackagesIndex] == "Packages" {
+            return "./Packages/Kitura/"
+        } else {
+            return "./"
+        }
+    }
+
     static func setupRouter(enableWelcomePage: Bool = true) -> Router {
         let router = Router(enableWelcomePage: enableWelcomePage)
+
+        if !enableWelcomePage {
+            // Testing the default welcome page can be disabled does not require a `StaticFileServer` to be configured.
+            return router
+        }
 
         // The route below ensures that the static file server does not prevent all routes being walked
         router.all("/", middleware: StaticFileServer())
 
         var cacheOptions = StaticFileServer.CacheOptions(maxAgeCacheControlHeader: 2)
         var options = StaticFileServer.Options(possibleExtensions: ["exe", "html"], cacheOptions: cacheOptions)
-        router.all("/qwer", middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options:options, customResponseHeadersSetter: HeaderSetter()))
+        router.all("/qwer", middleware: StaticFileServer(path: servingPathPrefix() + "Tests/KituraTests/TestStaticFileServer/", options:options, customResponseHeadersSetter: HeaderSetter()))
 
         cacheOptions = StaticFileServer.CacheOptions(addLastModifiedHeader: false, generateETag: false)
         options = StaticFileServer.Options(serveIndexForDirectory: false, cacheOptions: cacheOptions)
-        router.all("/zxcv", middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options:options))
+        router.all("/zxcv", middleware: StaticFileServer(path: servingPathPrefix() + "Tests/KituraTests/TestStaticFileServer/", options:options))
 
         options = StaticFileServer.Options(redirect: false)
         let directoryURL = URL(fileURLWithPath: #file + "/../TestStaticFileServer").standardizedFileURL
         router.all("/asdf", middleware: StaticFileServer(path: directoryURL.path, options:options))
 
         options = StaticFileServer.Options(possibleExtensions: ["exe", "html"], cacheOptions: cacheOptions, acceptRanges: false)
-        router.all("/tyui", middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options:options, customResponseHeadersSetter: HeaderSetter()))
+        router.all("/tyui", middleware: StaticFileServer(path: servingPathPrefix() + "Tests/KituraTests/TestStaticFileServer/", options:options, customResponseHeadersSetter: HeaderSetter()))
         
         options = StaticFileServer.Options(serveIndexForDirectory: true, redirect: true, cacheOptions: cacheOptions)
-        router.route("/ghjk").all(middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/", options: options))
+        router.route("/ghjk").all(middleware: StaticFileServer(path: servingPathPrefix() + "Tests/KituraTests/TestStaticFileServer/", options: options))
         
         options = StaticFileServer.Options(serveIndexForDirectory: true, redirect: true, cacheOptions: cacheOptions)
-        router.route("/opnm/:parameter").all(middleware: StaticFileServer(path: "./Tests/KituraTests/TestStaticFileServer/subfolder", options: options))
+        router.route("/opnm/:parameter").all(middleware: StaticFileServer(path: servingPathPrefix() + "Tests/KituraTests/TestStaticFileServer/subfolder", options: options))
+
+        options = StaticFileServer.Options(serveIndexForDirectory: true, redirect: true)
+        router.route("/queryparams").all(middleware: StaticFileServer(path: servingPathPrefix() + "Tests/KituraTests/TestStaticFileServer/", options: options))
 
         return router
     }
@@ -592,6 +621,27 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
                 XCTAssertNil(response?.headers["Content-Range"]?.first)
             }, headers: ["Range": "bytes=0-10", "If-Range": "Wed, 01 Jan 2000 00:00:00 GMT"])
             expectation.fulfill()
+        }
+    }
+
+    func testStaticFileServerRedirectPreservingQueryParams() {
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/queryparams?a=b&c=d", followRedirects: false, callback: { response in
+                defer {
+                    expectation.fulfill()
+                }
+                guard let response = response else {
+                    return XCTFail()
+                }
+                // We expect StaticFileServer to redirect us. In order to see what location header
+                // has been sent, we have disabled following of redirects, so expect a 3xx response:
+                XCTAssertEqual(response.statusCode.class, HTTPStatusCode.Class.redirection)
+                guard let location = response.headers["Location"] else {
+                    return XCTFail("Location header was missing")
+                }
+                XCTAssertEqual(location, ["/queryparams/?a=b&c=d"])
+
+            })
         }
     }
 }

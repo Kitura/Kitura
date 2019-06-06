@@ -194,7 +194,7 @@ class KituraTest: XCTestCase {
         }
 
         do {
-            try server.listen(on: 0)
+            try server.listen(on: 0, address: "localhost")
 
             if useSSL {
                 KituraTest.httpsInetServer = server
@@ -274,7 +274,7 @@ class KituraTest: XCTestCase {
         }
     }
 
-    func performRequest(_ method: String, path: String, port: Int? = nil, socketPath: String? = nil, useSSL: Bool? = nil, useUnixSocket: Bool? = nil,
+    func performRequest(_ method: String, path: String, port: Int? = nil, socketPath: String? = nil, useSSL: Bool? = nil, useUnixSocket: Bool? = nil, followRedirects: Bool = true,
                         callback: @escaping ClientRequest.Callback, headers: [String: String]? = nil,
                         requestModifier: ((ClientRequest) -> Void)? = nil) {
 
@@ -298,6 +298,9 @@ class KituraTest: XCTestCase {
             [.method(method), .schema(schema), .hostname("localhost"), .path(path), .headers(allHeaders)]
         if useSSL {
             options.append(.disableSSLVerification)
+        }
+        if !followRedirects {
+            options.append(.maxRedirects(0))
         }
         let req: ClientRequest
         if useUnixSocket {

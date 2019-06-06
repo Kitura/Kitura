@@ -27,6 +27,8 @@ final class TestServer: KituraTest, KituraTestSuite {
             ("testServerStartStop", testServerStartStop),
             ("testServerRun", testServerRun),
             ("testServerFail", testServerFail),
+            ("testServerStartWithStatus", testServerStartWithStatus),
+            ("testServerStartWaitStop", testServerStartWaitStop),
             ("testServerRestart", testServerRestart)
         ]
         #if !SKIP_UNIX_SOCKETS
@@ -45,8 +47,9 @@ final class TestServer: KituraTest, KituraTestSuite {
 
     private func setupServerAndExpectations(expectStart: Bool, expectStop: Bool, expectFail: Bool, httpPort: Int?=nil, fastCgiPort: Int?=nil) {
         let router = Router()
-        let httpServer = Kitura.addHTTPServer(onPort: httpPort ?? 0, with: router)
-        let fastCgiServer = useNIO ? FastCGIServer() : Kitura.addFastCGIServer(onPort: fastCgiPort ?? 0, with: router)
+        let httpServer = Kitura.addHTTPServer(onPort: httpPort ?? 0, onAddress: "localhost", with: router)
+        let fastCgiServer = useNIO ? FastCGIServer() : Kitura.addFastCGIServer(onPort: fastCgiPort ?? 0,
+                                                                               onAddress: "localhost", with: router)
 
         if expectStart {
             let httpStarted = expectation(description: "HTTPServer started()")
@@ -133,6 +136,64 @@ final class TestServer: KituraTest, KituraTestSuite {
 
         waitForExpectations(timeout: 10) { error in
             XCTAssertNil(error)
+        }
+    }
+
+    /// Sets up two servers on the same port. One will start, and one will fail to start
+    /// as the address is already in use.
+    private func setupConflictingServers(onPort: Int) {
+        let router1 = Router()
+        let router2 = Router()
+        let server1 = Kitura.addHTTPServer(onPort: onPort, with: router1)
+        let server2 = Kitura.addHTTPServer(onPort: onPort, with: router2)
+        // Expect server 1 to start
+        let server1Started = expectation(description: "Server 1 started on port \(onPort)")
+        server1.started {
+            server1Started.fulfill()
+        }
+        // Expect server 2 to fail (same port)
+        let server2Failed = expectation(description: "Server 2 failed - port should already be in use")
+        server2.failed { error in
+            XCTAssertNotNil(error)
+            server2Failed.fulfill()
+        }
+    }
+
+    /// Tests that Kitura.startWithStatus() returns the correct number of servers
+    /// that failed to start.
+    func testServerStartWithStatus() {
+        setupConflictingServers(onPort: 12345)
+        let numFailures = Kitura.startWithStatus()
+        XCTAssertEqual(numFailures, 1, "Expected startWithStatus() to report 1 server fail")
+        waitForExpectations(timeout: 10) { error in
+            Kitura.stop()
+            XCTAssertNil(error)
+        }
+    }
+
+    /// Tests that Kitura.wait() will wait until all successful servers are stopped.
+    func testServerStartWaitStop() {
+        setupConflictingServers(onPort: 23456)
+        let waitComplete = DispatchSemaphore(value: 0)
+        let requestQueue = DispatchQueue(label: "Request queue")
+        requestQueue.async() {
+            let failures = Kitura.startWithStatus()
+            XCTAssertEqual(failures, 1, "Expected one server to fail to start")
+            // As soon as the server has started, wait for it to stop
+            Kitura.wait()
+            // Signal that Kitura.wait() has completed
+            waitComplete.signal()
+        }
+        waitForExpectations(timeout: 10) { error in
+            // Check that Kitura.wait() is still waiting
+            let preStopStatus = waitComplete.wait(timeout: DispatchTime.now())
+            XCTAssertEqual(preStopStatus, DispatchTimeoutResult.timedOut, "Kitura.wait() unexpectedly completed")
+            // Stop the server, allowing wait() to complete
+            Kitura.stop()
+            XCTAssertNil(error)
+            // Check that the Kitura.wait() call completes
+            let postStopStatus = waitComplete.wait(timeout: DispatchTime.now() + DispatchTimeInterval.seconds(10))
+            XCTAssertEqual(postStopStatus, DispatchTimeoutResult.success, "Timed out waiting to Kitura.wait() to complete")
         }
     }
 
