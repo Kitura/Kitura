@@ -41,6 +41,8 @@ extension StaticFileServer {
         /// Whether accepts range requests or not
         let acceptRanges: Bool
 
+        let fallbackToDefaultIndex: Bool
+
         init(servingFilesPath: String, options: StaticFileServer.Options,
              responseHeadersSetter: ResponseHeadersSetter?) {
             self.possibleExtensions = options.possibleExtensions
@@ -49,6 +51,7 @@ extension StaticFileServer {
             self.acceptRanges = options.acceptRanges
             self.servingFilesPath = servingFilesPath
             self.responseHeadersSetter = responseHeadersSetter
+            self.fallbackToDefaultIndex = options.fallbackToDefaultIndex
         }
 
         func getFilePath(from request: RouterRequest) -> String? {
@@ -101,14 +104,30 @@ extension StaticFileServer {
                 return
             }
 
-            tryToServeWithExtensions(filePath, response: response)
+            if tryToServeWithExtensions(filePath, response: response) {
+                return
+            }
+
+            if fallbackToDefaultIndex {
+                serveDefaultIndex(response: response)
+            }
         }
 
-        private func tryToServeWithExtensions(_ filePath: String, response: RouterResponse) {
+        private func serveDefaultIndex(response: RouterResponse) {
+            do {
+                try response.send(fileName: servingFilesPath + "/index.html")
+            } catch {
+                 response.error = Error.failedToRedirectRequest(path: servingFilesPath + "/", chainedError: error)
+            }
+        }
+
+        private func tryToServeWithExtensions(_ filePath: String, response: RouterResponse) -> Bool {
+            var served = false
             let filePathWithPossibleExtensions = possibleExtensions.map { filePath + "." + $0 }
             for filePathWithExtension in filePathWithPossibleExtensions {
-                serveIfNonDirectoryFile(atPath: filePathWithExtension, response: response)
+                served = served || serveIfNonDirectoryFile(atPath: filePathWithExtension, response: response)
             }
+            return served
         }
 
         private func serveExistingFile(_ filePath: String, requestPath: String, queryString: String,
