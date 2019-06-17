@@ -78,6 +78,9 @@ open class StaticFileServer: RouterMiddleware {
         /// - Parameter redirect: an indication whether to redirect to trailing
         /// "/" when the requested path is a directory.
         /// - Parameter cacheOptions: cache options for StaticFileServer.
+        /// - Parameter fallbackToDefaultIndex: an indication to serve the "index.html"
+        /// if a requested path is not found. This is intended to be used by single page
+        /// applications.
         public init(possibleExtensions: [String] = [], serveIndexForDirectory: Bool = true,
              redirect: Bool = true, cacheOptions: CacheOptions = CacheOptions(), acceptRanges: Bool = true,
              fallbackToDefaultIndex: Bool = false) {
