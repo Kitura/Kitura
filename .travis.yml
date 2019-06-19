@@ -51,7 +51,7 @@ matrix:
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=swift:5.0.1 SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT SWIFT_TEST_ARGS="--parallel"
+      env: SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT SWIFT_TEST_ARGS="--parallel"
     - os: osx
       osx_image: xcode9.2
       sudo: required
@@ -72,10 +72,11 @@ matrix:
       osx_image: xcode10.2
       sudo: required
       env: KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
-    - os: osx
-      osx_image: xcode10.2
-      sudo: required
-      env: SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT SWIFT_TEST_ARGS="--parallel"
+# Awaiting xcode11 image from Travis
+#    - os: osx
+#      osx_image: xcode10.2
+#      sudo: required
+#      env: SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT SWIFT_TEST_ARGS="--parallel"
 
 before_install:
   - git clone https://github.com/IBM-Swift/Package-Builder.git
