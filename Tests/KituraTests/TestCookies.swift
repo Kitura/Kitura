@@ -16,6 +16,11 @@
 
 import XCTest
 import Foundation
+#if swift(>=4.1)
+  #if canImport(FoundationNetworking)
+    import FoundationNetworking
+  #endif
+#endif
 
 @testable import Kitura
 @testable import KituraNet
