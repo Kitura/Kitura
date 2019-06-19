@@ -179,6 +179,99 @@ public class RouterResponse {
         }
     }
 
+    public enum CookieAttribute {
+        //The cookie’s name.
+        case name(String)
+
+        //The cookie‘s string value.
+        case value(String)
+
+        //The domain of the cookie.
+        case domain(String)
+
+        //The cookie’s path.
+        case path(String)
+
+        //The cookie’s port list.
+        case portList([NSNumber]?)
+
+        //The cookie’s expiration date.
+        case expiresDate(Date?)
+
+        //The cookie’s version.
+        case version(Int)
+
+        //A Boolean value that indicates whether the cookie should only be sent to HTTP servers.
+        case isHTTPOnly(Bool)
+
+        //A Boolean value that indicates whether this cookie should only be sent over secure channels.
+        case isSecure(Bool)
+
+        //The cookie’s comment string.You can present this string to the user, explaining the contents and purpose of the cookie.
+        case comment(String?)
+
+        //The cookie’s comment URL. this Link to the information explaining the contents and purpose of the cookie
+        case commentURL(String?)
+    }
+
+    // creation of HTTP cookie
+    @discardableResult
+    public func addCookie(with attributes: [CookieAttribute]) -> HTTPCookie? {
+        var cookieProperties = [HTTPCookiePropertyKey: Any]()
+        for attribute in attributes {
+            switch attribute {
+            case .name(let cookieName):
+                cookieProperties[HTTPCookiePropertyKey.name] = cookieName
+
+            case .value(let cookieValue):
+                cookieProperties[HTTPCookiePropertyKey.value] = cookieValue
+
+            case .domain(let domainName):
+                cookieProperties[HTTPCookiePropertyKey.domain] = domainName
+
+            case .path(let pathName):
+                cookieProperties[HTTPCookiePropertyKey.path] = pathName
+
+            case .portList(let ports):
+                if let ports = ports {
+                    cookieProperties[HTTPCookiePropertyKey.port] = ports
+                }
+
+            case .expiresDate(let expiresDate):
+                if let expiresDate = expiresDate {
+                    cookieProperties[HTTPCookiePropertyKey.expires] = expiresDate
+                }
+
+            case .version(let cookieVersion):
+                cookieProperties[HTTPCookiePropertyKey.version] = cookieVersion
+
+            case .isHTTPOnly(let httpOnly):
+                cookieProperties[HTTPCookiePropertyKey.discard] = httpOnly
+
+            case .isSecure(let secure):
+                cookieProperties[HTTPCookiePropertyKey.secure] = secure
+
+            case .comment(let comment):
+                if let comment = comment {
+                    cookieProperties[HTTPCookiePropertyKey.comment] = comment
+                }
+
+            case .commentURL(let commentURL):
+                if let commentURL = commentURL {
+                    cookieProperties[HTTPCookiePropertyKey.commentURL] = commentURL
+                }
+            }
+        }
+
+        guard let cookie = HTTPCookie(properties: cookieProperties) else {
+            Log.warning("RouterResponse.addCookie() failed to create a cookie due to invalid cookie attributes.")
+            return nil
+        }
+        cookies[cookie.name] = cookie
+        return cookie
+    }
+
+
     // MARK: End
     
     /// End the response.
