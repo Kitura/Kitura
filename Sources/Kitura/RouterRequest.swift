@@ -19,6 +19,11 @@ import KituraNet
 import Socket
 import LoggerAPI
 import KituraContracts
+#if swift(>=4.1)
+  #if canImport(FoundationNetworking)
+    import FoundationNetworking
+  #endif
+#endif
 
 // MARK: RouterRequest
 
