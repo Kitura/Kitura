@@ -172,7 +172,7 @@ final class TestCookies: KituraTest, KituraTestSuite {
                         properties[HTTPCookiePropertyKey.value] =  cookieValue
 
                         for  part in parts[1..<parts.count] {
-                            var pieces = part.components(separatedBy: "=")
+                            let pieces = part.components(separatedBy: "=")
                             let piece = pieces[0].lowercased()
                             switch piece {
                             case "secure", "httponly":
