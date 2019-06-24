@@ -63,6 +63,7 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
             ("testStaticFileServerRedirectPreservingQueryParams", testStaticFileServerRedirectPreservingQueryParams),
             ("testFallbackToDefaultIndex", testFallbackToDefaultIndex),
             ("testFallbackToDefaultIndexFailsIfOptionNotSet", testFallbackToDefaultIndexFailsIfOptionNotSet),
+            ("testFallbackToDefaultIndexWithSubrouter", testFallbackToDefaultIndexWithSubrouter),
         ]
     }
 
