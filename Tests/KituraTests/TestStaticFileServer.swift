@@ -649,7 +649,7 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
     func testFallbackToDefaultIndex() {
         // This test verifies the fallback to the default index.html if the requested path
         // is not found. This feature is expected to be used by single file applications.
-        let router = TestStaticFileServer.setupRouter(fallbackToDefaultIndex: true)
+        let router = TestStaticFileServer.setupRouter(defaultIndex: "/index.html")
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path:"/help/contact", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
@@ -666,7 +666,7 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
     }
 
     func testFallbackToDefaultIndexFailsIfOptionNotSet() {
-        let router = TestStaticFileServer.setupRouter(fallbackToDefaultIndex: false)
+        let router = TestStaticFileServer.setupRouter(defaultIndex: nil)
         performServerTest(router, asyncTasks: { expectation in
             self.performRequest("get", path:"/help/contact", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
@@ -676,11 +676,33 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
         })
     }
 
-    static func setupRouter(fallbackToDefaultIndex: Bool) -> Router {
+    func testFallbackToDefaultIndexWithSubrouter() {
+        let router = Router(enableWelcomePage: true)
+        let parent = router.route("/help")
+        parent.all("/contact", middleware: StaticFileServer(
+            path: TestStaticFileServer.servingPathPrefix() + "Tests/KituraTests/TestStaticFileServer/",
+            options: StaticFileServer.Options(defaultIndex: "/index.html")))
+
+        performServerTest(router, asyncTasks: { expectation in
+            self.performRequest("get", path:"/help/contact/details", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
+                do {
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "<!DOCTYPE html><html><body><b>Index</b></body></html>\n")
+                } catch {
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            })
+        })
+    }
+
+    static func setupRouter(defaultIndex: String?) -> Router {
         let router = Router(enableWelcomePage: true)
         router.all("/help", middleware: StaticFileServer(
             path: servingPathPrefix() + "Tests/KituraTests/TestStaticFileServer/",
-            options: StaticFileServer.Options(fallbackToDefaultIndex: fallbackToDefaultIndex))
+            options: StaticFileServer.Options(defaultIndex: defaultIndex))
         )
         return router
     }

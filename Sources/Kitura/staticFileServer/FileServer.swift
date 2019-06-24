@@ -41,7 +41,7 @@ extension StaticFileServer {
         /// Whether accepts range requests or not
         let acceptRanges: Bool
 
-        let fallbackToDefaultIndex: Bool
+        let defaultIndex: String?
 
         init(servingFilesPath: String, options: StaticFileServer.Options,
              responseHeadersSetter: ResponseHeadersSetter?) {
@@ -51,7 +51,7 @@ extension StaticFileServer {
             self.acceptRanges = options.acceptRanges
             self.servingFilesPath = servingFilesPath
             self.responseHeadersSetter = responseHeadersSetter
-            self.fallbackToDefaultIndex = options.fallbackToDefaultIndex
+            self.defaultIndex = options.defaultIndex
         }
 
         func getFilePath(from request: RouterRequest) -> String? {
@@ -108,14 +108,15 @@ extension StaticFileServer {
                 return
             }
 
-            if fallbackToDefaultIndex {
-                serveDefaultIndex(response: response)
+            let isDirectFileAccess = filePath.split(separator: "/").last?.contains(".") ?? false
+            if isDirectFileAccess == false, let defaultIndex = self.defaultIndex {
+                serveDefaultIndex(defaultIndex: defaultIndex, response: response)
             }
         }
 
-        private func serveDefaultIndex(response: RouterResponse) {
+        fileprivate func serveDefaultIndex(defaultIndex: String, response: RouterResponse) {
             do {
-                try response.send(fileName: servingFilesPath + "/index.html")
+                try response.send(fileName: servingFilesPath + defaultIndex)
             } catch {
                  response.error = Error.failedToRedirectRequest(path: servingFilesPath + "/", chainedError: error)
             }

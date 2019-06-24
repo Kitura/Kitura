@@ -65,7 +65,7 @@ open class StaticFileServer: RouterMiddleware {
         let serveIndexForDirectory: Bool
         let cacheOptions: CacheOptions
         let acceptRanges: Bool
-        let fallbackToDefaultIndex: Bool
+        let defaultIndex: String?
 
         /// Initialize an Options instance.
         ///
@@ -78,18 +78,24 @@ open class StaticFileServer: RouterMiddleware {
         /// - Parameter redirect: an indication whether to redirect to trailing
         /// "/" when the requested path is a directory.
         /// - Parameter cacheOptions: cache options for StaticFileServer.
-        /// - Parameter fallbackToDefaultIndex: an indication to serve the "index.html"
-        /// if a requested path is not found. This is intended to be used by single page
-        /// applications.
+        /// - Parameter defaultIndex: A default index, like "/index.html", to be served if the
+        /// requested path is not found. This is intended to be used by single page applications
+        /// that wish to fallback to a default index when a requested path is not found.
+        /// It will be assumed that the default index is reachable from the root directory
+        /// configured with the StaticFileServer. Here's a usage example:
+        /// ```swift
+        /// let router = Router()
+        /// router.all("/", middleware: StaticFileServer(defaultIndex: "/index.html"))
+        /// ```
         public init(possibleExtensions: [String] = [], serveIndexForDirectory: Bool = true,
              redirect: Bool = true, cacheOptions: CacheOptions = CacheOptions(), acceptRanges: Bool = true,
-             fallbackToDefaultIndex: Bool = false) {
+             defaultIndex: String? = nil) {
             self.possibleExtensions = possibleExtensions
             self.serveIndexForDirectory = serveIndexForDirectory
             self.redirect = redirect
             self.cacheOptions = cacheOptions
             self.acceptRanges = acceptRanges
-            self.fallbackToDefaultIndex = fallbackToDefaultIndex
+            self.defaultIndex = defaultIndex
         }
     }
 
