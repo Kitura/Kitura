@@ -266,7 +266,7 @@ public class RouterResponse {
                 cookieProperties[HTTPCookiePropertyKey.discard] = discard
 
             case .isSecure(let secure):
-                cookieProperties[HTTPCookiePropertyKey.secure] = secure
+                cookieProperties[HTTPCookiePropertyKey.secure] = secure ? "YES" : "NO"
 
             case .comment(let comment):
                 if let comment = comment {

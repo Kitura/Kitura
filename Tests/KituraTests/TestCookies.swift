@@ -154,7 +154,7 @@ final class TestCookies: KituraTest, KituraTestSuite {
             self.performRequest("get", path: "/3/sendcookie", callback: { response in
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK,
                     "/3/sendcookie route did not match single path request")
-                let (cookie, cookieExpire) = self.cookieFrom(response:
+                let (cookie, _) = self.cookieFrom(response:
                     response, named: cookie4Name as String)
                 XCTAssertNotNil(cookie, "Cookie \(cookie4Name) wasn't found in the response.")
                 if let cookie = cookie {
@@ -168,7 +168,7 @@ final class TestCookies: KituraTest, KituraTestSuite {
             self.performRequest("get", path: "/3/sendcookie", callback: { response in
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK,
                                "/3/sendcookie route did not match single path request")
-                let (cookie, cookieExpire) = self.cookieFrom(response:
+                let (cookie, _) = self.cookieFrom(response:
                     response, named: cookie4Name as String)
                 XCTAssertNotNil(cookie, "Cookie \(cookie4Name) wasn't found in the response.")
                 if let cookie = cookie {
