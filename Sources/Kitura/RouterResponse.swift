@@ -192,25 +192,24 @@ public class RouterResponse {
         //The cookie’s path.
         case path(String)
 
-        //The cookie’s port list.
         case portList([NSNumber]?)
 
         //The cookie’s expiration date.
-        case expiresDate(Date?)
+        case expires(Date?)
 
-        //The cookie’s version.
+        case maximumAge(String)
+
+        case originURL(URL?)
+
         case version(Int)
 
-        //A Boolean value that indicates whether the cookie should only be sent to HTTP servers.
-        case isHTTPOnly(Bool)
+        case discard(String)
 
         //A Boolean value that indicates whether this cookie should only be sent over secure channels.
         case isSecure(Bool)
 
-        //The cookie’s comment string.You can present this string to the user, explaining the contents and purpose of the cookie.
         case comment(String?)
 
-        //The cookie’s comment URL. this Link to the information explaining the contents and purpose of the cookie
         case commentURL(String?)
     }
 
@@ -237,16 +236,22 @@ public class RouterResponse {
                     cookieProperties[HTTPCookiePropertyKey.port] = ports
                 }
 
-            case .expiresDate(let expiresDate):
+            case .expires(let expiresDate):
                 if let expiresDate = expiresDate {
                     cookieProperties[HTTPCookiePropertyKey.expires] = expiresDate
                 }
 
+            case .maximumAge(let maxAge):
+                cookieProperties[HTTPCookiePropertyKey.maximumAge] = maxAge
+
+            case .originURL(let originURL):
+                cookieProperties[HTTPCookiePropertyKey.originURL] = originURL
+
             case .version(let cookieVersion):
                 cookieProperties[HTTPCookiePropertyKey.version] = cookieVersion
 
-            case .isHTTPOnly(let httpOnly):
-                cookieProperties[HTTPCookiePropertyKey.discard] = httpOnly
+            case .discard(let discard):
+                cookieProperties[HTTPCookiePropertyKey.discard] = discard
 
             case .isSecure(let secure):
                 cookieProperties[HTTPCookiePropertyKey.secure] = secure
