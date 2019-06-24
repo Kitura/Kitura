@@ -178,42 +178,54 @@ public class RouterResponse {
             }
         }
     }
-
+    
+    /// An enum to describe the attributes  (name, value, domain, path etc) of a cookie.
     public enum CookieAttribute {
-        //The cookie’s name.
+        /// The cookie’s name.
         case name(String)
 
-        //The cookie‘s string value.
+        /// The cookie‘s value.
         case value(String)
 
-        //The domain of the cookie.
+        /// The domain of the cookie.
         case domain(String)
 
-        //The cookie’s path.
+        /// The cookie’s path.
         case path(String)
 
+        /// The list of ports for the cookie,  an array of NSNumber objects containing integers.
         case portList([NSNumber]?)
 
-        //The cookie’s expiration date.
+        /// The cookie’s expiration date. The expiration date is the date when the cookie should be deleted.
         case expires(Date?)
 
+        /// A  value stating how long in seconds the cookie should be kept, at most.
         case maximumAge(String)
 
+        /// The URL that set this cookie.
         case originURL(URL?)
 
+        /// The version of the cookie. Must be either 0 or 1. The default is 0.
         case version(Int)
 
+        /// A String value representing a boolean (TRUE/FALSE), stating whether the cookie should be discarded at the end of the session.
         case discard(String)
 
-        //A Boolean value that indicates whether this cookie should only be sent over secure channels.
+        /// A  boolean value that indicates whether this cookie should only be sent over secure channels.
         case isSecure(Bool)
 
+        /// A comment for the cookie.
         case comment(String?)
 
+        /// A URL that can be presented to the user as a link for further information about this cookie.
         case commentURL(String?)
     }
 
-    // creation of HTTP cookie
+    /// Add a cookie to the response.
+    ///
+    /// This function attempts to create an `HTTPCookie`  from a given `CookieAttribute`  array and, if successful , adds the HTTPCookie to the `cookies` dictionary.
+    /// - Parameter with: An  array of  `CookieAttribute`s
+    /// - Returns: Returns the added `HTTPCookie` or `nil` in the case of  an `HTTPCookie` creation failure. Here success or failure is governed by the Foundation's HTTPCookie specifiacation: https://developer.apple.com/documentation/foundation/httpcookie
     @discardableResult
     public func addCookie(with attributes: [CookieAttribute]) -> HTTPCookie? {
         var cookieProperties = [HTTPCookiePropertyKey: Any]()
