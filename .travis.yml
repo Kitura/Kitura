@@ -72,7 +72,7 @@ matrix:
       osx_image: xcode10.2
       sudo: required
       env: KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
-# Awaiting xcode11 image from Travis
+# Awaiting xcode11 image from Travis.
 #    - os: osx
 #      osx_image: xcode10.2
 #      sudo: required
