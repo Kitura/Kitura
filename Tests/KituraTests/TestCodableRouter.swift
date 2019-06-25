@@ -202,7 +202,7 @@ final class TestCodableRouter: KituraTest, KituraTestSuite {
 
             .run()
         #else
-        print("Test temporarily disabled for 5.1: see SR-xxxxx")
+        print("Test temporarily disabled for 5.1: see SR-11012")
         #endif
     }
 
@@ -680,7 +680,7 @@ final class TestCodableRouter: KituraTest, KituraTestSuite {
 
             .run()
         #else
-        print("Test temporarily disabled for 5.1: see SR-xxxxx")
+        print("Test temporarily disabled for 5.1: see SR-11012")
         #endif
     }
 
