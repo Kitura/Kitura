@@ -101,17 +101,17 @@ class KituraTest: XCTestCase {
         KituraTest.initOnce
     }
 
-    func buildServerTest(_ router: ServerDelegate, sslOption: SSLOption = SSLOption.both, socketTypeOption: SocketTypeOption = SocketTypeOption.both, timeout: TimeInterval = 10,
+    func buildServerTest(_ router: ServerDelegate, sslOption: SSLOption = SSLOption.httpOnly, socketTypeOption: SocketTypeOption = SocketTypeOption.both, timeout: TimeInterval = 10,
                            line: Int = #line) -> RequestTestBuilder {
         return ServerTestBuilder(test: self, router: router, sslOption: sslOption, socketTypeOption: socketTypeOption, timeout: timeout, line: line)
     }
 
-    func performServerTest(_ router: ServerDelegate, sslOption: SSLOption = SSLOption.both, socketTypeOption: SocketTypeOption = SocketTypeOption.both, timeout: TimeInterval = 10,
+    func performServerTest(_ router: ServerDelegate, sslOption: SSLOption = SSLOption.httpOnly, socketTypeOption: SocketTypeOption = SocketTypeOption.both, timeout: TimeInterval = 10,
                            line: Int = #line, asyncTasks: (XCTestExpectation) -> Void...) {
         performServerTest(router, sslOption: sslOption, socketTypeOption: socketTypeOption, timeout: timeout, line: line, asyncTasks: asyncTasks)
     }
 
-    func performServerTest(_ router: ServerDelegate, sslOption: SSLOption = SSLOption.both, socketTypeOption: SocketTypeOption = SocketTypeOption.both, timeout: TimeInterval = 10,
+    func performServerTest(_ router: ServerDelegate, sslOption: SSLOption = SSLOption.httpOnly, socketTypeOption: SocketTypeOption = SocketTypeOption.both, timeout: TimeInterval = 10,
                            line: Int = #line, asyncTasks: [(XCTestExpectation) -> Void]) {
         if sslOption != SSLOption.httpsOnly {
             self.useSSL = false
