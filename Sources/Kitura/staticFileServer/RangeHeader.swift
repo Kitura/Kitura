@@ -77,7 +77,7 @@ extension RangeHeader {
         // parse all ranges
         var ranges: [Range<UInt64>] = []
         rangeStrings.forEach { rangeString in
-            var range = rangeString.components(separatedBy: "-")
+            let range = rangeString.components(separatedBy: "-")
             guard range.count > 1 else {
                 // one range is malformed
                 return

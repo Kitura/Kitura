@@ -23,7 +23,7 @@ import KituraContracts
 final class TestCodableRouter: KituraTest, KituraTestSuite {
     static var allTests: [(String, (TestCodableRouter) -> () throws -> Void)] {
         return [
-            ("testBasicPost", testBasicPost),
+            ("testBasicPost", testBasicPost),  // Slow compile on 5.1
             ("testBasicPostIdentifier", testBasicPostIdentifier),
             ("testBasicGetSingleton", testBasicGetSingleton),
             ("testBasicGetArray", testBasicGetArray),
@@ -35,7 +35,7 @@ final class TestCodableRouter: KituraTest, KituraTestSuite {
             ("testBasicPatch", testBasicPatch),
             ("testJoinPath", testJoinPath),
             ("testRouteWithTrailingSlash", testRouteWithTrailingSlash),
-            ("testErrorOverridesBody", testErrorOverridesBody),
+            ("testErrorOverridesBody", testErrorOverridesBody),  // Slow compile on 5.1
             ("testRouteParameters", testRouteParameters),
             ("testCodableRoutesWithBodyParsingFail", testCodableRoutesWithBodyParsingFail),
             ("testCodableGetSingleQueryParameters", testCodableGetSingleQueryParameters),
@@ -148,6 +148,7 @@ final class TestCodableRouter: KituraTest, KituraTestSuite {
     }
 
     func testBasicPost() {
+        #if !swift(>=5.1)
         router.post("/users") { (user: User, respondWith: (User?, RequestError?) -> Void) in
             print("POST on /users for user \(user)")
             respondWith(user, nil)
@@ -198,10 +199,11 @@ final class TestCodableRouter: KituraTest, KituraTestSuite {
             .request("post", path: "/urlencoded", urlEncodedString: "invalidEncoding")
             .hasStatus(.unprocessableEntity)
             .hasData()
-            
-
 
             .run()
+        #else
+        print("Test temporarily disabled for 5.1: see SR-11012")
+        #endif
     }
 
     func testBasicPostIdentifier() {
@@ -625,6 +627,7 @@ final class TestCodableRouter: KituraTest, KituraTestSuite {
     }
 
     func testErrorOverridesBody() {
+        #if !swift(>=5.1)
         let status = Status("This should not be sent")
         router.get("/status") { (id: Int, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, .conflict) }
         router.post("/status") { (status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, .conflict) }
@@ -676,6 +679,9 @@ final class TestCodableRouter: KituraTest, KituraTestSuite {
             .hasData(conflict)
 
             .run()
+        #else
+        print("Test temporarily disabled for 5.1: see SR-11012")
+        #endif
     }
 
     func testRouteParameters() {
@@ -950,4 +956,5 @@ final class TestCodableRouter: KituraTest, KituraTestSuite {
             .hasNoData()
             .run()
     }
+
 }
