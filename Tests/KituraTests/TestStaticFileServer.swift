@@ -174,10 +174,9 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
         // the original repository directory is 3 path components up
         let currentFilePath = #file
 
-        var pathComponents = currentFilePath.split(separator: "/").map(String.init)
+        let pathComponents = currentFilePath.split(separator: "/").map(String.init)
 
         // We need to check whether we have an edited Kitura package, this will be seen from a path containing Packages and Kitura at the relevant indexes
-        let numberOfComponents = pathComponents.count
         let expectedKituraIndex = pathComponents.count - 4
         let expectedPackagesIndex = pathComponents.count - 5
         if pathComponents[expectedKituraIndex] == "Kitura"
