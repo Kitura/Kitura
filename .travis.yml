@@ -19,12 +19,12 @@ matrix:
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=djones6/swift51custom:0.0.3 SWIFT_TEST_ARGS="--parallel"
+      env: DOCKER_IMAGE=djones6/swift51custom:0.0.4 SWIFT_TEST_ARGS="--parallel"
     - os: linux
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=djones6/swift51custom:0.0.3 SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT SWIFT_TEST_ARGS="--parallel"
+      env: DOCKER_IMAGE=djones6/swift51custom:0.0.4 SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT SWIFT_TEST_ARGS="--parallel"
 
 
 before_install:
