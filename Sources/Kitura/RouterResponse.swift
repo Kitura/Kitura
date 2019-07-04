@@ -219,30 +219,35 @@ public class RouterResponse {
 
         /// A URL that can be presented to the user as a link for further information about this cookie.
         case commentURL(String?)
+
+        /// Custom cookie attributes
+        ///
+        ///Note: Custom cookie attributes are not honoured by Foundation yet.
+        case custom(String,String)
     }
 
     /// Add a cookie to the response.
     ///
-    /// This function attempts to create an `HTTPCookie`  from a given `CookieAttribute`  array and, if successful , adds the HTTPCookie to the `cookies` dictionary.
-    /// - Parameter with: An  array of  `CookieAttribute`s
-    /// - Returns: Returns the added `HTTPCookie` or `nil` in the case of  an `HTTPCookie` creation failure. Here success or failure is governed by the Foundation's HTTPCookie specifiacation: https://developer.apple.com/documentation/foundation/httpcookie
-    @discardableResult
-    public func addCookie(with attributes: [CookieAttribute]) -> HTTPCookie? {
+    /// This function creates an `HTTPCookie`  from the provided attributes and adds it to the `cookies` dictionary.
+    /// - Parameter name: The cookie’s name.
+    /// - Parameter value: The cookie‘s value.
+    /// - Parameter domain: The domain of the cookie.
+    /// - Parameter path: The cookie’s path.
+    /// - Parameter otherAttributes: An array of optional `CookieAttribute`s other
+    /// than name, value, domain,path,these values are ignored
+    /// if they are given in otherAttributes array.
+    public func addCookie(name: String, value: String, domain: String, path: String, otherAttributes: [CookieAttribute] = []) {
         var cookieProperties = [HTTPCookiePropertyKey: Any]()
-        for attribute in attributes {
+        cookieProperties[HTTPCookiePropertyKey.name] = name
+        cookieProperties[HTTPCookiePropertyKey.value] = value
+        cookieProperties[HTTPCookiePropertyKey.domain] = domain
+        cookieProperties[HTTPCookiePropertyKey.path] = path
+
+        for attribute in otherAttributes {
             switch attribute {
-            case .name(let cookieName):
-                cookieProperties[HTTPCookiePropertyKey.name] = cookieName
-
-            case .value(let cookieValue):
-                cookieProperties[HTTPCookiePropertyKey.value] = cookieValue
-
-            case .domain(let domainName):
-                cookieProperties[HTTPCookiePropertyKey.domain] = domainName
-
-            case .path(let pathName):
-                cookieProperties[HTTPCookiePropertyKey.path] = pathName
-
+            case .name, .value, .domain, .path:
+                Log.info("The \(attribute) value if supplied through otherAtrributes array is ignored.")
+                continue
             case .portList(let ports):
                 if let ports = ports {
                     cookieProperties[HTTPCookiePropertyKey.port] = ports
@@ -277,17 +282,17 @@ public class RouterResponse {
                 if let commentURL = commentURL {
                     cookieProperties[HTTPCookiePropertyKey.commentURL] = commentURL
                 }
+
+            case.custom(let key, let value):
+                let customKey = HTTPCookiePropertyKey(rawValue: key)
+                cookieProperties[customKey] = value
             }
         }
 
-        guard let cookie = HTTPCookie(properties: cookieProperties) else {
-            Log.warning("RouterResponse.addCookie() failed to create a cookie due to invalid cookie attributes.")
-            return nil
+        if let cookie = HTTPCookie(properties: cookieProperties) {
+            cookies[cookie.name] = cookie
         }
-        cookies[cookie.name] = cookie
-        return cookie
     }
-
 
     // MARK: End
     

@@ -179,17 +179,8 @@ final class TestCookies: KituraTest, KituraTestSuite {
                 }
                 expectation.fulfill()
             })
-        }, { expectation in
-            self.performRequest("get", path: "/4/sendcookie", callback: { response in
-                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK,
-                               "/4/sendcookie route did not match single path request")
-                let (cookie, _) = self.cookieFrom(response:
-                    response, named: cookie4Name as String)
-                XCTAssertNil(cookie)
-                expectation.fulfill()
-            })
         }
-        )}
+    )}
     func cookieFrom(response: ClientResponse?, named: String) -> (HTTPCookie?, String?) {
         guard let response = response else {
             return (nil, nil)
@@ -329,26 +320,10 @@ final class TestCookies: KituraTest, KituraTestSuite {
 
         router.get("/3/sendcookie") {request, response, next in
             response.status(HTTPStatusCode.OK)
-            response.addCookie(with: [
-                .name(cookie4Name),
-                .value(cookie4Value),
-                .domain(cookieHost),
-                .path("/"),
-                .isSecure(true),
-                .expires(Date.distantFuture)
-               ])
-
+            response.addCookie(name: cookie4Name, value: cookie4Value, domain: cookieHost, path: "/", otherAttributes: [.isSecure(true)])
             next()
         }
-        router.get("/4/sendcookie") {request, response, next in
-            response.status(HTTPStatusCode.OK)
-            response.addCookie(with: [
-                .domain(cookieHost),
-                .path("/")
-                ])
 
-            next()
-        }
         return router
     }
 }
