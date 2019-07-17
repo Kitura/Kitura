@@ -178,7 +178,8 @@ public class RouterResponse {
             }
         }
     }
-    
+
+    /// Describes an optional attribute of a cookie.
     public struct CookieAttribute {
         internal enum _CookieAttribute {
             case portList([NSNumber]?)
@@ -195,6 +196,7 @@ public class RouterResponse {
         // The internal case represented by this instance of CookieAttribute.
         internal let _value: _CookieAttribute
         // Called by public API to create an internal representation.
+
         private init(_ value: _CookieAttribute) {
             self._value = value
         }
@@ -258,9 +260,7 @@ public class RouterResponse {
     /// - Parameter value: The cookie‘s value.
     /// - Parameter domain: The domain of the cookie.
     /// - Parameter path: The cookie’s path.
-    /// - Parameter otherAttributes: An array of optional `CookieAttribute`s other
-    /// than name, value, domain,path,these values are ignored
-    /// if they are given in otherAttributes array.
+    /// - Parameter otherAttributes: An array of  any other optional cookie attributes
     public func addCookie(name: String, value: String, domain: String, path: String, otherAttributes: [CookieAttribute] = []) {
         var cookieProperties = [HTTPCookiePropertyKey: Any]()
         cookieProperties[HTTPCookiePropertyKey.name] = name
