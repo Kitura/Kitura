@@ -179,51 +179,76 @@ public class RouterResponse {
         }
     }
     
-    /// An enum to describe the attributes  (name, value, domain, path etc) of a cookie.
-    public enum CookieAttribute {
-        /// The cookie’s name.
-        case name(String)
-
-        /// The cookie‘s value.
-        case value(String)
-
-        /// The domain of the cookie.
-        case domain(String)
-
-        /// The cookie’s path.
-        case path(String)
-
+    public struct CookieAttribute {
+        internal enum _CookieAttribute {
+            case portList([NSNumber]?)
+            case expires(Date?)
+            case maximumAge(String)
+            case originURL(URL?)
+            case version(Int)
+            case discard(String)
+            case isSecure(Bool)
+            case comment(String?)
+            case commentURL(String?)
+            case custom(String,String)
+        }
+        // The internal case represented by this instance of CookieAttribute.
+        internal let _value: _CookieAttribute
+        // Called by public API to create an internal representation.
+        private init(_ value: _CookieAttribute) {
+            self._value = value
+        }
         /// The list of ports for the cookie,  an array of NSNumber objects containing integers.
-        case portList([NSNumber]?)
+        public static func portList(_ value: [NSNumber]?) -> CookieAttribute {
+            return CookieAttribute(_CookieAttribute.portList(value))
+        }
 
         /// The cookie’s expiration date. The expiration date is the date when the cookie should be deleted.
-        case expires(Date?)
+        public static func expires(_ value: Date?) -> CookieAttribute {
+            return CookieAttribute(_CookieAttribute.expires(value))
+        }
 
-        /// A  value stating how long in seconds the cookie should be kept, at most.
-        case maximumAge(String)
+        /// A value stating how long in seconds the cookie should be kept, at most.
+        public static func maximumAge(_ value: String) -> CookieAttribute {
+            return CookieAttribute(_CookieAttribute.maximumAge(value))
+        }
 
         /// The URL that set this cookie.
-        case originURL(URL?)
+        public static func originURL(_ value: URL?) -> CookieAttribute {
+            return CookieAttribute(_CookieAttribute.originURL(value))
+        }
 
         /// The version of the cookie. Must be either 0 or 1. The default is 0.
-        case version(Int)
+        public static func version(_ value: Int) -> CookieAttribute {
+            return CookieAttribute(_CookieAttribute.version(value))
+        }
 
         /// A String value representing a boolean (TRUE/FALSE), stating whether the cookie should be discarded at the end of the session.
-        case discard(String)
+        public static func discard(_ value: String) -> CookieAttribute {
+            return CookieAttribute(_CookieAttribute.discard(value))
+        }
 
         /// A  boolean value that indicates whether this cookie should only be sent over secure channels.
-        case isSecure(Bool)
+        public static func isSecure(_ value: Bool) -> CookieAttribute {
+            return CookieAttribute(_CookieAttribute.isSecure(value))
+        }
 
         /// A comment for the cookie.
-        case comment(String?)
+        public static func comment(_ value: String?) -> CookieAttribute {
+            return CookieAttribute(_CookieAttribute.comment(value))
+        }
 
         /// A URL that can be presented to the user as a link for further information about this cookie.
-        case commentURL(String?)
+        public static func commentURL(_ value: String?) -> CookieAttribute {
+            return CookieAttribute(_CookieAttribute.commentURL(value))
+        }
 
         /// Custom cookie attributes
         ///
         ///Note: Custom cookie attributes are not honoured by Foundation yet.
-        case custom(String,String)
+        public static func custom(_ key: String, _ value: String) -> CookieAttribute {
+            return CookieAttribute(_CookieAttribute.custom(key, value))
+        }
     }
 
     /// Add a cookie to the response.
@@ -244,10 +269,7 @@ public class RouterResponse {
         cookieProperties[HTTPCookiePropertyKey.path] = path
 
         for attribute in otherAttributes {
-            switch attribute {
-            case .name, .value, .domain, .path:
-                Log.info("The \(attribute) value if supplied through otherAtrributes array is ignored.")
-                continue
+            switch attribute._value {
             case .portList(let ports):
                 if let ports = ports {
                     cookieProperties[HTTPCookiePropertyKey.port] = ports
