@@ -179,8 +179,6 @@ public class RouterResponse {
         }
     }
 
-
-
     /// Add a cookie to the response.
     ///
     /// This function creates an `HTTPCookie`  from the provided attributes and adds it to the `cookies` dictionary.
@@ -189,7 +187,7 @@ public class RouterResponse {
     /// - Parameter domain: The domain of the cookie.
     /// - Parameter path: The cookie’s path.
     /// - Parameter otherAttributes: An array of  any other optional cookie attributes
-    public func addCookie(name: String, value: String, domain: String, path: String, otherAttributes: [CookieAttribute]? = nil ) {
+    public func addCookie(name: String, value: String, domain: String, path: String, otherAttributes: [OptionalCookieAttribute]? = nil ) {
         var cookieProperties = [HTTPCookiePropertyKey: Any]()
         cookieProperties[HTTPCookiePropertyKey.name] = name
         cookieProperties[HTTPCookiePropertyKey.value] = value
@@ -765,89 +763,3 @@ public typealias LifecycleHandler = () -> Void
 
 /// Type alias for written data filter, i.e. pre-write lifecycle handler.
 public typealias WrittenDataFilter = (Data) -> Data
-
-/// Describes an optional attribute of a cookie.
-public struct CookieAttribute {
-    internal enum OptionalCookieAttribute {
-        // A comment for the cookie.
-        case comment(String?)
-        // A URL that can be presented to the user as a link for further information about this cookie.
-        case commentURL(String?)
-        // Custom cookie attributes
-        case custom(String, String)
-        // A String value representing a boolean (TRUE/FALSE), stating whether the cookie should be discarded at the end of the session
-        case discard(String)
-        // The list of ports for the cookie,  an array of NSNumber objects containing integers.
-        case expires(Date?)
-        //  A boolean value that indicates whether this cookie should only be sent over secure channels.
-        case isSecure(Bool)
-        // A value stating how long in seconds the cookie should be kept, at most.
-        case maximumAge(String)
-        // The URL that set this cookie.
-        case originURL(URL?)
-        // The version of the cookie. Must be either 0 or 1. The default is 0.
-        case portList([NSNumber]?)
-        // The cookie’s expiration date. The expiration date is the date when the cookie should be deleted.
-        case version(Int)
-    }
-
-    // The internal case represented by this instance of CookieAttribute.
-    internal let _value: OptionalCookieAttribute
-
-    // Called by public API to create an internal representation.
-    private init(_ value: OptionalCookieAttribute) {
-        self._value = value
-    }
-
-    /// A comment for the cookie.
-    public static func comment(_ value: String?) -> CookieAttribute {
-        return CookieAttribute(OptionalCookieAttribute.comment(value))
-    }
-
-    /// A URL that can be presented to the user as a link for further information about this cookie.
-    public static func commentURL(_ value: String?) -> CookieAttribute {
-        return CookieAttribute(OptionalCookieAttribute.commentURL(value))
-    }
-
-    /// Custom cookie attributes
-    ///
-    ///Note: Custom cookie attributes are not honoured by Foundation yet.
-    public static func custom(_ key: String, _ value: String) -> CookieAttribute {
-        return CookieAttribute(OptionalCookieAttribute.custom(key, value))
-    }
-
-    /// A String value representing a boolean (TRUE/FALSE), stating whether the cookie should be discarded at the end of the session.
-    public static func discard(_ value: String) -> CookieAttribute {
-        return CookieAttribute(OptionalCookieAttribute.discard(value))
-    }
-
-    /// The cookie’s expiration date. The expiration date is the date when the cookie should be deleted.
-    public static func expires(_ value: Date?) -> CookieAttribute {
-        return CookieAttribute(OptionalCookieAttribute.expires(value))
-    }
-
-    /// A boolean value that indicates whether this cookie should only be sent over secure channels.
-    public static func isSecure(_ value: Bool) -> CookieAttribute {
-        return CookieAttribute(OptionalCookieAttribute.isSecure(value))
-    }
-
-    /// A value stating how long in seconds the cookie should be kept, at most.
-    public static func maximumAge(_ value: String) -> CookieAttribute {
-        return CookieAttribute(OptionalCookieAttribute.maximumAge(value))
-    }
-
-    /// The URL that set this cookie.
-    public static func originURL(_ value: URL?) -> CookieAttribute {
-        return CookieAttribute(OptionalCookieAttribute.originURL(value))
-    }
-
-    /// The list of ports for the cookie,  an array of NSNumber objects containing integers.
-    public static func portList(_ value: [NSNumber]?) -> CookieAttribute {
-        return CookieAttribute(OptionalCookieAttribute.portList(value))
-    }
-
-    /// The version of the cookie. Must be either 0 or 1. The default is 0.
-    public static func version(_ value: Int) -> CookieAttribute {
-        return CookieAttribute(OptionalCookieAttribute.version(value))
-    }
-}
