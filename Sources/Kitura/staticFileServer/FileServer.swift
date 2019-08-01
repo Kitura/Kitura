@@ -41,6 +41,10 @@ extension StaticFileServer {
         /// Whether accepts range requests or not
         let acceptRanges: Bool
 
+        /// A default index to be served if the requested path is not found.
+        /// This is intended to be used by single page applications.
+        let defaultIndex: String?
+
         init(servingFilesPath: String, options: StaticFileServer.Options,
              responseHeadersSetter: ResponseHeadersSetter?) {
             self.possibleExtensions = options.possibleExtensions
@@ -49,6 +53,7 @@ extension StaticFileServer {
             self.acceptRanges = options.acceptRanges
             self.servingFilesPath = servingFilesPath
             self.responseHeadersSetter = responseHeadersSetter
+            self.defaultIndex = options.defaultIndex
         }
 
         func getFilePath(from request: RouterRequest) -> String? {
@@ -101,14 +106,36 @@ extension StaticFileServer {
                 return
             }
 
-            tryToServeWithExtensions(filePath, response: response)
+            if tryToServeWithExtensions(filePath, response: response) {
+                return
+            }
+
+            // We haven't been able to find the requested path. For single page applications,
+            // a default fallback index may be configured. Before we serve the default index
+            // we make sure that this is a not a direct file request. The best check we could
+            // run for that is if the requested file contains a '.'. This is inspired by:
+            // https://github.com/bripkens/connect-history-api-fallback
+            let isDirectFileAccess = filePath.split(separator: "/").last?.contains(".") ?? false
+            if isDirectFileAccess == false, let defaultIndex = self.defaultIndex {
+                serveDefaultIndex(defaultIndex: defaultIndex, response: response)
+            }
         }
 
-        private func tryToServeWithExtensions(_ filePath: String, response: RouterResponse) {
+        fileprivate func serveDefaultIndex(defaultIndex: String, response: RouterResponse) {
+            do {
+                try response.send(fileName: servingFilesPath + defaultIndex)
+            } catch {
+                 response.error = Error.failedToRedirectRequest(path: servingFilesPath + "/", chainedError: error)
+            }
+        }
+
+        private func tryToServeWithExtensions(_ filePath: String, response: RouterResponse) -> Bool {
+            var served = false
             let filePathWithPossibleExtensions = possibleExtensions.map { filePath + "." + $0 }
             for filePathWithExtension in filePathWithPossibleExtensions {
-                serveIfNonDirectoryFile(atPath: filePathWithExtension, response: response)
+                served = served || serveIfNonDirectoryFile(atPath: filePathWithExtension, response: response)
             }
+            return served
         }
 
         private func serveExistingFile(_ filePath: String, requestPath: String, queryString: String,
