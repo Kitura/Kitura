@@ -899,7 +899,7 @@ struct SwaggerDocument: Encodable {
         let nl = pretty ? "\n" : ""
 
         let encoder = JSONEncoder()
-        if #available(OSX 10.13, *) {
+        if #available(OSX 10.13, iOS 11.0, *) {
             encoder.outputFormatting = .sortedKeys
         } else {
             // Fallback on earlier versions
@@ -938,7 +938,7 @@ struct SwaggerDocument: Encodable {
             contentStr.append("\(sp)\"type\": \"\(modelRef.type)\",\(nl)")
             if modelRef.required.count > 0 {
                 let encoder = JSONEncoder()
-                if #available(OSX 10.13, *) {
+                if #available(OSX 10.13, iOS 11.0, *) {
                     encoder.outputFormatting = .sortedKeys
                 } else {
                     // Fallback on earlier versions
@@ -1027,7 +1027,7 @@ struct SwaggerDocument: Encodable {
     ///
     func serializeAPIToJSON() throws -> String? {
         let encoder = JSONEncoder()
-        if #available(OSX 10.13, *) {
+        if #available(OSX 10.13, iOS 11.0, *) {
             encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         } else {
             // Fallback on earlier versions
