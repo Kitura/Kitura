@@ -80,9 +80,9 @@ open class StaticFileServer: RouterMiddleware {
         /// - Parameter cacheOptions: cache options for StaticFileServer.
         /// - Parameter defaultIndex: A default index, like "/index.html", to be served if the
         /// requested path is not found. This is intended to be used by single page applications
-        /// that wish to fallback to a default index when a requested path is not found.
-        /// It will be assumed that the default index is reachable from the root directory
-        /// configured with the StaticFileServer. Here's a usage example:
+        /// that wish to fallback to a default index when a requested path is not found, and where
+        /// that path is not a file request. It will be assumed that the default index is reachable
+        /// from the root directory configured with the StaticFileServer. Here's a usage example:
         /// ```swift
         /// let router = Router()
         /// router.all("/", middleware: StaticFileServer(defaultIndex: "/index.html"))

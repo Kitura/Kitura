@@ -41,6 +41,8 @@ extension StaticFileServer {
         /// Whether accepts range requests or not
         let acceptRanges: Bool
 
+        /// A default index to be served if the requested path is not found.
+        /// This is intended to be used by single page applications.
         let defaultIndex: String?
 
         init(servingFilesPath: String, options: StaticFileServer.Options,
@@ -108,6 +110,11 @@ extension StaticFileServer {
                 return
             }
 
+            // We haven't been able to find the requested path. For single page applications,
+            // a default fallback index may be configured. Before we serve the default index
+            // we make sure that this is a not a direct file request. The best check we could
+            // run for that is if the requested file contains a '.'. This is inspired by:
+            // https://github.com/bripkens/connect-history-api-fallback
             let isDirectFileAccess = filePath.split(separator: "/").last?.contains(".") ?? false
             if isDirectFileAccess == false, let defaultIndex = self.defaultIndex {
                 serveDefaultIndex(defaultIndex: defaultIndex, response: response)
