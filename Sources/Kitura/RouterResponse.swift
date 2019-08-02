@@ -230,10 +230,6 @@ public class RouterResponse {
                     if let commentURL = commentURL {
                         cookieProperties[HTTPCookiePropertyKey.commentURL] = commentURL
                     }
-
-                case.custom(let key, let value):
-                    let customKey = HTTPCookiePropertyKey(rawValue: key)
-                    cookieProperties[customKey] = value
                 }
             }
             if let cookie = HTTPCookie(properties: cookieProperties) {
