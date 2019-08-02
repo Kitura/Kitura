@@ -11,3 +11,4 @@ disabled_rules:
   - function_body_length
   - large_tuple
   - identifier_name
+  - type_name
