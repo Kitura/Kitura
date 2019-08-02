@@ -7,8 +7,6 @@ public struct AdditionalCookieAttribute {
         case comment(String?)
         // A URL that can be presented to the user as a link for further information about this cookie.
         case commentURL(String?)
-        // Custom cookie attributes
-        case custom(String, String)
         // A String value representing a boolean (TRUE/FALSE), stating whether the cookie should be discarded at the end of the session
         case discard(String)
         // The list of ports for the cookie,  an array of NSNumber objects containing integers.
@@ -41,13 +39,6 @@ public struct AdditionalCookieAttribute {
     /// A URL that can be presented to the user as a link for further information about this cookie.
     public static func commentURL(_ value: String?) -> AdditionalCookieAttribute {
         return AdditionalCookieAttribute(_CookieAttribute.commentURL(value))
-    }
-
-    /// Custom cookie attributes
-    ///
-    ///Note: Custom cookie attributes are not honoured by Foundation yet.
-    public static func custom(_ key: String, _ value: String) -> AdditionalCookieAttribute {
-        return AdditionalCookieAttribute(_CookieAttribute.custom(key, value))
     }
 
     /// A String value representing a boolean (TRUE/FALSE), stating whether the cookie should be discarded at the end of the session.
