@@ -187,7 +187,7 @@ public class RouterResponse {
     /// - Parameter domain: The domain of the cookie.
     /// - Parameter path: The cookie’s path.
     /// - Parameter otherAttributes: An array of  any other optional cookie attributes
-    public func addCookie(name: String, value: String, domain: String, path: String, otherAttributes: [OptionalCookieAttribute]? = nil ) {
+    public func addCookie(name: String, value: String, domain: String, path: String, otherAttributes: [AdditionalCookieAttribute]? = nil ) {
         var cookieProperties = [HTTPCookiePropertyKey: Any]()
         cookieProperties[HTTPCookiePropertyKey.name] = name
         cookieProperties[HTTPCookiePropertyKey.value] = value
