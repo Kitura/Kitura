@@ -131,6 +131,9 @@
             <a class="nav-group-name-link" href="../../Structs.html">Structures</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../Structs/AdditionalCookieAttribute.html">AdditionalCookieAttribute</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../../Structs/CodableHelpers.html">CodableHelpers</a>
               </li>
               <li class="nav-group-task">
@@ -204,9 +207,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6Kitura16StaticFileServerC7OptionsV18possibleExtensions22serveIndexForDirectory8redirect05cacheE012acceptRangesAESaySSG_S2bAC05CacheE0VSbtcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(possibleExtensions:serveIndexForDirectory:redirect:cacheOptions:acceptRanges:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura16StaticFileServerC7OptionsV18possibleExtensions22serveIndexForDirectory8redirect05cacheE012acceptRangesAESaySSG_S2bAC05CacheE0VSbtcfc">init(possibleExtensions:serveIndexForDirectory:redirect:cacheOptions:acceptRanges:)</a>
+                    <a name="/s:6Kitura16StaticFileServerC7OptionsV18possibleExtensions22serveIndexForDirectory8redirect05cacheE012acceptRanges07defaultI0AESaySSG_S2bAC05CacheE0VSbSSSgtcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(possibleExtensions:serveIndexForDirectory:redirect:cacheOptions:acceptRanges:defaultIndex:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura16StaticFileServerC7OptionsV18possibleExtensions22serveIndexForDirectory8redirect05cacheE012acceptRanges07defaultI0AESaySSG_S2bAC05CacheE0VSbSSSgtcfc">init(possibleExtensions:serveIndexForDirectory:redirect:cacheOptions:acceptRanges:defaultIndex:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -222,7 +225,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">possibleExtensions</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span> <span class="nv">serveIndexForDirectory</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
-     <span class="nv">redirect</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="nv">cacheOptions</span><span class="p">:</span> <span class="kt"><a href="../../Classes/StaticFileServer/CacheOptions.html">CacheOptions</a></span> <span class="o">=</span> <span class="kt"><a href="../../Classes/StaticFileServer/CacheOptions.html">CacheOptions</a></span><span class="p">(),</span> <span class="nv">acceptRanges</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span></code></pre>
+     <span class="nv">redirect</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="nv">cacheOptions</span><span class="p">:</span> <span class="kt"><a href="../../Classes/StaticFileServer/CacheOptions.html">CacheOptions</a></span> <span class="o">=</span> <span class="kt"><a href="../../Classes/StaticFileServer/CacheOptions.html">CacheOptions</a></span><span class="p">(),</span> <span class="nv">acceptRanges</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+     <span class="n">defaultIndex</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -283,6 +287,26 @@ performed.</p>
                                 </div>
                               </td>
                             </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>defaultIndex</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A default index, like <q>/index.html</q>, to be served if the
+requested path is not found. This is intended to be used by single page applications
+that wish to fallback to a default index when a requested path is not found, and where
+that path is not a file request. It will be assumed that the default index is reachable
+from the root directory configured with the StaticFileServer. Here&rsquo;s a usage example:
+<code>swift
+let router = Router()
+router.all(&quot;/&quot;, middleware: StaticFileServer(defaultIndex: &quot;/index.html&quot;))
+</code></p>
+                                </div>
+                              </td>
+                            </tr>
                           </tbody>
                         </table>
                       </div>
@@ -297,7 +321,7 @@ performed.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-05-20)</p>
+      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-08-13)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
