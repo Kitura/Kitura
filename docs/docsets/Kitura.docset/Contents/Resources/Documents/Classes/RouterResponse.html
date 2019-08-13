@@ -131,6 +131,9 @@
             <a class="nav-group-name-link" href="../Structs.html">Structures</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AdditionalCookieAttribute.html">AdditionalCookieAttribute</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/CodableHelpers.html">CodableHelpers</a>
               </li>
               <li class="nav-group-task">
@@ -358,6 +361,102 @@ Can be used by middlewares and handlers to store and pass information on to subs
                     </section>
                   </div>
                 </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura14RouterResponseC9addCookie4name5value6domain4path15otherAttributesySS_S3SSayAA010AdditionalE9AttributeVGSgtF"></a>
+                    <a name="//apple_ref/swift/Method/addCookie(name:value:domain:path:otherAttributes:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC9addCookie4name5value6domain4path15otherAttributesySS_S3SSayAA010AdditionalE9AttributeVGSgtF">addCookie(name:value:domain:path:otherAttributes:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Add a cookie to the response.</p>
+
+<p>This function creates an <code>HTTPCookie</code>  from the provided attributes and adds it to the <code><a href="../Classes/RouterResponse.html#/s:6Kitura14RouterResponseC7cookiesSDySSSo12NSHTTPCookieCGvp">cookies</a></code> dictionary.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">addCookie</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">domain</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">path</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">otherAttributes</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Structs/AdditionalCookieAttribute.html">AdditionalCookieAttribute</a></span><span class="p">]?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>name</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The cookie’s name.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>value</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The cookie‘s value.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>domain</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The domain of the cookie.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>path</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The cookie’s path.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>otherAttributes</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>An array of  any other optional cookie attributes</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
               </ul>
             </div>
             <div class="task-group">
@@ -548,7 +647,7 @@ Can be used by middlewares and handlers to store and pass information on to subs
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
-<span class="kd">public</span> <span class="kd">func</span> <span class="nf">render</span><span class="p">(</span><span class="n">_</span> <span class="nv">resource</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">context</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span><span class="kt">Any</span><span class="p">],</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">render</span><span class="p">(</span><span class="n">_</span> <span class="nv">resource</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">context</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">Any</span><span class="p">],</span>
                    <span class="nv">options</span><span class="p">:</span> <span class="kt">RenderingOptions</span> <span class="o">=</span> <span class="kt">NullRenderingOptions</span><span class="p">())</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">RouterResponse</span></code></pre>
 
                         </div>
@@ -1608,7 +1707,7 @@ parameter whose value contains the JSONP callback function.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-05-20)</p>
+      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-08-13)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
