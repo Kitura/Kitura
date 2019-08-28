@@ -73,9 +73,10 @@ public class Kitura {
                                     with delegate: ServerDelegate,
                                     withSSL sslConfig: SSLConfig?=nil,
                                     keepAlive keepAliveState: KeepAliveState = .unlimited,
-                                    allowPortReuse: Bool = false) -> HTTPServer {
+                                    allowPortReuse: Bool = false,
+                                    options: ServerOptions? = nil) -> HTTPServer {
         return Kitura._addHTTPServer(on: .inet(port, address), with: delegate, withSSL: sslConfig,
-                                     keepAlive: keepAliveState, allowPortReuse: allowPortReuse)
+                                     keepAlive: keepAliveState, allowPortReuse: allowPortReuse, options: options)
     }
 
     /// Add an HTTPServer on a Unix domain socket path with a delegate.
@@ -97,8 +98,10 @@ public class Kitura {
     public class func addHTTPServer(onUnixDomainSocket socketPath: String,
                                     with delegate: ServerDelegate,
                                     withSSL sslConfig: SSLConfig?=nil,
-                                    keepAlive keepAliveState: KeepAliveState = .unlimited) -> HTTPServer {
-        return Kitura._addHTTPServer(on: .unix(socketPath), with: delegate, withSSL: sslConfig, keepAlive: keepAliveState)
+                                    keepAlive keepAliveState: KeepAliveState = .unlimited,
+                                    options: ServerOptions? = nil) -> HTTPServer {
+
+        return Kitura._addHTTPServer(on: .unix(socketPath), with: delegate, withSSL: sslConfig, keepAlive: keepAliveState, options: options)
     }
 
     private class func _addHTTPServer(on listenType: ListenerType,
@@ -106,7 +109,7 @@ public class Kitura {
                                     withSSL sslConfig: SSLConfig?=nil,
                                     keepAlive keepAliveState: KeepAliveState = .unlimited,
                                     allowPortReuse: Bool = false,
-                                    options: ServerOptions? = nil) -> HTTPServer {
+                                    options: ServerOptions?) -> HTTPServer {
         let server = HTTP.createServer()
         server.delegate = delegate
         server.sslConfig = sslConfig?.config
