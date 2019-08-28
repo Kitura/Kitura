@@ -86,6 +86,12 @@ final class TestResponse: KituraTest, KituraTestSuite {
 
     let router = TestResponse.setupRouter()
 
+    override func setUp() {
+        super.setUp()
+        // Increase request size limit to allow testLargePost() to succeed
+        KituraTest.options = ServerOptions(requestSizeLimit: 2000000)
+    }
+
     func testSimpleResponse() {
     	performServerTest(router) { expectation in
             self.performRequest("get", path:"/qwer", callback: {response in
