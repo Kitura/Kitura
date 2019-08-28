@@ -62,6 +62,9 @@ class KituraTest: XCTestCase {
     // A singleton Kitura server listening on HTTPS on a Unix socket
     static private(set) var httpsUnixServer: HTTPServer?
 
+    // Options for servers for the current KituraTest subclass
+    static var options: ServerOptions?
+
     // The port of the server returned by startServer().
     private(set) var port = -1
     // Whether the server used by doPerformServerTest should use SSL.
@@ -192,6 +195,9 @@ class KituraTest: XCTestCase {
         if useSSL {
             server.sslConfig = KituraTest.sslConfig.config
         }
+        if let options = KituraTest.options {
+            server.options = options
+        }
 
         do {
             try server.listen(on: 0, address: "localhost")
@@ -235,7 +241,9 @@ class KituraTest: XCTestCase {
         if useSSL {
             server.sslConfig = KituraTest.sslConfig.config
         }
-
+        if let options = KituraTest.options {
+            server.options = options
+        }
         // Create a temporary path for Unix domain socket
         let socketPath = uniqueTemporaryFilePath()
         self.socketFilePath = socketPath
