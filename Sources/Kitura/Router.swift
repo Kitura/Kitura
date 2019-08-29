@@ -120,7 +120,7 @@ public class Router {
     // MARK: Swagger
     
     /// Contains the structures needed for swagger document generation
-    var swagger: SwaggerDocument
+    public var swagger: SwaggerDocument
     
     /// Returns the current in-memory representation of Codable routes as a
     /// Swagger document in JSON format, or nil if the document cannot be
