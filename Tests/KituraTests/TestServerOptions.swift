@@ -37,14 +37,8 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
 
     let router = TestServerOptions.setupRouter()
 
-    override func setUp() {
-        super.setUp()
-        // Impose limit on request size. Must allow for headers and payload
-        KituraTest.options = ServerOptions(requestSizeLimit: 200, connectionLimit: 1)
-    }
-
     func testSmallPostSucceeds() {
-        performServerTest(router, timeout: 30) { expectation in
+        performServerTest(router, options: ServerOptions(requestSizeLimit: 200), timeout: 30) { expectation in
             // Data that (together with headers) is within request limit
             let count = 10
             let postData = Data(repeating: UInt8.max, count: count)
@@ -60,7 +54,7 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
     }
 
     func testLargePostFails() {
-        performServerTest(router, timeout: 30) { expectation in
+        performServerTest(router, options: ServerOptions(requestSizeLimit: 200), timeout: 30) { expectation in
             // Data that exceeds the request size limit
             let count = 10000
             let postData = Data(repeating: UInt8.max, count: count)
