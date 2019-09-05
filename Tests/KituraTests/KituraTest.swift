@@ -62,6 +62,9 @@ class KituraTest: XCTestCase {
     // A singleton Kitura server listening on HTTPS on a Unix socket
     static private(set) var httpsUnixServer: HTTPServer?
 
+    // A short-lived Kitura server created for a specific test
+    private var serverWithOptions: HTTPServer?
+
     // The port of the server returned by startServer().
     private(set) var port = -1
     // Whether the server used by doPerformServerTest should use SSL.
@@ -172,9 +175,45 @@ class KituraTest: XCTestCase {
         waitForExpectations(timeout: timeout) { error in
             XCTAssertNil(error)
         }
+
+        // If we created a short-lived server for specific ServerOptions, shut it down now
+        serverWithOptions?.stop()
     }
 
+    // Start a server. If a non-nil `options` is provided, then the server is stored
+    // as the `serverWithOptions` property, and will be shut down at the end of the test.
+    private func doStartServer(router: ServerDelegate, options: ServerOptions?) -> HTTPServer? {
+        let server = HTTP.createServer()
+        server.delegate = router
+
+        if useSSL {
+            server.sslConfig = KituraTest.sslConfig.config
+        }
+
+        if let options = options {
+            server.options = options
+            serverWithOptions = server
+        }
+
+        do {
+            try server.listen(on: 0, address: "localhost")
+            return server
+        } catch {
+            XCTFail("Error starting server: \(error)")
+            return nil
+        }
+    }
+
+    // Start a server on an inet socket. If nil `options` are specified, this is
+    // a generic server that can be reused between tests, and will be stored as a
+    // static property.
     private func startServer(router: ServerDelegate, options: ServerOptions?) -> Int? {
+        // Servers with options (live for duration of one test)
+        if options != nil {
+            let server = doStartServer(router: router, options: options)
+            return server?.port
+        }
+        // Generic servers that can be long-lived (for a whole test class)
         if useSSL {
             if let server = KituraTest.httpsInetServer {
                 server.delegate = router
@@ -187,31 +226,54 @@ class KituraTest: XCTestCase {
             }
         }
 
+        let server = doStartServer(router: router, options: nil)
+
+        if useSSL {
+            KituraTest.httpsInetServer = server
+        } else {
+            KituraTest.httpInetServer = server
+        }
+        return server?.port
+    }
+
+    // Start a server. If a non-nil `options` is provided, then the server is stored
+    // as the `serverWithOptions` property, and will be shut down at the end of the test.
+    private func doStartUnixSocketServer(router: ServerDelegate, options: ServerOptions?) -> HTTPServer? {
         let server = HTTP.createServer()
         server.delegate = router
+
         if useSSL {
             server.sslConfig = KituraTest.sslConfig.config
         }
+
         if let options = options {
             server.options = options
+            serverWithOptions = server
         }
 
-        do {
-            try server.listen(on: 0, address: "localhost")
+        // Create a temporary path for Unix domain socket
+        let socketPath = uniqueTemporaryFilePath()
+        self.socketFilePath = socketPath
 
-            if useSSL {
-                KituraTest.httpsInetServer = server
-            } else {
-                KituraTest.httpInetServer = server
-            }
-            return server.port
+        do {
+            try server.listen(unixDomainSocketPath: socketPath)
+            return server
         } catch {
             XCTFail("Error starting server: \(error)")
             return nil
         }
     }
 
+    // Start a server on a unix domain socket. If nil `options` are specified, this is
+    // a generic server that can be reused between tests, and will be stored as a
+    // static property.
     private func startUnixSocketServer(router: ServerDelegate, options: ServerOptions?) -> String? {
+        // Servers with options (live for duration of one test)
+        if (options != nil) {
+            let server = doStartUnixSocketServer(router: router, options: options)
+            return server?.unixDomainSocketPath
+        }
+        // Generic servers that can be long-lived (for a whole test class)
         if useSSL {
             if let server = KituraTest.httpsUnixServer {
                 server.delegate = router
@@ -233,31 +295,15 @@ class KituraTest: XCTestCase {
                 return server.unixDomainSocketPath
             }
         }
-        let server = HTTP.createServer()
-        server.delegate = router
+
+        let server = doStartUnixSocketServer(router: router, options: nil)
+
         if useSSL {
-            server.sslConfig = KituraTest.sslConfig.config
+            KituraTest.httpsUnixServer = server
+        } else {
+            KituraTest.httpUnixServer = server
         }
-        if let options = options {
-            server.options = options
-        }
-        // Create a temporary path for Unix domain socket
-        let socketPath = uniqueTemporaryFilePath()
-        self.socketFilePath = socketPath
-
-        do {
-            try server.listen(unixDomainSocketPath: socketPath)
-
-            if useSSL {
-                KituraTest.httpsUnixServer = server
-            } else {
-                KituraTest.httpUnixServer = server
-            }
-            return server.unixDomainSocketPath
-        } catch {
-            XCTFail("Error starting server: \(error)")
-            return nil
-        }
+        return server?.unixDomainSocketPath
     }
 
     func stopServer() {
