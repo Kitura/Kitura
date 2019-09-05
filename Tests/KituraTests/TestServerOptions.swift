@@ -31,12 +31,14 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
     static var allTests: [(String, (TestServerOptions) -> () throws -> Void)] {
         return [
             ("testSmallPostSucceeds", testSmallPostSucceeds),
-            ("testLargePostFails", testLargePostFails),
+            ("testLargePostExceedsLimit", testLargePostExceedsLimit),
+            ("testLargeHeaderExceedsLimit", testLargeHeaderExceedsLimit),
         ]
     }
 
     let router = TestServerOptions.setupRouter()
 
+    // Tests that a request whose total size is smaller than the configured limit is successful.
     func testSmallPostSucceeds() {
         performServerTest(router, options: ServerOptions(requestSizeLimit: 200), timeout: 30) { expectation in
             // Data that (together with headers) is within request limit
@@ -53,7 +55,9 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
         }
     }
 
-    func testLargePostFails() {
+    // Tests that a POST request containing body data that exceeds the configured limit is
+    // correctly rejected with `.requestTooLong`.
+    func testLargePostExceedsLimit() {
         performServerTest(router, options: ServerOptions(requestSizeLimit: 200), timeout: 30) { expectation in
             // Data that exceeds the request size limit
             let count = 10000
@@ -64,6 +68,30 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.requestTooLong, "HTTP Status code was \(String(describing: response?.statusCode))")
                 expectation.fulfill()
             }, requestModifier: { request in
+                request.write(from: postData)
+            })
+        }
+    }
+
+    // Tests that a request with a modest total size, but an over-sized header (> 80kb)
+    // is correctly rejected as a `.badRequest`.
+    func testLargeHeaderExceedsLimit() {
+        performServerTest(router, options: nil /* default options */, timeout: 30) { expectation in
+            // Data that is within default request limit
+            let count = 10
+            let postData = Data(repeating: UInt8.max, count: count)
+            // Header data that is within the default request limit, but should be rejected
+            // as headers are limited to 80kb.
+            let headerBytes = 1024 * 80 + 1
+            let headerData = Data(repeating: 0x7A, count: headerBytes)
+            let tooLongString = String(data: headerData, encoding: .utf8)!
+
+            self.performRequest("post", path: "/smallPost", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(String(describing: response?.statusCode))")
+                expectation.fulfill()
+            }, requestModifier: { request in
+                request.headers["Much-Too-Long"] = tooLongString
                 request.write(from: postData)
             })
         }
