@@ -277,7 +277,7 @@ extension Router {
             return
         }
         registerGetRoute(route: route, id: Id.self, outputType: O.self)
-        get(join(path: route, with: ":id")) { request, response, next in
+        get(appendId(path: route)) { request, response, next in
             Log.verbose("Received GET (singular with identifier and middleware) type-safe request")
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
@@ -318,7 +318,7 @@ extension Router {
             return
         }
         registerGetRoute(route: route, id: Id.self, outputType: O.self)
-        get(join(path: route, with: ":id")) { request, response, next in
+        get(appendId(path: route)) { request, response, next in
             Log.verbose("Received GET (singular with identifier and middleware) type-safe request")
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
@@ -359,7 +359,7 @@ extension Router {
             return
         }
         registerGetRoute(route: route, id: Id.self, outputType: O.self)
-        get(join(path: route, with: ":id")) { request, response, next in
+        get(appendId(path: route)) { request, response, next in
             Log.verbose("Received GET (singular with identifier and middleware) type-safe request")
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
@@ -1069,7 +1069,7 @@ extension Router {
             return
         }
         registerDeleteRoute(route: route, id: Id.self)
-        delete(join(path: route, with: ":id")) { request, response, next in
+        delete(appendId(path: route)) { request, response, next in
             Log.verbose("Received DELETE (singular with middleware) type-safe request")
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
@@ -1108,7 +1108,7 @@ extension Router {
             return
         }
         registerDeleteRoute(route: route, id: Id.self)
-        delete(join(path: route, with: ":id")) { request, response, next in
+        delete(appendId(path: route)) { request, response, next in
             Log.verbose("Received DELETE (singular with middleware) type-safe request")
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
@@ -1147,7 +1147,7 @@ extension Router {
             return
         }
         registerDeleteRoute(route: route, id: Id.self)
-        delete(join(path: route, with: ":id")) { request, response, next in
+        delete(appendId(path: route)) { request, response, next in
             Log.verbose("Received DELETE (singular with middleware) type-safe request")
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
@@ -1738,7 +1738,7 @@ extension Router {
             return
         }
         registerPutRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
-        put(join(path: route, with: ":id")) { request, response, next in
+        put(appendId(path: route)) { request, response, next in
             Log.verbose("Received PUT type-safe request")
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
@@ -1779,7 +1779,7 @@ extension Router {
             return
         }
         registerPutRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
-        put(join(path: route, with: ":id")) { request, response, next in
+        put(appendId(path: route)) { request, response, next in
             Log.verbose("Received PUT type-safe request")
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
@@ -1820,7 +1820,7 @@ extension Router {
             return
         }
         registerPutRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
-        put(join(path: route, with: ":id")) { request, response, next in
+        put(appendId(path: route)) { request, response, next in
             Log.verbose("Received PUT type-safe request")
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
@@ -1872,7 +1872,7 @@ extension Router {
             return
         }
         registerPatchRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
-        patch(join(path: route, with: ":id")) { request, response, next in
+        patch(appendId(path: route)) { request, response, next in
             Log.verbose("Received PATCH type-safe request")
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
@@ -1919,7 +1919,7 @@ extension Router {
             return
         }
         registerPatchRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
-        patch(join(path: route, with: ":id")) { request, response, next in
+        patch(appendId(path: route)) { request, response, next in
             Log.verbose("Received PATCH type-safe request")
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
@@ -1965,7 +1965,7 @@ extension Router {
             return
         }
         registerPatchRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
-        patch(join(path: route, with: ":id")) { request, response, next in
+        patch(appendId(path: route)) { request, response, next in
             Log.verbose("Received PATCH type-safe request")
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
