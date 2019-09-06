@@ -16,6 +16,7 @@
 
 import XCTest
 import Foundation
+import Dispatch
 
 @testable import Kitura
 @testable import KituraNet
@@ -33,6 +34,7 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
             ("testSmallPostSucceeds", testSmallPostSucceeds),
             ("testLargePostExceedsLimit", testLargePostExceedsLimit),
             ("testLargeHeaderExceedsLimit", testLargeHeaderExceedsLimit),
+            ("testConnectionRejection", testConnectionRejection),
         ]
     }
 
@@ -97,6 +99,68 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
         }
     }
 
+    // Tests that when more concurrent connections are attempted than the server permits,
+    // the extra connections are rejected with `.serviceUnavailable`.
+    // Clients attempt to make a request to a route that deliberately takes a second to
+    // respond. This allows us to connect several clients in parallel.
+    func testConnectionRejection() {
+        let numClients = 5  // Number of clients to connect
+        let maxClients = 2  // Maximum number of concurrent clients
+
+        // Class to hold status code from attempted client request
+        class ClientStatus {
+            var code: HTTPStatusCode = .unknown
+        }
+
+        // Wrap ClientRequest in an async dispatch block as Kitura-net's implementation is
+        // not asynchronous, and we need connections to be established in parallel.
+        func asyncClientRequest(expectation: XCTestExpectation, status: ClientStatus) {
+            DispatchQueue.global().async {
+                self.performRequest("get", path: "/answerSlowly", callback: { response in
+                    defer {
+                        expectation.fulfill()
+                    }
+                    guard let response = response else {
+                        return XCTFail("ERROR!!! ClientRequest response object was nil")
+                    }
+                    status.code = response.statusCode
+                })
+            }
+        }
+
+        // Create client status objects and expectations
+        var clientStatus = [ClientStatus]()
+        var clientExpectations = [XCTestExpectation]()
+        for i in 1...numClients {
+            clientStatus.append(ClientStatus())
+            clientExpectations.append(self.expectation(description: "Client \(i) completed"))
+        }
+
+        // Start server and make concurrent request attempts. performServerTest() will
+        // not complete until all expectations (including client completion) are fulfilled.
+        performServerTest(router, options: ServerOptions(connectionLimit: maxClients), sslOption: .httpOnly, socketTypeOption: .inet, timeout: 30) { expectation in
+            for i in 0..<numClients {
+                usleep(1000)  // TODO: properly fix crash when creating ClientRequests concurrently
+                asyncClientRequest(expectation: clientExpectations[i], status: clientStatus[i])
+            }
+            expectation.fulfill()
+        }
+
+        // Assess results
+        var successCount = 0
+        var failCount = 0
+        for i in 0..<numClients {
+            switch clientStatus[i].code {
+            case .OK: successCount += 1
+            case .serviceUnavailable: failCount += 1
+            default: XCTFail("Unexpected client status: \(clientStatus[i].code)")
+            }
+        }
+        XCTAssertEqual(successCount, maxClients, "Incorrect number of accepted client connections")
+        XCTAssertEqual(failCount, numClients - maxClients, "Incorrect number of rejected client connections")
+    }
+
+
     static func setupRouter() -> Router {
         let router = Router()
 
@@ -106,6 +170,18 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
 
         router.post("/largePostFail") { request, response, _ in
             XCTFail("Large post request succeeded, should have been rejected")
+            try response.status(.internalServerError).end()
+        }
+
+        router.get("/answerSlowly") { request, response, _ in
+            // Return .OK after 1 second
+            DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)) {
+                do {
+                    try response.status(.OK).end()
+                } catch {
+                    XCTFail("\(error)")
+                }
+            }
         }
 
         return router
