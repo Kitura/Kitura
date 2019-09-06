@@ -26,12 +26,10 @@ final class TestCodablePathParams: KituraTest, KituraTestSuite {
             ("testJoinPath", testJoinPath),
             ("testRouteWithTrailingSlash", testRouteWithTrailingSlash),
             ("testInvalidRouteParameters", testInvalidRouteParameters),
-            ("testInvalidIdentifierSupplied", testInvalidIdentifierSupplied),
             ("testIdentifierNotExpected", testIdentifierNotExpected),
             ("testPartialIdentifierSupplied", testPartialIdentifierSupplied),
             ("testIdentifierNotSupplied", testIdentifierNotSupplied),
-            ("testGetIdentifierNotSupplied", testGetIdentifierNotSupplied),
-            ("testGetIdentifierSupplied", testGetIdentifierSupplied),
+            ("testIdentifierSupplied", testIdentifierSupplied),
         ]
     }
 
@@ -90,51 +88,59 @@ final class TestCodablePathParams: KituraTest, KituraTestSuite {
             .run()
     }
 
+    // Test that routes containing a path parameter that is not `:id` are
+    // correctly rejected.
     func testInvalidRouteParameters() {
-        //Add this erroneous route which should not be hit by the test, should log an error but we can't test the log so we check for a 404 not found.
-        let result = Fruit(name: "banana", id: 1)
-        router.get("/status/:notId") { (id: Int, respondWith: (Fruit?, RequestError?) -> Void) in
-            XCTFail("GET on /status/:notId that should not happen")
+        // These routes should fail to be registered.
+        router.get("/fruit/:myid") { (id: Int, respondWith: (Fruit?, RequestError?) -> Void) in
+            XCTFail("GET on /fruit/:myid that should not happen")
+            let result = Fruit(name: "banana", id: 1)
             respondWith(result, nil)
         }
-
-        buildServerTest(router, timeout: 30)
-            .request("get", path: "/status/1")
-            .hasStatus(.notFound)
-            .hasData()
-            .run()
-    }
-
-    func testInvalidIdentifierSupplied() {
-        //Add this erroneous route with invalid identifier, should log an error but we can't test the log so we check for a 404 not found.
-        router.delete("/status/:myid") { (id: Int, respondWith: (RequestError?) -> Void) in
-            XCTFail("DELETE on /status/:myid that should not happen")
+        router.delete("/fruit/:myid") { (id: Int, respondWith: (RequestError?) -> Void) in
+            XCTFail("DELETE on /fruit/:myid that should not happen")
             respondWith(.badRequest)
         }
 
         buildServerTest(router, timeout: 30)
-            .request("delete", path: "/status/1")
+            .request("get", path: "/fruit/1")
             .hasStatus(.notFound)
             .hasData()
+
+            .request("delete", path: "/fruit/1")
+            .hasStatus(.notFound)
+            .hasData()
+
             .run()
     }
 
+    // Test that routes with trailing :id for a DELETE (plural) or GET (plural)
+    // handler are correctly rejected.
     func testIdentifierNotExpected() {
-        //Add this erroneous route which should not be hit by the test, should log an error but we can't test the log so we check for a 404 not found.
-        router.delete("/users/:id") { (respondWith: (RequestError?) -> Void) in
-            print("DELETE on /users")
+        // These routes should fail to be registered.
+        router.delete("/fruit/:id") { (respondWith: (RequestError?) -> Void) in
+            XCTFail("DELETE (plural) on /fruit/:id that should not happen")
             respondWith(.badRequest)
+        }
+        router.get("/fruit/:id") { (respondWith: ([Fruit]?, RequestError?) -> Void) in
+            XCTFail("GET (plural) on /fruit/:id that should not happen")
         }
 
         buildServerTest(router, timeout: 30)
-            .request("delete", path: "/users/1")
+            .request("delete", path: "/fruit/1")
             .hasStatus(.notFound)
             .hasData()
+
+            .request("get", path: "/fruit/1")
+            .hasStatus(.notFound)
+            .hasData()
+
             .run()
     }
 
+    // Test that a route with a partial identifier is rejected.
     func testPartialIdentifierSupplied() {
-        //Add this route with partial identifier. should log an error but we can't test the log so we check for a 404 not found.
+        // This route should fail to be registered.
         router.delete("/status/:") { (id: Int, respondWith: (RequestError?) -> Void) in
             XCTFail("DELETE on /status/: that should not happen")
             respondWith(.badRequest)
@@ -147,51 +153,59 @@ final class TestCodablePathParams: KituraTest, KituraTestSuite {
             .run()
     }
 
-    func testIdentifierNotSupplied() {
-        router.delete("/status/") { (id: Int, respondWith: (RequestError?) -> Void) in
-            print("DELETE on /status")
-            respondWith(nil)
-        }
-
-        buildServerTest(router, timeout: 30)
-            .request("delete", path: "/status/1")
-            .hasStatus(.noContent)
-            .hasNoData()
-            .run()
-    }
-
     // A trailing :id parameter is allowed, but if not supplied will be added
     // implicitly (with a warning to signal to the user that this has occurred).
-    func testGetIdentifierNotSupplied() {
-        router.get("/banana") { (id: Int, respondWith: (Fruit?, RequestError?) -> Void) in
-            print("GET on /banana")
+    func testIdentifierNotSupplied() {
+        router.delete("/fruit/") { (id: Int, respondWith: (RequestError?) -> Void) in
+            print("DELETE on /fruit/ (implicit :id)")
+            XCTAssertEqual(id, 1)
+            respondWith(nil)
+        }
+        router.get("/fruit") { (id: Int, respondWith: (Fruit?, RequestError?) -> Void) in
+            print("GET on /fruit (implicit :id)")
             respondWith(Fruit(name: "banana", id: id), nil)
         }
 
         let banana = Fruit(name: "banana", id: 10)
 
         buildServerTest(router, timeout: 30)
-            .request("get", path: "/banana/10")
+            .request("delete", path: "/fruit/1")
+            .hasStatus(.noContent)
+            .hasNoData()
+
+            .request("get", path: "/fruit/10")
             .hasStatus(.OK)
             .hasData(banana)
+
             .run()
     }
 
     // Test added to address fix for https://github.com/IBM-Swift/Kitura/issues/1473
+    // Tests that a GET (singular) or DELETE (singular) with explicit :id parameter
+    // is successful.
     // A trailing :id parameter is allowed, and replaces the :id parameter that
     // would otherwise be added implicitly.
-    func testGetIdentifierSupplied() {
-        router.get("/banana/:id") { (id: Int, respondWith: (Fruit?, RequestError?) -> Void) in
-            print("GET on /banana/:id")
+    func testIdentifierSupplied() {
+        router.get("/fruit/:id") { (id: Int, respondWith: (Fruit?, RequestError?) -> Void) in
+            print("GET on /fruit/:id")
             respondWith(Fruit(name: "banana", id: id), nil)
         }
-
+        router.delete("/fruit/:id") { (id: Int, respondWith: (RequestError?) -> Void) in
+            print("DELETE on /fruit/:id")
+            XCTAssertEqual(id, 1)
+            respondWith(nil)
+        }
         let banana = Fruit(name: "banana", id: 20)
 
         buildServerTest(router, timeout: 30)
-            .request("get", path: "/banana/20")
+            .request("get", path: "/fruit/20")
             .hasStatus(.OK)
             .hasData(banana)
+
+            .request("delete", path: "/fruit/1")
+            .hasStatus(.noContent)
+            .hasNoData()
+
             .run()
     }
 
