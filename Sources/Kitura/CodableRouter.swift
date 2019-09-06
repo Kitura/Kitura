@@ -387,7 +387,7 @@ extension Router {
             return
         }
         registerPutRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
-        put(join(path: route, with: ":id")) { request, response, next in
+        put(appendId(path: route)) { request, response, next in
             Log.verbose("Received PUT type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
                   let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
@@ -405,7 +405,7 @@ extension Router {
             return
         }
         registerPatchRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
-        patch(join(path: route, with: ":id")) { request, response, next in
+        patch(appendId(path: route)) { request, response, next in
             Log.verbose("Received PATCH type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
                   let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
@@ -536,7 +536,7 @@ extension Router {
             return
         }
         registerGetRoute(route: route, id: Id.self, outputType: O.self)
-        get(join(path: route, with: ":id")) { request, response, next in
+        get(appendId(path: route)) { request, response, next in
             Log.verbose("Received GET (singular with identifier) type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
                 next()
@@ -564,7 +564,7 @@ extension Router {
             return
         }
         registerDeleteRoute(route: route, id: Id.self)
-        delete(join(path: route, with: ":id")) { request, response, next in
+        delete(appendId(path: route)) { request, response, next in
             Log.verbose("Received DELETE (singular) type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
                 next()
@@ -641,7 +641,18 @@ extension Router {
         }
     }
 
-    internal func join(path base: String, with component: String) -> String {
+    /// Append the `:id` parameter to a path that does not already contain a parameter.
+    /// If the path already contains a parameter, it will be returned unmodified.
+    internal func appendId(path base: String) -> String {
+        let identifierSupplied = base.contains(":")
+        guard !identifierSupplied else {
+            return base
+        }
+        return joinPath(base, with: ":id")
+    }
+
+    /// Join two path components together such that they are separated by a single `/`.
+    private func joinPath(_ base: String, with component: String) -> String {
         let strippedBase = base.hasSuffix("/") ? String(base.dropLast()) : base
         let strippedComponent = component.hasPrefix("/") ? String(component.dropFirst()) : component
         return "\(strippedBase)/\(strippedComponent)"

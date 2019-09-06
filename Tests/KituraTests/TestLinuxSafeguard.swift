@@ -31,6 +31,7 @@
             verifyCount(MiscellaneousTests.self)
             verifyCount(TestBridgingHTTPStatusCode.self)
             verifyCount(TestBridgingRequestError.self)
+            verifyCount(TestCodablePathParams.self)
             verifyCount(TestCodableRouter.self)
             verifyCount(TestContentType.self)
             verifyCount(TestCookies.self)

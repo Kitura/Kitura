@@ -33,10 +33,7 @@ final class TestCodableRouter: KituraTest, KituraTestSuite {
             ("testBasicDeleteSingle", testBasicDeleteSingle),
             ("testBasicPut", testBasicPut),
             ("testBasicPatch", testBasicPatch),
-            ("testJoinPath", testJoinPath),
-            ("testRouteWithTrailingSlash", testRouteWithTrailingSlash),
             ("testErrorOverridesBody", testErrorOverridesBody),  // Slow compile on 5.1
-            ("testRouteParameters", testRouteParameters),
             ("testCodableRoutesWithBodyParsingFail", testCodableRoutesWithBodyParsingFail),
             ("testCodableGetSingleQueryParameters", testCodableGetSingleQueryParameters),
             ("testCodableGetArrayQueryParameters", testCodableGetArrayQueryParameters),
@@ -44,10 +41,6 @@ final class TestCodableRouter: KituraTest, KituraTestSuite {
             ("testCodablePostSuccessStatuses", testCodablePostSuccessStatuses),
             ("testNoDataCustomStatus", testNoDataCustomStatus),
             ("testNoDataDefaultStatus", testNoDataDefaultStatus),
-            ("testInvalidIdentifierSupplied", testInvalidIdentifierSupplied),
-            ("testIdentifierNotExpected", testIdentifierNotExpected),
-            ("testPartialIdentifierSupplied", testPartialIdentifierSupplied),
-            ("testIdentifierNotSupplied", testIdentifierNotSupplied),
         ]
     }
 
@@ -602,30 +595,6 @@ final class TestCodableRouter: KituraTest, KituraTestSuite {
             .run()
     }
 
-    func testJoinPath() {
-        let router = Router()
-        XCTAssertEqual(router.join(path: "a", with: "b"), "a/b")
-        XCTAssertEqual(router.join(path: "a/", with: "/b"), "a/b")
-        XCTAssertEqual(router.join(path: "a", with: "/b"), "a/b")
-        XCTAssertEqual(router.join(path: "a/", with: "b"), "a/b")
-    }
-
-    // Test adding a trailing slash to your route when it has an implicit id parameter
-    func testRouteWithTrailingSlash() {
-        let status = Status("Slashes work as expected")
-        router.get("/status/") { (id: Int, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, nil) }
-        router.put("/status/") { (id: Int, status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, nil) }
-        router.patch("/status/") { (id: Int, status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, nil) }
-        router.delete("/status/") { (id: Int, respondWith: (RequestError?) -> Void) in respondWith(nil) }
-
-        buildServerTest(router, timeout: 30)
-            .request("get", path: "/status/1").hasStatus(.OK).hasContentType(withPrefix: "application/json").hasData(status)
-            .request("put", path: "/status/1", data: status).hasStatus(.OK).hasContentType(withPrefix: "application/json").hasData(status)
-            .request("patch", path: "/status/1", data: status).hasStatus(.OK).hasContentType(withPrefix: "application/json").hasData(status)
-            .request("delete", path: "/status/1").hasStatus(.noContent).hasNoData()
-            .run()
-    }
-
     func testErrorOverridesBody() {
         #if !swift(>=5.1)
         let status = Status("This should not be sent")
@@ -682,21 +651,6 @@ final class TestCodableRouter: KituraTest, KituraTestSuite {
         #else
         print("Test temporarily disabled for 5.1: see SR-11012")
         #endif
-    }
-
-    func testRouteParameters() {
-        //Add this erroneous route which should not be hit by the test, should log an error but we can't test the log so we check for a 404 not found.
-        let status = Status("Should not be seen")
-        router.get("/status/:id") { (id: Int, respondWith: (Status?, RequestError?) -> Void) in
-            print("GET on /status/:id that should not happen")
-            respondWith(status, nil)
-        }
-
-        buildServerTest(router, timeout: 30)
-            .request("get", path: "/status/1")
-            .hasStatus(.notFound)
-            .hasData()
-            .run()
     }
 
     // Test that we get an internalServerError when using BodyParser with a Codable route
@@ -899,61 +853,6 @@ final class TestCodableRouter: KituraTest, KituraTestSuite {
             .hasContentType(withPrefix: "application/json")
             .hasData(user)
 
-            .run()
-    }
-
-    func testInvalidIdentifierSupplied() {
-        //Add this erroneous route with invalid identifier, should log an error but we can't test the log so we check for a 404 not found.
-        router.delete("/status/:myid") { (id: Int, respondWith: (RequestError?) -> Void) in
-            print("DELETE on /status/:myid that should not happen")
-            respondWith(RequestError(.badRequest, body: Conflict(on: "id")))
-        }
-
-        buildServerTest(router, timeout: 30)
-            .request("delete", path: "/status/1")
-            .hasStatus(.notFound)
-            .hasData()
-            .run()
-    }
-
-    func testIdentifierNotExpected() {
-        //Add this erroneous route which should not be hit by the test, should log an error but we can't test the log so we check for a 404 not found.
-        router.delete("/users/:id") { (respondWith: (RequestError?) -> Void) in
-            print("DELETE on /users")
-            respondWith(RequestError(.badRequest, body: Conflict(on: "id")))
-        }
-
-        buildServerTest(router, timeout: 30)
-            .request("delete", path: "/users/1")
-            .hasStatus(.notFound)
-            .hasData()
-            .run()
-    }
-
-    func testPartialIdentifierSupplied() {
-        //Add this route with partial identifier. should log an error but we can't test the log so we check for a 404 not found.
-        router.delete("/status/:") { (id: Int, respondWith: (RequestError?) -> Void) in
-            print("DELETE on /status/: that should not happen")
-            respondWith(RequestError(.badRequest, body: Conflict(on: "id")))
-        }
-
-        buildServerTest(router, timeout: 30)
-            .request("delete", path: "/status/1")
-            .hasStatus(.notFound)
-            .hasData()
-            .run()
-    }
-
-    func testIdentifierNotSupplied() {
-        router.delete("/status/") { (id: Int, respondWith: (RequestError?) -> Void) in
-            print("DELETE on /status")
-            respondWith(nil)
-        }
-
-        buildServerTest(router, timeout: 30)
-            .request("delete", path: "/status/1")
-            .hasStatus(.noContent)
-            .hasNoData()
             .run()
     }
 
