@@ -92,8 +92,8 @@ public class Router {
     ///                                FileResourceServer to serve the default
     ///                                "Welcome to Kitura" page and related
     ///                                assets.
-    public init(mergeParameters: Bool = false, enableWelcomePage: Bool = true) {
-        self.swagger = SwaggerDocument()
+    public init(mergeParameters: Bool = false, enableWelcomePage: Bool = true, apiDocument: SwaggerDocument = SwaggerDocument()) {
+        self.swagger = apiDocument
         self.mergeParameters = mergeParameters
         self.fileResourceServer = enableWelcomePage ? FileResourceServer() : nil
 
@@ -120,7 +120,7 @@ public class Router {
     // MARK: Swagger
     
     /// Contains the structures needed for swagger document generation
-    public var swagger: SwaggerDocument
+    internal var swagger: SwaggerDocument
     
     /// Returns the current in-memory representation of Codable routes as a
     /// Swagger document in JSON format, or nil if the document cannot be
