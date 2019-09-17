@@ -92,8 +92,10 @@ public class Router {
     ///                                FileResourceServer to serve the default
     ///                                "Welcome to Kitura" page and related
     ///                                assets.
-    public init(mergeParameters: Bool = false, enableWelcomePage: Bool = true) {
-        self.swagger = SwaggerDocument()
+    /// - Parameter apiDocument: Optional parameter that allows customization of the OpenAPI document 
+    ///                          describing this Router.
+    public init(mergeParameters: Bool = false, enableWelcomePage: Bool = true, apiDocument: SwaggerDocument = SwaggerDocument()) {
+        self.swagger = apiDocument
         self.mergeParameters = mergeParameters
         self.fileResourceServer = enableWelcomePage ? FileResourceServer() : nil
 
