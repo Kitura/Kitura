@@ -1,5 +1,5 @@
 /**
- * Copyright IBM Corporation 2017
+ * Copyright IBM Corporation 2017-2019
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import KituraContracts
 final class TestCodableRouter: KituraTest, KituraTestSuite {
     static var allTests: [(String, (TestCodableRouter) -> () throws -> Void)] {
         return [
-            ("testBasicPost", testBasicPost),  // Slow compile on 5.1
+            ("testBasicPost", testBasicPost),
             ("testBasicPostIdentifier", testBasicPostIdentifier),
             ("testBasicGetSingleton", testBasicGetSingleton),
             ("testBasicGetArray", testBasicGetArray),
@@ -33,7 +33,7 @@ final class TestCodableRouter: KituraTest, KituraTestSuite {
             ("testBasicDeleteSingle", testBasicDeleteSingle),
             ("testBasicPut", testBasicPut),
             ("testBasicPatch", testBasicPatch),
-            ("testErrorOverridesBody", testErrorOverridesBody),  // Slow compile on 5.1
+            ("testErrorOverridesBody", testErrorOverridesBody),
             ("testCodableRoutesWithBodyParsingFail", testCodableRoutesWithBodyParsingFail),
             ("testCodableGetSingleQueryParameters", testCodableGetSingleQueryParameters),
             ("testCodableGetArrayQueryParameters", testCodableGetArrayQueryParameters),
@@ -141,7 +141,6 @@ final class TestCodableRouter: KituraTest, KituraTestSuite {
     }
 
     func testBasicPost() {
-        #if !swift(>=5.1)
         router.post("/users") { (user: User, respondWith: (User?, RequestError?) -> Void) in
             print("POST on /users for user \(user)")
             respondWith(user, nil)
@@ -194,9 +193,6 @@ final class TestCodableRouter: KituraTest, KituraTestSuite {
             .hasData()
 
             .run()
-        #else
-        print("Test temporarily disabled for 5.1: see SR-11012")
-        #endif
     }
 
     func testBasicPostIdentifier() {
@@ -596,7 +592,6 @@ final class TestCodableRouter: KituraTest, KituraTestSuite {
     }
 
     func testErrorOverridesBody() {
-        #if !swift(>=5.1)
         let status = Status("This should not be sent")
         router.get("/status") { (id: Int, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, .conflict) }
         router.post("/status") { (status: Status, respondWith: (Status?, RequestError?) -> Void) in respondWith(status, .conflict) }
@@ -648,9 +643,6 @@ final class TestCodableRouter: KituraTest, KituraTestSuite {
             .hasData(conflict)
 
             .run()
-        #else
-        print("Test temporarily disabled for 5.1: see SR-11012")
-        #endif
     }
 
     // Test that we get an internalServerError when using BodyParser with a Codable route
