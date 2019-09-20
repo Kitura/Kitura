@@ -42,8 +42,8 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
 
     // Tests that a request whose total size is smaller than the configured limit is successful.
     func testSmallPostSucceeds() {
-        performServerTest(router, options: ServerOptions(requestSizeLimit: 200), timeout: 30) { expectation in
-            // Data that (together with headers) is within request limit
+        performServerTest(router, options: ServerOptions(requestSizeLimit: 10), timeout: 30) { expectation in
+            // Data that is within request limit
             let count = 10
             let postData = Data(repeating: UInt8.max, count: count)
 
@@ -60,9 +60,9 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
     // Tests that a POST request containing body data that exceeds the configured limit is
     // correctly rejected with `.requestTooLong`.
     func testLargePostExceedsLimit() {
-        performServerTest(router, options: ServerOptions(requestSizeLimit: 200), timeout: 30) { expectation in
+        performServerTest(router, options: ServerOptions(requestSizeLimit: 10), timeout: 30) { expectation in
             // Data that exceeds the request size limit
-            let count = 10000
+            let count = 20
             let postData = Data(repeating: UInt8.max, count: count)
 
             self.performRequest("post", path: "/largePostFail", callback: { response in
@@ -170,7 +170,7 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
 
         router.post("/largePostFail") { request, response, _ in
             XCTFail("Large post request succeeded, should have been rejected")
-            try response.status(.internalServerError).end()
+            try response.status(.OK).end()
         }
 
         router.get("/answerSlowly") { request, response, _ in
