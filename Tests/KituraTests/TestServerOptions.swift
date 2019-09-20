@@ -33,12 +33,16 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
         return [
             ("testSmallPostSucceeds", testSmallPostSucceeds),
             ("testLargePostExceedsLimit", testLargePostExceedsLimit),
+            ("testRequestSizeLimitCustomResponse", testRequestSizeLimitCustomResponse),
             ("testLargeHeaderExceedsLimit", testLargeHeaderExceedsLimit),
             ("testConnectionRejection", testConnectionRejection),
+            ("testConnectionRejectionCustomResponse", testConnectionRejectionCustomResponse),
         ]
     }
 
     let router = TestServerOptions.setupRouter()
+
+    // MARK: Request size limit tests
 
     // Tests that a request whose total size is smaller than the configured limit is successful.
     func testSmallPostSucceeds() {
@@ -75,6 +79,33 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
         }
     }
 
+    // Tests that a POST request containing body data that exceeds the configured limit is
+    // correctly rejected, and the response is customized by the custom response generator.
+    func testRequestSizeLimitCustomResponse() {
+        let customResponse: (Int, String) -> (HTTPStatusCode, String)? = { requestLimit, client in
+            return (.badRequest, "Request too large, limit \(requestLimit)")
+        }
+        performServerTest(router, options: ServerOptions(requestSizeLimit: 10, requestSizeResponseGenerator: customResponse), timeout: 30) { expectation in
+            // Data that exceeds the request size limit
+            let count = 20
+            let postData = Data(repeating: UInt8.max, count: count)
+
+            self.performRequest("post", path: "/largePostFail", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(String(describing: response?.statusCode))")
+                do {
+                    let message = try response?.readString()
+                    XCTAssertEqual(message, "Request too large, limit 10")
+                } catch {
+                    XCTFail("Unable to read response: \(error)")
+                }
+                expectation.fulfill()
+            }, requestModifier: { request in
+                request.write(from: postData)
+            })
+        }
+    }
+
     // Tests that a request with a modest total size, but an over-sized header (> 80kb)
     // is correctly rejected as a `.badRequest`.
     func testLargeHeaderExceedsLimit() {
@@ -99,6 +130,29 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
         }
     }
 
+    // MARK: Concurrent client limit tests
+
+    // Class to hold status code from attempted client request
+    class ClientStatus {
+        var code: HTTPStatusCode = .unknown
+    }
+
+    // Wrap ClientRequest in an async dispatch block as Kitura-net's implementation is
+    // not asynchronous, and we need connections to be established in parallel.
+    func asyncClientRequest(expectation: XCTestExpectation, status: ClientStatus) {
+        DispatchQueue.global().async {
+            self.performRequest("get", path: "/answerSlowly", callback: { response in
+                defer {
+                    expectation.fulfill()
+                }
+                guard let response = response else {
+                    return XCTFail("ERROR!!! ClientRequest response object was nil")
+                }
+                status.code = response.statusCode
+            })
+        }
+    }
+
     // Tests that when more concurrent connections are attempted than the server permits,
     // the extra connections are rejected with `.serviceUnavailable`.
     // Clients attempt to make a request to a route that deliberately takes a second to
@@ -106,27 +160,6 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
     func testConnectionRejection() {
         let numClients = 5  // Number of clients to connect
         let maxClients = 2  // Maximum number of concurrent clients
-
-        // Class to hold status code from attempted client request
-        class ClientStatus {
-            var code: HTTPStatusCode = .unknown
-        }
-
-        // Wrap ClientRequest in an async dispatch block as Kitura-net's implementation is
-        // not asynchronous, and we need connections to be established in parallel.
-        func asyncClientRequest(expectation: XCTestExpectation, status: ClientStatus) {
-            DispatchQueue.global().async {
-                self.performRequest("get", path: "/answerSlowly", callback: { response in
-                    defer {
-                        expectation.fulfill()
-                    }
-                    guard let response = response else {
-                        return XCTFail("ERROR!!! ClientRequest response object was nil")
-                    }
-                    status.code = response.statusCode
-                })
-            }
-        }
 
         // Create client status objects and expectations
         var clientStatus = [ClientStatus]()
@@ -141,7 +174,7 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
         performServerTest(router, options: ServerOptions(connectionLimit: maxClients), sslOption: .httpOnly, socketTypeOption: .inet, timeout: 30) { expectation in
             for i in 0..<numClients {
                 usleep(1000)  // TODO: properly fix crash when creating ClientRequests concurrently
-                asyncClientRequest(expectation: clientExpectations[i], status: clientStatus[i])
+                self.asyncClientRequest(expectation: clientExpectations[i], status: clientStatus[i])
             }
             expectation.fulfill()
         }
@@ -160,6 +193,49 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
         XCTAssertEqual(failCount, numClients - maxClients, "Incorrect number of rejected client connections")
     }
 
+    // Tests that the response can be customized for when a connection is rejected.
+    func testConnectionRejectionCustomResponse() {
+        let numClients = 5  // Number of clients to connect
+        let maxClients = 2  // Maximum number of concurrent clients
+
+        // Create client status objects and expectations
+        var clientStatus = [ClientStatus]()
+        var clientExpectations = [XCTestExpectation]()
+        for i in 1...numClients {
+            clientStatus.append(ClientStatus())
+            clientExpectations.append(self.expectation(description: "Client \(i) completed"))
+        }
+
+        let customResponse: (Int, String) -> (HTTPStatusCode, String)? = { limit, client in
+            return (.badRequest, "Too many connections (more than \(limit))")
+        }
+
+        // Start server and make concurrent request attempts. performServerTest() will
+        // not complete until all expectations (including client completion) are fulfilled.
+        performServerTest(router, options: ServerOptions(connectionLimit: maxClients, connectionResponseGenerator: customResponse), sslOption: .httpOnly, socketTypeOption: .inet, timeout: 30) { expectation in
+            for i in 0..<numClients {
+                usleep(1000)  // TODO: properly fix crash when creating ClientRequests concurrently
+                self.asyncClientRequest(expectation: clientExpectations[i], status: clientStatus[i])
+            }
+            expectation.fulfill()
+        }
+
+        // Assess results
+        var successCount = 0
+        var failCount = 0
+        for i in 0..<numClients {
+            switch clientStatus[i].code {
+            case .OK: successCount += 1
+            case .badRequest: failCount += 1
+            case .serviceUnavailable: XCTFail("Response was not customized")
+            default: XCTFail("Unexpected client status: \(clientStatus[i].code)")
+            }
+        }
+        XCTAssertEqual(successCount, maxClients, "Incorrect number of accepted client connections")
+        XCTAssertEqual(failCount, numClients - maxClients, "Incorrect number of rejected client connections")
+    }
+
+    // MARK: Router configuration for this suite
 
     static func setupRouter() -> Router {
         let router = Router()
