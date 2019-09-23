@@ -120,8 +120,13 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
             let tooLongString = String(data: headerData, encoding: .utf8)!
 
             self.performRequest("post", path: "/smallPost", callback: { response in
-                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                XCTAssertEqual(response?.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(String(describing: response?.statusCode))")
+                if let response = response {
+                    XCTAssertEqual(response.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(response.statusCode)")
+                } else {
+                    // Valid outcome of connection rejection: server closes connection before
+                    // client has completed sending headers: curl reports send failure. We cannot
+                    // test this explicitly as ClientRequest does not return the underlying error.
+                }
                 expectation.fulfill()
             }, requestModifier: { request in
                 request.headers["Much-Too-Long"] = tooLongString
