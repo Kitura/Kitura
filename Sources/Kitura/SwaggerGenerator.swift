@@ -562,8 +562,7 @@ public struct SwaggerDocument: Encodable {
     func swaggerPropertyFromSwiftType(_ theSwiftType: Any) throws -> SwaggerProperty {
         // return a property with the type and format.
         var property = SwaggerProperty()
-        var swiftTypeStr = String(describing: theSwiftType)
-
+        var swiftTypeStr = SwaggerDocument.getTypeName(type: theSwiftType)
         if isDictEncodedAsTuple(theSwiftType) {
             swiftTypeStr = "Dictionary"
         }
@@ -800,7 +799,7 @@ public struct SwaggerDocument: Encodable {
     /// - Parameter qParams: Query Parameters passed on the REST call.
     /// - Parameter optQParams: Whether all the query parameters in qParams are to be treated as optional.
     /// - Parameter responseList: An array of response types that can be returned from this path.
-    mutating func addPath(path: String, method: String, id: String?, idReturned: Bool, qParams: QParams?, allOptQParams: Bool=false, inputType: String?, responseList: [SwaggerResponseType]?) {
+    mutating func addPath(path: String, method: String, id: String?, idReturned: Bool, qParams: QParams?, allOptQParams: Bool=false, inputTypeInfo: TypeInfo?, responseList: [SwaggerResponseType]?) {
         // split the path into its components:
         // - route path.
         // - parameters.
@@ -850,8 +849,8 @@ public struct SwaggerDocument: Encodable {
                     }
                 }
 
-                if let paramType = inputType {
-                    parameters.append(buildParameter(name: "input", parameterType: paramType))
+                if let paramTypeInfo = inputTypeInfo {
+                    parameters.append(buildParameter(name: "input", parameterType: SwaggerDocument.getTypeName(typeInfo: paramTypeInfo)))
                 }
 
                 if let qParams = qParams {
@@ -1082,6 +1081,11 @@ public struct SwaggerDocument: Encodable {
         return removeFrameworkname(fullName: fullName)
     }
     
+    private static func getTypeName(type: Any) -> String {
+        let fullName = String(reflecting: type)
+        return removeFrameworkname(fullName: fullName)
+    }
+    
     private static func getTypeName(typeInfo: Any.Type) -> String {
         let fullName = String(reflecting: typeInfo)
         return getTypeName(fullName: fullName)
@@ -1148,7 +1152,7 @@ extension Router {
         }
 
         // insert the path information into the document structure.
-        swagger.addPath(path: route, method: method, id: nil, idReturned: false, qParams: nil, inputType: nil, responseList: responseTypes)
+        swagger.addPath(path: route, method: method, id: nil, idReturned: false, qParams: nil, inputTypeInfo: nil, responseList: responseTypes)
 
         // add model information into the document structure.
         swagger.addModel(model: typeInfo, forSwiftType: outputType)
@@ -1188,7 +1192,7 @@ extension Router {
         }
 
         // insert the path information into the document structure.
-        swagger.addPath(path: route, method: method, id: nil, idReturned: false, qParams: params, allOptQParams: allOptQParams, inputType: nil, responseList: responseTypes)
+        swagger.addPath(path: route, method: method, id: nil, idReturned: false, qParams: params, allOptQParams: allOptQParams, inputTypeInfo: nil, responseList: responseTypes)
 
         // add model information into the document structure.
         swagger.addModel(model: typeInfo, forSwiftType: outputType)
@@ -1227,7 +1231,7 @@ extension Router {
         }
 
         // insert the path information into the document structure.
-        swagger.addPath(path: route, method: method, id: nil, idReturned: false, qParams: nil, inputType: "\(inputType)", responseList: responseTypes)
+        swagger.addPath(path: route, method: method, id: nil, idReturned: false, qParams: nil, inputTypeInfo: inputTypeInfo, responseList: responseTypes)
 
         // add model information into the document structure.
         swagger.addModel(model: inputTypeInfo, forSwiftType: inputType)
@@ -1261,7 +1265,7 @@ extension Router {
         }
 
         // insert the path information into the document structure.
-        swagger.addPath(path: route, method: method, id: "\(id)", idReturned: idReturned, qParams: nil, inputType: nil, responseList: responseTypes)
+        swagger.addPath(path: route, method: method, id: "\(id)", idReturned: idReturned, qParams: nil, inputTypeInfo: nil, responseList: responseTypes)
 
         // add model information into the document structure.
         swagger.addModel(model: typeInfo, forSwiftType: outputType)
@@ -1302,7 +1306,7 @@ extension Router {
         }
 
         // insert the path information into the document structure
-        swagger.addPath(path: route, method: method, id: "\(id)", idReturned: idReturned, qParams: nil, inputType: "\(inputType)", responseList: responseTypes)
+        swagger.addPath(path: route, method: method, id: "\(id)", idReturned: idReturned, qParams: nil, inputTypeInfo: inputTypeInfo, responseList: responseTypes)
 
         // add model information into the document structure.
         swagger.addModel(model: inputTypeInfo, forSwiftType: inputType)
@@ -1325,7 +1329,7 @@ extension Router {
         Log.debug("Registering \(route) for delete method")
 
         // insert the path information into the document structure.
-        swagger.addPath(path: route, method: "delete", id: nil, idReturned: false, qParams: nil, inputType: nil, responseList: responseTypes)
+        swagger.addPath(path: route, method: "delete", id: nil, idReturned: false, qParams: nil, inputTypeInfo: nil, responseList: responseTypes)
     }
 
     // Register a delete route in the SwaggerDocument.
@@ -1349,7 +1353,7 @@ extension Router {
         }
 
         // insert the path information into the document structure.
-        swagger.addPath(path: route, method: "delete", id: nil, idReturned: false, qParams: params, allOptQParams: allOptQParams, inputType: nil, responseList: responseTypes)
+        swagger.addPath(path: route, method: "delete", id: nil, idReturned: false, qParams: params, allOptQParams: allOptQParams, inputTypeInfo: nil, responseList: responseTypes)
     }
 
     // Register a delete route in the SwaggerDocument.
@@ -1360,7 +1364,7 @@ extension Router {
         Log.debug("Registering \(route) for delete method")
 
         // insert the path information into the document structure.
-        swagger.addPath(path: route, method: "delete", id: "\(id)", idReturned: false, qParams: nil, inputType: nil, responseList: responseTypes)
+        swagger.addPath(path: route, method: "delete", id: "\(id)", idReturned: false, qParams: nil, inputTypeInfo: nil, responseList: responseTypes)
     }
 
     /// Register GET route
