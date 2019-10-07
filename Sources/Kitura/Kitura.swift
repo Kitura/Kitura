@@ -316,7 +316,7 @@ public class Kitura {
 
  ServerOptions allows customization of default connection policies, including:
 
- - `requestSizeLimit`: Defines the maximum size of an incoming request, in bytes. If requests are received that are larger than this limit, they will be rejected and the connection will be closed. A value of `nil` means no limit.
+ - `requestSizeLimit`: Defines the maximum size of an incoming request body, in bytes. If requests are received that are larger than this limit, they will be rejected and the connection will be closed. A value of `nil` means no limit.
  - `connectionLimit`: Defines the maximum number of concurrent connections that a server should accept. Clients attempting to connect when this limit has been reached will be rejected. A value of `nil` means no limit.
 
  The server can optionally respond to the client with a message in either of these cases. This message can be customized by defining `requestSizeResponseGenerator` and `connectionResponseGenerator`.
