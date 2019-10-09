@@ -66,5 +66,6 @@ XCTMain([
     testCase(TestMediaType.allTests.shuffled()),
     testCase(TestCustomCoders.allTests.shuffled()),
     testCase(TestCodablePathParams.allTests.shuffled()),
+    testCase(TestServerOptions.allTests.shuffled()),
 //    testCase(TestCRUDTypeRouter.allTests.shuffled()),
     ].shuffled())

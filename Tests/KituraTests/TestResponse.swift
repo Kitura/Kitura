@@ -161,7 +161,7 @@ final class TestResponse: KituraTest, KituraTestSuite {
     }
 
     func testLargePost() {
-        performServerTest(router, timeout: 30) { expectation in
+        performServerTest(router, options: ServerOptions(requestSizeLimit: 2000000), timeout: 30) { expectation in
             let count = 1024 * 1024
             let postData = Data(repeating: UInt8.max, count: count)
 

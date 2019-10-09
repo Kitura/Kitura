@@ -663,7 +663,7 @@ final class TestCodableRouter: KituraTest, KituraTestSuite {
     }
 
     func testCodableGetSingleQueryParameters() {
-        let date: Date = Coder().dateFormatter.date(from: Coder().dateFormatter.string(from: Date()))!
+        let date: Date = Coder.defaultDateFormatter.date(from: Coder.defaultDateFormatter.string(from: Date()))!
 
         let expectedQuery = MyQuery(intField: 23, optionalIntField: 282, stringField: "a string", intArray: [1, 2, 3], dateField: date, optionalDateField: date, nested: Nested(nestedIntField: 333, nestedStringField: "nested string"))
 
@@ -715,7 +715,7 @@ final class TestCodableRouter: KituraTest, KituraTestSuite {
     func testCodableGetArrayQueryParameters() {
         /// Currently the milliseconds are cut off by our date formatter
         /// This synchronizes it for testing with the codable route
-        let date: Date = Coder().dateFormatter.date(from: Coder().dateFormatter.string(from: Date()))!
+        let date: Date = Coder.defaultDateFormatter.date(from: Coder.defaultDateFormatter.string(from: Date()))!
 
         let expectedQuery = MyQuery(intField: 23, optionalIntField: 282, stringField: "a string", intArray: [1, 2, 3], dateField: date, optionalDateField: date, nested: Nested(nestedIntField: 333, nestedStringField: "nested string"))
 
@@ -767,7 +767,7 @@ final class TestCodableRouter: KituraTest, KituraTestSuite {
     func testCodableDeleteQueryParameters() {
         /// Currently the milliseconds are cut off by our date formatter
         /// This synchronizes it for testing with the codable route
-        let date: Date = Coder().dateFormatter.date(from: Coder().dateFormatter.string(from: Date()))!
+        let date: Date = Coder.defaultDateFormatter.date(from: Coder.defaultDateFormatter.string(from: Date()))!
 
         let expectedQuery = MyQuery(intField: 23, optionalIntField: 282, stringField: "a string", intArray: [1, 2, 3], dateField: date, optionalDateField: date, nested: Nested(nestedIntField: 333, nestedStringField: "nested string"))
 
