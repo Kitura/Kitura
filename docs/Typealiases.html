@@ -23,7 +23,7 @@
         <a class="header-link" href="index.html">
           Kitura Docs
         </a>
-         (100% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -157,6 +157,9 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/SSLConfig.html">SSLConfig</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SwaggerDocument.html">SwaggerDocument</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -176,6 +179,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura22RouterParameterHandlera">RouterParameterHandler</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura13ServerOptionsa">ServerOptions</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura17WrittenDataFiltera">WrittenDataFilter</a>
@@ -254,6 +260,64 @@ from <a href="http://ibm-swift.github.io/Kitura-net">KituraNet</a> so that you o
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">HTTPStatusCode</span> <span class="o">=</span> <span class="kt">KituraNet</span><span class="o">.</span><span class="kt">HTTPStatusCode</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/ServerOptions"></a>
+                <a name="//apple_ref/swift/Section/ServerOptions" class="dashAnchor"></a>
+                <a href="#/ServerOptions">
+                  <h3 class="section-name">ServerOptions</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura13ServerOptionsa"></a>
+                    <a name="//apple_ref/swift/Alias/ServerOptions" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura13ServerOptionsa">ServerOptions</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Bridge <a href="http://ibm-swift.github.io/Kitura-net/Structs/ServerOptions.html">ServerOptions</a> from <a href="http://ibm-swift.github.io/Kitura-net">KituraNet</a> so that you only need to import <code><a href="Classes/Kitura.html">Kitura</a></code> to access it.</p>
+
+<p>ServerOptions allows customization of default connection policies, including:</p>
+
+<ul>
+<li><code>requestSizeLimit</code>: Defines the maximum size of an incoming request body, in bytes. If requests are received that are larger than this limit, they will be rejected and the connection will be closed. A value of <code>nil</code> means no limit.</li>
+<li><code>connectionLimit</code>: Defines the maximum number of concurrent connections that a server should accept. Clients attempting to connect when this limit has been reached will be rejected. A value of <code>nil</code> means no limit.</li>
+</ul>
+
+<p>The server can optionally respond to the client with a message in either of these cases. This message can be customized by defining <code>requestSizeResponseGenerator</code> and <code>connectionResponseGenerator</code>.</p>
+
+<p>Example usage:</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">port</span> <span class="o">=</span> <span class="mi">8080</span>
+<span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">connectionResponse</span><span class="p">:</span> <span class="p">(</span><span class="kt">Int</span><span class="p">,</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="kt">HTTPStatusCode</span><span class="p">,</span> <span class="kt">String</span><span class="p">)?</span> <span class="o">=</span> <span class="p">{</span> <span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">client</span><span class="p">)</span> <span class="k">in</span>
+    <span class="kt">Log</span><span class="o">.</span><span class="nf">debug</span><span class="p">(</span><span class="s">"Rejecting request from </span><span class="se">\(</span><span class="n">client</span><span class="se">)</span><span class="s">: Connection limit </span><span class="se">\(</span><span class="n">limit</span><span class="se">)</span><span class="s"> reached"</span><span class="p">)</span>
+    <span class="nf">return</span> <span class="p">(</span><span class="o">.</span><span class="n">serviceUnavailable</span><span class="p">,</span> <span class="s">"Service busy - please try again later.</span><span class="se">\r\n</span><span class="s">"</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="k">let</span> <span class="nv">serverOptions</span> <span class="o">=</span> <span class="kt">ServerOptions</span><span class="p">(</span><span class="nv">requestSizeLimit</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span> <span class="nv">connectionLimit</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="nv">connectionResponseGenerator</span><span class="p">:</span> <span class="n">connectionResponse</span><span class="p">)</span>
+<span class="kt">Kitura</span><span class="o">.</span><span class="nf">addHTTPServer</span><span class="p">(</span><span class="nv">onPort</span><span class="p">:</span> <span class="n">port</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="n">router</span><span class="p">,</span> <span class="nv">options</span><span class="p">:</span> <span class="n">serverOptions</span><span class="p">)</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">ServerOptions</span> <span class="o">=</span> <span class="kt">KituraNet</span><span class="o">.</span><span class="kt">ServerOptions</span></code></pre>
 
                         </div>
                       </div>
@@ -519,7 +583,7 @@ when routing HTTP requests to closure.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-08-13)</p>
+      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-10-09)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

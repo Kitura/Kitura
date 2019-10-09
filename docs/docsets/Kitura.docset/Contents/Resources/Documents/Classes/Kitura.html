@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (100% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -157,6 +157,9 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/SSLConfig.html">SSLConfig</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SwaggerDocument.html">SwaggerDocument</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -176,6 +179,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura22RouterParameterHandlera">RouterParameterHandler</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura13ServerOptionsa">ServerOptions</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura17WrittenDataFiltera">WrittenDataFilter</a>
@@ -227,9 +233,9 @@ The route can then be accessed by visiting <code>http://localhost:8080</code>.</
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6KituraAAC13addHTTPServer6onPort0D7Address4with0G3SSL9keepAlive05allowE5Reuse0A3Net0C0CSi_SSSgAJ14ServerDelegate_pAA9SSLConfigVSgAJ04KeepJ5StateOSbtFZ"></a>
-                    <a name="//apple_ref/swift/Method/addHTTPServer(onPort:onAddress:with:withSSL:keepAlive:allowPortReuse:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6KituraAAC13addHTTPServer6onPort0D7Address4with0G3SSL9keepAlive05allowE5Reuse0A3Net0C0CSi_SSSgAJ14ServerDelegate_pAA9SSLConfigVSgAJ04KeepJ5StateOSbtFZ">addHTTPServer(onPort:onAddress:with:withSSL:keepAlive:allowPortReuse:)</a>
+                    <a name="/s:6KituraAAC13addHTTPServer6onPort0D7Address4with0G3SSL9keepAlive05allowE5Reuse7options0A3Net0C0CSi_SSSgAK14ServerDelegate_pAA9SSLConfigVSgAK04KeepJ5StateOSbAK0O7OptionsVSgtFZ"></a>
+                    <a name="//apple_ref/swift/Method/addHTTPServer(onPort:onAddress:with:withSSL:keepAlive:allowPortReuse:options:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6KituraAAC13addHTTPServer6onPort0D7Address4with0G3SSL9keepAlive05allowE5Reuse7options0A3Net0C0CSi_SSSgAK14ServerDelegate_pAA9SSLConfigVSgAK04KeepJ5StateOSbAK0O7OptionsVSgtFZ">addHTTPServer(onPort:onAddress:with:withSSL:keepAlive:allowPortReuse:options:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -257,7 +263,8 @@ The route can then be accessed by visiting <code>http://localhost:8080</code>.</
                                 <span class="n">with</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt">ServerDelegate</span><span class="p">,</span>
                                 <span class="n">withSSL</span> <span class="nv">sslConfig</span><span class="p">:</span> <span class="kt"><a href="../Structs/SSLConfig.html">SSLConfig</a></span><span class="p">?</span><span class="o">=</span><span class="kc">nil</span><span class="p">,</span>
                                 <span class="n">keepAlive</span> <span class="nv">keepAliveState</span><span class="p">:</span> <span class="kt">KeepAliveState</span> <span class="o">=</span> <span class="o">.</span><span class="n">unlimited</span><span class="p">,</span>
-                                <span class="nv">allowPortReuse</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">HTTPServer</span></code></pre>
+                                <span class="nv">allowPortReuse</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+                                <span class="nv">options</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura13ServerOptionsa">ServerOptions</a></span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">HTTPServer</span></code></pre>
 
                         </div>
                       </div>
@@ -338,6 +345,18 @@ The route can then be accessed by visiting <code>http://localhost:8080</code>.</
                                 </div>
                               </td>
                             </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>options</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Allows customization of default policies for this server.</p>
+                                </div>
+                              </td>
+                            </tr>
                           </tbody>
                         </table>
                       </div>
@@ -351,9 +370,9 @@ The route can then be accessed by visiting <code>http://localhost:8080</code>.</
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6KituraAAC13addHTTPServer18onUnixDomainSocket4with0H3SSL9keepAlive0A3Net0C0CSS_AH14ServerDelegate_pAA9SSLConfigVSgAH04KeepK5StateOtFZ"></a>
-                    <a name="//apple_ref/swift/Method/addHTTPServer(onUnixDomainSocket:with:withSSL:keepAlive:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6KituraAAC13addHTTPServer18onUnixDomainSocket4with0H3SSL9keepAlive0A3Net0C0CSS_AH14ServerDelegate_pAA9SSLConfigVSgAH04KeepK5StateOtFZ">addHTTPServer(onUnixDomainSocket:with:withSSL:keepAlive:)</a>
+                    <a name="/s:6KituraAAC13addHTTPServer18onUnixDomainSocket4with0H3SSL9keepAlive7options0A3Net0C0CSS_AI14ServerDelegate_pAA9SSLConfigVSgAI04KeepK5StateOAI0N7OptionsVSgtFZ"></a>
+                    <a name="//apple_ref/swift/Method/addHTTPServer(onUnixDomainSocket:with:withSSL:keepAlive:options:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6KituraAAC13addHTTPServer18onUnixDomainSocket4with0H3SSL9keepAlive7options0A3Net0C0CSS_AI14ServerDelegate_pAA9SSLConfigVSgAI04KeepK5StateOAI0N7OptionsVSgtFZ">addHTTPServer(onUnixDomainSocket:with:withSSL:keepAlive:options:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -379,7 +398,8 @@ The route can then be accessed by visiting <code>http://localhost:8080</code>.</
 <span class="kd">public</span> <span class="kd">class</span> <span class="kd">func</span> <span class="nf">addHTTPServer</span><span class="p">(</span><span class="n">onUnixDomainSocket</span> <span class="nv">socketPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
                                 <span class="n">with</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt">ServerDelegate</span><span class="p">,</span>
                                 <span class="n">withSSL</span> <span class="nv">sslConfig</span><span class="p">:</span> <span class="kt"><a href="../Structs/SSLConfig.html">SSLConfig</a></span><span class="p">?</span><span class="o">=</span><span class="kc">nil</span><span class="p">,</span>
-                                <span class="n">keepAlive</span> <span class="nv">keepAliveState</span><span class="p">:</span> <span class="kt">KeepAliveState</span> <span class="o">=</span> <span class="o">.</span><span class="n">unlimited</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">HTTPServer</span></code></pre>
+                                <span class="n">keepAlive</span> <span class="nv">keepAliveState</span><span class="p">:</span> <span class="kt">KeepAliveState</span> <span class="o">=</span> <span class="o">.</span><span class="n">unlimited</span><span class="p">,</span>
+                                <span class="nv">options</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura13ServerOptionsa">ServerOptions</a></span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">HTTPServer</span></code></pre>
 
                         </div>
                       </div>
@@ -834,7 +854,7 @@ Usage example:</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-08-13)</p>
+      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-10-09)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
