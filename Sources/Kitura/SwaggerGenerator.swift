@@ -452,7 +452,7 @@ public struct SwaggerDocument: Encodable {
             processQueryParameter(name: name, typeInfo: wrappedTypeInfo, parameters: &parameters, isArray: array, isRequired: false)
         } else if case .single(_, let typeInfo) = typeInfo {
             // A native type.
-            if let swifttype = SwiftType(rawValue: SwaggerDocument.getTypeName(typeInfo: typeInfo)) {
+            if let swifttype = SwiftType(rawValue: SwaggerDocument.getTypeName(type: typeInfo)) {
                 property["type"] = swifttype.swaggerType()
                 if let format = swifttype.swaggerFormat() {
                     property["format"] = format
@@ -1085,24 +1085,28 @@ public struct SwaggerDocument: Encodable {
         let fullName = String(reflecting: type)
         return removeFrameworkname(fullName: fullName)
     }
-    
-    private static func getTypeName(typeInfo: Any.Type) -> String {
-        let fullName = String(reflecting: typeInfo)
-        return getTypeName(fullName: fullName)
-    }
-    
+
     private static func getTypeName(typeInfo: TypeInfo) -> String {
-        let fullName = String(reflecting: typeInfo)
-        return getTypeName(fullName: fullName)
-    }
-    
-    private static func getTypeName(fullName: String) -> String {
-        let fullName = fullName
-            .replacingOccurrences(of: ".keyed: ", with: "")
-            .replacingOccurrences(of: ".single: ", with: "")
+        let fullName: String
+        switch typeInfo {
+        case .cyclic(let type):
+            fullName = "\(String(reflecting: type))"
+        case .dynamicKeyed:
+            fullName = "\(typeInfo.description)"
+        case .keyed(let original, _):
+            fullName = "\(String(reflecting: original))"
+        case .opaque(let type):
+            fullName = "\(String(reflecting: type))"
+        case .optional(let type):
+            fullName = "\(type.debugDescription)"
+        case .single(_, let type):
+            fullName = "\(String(reflecting: type))"
+        case .unkeyed(_, let type):
+            fullName = "\(type.debugDescription)"
+        }
         return removeFrameworkname(fullName: fullName)
     }
-    
+
     private static func removeFrameworkname(fullName: String) -> String {
         let fullNameSplit = fullName.components(separatedBy: ".")
         if fullNameSplit.count <= 1 {
