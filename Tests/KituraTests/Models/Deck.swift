@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-// swiftlint:enable nesting
+// swiftlint:disable nesting
 
 import Foundation
 
