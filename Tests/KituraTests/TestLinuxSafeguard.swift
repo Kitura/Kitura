@@ -47,6 +47,7 @@
             verifyCount(TestRouteRegex.self)
             verifyCount(TestRouterHTTPVerbsGenerated.self)
             verifyCount(TestServer.self)
+            verifyCount(TestServerOptions.self)
             verifyCount(TestStack.self)
             verifyCount(TestStaticFileServer.self)
             verifyCount(TestSubrouter.self)
