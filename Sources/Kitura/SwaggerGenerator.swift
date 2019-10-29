@@ -1408,6 +1408,17 @@ extension Router {
         registerDelete(route: route, id: Id.self, responseTypes: responseTypes)
     }
 
+    /// Register POST route.
+    ///
+    /// - Parameter route: The route to register.
+    /// - Parameter outputType: The output object type.
+    public func registerPostRoute<O: Codable>(route: String, outputType: O.Type) {
+        var responseTypes = [SwaggerResponseType]()
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, tuple: false, type: O.self, statusCode: .created))
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, tuple: false, type: nil, statusCode: .internalServerError))
+        registerRoute(route: route, method: "post", outputType: O.self, responseTypes: responseTypes)
+    }
+
     /// Register POST route that is handled by a CodableIdentifierClosure.
     ///
     /// - Parameter route: The route to register.

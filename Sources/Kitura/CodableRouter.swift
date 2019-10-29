@@ -271,6 +271,28 @@ extension Router {
         deleteSafely(route, handler: handler)
     }
 
+
+    /**
+     Setup a SimpleCodableClosure on the provided route which will be invoked when a POST request comes to the server.
+     This can be use to create a new resource without parameters.
+
+     ### Usage Example: ###
+     ````
+     //Resource is a struct object that conforms to Codable
+     router.post("/resource") { (respondWith: (Resource?, RequestError?) -> Void) in
+
+        ...
+
+        respondWith(resource, nil)
+     }
+     ````
+     - Parameter route: A String specifying the pattern that needs to be matched, in order for the handler to be invoked.
+     - Parameter handler: A SimpleCodableClosure that gets invoked when a request comes to the server.
+     */
+    public func post<O: Codable>(_ route: String, handler: @escaping SimpleCodableClosure<O>) {
+        postSafely(route, handler: handler)
+    }
+
     /**
      Setup a CodableClosure on the provided route which will be invoked when a POST request comes to the server.
      In this scenario, the ID (i.e. unique identifier) is a field in the Codable instance.
@@ -356,6 +378,14 @@ extension Router {
     }
 
     // POST
+    fileprivate func postSafely<O: Codable>(_ route: String, handler: @escaping SimpleCodableClosure<O>) {
+        registerPostRoute(route: route, outputType: O.self)
+        post(route) { request, response, next in
+            Log.verbose("Received POST type-safe request")
+            handler(CodableHelpers.constructOutResultHandler(successStatus: .created, response: response, completion: next))
+        }
+    }
+
     fileprivate func postSafely<I: Codable, O: Codable>(_ route: String, handler: @escaping CodableClosure<I, O>) {
         registerPostRoute(route: route, inputType: I.self, outputType: O.self)
         post(route) { request, response, next in
