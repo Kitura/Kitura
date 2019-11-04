@@ -104,6 +104,10 @@ func getAppleHandler(completion: (Apple?, RequestError?) -> Void ) -> Void {
     completion(nil, nil)
 }
 
+func getDeckHandler(completion: (Deck?, RequestError?) -> Void ) -> Void {
+    completion(nil, nil)
+}
+
 func getArrayAppleHandler(completion: ([Apple]?, RequestError?) -> Void ) -> Void {
     completion(nil, nil)
 }
@@ -191,6 +195,7 @@ final class TestSwaggerGeneration: KituraTest, KituraTestSuite {
         router.delete("/me/pear", handler: deleteHandler)
         router.get("/me/pear", handler: getPearHandler)
         router.get("/me/apple", handler: getAppleHandler)
+        router.get("/me/deck", handler: getDeckHandler)
         router.get("/me/getArray", handler: getArrayAppleHandler)
         router.get("/me/getTupleArray", handler: getTupleArrayAppleHandler)
         router.get("/me/getid", handler: getSingleAppleHandler)
@@ -226,6 +231,7 @@ final class TestSwaggerGeneration: KituraTest, KituraTestSuite {
         XCTAssertTrue(paths["/me/postid"] != nil, "path /me/postid is missing")
         XCTAssertTrue(paths["/me/getArray"] != nil, "path /me/getArray is missing")
         XCTAssertTrue(paths["/me/apple"] != nil, "path /me/apple is missing")
+        XCTAssertTrue(paths["/me/deck"] != nil, "path /me/deck is missing")
         XCTAssertTrue(paths["/me/getid/{id}"] != nil, "path /me/getid/{id} is missing")
         XCTAssertTrue(paths["/me/patch/{id}"] != nil, "path /me/patch/{id} is missing")
         XCTAssertTrue(paths["/me/pear"] != nil, "path /me/pear is missing")
@@ -339,6 +345,67 @@ final class TestSwaggerGeneration: KituraTest, KituraTestSuite {
             } else {
                 XCTFail("model Apple: properties is missing")
             }
+        }
+    }
+    
+    func deckDefinitionsAssertions(definitions: [String: Any]) {
+        if let model = definitions["Deck"] as? [String: Any] {
+            if let type = model["type"] as? String {
+                XCTAssertTrue(type == "object", "model Deck: type is incorrect")
+            } else {
+                XCTFail("model Deck: type is missing")
+            }
+
+            if let properties = model["properties"] as? [String: Any] {
+                if let cards = properties["cards"] as? [String: Any] {
+                    if let items = cards["items"] as? [String : Any], let ref = items["$ref"] as? String {
+                        XCTAssertTrue(ref == "#/definitions/Deck.Card", "model Deck: cards property has incorrect type")
+                    } else {
+                        XCTFail("model Deck: property cards has missing type")
+                    }
+                } else {
+                    XCTFail("model Deck: property cards is missing")
+                }
+            } else {
+                XCTFail("model Deck: properties is missing")
+            }
+        } else {
+            return XCTFail("Deck model is missing")
+        }
+    }
+    
+    func deckCardDefinitionsAssertions(definitions: [String: Any]) {
+        if let model = definitions["Deck.Card"] as? [String: Any] {
+            if let type = model["type"] as? String {
+                XCTAssertTrue(type == "object", "model Deck.Card: type is incorrect")
+            } else {
+                XCTFail("model Deck.Card: type is missing")
+            }
+
+            if let properties = model["properties"] as? [String: Any] {
+                if let suit = properties["suit"] as? [String: Any] {
+                    if let ref = suit["$ref"] as? String {
+                        XCTAssertTrue(ref == "#/definitions/Deck.Card.Suit", "model Deck.Card: suit property has incorrect type")
+                    } else {
+                        XCTFail("model Deck.Card: property suit has missing type")
+                    }
+                } else {
+                    XCTFail("model Deck.Card: property suit is missing")
+                }
+                if let rank = properties["rank"] as? [String: Any] {
+                    if let ref = rank["$ref"] as? String {
+                        XCTAssertTrue(ref == "#/definitions/Deck.Card.Rank", "model Deck.Card: suit property has incorrect type")
+                    } else {
+                        XCTFail("model Deck.Card: property rank has missing type")
+                    }
+                } else {
+                    XCTFail("model Deck.Card: property rank is missing")
+                }
+            } else {
+                XCTFail("model Deck.Card: properties is missing")
+            }
+        } else {
+            return XCTFail("Deck.Card model is missing")
         }
     }
 
@@ -1105,6 +1172,8 @@ final class TestSwaggerGeneration: KituraTest, KituraTestSuite {
             appleDefinitionsAssertions(definitions: definitions)
             pearDefinitionsAssertions(definitions: definitions)
             uglifruitDefinitionsAssertions(definitions: definitions)
+            deckDefinitionsAssertions(definitions: definitions)
+            deckCardDefinitionsAssertions(definitions: definitions)
         } else {
             XCTFail("definitions section is missing")
         }
