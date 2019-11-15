@@ -452,7 +452,7 @@ public struct SwaggerDocument: Encodable {
             processQueryParameter(name: name, typeInfo: wrappedTypeInfo, parameters: &parameters, isArray: array, isRequired: false)
         } else if case .single(_, let typeInfo) = typeInfo {
             // A native type.
-            if let swifttype = SwiftType(rawValue: String(describing: typeInfo)) {
+            if let swifttype = SwiftType(rawValue: SwaggerDocument.getTypeName(type: typeInfo)) {
                 property["type"] = swifttype.swaggerType()
                 if let format = swifttype.swaggerFormat() {
                     property["format"] = format
@@ -562,8 +562,7 @@ public struct SwaggerDocument: Encodable {
     func swaggerPropertyFromSwiftType(_ theSwiftType: Any) throws -> SwaggerProperty {
         // return a property with the type and format.
         var property = SwaggerProperty()
-        var swiftTypeStr = String(describing: theSwiftType)
-
+        var swiftTypeStr = SwaggerDocument.getTypeName(type: theSwiftType)
         if isDictEncodedAsTuple(theSwiftType) {
             swiftTypeStr = "Dictionary"
         }
@@ -594,7 +593,7 @@ public struct SwaggerDocument: Encodable {
             // found a keyed item, this is an embedded model that needs to be
             // turned into a separate definition and a ref to it placed here.
             addModel(model: typeInfo, forSwiftType: type)
-            let typeName = String(describing: type)
+            let typeName = SwaggerDocument.getTypeName(type: type)
             property["$ref"] = .string("#/definitions/\(typeName)")
             return (property, required == true)
         case .dynamicKeyed(_, _ /*let keyTypeInfo*/, let valueTypeInfo):
@@ -605,7 +604,7 @@ public struct SwaggerDocument: Encodable {
             return (property, optional)
         case .unkeyed(_, let elementTypeInfo):
             // found an array.
-            let typeName = self.getUnkeyedTypeName(String(describing: elementTypeInfo))
+            let typeName = self.getUnkeyedTypeName(SwaggerDocument.getTypeName(typeInfo: elementTypeInfo))
             if SwiftType.isBaseType(typeName) {
                 if let type = SwiftType(rawValue: typeName) {
                     if let format = type.swaggerFormat() {
@@ -637,7 +636,7 @@ public struct SwaggerDocument: Encodable {
             }
             return (property, required == true)
         case .cyclic(let type):
-            property["type"] = .string(String(describing: type))
+            property["type"] = .string(SwaggerDocument.getTypeName(type: type))
             return (property, required == true)
         case .single(let swiftType, let serializedType):
             do {
@@ -721,14 +720,14 @@ public struct SwaggerDocument: Encodable {
             // A composite type (struct, class) that requires a model definition.
             let model: String
             if let swiftType = forSwiftType {
-                model = String(describing: swiftType)
-                if model != String(describing: name) {
+                model = SwaggerDocument.getTypeName(type: swiftType)
+                if model != SwaggerDocument.getTypeName(type: name) {
                     // This composite type A encodes itself to a single value of composite type B.
                     // The swagger should describe a model of type A with structure of type B.
                     Log.debug("Note: Model name '\(model)' differs from TypeDecoded name '\(name)'. This probably indicates that it is a keyed container that encodes as a single value, complex type.")
                 }
             } else {
-                model = String(describing: name)
+                model = SwaggerDocument.getTypeName(type: name)
             }
             var modelDefinition: SwaggerModel
 
@@ -761,7 +760,7 @@ public struct SwaggerDocument: Encodable {
             self.unprocessedSet.insert(dictionaryValueType)
         case .single(let swiftType, let encodedType):
             // A type that encodes to a single value: this does not need to be modelled
-            let model = String(describing: swiftType)
+            let model = SwaggerDocument.getTypeName(type: swiftType)
             if swiftType == encodedType {
                 // This Swift type is a basic type, eg. String
                 Log.debug("Model not required for type '\(typeInfo.debugDescription)'")
@@ -800,7 +799,7 @@ public struct SwaggerDocument: Encodable {
     /// - Parameter qParams: Query Parameters passed on the REST call.
     /// - Parameter optQParams: Whether all the query parameters in qParams are to be treated as optional.
     /// - Parameter responseList: An array of response types that can be returned from this path.
-    mutating func addPath(path: String, method: String, id: String?, idReturned: Bool, qParams: QParams?, allOptQParams: Bool=false, inputType: String?, responseList: [SwaggerResponseType]?) {
+    mutating func addPath(path: String, method: String, id: String?, idReturned: Bool, qParams: QParams?, allOptQParams: Bool=false, inputTypeInfo: TypeInfo?, responseList: [SwaggerResponseType]?) {
         // split the path into its components:
         // - route path.
         // - parameters.
@@ -850,8 +849,8 @@ public struct SwaggerDocument: Encodable {
                     }
                 }
 
-                if let paramType = inputType {
-                    parameters.append(buildParameter(name: "input", parameterType: paramType))
+                if let paramTypeInfo = inputTypeInfo {
+                    parameters.append(buildParameter(name: "input", parameterType: SwaggerDocument.getTypeName(typeInfo: paramTypeInfo)))
                 }
 
                 if let qParams = qParams {
@@ -1076,6 +1075,46 @@ public struct SwaggerDocument: Encodable {
         }
         return document
     }
+    
+    private static func getTypeName(type: Any.Type) -> String {
+        let fullName = String(reflecting: type)
+        return removeFrameworkname(fullName: fullName)
+    }
+    
+    private static func getTypeName(type: Any) -> String {
+        let fullName = String(reflecting: type)
+        return removeFrameworkname(fullName: fullName)
+    }
+
+    private static func getTypeName(typeInfo: TypeInfo) -> String {
+        let fullName: String
+        switch typeInfo {
+        case .cyclic(let type):
+            fullName = "\(String(reflecting: type))"
+        case .dynamicKeyed:
+            fullName = "\(typeInfo.description)"
+        case .keyed(let original, _):
+            fullName = "\(String(reflecting: original))"
+        case .opaque(let type):
+            fullName = "\(String(reflecting: type))"
+        case .optional(let type):
+            fullName = "\(type.debugDescription)"
+        case .single(_, let type):
+            fullName = "\(String(reflecting: type))"
+        case .unkeyed(_, let type):
+            fullName = "\(type.debugDescription)"
+        }
+        return removeFrameworkname(fullName: fullName)
+    }
+
+    private static func removeFrameworkname(fullName: String) -> String {
+        let fullNameSplit = fullName.components(separatedBy: ".")
+        if fullNameSplit.count <= 1 {
+            return fullName
+        } else {
+            return fullNameSplit[1..<fullNameSplit.count].joined(separator: ".")
+        }
+    }
 }
 
 extension Router {
@@ -1117,7 +1156,7 @@ extension Router {
         }
 
         // insert the path information into the document structure.
-        swagger.addPath(path: route, method: method, id: nil, idReturned: false, qParams: nil, inputType: nil, responseList: responseTypes)
+        swagger.addPath(path: route, method: method, id: nil, idReturned: false, qParams: nil, inputTypeInfo: nil, responseList: responseTypes)
 
         // add model information into the document structure.
         swagger.addModel(model: typeInfo, forSwiftType: outputType)
@@ -1157,7 +1196,7 @@ extension Router {
         }
 
         // insert the path information into the document structure.
-        swagger.addPath(path: route, method: method, id: nil, idReturned: false, qParams: params, allOptQParams: allOptQParams, inputType: nil, responseList: responseTypes)
+        swagger.addPath(path: route, method: method, id: nil, idReturned: false, qParams: params, allOptQParams: allOptQParams, inputTypeInfo: nil, responseList: responseTypes)
 
         // add model information into the document structure.
         swagger.addModel(model: typeInfo, forSwiftType: outputType)
@@ -1196,7 +1235,7 @@ extension Router {
         }
 
         // insert the path information into the document structure.
-        swagger.addPath(path: route, method: method, id: nil, idReturned: false, qParams: nil, inputType: "\(inputType)", responseList: responseTypes)
+        swagger.addPath(path: route, method: method, id: nil, idReturned: false, qParams: nil, inputTypeInfo: inputTypeInfo, responseList: responseTypes)
 
         // add model information into the document structure.
         swagger.addModel(model: inputTypeInfo, forSwiftType: inputType)
@@ -1230,7 +1269,7 @@ extension Router {
         }
 
         // insert the path information into the document structure.
-        swagger.addPath(path: route, method: method, id: "\(id)", idReturned: idReturned, qParams: nil, inputType: nil, responseList: responseTypes)
+        swagger.addPath(path: route, method: method, id: "\(id)", idReturned: idReturned, qParams: nil, inputTypeInfo: nil, responseList: responseTypes)
 
         // add model information into the document structure.
         swagger.addModel(model: typeInfo, forSwiftType: outputType)
@@ -1271,7 +1310,7 @@ extension Router {
         }
 
         // insert the path information into the document structure
-        swagger.addPath(path: route, method: method, id: "\(id)", idReturned: idReturned, qParams: nil, inputType: "\(inputType)", responseList: responseTypes)
+        swagger.addPath(path: route, method: method, id: "\(id)", idReturned: idReturned, qParams: nil, inputTypeInfo: inputTypeInfo, responseList: responseTypes)
 
         // add model information into the document structure.
         swagger.addModel(model: inputTypeInfo, forSwiftType: inputType)
@@ -1294,7 +1333,7 @@ extension Router {
         Log.debug("Registering \(route) for delete method")
 
         // insert the path information into the document structure.
-        swagger.addPath(path: route, method: "delete", id: nil, idReturned: false, qParams: nil, inputType: nil, responseList: responseTypes)
+        swagger.addPath(path: route, method: "delete", id: nil, idReturned: false, qParams: nil, inputTypeInfo: nil, responseList: responseTypes)
     }
 
     // Register a delete route in the SwaggerDocument.
@@ -1318,7 +1357,7 @@ extension Router {
         }
 
         // insert the path information into the document structure.
-        swagger.addPath(path: route, method: "delete", id: nil, idReturned: false, qParams: params, allOptQParams: allOptQParams, inputType: nil, responseList: responseTypes)
+        swagger.addPath(path: route, method: "delete", id: nil, idReturned: false, qParams: params, allOptQParams: allOptQParams, inputTypeInfo: nil, responseList: responseTypes)
     }
 
     // Register a delete route in the SwaggerDocument.
@@ -1329,7 +1368,7 @@ extension Router {
         Log.debug("Registering \(route) for delete method")
 
         // insert the path information into the document structure.
-        swagger.addPath(path: route, method: "delete", id: "\(id)", idReturned: false, qParams: nil, inputType: nil, responseList: responseTypes)
+        swagger.addPath(path: route, method: "delete", id: "\(id)", idReturned: false, qParams: nil, inputTypeInfo: nil, responseList: responseTypes)
     }
 
     /// Register GET route
