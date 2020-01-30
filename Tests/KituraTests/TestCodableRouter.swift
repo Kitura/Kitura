@@ -141,6 +141,13 @@ final class TestCodableRouter: KituraTest, KituraTestSuite {
     }
 
     func testBasicPost() {
+        let user = User(id: 4, name: "David")
+        
+        router.post("/user") { (respondWith: (User?, RequestError?) -> Void) in
+            print("POST on /user with no parameters")
+            respondWith(user, nil)
+        }
+
         router.post("/users") { (user: User, respondWith: (User?, RequestError?) -> Void) in
             print("POST on /users for user \(user)")
             respondWith(user, nil)
@@ -158,8 +165,12 @@ final class TestCodableRouter: KituraTest, KituraTestSuite {
             respondWith(user, nil)
         }
 
-        let user = User(id: 4, name: "David")
         buildServerTest(router, timeout: 30)
+            .request("post", path: "/user")
+            .hasStatus(.created)
+            .hasContentType(withPrefix: "application/json")
+            .hasData(user)
+
             .request("post", path: "/users", data: user)
             .hasStatus(.created)
             .hasContentType(withPrefix: "application/json")
