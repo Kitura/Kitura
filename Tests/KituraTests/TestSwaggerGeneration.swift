@@ -625,7 +625,7 @@ final class TestSwaggerGeneration: KituraTest, KituraTestSuite {
     func pathContentAssertions3(paths: [String: Any]) {
         // Test empty POST
         if let path = paths["/me/new"] as? [String: Any] {
-            if let new = path["new"] as? [String: Any] {
+            if let _ = path["new"] as? [String: Any] {
                 XCTFail("path /me/new: no post parameters expected")
             }
         } else {
