@@ -386,8 +386,9 @@ extension Router {
         if !pathSyntaxIsValid(route, identifierExpected: true) {
             return
         }
-        registerPutRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
-        put(appendId(path: route)) { request, response, next in
+        let safeRoute = appendId(path: route)
+        registerPutRoute(route: safeRoute, id: Id.self, inputType: I.self, outputType: O.self)
+        put(safeRoute) { request, response, next in
             Log.verbose("Received PUT type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
                   let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
@@ -404,8 +405,9 @@ extension Router {
         if !pathSyntaxIsValid(route, identifierExpected: true) {
             return
         }
-        registerPatchRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
-        patch(appendId(path: route)) { request, response, next in
+        let safeRoute = appendId(path: route)
+        registerPatchRoute(route: safeRoute, id: Id.self, inputType: I.self, outputType: O.self)
+        patch(safeRoute) { request, response, next in
             Log.verbose("Received PATCH type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response),
                   let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
@@ -535,8 +537,9 @@ extension Router {
         if !pathSyntaxIsValid(route, identifierExpected: true) {
             return
         }
-        registerGetRoute(route: route, id: Id.self, outputType: O.self)
-        get(appendId(path: route)) { request, response, next in
+        let safeRoute = appendId(path: route)
+        registerGetRoute(route: safeRoute, id: Id.self, outputType: O.self)
+        get(safeRoute) { request, response, next in
             Log.verbose("Received GET (singular with identifier) type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
                 next()
@@ -563,8 +566,9 @@ extension Router {
         if !pathSyntaxIsValid(route, identifierExpected: true) {
             return
         }
-        registerDeleteRoute(route: route, id: Id.self)
-        delete(appendId(path: route)) { request, response, next in
+        let safeRoute = appendId(path: route)
+        registerDeleteRoute(route: safeRoute, id: Id.self)
+        delete(safeRoute) { request, response, next in
             Log.verbose("Received DELETE (singular) type-safe request")
             guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
                 next()

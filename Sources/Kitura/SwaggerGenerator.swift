@@ -349,7 +349,7 @@ enum SwiftType: String {
 }
 
 public struct SwaggerDocument: Encodable {
-    // swagger document is the conatiner for all the openAPI information that we
+    // swagger document is the container for all the openAPI information that we
     // can gather from the Kitura server. Once data is written to the structures
     // in SwaggerDocument, a call to toDocument() is used to write the document
     // to disk.
@@ -1374,11 +1374,17 @@ extension Router {
     /// Register GET route
     ///
     /// - Parameter route: The route to register.
-    /// - Parameter outputtype: The output object type.
-    public func registerGetRoute<O: Codable>(route: String, outputType: O.Type, outputIsArray: Bool = false) {
+    /// - Parameter outputType: The output object type.
+    /// - Parameter middleware1: Optional the first middleware applied to the route.
+    /// - Parameter middleware2: Optional the second middleware applied to the route.
+    /// - Parameter middleware3: Optional the third middleware applied to the route.
+    public func registerGetRoute<O: Codable>(route: String, outputType: O.Type, outputIsArray: Bool = false,
+        middleware1: TypeSafeMiddleware.Type? = nil, middleware2: TypeSafeMiddleware.Type? = nil, middleware3: TypeSafeMiddleware.Type? = nil) {
         var responseTypes = [SwaggerResponseType]()
         responseTypes.append(SwaggerResponseType(optional: true, array: outputIsArray, tuple: false, type: O.self, statusCode: .OK))
         registerRoute(route: route, method: "get", outputType: O.self, responseTypes: responseTypes)
+        registerGetRouteOpenAPI(route: route, outputType: outputType, outputIsArray: outputIsArray,
+                                middleware1: middleware1, middleware2: middleware2, middleware3: middleware3)
     }
 
     /// Register GET route
@@ -1386,7 +1392,11 @@ extension Router {
     /// - Parameter route: The route to register.
     /// - Parameter id: The id type.
     /// - Parameter outputtype: The output object type.
-    public func registerGetRoute<Id: Identifier, O: Codable>(route: String, id: Id.Type, outputType: O.Type, outputIsArray: Bool = false) {
+    /// - Parameter middleware1: Optional the first middleware applied to the route.
+    /// - Parameter middleware2: Optional the second middleware applied to the route.
+    /// - Parameter middleware3: Optional the third middleware applied to the route.
+    public func registerGetRoute<Id: Identifier, O: Codable>(route: String, id: Id.Type, outputType: O.Type, outputIsArray: Bool = false,
+        middleware1: TypeSafeMiddleware.Type? = nil, middleware2: TypeSafeMiddleware.Type? = nil, middleware3: TypeSafeMiddleware.Type? = nil) {
         var responseTypes = [SwaggerResponseType]()
         // A GET route involving an ID and an array return type is a GET (plural) request, returning
         // an array of tuples associating an ID with each item returned.
@@ -1401,6 +1411,8 @@ extension Router {
         // however we can infer it from whether the return type is an array.
         let idReturned: Bool = outputIsArray
         registerRoute(route: route, method: "get", id: Id.self, idReturned: idReturned, outputType: O.self, responseTypes: responseTypes)
+        registerGetRouteOpenAPI(route: route, id: id, outputType: outputType, outputIsArray: outputIsArray,
+                                middleware1: middleware1, middleware2: middleware2, middleware3: middleware3)
     }
 
     /// Register GET route
@@ -1409,20 +1421,32 @@ extension Router {
     /// - Parameter queryParams: The query parameters.
     /// - Parameter optionalQParam: Flag to indicate that the query params are all optional.
     /// - Parameter outputType: The output object type.
-    public func registerGetRoute<Q: QueryParams, O: Codable>(route: String, queryParams: Q.Type, optionalQParam: Bool, outputType: O.Type, outputIsArray: Bool = false) {
+    /// - Parameter middleware1: Optional the first middleware applied to the route.
+    /// - Parameter middleware2: Optional the second middleware applied to the route.
+    /// - Parameter middleware3: Optional the third middleware applied to the route.
+    public func registerGetRoute<Q: QueryParams, O: Codable>(route: String, queryParams: Q.Type, optionalQParam: Bool, outputType: O.Type, outputIsArray: Bool = false,
+        middleware1: TypeSafeMiddleware.Type? = nil, middleware2: TypeSafeMiddleware.Type? = nil, middleware3: TypeSafeMiddleware.Type? = nil) {
         var responseTypes = [SwaggerResponseType]()
         responseTypes.append(SwaggerResponseType(optional: true, array: outputIsArray, tuple: false, type: O.self, statusCode: .OK))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, tuple: false, type: nil, statusCode: .badRequest))
         registerRoute(route: route, method: "get", queryType: Q.self, allOptQParams: optionalQParam, outputType: O.self, responseTypes: responseTypes)
+        registerGetRouteOpenAPI(route: route, queryParams: queryParams, optionalQParam: optionalQParam, outputType: outputType, outputIsArray: outputIsArray,
+                                middleware1: middleware1, middleware2: middleware2, middleware3: middleware3)
     }
 
     /// Register DELETE route
     ///
     /// - Parameter route: The route to register.
-    public func registerDeleteRoute(route: String) {
+    /// - Parameter middleware1: Optional the first middleware applied to the route.
+    /// - Parameter middleware2: Optional the second middleware applied to the route.
+    /// - Parameter middleware3: Optional the third middleware applied to the route.
+    public func registerDeleteRoute(route: String,
+        middleware1: TypeSafeMiddleware.Type? = nil, middleware2: TypeSafeMiddleware.Type? = nil, middleware3: TypeSafeMiddleware.Type? = nil) {
         var responseTypes = [SwaggerResponseType]()
         responseTypes.append(SwaggerResponseType(optional: true, array: false, tuple: false, type: nil, statusCode: .OK))
         registerDelete(route: route, responseTypes: responseTypes)
+        registerDeleteRouteOpenAPI(route: route,
+                                   middleware1: middleware1, middleware2: middleware2, middleware3: middleware3)
     }
 
     /// Register DELETE route
@@ -1430,21 +1454,33 @@ extension Router {
     /// - Parameter route: The route to register.
     /// - Parameter queryParams: The query parameters.
     /// - Parameter optionalQParam: Flag to indicate that the query params are all optional.
-    public func registerDeleteRoute<Q: QueryParams>(route: String, queryParams: Q.Type, optionalQParam: Bool) {
+    /// - Parameter middleware1: Optional the first middleware applied to the route.
+    /// - Parameter middleware2: Optional the second middleware applied to the route.
+    /// - Parameter middleware3: Optional the third middleware applied to the route.
+    public func registerDeleteRoute<Q: QueryParams>(route: String, queryParams: Q.Type, optionalQParam: Bool,
+        middleware1: TypeSafeMiddleware.Type? = nil, middleware2: TypeSafeMiddleware.Type? = nil, middleware3: TypeSafeMiddleware.Type? = nil) {
         var responseTypes = [SwaggerResponseType]()
         responseTypes.append(SwaggerResponseType(optional: true, array: false, tuple: false, type: nil, statusCode: .OK))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, tuple: false, type: nil, statusCode: .badRequest))
         registerDelete(route: route, queryType: Q.self, allOptQParams: optionalQParam, responseTypes: responseTypes)
+        registerDeleteRouteOpenAPI(route: route, queryParams: Q.self, allOptQParams: optionalQParam,
+                                   middleware1: middleware1, middleware2: middleware2, middleware3: middleware3)
     }
 
     /// Register DELETE route
     ///
     /// - Parameter route: The route to register.
     /// - Parameter id: The id type.
-    public func registerDeleteRoute<Id: Identifier>(route: String, id: Id.Type ) {
+    /// - Parameter middleware1: Optional the first middleware applied to the route.
+    /// - Parameter middleware2: Optional the second middleware applied to the route.
+    /// - Parameter middleware3: Optional the third middleware applied to the route.
+    public func registerDeleteRoute<Id: Identifier>(route: String, id: Id.Type,
+        middleware1: TypeSafeMiddleware.Type? = nil, middleware2: TypeSafeMiddleware.Type? = nil, middleware3: TypeSafeMiddleware.Type? = nil) {
         var responseTypes = [SwaggerResponseType]()
         responseTypes.append(SwaggerResponseType(optional: true, array: false, tuple: false, type: nil, statusCode: .OK))
         registerDelete(route: route, id: Id.self, responseTypes: responseTypes)
+        registerDeleteRouteOpenAPI(route: route, id: Id.self,
+                                   middleware1: middleware1, middleware2: middleware2, middleware3: middleware3)
     }
 
     /// Register POST route that is handled by a CodableIdentifierClosure.
@@ -1452,13 +1488,19 @@ extension Router {
     /// - Parameter route: The route to register.
     /// - Parameter inputType: The input object type.
     /// - Parameter outputType: The output object type.
-    public func registerPostRoute<I: Codable, O: Codable>(route: String, inputType: I.Type, outputType: O.Type) {
+    /// - Parameter middleware1: Optional the first middleware applied to the route.
+    /// - Parameter middleware2: Optional the second middleware applied to the route.
+    /// - Parameter middleware3: Optional the third middleware applied to the route.
+    public func registerPostRoute<I: Codable, O: Codable>(route: String, inputType: I.Type, outputType: O.Type,
+        middleware1: TypeSafeMiddleware.Type? = nil, middleware2: TypeSafeMiddleware.Type? = nil, middleware3: TypeSafeMiddleware.Type? = nil) {
         var responseTypes = [SwaggerResponseType]()
         responseTypes.append(SwaggerResponseType(optional: true, array: false, tuple: false, type: O.self, statusCode: .created))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, tuple: false, type: nil, statusCode: .unsupportedMediaType))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, tuple: false, type: nil, statusCode: .internalServerError))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, tuple: false, type: nil, statusCode: .unprocessableEntity))
         registerRoute(route: route, method: "post", inputType: I.self, outputType: O.self, responseTypes: responseTypes)
+        registerPostRouteOpenAPI(route: route, inputType: inputType, outputType: outputType,
+                                middleware1: middleware1, middleware2: middleware2, middleware3: middleware3)
     }
 
     /// Register POST route that is handled by a CodableIdentifierClosure.
@@ -1467,13 +1509,19 @@ extension Router {
     /// - Parameter id: The id type.
     /// - Parameter inputType: The input object type.
     /// - Parameter outputType: The output object type.
-    public func registerPostRoute<I: Codable, Id: Identifier, O: Codable>(route: String, id: Id.Type, inputType: I.Type, outputType: O.Type) {
+    /// - Parameter middleware1: Optional the first middleware applied to the route.
+    /// - Parameter middleware2: Optional the second middleware applied to the route.
+    /// - Parameter middleware3: Optional the third middleware applied to the route.
+    public func registerPostRoute<I: Codable, Id: Identifier, O: Codable>(route: String, id: Id.Type, inputType: I.Type, outputType: O.Type,
+        middleware1: TypeSafeMiddleware.Type? = nil, middleware2: TypeSafeMiddleware.Type? = nil, middleware3: TypeSafeMiddleware.Type? = nil) {
         var responseTypes = [SwaggerResponseType]()
         responseTypes.append(SwaggerResponseType(optional: true, array: false, tuple: false, type: O.self, statusCode: .created))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, tuple: false, type: nil, statusCode: .unsupportedMediaType))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, tuple: false, type: nil, statusCode: .internalServerError))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, tuple: false, type: nil, statusCode: .unprocessableEntity))
         registerRoute(route: route, method: "post", id: Id.self, idReturned: true, inputType: I.self, outputType: O.self, responseTypes: responseTypes)
+        registerPostRouteOpenAPI(route: route, id: id, inputType: inputType, outputType: outputType,
+                                middleware1: middleware1, middleware2: middleware2, middleware3: middleware3)
     }
 
     /// Register PUT route that is handled by a IdentifierCodableClosure.
@@ -1482,7 +1530,11 @@ extension Router {
     /// - Parameter id: The id type.
     /// - Parameter inputType: The input object type.
     /// - Parameter outputType: The output object type.
-    public func registerPutRoute<Id: Identifier, I: Codable, O: Codable>(route: String, id: Id.Type, inputType: I.Type, outputType: O.Type) {
+    /// - Parameter middleware1: Optional the first middleware applied to the route.
+    /// - Parameter middleware2: Optional the second middleware applied to the route.
+    /// - Parameter middleware3: Optional the third middleware applied to the route.
+    public func registerPutRoute<Id: Identifier, I: Codable, O: Codable>(route: String, id: Id.Type, inputType: I.Type, outputType: O.Type,
+        middleware1: TypeSafeMiddleware.Type? = nil, middleware2: TypeSafeMiddleware.Type? = nil, middleware3: TypeSafeMiddleware.Type? = nil) {
         var responseTypes = [SwaggerResponseType]()
         responseTypes.append(SwaggerResponseType(optional: true, array: false, tuple: false, type: O.self, statusCode: .OK))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, tuple: false, type: nil, statusCode: .unsupportedMediaType))
@@ -1492,6 +1544,8 @@ extension Router {
         // 2. If we cannot decode the Identifier value supplied (for example, a missing or non-numeric value is supplied for a numeric Identifier)
         responseTypes.append(SwaggerResponseType(optional: true, array: false, tuple: false, type: nil, statusCode: .unprocessableEntity))
         registerRoute(route: route, method: "put", id: Id.self, idReturned: false, inputType: I.self, outputType: O.self, responseTypes: responseTypes)
+        registerPutRouteOpenAPI(route: route, id: Id.self, idReturned: false, inputType: I.self, outputType: O.self,
+                                middleware1: middleware1, middleware2: middleware2, middleware3: middleware3)
     }
 
     /// Register PATCH route that is handled by an IdentifierCodableClosure.
@@ -1500,7 +1554,11 @@ extension Router {
     /// - Parameter id: The id type.
     /// - Parameter inputType: The input object type.
     /// - Parameter outputType: The output object type.
-    public func registerPatchRoute<Id: Identifier, I: Codable, O: Codable>(route: String, id: Id.Type, inputType: I.Type, outputType: O.Type) {
+    /// - Parameter middleware1: Optional the first middleware applied to the route.
+    /// - Parameter middleware2: Optional the second middleware applied to the route.
+    /// - Parameter middleware3: Optional the third middleware applied to the route.
+    public func registerPatchRoute<Id: Identifier, I: Codable, O: Codable>(route: String, id: Id.Type, inputType: I.Type, outputType: O.Type,
+        middleware1: TypeSafeMiddleware.Type? = nil, middleware2: TypeSafeMiddleware.Type? = nil, middleware3: TypeSafeMiddleware.Type? = nil) {
         var responseTypes = [SwaggerResponseType]()
         responseTypes.append(SwaggerResponseType(optional: true, array: false, tuple: false, type: O.self, statusCode: .OK))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, tuple: false, type: nil, statusCode: .unsupportedMediaType))
@@ -1510,5 +1568,7 @@ extension Router {
         // 2. If we cannot decode the Identifier value supplied (for example, a missing or non-numeric value is supplied for a numeric Identifier)
         responseTypes.append(SwaggerResponseType(optional: true, array: false, tuple: false, type: nil, statusCode: .unprocessableEntity))
         registerRoute(route: route, method: "patch", id: Id.self, idReturned: false, inputType: I.self, outputType: O.self, responseTypes: responseTypes)
+        registerPatchRouteOpenAPI(route: route, id: Id.self, idReturned: false, inputType: I.self, outputType: O.self,
+                                  middleware1: middleware1, middleware2: middleware2, middleware3: middleware3)
     }
 }
