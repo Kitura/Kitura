@@ -88,9 +88,15 @@ public struct OpenAPI {
             return lhs.url == rhs.url
         }
 
+        #if swift(>=4.2)
         public func hash(into hasher: inout Hasher) {
             hasher.combine(url)
         }
+        #else
+        public var hashValue: Int { 
+            return url.hashValue
+        }
+        #endif
 
         public init(url: String, description: String, variables: [String: Server.Variable] = [:]) {
             self.url = url
@@ -324,7 +330,7 @@ public struct OpenAPI {
         }
 
         public func merge(with path: PathItem) -> PathItem {
-            PathItem(
+            return PathItem(
                 ref: ref ?? path.ref,
                 summary: self.summary ?? path.summary,
                 description: self.description ?? path.description,
@@ -636,7 +642,7 @@ public struct OpenAPI {
         private let _type: String
         private var required: [String]
 
-        public var ref: Ref { OpenAPI.Ref(ref: "#/components/schemas/\(name)") }
+        public var ref: Ref { return OpenAPI.Ref(ref: "#/components/schemas/\(name)") }
 
         enum CodingKeys: String, CodingKey {
             case _type = "type"
@@ -1353,11 +1359,11 @@ public struct OpenAPI {
         }
 
         public var tagNames: [String] {
-            tags?.map{ $0.name } ?? []
+            return tags?.map{ $0.name } ?? []
         }
 
         mutating func serializeAPI(format: SwaggerDocumentFormat) throws -> String? {
-            try serialize()
+            return try serialize()
         }
 
         public func serialize() throws -> String? {

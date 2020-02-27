@@ -72,7 +72,7 @@ public protocol TypeSafeMiddleware {
 /// The default implementation allows the existing middleware to still works.
 public extension TypeSafeMiddleware {
     /// The default implementation returning nil and not setting anything.
-    static var parameters: [OpenAPI.Parameter]? { get { nil } }
+    static var parameters: [OpenAPI.Parameter]? { get { return nil } }
     /// The default implementation returning nil and not setting anything.
-    static var securitySchemes: OpenAPI.SecuritySchemes? { get { nil } }
+    static var securitySchemes: OpenAPI.SecuritySchemes? { get { return nil } }
 }

@@ -186,14 +186,18 @@ public class Router {
     /// Swagger document in JSON format, or nil if the document cannot be
     /// generated.
     public var swaggerJSON: String? {
-        switch openAPIVersion {
-            case .swagger2_0:
-                return try? self.swagger.serializeAPI(format: .json)
-            case .openapi3_0:
-                subRouters.forEach{ router in
-                    self.openapi.merge(with: router.openapi)
-                }
-                return try? openapi.serializeAPI(format: .json)
+        do {
+            switch openAPIVersion {
+                case .swagger2_0:
+                    return try self.swagger.serializeAPI(format: .json)
+                case .openapi3_0:
+                    subRouters.forEach{ router in
+                        self.openapi.merge(with: router.openapi)
+                    }
+                    return try openapi.serializeAPI(format: .json)
+            }
+        } catch {
+            return nil
         }
     }
     
