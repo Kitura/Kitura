@@ -1420,6 +1420,14 @@ public struct OpenAPI {
     }
 }
 
+#if !swift(>=4.2)
+extension OpenAPI.SecurityRequirement: Hashable {
+    public var hashValue: Int { 
+        self.keys.reduce(0){ $0 << 2 | $1.hashValue }
+    }
+}
+#endif
+
 extension Router {
 
     // Register the middlewares extra parameters and security schemes within the document.
