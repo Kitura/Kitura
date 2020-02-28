@@ -715,7 +715,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T, Q?, @escaping CodableArrayResultClosure<O>) -> Void
         ) {
-        registerGetRoute(route: route, queryParams: Q.self, optionalQParam: true, outputType: O.self, middleware1: T.self)
+        registerGetRoute(route: route, queryParams: Q.self, optionalQParam: true, outputType: O.self, outputIsArray: true, middleware1: T.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -813,7 +813,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, Q?, @escaping CodableArrayResultClosure<O>) -> Void
         ) {
-        registerGetRoute(route: route, queryParams: Q.self, optionalQParam: true, outputType: O.self, middleware1: T1.self, middleware2: T2.self)
+        registerGetRoute(route: route, queryParams: Q.self, optionalQParam: true, outputType: O.self, outputIsArray: true, middleware1: T1.self, middleware2: T2.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
@@ -911,7 +911,7 @@ extension Router {
         _ route: String,
         handler: @escaping (T1, T2, T3, Q?, @escaping CodableArrayResultClosure<O>) -> Void
         ) {
-        registerGetRoute(route: route, queryParams: Q.self, optionalQParam: true, outputType: O.self, middleware1: T1.self, middleware2: T2.self, middleware3: T3.self)
+        registerGetRoute(route: route, queryParams: Q.self, optionalQParam: true, outputType: O.self, outputIsArray: true, middleware1: T1.self, middleware2: T2.self, middleware3: T3.self)
         get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
