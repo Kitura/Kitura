@@ -457,7 +457,8 @@ public class Router {
     public func route(_ route: String, mergeParameters: Bool = false, allowPartialMatch: Bool = true, tags: [OpenAPI.Tag]? = nil) -> Router {
         let subrouter: Router
         let subTags = tags == nil ? (openapi.tags ?? []) + [OpenAPI.Tag(name: String(route.dropFirst().capitalized))] : tags!
-        let apiDocument = OpenAPI.Document(info: openapi.info, servers: Array(openapi.servers), tags: subTags)
+        var apiDocument = OpenAPI.Document(info: openapi.info, servers: Array(openapi.servers), tags: subTags)
+        apiDocument.subRoute = route != "/" ? route : ""
         subrouter = Router(mergeParameters: mergeParameters, apiDocument: apiDocument)
         subRouters.append(subrouter)
         subrouter.parameterHandlers = self.parameterHandlers

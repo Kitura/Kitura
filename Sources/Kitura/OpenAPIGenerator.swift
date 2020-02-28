@@ -1425,6 +1425,7 @@ public struct OpenAPI {
         public private(set) var paths: Dictionary<String, PathItem>
         public private(set) var components: Components
         public private(set) var security: Set<SecurityRequirement>
+        public internal(set) var subRoute: String = ""
 
         public init(info: Info,
                     servers: [Server] = [],
@@ -1441,6 +1442,10 @@ public struct OpenAPI {
 
         public var tagNames: [String] {
             return tags?.map{ $0.name } ?? []
+        }
+
+        enum CodingKeys: String, CodingKey {
+            case openapi, info, servers, tags, externalDocs, paths, components, security
         }
 
         mutating func serializeAPI(format: SwaggerDocumentFormat) throws -> String? {
@@ -1460,10 +1465,11 @@ public struct OpenAPI {
         }
 
         public mutating func add(path: PathItem, for route: String) {
-            if let existingPath = paths[route] {
-                paths[route] = existingPath.merge(with: path)
+            let completeRoute = subRoute + route 
+            if let existingPath = paths[completeRoute] {
+                paths[completeRoute] = existingPath.merge(with: path)
             } else {
-                self.paths[route] = path
+                self.paths[completeRoute] = path
             }
         }
 
