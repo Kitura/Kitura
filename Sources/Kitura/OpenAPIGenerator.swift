@@ -518,8 +518,55 @@ public struct OpenAPI {
             self.required = required
             self.deprecated = deprecated
             self.allowEmptyValue = allowEmptyValue
-            self.ref = schema.ref
-            self.content = [:]
+            if location == .query {
+                self.ref = nil
+                var contents: Dictionary<String, Media> = [:]
+                schema.properties.forEach { property in
+                    property.value.forEach{ value in 
+                        contents[property.key] = Media(value: value.value)
+                    }
+                }
+                self.content = contents
+            } else {
+                self.ref = schema.ref
+                self.content = [:]
+            }
+        }
+
+        private init(name: String,
+                     `in` location: Location,
+                     description: String?,
+                     required: Bool?,
+                     deprecated: Bool?,
+                     allowEmptyValue: Bool?,
+                     ref: Ref?,
+                     content: Dictionary<String, Media>) {
+            self.name = name
+            self.in = location
+            self.description = description
+            self.required = required
+            self.deprecated = deprecated
+            self.allowEmptyValue = allowEmptyValue
+            self.ref = ref
+            self.content = content
+        }
+
+        static func query(from schema: Schema) -> [Parameter] {
+            var parameters: [Parameter] = []
+            schema.properties.forEach { property in
+                property.value.forEach{ value in
+                    let media = Media(value: value.value)
+                    parameters.append(Parameter(name: property.key,
+                                      in: .query,
+                                      description: nil,
+                                      required: true, // info lost here.
+                                      deprecated: false, // info lost here if any?
+                                      allowEmptyValue: false, // info lost here.
+                                      ref: nil,
+                                      content: [value.key: media]))
+                }
+            }
+            return parameters
         }
 
         public func encode(to encoder: Encoder) throws {
@@ -591,6 +638,30 @@ public struct OpenAPI {
             self.encoding = encoding
         }
 
+        internal init(value: PropertyValue) {
+            switch value {
+                case .arrayref(let single):
+                    self.schemaRef = Ref(ref: single.ref)
+                    self.schema = nil
+                case .nativearray(let native):
+                    self.schema = Schema(plain: native.type ?? "")
+                    self.schemaRef = nil
+                case .singleref(let single):
+                    self.schemaRef = Ref(ref: single.ref)
+                    self.schema = nil
+                case .string(let name):
+                    self.schema = Schema(plain: name)
+                    self.schemaRef = nil
+                case .dict(let properties):
+                    // unsupported
+                    Log.error("Trying to encode a Media with a dictionary: \(properties).")
+                    self.schema = nil
+                    self.schemaRef = nil
+            }
+            self.examples = nil
+            self.encoding = nil
+        }
+
         enum CodingKeys: String, CodingKey {
             case schema, examples, encoding
         }
@@ -638,15 +709,24 @@ public struct OpenAPI {
     /// Unless stated otherwise, the property definitions follow the JSON Schema.
     public struct Schema: Encodable {
         public private(set) var name: String
-        private var properties: Properties
+        internal private(set) var properties: Properties
         private let _type: String
         private var required: [String]
+        private var items: Ref? = nil
 
         public var ref: Ref { return OpenAPI.Ref(ref: "#/components/schemas/\(name)") }
 
         enum CodingKeys: String, CodingKey {
             case _type = "type"
-            case properties, required
+            case properties, required, items
+        }
+
+        public init(array: Schema) {
+            self._type = "array"
+            self.items = array.ref
+            self.name = "Array of \(array.name)"
+            self.properties = [:]
+            self.required = []
         }
 
         public init(plain: String) {
@@ -742,7 +822,7 @@ public struct OpenAPI {
                 OpenAPI.processedSet.insert(typeInfo)
             } else {
                 // This should not occur: addModel should only call buildModel for a keyed type
-                // Log.error("Expected a top-level (keyed) type, but received: \(typeInfo.debugDescription)")
+                Log.error("Expected a top-level (keyed) type, but received: \(typeInfo.debugDescription)")
             }
             return (properties: modelProperties, required: required)
         }
@@ -925,8 +1005,9 @@ public struct OpenAPI {
         public func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
             try container.encode(_type, forKey: ._type)
-            try container.encode(properties, forKey: .properties)
+            try container.if(properties, forKey: .properties)
             try container.if(required, forKey: .required)
+            try container.if(items, forKey: .items)
         }
     }
 
@@ -1421,7 +1502,7 @@ public struct OpenAPI {
 }
 
 #if !swift(>=4.2)
-extension OpenAPI.SecurityRequirement: Hashable {
+extension Dictionary: Hashable where T==String {
     public var hashValue: Int { 
         self.keys.reduce(0){ $0 << 2 | $1.hashValue }
     }
@@ -1466,13 +1547,14 @@ extension Router {
             let middlewares = register(middleware1: middleware1, middleware2: middleware2, middleware3: middleware3)
 
             let schema = try OpenAPI.Schema(from: outputType)
+            let arraySchema = OpenAPI.Schema(array: schema)
             let pathItem = OpenAPI.PathItem(
                 get: OpenAPI.Operation(
                     summary: "Return \(outputIsArray ? "an array of" : "a single") \(schema.name)",
                     responses: [
                         "\(HTTPStatusCode.OK.rawValue)": OpenAPI.Response(
                             description: "OK",
-                            content: ["application/json" : OpenAPI.Media(schema: schema.ref)]),
+                            content: ["application/json" : (outputIsArray ? OpenAPI.Media(schema: arraySchema) : OpenAPI.Media(schema: schema.ref))]),
                     ],
                     parameters: middlewares.parameters,
                     security: middlewares.security,
@@ -1502,22 +1584,22 @@ extension Router {
             let middlewares = register(middleware1: middleware1, middleware2: middleware2, middleware3: middleware3)
 
             let schema = try OpenAPI.Schema(from: outputType)
+            let arraySchema = OpenAPI.Schema(array: schema)
             let idSchema = OpenAPI.Schema(plain: id)
-            let content = (key: "application/json", entry: OpenAPI.Media(schema: schema.ref))
             let pathItem = OpenAPI.PathItem(
                 get: OpenAPI.Operation(
                     summary: "Return \(outputIsArray ? "an array of" : "a single") \(schema.name)",
                     responses: [
                         "\(HTTPStatusCode.OK.rawValue)": OpenAPI.Response(
                             description: "OK",
-                            content: [content.key: content.entry]),
+                            content: ["application/json": (outputIsArray ? OpenAPI.Media(schema: arraySchema) : OpenAPI.Media(schema: schema.ref))]),
                     ],
                     parameters: [
                         OpenAPI.Parameter(
                             name: "id",
                             in: .path,
                             content: ("id", OpenAPI.Media(schema: idSchema)),
-                            description: (outputIsArray ? "An array of \(schema.name)" : "The id of the \(schema.name)"),
+                            description: "The id of the \(schema.name)",
                             required: true)
                     ] + middlewares.parameters,
                     security: middlewares.security,
@@ -1546,8 +1628,8 @@ extension Router {
         middleware1: TypeSafeMiddleware.Type? = nil, middleware2: TypeSafeMiddleware.Type? = nil, middleware3: TypeSafeMiddleware.Type? = nil) {
         do {
             let middlewares = register(middleware1: middleware1, middleware2: middleware2, middleware3: middleware3)
-
             let schema = try OpenAPI.Schema(from: outputType)
+            let arraySchema = OpenAPI.Schema(array: schema)
             let querySchema = try OpenAPI.Schema(from: queryParams)
             let pathItem = OpenAPI.PathItem(
                 get: OpenAPI.Operation(
@@ -1555,17 +1637,12 @@ extension Router {
                     responses: [
                         "\(HTTPStatusCode.OK.rawValue)": OpenAPI.Response(
                             description: "OK",
-                            content: ["application/json" : OpenAPI.Media(schema: schema.ref)]),
+                            content: ["application/json" : (outputIsArray ? OpenAPI.Media(schema: arraySchema) : OpenAPI.Media(schema: schema.ref))]),
                         "\(HTTPStatusCode.badRequest.rawValue)": OpenAPI.Response(
                             description: "Bad request")
                     ],
-                    parameters: [
-                        OpenAPI.Parameter(
-                            schema: querySchema,
-                            in: .query,
-                            description: "",
-                            required: optionalQParam),
-                    ] + middlewares.parameters,
+                    parameters: OpenAPI.Parameter.query(from: querySchema)
+                        + middlewares.parameters,
                     security: middlewares.security,
                     tags: self.openapi.tagNames,
                     servers: self.openapi.servers
@@ -1595,14 +1672,13 @@ extension Router {
 
             let schema = try OpenAPI.Schema(from: outputType)
             let inputSchema = try OpenAPI.Schema(from: inputType)
-            let content = (key: "application/json", entry: OpenAPI.Media(schema: schema.ref))
             let pathItem = OpenAPI.PathItem(
                 post: OpenAPI.Operation(
                     summary: "Create a \(schema.name)",
                     responses: [
                         "\(HTTPStatusCode.created.rawValue)": OpenAPI.Response(
                             description: "Content created",
-                            content: [content.key: content.entry]),
+                            content: ["application/json": OpenAPI.Media(schema: schema.ref)]),
                         "\(HTTPStatusCode.notFound.rawValue)": OpenAPI.Response(
                             description: "Not found"),
                         "\(HTTPStatusCode.unsupportedMediaType.rawValue)": OpenAPI.Response(
@@ -1615,7 +1691,7 @@ extension Router {
                     parameters: middlewares.parameters,
                     security: middlewares.security,
                     requestBody: OpenAPI.RequestBody(
-                        content: content,
+                        content: (key: "application/json", entry: OpenAPI.Media(schema: inputSchema.ref)),
                         description: "The content of a \(inputSchema.name)",
                         required: true),
                     tags: self.openapi.tagNames,
@@ -1624,6 +1700,7 @@ extension Router {
             )
             self.openapi.add(path: pathItem, for: route)
             self.openapi.add(component: schema)
+            self.openapi.add(component: inputSchema)
         } catch let error {
             Log.error("Cannot register the route POST \(route): \(error)")
         }
@@ -1647,7 +1724,6 @@ extension Router {
             let schema = try OpenAPI.Schema(from: outputType)
             let inputSchema = try OpenAPI.Schema(from: inputType)
             let idSchema = OpenAPI.Schema(plain: id)
-            let content = (key: "application/json", entry: OpenAPI.Media(schema: schema.ref))
             let pathItem = OpenAPI.PathItem(
                 post: OpenAPI.Operation(
                     summary: "Create a \(schema.name) with an id",
@@ -1674,7 +1750,7 @@ extension Router {
                     ] + middlewares.parameters,
                     security: middlewares.security,
                     requestBody: OpenAPI.RequestBody(
-                        content: content,
+                        content: (key: "application/json", entry: OpenAPI.Media(schema: inputSchema.ref)),
                         description: "The content of a \(inputSchema.name)",
                         required: true),
                     tags: self.openapi.tagNames,
@@ -1683,6 +1759,7 @@ extension Router {
             )
             self.openapi.add(path: pathItem, for: route)
             self.openapi.add(component: schema)
+            self.openapi.add(component: inputSchema)
         } catch let error {
             Log.error("Cannot register the route POST \(route): \(error)")
         }
@@ -1706,7 +1783,6 @@ extension Router {
             let schema = try OpenAPI.Schema(from: outputType)
             let inputSchema = try OpenAPI.Schema(from: inputType)
             let idSchema = OpenAPI.Schema(plain: id)
-            let content = (key: "application/json", entry: OpenAPI.Media(schema: schema.ref))
             let pathItem = OpenAPI.PathItem(
                 put: OpenAPI.Operation(
                     summary: "Set a \(schema.name) with for an id",
@@ -1731,7 +1807,7 @@ extension Router {
                     ] + middlewares.parameters,
                     security: middlewares.security,
                     requestBody: OpenAPI.RequestBody(
-                        content: content,
+                        content: (key: "application/json", entry: OpenAPI.Media(schema: inputSchema.ref)),
                         description: "The content of a \(inputSchema.name)",
                         required: true),
                     tags: self.openapi.tagNames,
@@ -1740,6 +1816,7 @@ extension Router {
             )
             self.openapi.add(path: pathItem, for: route)
             self.openapi.add(component: schema)
+            self.openapi.add(component: inputSchema)
         } catch let error {
             Log.error("Cannot register the route POST \(route): \(error)")
         }
@@ -1763,7 +1840,6 @@ extension Router {
             let schema = try OpenAPI.Schema(from: outputType)
             let inputSchema = try OpenAPI.Schema(from: inputType)
             let idSchema = OpenAPI.Schema(plain: id)
-            let content = (key: "application/json", entry: OpenAPI.Media(schema: schema.ref))
             let pathItem = OpenAPI.PathItem(
                 patch: OpenAPI.Operation(
                     summary: "Update a \(schema.name) from its id",
@@ -1788,7 +1864,7 @@ extension Router {
                     ] + middlewares.parameters,
                     security: middlewares.security,
                     requestBody: OpenAPI.RequestBody(
-                        content: content,
+                        content: (key: "application/json", entry: OpenAPI.Media(schema: inputSchema.ref)),
                         description: "The content of a \(inputSchema.name)",
                         required: true),
                     tags: self.openapi.tagNames,
@@ -1854,13 +1930,8 @@ extension Router {
                         "\(HTTPStatusCode.notFound.rawValue)": OpenAPI.Response(
                                 description: "Not found"),
                     ],
-                    parameters: [
-                            OpenAPI.Parameter(
-                                schema: querySchema,
-                                in: .query,
-                                description: "",
-                                required: allOptQParams),
-                        ] + middlewares.parameters,
+                    parameters: OpenAPI.Parameter.query(from: querySchema)
+                        + middlewares.parameters,
                     security: middlewares.security,
                     tags: self.openapi.tagNames,
                     servers: self.openapi.servers
