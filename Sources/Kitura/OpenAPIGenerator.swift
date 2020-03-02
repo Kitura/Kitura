@@ -1508,9 +1508,15 @@ public struct OpenAPI {
 }
 
 #if !swift(>=4.2)
-extension Dictionary: Hashable where Value: Equatable {
-    public var hashValue: Int { 
-        self.keys.reduce(0){ $0 << 2 | $1.hashValue }
+extension Dictionary: Hashable {
+    // Simple hash
+    public var hashValue: Int {
+        return self.keys.reduce(0){ $0 << 2 | $1.hashValue }
+    }
+
+    // Assess only keys.
+    public static func ==(lhs: Dictionary, rhs: Dictionary) -> Bool {
+        return lhs.keys == rhs.keys
     }
 }
 #endif
