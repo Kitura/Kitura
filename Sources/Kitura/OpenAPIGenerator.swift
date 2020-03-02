@@ -1507,7 +1507,16 @@ public struct OpenAPI {
     }
 }
 
-#if !swift(>=4.2)
+#if swift(>=4.2)
+// Nothing to do regarding the dictionary conformancy.
+#elseif swift(>=4.1)
+extension Dictionary: Hashable where Value: Equatable {
+    // Simple hash
+    public var hashValue: Int {
+        return self.keys.reduce(0){ $0 << 2 | $1.hashValue }
+    }
+}
+#elseif swift(>=4.0)
 extension Dictionary: Hashable {
     // Simple hash
     public var hashValue: Int {
