@@ -559,9 +559,9 @@ public struct OpenAPI {
                     parameters.append(Parameter(name: property.key,
                                       in: .query,
                                       description: nil,
-                                      required: true, // info lost here.
-                                      deprecated: false, // info lost here if any?
-                                      allowEmptyValue: false, // info lost here.
+                                      required: schema.required.contains(property.key),
+                                      deprecated: false, // Not supported.
+                                      allowEmptyValue: false, // Not supported.
                                       ref: nil,
                                       content: [value.key: media]))
                 }
@@ -711,7 +711,7 @@ public struct OpenAPI {
         public private(set) var name: String
         internal private(set) var properties: Properties
         private let _type: String
-        private var required: [String]
+        internal private(set) var required: [String]
         private var items: Ref? = nil
 
         public var ref: Ref { return OpenAPI.Ref(ref: "#/components/schemas/\(name)") }
