@@ -75,7 +75,7 @@ matrix:
     - os: osx
       osx_image: xcode11.3
       sudo: required
-      env: KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
+      env: KITURA_NIO=1 # Try disabling parallel tests # SWIFT_TEST_ARGS="--parallel"
     - os: osx
       osx_image: xcode11.3
       sudo: required
