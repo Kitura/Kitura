@@ -55,4 +55,24 @@ public protocol TypeSafeMiddleware {
     ///                         attempt to process the request, respectively.
     static func handle(request: RouterRequest, response: RouterResponse, completion: @escaping (Self?, RequestError?) -> Void) -> Void
 
+
+    /// Optional OpenAPI components.
+    ///
+    /// Document the parameters of your middleware (header, path, etc.)
+    static var parameters:[OpenAPI.Parameter]? { get }
+
+    /// Optional OpenAPI security schemes.
+    ///
+    /// Document the security schemes used by your middleware if any.
+    static var securitySchemes: OpenAPI.SecuritySchemes? { get }
+}
+
+/// Provide a default implementation.
+///
+/// The default implementation allows the existing middleware to still works.
+public extension TypeSafeMiddleware {
+    /// The default implementation returning nil and not setting anything.
+    static var parameters: [OpenAPI.Parameter]? { get { return nil } }
+    /// The default implementation returning nil and not setting anything.
+    static var securitySchemes: OpenAPI.SecuritySchemes? { get { return nil } }
 }
