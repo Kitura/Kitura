@@ -48,13 +48,15 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives a TypeSafeMiddleware instance and returns a single Codable object or a RequestError.
+     - Returns `self`
      */
+    @discardableResult
     public func get<T: TypeSafeMiddleware, O: Codable>(
         _ route: String,
         handler: @escaping (T, @escaping CodableResultClosure<O>) -> Void
-    ) {
+    ) -> Router {
         registerGetRoute(route: route, outputType: O.self)
-        get(route) { request, response, next in
+        return get(route) { request, response, next in
             Log.verbose("Received GET(Single) typed middleware request")
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
@@ -82,14 +84,16 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives two TypeSafeMiddleware instances and returns a single Codable object or a RequestError.
+     - Returns `self`
      :nodoc:
     */
+    @discardableResult
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, @escaping CodableResultClosure<O>) -> Void
-    ) {
+    ) -> Router {
         registerGetRoute(route: route, outputType: O.self)
-        get(route) { request, response, next in
+        return get(route) { request, response, next in
             Log.verbose("Received GET(Single) typed middleware request")
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
@@ -117,14 +121,16 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives three TypeSafeMiddleware instances and returns a single Codable object or a RequestError.
+     - Returns `self`
      :nodoc:
      */
+    @discardableResult
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, T3, @escaping CodableResultClosure<O>) -> Void
-    ) {
+    ) -> Router {
         registerGetRoute(route: route, outputType: O.self)
-        get(route) { request, response, next in
+        return get(route) { request, response, next in
             Log.verbose("Received GET(Single) typed middleware request")
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
@@ -158,13 +164,15 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives a TypeSafeMiddleware instance and returns an array of Codable objects or a RequestError.
+     - Returns `self`
      */
+    @discardableResult
     public func get<T: TypeSafeMiddleware, O: Codable>(
         _ route: String,
         handler: @escaping (T, @escaping CodableArrayResultClosure<O>) -> Void
-    ) {
+    ) -> Router {
         registerGetRoute(route: route, outputType: O.self, outputIsArray: true)
-        get(route) { request, response, next in
+        return get(route) { request, response, next in
             Log.verbose("Received GET(Array) typed middleware request")
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
@@ -192,14 +200,16 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives two TypeSafeMiddleware instances and returns an array of Codable objects or a RequestError.
+     - Returns `self`
      :nodoc:
      */
+    @discardableResult
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, @escaping CodableArrayResultClosure<O>) -> Void
-    ) {
+    ) -> Router {
         registerGetRoute(route: route, outputType: O.self, outputIsArray: true)
-        get(route) { request, response, next in
+        return get(route) { request, response, next in
             Log.verbose("Received GET(Array) typed middleware request")
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
@@ -227,14 +237,16 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives three TypeSafeMiddleware instances and returns an array of Codable objects or a RequestError.
+     - Returns `self`
      :nodoc:
      */
+    @discardableResult
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, T3, @escaping CodableArrayResultClosure<O>) -> Void
-    ) {
+    ) -> Router {
         registerGetRoute(route: route, outputType: O.self, outputIsArray: true)
-        get(route) { request, response, next in
+        return get(route) { request, response, next in
             Log.verbose("Received GET(Array) typed middleware request")
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
@@ -268,16 +280,18 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives a TypeSafeMiddleware instance and an Identifier, and returns a single of Codable object or a RequestError.
+     - Returns `self`
      */
+    @discardableResult
     public func get<T: TypeSafeMiddleware, Id: Identifier, O: Codable>(
         _ route: String,
         handler: @escaping (T, Id, @escaping CodableResultClosure<O>) -> Void
-    ) {
+    ) -> Router {
         if !pathSyntaxIsValid(route, identifierExpected: true) {
-            return
+            return self
         }
         registerGetRoute(route: route, id: Id.self, outputType: O.self)
-        get(appendId(path: route)) { request, response, next in
+        return get(appendId(path: route)) { request, response, next in
             Log.verbose("Received GET (singular with identifier and middleware) type-safe request")
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
@@ -308,17 +322,19 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives two TypeSafeMiddleware instances and an Identifier, and returns a single of Codable object or a RequestError.
+     - Returns `self`
      :nodoc:
      */
+    @discardableResult
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Id: Identifier, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, Id, @escaping CodableResultClosure<O>) -> Void
-    ) {
+    ) -> Router {
         if !pathSyntaxIsValid(route, identifierExpected: true) {
-            return
+            return self
         }
         registerGetRoute(route: route, id: Id.self, outputType: O.self)
-        get(appendId(path: route)) { request, response, next in
+        return get(appendId(path: route)) { request, response, next in
             Log.verbose("Received GET (singular with identifier and middleware) type-safe request")
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
@@ -349,17 +365,19 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives three TypeSafeMiddleware instances and an Identifier, and returns a single of Codable object or a RequestError.
+     - Returns `self`
      :nodoc:
      */
+    @discardableResult
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Id: Identifier, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, T3, Id, @escaping CodableResultClosure<O>) -> Void
-    ) {
+    ) -> Router {
         if !pathSyntaxIsValid(route, identifierExpected: true) {
-            return
+            return self
         }
         registerGetRoute(route: route, id: Id.self, outputType: O.self)
-        get(appendId(path: route)) { request, response, next in
+        return get(appendId(path: route)) { request, response, next in
             Log.verbose("Received GET (singular with identifier and middleware) type-safe request")
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
@@ -396,13 +414,15 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives a TypeSafeMiddleware instance, and returns an array of (Identifier, Codable) tuples or a RequestError.
+     - Returns `self`
      */
+    @discardableResult
     public func get<T: TypeSafeMiddleware, Id: Identifier, O: Codable>(
         _ route: String,
         handler: @escaping (T, @escaping IdentifierCodableArrayResultClosure<Id, O>) -> Void
-    ) {
+    ) -> Router {
         registerGetRoute(route: route, id: Id.self, outputType: O.self, outputIsArray: true)
-        get(route) { request, response, next in
+        return get(route) { request, response, next in
             Log.verbose("Received GET(Array) with identifier typed middleware request")
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
@@ -431,13 +451,15 @@ extension Router {
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives two TypeSafeMiddleware instances, and returns an array of (Identifier, Codable) tuples or a RequestError.
      :nodoc:
+     - Returns `self`
      */
+    @discardableResult
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Id: Identifier, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, @escaping IdentifierCodableArrayResultClosure<Id, O>) -> Void
-    ) {
+    ) -> Router {
         registerGetRoute(route: route, id: Id.self, outputType: O.self, outputIsArray: true)
-        get(route) { request, response, next in
+        return get(route) { request, response, next in
             Log.verbose("Received GET(Array) with identifier typed middleware request")
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
@@ -466,13 +488,15 @@ extension Router {
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives three TypeSafeMiddleware instances, and returns an array of (Identifier, Codable) tuples or a RequestError.
      :nodoc:
+     - Returns `self`
      */
+    @discardableResult
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Id: Identifier, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, T3, @escaping IdentifierCodableArrayResultClosure<Id, O>) -> Void
-    ) {
+    ) -> Router {
         registerGetRoute(route: route, id: Id.self, outputType: O.self, outputIsArray: true)
-        get(route) { request, response, next in
+        return get(route) { request, response, next in
             Log.verbose("Received GET(Array) with identifier typed middleware request")
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
@@ -509,13 +533,15 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives a TypeSafeMiddleware instance and a QueryParams instance, and returns a single of Codable object or a RequestError.
+     - Returns `self`
      */
+    @discardableResult
     public func get<T: TypeSafeMiddleware, Q: QueryParams, O: Codable>(
         _ route: String,
         handler: @escaping (T, Q, @escaping CodableResultClosure<O>) -> Void
-    ) {
+    ) -> Router {
         registerGetRoute(route: route, queryParams: Q.self, optionalQParam: false, outputType: O.self)
-        get(route) { request, response, next in
+        return get(route) { request, response, next in
             Log.verbose("Received GET (singular) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
             // Define result handler
@@ -556,14 +582,16 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives two TypeSafeMiddleware instances and a QueryParams instance, and returns a single of Codable object or a RequestError.
+     - Returns `self`
      :nodoc:
      */
+    @discardableResult
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Q: QueryParams, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, Q, @escaping CodableResultClosure<O>) -> Void
-    ) {
+    ) -> Router {
         registerGetRoute(route: route, queryParams: Q.self, optionalQParam: false, outputType: O.self)
-        get(route) { request, response, next in
+        return get(route) { request, response, next in
             Log.verbose("Received GET (singular) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
             // Define result handler
@@ -604,14 +632,16 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives three TypeSafeMiddleware instances and a QueryParams instance, and returns a single of Codable object or a RequestError.
+     - Returns `self`
      :nodoc:
      */
+    @discardableResult
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Q: QueryParams, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, T3, Q, @escaping CodableResultClosure<O>) -> Void
-    ) {
+    ) -> Router {
         registerGetRoute(route: route, queryParams: Q.self, optionalQParam: false, outputType: O.self)
-        get(route) { request, response, next in
+        return get(route) { request, response, next in
             Log.verbose("Received GET (singular) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
             // Define result handler
@@ -657,13 +687,15 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives a TypeSafeMiddleware instance and a QueryParams instance, and returns an array of Codable objects or a RequestError.
+     - Returns `self`
      */
+    @discardableResult
     public func get<T: TypeSafeMiddleware, Q: QueryParams, O: Codable>(
         _ route: String,
         handler: @escaping (T, Q, @escaping CodableArrayResultClosure<O>) -> Void
-    ) {
+    ) -> Router {
         registerGetRoute(route: route, queryParams: Q.self, optionalQParam: false, outputType: O.self, outputIsArray: true)
-        get(route) { request, response, next in
+        return get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
@@ -710,13 +742,15 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives a TypeSafeMiddleware instance and a QueryParams instance, and returns an array of Codable objects or a RequestError.
+     - Returns `self`
      */
+    @discardableResult
     public func get<T: TypeSafeMiddleware, Q: QueryParams, O: Codable>(
         _ route: String,
         handler: @escaping (T, Q?, @escaping CodableArrayResultClosure<O>) -> Void
-        ) {
+    ) -> Router {
         registerGetRoute(route: route, queryParams: Q.self, optionalQParam: true, outputType: O.self)
-        get(route) { request, response, next in
+        return get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
@@ -759,14 +793,16 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives two TypeSafeMiddleware instances and a QueryParams instance, and returns an array of Codable objects or a RequestError.
+     - Returns `self`
      :nodoc:
      */
+    @discardableResult
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Q: QueryParams, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, Q, @escaping CodableArrayResultClosure<O>) -> Void
-    ) {
+    ) -> Router {
         registerGetRoute(route: route, queryParams: Q.self, optionalQParam: false, outputType: O.self, outputIsArray: true)
-        get(route) { request, response, next in
+        return get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
@@ -807,14 +843,16 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives two TypeSafeMiddleware instances and a QueryParams instance, and returns an array of Codable objects or a RequestError.
+     - Returns `self`
      :nodoc:
      */
+    @discardableResult
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Q: QueryParams, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, Q?, @escaping CodableArrayResultClosure<O>) -> Void
-        ) {
+    ) -> Router {
         registerGetRoute(route: route, queryParams: Q.self, optionalQParam: true, outputType: O.self)
-        get(route) { request, response, next in
+        return get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
@@ -857,14 +895,16 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives three TypeSafeMiddleware instances and a QueryParams instance, and returns an array of Codable objects or a RequestError.
+     - Returns `self`
      :nodoc:
      */
+    @discardableResult
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Q: QueryParams, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, T3, Q, @escaping CodableArrayResultClosure<O>) -> Void
-    ) {
+    ) -> Router {
         registerGetRoute(route: route, queryParams: Q.self, optionalQParam: false, outputType: O.self, outputIsArray: true)
-        get(route) { request, response, next in
+        return get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
@@ -905,14 +945,16 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives three TypeSafeMiddleware instances and a QueryParams instance, and returns an array of Codable objects or a RequestError.
+     - Returns `self`
      :nodoc:
      */
+    @discardableResult
     public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Q: QueryParams, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, T3, Q?, @escaping CodableArrayResultClosure<O>) -> Void
-        ) {
+    ) -> Router {
         registerGetRoute(route: route, queryParams: Q.self, optionalQParam: true, outputType: O.self)
-        get(route) { request, response, next in
+        return get(route) { request, response, next in
             Log.verbose("Received GET (plural) type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
@@ -956,13 +998,15 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives a TypeSafeMiddleware and returns a RequestError or nil on success.
+     - Returns `self`
      */
+    @discardableResult
     public func delete<T: TypeSafeMiddleware>(
         _ route: String,
         handler: @escaping (T, @escaping ResultClosure) -> Void
-    ) {
+    ) -> Router {
         registerDeleteRoute(route: route)
-        delete(route) { request, response, next in
+        return delete(route) { request, response, next in
             Log.verbose("Received DELETE (plural with middleware) type-safe request")
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
@@ -988,14 +1032,16 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives a TypeSafeMiddleware and returns a RequestError or nil on success.
+     - Returns `self`
      :nodoc:
      */
+    @discardableResult
     public func delete<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware>(
         _ route: String,
         handler: @escaping (T1, T2, @escaping ResultClosure) -> Void
-    ) {
+    ) -> Router {
         registerDeleteRoute(route: route)
-        delete(route) { request, response, next in
+        return delete(route) { request, response, next in
             Log.verbose("Received DELETE (plural with middleware) type-safe request")
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
@@ -1021,14 +1067,16 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives a TypeSafeMiddleware and returns a RequestError or nil on success.
+     - Returns `self`
      :nodoc:
      */
+    @discardableResult
     public func delete<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware>(
         _ route: String,
         handler: @escaping (T1, T2, T3, @escaping ResultClosure) -> Void
-    ) {
+    ) -> Router {
         registerDeleteRoute(route: route)
-        delete(route) { request, response, next in
+        return delete(route) { request, response, next in
             Log.verbose("Received DELETE (plural with middleware) type-safe request")
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
@@ -1060,16 +1108,18 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives a TypeSafeMiddleware and Identifier, and returns nil on success, or a `RequestError`.
+     - Returns `self`
      */
+    @discardableResult
     public func delete<T: TypeSafeMiddleware, Id: Identifier>(
         _ route: String,
         handler: @escaping (T, Id, @escaping ResultClosure) -> Void
-    ) {
+    ) -> Router {
         if !pathSyntaxIsValid(route, identifierExpected: true) {
-            return
+            return self
         }
         registerDeleteRoute(route: route, id: Id.self)
-        delete(appendId(path: route)) { request, response, next in
+        return delete(appendId(path: route)) { request, response, next in
             Log.verbose("Received DELETE (singular with middleware) type-safe request")
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
@@ -1098,17 +1148,19 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives a TypeSafeMiddleware and Identifier, and returns nil on success, or a `RequestError`.
+     - Returns `self`
      :nodoc:
      */
+    @discardableResult
     public func delete<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Id: Identifier>(
         _ route: String,
         handler: @escaping (T1, T2, Id, @escaping ResultClosure) -> Void
-    ) {
+    ) -> Router {
         if !pathSyntaxIsValid(route, identifierExpected: true) {
-            return
+            return self
         }
         registerDeleteRoute(route: route, id: Id.self)
-        delete(appendId(path: route)) { request, response, next in
+        return delete(appendId(path: route)) { request, response, next in
             Log.verbose("Received DELETE (singular with middleware) type-safe request")
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
@@ -1137,17 +1189,19 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives a TypeSafeMiddleware and Identifier, and returns nil on success, or a `RequestError`.
+     - Returns `self`
      :nodoc:
      */
+    @discardableResult
     public func delete<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Id: Identifier>(
         _ route: String,
         handler: @escaping (T1, T2, T3, Id, @escaping ResultClosure) -> Void
-    ) {
+    ) -> Router {
         if !pathSyntaxIsValid(route, identifierExpected: true) {
-            return
+            return self
         }
         registerDeleteRoute(route: route, id: Id.self)
-        delete(appendId(path: route)) { request, response, next in
+        return delete(appendId(path: route)) { request, response, next in
             Log.verbose("Received DELETE (singular with middleware) type-safe request")
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
@@ -1185,13 +1239,15 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives a TypeSafeMiddleware and Identifier, and returns nil on success, or a `RequestError`.
+     - Returns `self`
      */
+    @discardableResult
     public func delete<T: TypeSafeMiddleware, Q: QueryParams>(
         _ route: String,
         handler: @escaping (T, Q, @escaping ResultClosure) -> Void
-    ) {
+    ) -> Router {
         registerDeleteRoute(route: route, queryParams: Q.self, optionalQParam: false)
-        delete(route) { request, response, next in
+        return delete(route) { request, response, next in
             Log.verbose("Received DELETE type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
@@ -1239,13 +1295,15 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives a TypeSafeMiddleware and Identifier, and returns nil on success, or a `RequestError`.
+     - Returns `self`
      */
+    @discardableResult
     public func delete<T: TypeSafeMiddleware, Q: QueryParams>(
         _ route: String,
         handler: @escaping (T, Q?, @escaping ResultClosure) -> Void
-        ) {
+    ) -> Router {
         registerDeleteRoute(route: route, queryParams: Q.self, optionalQParam: true)
-        delete(route) { request, response, next in
+        return delete(route) { request, response, next in
             Log.verbose("Received DELETE type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
@@ -1287,13 +1345,15 @@ extension Router {
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives a TypeSafeMiddleware and Identifier, and returns nil on success, or a `RequestError`.
      :nodoc:
+     - Returns `self`
      */
+    @discardableResult
     public func delete<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Q: QueryParams>(
         _ route: String,
         handler: @escaping (T1, T2, Q, @escaping ResultClosure) -> Void
-    ) {
+    ) -> Router {
         registerDeleteRoute(route: route, queryParams: Q.self, optionalQParam: false)
-        delete(route) { request, response, next in
+        return delete(route) { request, response, next in
             Log.verbose("Received DELETE type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
@@ -1336,13 +1396,15 @@ extension Router {
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives a TypeSafeMiddleware and Identifier, and returns nil on success, or a `RequestError`.
      :nodoc:
+     - Returns `self`
      */
+    @discardableResult
     public func delete<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Q: QueryParams>(
         _ route: String,
         handler: @escaping (T1, T2, Q?, @escaping ResultClosure) -> Void
-        ) {
+    ) -> Router {
         registerDeleteRoute(route: route, queryParams: Q.self, optionalQParam: true)
-        delete(route) { request, response, next in
+        return delete(route) { request, response, next in
             Log.verbose("Received DELETE type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
@@ -1384,13 +1446,15 @@ extension Router {
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives a TypeSafeMiddleware and Identifier, and returns nil on success, or a `RequestError`.
      :nodoc:
+     - Returns `self`
      */
+    @discardableResult
     public func delete<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Q: QueryParams>(
         _ route: String,
         handler: @escaping (T1, T2, T3, Q, @escaping ResultClosure) -> Void
-    ) {
+    ) -> Router {
         registerDeleteRoute(route: route, queryParams: Q.self, optionalQParam: false)
-        delete(route) { request, response, next in
+        return delete(route) { request, response, next in
             Log.verbose("Received DELETE type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
@@ -1433,13 +1497,15 @@ extension Router {
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives a TypeSafeMiddleware and Identifier, and returns nil on success, or a `RequestError`.
      :nodoc:
+     - Returns `self`
      */
+    @discardableResult
     public func delete<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Q: QueryParams>(
         _ route: String,
         handler: @escaping (T1, T2, T3, Q?, @escaping ResultClosure) -> Void
-        ) {
+    ) -> Router {
         registerDeleteRoute(route: route, queryParams: Q.self, optionalQParam: true)
-        delete(route) { request, response, next in
+        return delete(route) { request, response, next in
             Log.verbose("Received DELETE type-safe request with middleware and Query Parameters")
             Log.verbose("Query Parameters: \(request.queryParameters)")
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
@@ -1487,13 +1553,15 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives a TypeSafeMiddleware instance and a Codable object, and returns a Codable object or a RequestError.
+     - Returns `self`
      */
+    @discardableResult
     public func post<T: TypeSafeMiddleware, I: Codable, O: Codable>(
         _ route: String,
         handler: @escaping (T, I, @escaping CodableResultClosure<O>) -> Void
-    ) {
+    ) -> Router {
         registerPostRoute(route: route, inputType: I.self, outputType: O.self)
-        post(route) { request, response, next in
+        return post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
@@ -1527,14 +1595,16 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives two TypeSafeMiddleware instances and a Codable object, and returns a Codable object or a RequestError.
+     - Returns `self`
      :nodoc:
      */
+    @discardableResult
     public func post<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, I: Codable, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, I, @escaping CodableResultClosure<O>) -> Void
-    ) {
+    ) -> Router {
         registerPostRoute(route: route, inputType: I.self, outputType: O.self)
-        post(route) { request, response, next in
+        return post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
@@ -1568,14 +1638,16 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives three TypeSafeMiddleware instances and a Codable object, and returns a Codable object or a RequestError.
+     - Returns `self`
      :nodoc:
      */
+    @discardableResult
     public func post<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, I: Codable, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, T3, I, @escaping CodableResultClosure<O>) -> Void
-    ) {
+    ) -> Router {
         registerPostRoute(route: route, inputType: I.self, outputType: O.self)
-        post(route) { request, response, next in
+        return post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
@@ -1612,13 +1684,15 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives a TypeSafeMiddleware instance and a Codable object, and returns an Identifier and a Codable object or a RequestError.
+     - Returns `self`
      */
+    @discardableResult
     public func post<T: TypeSafeMiddleware, I: Codable, Id: Identifier, O: Codable>(
         _ route: String,
         handler: @escaping (T, I, @escaping IdentifierCodableResultClosure<Id, O>) -> Void
-    ) {
+    ) -> Router {
         registerPostRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
-        post(route) { request, response, next in
+        return post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
@@ -1649,14 +1723,16 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives two TypeSafeMiddleware instances and a Codable object, and returns an Identifier and a Codable object or a RequestError.
+     - Returns `self`
      :nodoc:
      */
+    @discardableResult
     public func post<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, I: Codable, Id: Identifier, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, I, @escaping IdentifierCodableResultClosure<Id, O>) -> Void
-    ) {
+    ) -> Router {
         registerPostRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
-        post(route) { request, response, next in
+        return post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
@@ -1687,14 +1763,16 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives three TypeSafeMiddleware instances and a Codable object, and returns an Identifier and a Codable object or a RequestError.
+     - Returns `self`
      :nodoc:
      */
+    @discardableResult
     public func post<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, I: Codable, Id: Identifier, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, T3, I, @escaping IdentifierCodableResultClosure<Id, O>) -> Void
-    ) {
+    ) -> Router {
         registerPostRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
-        post(route) { request, response, next in
+        return post(route) { request, response, next in
             Log.verbose("Received POST type-safe request")
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
@@ -1729,16 +1807,18 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives a TypeSafeMiddleware instance, an Identifier and a Codable object, and returns a Codable object or a RequestError.
+     - Returns `self`
      */
+    @discardableResult
     public func put<T: TypeSafeMiddleware, Id: Identifier, I: Codable, O: Codable>(
         _ route: String,
         handler: @escaping (T, Id, I, @escaping CodableResultClosure<O>) -> Void
-    ) {
+    ) -> Router {
         if !pathSyntaxIsValid(route, identifierExpected: true) {
-            return
+            return self
         }
         registerPutRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
-        put(appendId(path: route)) { request, response, next in
+        return put(appendId(path: route)) { request, response, next in
             Log.verbose("Received PUT type-safe request")
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
@@ -1769,17 +1849,19 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives two TypeSafeMiddleware instances, an Identifier and a Codable object, and returns a Codable object or a RequestError.
+     - Returns `self`
      :nodoc:
      */
+    @discardableResult
     public func put<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Id: Identifier, I: Codable, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, Id, I, @escaping CodableResultClosure<O>) -> Void
-    ) {
+    ) -> Router {
         if !pathSyntaxIsValid(route, identifierExpected: true) {
-            return
+            return self
         }
         registerPutRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
-        put(appendId(path: route)) { request, response, next in
+        return put(appendId(path: route)) { request, response, next in
             Log.verbose("Received PUT type-safe request")
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
@@ -1810,17 +1892,19 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives three TypeSafeMiddleware instances, an Identifier and a Codable object, and returns a Codable object or a RequestError.
+     - Returns `self`
      :nodoc:
      */
+    @discardableResult
     public func put<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Id: Identifier, I: Codable, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, T3, Id, I, @escaping CodableResultClosure<O>) -> Void
-    ) {
+    ) -> Router {
         if !pathSyntaxIsValid(route, identifierExpected: true) {
-            return
+            return self
         }
         registerPutRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
-        put(appendId(path: route)) { request, response, next in
+        return put(appendId(path: route)) { request, response, next in
             Log.verbose("Received PUT type-safe request")
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
@@ -1863,16 +1947,18 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives a TypeSafeMiddleware instance, an Identifier and a Codable object, and returns a Codable object or a RequestError.
+     - Returns `self`
      */
+    @discardableResult
     public func patch<T: TypeSafeMiddleware, Id: Identifier, I: Codable, O: Codable>(
         _ route: String,
         handler: @escaping (T, Id, I, @escaping CodableResultClosure<O>) -> Void
-    ) {
+    ) -> Router {
         if !pathSyntaxIsValid(route, identifierExpected: true) {
-            return
+            return self
         }
         registerPatchRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
-        patch(appendId(path: route)) { request, response, next in
+        return patch(appendId(path: route)) { request, response, next in
             Log.verbose("Received PATCH type-safe request")
             self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
                 guard let typeSafeMiddleware = typeSafeMiddleware else {
@@ -1909,17 +1995,19 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives two TypeSafeMiddleware instances, an Identifier and a Codable object, and returns a Codable object or a RequestError.
+     - Returns `self`
      :nodoc:
      */
+    @discardableResult
     public func patch<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Id: Identifier, I: Codable, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, Id, I, @escaping CodableResultClosure<O>) -> Void
-    ) {
+    ) -> Router {
         if !pathSyntaxIsValid(route, identifierExpected: true) {
-            return
+            return self
         }
         registerPatchRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
-        patch(appendId(path: route)) { request, response, next in
+        return patch(appendId(path: route)) { request, response, next in
             Log.verbose("Received PATCH type-safe request")
             self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
@@ -1955,17 +2043,19 @@ extension Router {
      ```
      - Parameter route: A String specifying the URL path that will invoke the handler.
      - Parameter handler: A closure that receives three TypeSafeMiddleware instances, an Identifier and a Codable object, and returns a Codable object or a RequestError.
+     - Returns `self`
      :nodoc:
      */
+    @discardableResult
     public func patch<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Id: Identifier, I: Codable, O: Codable>(
         _ route: String,
         handler: @escaping (T1, T2, T3, Id, I, @escaping CodableResultClosure<O>) -> Void
-    ) {
+    ) -> Router {
         if !pathSyntaxIsValid(route, identifierExpected: true) {
-            return
+            return self
         }
         registerPatchRoute(route: route, id: Id.self, inputType: I.self, outputType: O.self)
-        patch(appendId(path: route)) { request, response, next in
+        return patch(appendId(path: route)) { request, response, next in
             Log.verbose("Received PATCH type-safe request")
             self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
                 guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
