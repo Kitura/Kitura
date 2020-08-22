@@ -117,8 +117,16 @@ extension StaticFileServer {
             // https://github.com/bripkens/connect-history-api-fallback
             let isDirectFileAccess = filePath.split(separator: "/").last?.contains(".") ?? false
             if isDirectFileAccess == false, let defaultIndex = self.defaultIndex {
-                serveDefaultIndex(defaultIndex: defaultIndex, response: response)
+                // Do not attempt to serve the file if another handler has already sent or ended the response
+                if !response.state.invokedEnd && !response.state.invokedSend {
+                    serveDefaultIndex(defaultIndex: defaultIndex, response: response)
+                } else {
+                    Log.debug("Not serving file because the response was ended already: \(filePath)")
+                }
+            } else {
+                Log.verbose("Request file does not exist: \(filePath)")
             }
+
         }
 
         fileprivate func serveDefaultIndex(defaultIndex: String, response: RouterResponse) {
