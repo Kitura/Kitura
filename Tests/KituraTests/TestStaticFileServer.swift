@@ -62,6 +62,7 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
             ("testRangeRequestWithIfRangeHeaderAsOldLastModified", testRangeRequestWithIfRangeHeaderAsOldLastModified),
             ("testStaticFileServerRedirectPreservingQueryParams", testStaticFileServerRedirectPreservingQueryParams),
             ("testFallbackToDefaultIndex", testFallbackToDefaultIndex),
+            ("testThat_DefaultIndex_WillNotSend_WhenRequestPreviouslyEnded", testThat_DefaultIndex_WillNotSend_WhenRequestPreviouslyEnded),
             ("testFallbackToDefaultIndexFailsIfOptionNotSet", testFallbackToDefaultIndexFailsIfOptionNotSet),
             ("testFallbackToDefaultIndexWithSubrouter", testFallbackToDefaultIndexWithSubrouter),
         ]
