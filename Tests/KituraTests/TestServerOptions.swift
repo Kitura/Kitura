@@ -268,6 +268,78 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
         XCTAssertEqual(failCount, numClients - maxClients, "Incorrect number of rejected client connections")
     }
 
+    // Issue #1501: https://github.com/IBM-Swift/Kitura/issues/1501
+    func testThat_ConnectionsCanBeMade_AfterMaxConnectionsReached() {
+        let maxClients = 2          // Maximum number of concurrent clients
+        let numClogClients = 5      // Number of clients to connect (above max)
+        let numCheckClients = 10    // Num clients use to verify connections after clog event
+
+        XCTAssert(numClogClients >= maxClients, "This test only makes sense if numClogClients >= maxClients")
+
+        // Create client status objects and expectations
+        var clientClogStatus = [ClientStatus]()
+        var clientClogExpectations = [XCTestExpectation]()
+        for i in 1...numClogClients {
+            clientClogStatus.append(ClientStatus())
+            clientClogExpectations.append(XCTestExpectation(description: "CLOG Client \(i) completed"))
+        }
+        var clientCheckStatus = [ClientStatus]()
+        var clientCheckExpectations = [XCTestExpectation]()
+        for i in 1...numCheckClients {
+            clientCheckStatus.append(ClientStatus())
+            clientCheckExpectations.append(XCTestExpectation(description: "CHECK Client \(i) completed"))
+        }
+
+        let customResponse: (Int, String) -> (HTTPStatusCode, String)? = { limit, client in
+            return (.badRequest, "Too many connections (more than \(limit))")
+        }
+
+        // Start server and make concurrent request attempts. performServerTest() will
+        // not complete until all expectations (including client completion) are fulfilled.
+        performServerTest(router, options: ServerOptions(connectionLimit: maxClients, connectionResponseGenerator: customResponse), sslOption: .httpOnly, socketTypeOption: .inet, timeout: 30) { expectation in
+            for i in 0..<numClogClients {
+                self.asyncClientRequest(expectation: clientClogExpectations[i], status: clientClogStatus[i])
+            }
+            self.wait(for: clientClogExpectations, timeout: 4)
+
+            for i in 0..<numCheckClients {
+                self.asyncClientRequest(expectation: clientCheckExpectations[i], status: clientCheckStatus[i])
+                self.wait(for: [ clientCheckExpectations[i] ], timeout: 3)
+            }
+
+            expectation.fulfill()
+        }
+
+        // Ensure server is "clogged" correctly (successCount == maxClients)
+        var successCount = 0
+        var failCount = 0
+        for i in 0..<numClogClients {
+            switch clientClogStatus[i].code {
+            case .OK: successCount += 1
+            case .badRequest: failCount += 1
+            case .serviceUnavailable: XCTFail("Response was not customized")
+            default: XCTFail("Unexpected client status: \(clientClogStatus[i].code)")
+            }
+        }
+        XCTAssertEqual(successCount, maxClients, "Incorrect number of accepted client CLOG connections")
+        XCTAssertEqual(failCount, numClogClients - maxClients, "Incorrect number of rejected client CLOG connections")
+
+
+        // Ensure check connections are successful
+        successCount = 0
+        failCount = 0
+        for i in 0..<numCheckClients {
+            switch clientCheckStatus[i].code {
+            case .OK: successCount += 1
+            case .badRequest: failCount += 1
+            case .serviceUnavailable: XCTFail("Response was not customized")
+            default: XCTFail("Unexpected client status: \(clientCheckStatus[i].code)")
+            }
+        }
+        XCTAssertEqual(successCount, numCheckClients, "Incorrect number of accepted client CHECK connections")
+        XCTAssertEqual(failCount, 0, "Incorrect number of rejected client CHECK connections")
+    }
+
     // MARK: Router configuration for this suite
 
     static func setupRouter() -> Router {
