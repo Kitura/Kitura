@@ -44,14 +44,14 @@ import KituraContracts
  ```
  */
 public class RouterRequest {
-
-    /// The server request.
-    let serverRequest: ServerRequest
     
     /// The Data decoder generator for the request content-type
     let decoder: BodyDecoder?
 
-    // MARK: Properties
+    // MARK: Public Properties
+    
+    /// The server request.
+    public let serverRequest: ServerRequest
     
     /// The hostname of the request.
     public var hostname: String {
