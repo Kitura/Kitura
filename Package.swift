@@ -1,7 +1,7 @@
 // swift-tools-version:5.0
 
 /**
- * Copyright IBM Corporation 2016-2019
+ * Copyright IBM Corporation and the Kitura project authors 2016-2020
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,9 @@ import Foundation
 var kituraNetPackage: Package.Dependency
 
 if ProcessInfo.processInfo.environment["KITURA_NIO"] != nil {
-    kituraNetPackage = .package(url: "https://github.com/IBM-Swift/Kitura-NIO.git", from: "2.3.0")
+    kituraNetPackage = .package(url: "https://github.com/Kitura/Kitura-NIO.git", from: "2.3.0")
 } else {
-    kituraNetPackage = .package(url: "https://github.com/IBM-Swift/Kitura-net.git", from: "2.4.0")
+    kituraNetPackage = .package(url: "https://github.com/Kitura/Kitura-net.git", from: "2.4.0")
 }
 
 let package = Package(
@@ -36,12 +36,12 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/IBM-Swift/LoggerAPI.git", from: "1.9.0"),
+        .package(url: "https://github.com/Kitura/LoggerAPI.git", from: "1.9.0"),
         .package(url: "https://github.com/apple/swift-log.git", Version("0.0.0") ..< Version("2.0.0")),
         kituraNetPackage,
-        .package(url: "https://github.com/IBM-Swift/Kitura-TemplateEngine.git", from: "2.0.0"),
-        .package(url: "https://github.com/IBM-Swift/KituraContracts.git", from: "1.0.0"),
-        .package(url: "https://github.com/IBM-Swift/TypeDecoder.git", from: "1.3.0"),
+        .package(url: "https://github.com/Kitura/Kitura-TemplateEngine.git", from: "2.0.0"),
+        .package(url: "https://github.com/Kitura/KituraContracts.git", from: "1.0.0"),
+        .package(url: "https://github.com/Kitura/TypeDecoder.git", from: "1.3.0"),
     ],
     targets: [
         .target(
