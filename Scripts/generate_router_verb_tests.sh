@@ -1,5 +1,5 @@
 #/**
-#* Copyright IBM Corporation 2016
+#* Copyright IBM Corporation and the Kitura project authors 2016-2020
 #*
 #* Licensed under the Apache License, Version 2.0 (the "License");
 #* you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ echo "--- Generating ${OUTPUT_FILE}"
 
 cat <<'EOF' > ${OUTPUT_FILE}
 /**
- * Copyright IBM Corporation 2016
+ * Copyright IBM Corporation and the Kitura project authors 2016-2020
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
