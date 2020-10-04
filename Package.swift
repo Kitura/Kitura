@@ -22,9 +22,9 @@ import Foundation
 var kituraNetPackage: Package.Dependency
 
 if ProcessInfo.processInfo.environment["KITURA_NIO"] != nil {
-    kituraNetPackage = .package(url: "https://github.com/Kitura/Kitura-NIO.git", from: "2.3.0")
+    kituraNetPackage = .package(url: "https://github.com/Kitura/Kitura-NIO.git", from: "2.4.200")
 } else {
-    kituraNetPackage = .package(url: "https://github.com/Kitura/Kitura-net.git", from: "2.4.0")
+    kituraNetPackage = .package(url: "https://github.com/Kitura/Kitura-net.git", from: "2.4.200")
 }
 
 let package = Package(
