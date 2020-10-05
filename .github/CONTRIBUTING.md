@@ -13,9 +13,9 @@ We love contributions to the Kitura project and request you follow the guideline
 
 ## Getting Started
 
-Please follow the [Kitura coding standards](https://github.com/IBM-Swift/Kitura/blob/master/Documentation/CodeConventions.md); this keeps the source code tidy and allows [Swift Lint](https://github.com/realm/SwiftLint) to work with the project.
+Please follow the [Kitura coding standards](https://github.com/Kitura/Kitura/blob/master/Documentation/CodeConventions.md); this keeps the source code tidy and allows [Swift Lint](https://github.com/realm/SwiftLint) to work with the project.
 
-**First time contributing?** We have created the label ["good first issue"](https://github.com/IBM-Swift/Kitura/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) to help new members of the community get involved with Kitura quickly and effectively. These issues include documentation changes, test cases, minor bug fixes, logging, renaming and refactoring.
+**First time contributing?** We have created the label ["good first issue"](https://github.com/Kitura/Kitura/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) to help new members of the community get involved with Kitura quickly and effectively. These issues include documentation changes, test cases, minor bug fixes, logging, renaming and refactoring.
 
 To get started, you will need to open a Terminal and:
 
@@ -24,7 +24,7 @@ To get started, you will need to open a Terminal and:
    `$ git clone https://github.com/YOUR_GITHUB_ID/Kitura`
 
 
-2. Make changes to code, usually by tackling an issue. A list of issues can be found [here](https://github.com/IBM-Swift/Kitura/issues). If you are new to Swift or software development, look for issues labelled ["good first issue"](https://github.com/IBM-Swift/Kitura/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
+2. Make changes to code, usually by tackling an issue. A list of issues can be found [here](https://github.com/Kitura/Kitura/issues). If you are new to Swift or software development, look for issues labelled ["good first issue"](https://github.com/Kitura/Kitura/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
 
    If there aren't any tagged issues, post in [Slack](http://swift-at-ibm-slack.mybluemix.net/) and the team would be happy to help you get started.
 
@@ -59,7 +59,7 @@ When opening a PR, please:
 
 1. Create minimal differences and do not reformat the code. If you feel the codes structure needs changing, open a separate PR.
 2. Check for unnecessary white space using `git diff --check` before you commit your code.
-3. Ensure you follow the coding standards for the Kitura project, [linked here](https://github.com/IBM-Swift/Kitura/blob/master/Documentation/CodeConventions.md).
+3. Ensure you follow the coding standards for the Kitura project, [linked here](https://github.com/Kitura/Kitura/blob/master/Documentation/CodeConventions.md).
 
 ## Coding Style
 
