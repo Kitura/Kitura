@@ -50,7 +50,7 @@ Kitura is a web framework and web server that is created for web services writte
 
 ## Getting Started
 
-Visit [www.kitura.io](http://www.kitura.io/) for a Getting Started guide, tutorials, and API reference documentation.
+Visit [https://www.kitura.dev](http://www.kitura.dev/) for a Getting Started guide, tutorials, and API reference documentation.
 
 ## Contributing to Kitura
 
