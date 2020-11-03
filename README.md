@@ -1,5 +1,5 @@
 <p align="center">
-<a href="http://kitura.io/">
+<a href="https://www.kitura.dev">
 <img src="https://raw.githubusercontent.com/IBM-Swift/Kitura/master/Documentation/KituraLogo-wide.png" height="100" alt="Kitura">
 </a>
 <p align="center"><strong>A Swift Web Framework and HTTP Server</strong></p>
@@ -29,7 +29,7 @@
 
 ## Summary
 
-Kitura is a web framework and web server that is created for web services written in Swift. For more information, visit [www.kitura.io](http://www.kitura.io).
+Kitura is a web framework and web server that is created for web services written in Swift. For more information, visit [www.kitura.dev](https://www.kitura.dev).
 
 ## Table of Contents
 * [Summary](#summary)
@@ -50,7 +50,7 @@ Kitura is a web framework and web server that is created for web services writte
 
 ## Getting Started
 
-Visit [https://www.kitura.dev](http://www.kitura.dev/) for a Getting Started guide, tutorials, and API reference documentation.
+Visit [https://www.kitura.dev](https://www.kitura.dev/) for a Getting Started guide, tutorials, and API reference documentation.
 
 ## Contributing to Kitura
 
