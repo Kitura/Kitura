@@ -1,6 +1,19 @@
 {
   "warnings": [
-
+    {
+      "file": "/Users/travis/build/IBM-Swift/Kitura/Sources/Kitura/SwaggerGenerator.swift",
+      "line": 351,
+      "symbol": "SwaggerDocument",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/IBM-Swift/Kitura/Sources/Kitura/SwaggerGenerator.swift",
+      "line": 376,
+      "symbol": "SwaggerDocument.init(title:description:version:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    }
   ],
   "source_directory": "/Users/travis/build/IBM-Swift/Kitura"
 }
