@@ -19,7 +19,7 @@ import KituraNet
 /// A dummy class to get the documentation for the HTTPStatusCode below to be emitted.
 private class DummyHTTPStatusCodeClass {}
 
-/// Bridge [HTTPStatusCode](http://ibm-swift.github.io/Kitura-net/Enums/HTTPStatusCode.html)
-/// from [KituraNet](http://ibm-swift.github.io/Kitura-net) so that you only need to import
+/// Bridge [HTTPStatusCode](http://kitura.github.io/Kitura-net/Enums/HTTPStatusCode.html)
+/// from [KituraNet](http://kitura.github.io/Kitura-net) so that you only need to import
 /// `Kitura` to access it.
 public typealias HTTPStatusCode = KituraNet.HTTPStatusCode
