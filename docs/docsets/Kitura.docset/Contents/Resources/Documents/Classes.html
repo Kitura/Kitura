@@ -23,7 +23,7 @@
         <a class="header-link" href="index.html">
           Kitura Docs
         </a>
-         (100% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -33,7 +33,7 @@
       </p>
     
         <p class="header-col header-col--secondary">
-          <a class="header-link" href="https://github.com/IBM-Swift/Kitura/">
+          <a class="header-link" href="https://github.com/Kitura/Kitura/">
             <img class="header-icon" src="img/gh.png"/>
             View on GitHub
           </a>
@@ -157,6 +157,9 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/SSLConfig.html">SSLConfig</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SwaggerDocument.html">SwaggerDocument</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -178,6 +181,9 @@
                 <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura22RouterParameterHandlera">RouterParameterHandler</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura13ServerOptionsa">ServerOptions</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura17WrittenDataFiltera">WrittenDataFilter</a>
               </li>
             </ul>
@@ -187,7 +193,7 @@
       <article class="main-content">
 
         <section class="section">
-          <div class="section-content">
+          <div class="section-content top-matter">
             <h1>Classes</h1>
             <p>The following classes are available globally.</p>
 
@@ -229,16 +235,14 @@ the appropriate code to handle them. This includes:</p>
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Router</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Router</span> <span class="p">:</span> <span class="kt"><a href="Protocols/RouterMiddleware.html">RouterMiddleware</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Router</span> <span class="p">:</span> <span class="kt">ServerDelegate</span></code></pre>
 
                         </div>
                       </div>
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -255,7 +259,7 @@ the appropriate code to handle them. This includes:</p>
                         <p>Facilities for creating, starting and stopping Kitura-based servers.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 
-<p>In this example, a <code><a href="Classes/Router.html">Router</a></code> is created, and a single route registered that responds to an HTTP GET request on <q>/</q> with a plain text response.
+<p>In this example, a <code><a href="Classes/Router.html">Router</a></code> is created, and a single route registered that responds to an HTTP GET request on &ldquo;/&rdquo; with a plain text response.
 An HTTP server is created on port 8080, and is started with the <code>Kitura.run()</code> function (note that this function does not return).
 The route can then be accessed by visiting <code>http://localhost:8080</code>.</p>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
@@ -286,9 +290,11 @@ The route can then be accessed by visiting <code>http://localhost:8080</code>.</
               <div class="task-name-container">
                 <a name="/RouterMiddlewareGenerator"></a>
                 <a name="//apple_ref/swift/Section/RouterMiddlewareGenerator" class="dashAnchor"></a>
-                <a href="#/RouterMiddlewareGenerator">
-                  <h3 class="section-name">RouterMiddlewareGenerator</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/RouterMiddlewareGenerator"></a>
+                  <h3 class="section-name"><p>RouterMiddlewareGenerator</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -325,9 +331,11 @@ The route can then be accessed by visiting <code>http://localhost:8080</code>.</
               <div class="task-name-container">
                 <a name="/RouterRequest"></a>
                 <a name="//apple_ref/swift/Section/RouterRequest" class="dashAnchor"></a>
-                <a href="#/RouterRequest">
-                  <h3 class="section-name">RouterRequest</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/RouterRequest"></a>
+                  <h3 class="section-name"><p>RouterRequest</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -345,10 +353,10 @@ The route can then be accessed by visiting <code>http://localhost:8080</code>.</
                       <div class="abstract">
                         <p>The <code>RouterRequest</code> class is used to interact with incoming HTTP requests to the Router.
 It contains and allows access to the request&rsquo;s <code><a href="Structs/Headers.html">Headers</a></code> and <code>Body</code> as well as other properties of the request.
-It can also perform content negotiation based on the request’s <q>Accept</q> header.</p>
+It can also perform content negotiation based on the request’s &ldquo;Accept&rdquo; header.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 
-<p>In this example <q>request</q> is an instance of the class <code>RouterRequest</code>.
+<p>In this example &ldquo;request&rdquo; is an instance of the class <code>RouterRequest</code>.
 It is used by the server to read the body of the request as a String and send it back to the user.</p>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
 <span class="n">router</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="s">"/"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
@@ -377,9 +385,11 @@ It is used by the server to read the body of the request as a String and send it
               <div class="task-name-container">
                 <a name="/RouterResponse"></a>
                 <a name="//apple_ref/swift/Section/RouterResponse" class="dashAnchor"></a>
-                <a href="#/RouterResponse">
-                  <h3 class="section-name">RouterResponse</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/RouterResponse"></a>
+                  <h3 class="section-name"><p>RouterResponse</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -396,14 +406,14 @@ It is used by the server to read the body of the request as a String and send it
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>The RouterResponse class is used to define and work with the response that will be sent by the <code><a href="Classes/Router.html">Router</a></code>.
-It contains and allows access to the HTTP response code (e.g. 404 <q>Not Found</q>), the HTTP <code><a href="Structs/Headers.html">Headers</a></code>
+It contains and allows access to the HTTP response code (e.g. 404 &ldquo;Not Found&rdquo;), the HTTP <code><a href="Structs/Headers.html">Headers</a></code>
 and the body of the response.
 It can also render template files, using a template engine registered to the router.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 
-<p>In this example <q>response</q> is an instance of the class <code>RouterResponse</code>.
+<p>In this example &ldquo;response&rdquo; is an instance of the class <code>RouterResponse</code>.
 The content type and status code of the response are set.
-The String <q>Hello world</q> is added to the body and the response is transmitted.</p>
+The String &ldquo;Hello world&rdquo; is added to the body and the response is transmitted.</p>
 <pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/example"</span><span class="p">)</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
     <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s">"Content-Type"</span><span class="p">]</span> <span class="o">=</span> <span class="s">"text/html"</span>
     <span class="n">response</span><span class="o">.</span><span class="nf">status</span><span class="p">(</span><span class="o">.</span><span class="kt">OK</span><span class="p">)</span>
@@ -430,9 +440,11 @@ The String <q>Hello world</q> is added to the body and the response is transmitt
               <div class="task-name-container">
                 <a name="/BodyParser"></a>
                 <a name="//apple_ref/swift/Section/BodyParser" class="dashAnchor"></a>
-                <a href="#/BodyParser">
-                  <h3 class="section-name">BodyParser</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/BodyParser"></a>
+                  <h3 class="section-name"><p>BodyParser</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -466,7 +478,7 @@ The String <q>Hello world</q> is added to the body and the response is transmitt
 <p><strong>Note</strong>: If you have not declared a Content-Type header, <code><a href="Enums/ParsedBody.html">ParsedBody</a></code> will be <code>nil</code>.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 
-<p>In this example, all routes to the BodyParser middleware are registered to the <code>BodyParser</code> middleware. A request with <q>application/json</q>, ContentType header is received. It is then parsed as JSON and the value for <q>name</q> is returned in the response.</p>
+<p>In this example, all routes to the BodyParser middleware are registered to the <code>BodyParser</code> middleware. A request with &ldquo;application/json&rdquo;, ContentType header is received. It is then parsed as JSON and the value for &ldquo;name&rdquo; is returned in the response.</p>
 <pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/name"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="kt">BodyParser</span><span class="p">())</span>
 <span class="n">router</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="s">"/name"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
     <span class="k">guard</span> <span class="k">let</span> <span class="nv">jsonBody</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">parsedBody</span><span class="p">?</span><span class="o">.</span><span class="n">asJSON</span> <span class="k">else</span> <span class="p">{</span>
@@ -478,7 +490,7 @@ The String <q>Hello world</q> is added to the body and the response is transmitt
 <span class="p">}</span>
 </code></pre>
 
-<p><strong>Note</strong>: When using Codable Routing in Kitura 2.x the BodyParser should not be registered to any codable routes (doing so will log the following error <q>No data in request. Codable routes do not allow the use of a BodyParser.</q> and the route handler will not be executed).</p>
+<p><strong>Note</strong>: When using Codable Routing in Kitura 2.x the BodyParser should not be registered to any codable routes (doing so will log the following error &ldquo;No data in request. Codable routes do not allow the use of a BodyParser.&rdquo; and the route handler will not be executed).</p>
 
                         <a href="Classes/BodyParser.html" class="slightly-smaller">See more</a>
                       </div>
@@ -534,9 +546,11 @@ produce an array of values: <code>[&quot;a&quot;: [&quot;1&quot;, &quot;2&quot;]
               <div class="task-name-container">
                 <a name="/ContentType"></a>
                 <a name="//apple_ref/swift/Section/ContentType" class="dashAnchor"></a>
-                <a href="#/ContentType">
-                  <h3 class="section-name">ContentType</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/ContentType"></a>
+                  <h3 class="section-name"><p>ContentType</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -552,10 +566,10 @@ produce an array of values: <code>[&quot;a&quot;: [&quot;1&quot;, &quot;2&quot;]
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The <code>ContentType</code> class provides functions to determine the MIME content type for a given file extension. The user can pass in a complete file name e.g. <q>foo.png</q> or just the file extension e.g. <q>png</q>, or they can pass in both a MIME content type and a file extension and query whether they match.</p>
+                        <p>The <code>ContentType</code> class provides functions to determine the MIME content type for a given file extension. The user can pass in a complete file name e.g. &ldquo;foo.png&rdquo; or just the file extension e.g. &ldquo;png&rdquo;, or they can pass in both a MIME content type and a file extension and query whether they match.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 
-<p>In this example, a <code>ContentType</code> instance is initialised called contentType. This instance is then used to obtain the MIME content type of the file <q>foo.png</q>, which is identified as <q>image/png</q>.</p>
+<p>In this example, a <code>ContentType</code> instance is initialised called contentType. This instance is then used to obtain the MIME content type of the file &ldquo;foo.png&rdquo;, which is identified as &ldquo;image/png&rdquo;.</p>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">contentType</span> <span class="o">=</span> <span class="kt">ContentType</span><span class="o">.</span><span class="n">sharedInstance</span>
 <span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="n">contentType</span><span class="o">.</span><span class="nf">getContentType</span><span class="p">(</span><span class="nv">forFileName</span><span class="p">:</span> <span class="s">"foo.png"</span><span class="p">)</span>
 <span class="nf">print</span><span class="p">(</span><span class="kt">String</span><span class="p">(</span><span class="nv">describing</span><span class="p">:</span> <span class="n">result</span><span class="p">))</span>
@@ -581,9 +595,11 @@ produce an array of values: <code>[&quot;a&quot;: [&quot;1&quot;, &quot;2&quot;]
               <div class="task-name-container">
                 <a name="/StaticFileServer"></a>
                 <a name="//apple_ref/swift/Section/StaticFileServer" class="dashAnchor"></a>
-                <a href="#/StaticFileServer">
-                  <h3 class="section-name">StaticFileServer</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/StaticFileServer"></a>
+                  <h3 class="section-name"><p>StaticFileServer</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -600,12 +616,12 @@ produce an array of values: <code>[&quot;a&quot;: [&quot;1&quot;, &quot;2&quot;]
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>A router middleware that serves static files from a given path.
-By default, it will serve files from the <q>/public</q> directory.</p>
+By default, it will serve files from the &ldquo;/public&rdquo; directory.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 
-<p>The example below creates and registers a <code>StaticFileServer</code> on the <q>/example</q> route.
-When the router is running, A user can make a request that matches the <q>/example</q> path (e.g. localhost:8080/example/hello.html).
-The static file server would look inside its <q>/files</q> folder for a file with the same name as the path following <q>/example</q>  (e.g. <q>hello.html</q>).
+<p>The example below creates and registers a <code>StaticFileServer</code> on the &ldquo;/example&rdquo; route.
+When the router is running, A user can make a request that matches the &ldquo;/example&rdquo; path (e.g. localhost:8080/example/hello.html).
+The static file server would look inside its &ldquo;/files&rdquo; folder for a file with the same name as the path following &ldquo;/example&rdquo;  (e.g. &ldquo;hello.html&rdquo;).
 If a file is found it is sent as a response to that request, otherwise the next handler is called.</p>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
 <span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/example"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="kt">StaticFileServer</span><span class="p">(</span><span class="nv">path</span><span class="p">:</span> <span class="s">"./files"</span><span class="p">))</span>
@@ -632,8 +648,8 @@ If a file is found it is sent as a response to that request, otherwise the next 
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-08-13)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external">IBM &amp; Kitura project contributors</a>. All rights reserved. (Last updated: 2020-11-25)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

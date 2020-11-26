@@ -23,7 +23,7 @@
         <a class="header-link" href="../../index.html">
           Kitura Docs
         </a>
-         (100% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -33,7 +33,7 @@
       </p>
     
         <p class="header-col header-col--secondary">
-          <a class="header-link" href="https://github.com/IBM-Swift/Kitura/">
+          <a class="header-link" href="https://github.com/Kitura/Kitura/">
             <img class="header-icon" src="../../img/gh.png"/>
             View on GitHub
           </a>
@@ -157,6 +157,9 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../../Structs/SSLConfig.html">SSLConfig</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../Structs/SwaggerDocument.html">SwaggerDocument</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -178,6 +181,9 @@
                 <a class="nav-group-task-link" href="../../Typealiases.html#/s:6Kitura22RouterParameterHandlera">RouterParameterHandler</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../../Typealiases.html#/s:6Kitura13ServerOptionsa">ServerOptions</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../../Typealiases.html#/s:6Kitura17WrittenDataFiltera">WrittenDataFilter</a>
               </li>
             </ul>
@@ -187,10 +193,11 @@
       <article class="main-content">
 
         <section class="section">
-          <div class="section-content">
+          <div class="section-content top-matter">
             <h1>Options</h1>
               <div class="declaration">
                 <div class="language">
+                  
                   <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Options</span></code></pre>
 
                 </div>
@@ -209,7 +216,7 @@
                     <code>
                     <a name="/s:6Kitura16StaticFileServerC7OptionsV18possibleExtensions22serveIndexForDirectory8redirect05cacheE012acceptRanges07defaultI0AESaySSG_S2bAC05CacheE0VSbSSSgtcfc"></a>
                     <a name="//apple_ref/swift/Method/init(possibleExtensions:serveIndexForDirectory:redirect:cacheOptions:acceptRanges:defaultIndex:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura16StaticFileServerC7OptionsV18possibleExtensions22serveIndexForDirectory8redirect05cacheE012acceptRanges07defaultI0AESaySSG_S2bAC05CacheE0VSbSSSgtcfc">init(possibleExtensions:serveIndexForDirectory:redirect:cacheOptions:acceptRanges:defaultIndex:)</a>
+                    <a class="token" href="#/s:6Kitura16StaticFileServerC7OptionsV18possibleExtensions22serveIndexForDirectory8redirect05cacheE012acceptRanges07defaultI0AESaySSG_S2bAC05CacheE0VSbSSSgtcfc">init(possibleExtensions:<wbr>serveIndexForDirectory:<wbr>redirect:<wbr>cacheOptions:<wbr>acceptRanges:<wbr>defaultIndex:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -258,7 +265,7 @@ performed.</p>
                               <td>
                                 <div>
                                   <p>an indication whether to serve
-<q>index.html</q> file the requested path is a directory.</p>
+&ldquo;index.html&rdquo; file the requested path is a directory.</p>
                                 </div>
                               </td>
                             </tr>
@@ -271,7 +278,7 @@ performed.</p>
                               <td>
                                 <div>
                                   <p>an indication whether to redirect to trailing
-<q>/</q> when the requested path is a directory.</p>
+&ldquo;/&rdquo; when the requested path is a directory.</p>
                                 </div>
                               </td>
                             </tr>
@@ -295,7 +302,7 @@ performed.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>A default index, like <q>/index.html</q>, to be served if the
+                                  <p>A default index, like &ldquo;/index.html&rdquo;, to be served if the
 requested path is not found. This is intended to be used by single page applications
 that wish to fallback to a default index when a requested path is not found, and where
 that path is not a file request. It will be assumed that the default index is reachable
@@ -321,8 +328,8 @@ router.all(&quot;/&quot;, middleware: StaticFileServer(defaultIndex: &quot;/inde
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-08-13)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external">IBM &amp; Kitura project contributors</a>. All rights reserved. (Last updated: 2020-11-25)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>
