@@ -561,9 +561,9 @@ extension Router : ServerDelegate {
     /// Handle new incoming requests to the server.
     ///
     /// - Parameter request: The `ServerRequest` object used to work with the incoming
-    ///                     HTTP request at the [Kitura-net](http://ibm-swift.github.io/Kitura-net/) API level.
+    ///                     HTTP request at the [Kitura-net](http://kitura.github.io/Kitura-net/) API level.
     /// - Parameter response: The `ServerResponse` object used to send responses to the
-    ///                      HTTP request at the [Kitura-net](http://ibm-swift.github.io/Kitura-net/) API level.
+    ///                      HTTP request at the [Kitura-net](http://kitura.github.io/Kitura-net/) API level.
     public func handle(request: ServerRequest, response: ServerResponse) {
         var decoder: (() -> BodyDecoder)?
         if let contentType = request.headers["Content-Type"]?[0], let mediaType = MediaType(contentTypeHeader: contentType) {

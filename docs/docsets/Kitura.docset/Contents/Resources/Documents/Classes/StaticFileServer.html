@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (100% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -33,7 +33,7 @@
       </p>
     
         <p class="header-col header-col--secondary">
-          <a class="header-link" href="https://github.com/IBM-Swift/Kitura/">
+          <a class="header-link" href="https://github.com/Kitura/Kitura/">
             <img class="header-icon" src="../img/gh.png"/>
             View on GitHub
           </a>
@@ -157,6 +157,9 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/SSLConfig.html">SSLConfig</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SwaggerDocument.html">SwaggerDocument</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -178,6 +181,9 @@
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura22RouterParameterHandlera">RouterParameterHandler</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura13ServerOptionsa">ServerOptions</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura17WrittenDataFiltera">WrittenDataFilter</a>
               </li>
             </ul>
@@ -187,21 +193,22 @@
       <article class="main-content">
 
         <section class="section">
-          <div class="section-content">
+          <div class="section-content top-matter">
             <h1>StaticFileServer</h1>
               <div class="declaration">
                 <div class="language">
+                  
                   <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">StaticFileServer</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></span></code></pre>
 
                 </div>
               </div>
             <p>A router middleware that serves static files from a given path.
-By default, it will serve files from the <q>/public</q> directory.</p>
+By default, it will serve files from the &ldquo;/public&rdquo; directory.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 
-<p>The example below creates and registers a <code>StaticFileServer</code> on the <q>/example</q> route.
-When the router is running, A user can make a request that matches the <q>/example</q> path (e.g. localhost:8080/example/hello.html).
-The static file server would look inside its <q>/files</q> folder for a file with the same name as the path following <q>/example</q>  (e.g. <q>hello.html</q>).
+<p>The example below creates and registers a <code>StaticFileServer</code> on the &ldquo;/example&rdquo; route.
+When the router is running, A user can make a request that matches the &ldquo;/example&rdquo; path (e.g. localhost:8080/example/hello.html).
+The static file server would look inside its &ldquo;/files&rdquo; folder for a file with the same name as the path following &ldquo;/example&rdquo;  (e.g. &ldquo;hello.html&rdquo;).
 If a file is found it is sent as a response to that request, otherwise the next handler is called.</p>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
 <span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/example"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="kt">StaticFileServer</span><span class="p">(</span><span class="nv">path</span><span class="p">:</span> <span class="s">"./files"</span><span class="p">))</span>
@@ -216,9 +223,11 @@ If a file is found it is sent as a response to that request, otherwise the next 
               <div class="task-name-container">
                 <a name="/Configuration%20Options"></a>
                 <a name="//apple_ref/swift/Section/Configuration Options" class="dashAnchor"></a>
-                <a href="#/Configuration%20Options">
-                  <h3 class="section-name">Configuration Options</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Configuration%20Options"></a>
+                  <h3 class="section-name"><p>Configuration Options</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -311,9 +320,11 @@ for example: <code>/Users/Dave/MyKituraProj/./public</code></p>
               <div class="task-name-container">
                 <a name="/Initializer"></a>
                 <a name="//apple_ref/swift/Section/Initializer" class="dashAnchor"></a>
-                <a href="#/Initializer">
-                  <h3 class="section-name">Initializer</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Initializer"></a>
+                  <h3 class="section-name"><p>Initializer</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -321,7 +332,7 @@ for example: <code>/Users/Dave/MyKituraProj/./public</code></p>
                     <code>
                     <a name="/s:6Kitura16StaticFileServerC4path7options27customResponseHeadersSetterACSS_AC7OptionsVAA0hiJ0_pSgtcfc"></a>
                     <a name="//apple_ref/swift/Method/init(path:options:customResponseHeadersSetter:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura16StaticFileServerC4path7options27customResponseHeadersSetterACSS_AC7OptionsVAA0hiJ0_pSgtcfc">init(path:options:customResponseHeadersSetter:)</a>
+                    <a class="token" href="#/s:6Kitura16StaticFileServerC4path7options27customResponseHeadersSetterACSS_AC7OptionsVAA0hiJ0_pSgtcfc">init(path:<wbr>options:<wbr>customResponseHeadersSetter:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -395,9 +406,11 @@ the headers of the response.</p>
               <div class="task-name-container">
                 <a name="/Serve%20file"></a>
                 <a name="//apple_ref/swift/Section/Serve file" class="dashAnchor"></a>
-                <a href="#/Serve%20file">
-                  <h3 class="section-name">Serve file</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Serve%20file"></a>
+                  <h3 class="section-name"><p>Serve file</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -405,7 +418,7 @@ the headers of the response.</p>
                     <code>
                     <a name="/s:6Kitura16StaticFileServerC6handle7request8response4nextyAA13RouterRequestC_AA0I8ResponseCyyctF"></a>
                     <a name="//apple_ref/swift/Method/handle(request:response:next:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura16StaticFileServerC6handle7request8response4nextyAA13RouterRequestC_AA0I8ResponseCyyctF">handle(request:response:next:)</a>
+                    <a class="token" href="#/s:6Kitura16StaticFileServerC6handle7request8response4nextyAA13RouterRequestC_AA0I8ResponseCyyctF">handle(request:<wbr>response:<wbr>next:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -481,8 +494,8 @@ the headers of the response.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-08-13)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external">IBM &amp; Kitura project contributors</a>. All rights reserved. (Last updated: 2020-11-25)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

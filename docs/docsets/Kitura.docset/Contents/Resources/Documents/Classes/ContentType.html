@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (100% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -33,7 +33,7 @@
       </p>
     
         <p class="header-col header-col--secondary">
-          <a class="header-link" href="https://github.com/IBM-Swift/Kitura/">
+          <a class="header-link" href="https://github.com/Kitura/Kitura/">
             <img class="header-icon" src="../img/gh.png"/>
             View on GitHub
           </a>
@@ -157,6 +157,9 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/SSLConfig.html">SSLConfig</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SwaggerDocument.html">SwaggerDocument</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -178,6 +181,9 @@
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura22RouterParameterHandlera">RouterParameterHandler</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura13ServerOptionsa">ServerOptions</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura17WrittenDataFiltera">WrittenDataFilter</a>
               </li>
             </ul>
@@ -187,18 +193,19 @@
       <article class="main-content">
 
         <section class="section">
-          <div class="section-content">
+          <div class="section-content top-matter">
             <h1>ContentType</h1>
               <div class="declaration">
                 <div class="language">
+                  
                   <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">ContentType</span></code></pre>
 
                 </div>
               </div>
-            <p>The <code>ContentType</code> class provides functions to determine the MIME content type for a given file extension. The user can pass in a complete file name e.g. <q>foo.png</q> or just the file extension e.g. <q>png</q>, or they can pass in both a MIME content type and a file extension and query whether they match.</p>
+            <p>The <code>ContentType</code> class provides functions to determine the MIME content type for a given file extension. The user can pass in a complete file name e.g. &ldquo;foo.png&rdquo; or just the file extension e.g. &ldquo;png&rdquo;, or they can pass in both a MIME content type and a file extension and query whether they match.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 
-<p>In this example, a <code>ContentType</code> instance is initialised called contentType. This instance is then used to obtain the MIME content type of the file <q>foo.png</q>, which is identified as <q>image/png</q>.</p>
+<p>In this example, a <code>ContentType</code> instance is initialised called contentType. This instance is then used to obtain the MIME content type of the file &ldquo;foo.png&rdquo;, which is identified as &ldquo;image/png&rdquo;.</p>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">contentType</span> <span class="o">=</span> <span class="kt">ContentType</span><span class="o">.</span><span class="n">sharedInstance</span>
 <span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="n">contentType</span><span class="o">.</span><span class="nf">getContentType</span><span class="p">(</span><span class="nv">forFileName</span><span class="p">:</span> <span class="s">"foo.png"</span><span class="p">)</span>
 <span class="nf">print</span><span class="p">(</span><span class="kt">String</span><span class="p">(</span><span class="nv">describing</span><span class="p">:</span> <span class="n">result</span><span class="p">))</span>
@@ -244,7 +251,7 @@
                     <code>
                     <a name="/s:6Kitura11ContentTypeC03getbC012forExtensionSSSgSS_tF"></a>
                     <a name="//apple_ref/swift/Method/getContentType(forExtension:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura11ContentTypeC03getbC012forExtensionSSSgSS_tF">getContentType(forExtension:)</a>
+                    <a class="token" href="#/s:6Kitura11ContentTypeC03getbC012forExtensionSSSgSS_tF">getContentType(forExtension:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -300,7 +307,7 @@
                     <code>
                     <a name="/s:6Kitura11ContentTypeC03getbC011forFileNameSSSgSS_tF"></a>
                     <a name="//apple_ref/swift/Method/getContentType(forFileName:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura11ContentTypeC03getbC011forFileNameSSSgSS_tF">getContentType(forFileName:)</a>
+                    <a class="token" href="#/s:6Kitura11ContentTypeC03getbC011forFileNameSSSgSS_tF">getContentType(forFileName:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -356,7 +363,7 @@
                     <code>
                     <a name="/s:6Kitura11ContentTypeC02isbC0_02ofC0SbSS_SStF"></a>
                     <a name="//apple_ref/swift/Method/isContentType(_:ofType:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura11ContentTypeC02isbC0_02ofC0SbSS_SStF">isContentType(_:ofType:)</a>
+                    <a class="token" href="#/s:6Kitura11ContentTypeC02isbC0_02ofC0SbSS_SStF">isContentType(_:<wbr>ofType:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -427,8 +434,8 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-08-13)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external">IBM &amp; Kitura project contributors</a>. All rights reserved. (Last updated: 2020-11-25)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

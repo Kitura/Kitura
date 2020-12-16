@@ -180,7 +180,7 @@ final class TestCodablePathParams: KituraTest, KituraTestSuite {
             .run()
     }
 
-    // Test added to address fix for https://github.com/IBM-Swift/Kitura/issues/1473
+    // Test added to address fix for https://github.com/Kitura/Kitura/issues/1473
     // Tests that a GET (singular) or DELETE (singular) with explicit :id parameter
     // is successful.
     // A trailing :id parameter is allowed, and replaces the :id parameter that
