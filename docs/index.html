@@ -22,7 +22,7 @@
         <a class="header-link" href="index.html">
           Kitura Docs
         </a>
-         (100% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -32,7 +32,7 @@
       </p>
     
         <p class="header-col header-col--secondary">
-          <a class="header-link" href="https://github.com/IBM-Swift/Kitura/">
+          <a class="header-link" href="https://github.com/Kitura/Kitura/">
             <img class="header-icon" src="img/gh.png"/>
             View on GitHub
           </a>
@@ -156,6 +156,9 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/SSLConfig.html">SSLConfig</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SwaggerDocument.html">SwaggerDocument</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -177,6 +180,9 @@
                 <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura22RouterParameterHandlera">RouterParameterHandler</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura13ServerOptionsa">ServerOptions</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura17WrittenDataFiltera">WrittenDataFilter</a>
               </li>
             </ul>
@@ -186,11 +192,11 @@
       <article class="main-content">
 
         <section class="section">
-          <div class="section-content">
+          <div class="section-content top-matter">
             
             <p align="center">
-<a href="http://kitura.io/">
-<img src="https://raw.githubusercontent.com/IBM-Swift/Kitura/master/Documentation/KituraLogo-wide.png" height="100" alt="Kitura">
+<a href="https://www.kitura.dev">
+<img src="https://raw.githubusercontent.com/Kitura/Kitura/master/Documentation/KituraLogo-wide.png" height="100" alt="Kitura">
 </a>
 <p align="center"><strong>A Swift Web Framework and HTTP Server</strong></p>
 </p>
@@ -199,14 +205,14 @@
 <a href="https://www.kitura.io/packages.html#all">
 <img src="https://img.shields.io/badge/docs-kitura.io-1FBCE4.svg" alt="Docs">
 </a>
-<a href="https://travis-ci.org/IBM-Swift/Kitura">
-<img src="https://travis-ci.org/IBM-Swift/Kitura.svg?branch=master" alt="Build Status - Master">
+<a href="https://travis-ci.org/Kitura/Kitura">
+<img src="https://travis-ci.org/Kitura/Kitura.svg?branch=master" alt="Build Status - Master">
 </a>
 <img src="https://img.shields.io/badge/os-macOS-green.svg?style=flat" alt="macOS">
 <img src="https://img.shields.io/badge/os-linux-green.svg?style=flat" alt="Linux">
 <img src="https://img.shields.io/badge/license-Apache2-blue.svg?style=flat" alt="Apache 2">
-<a href="https://codecov.io/gh/IBM-Swift/Kitura">
-<img src="https://codecov.io/gh/IBM-Swift/Kitura/branch/master/graph/badge.svg" alt="codecov">
+<a href="https://codecov.io/gh/Kitura/Kitura">
+<img src="https://codecov.io/gh/Kitura/Kitura/branch/master/graph/badge.svg" alt="codecov">
 </a>
 <a href="https://codebeat.co/projects/github-com-ibm-swift-kitura">
 <img src="https://codebeat.co/badges/d2d1cb10-e587-44b7-b63a-0a76ffb7bd96" alt="codebeat badge">
@@ -217,7 +223,7 @@
 </p>
 <h2 id='summary' class='heading'>Summary</h2>
 
-<p>Kitura is a web framework and web server that is created for web services written in Swift. For more information, visit <a href="http://www.kitura.io">www.kitura.io</a>.</p>
+<p>Kitura is a web framework and web server that is created for web services written in Swift. For more information, visit <a href="https://www.kitura.dev">www.kitura.dev</a>.</p>
 <h2 id='table-of-contents' class='heading'>Table of Contents</h2>
 
 <ul>
@@ -234,13 +240,13 @@
 <li>Codable routing</li>
 <li>URL parameters</li>
 <li>Static file serving</li>
-<li><a href="https://github.com/IBM-Swift/Kitura/blob/master/Documentation/FastCGI.md">FastCGI support</a></li>
+<li><a href="https://github.com/Kitura/Kitura/blob/master/Documentation/FastCGI.md">FastCGI support</a></li>
 <li>SSL/TLS support</li>
 <li>Pluggable middleware</li>
 </ul>
 <h2 id='getting-started' class='heading'>Getting Started</h2>
 
-<p>Visit <a href="http://www.kitura.io/">www.kitura.io</a> for a Getting Started guide, tutorials, and API reference documentation.</p>
+<p>Visit <a href="https://www.kitura.dev/">https://www.kitura.dev</a> for a Getting Started guide, tutorials, and API reference documentation.</p>
 <h2 id='contributing-to-kitura' class='heading'>Contributing to Kitura</h2>
 
 <p>All improvements to Kitura are very welcome! Here&rsquo;s how to get started with developing Kitura itself.</p>
@@ -249,7 +255,7 @@
 <li>Clone this repository.</li>
 </ol>
 
-<p><code>$ git clone https://github.com/IBM-Swift/Kitura</code></p>
+<p><code>$ git clone https://github.com/Kitura/Kitura</code></p>
 
 <ol>
 <li>Build and run tests.</li>
@@ -257,7 +263,7 @@
 
 <p><code>$ swift test</code></p>
 
-<p>You can find more info on contributing to Kitura in our <a href="https://github.com/IBM-Swift/Kitura/blob/master/.github/CONTRIBUTING.md">contributing guidelines</a>.</p>
+<p>You can find more info on contributing to Kitura in our <a href="https://github.com/Kitura/Kitura/blob/master/.github/CONTRIBUTING.md">contributing guidelines</a>.</p>
 <h2 id='community' class='heading'>Community</h2>
 
 <p>We love to talk server-side Swift, and Kitura. Join our <a href="http://swift-at-ibm-slack.mybluemix.net/">Slack</a> to meet the team!</p>
@@ -269,8 +275,8 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-08-13)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2021 <a class="link" href="" target="_blank" rel="external">IBM &amp; Kitura project authors</a>. All rights reserved. (Last updated: 2021-01-25)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

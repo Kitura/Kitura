@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (100% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -33,7 +33,7 @@
       </p>
     
         <p class="header-col header-col--secondary">
-          <a class="header-link" href="https://github.com/IBM-Swift/Kitura/">
+          <a class="header-link" href="https://github.com/Kitura/Kitura/">
             <img class="header-icon" src="../img/gh.png"/>
             View on GitHub
           </a>
@@ -157,6 +157,9 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/SSLConfig.html">SSLConfig</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SwaggerDocument.html">SwaggerDocument</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -178,6 +181,9 @@
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura22RouterParameterHandlera">RouterParameterHandler</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura13ServerOptionsa">ServerOptions</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura17WrittenDataFiltera">WrittenDataFilter</a>
               </li>
             </ul>
@@ -187,23 +193,24 @@
       <article class="main-content">
 
         <section class="section">
-          <div class="section-content">
+          <div class="section-content top-matter">
             <h1>RouterResponse</h1>
               <div class="declaration">
                 <div class="language">
+                  
                   <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">RouterResponse</span></code></pre>
 
                 </div>
               </div>
             <p>The RouterResponse class is used to define and work with the response that will be sent by the <code><a href="../Classes/Router.html">Router</a></code>.
-It contains and allows access to the HTTP response code (e.g. 404 <q>Not Found</q>), the HTTP <code><a href="../Structs/Headers.html">Headers</a></code>
+It contains and allows access to the HTTP response code (e.g. 404 &ldquo;Not Found&rdquo;), the HTTP <code><a href="../Structs/Headers.html">Headers</a></code>
 and the body of the response.
 It can also render template files, using a template engine registered to the router.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 
-<p>In this example <q>response</q> is an instance of the class <code>RouterResponse</code>.
+<p>In this example &ldquo;response&rdquo; is an instance of the class <code>RouterResponse</code>.
 The content type and status code of the response are set.
-The String <q>Hello world</q> is added to the body and the response is transmitted.</p>
+The String &ldquo;Hello world&rdquo; is added to the body and the response is transmitted.</p>
 <pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/example"</span><span class="p">)</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
     <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s">"Content-Type"</span><span class="p">]</span> <span class="o">=</span> <span class="s">"text/html"</span>
     <span class="n">response</span><span class="o">.</span><span class="nf">status</span><span class="p">(</span><span class="o">.</span><span class="kt">OK</span><span class="p">)</span>
@@ -220,9 +227,11 @@ The String <q>Hello world</q> is added to the body and the response is transmitt
               <div class="task-name-container">
                 <a name="/Properties"></a>
                 <a name="//apple_ref/swift/Section/Properties" class="dashAnchor"></a>
-                <a href="#/Properties">
-                  <h3 class="section-name">Properties</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Properties"></a>
+                  <h3 class="section-name"><p>Properties</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -272,7 +281,7 @@ The String <q>Hello world</q> is added to the body and the response is transmitt
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">error</span><span class="p">:</span> <span class="kt">Error</span><span class="p">?</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">error</span><span class="p">:</span> <span class="kt">Swift</span><span class="o">.</span><span class="kt">Error</span><span class="p">?</span></code></pre>
 
                         </div>
                       </div>
@@ -366,7 +375,7 @@ Can be used by middlewares and handlers to store and pass information on to subs
                     <code>
                     <a name="/s:6Kitura14RouterResponseC9addCookie4name5value6domain4path15otherAttributesySS_S3SSayAA010AdditionalE9AttributeVGSgtF"></a>
                     <a name="//apple_ref/swift/Method/addCookie(name:value:domain:path:otherAttributes:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC9addCookie4name5value6domain4path15otherAttributesySS_S3SSayAA010AdditionalE9AttributeVGSgtF">addCookie(name:value:domain:path:otherAttributes:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC9addCookie4name5value6domain4path15otherAttributesySS_S3SSayAA010AdditionalE9AttributeVGSgtF">addCookie(name:<wbr>value:<wbr>domain:<wbr>path:<wbr>otherAttributes:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -463,9 +472,11 @@ Can be used by middlewares and handlers to store and pass information on to subs
               <div class="task-name-container">
                 <a name="/End"></a>
                 <a name="//apple_ref/swift/Section/End" class="dashAnchor"></a>
-                <a href="#/End">
-                  <h3 class="section-name">End</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/End"></a>
+                  <h3 class="section-name"><p>End</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -506,9 +517,11 @@ Can be used by middlewares and handlers to store and pass information on to subs
               <div class="task-name-container">
                 <a name="/Status%20Code"></a>
                 <a name="//apple_ref/swift/Section/Status Code" class="dashAnchor"></a>
-                <a href="#/Status%20Code">
-                  <h3 class="section-name">Status Code</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Status%20Code"></a>
+                  <h3 class="section-name"><p>Status Code</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -516,7 +529,7 @@ Can be used by middlewares and handlers to store and pass information on to subs
                     <code>
                     <a name="/s:6Kitura14RouterResponseC6statusyAC0A3Net14HTTPStatusCodeOF"></a>
                     <a name="//apple_ref/swift/Method/status(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC6statusyAC0A3Net14HTTPStatusCodeOF">status(_:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC6statusyAC0A3Net14HTTPStatusCodeOF">status(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -568,9 +581,11 @@ Can be used by middlewares and handlers to store and pass information on to subs
               <div class="task-name-container">
                 <a name="/Redirect"></a>
                 <a name="//apple_ref/swift/Section/Redirect" class="dashAnchor"></a>
-                <a href="#/Redirect">
-                  <h3 class="section-name">Redirect</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Redirect"></a>
+                  <h3 class="section-name"><p>Redirect</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -578,7 +593,7 @@ Can be used by middlewares and handlers to store and pass information on to subs
                     <code>
                     <a name="/s:6Kitura14RouterResponseC8redirect_6statusACSS_0A3Net14HTTPStatusCodeOtKF"></a>
                     <a name="//apple_ref/swift/Method/redirect(_:status:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC8redirect_6statusACSS_0A3Net14HTTPStatusCodeOtKF">redirect(_:status:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC8redirect_6statusACSS_0A3Net14HTTPStatusCodeOtKF">redirect(_:<wbr>status:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -616,9 +631,11 @@ Can be used by middlewares and handlers to store and pass information on to subs
               <div class="task-name-container">
                 <a name="/Render"></a>
                 <a name="//apple_ref/swift/Section/Render" class="dashAnchor"></a>
-                <a href="#/Render">
-                  <h3 class="section-name">Render</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Render"></a>
+                  <h3 class="section-name"><p>Render</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -626,7 +643,7 @@ Can be used by middlewares and handlers to store and pass information on to subs
                     <code>
                     <a name="/s:6Kitura14RouterResponseC6render_7context7optionsACSS_SDySSypG0A14TemplateEngine16RenderingOptions_ptKF"></a>
                     <a name="//apple_ref/swift/Method/render(_:context:options:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC6render_7context7optionsACSS_SDySSypG0A14TemplateEngine16RenderingOptions_ptKF">render(_:context:options:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC6render_7context7optionsACSS_SDySSypG0A14TemplateEngine16RenderingOptions_ptKF">render(_:<wbr>context:<wbr>options:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -707,7 +724,7 @@ Can be used by middlewares and handlers to store and pass information on to subs
                     <code>
                     <a name="/s:6Kitura14RouterResponseC6render_4with6forKey7optionsACSS_xSSSg0A14TemplateEngine16RenderingOptions_ptKSERzlF"></a>
                     <a name="//apple_ref/swift/Method/render(_:with:forKey:options:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC6render_4with6forKey7optionsACSS_xSSSg0A14TemplateEngine16RenderingOptions_ptKSERzlF">render(_:with:forKey:options:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC6render_4with6forKey7optionsACSS_xSSSg0A14TemplateEngine16RenderingOptions_ptKSERzlF">render(_:<wbr>with:<wbr>forKey:<wbr>options:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -801,7 +818,7 @@ Can be used by middlewares and handlers to store and pass information on to subs
                     <code>
                     <a name="/s:6Kitura14RouterResponseC6render_4with6forKey7optionsACSS_Sayx_q_tGSS0A14TemplateEngine16RenderingOptions_ptK0A9Contracts10IdentifierRzSER_r0_lF"></a>
                     <a name="//apple_ref/swift/Method/render(_:with:forKey:options:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC6render_4with6forKey7optionsACSS_Sayx_q_tGSS0A14TemplateEngine16RenderingOptions_ptK0A9Contracts10IdentifierRzSER_r0_lF">render(_:with:forKey:options:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC6render_4with6forKey7optionsACSS_Sayx_q_tGSS0A14TemplateEngine16RenderingOptions_ptK0A9Contracts10IdentifierRzSER_r0_lF">render(_:<wbr>with:<wbr>forKey:<wbr>options:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -896,9 +913,11 @@ Can be used by middlewares and handlers to store and pass information on to subs
               <div class="task-name-container">
                 <a name="/Set%20Properties"></a>
                 <a name="//apple_ref/swift/Section/Set Properties" class="dashAnchor"></a>
-                <a href="#/Set%20Properties">
-                  <h3 class="section-name">Set Properties</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Set%20Properties"></a>
+                  <h3 class="section-name"><p>Set Properties</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -906,7 +925,7 @@ Can be used by middlewares and handlers to store and pass information on to subs
                     <code>
                     <a name="/s:6Kitura14RouterResponseC15setOnEndInvokedyyycyycF"></a>
                     <a name="//apple_ref/swift/Method/setOnEndInvoked(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC15setOnEndInvokedyyycyycF">setOnEndInvoked(_:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC15setOnEndInvokedyyycyycF">setOnEndInvoked(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -956,7 +975,7 @@ Can be used by middlewares and handlers to store and pass information on to subs
                     <code>
                     <a name="/s:6Kitura14RouterResponseC20setWrittenDataFiltery10Foundation0F0VAGcA2GcF"></a>
                     <a name="//apple_ref/swift/Method/setWrittenDataFilter(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC20setWrittenDataFiltery10Foundation0F0VAGcA2GcF">setWrittenDataFilter(_:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC20setWrittenDataFiltery10Foundation0F0VAGcA2GcF">setWrittenDataFilter(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1007,9 +1026,11 @@ Can be used by middlewares and handlers to store and pass information on to subs
               <div class="task-name-container">
                 <a name="/Content%20Negotiation"></a>
                 <a name="//apple_ref/swift/Section/Content Negotiation" class="dashAnchor"></a>
-                <a href="#/Content%20Negotiation">
-                  <h3 class="section-name">Content Negotiation</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Content%20Negotiation"></a>
+                  <h3 class="section-name"><p>Content Negotiation</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -1017,7 +1038,7 @@ Can be used by middlewares and handlers to store and pass information on to subs
                     <code>
                     <a name="/s:6Kitura14RouterResponseC6format9callbacksySDySSyAA0B7RequestC_ACtcG_tKF"></a>
                     <a name="//apple_ref/swift/Method/format(callbacks:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC6format9callbacksySDySSyAA0B7RequestC_ACtcG_tKF">format(callbacks:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC6format9callbacksySDySSyAA0B7RequestC_ACtcG_tKF">format(callbacks:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1074,9 +1095,11 @@ The Content-Type response header is set when a callback is selected.</p>
               <div class="task-name-container">
                 <a name="/Send%20String"></a>
                 <a name="//apple_ref/swift/Section/Send String" class="dashAnchor"></a>
-                <a href="#/Send%20String">
-                  <h3 class="section-name">Send String</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Send%20String"></a>
+                  <h3 class="section-name"><p>Send String</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -1084,7 +1107,7 @@ The Content-Type response header is set when a callback is selected.</p>
                     <code>
                     <a name="/s:6Kitura14RouterResponseC4sendyACSSF"></a>
                     <a name="//apple_ref/swift/Method/send(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendyACSSF">send(_:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendyACSSF">send(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1135,7 +1158,7 @@ The Content-Type response header is set when a callback is selected.</p>
                     <code>
                     <a name="/s:6Kitura14RouterResponseC4sendyACSSSgF"></a>
                     <a name="//apple_ref/swift/Method/send(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendyACSSSgF">send(_:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendyACSSSgF">send(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1187,7 +1210,7 @@ If the <code>String?</code> can be unwrapped it is sent as a String, otherwise t
                     <code>
                     <a name="/s:6Kitura14RouterResponseC4send6statusAC0A3Net14HTTPStatusCodeO_tF"></a>
                     <a name="//apple_ref/swift/Method/send(status:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4send6statusAC0A3Net14HTTPStatusCodeO_tF">send(status:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4send6statusAC0A3Net14HTTPStatusCodeO_tF">send(status:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1238,9 +1261,11 @@ If the <code>String?</code> can be unwrapped it is sent as a String, otherwise t
               <div class="task-name-container">
                 <a name="/Send%20Data"></a>
                 <a name="//apple_ref/swift/Section/Send Data" class="dashAnchor"></a>
-                <a href="#/Send%20Data">
-                  <h3 class="section-name">Send Data</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Send%20Data"></a>
+                  <h3 class="section-name"><p>Send Data</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -1248,7 +1273,7 @@ If the <code>String?</code> can be unwrapped it is sent as a String, otherwise t
                     <code>
                     <a name="/s:6Kitura14RouterResponseC4send4dataAC10Foundation4DataV_tF"></a>
                     <a name="//apple_ref/swift/Method/send(data:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4send4dataAC10Foundation4DataV_tF">send(data:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4send4dataAC10Foundation4DataV_tF">send(data:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1299,7 +1324,7 @@ If the <code>String?</code> can be unwrapped it is sent as a String, otherwise t
                     <code>
                     <a name="/s:6Kitura14RouterResponseC4send8fileNameACSS_tKF"></a>
                     <a name="//apple_ref/swift/Method/send(fileName:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4send8fileNameACSS_tKF">send(fileName:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4send8fileNameACSS_tKF">send(fileName:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1312,10 +1337,9 @@ If the <code>String?</code> can be unwrapped it is sent as a String, otherwise t
     <p class="aside-title">Throws</p>
     An error in the Cocoa domain, if the file cannot be read.
 
-</div>
-<div class="aside aside-note">
+</div><div class="aside aside-note">
     <p class="aside-title">Note</p>
-    <p>Sets the Content-Type header based on the <q>extension</q> of the file.
+    <p>Sets the Content-Type header based on the &ldquo;extension&rdquo; of the file.
   If the fileName is relative, it is relative to the current directory.</p>
 
 </div>
@@ -1361,7 +1385,7 @@ If the <code>String?</code> can be unwrapped it is sent as a String, otherwise t
                     <code>
                     <a name="/s:6Kitura14RouterResponseC4send8downloadySS_tKF"></a>
                     <a name="//apple_ref/swift/Method/send(download:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4send8downloadySS_tKF">send(download:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4send8downloadySS_tKF">send(download:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1412,7 +1436,7 @@ If the <code>String?</code> can be unwrapped it is sent as a String, otherwise t
                     <code>
                     <a name="/s:6Kitura14RouterResponseC4send4jsonACSayypG_tF"></a>
                     <a name="//apple_ref/swift/Method/send(json:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4send4jsonACSayypG_tF">send(json:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4send4jsonACSayypG_tF">send(json:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1464,7 +1488,7 @@ If the data is not a valid JSON structure, it will not be sent and a warning wil
                     <code>
                     <a name="/s:6Kitura14RouterResponseC4send4jsonACSDySSypG_tF"></a>
                     <a name="//apple_ref/swift/Method/send(json:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4send4jsonACSDySSypG_tF">send(json:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4send4jsonACSDySSypG_tF">send(json:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1472,7 +1496,7 @@ If the data is not a valid JSON structure, it will not be sent and a warning wil
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Sets the Content-Type header as <q>application/json</q>,
+                        <p>Sets the Content-Type header as &ldquo;application/json&rdquo;,
 Serializes a dictionary into JSON data and sends the data.
 If the data is not a valid JSON structure, it will not be sent and a warning will be logged.</p>
 
@@ -1518,9 +1542,11 @@ If the data is not a valid JSON structure, it will not be sent and a warning wil
               <div class="task-name-container">
                 <a name="/Send%20Encodable"></a>
                 <a name="//apple_ref/swift/Section/Send Encodable" class="dashAnchor"></a>
-                <a href="#/Send%20Encodable">
-                  <h3 class="section-name">Send Encodable</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Send%20Encodable"></a>
+                  <h3 class="section-name"><p>Send Encodable</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -1528,7 +1554,7 @@ If the data is not a valid JSON structure, it will not be sent and a warning wil
                     <code>
                     <a name="/s:6Kitura14RouterResponseC4sendyACxSERzlF"></a>
                     <a name="//apple_ref/swift/Method/send(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendyACxSERzlF">send(_:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4sendyACxSERzlF">send(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1536,7 +1562,7 @@ If the data is not a valid JSON structure, it will not be sent and a warning wil
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Sends an Encodable type, encoded using the preferred <code>BodyEncoder</code> based on the <q>Accept</q> header sent in the request, and sets the Content-Type header appropriately.
+                        <p>Sends an Encodable type, encoded using the preferred <code>BodyEncoder</code> based on the &ldquo;Accept&rdquo; header sent in the request, and sets the Content-Type header appropriately.
 If no Accept header was provided, or if no suitable encoder is registered with the router, the encoder corresponding to the <code>defaultResponseMediaType</code> will be used.</p>
 
                       </div>
@@ -1580,7 +1606,7 @@ If no Accept header was provided, or if no suitable encoder is registered with t
                     <code>
                     <a name="/s:6Kitura14RouterResponseC4send4jsonACx_tSERzlF"></a>
                     <a name="//apple_ref/swift/Method/send(json:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4send4jsonACx_tSERzlF">send(json:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4send4jsonACx_tSERzlF">send(json:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1588,7 +1614,7 @@ If no Accept header was provided, or if no suitable encoder is registered with t
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Sets the Content-Type header as <q>application/json</q>,
+                        <p>Sets the Content-Type header as &ldquo;application/json&rdquo;,
 Encodes an Encodable object into data using a <code>JSONEncoder()</code> and sends the data.</p>
 
                       </div>
@@ -1632,7 +1658,7 @@ Encodes an Encodable object into data using a <code>JSONEncoder()</code> and sen
                     <code>
                     <a name="/s:6Kitura14RouterResponseC4send5jsonp17callbackParameterACx_SStKSERzlF"></a>
                     <a name="//apple_ref/swift/Method/send(jsonp:callbackParameter:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura14RouterResponseC4send5jsonp17callbackParameterACx_SStKSERzlF">send(jsonp:callbackParameter:)</a>
+                    <a class="token" href="#/s:6Kitura14RouterResponseC4send5jsonp17callbackParameterACx_SStKSERzlF">send(jsonp:<wbr>callbackParameter:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1707,8 +1733,8 @@ parameter whose value contains the JSONP callback function.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-08-13)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2021 <a class="link" href="" target="_blank" rel="external">IBM &amp; Kitura project authors</a>. All rights reserved. (Last updated: 2021-01-25)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

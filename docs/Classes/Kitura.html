@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (100% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -33,7 +33,7 @@
       </p>
     
         <p class="header-col header-col--secondary">
-          <a class="header-link" href="https://github.com/IBM-Swift/Kitura/">
+          <a class="header-link" href="https://github.com/Kitura/Kitura/">
             <img class="header-icon" src="../img/gh.png"/>
             View on GitHub
           </a>
@@ -157,6 +157,9 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/SSLConfig.html">SSLConfig</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SwaggerDocument.html">SwaggerDocument</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -178,6 +181,9 @@
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura22RouterParameterHandlera">RouterParameterHandler</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura13ServerOptionsa">ServerOptions</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura17WrittenDataFiltera">WrittenDataFilter</a>
               </li>
             </ul>
@@ -187,10 +193,11 @@
       <article class="main-content">
 
         <section class="section">
-          <div class="section-content">
+          <div class="section-content top-matter">
             <h1>Kitura</h1>
               <div class="declaration">
                 <div class="language">
+                  
                   <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Kitura</span></code></pre>
 
                 </div>
@@ -198,7 +205,7 @@
             <p>Facilities for creating, starting and stopping Kitura-based servers.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 
-<p>In this example, a <code><a href="../Classes/Router.html">Router</a></code> is created, and a single route registered that responds to an HTTP GET request on <q>/</q> with a plain text response.
+<p>In this example, a <code><a href="../Classes/Router.html">Router</a></code> is created, and a single route registered that responds to an HTTP GET request on &ldquo;/&rdquo; with a plain text response.
 An HTTP server is created on port 8080, and is started with the <code>Kitura.run()</code> function (note that this function does not return).
 The route can then be accessed by visiting <code>http://localhost:8080</code>.</p>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
@@ -219,17 +226,19 @@ The route can then be accessed by visiting <code>http://localhost:8080</code>.</
               <div class="task-name-container">
                 <a name="/Create%20Server"></a>
                 <a name="//apple_ref/swift/Section/Create Server" class="dashAnchor"></a>
-                <a href="#/Create%20Server">
-                  <h3 class="section-name">Create Server</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Create%20Server"></a>
+                  <h3 class="section-name"><p>Create Server</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6KituraAAC13addHTTPServer6onPort0D7Address4with0G3SSL9keepAlive05allowE5Reuse0A3Net0C0CSi_SSSgAJ14ServerDelegate_pAA9SSLConfigVSgAJ04KeepJ5StateOSbtFZ"></a>
-                    <a name="//apple_ref/swift/Method/addHTTPServer(onPort:onAddress:with:withSSL:keepAlive:allowPortReuse:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6KituraAAC13addHTTPServer6onPort0D7Address4with0G3SSL9keepAlive05allowE5Reuse0A3Net0C0CSi_SSSgAJ14ServerDelegate_pAA9SSLConfigVSgAJ04KeepJ5StateOSbtFZ">addHTTPServer(onPort:onAddress:with:withSSL:keepAlive:allowPortReuse:)</a>
+                    <a name="/s:6KituraAAC13addHTTPServer6onPort0D7Address4with0G3SSL9keepAlive05allowE5Reuse7options0A3Net0C0CSi_SSSgAK14ServerDelegate_pAA9SSLConfigVSgAK04KeepJ5StateOSbAK0O7OptionsVSgtFZ"></a>
+                    <a name="//apple_ref/swift/Method/addHTTPServer(onPort:onAddress:with:withSSL:keepAlive:allowPortReuse:options:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6KituraAAC13addHTTPServer6onPort0D7Address4with0G3SSL9keepAlive05allowE5Reuse7options0A3Net0C0CSi_SSSgAK14ServerDelegate_pAA9SSLConfigVSgAK04KeepJ5StateOSbAK0O7OptionsVSgtFZ">addHTTPServer(onPort:<wbr>onAddress:<wbr>with:<wbr>withSSL:<wbr>keepAlive:<wbr>allowPortReuse:<wbr>options:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -257,7 +266,8 @@ The route can then be accessed by visiting <code>http://localhost:8080</code>.</
                                 <span class="n">with</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt">ServerDelegate</span><span class="p">,</span>
                                 <span class="n">withSSL</span> <span class="nv">sslConfig</span><span class="p">:</span> <span class="kt"><a href="../Structs/SSLConfig.html">SSLConfig</a></span><span class="p">?</span><span class="o">=</span><span class="kc">nil</span><span class="p">,</span>
                                 <span class="n">keepAlive</span> <span class="nv">keepAliveState</span><span class="p">:</span> <span class="kt">KeepAliveState</span> <span class="o">=</span> <span class="o">.</span><span class="n">unlimited</span><span class="p">,</span>
-                                <span class="nv">allowPortReuse</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">HTTPServer</span></code></pre>
+                                <span class="nv">allowPortReuse</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+                                <span class="nv">options</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura13ServerOptionsa">ServerOptions</a></span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">HTTPServer</span></code></pre>
 
                         </div>
                       </div>
@@ -285,7 +295,7 @@ The route can then be accessed by visiting <code>http://localhost:8080</code>.</
                               </td>
                               <td>
                                 <div>
-                                  <p>The address to listen on, for example <q>localhost</q>. The default is nil, which listens on
+                                  <p>The address to listen on, for example &ldquo;localhost&rdquo;. The default is nil, which listens on
          all addresses.</p>
                                 </div>
                               </td>
@@ -338,6 +348,18 @@ The route can then be accessed by visiting <code>http://localhost:8080</code>.</
                                 </div>
                               </td>
                             </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>options</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Allows customization of default policies for this server.</p>
+                                </div>
+                              </td>
+                            </tr>
                           </tbody>
                         </table>
                       </div>
@@ -351,9 +373,9 @@ The route can then be accessed by visiting <code>http://localhost:8080</code>.</
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:6KituraAAC13addHTTPServer18onUnixDomainSocket4with0H3SSL9keepAlive0A3Net0C0CSS_AH14ServerDelegate_pAA9SSLConfigVSgAH04KeepK5StateOtFZ"></a>
-                    <a name="//apple_ref/swift/Method/addHTTPServer(onUnixDomainSocket:with:withSSL:keepAlive:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6KituraAAC13addHTTPServer18onUnixDomainSocket4with0H3SSL9keepAlive0A3Net0C0CSS_AH14ServerDelegate_pAA9SSLConfigVSgAH04KeepK5StateOtFZ">addHTTPServer(onUnixDomainSocket:with:withSSL:keepAlive:)</a>
+                    <a name="/s:6KituraAAC13addHTTPServer18onUnixDomainSocket4with0H3SSL9keepAlive7options0A3Net0C0CSS_AI14ServerDelegate_pAA9SSLConfigVSgAI04KeepK5StateOAI0N7OptionsVSgtFZ"></a>
+                    <a name="//apple_ref/swift/Method/addHTTPServer(onUnixDomainSocket:with:withSSL:keepAlive:options:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6KituraAAC13addHTTPServer18onUnixDomainSocket4with0H3SSL9keepAlive7options0A3Net0C0CSS_AI14ServerDelegate_pAA9SSLConfigVSgAI04KeepK5StateOAI0N7OptionsVSgtFZ">addHTTPServer(onUnixDomainSocket:<wbr>with:<wbr>withSSL:<wbr>keepAlive:<wbr>options:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -379,7 +401,8 @@ The route can then be accessed by visiting <code>http://localhost:8080</code>.</
 <span class="kd">public</span> <span class="kd">class</span> <span class="kd">func</span> <span class="nf">addHTTPServer</span><span class="p">(</span><span class="n">onUnixDomainSocket</span> <span class="nv">socketPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
                                 <span class="n">with</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt">ServerDelegate</span><span class="p">,</span>
                                 <span class="n">withSSL</span> <span class="nv">sslConfig</span><span class="p">:</span> <span class="kt"><a href="../Structs/SSLConfig.html">SSLConfig</a></span><span class="p">?</span><span class="o">=</span><span class="kc">nil</span><span class="p">,</span>
-                                <span class="n">keepAlive</span> <span class="nv">keepAliveState</span><span class="p">:</span> <span class="kt">KeepAliveState</span> <span class="o">=</span> <span class="o">.</span><span class="n">unlimited</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">HTTPServer</span></code></pre>
+                                <span class="n">keepAlive</span> <span class="nv">keepAliveState</span><span class="p">:</span> <span class="kt">KeepAliveState</span> <span class="o">=</span> <span class="o">.</span><span class="n">unlimited</span><span class="p">,</span>
+                                <span class="nv">options</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:6Kitura13ServerOptionsa">ServerOptions</a></span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">HTTPServer</span></code></pre>
 
                         </div>
                       </div>
@@ -450,7 +473,7 @@ The route can then be accessed by visiting <code>http://localhost:8080</code>.</
                     <code>
                     <a name="/s:6KituraAAC16addFastCGIServer6onPort0E7Address4with05allowF5Reuse0A3Net0cD0CSi_SSSgAH14ServerDelegate_pSbtFZ"></a>
                     <a name="//apple_ref/swift/Method/addFastCGIServer(onPort:onAddress:with:allowPortReuse:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6KituraAAC16addFastCGIServer6onPort0E7Address4with05allowF5Reuse0A3Net0cD0CSi_SSSgAH14ServerDelegate_pSbtFZ">addFastCGIServer(onPort:onAddress:with:allowPortReuse:)</a>
+                    <a class="token" href="#/s:6KituraAAC16addFastCGIServer6onPort0E7Address4with05allowF5Reuse0A3Net0cD0CSi_SSSgAH14ServerDelegate_pSbtFZ">addFastCGIServer(onPort:<wbr>onAddress:<wbr>with:<wbr>allowPortReuse:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -504,7 +527,7 @@ The route can then be accessed by visiting <code>http://localhost:8080</code>.</
                               </td>
                               <td>
                                 <div>
-                                  <p>The address to listen on, for example <q>localhost</q>. The default is nil, which listens on
+                                  <p>The address to listen on, for example &ldquo;localhost&rdquo;. The default is nil, which listens on
          all addresses.</p>
                                 </div>
                               </td>
@@ -549,9 +572,11 @@ The route can then be accessed by visiting <code>http://localhost:8080</code>.</
               <div class="task-name-container">
                 <a name="/Start%20Servers"></a>
                 <a name="//apple_ref/swift/Section/Start Servers" class="dashAnchor"></a>
-                <a href="#/Start%20Servers">
-                  <h3 class="section-name">Start Servers</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Start%20Servers"></a>
+                  <h3 class="section-name"><p>Start Servers</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -559,7 +584,7 @@ The route can then be accessed by visiting <code>http://localhost:8080</code>.</
                     <code>
                     <a name="/s:6KituraAAC3run13exitOnFailureySb_tFZ"></a>
                     <a name="//apple_ref/swift/Method/run(exitOnFailure:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6KituraAAC3run13exitOnFailureySb_tFZ">run(exitOnFailure:)</a>
+                    <a class="token" href="#/s:6KituraAAC3run13exitOnFailureySb_tFZ">run(exitOnFailure:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -728,9 +753,11 @@ The route can then be accessed by visiting <code>http://localhost:8080</code>.</
               <div class="task-name-container">
                 <a name="/Stop%20Servers"></a>
                 <a name="//apple_ref/swift/Section/Stop Servers" class="dashAnchor"></a>
-                <a href="#/Stop%20Servers">
-                  <h3 class="section-name">Stop Servers</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Stop%20Servers"></a>
+                  <h3 class="section-name"><p>Stop Servers</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -738,7 +765,7 @@ The route can then be accessed by visiting <code>http://localhost:8080</code>.</
                     <code>
                     <a name="/s:6KituraAAC4stop10unregisterySb_tFZ"></a>
                     <a name="//apple_ref/swift/Method/stop(unregister:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6KituraAAC4stop10unregisterySb_tFZ">stop(unregister:)</a>
+                    <a class="token" href="#/s:6KituraAAC4stop10unregisterySb_tFZ">stop(unregister:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -787,16 +814,12 @@ The route can then be accessed by visiting <code>http://localhost:8080</code>.</
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
                     <a name="/s:6KituraAAC5logToyy7Logging6LoggerVFZ"></a>
                     <a name="//apple_ref/swift/Method/logTo(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6KituraAAC5logToyy7Logging6LoggerVFZ">logTo(_:)</a>
+                    <a class="token" href="#/s:6KituraAAC5logToyy7Logging6LoggerVFZ">logTo(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -834,8 +857,8 @@ Usage example:</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-08-13)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2021 <a class="link" href="" target="_blank" rel="external">IBM &amp; Kitura project authors</a>. All rights reserved. (Last updated: 2021-01-25)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

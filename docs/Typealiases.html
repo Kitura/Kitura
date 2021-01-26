@@ -23,7 +23,7 @@
         <a class="header-link" href="index.html">
           Kitura Docs
         </a>
-         (100% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -33,7 +33,7 @@
       </p>
     
         <p class="header-col header-col--secondary">
-          <a class="header-link" href="https://github.com/IBM-Swift/Kitura/">
+          <a class="header-link" href="https://github.com/Kitura/Kitura/">
             <img class="header-icon" src="img/gh.png"/>
             View on GitHub
           </a>
@@ -157,6 +157,9 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/SSLConfig.html">SSLConfig</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SwaggerDocument.html">SwaggerDocument</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -178,6 +181,9 @@
                 <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura22RouterParameterHandlera">RouterParameterHandler</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura13ServerOptionsa">ServerOptions</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura17WrittenDataFiltera">WrittenDataFilter</a>
               </li>
             </ul>
@@ -187,7 +193,7 @@
       <article class="main-content">
 
         <section class="section">
-          <div class="section-content">
+          <div class="section-content top-matter">
             <h1>Type Aliases</h1>
             <p>The following type aliases are available globally.</p>
 
@@ -227,10 +233,6 @@ from <a href="https://ibm-swift.github.io/KituraContracts">KituraContracts</a> s
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -263,7 +265,63 @@ from <a href="http://ibm-swift.github.io/Kitura-net">KituraNet</a> so that you o
               </ul>
             </div>
             <div class="task-group">
+              <div class="task-name-container">
+                <a name="/ServerOptions"></a>
+                <a name="//apple_ref/swift/Section/ServerOptions" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/ServerOptions"></a>
+                  <h3 class="section-name"><p>ServerOptions</p>
+</h3>
+                </div>
+              </div>
               <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura13ServerOptionsa"></a>
+                    <a name="//apple_ref/swift/Alias/ServerOptions" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura13ServerOptionsa">ServerOptions</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Bridge <a href="http://ibm-swift.github.io/Kitura-net/Structs/ServerOptions.html">ServerOptions</a> from <a href="http://ibm-swift.github.io/Kitura-net">KituraNet</a> so that you only need to import <code><a href="Classes/Kitura.html">Kitura</a></code> to access it.</p>
+
+<p>ServerOptions allows customization of default connection policies, including:</p>
+
+<ul>
+<li><code>requestSizeLimit</code>: Defines the maximum size of an incoming request body, in bytes. If requests are received that are larger than this limit, they will be rejected and the connection will be closed. A value of <code>nil</code> means no limit.</li>
+<li><code>connectionLimit</code>: Defines the maximum number of concurrent connections that a server should accept. Clients attempting to connect when this limit has been reached will be rejected. A value of <code>nil</code> means no limit.</li>
+</ul>
+
+<p>The server can optionally respond to the client with a message in either of these cases. This message can be customized by defining <code>requestSizeResponseGenerator</code> and <code>connectionResponseGenerator</code>.</p>
+
+<p>Example usage:</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">port</span> <span class="o">=</span> <span class="mi">8080</span>
+<span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">connectionResponse</span><span class="p">:</span> <span class="p">(</span><span class="kt">Int</span><span class="p">,</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="kt">HTTPStatusCode</span><span class="p">,</span> <span class="kt">String</span><span class="p">)?</span> <span class="o">=</span> <span class="p">{</span> <span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">client</span><span class="p">)</span> <span class="k">in</span>
+    <span class="kt">Log</span><span class="o">.</span><span class="nf">debug</span><span class="p">(</span><span class="s">"Rejecting request from </span><span class="se">\(</span><span class="n">client</span><span class="se">)</span><span class="s">: Connection limit </span><span class="se">\(</span><span class="n">limit</span><span class="se">)</span><span class="s"> reached"</span><span class="p">)</span>
+    <span class="nf">return</span> <span class="p">(</span><span class="o">.</span><span class="n">serviceUnavailable</span><span class="p">,</span> <span class="s">"Service busy - please try again later.</span><span class="se">\r\n</span><span class="s">"</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="k">let</span> <span class="nv">serverOptions</span> <span class="o">=</span> <span class="kt">ServerOptions</span><span class="p">(</span><span class="nv">requestSizeLimit</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span> <span class="nv">connectionLimit</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="nv">connectionResponseGenerator</span><span class="p">:</span> <span class="n">connectionResponse</span><span class="p">)</span>
+<span class="kt">Kitura</span><span class="o">.</span><span class="nf">addHTTPServer</span><span class="p">(</span><span class="nv">onPort</span><span class="p">:</span> <span class="n">port</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="n">router</span><span class="p">,</span> <span class="nv">options</span><span class="p">:</span> <span class="n">serverOptions</span><span class="p">)</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">ServerOptions</span> <span class="o">=</span> <span class="kt">KituraNet</span><span class="o">.</span><span class="kt">ServerOptions</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
                 <li class="item">
                   <div>
                     <code>
@@ -338,10 +396,6 @@ when routing HTTP requests to closure.</p>
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -355,7 +409,7 @@ when routing HTTP requests to closure.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A <a href="https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/Declarations.html#//apple_ref/doc/uid/TP40014097-CH34-ID361">type alias</a> declaration to describe a handler for named parameters when using <code><a href="Classes/Router.html#/s:6Kitura6RouterC9parameter_7handlerACSS_yAA0B7RequestC_AA0B8ResponseCSSyyctKcdtF">Router.parameter(...)</a></code>. The example below shows two ways to use it, both as a function named <code>handler</code> to handle the <q>id</q> parameter and as a closure to handle the <q>name</q> parameter.</p>
+                        <p>A <a href="https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/Declarations.html#//apple_ref/doc/uid/TP40014097-CH34-ID361">type alias</a> declaration to describe a handler for named parameters when using <code><a href="Classes/Router.html#/s:6Kitura6RouterC9parameter_7handlerACSS_yAA0B7RequestC_AA0B8ResponseCSSyyctKcdtF">Router.parameter(...)</a></code>. The example below shows two ways to use it, both as a function named <code>handler</code> to handle the &ldquo;id&rdquo; parameter and as a closure to handle the &ldquo;name&rdquo; parameter.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">router</span> <span class="o">=</span> <span class="kt">Router</span><span class="p">()</span>
 <span class="kd">func</span> <span class="nf">handler</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">RouterRequest</span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt">RouterResponse</span><span class="p">,</span> <span class="nv">param</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">next</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span> <span class="p">{</span>
@@ -452,9 +506,11 @@ when routing HTTP requests to closure.</p>
               <div class="task-name-container">
                 <a name="/RouterResponse"></a>
                 <a name="//apple_ref/swift/Section/RouterResponse" class="dashAnchor"></a>
-                <a href="#/RouterResponse">
-                  <h3 class="section-name">RouterResponse</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/RouterResponse"></a>
+                  <h3 class="section-name"><p>RouterResponse</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -470,7 +526,7 @@ when routing HTTP requests to closure.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Type alias for <q>Before flush</q> (i.e. before headers and body are written) lifecycle handler.</p>
+                        <p>Type alias for &ldquo;Before flush&rdquo; (i.e. before headers and body are written) lifecycle handler.</p>
 
                       </div>
                       <div class="declaration">
@@ -519,8 +575,8 @@ when routing HTTP requests to closure.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-08-13)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2021 <a class="link" href="" target="_blank" rel="external">IBM &amp; Kitura project authors</a>. All rights reserved. (Last updated: 2021-01-25)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>
