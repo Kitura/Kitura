@@ -8,7 +8,7 @@ SWIFT_DIRECTORY = 'swift-3.1-RELEASE-ubuntu14.04'.freeze
 SWIFT_FILE = "#{SWIFT_DIRECTORY}.tar.gz".freeze
 SWIFT_HOME = "/home/vagrant/#{SWIFT_DIRECTORY}".freeze
 
-KITURA_URL = 'https://github.com/IBM-Swift/Kitura.git'.freeze
+KITURA_URL = 'https://github.com/Kitura/Kitura.git'.freeze
 KITURA_BRANCH = 'master'.freeze
 
 Vagrant.configure(2) do |config|

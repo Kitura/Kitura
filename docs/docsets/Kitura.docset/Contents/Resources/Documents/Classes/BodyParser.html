@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (100% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -33,7 +33,7 @@
       </p>
     
         <p class="header-col header-col--secondary">
-          <a class="header-link" href="https://github.com/IBM-Swift/Kitura/">
+          <a class="header-link" href="https://github.com/Kitura/Kitura/">
             <img class="header-icon" src="../img/gh.png"/>
             View on GitHub
           </a>
@@ -157,6 +157,9 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/SSLConfig.html">SSLConfig</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SwaggerDocument.html">SwaggerDocument</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -178,6 +181,9 @@
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura22RouterParameterHandlera">RouterParameterHandler</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura13ServerOptionsa">ServerOptions</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura17WrittenDataFiltera">WrittenDataFilter</a>
               </li>
             </ul>
@@ -187,10 +193,11 @@
       <article class="main-content">
 
         <section class="section">
-          <div class="section-content">
+          <div class="section-content top-matter">
             <h1>BodyParser</h1>
               <div class="declaration">
                 <div class="language">
+                  
                   <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">BodyParser</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/RouterMiddleware.html">RouterMiddleware</a></span></code></pre>
 
                 </div>
@@ -213,7 +220,7 @@
 <p><strong>Note</strong>: If you have not declared a Content-Type header, <code><a href="../Enums/ParsedBody.html">ParsedBody</a></code> will be <code>nil</code>.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 
-<p>In this example, all routes to the BodyParser middleware are registered to the <code>BodyParser</code> middleware. A request with <q>application/json</q>, ContentType header is received. It is then parsed as JSON and the value for <q>name</q> is returned in the response.</p>
+<p>In this example, all routes to the BodyParser middleware are registered to the <code>BodyParser</code> middleware. A request with &ldquo;application/json&rdquo;, ContentType header is received. It is then parsed as JSON and the value for &ldquo;name&rdquo; is returned in the response.</p>
 <pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/name"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="kt">BodyParser</span><span class="p">())</span>
 <span class="n">router</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="s">"/name"</span><span class="p">)</span> <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
     <span class="k">guard</span> <span class="k">let</span> <span class="nv">jsonBody</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">parsedBody</span><span class="p">?</span><span class="o">.</span><span class="n">asJSON</span> <span class="k">else</span> <span class="p">{</span>
@@ -225,7 +232,7 @@
 <span class="p">}</span>
 </code></pre>
 
-<p><strong>Note</strong>: When using Codable Routing in Kitura 2.x the BodyParser should not be registered to any codable routes (doing so will log the following error <q>No data in request. Codable routes do not allow the use of a BodyParser.</q> and the route handler will not be executed).</p>
+<p><strong>Note</strong>: When using Codable Routing in Kitura 2.x the BodyParser should not be registered to any codable routes (doing so will log the following error &ldquo;No data in request. Codable routes do not allow the use of a BodyParser.&rdquo; and the route handler will not be executed).</p>
 
           </div>
         </section>
@@ -270,7 +277,7 @@
                     <code>
                     <a name="/s:6Kitura10BodyParserC6handle7request8response4nextyAA13RouterRequestC_AA0H8ResponseCyyctKF"></a>
                     <a name="//apple_ref/swift/Method/handle(request:response:next:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura10BodyParserC6handle7request8response4nextyAA13RouterRequestC_AA0H8ResponseCyyctKF">handle(request:response:next:)</a>
+                    <a class="token" href="#/s:6Kitura10BodyParserC6handle7request8response4nextyAA13RouterRequestC_AA0H8ResponseCyyctKF">handle(request:<wbr>response:<wbr>next:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -343,7 +350,7 @@
                     <code>
                     <a name="/s:6Kitura10BodyParserC5parse_11contentTypeAA06ParsedB0OSgAA13RouterRequestC_SSSgtFZ"></a>
                     <a name="//apple_ref/swift/Method/parse(_:contentType:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura10BodyParserC5parse_11contentTypeAA06ParsedB0OSgAA13RouterRequestC_SSSgtFZ">parse(_:contentType:)</a>
+                    <a class="token" href="#/s:6Kitura10BodyParserC5parse_11contentTypeAA06ParsedB0OSgAA13RouterRequestC_SSSgtFZ">parse(_:<wbr>contentType:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -410,7 +417,7 @@
                     <code>
                     <a name="/s:6Kitura10BodyParserC04readB4Data4with10Foundation0E0VAA13RouterRequestC_tKFZ"></a>
                     <a name="//apple_ref/swift/Method/readBodyData(with:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura10BodyParserC04readB4Data4with10Foundation0E0VAA13RouterRequestC_tKFZ">readBodyData(with:)</a>
+                    <a class="token" href="#/s:6Kitura10BodyParserC04readB4Data4with10Foundation0E0VAA13RouterRequestC_tKFZ">readBodyData(with:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -473,8 +480,8 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-08-13)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2021 <a class="link" href="" target="_blank" rel="external">IBM &amp; Kitura project authors</a>. All rights reserved. (Last updated: 2021-01-25)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

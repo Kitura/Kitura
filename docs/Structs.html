@@ -23,7 +23,7 @@
         <a class="header-link" href="index.html">
           Kitura Docs
         </a>
-         (100% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -33,7 +33,7 @@
       </p>
     
         <p class="header-col header-col--secondary">
-          <a class="header-link" href="https://github.com/IBM-Swift/Kitura/">
+          <a class="header-link" href="https://github.com/Kitura/Kitura/">
             <img class="header-icon" src="img/gh.png"/>
             View on GitHub
           </a>
@@ -157,6 +157,9 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/SSLConfig.html">SSLConfig</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SwaggerDocument.html">SwaggerDocument</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -178,6 +181,9 @@
                 <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura22RouterParameterHandlera">RouterParameterHandler</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura13ServerOptionsa">ServerOptions</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Typealiases.html#/s:6Kitura17WrittenDataFiltera">WrittenDataFilter</a>
               </li>
             </ul>
@@ -187,7 +193,7 @@
       <article class="main-content">
 
         <section class="section">
-          <div class="section-content">
+          <div class="section-content top-matter">
             <h1>Structures</h1>
             <p>The following structures are available globally.</p>
 
@@ -226,10 +232,6 @@
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -259,10 +261,6 @@ extensions to the <code><a href="Classes/Router.html">Router</a></code> that int
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -278,7 +276,7 @@ extensions to the <code><a href="Classes/Router.html">Router</a></code> that int
                       <div class="abstract">
                         <p>The version of HTTP protocol.</p>
 
-<p>HTTP uses a <q>major.minor</q> numbering scheme to indicate versions of the protocol.</p>
+<p>HTTP uses a &ldquo;major.minor&rdquo; numbering scheme to indicate versions of the protocol.</p>
 
                         <a href="Structs/HTTPVersion.html" class="slightly-smaller">See more</a>
                       </div>
@@ -293,10 +291,6 @@ extensions to the <code><a href="Classes/Router.html">Router</a></code> that int
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -320,6 +314,7 @@ extensions to the <code><a href="Classes/Router.html">Router</a></code> that int
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Headers</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Headers</span><span class="p">:</span> <span class="kt">Collection</span></code></pre>
 
                         </div>
                       </div>
@@ -332,9 +327,11 @@ extensions to the <code><a href="Classes/Router.html">Router</a></code> that int
               <div class="task-name-container">
                 <a name="/SSLConfig"></a>
                 <a name="//apple_ref/swift/Section/SSLConfig" class="dashAnchor"></a>
-                <a href="#/SSLConfig">
-                  <h3 class="section-name">SSLConfig</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/SSLConfig"></a>
+                  <h3 class="section-name"><p>SSLConfig</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -365,10 +362,34 @@ extensions to the <code><a href="Classes/Router.html">Router</a></code> that int
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Kitura15SwaggerDocumentV"></a>
+                    <a name="//apple_ref/swift/Struct/SwaggerDocument" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Kitura15SwaggerDocumentV">SwaggerDocument</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="Structs/SwaggerDocument.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">SwaggerDocument</span> <span class="p">:</span> <span class="kt">Encodable</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
                 <li class="item">
                   <div>
                     <code>
@@ -397,10 +418,6 @@ extensions to the <code><a href="Classes/Router.html">Router</a></code> that int
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -415,8 +432,8 @@ extensions to the <code><a href="Classes/Router.html">Router</a></code> that int
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>The media type (formerly known as MIME type) is a standardized way to indicate the nature and format of a document.
-This struct consists of a catagorical <code>topLevelType</code> and specific <code>subtype</code> seperated by a <q>/</q> (e.g. <q>text/plain</q>).
-In HTTP, The media type is sent as the first section of the <q>Content-Type</q> header and is case insensitive.</p>
+This struct consists of a catagorical <code>topLevelType</code> and specific <code>subtype</code> seperated by a &ldquo;/&rdquo; (e.g. &ldquo;text/plain&rdquo;).
+In HTTP, The media type is sent as the first section of the &ldquo;Content-Type&rdquo; header and is case insensitive.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">mediaType</span> <span class="o">=</span> <span class="kt">MediaType</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="o">.</span><span class="n">application</span><span class="p">,</span> <span class="nv">subtype</span><span class="p">:</span> <span class="s">"json"</span><span class="p">)</span>
 <span class="nf">print</span><span class="p">(</span><span class="n">mediaType</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
@@ -430,6 +447,8 @@ In HTTP, The media type is sent as the first section of the <q>Content-Type</q> 
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">MediaType</span> <span class="p">:</span> <span class="kt">CustomStringConvertible</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">MediaType</span><span class="p">:</span> <span class="kt">Equatable</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">MediaType</span><span class="p">:</span> <span class="kt">Hashable</span></code></pre>
 
                         </div>
                       </div>
@@ -444,8 +463,8 @@ In HTTP, The media type is sent as the first section of the <q>Content-Type</q> 
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-08-13)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2021 <a class="link" href="" target="_blank" rel="external">IBM &amp; Kitura project authors</a>. All rights reserved. (Last updated: 2021-01-25)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

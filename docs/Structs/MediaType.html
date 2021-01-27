@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (100% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -33,7 +33,7 @@
       </p>
     
         <p class="header-col header-col--secondary">
-          <a class="header-link" href="https://github.com/IBM-Swift/Kitura/">
+          <a class="header-link" href="https://github.com/Kitura/Kitura/">
             <img class="header-icon" src="../img/gh.png"/>
             View on GitHub
           </a>
@@ -157,6 +157,9 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/SSLConfig.html">SSLConfig</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SwaggerDocument.html">SwaggerDocument</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -178,6 +181,9 @@
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura22RouterParameterHandlera">RouterParameterHandler</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura13ServerOptionsa">ServerOptions</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura17WrittenDataFiltera">WrittenDataFilter</a>
               </li>
             </ul>
@@ -187,17 +193,20 @@
       <article class="main-content">
 
         <section class="section">
-          <div class="section-content">
+          <div class="section-content top-matter">
             <h1>MediaType</h1>
               <div class="declaration">
                 <div class="language">
+                  
                   <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">MediaType</span> <span class="p">:</span> <span class="kt">CustomStringConvertible</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">MediaType</span><span class="p">:</span> <span class="kt">Equatable</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">MediaType</span><span class="p">:</span> <span class="kt">Hashable</span></code></pre>
 
                 </div>
               </div>
             <p>The media type (formerly known as MIME type) is a standardized way to indicate the nature and format of a document.
-This struct consists of a catagorical <code>topLevelType</code> and specific <code>subtype</code> seperated by a <q>/</q> (e.g. <q>text/plain</q>).
-In HTTP, The media type is sent as the first section of the <q>Content-Type</q> header and is case insensitive.</p>
+This struct consists of a catagorical <code>topLevelType</code> and specific <code>subtype</code> seperated by a &ldquo;/&rdquo; (e.g. &ldquo;text/plain&rdquo;).
+In HTTP, The media type is sent as the first section of the &ldquo;Content-Type&rdquo; header and is case insensitive.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">mediaType</span> <span class="o">=</span> <span class="kt">MediaType</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="o">.</span><span class="n">application</span><span class="p">,</span> <span class="nv">subtype</span><span class="p">:</span> <span class="s">"json"</span><span class="p">)</span>
 <span class="nf">print</span><span class="p">(</span><span class="n">mediaType</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
@@ -246,9 +255,11 @@ In HTTP, The media type is sent as the first section of the <q>Content-Type</q> 
               <div class="task-name-container">
                 <a name="/Media%20type%20components"></a>
                 <a name="//apple_ref/swift/Section/Media type components" class="dashAnchor"></a>
-                <a href="#/Media%20type%20components">
-                  <h3 class="section-name">Media type components</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Media%20type%20components"></a>
+                  <h3 class="section-name"><p>Media type components</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -264,7 +275,7 @@ In HTTP, The media type is sent as the first section of the <q>Content-Type</q> 
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The topLevelType represents the category of the MediaType (e.g. <q>audio</q>).</p>
+                        <p>The topLevelType represents the category of the MediaType (e.g. &ldquo;audio&rdquo;).</p>
 
                       </div>
                       <div class="declaration">
@@ -291,7 +302,7 @@ In HTTP, The media type is sent as the first section of the <q>Content-Type</q> 
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The subtype is the specific MediaType (e.g. <q>html</q>).</p>
+                        <p>The subtype is the specific MediaType (e.g. &ldquo;html&rdquo;).</p>
 
                       </div>
                       <div class="declaration">
@@ -311,9 +322,11 @@ In HTTP, The media type is sent as the first section of the <q>Content-Type</q> 
               <div class="task-name-container">
                 <a name="/Initializers"></a>
                 <a name="//apple_ref/swift/Section/Initializers" class="dashAnchor"></a>
-                <a href="#/Initializers">
-                  <h3 class="section-name">Initializers</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Initializers"></a>
+                  <h3 class="section-name"><p>Initializers</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -321,7 +334,7 @@ In HTTP, The media type is sent as the first section of the <q>Content-Type</q> 
                     <code>
                     <a name="/s:6Kitura9MediaTypeV4type03subC0A2C08TopLevelC0O_SStcfc"></a>
                     <a name="//apple_ref/swift/Method/init(type:subType:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura9MediaTypeV4type03subC0A2C08TopLevelC0O_SStcfc">init(type:subType:)</a>
+                    <a class="token" href="#/s:6Kitura9MediaTypeV4type03subC0A2C08TopLevelC0O_SStcfc">init(type:<wbr>subType:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -329,7 +342,7 @@ In HTTP, The media type is sent as the first section of the <q>Content-Type</q> 
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Initialize a <code>MediaType</code> instance with a <code><a href="../Structs/MediaType/TopLevelType.html">TopLevelType</a></code> type and <code>String</code> subtype. If no subtype is provided it will default to <q>*</q> representing all subtypes.</p>
+                        <p>Initialize a <code>MediaType</code> instance with a <code><a href="../Structs/MediaType/TopLevelType.html">TopLevelType</a></code> type and <code>String</code> subtype. If no subtype is provided it will default to &ldquo;*&rdquo; representing all subtypes.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">mediaType</span> <span class="o">=</span> <span class="kt">MediaType</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="o">.</span><span class="n">application</span><span class="p">,</span> <span class="nv">subtype</span><span class="p">:</span> <span class="s">"json"</span><span class="p">)</span>
 </code></pre>
@@ -351,7 +364,7 @@ In HTTP, The media type is sent as the first section of the <q>Content-Type</q> 
                     <code>
                     <a name="/s:6Kitura9MediaTypeVyACSgSScfc"></a>
                     <a name="//apple_ref/swift/Method/init(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura9MediaTypeVyACSgSScfc">init(_:)</a>
+                    <a class="token" href="#/s:6Kitura9MediaTypeVyACSgSScfc">init(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -359,8 +372,8 @@ In HTTP, The media type is sent as the first section of the <q>Content-Type</q> 
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Initialize a <code>MediaType</code> instance from a <code>String</code>. If no subtype is provided it will default to <q>*</q> representing all subtypes.
-If the string preceding the first <q>/</q> is not a valid <code><a href="../Structs/MediaType/TopLevelType.html">TopLevelType</a></code> the initializer will return nil.</p>
+                        <p>Initialize a <code>MediaType</code> instance from a <code>String</code>. If no subtype is provided it will default to &ldquo;*&rdquo; representing all subtypes.
+If the string preceding the first &ldquo;/&rdquo; is not a valid <code><a href="../Structs/MediaType/TopLevelType.html">TopLevelType</a></code> the initializer will return nil.</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">mediaType</span> <span class="o">=</span> <span class="kt">MediaType</span><span class="p">(</span><span class="s">"application/json"</span><span class="p">)</span>
 </code></pre>
@@ -383,9 +396,11 @@ If the string preceding the first <q>/</q> is not a valid <code><a href="../Stru
               <div class="task-name-container">
                 <a name="/Helper%20Constructors"></a>
                 <a name="//apple_ref/swift/Section/Helper Constructors" class="dashAnchor"></a>
-                <a href="#/Helper%20Constructors">
-                  <h3 class="section-name">Helper Constructors</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Helper%20Constructors"></a>
+                  <h3 class="section-name"><p>Helper Constructors</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -401,7 +416,7 @@ If the string preceding the first <q>/</q> is not a valid <code><a href="../Stru
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Helper constructor for the <q>application/json</q> media type</p>
+                        <p>Helper constructor for the &ldquo;application/json&rdquo; media type</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">mediaType</span> <span class="o">=</span> <span class="kt">MediaType</span><span class="o">.</span><span class="n">json</span>
 <span class="nf">print</span><span class="p">(</span><span class="n">mediaType</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
@@ -433,7 +448,7 @@ If the string preceding the first <q>/</q> is not a valid <code><a href="../Stru
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Helper constructor for the <q>application/x-www-form-urlencoded</q> media type</p>
+                        <p>Helper constructor for the &ldquo;application/x-www-form-urlencoded&rdquo; media type</p>
 <h3 id='usage-example' class='heading'>Usage Example:</h3>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">mediaType</span> <span class="o">=</span> <span class="kt">MediaType</span><span class="o">.</span><span class="n">urlEncoded</span>
 <span class="nf">print</span><span class="p">(</span><span class="n">mediaType</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
@@ -458,9 +473,11 @@ If the string preceding the first <q>/</q> is not a valid <code><a href="../Stru
               <div class="task-name-container">
                 <a name="/Protocol%20conformance"></a>
                 <a name="//apple_ref/swift/Section/Protocol conformance" class="dashAnchor"></a>
-                <a href="#/Protocol%20conformance">
-                  <h3 class="section-name">Protocol conformance</h3>
-                </a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Protocol%20conformance"></a>
+                  <h3 class="section-name"><p>Protocol conformance</p>
+</h3>
+                </div>
               </div>
               <ul class="item-container">
                 <li class="item">
@@ -494,16 +511,12 @@ If the string preceding the first <q>/</q> is not a valid <code><a href="../Stru
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
                     <a name="/"></a>
                     <a name="//apple_ref/swift/Method/==(_:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/">==(_:_:)</a>
+                    <a class="token" href="#/">==(_:<wbr>_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -517,10 +530,6 @@ If the string preceding the first <q>/</q> is not a valid <code><a href="../Stru
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -547,8 +556,8 @@ If the string preceding the first <q>/</q> is not a valid <code><a href="../Stru
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-08-13)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2021 <a class="link" href="" target="_blank" rel="external">IBM &amp; Kitura project authors</a>. All rights reserved. (Last updated: 2021-01-25)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

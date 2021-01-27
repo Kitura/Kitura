@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (100% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -33,7 +33,7 @@
       </p>
     
         <p class="header-col header-col--secondary">
-          <a class="header-link" href="https://github.com/IBM-Swift/Kitura/">
+          <a class="header-link" href="https://github.com/Kitura/Kitura/">
             <img class="header-icon" src="../img/gh.png"/>
             View on GitHub
           </a>
@@ -157,6 +157,9 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/SSLConfig.html">SSLConfig</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SwaggerDocument.html">SwaggerDocument</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -178,6 +181,9 @@
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura22RouterParameterHandlera">RouterParameterHandler</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura13ServerOptionsa">ServerOptions</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura17WrittenDataFiltera">WrittenDataFilter</a>
               </li>
             </ul>
@@ -187,11 +193,13 @@
       <article class="main-content">
 
         <section class="section">
-          <div class="section-content">
+          <div class="section-content top-matter">
             <h1>Headers</h1>
               <div class="declaration">
                 <div class="language">
+                  
                   <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Headers</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Headers</span><span class="p">:</span> <span class="kt">Collection</span></code></pre>
 
                 </div>
               </div>
@@ -210,7 +218,7 @@
                     <code>
                     <a name="/s:6Kitura7HeadersV6append_5valueySS_SStF"></a>
                     <a name="//apple_ref/swift/Method/append(_:value:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura7HeadersV6append_5valueySS_SStF">append(_:value:)</a>
+                    <a class="token" href="#/s:6Kitura7HeadersV6append_5valueySS_SStF">append(_:<wbr>value:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -263,10 +271,6 @@
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -353,7 +357,7 @@
                     <code>
                     <a name="/s:6Kitura7HeadersVySSSgSScip"></a>
                     <a name="//apple_ref/swift/Method/subscript(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura7HeadersVySSSgSScip">subscript(_:)</a>
+                    <a class="token" href="#/s:6Kitura7HeadersVySSSgSScip">subscript(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -403,7 +407,7 @@
                     <code>
                     <a name="/s:6Kitura7HeadersVySS_SSSgtSD5IndexVyS2S3key_SaySSG5valuet_Gcip"></a>
                     <a name="//apple_ref/swift/Method/subscript(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura7HeadersVySS_SSSgtSD5IndexVyS2S3key_SaySSG5valuet_Gcip">subscript(_:)</a>
+                    <a class="token" href="#/s:6Kitura7HeadersVySS_SSSgtSD5IndexVyS2S3key_SaySSG5valuet_Gcip">subscript(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -454,7 +458,7 @@
                     <code>
                     <a name="/s:Sl5index5after5IndexQzAD_tF"></a>
                     <a name="//apple_ref/swift/Method/index(after:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:Sl5index5after5IndexQzAD_tF">index(after:)</a>
+                    <a class="token" href="#/s:Sl5index5after5IndexQzAD_tF">index(after:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -480,16 +484,12 @@
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
                     <a name="/s:6Kitura7HeadersV11setLocationyySSF"></a>
                     <a name="//apple_ref/swift/Method/setLocation(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura7HeadersV11setLocationyySSF">setLocation(_:)</a>
+                    <a class="token" href="#/s:6Kitura7HeadersV11setLocationyySSF">setLocation(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -520,7 +520,7 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>the path to set into the header or the special reserved word <q>back</q>.</p>
+                                  <p>the path to set into the header or the special reserved word &ldquo;back&rdquo;.</p>
                                 </div>
                               </td>
                             </tr>
@@ -535,7 +535,7 @@
                     <code>
                     <a name="/s:6Kitura7HeadersV7setType_7charsetySS_SSSgtF"></a>
                     <a name="//apple_ref/swift/Method/setType(_:charset:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura7HeadersV7setType_7charsetySS_SSSgtF">setType(_:charset:)</a>
+                    <a class="token" href="#/s:6Kitura7HeadersV7setType_7charsetySS_SSSgtF">setType(_:<wbr>charset:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -593,7 +593,7 @@
                     <code>
                     <a name="/s:6Kitura7HeadersV13addAttachment3forySSSg_tF"></a>
                     <a name="//apple_ref/swift/Method/addAttachment(for:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura7HeadersV13addAttachment3forySSSg_tF">addAttachment(for:)</a>
+                    <a class="token" href="#/s:6Kitura7HeadersV13addAttachment3forySSSg_tF">addAttachment(for:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -601,7 +601,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Sets the HTTP header Content-Disposition to <q>attachment</q>, optionally
+                        <p>Sets the HTTP header Content-Disposition to &ldquo;attachment&rdquo;, optionally
 adding the filename parameter. If a file is specified the HTTP header
 Content-Type will be set based on the extension of the specified file.</p>
 
@@ -641,7 +641,7 @@ Content-Type will be set based on the extension of the specified file.</p>
                     <code>
                     <a name="/s:6Kitura7HeadersV7addLink_14linkParametersySS_SDyAA0D9ParameterOSSGtF"></a>
                     <a name="//apple_ref/swift/Method/addLink(_:linkParameters:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura7HeadersV7addLink_14linkParametersySS_SDyAA0D9ParameterOSSGtF">addLink(_:linkParameters:)</a>
+                    <a class="token" href="#/s:6Kitura7HeadersV7addLink_14linkParametersySS_SDyAA0D9ParameterOSSGtF">addLink(_:<wbr>linkParameters:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -702,8 +702,8 @@ Content-Type will be set based on the extension of the specified file.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-08-13)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2021 <a class="link" href="" target="_blank" rel="external">IBM &amp; Kitura project authors</a>. All rights reserved. (Last updated: 2021-01-25)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

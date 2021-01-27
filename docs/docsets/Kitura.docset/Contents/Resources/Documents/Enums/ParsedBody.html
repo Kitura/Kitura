@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           Kitura Docs
         </a>
-         (100% documented)
+         (99% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -33,7 +33,7 @@
       </p>
     
         <p class="header-col header-col--secondary">
-          <a class="header-link" href="https://github.com/IBM-Swift/Kitura/">
+          <a class="header-link" href="https://github.com/Kitura/Kitura/">
             <img class="header-icon" src="../img/gh.png"/>
             View on GitHub
           </a>
@@ -157,6 +157,9 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/SSLConfig.html">SSLConfig</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SwaggerDocument.html">SwaggerDocument</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -178,6 +181,9 @@
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura22RouterParameterHandlera">RouterParameterHandler</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura13ServerOptionsa">ServerOptions</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Typealiases.html#/s:6Kitura17WrittenDataFiltera">WrittenDataFilter</a>
               </li>
             </ul>
@@ -187,10 +193,11 @@
       <article class="main-content">
 
         <section class="section">
-          <div class="section-content">
+          <div class="section-content top-matter">
             <h1>ParsedBody</h1>
               <div class="declaration">
                 <div class="language">
+                  
                   <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">indirect</span> <span class="kd">enum</span> <span class="kt">ParsedBody</span></code></pre>
 
                 </div>
@@ -212,7 +219,7 @@ in the associated value of the enum case based on Content-Type</p>
                     <code>
                     <a name="/s:6Kitura10ParsedBodyO10urlEncodedyACSDyS2SGcACmF"></a>
                     <a name="//apple_ref/swift/Element/urlEncoded(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura10ParsedBodyO10urlEncodedyACSDyS2SGcACmF">urlEncoded(_:)</a>
+                    <a class="token" href="#/s:6Kitura10ParsedBodyO10urlEncodedyACSDyS2SGcACmF">urlEncoded(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -220,7 +227,7 @@ in the associated value of the enum case based on Content-Type</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>If the content type was <q>application/x-www-form-urlencoded</q> this
+                        <p>If the content type was &ldquo;application/x-www-form-urlencoded&rdquo; this
 associated value will contain a representation of the body as a
 dictionary of key-value pairs.</p>
 
@@ -241,7 +248,7 @@ dictionary of key-value pairs.</p>
                     <code>
                     <a name="/s:6Kitura10ParsedBodyO20urlEncodedMultiValueyACSDySSSaySSGGcACmF"></a>
                     <a name="//apple_ref/swift/Element/urlEncodedMultiValue(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura10ParsedBodyO20urlEncodedMultiValueyACSDySSSaySSGGcACmF">urlEncodedMultiValue(_:)</a>
+                    <a class="token" href="#/s:6Kitura10ParsedBodyO20urlEncodedMultiValueyACSDySSSaySSGGcACmF">urlEncodedMultiValue(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -249,7 +256,7 @@ dictionary of key-value pairs.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>If the content type was <q>application/x-www-form-urlencoded</q> this
+                        <p>If the content type was &ldquo;application/x-www-form-urlencoded&rdquo; this
 associated value will contain a representation of the body as a
 dictionary of key-[value] pairs.</p>
 
@@ -270,7 +277,7 @@ dictionary of key-[value] pairs.</p>
                     <code>
                     <a name="/s:6Kitura10ParsedBodyO4textyACSScACmF"></a>
                     <a name="//apple_ref/swift/Element/text(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura10ParsedBodyO4textyACSScACmF">text(_:)</a>
+                    <a class="token" href="#/s:6Kitura10ParsedBodyO4textyACSScACmF">text(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -278,7 +285,7 @@ dictionary of key-[value] pairs.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>If the content type was <q>text</q> this associated value will contain a
+                        <p>If the content type was &ldquo;text&rdquo; this associated value will contain a
 representation of the body as a String.</p>
 
                       </div>
@@ -298,7 +305,7 @@ representation of the body as a String.</p>
                     <code>
                     <a name="/s:6Kitura10ParsedBodyO3rawyAC10Foundation4DataVcACmF"></a>
                     <a name="//apple_ref/swift/Element/raw(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura10ParsedBodyO3rawyAC10Foundation4DataVcACmF">raw(_:)</a>
+                    <a class="token" href="#/s:6Kitura10ParsedBodyO3rawyAC10Foundation4DataVcACmF">raw(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -325,7 +332,7 @@ representation of the body as a String.</p>
                     <code>
                     <a name="/s:6Kitura10ParsedBodyO9multipartyACSayAA4PartVGcACmF"></a>
                     <a name="//apple_ref/swift/Element/multipart(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura10ParsedBodyO9multipartyACSayAA4PartVGcACmF">multipart(_:)</a>
+                    <a class="token" href="#/s:6Kitura10ParsedBodyO9multipartyACSayAA4PartVGcACmF">multipart(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -333,7 +340,7 @@ representation of the body as a String.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>If the content type was <q>multipart/form-data</q> this associated value will
+                        <p>If the content type was &ldquo;multipart/form-data&rdquo; this associated value will
 contain an array of parts of multi-part respresentation of the body.</p>
 
                       </div>
@@ -353,7 +360,7 @@ contain an array of parts of multi-part respresentation of the body.</p>
                     <code>
                     <a name="/s:6Kitura10ParsedBodyO4jsonyACSDySSypGcACmF"></a>
                     <a name="//apple_ref/swift/Element/json(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:6Kitura10ParsedBodyO4jsonyACSDySSypGcACmF">json(_:)</a>
+                    <a class="token" href="#/s:6Kitura10ParsedBodyO4jsonyACSDySSypGcACmF">json(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -361,7 +368,7 @@ contain an array of parts of multi-part respresentation of the body.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>If the content type was <q>application/json</q> this associated value will
+                        <p>If the content type was &ldquo;application/json&rdquo; this associated value will
 contain the body of a [String: Any] json dictionary object.</p>
 
                       </div>
@@ -389,7 +396,7 @@ contain the body of a [String: Any] json dictionary object.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Extract a <q>JSON</q> body from the <code>ParsedBody</code> enum</p>
+                        <p>Extract a &ldquo;JSON&rdquo; body from the <code>ParsedBody</code> enum</p>
 
                       </div>
                       <div class="declaration">
@@ -421,7 +428,7 @@ contain the body of a [String: Any] json dictionary object.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Extract a <q>multipart</q> body from the <code>ParsedBody</code> enum</p>
+                        <p>Extract a &ldquo;multipart&rdquo; body from the <code>ParsedBody</code> enum</p>
 
                       </div>
                       <div class="declaration">
@@ -453,7 +460,7 @@ contain the body of a [String: Any] json dictionary object.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Extract a <q>raw</q> body from the <code>ParsedBody</code> enum</p>
+                        <p>Extract a &ldquo;raw&rdquo; body from the <code>ParsedBody</code> enum</p>
 
                       </div>
                       <div class="declaration">
@@ -466,7 +473,7 @@ contain the body of a [String: Any] json dictionary object.</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>The <q>raw</q> body as a Data, or nil if the body wasn&rsquo;t in raw format.</p>
+                        <p>The &ldquo;raw&rdquo; body as a Data, or nil if the body wasn&rsquo;t in raw format.</p>
                       </div>
                     </section>
                   </div>
@@ -484,7 +491,7 @@ contain the body of a [String: Any] json dictionary object.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Extract a <q>text</q> body from the <code>ParsedBody</code> enum</p>
+                        <p>Extract a &ldquo;text&rdquo; body from the <code>ParsedBody</code> enum</p>
 
                       </div>
                       <div class="declaration">
@@ -497,7 +504,7 @@ contain the body of a [String: Any] json dictionary object.</p>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>The <q>text</q> body as a String, or nil if the body wasn&rsquo;t in text format.</p>
+                        <p>The &ldquo;text&rdquo; body as a String, or nil if the body wasn&rsquo;t in text format.</p>
                       </div>
                     </section>
                   </div>
@@ -515,7 +522,7 @@ contain the body of a [String: Any] json dictionary object.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Extract a <q>urlEncoded</q> body from the <code>ParsedBody</code> enum with comma-
+                        <p>Extract a &ldquo;urlEncoded&rdquo; body from the <code>ParsedBody</code> enum with comma-
 separated values.</p>
 
                       </div>
@@ -548,7 +555,7 @@ separated values.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Extract a <q>urlEncoded</q> body from the <code>ParsedBody</code> enum with values in
+                        <p>Extract a &ldquo;urlEncoded&rdquo; body from the <code>ParsedBody</code> enum with values in
 an array..</p>
 
                       </div>
@@ -576,8 +583,8 @@ an array..</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2019-08-13)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2021 <a class="link" href="" target="_blank" rel="external">IBM &amp; Kitura project authors</a>. All rights reserved. (Last updated: 2021-01-25)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>
