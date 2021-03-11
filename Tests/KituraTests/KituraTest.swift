@@ -388,9 +388,14 @@ class KituraTest: XCTestCase {
     }
 
     // Delete a temporary file path.
-    func removeTemporaryFilePath(_ path: String) {
+    func removeTemporaryFilePath(_ path: String, ignoreIfNotExist: Bool=false) {
         let fileURL = URL(fileURLWithPath: path)
         let fm = FileManager.default
+        if ignoreIfNotExist {
+            guard fm.fileExists(atPath: path) else {
+                return
+            }
+        }
         do {
             try fm.removeItem(at: fileURL)
         } catch {
