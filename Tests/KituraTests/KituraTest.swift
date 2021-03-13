@@ -163,18 +163,23 @@ class KituraTest: XCTestCase {
             }
             self.port = port
         }
+
+        var expectations: [XCTestExpectation] = []
+
         let requestQueue = DispatchQueue(label: "Request queue")
         for (index, asyncTask) in asyncTasks.enumerated() {
             let expectation = self.expectation(line: line, index: index)
+            expectations.append(expectation)
             requestQueue.async {
                 asyncTask(expectation)
             }
         }
 
         // wait for timeout or for all created expectations to be fulfilled
-        waitForExpectations(timeout: timeout) { error in
-            XCTAssertNil(error)
-        }
+        wait(for: expectations, timeout: timeout)
+//        waitForExpectations(timeout: timeout) { error in
+//            XCTAssertNil(error)
+//        }
 
         // If we created a short-lived server for specific ServerOptions, shut it down now
         serverWithOptions?.stop()
