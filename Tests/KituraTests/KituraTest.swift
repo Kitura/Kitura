@@ -163,18 +163,23 @@ class KituraTest: XCTestCase {
             }
             self.port = port
         }
+
+        var expectations: [XCTestExpectation] = []
+
         let requestQueue = DispatchQueue(label: "Request queue")
         for (index, asyncTask) in asyncTasks.enumerated() {
             let expectation = self.expectation(line: line, index: index)
+            expectations.append(expectation)
             requestQueue.async {
                 asyncTask(expectation)
             }
         }
 
         // wait for timeout or for all created expectations to be fulfilled
-        waitForExpectations(timeout: timeout) { error in
-            XCTAssertNil(error)
-        }
+        wait(for: expectations, timeout: timeout)
+//        waitForExpectations(timeout: timeout) { error in
+//            XCTAssertNil(error)
+//        }
 
         // If we created a short-lived server for specific ServerOptions, shut it down now
         serverWithOptions?.stop()
@@ -367,7 +372,7 @@ class KituraTest: XCTestCase {
     }
 
     func expectation(line: Int, index: Int) -> XCTestExpectation {
-        return self.expectation(description: "\(type(of: self)):\(line)[\(index)](ssl:\(useSSL))")
+        return XCTestExpectation(description: "\(type(of: self)):\(line)[\(index)](ssl:\(useSSL))")
     }
 
     // Generates a unique temporary file path suitable for use as a Unix domain socket.
@@ -388,9 +393,14 @@ class KituraTest: XCTestCase {
     }
 
     // Delete a temporary file path.
-    func removeTemporaryFilePath(_ path: String) {
+    func removeTemporaryFilePath(_ path: String, ignoreIfNotExist: Bool=false) {
         let fileURL = URL(fileURLWithPath: path)
         let fm = FileManager.default
+        if ignoreIfNotExist {
+            guard fm.fileExists(atPath: path) else {
+                return
+            }
+        }
         do {
             try fm.removeItem(at: fileURL)
         } catch {

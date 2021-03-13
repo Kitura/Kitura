@@ -271,7 +271,8 @@ final class TestServer: KituraTest, KituraTestSuite {
         // Create a temporary socket path for this server
         let socketPath = uniqueTemporaryFilePath()
         defer {
-            removeTemporaryFilePath(socketPath)
+            // on Kitura.stop(), the socket is removed
+            removeTemporaryFilePath(socketPath, ignoreIfNotExist: true)
         }
 
         let router = Router()

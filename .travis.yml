@@ -36,22 +36,24 @@ matrix:
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=swift:5.0.3-xenial SWIFT_SNAPSHOT=5.0.3 SWIFT_TEST_ARGS="--parallel"
+      env: DOCKER_IMAGE=docker.kitura.net/kitura/swift-ci:5.0.3 SWIFT_SNAPSHOT=5.0.3 SWIFT_TEST_ARGS="--parallel"
     - os: linux
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=swift:5.1 SWIFT_TEST_ARGS="--parallel"
+      env: DOCKER_IMAGE=docker.kitura.net/kitura/swift-ci:5.3.3 SWIFT_TEST_ARGS="--parallel"
     - os: linux
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=swift:5.1 KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
+      env: DOCKER_IMAGE=docker.kitura.net/kitura/swift-ci:5.3.3 KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
     - os: linux
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=swift:5.1 SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT SWIFT_TEST_ARGS="--parallel"
+      env: DOCKER_IMAGE=docker.kitura.net/kitura/swift-ci:5.3.3 SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT SWIFT_TEST_ARGS="--parallel"
+
+    # OSX SWIFT_SNAPSHOT should match that of built-in swift otherwise link issues may occur.
     - os: osx
       osx_image: xcode9.2
       sudo: required
@@ -75,14 +77,20 @@ matrix:
     - os: osx
       osx_image: xcode11
       sudo: required
-      env: KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
+      env: SWIFT_SNAPSHOT=5.1 KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
     - os: osx
-      osx_image: xcode11
+      osx_image: xcode12.2
       sudo: required
-      env: SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT SWIFT_TEST_ARGS="--parallel"
+      env: SWIFT_SNAPSHOT=5.3.1 KITURA_NIO=1 SWIFT_TEST_ARGS="--parallel"
+
+      # Disable non-standard swift builds on macOS due to library path issues.
+      #- os: osx
+      #osx_image: xcode12.2
+      #sudo: required
+      #env: SWIFT_SNAPSHOT=$SWIFT_DEVELOPMENT_SNAPSHOT SWIFT_TEST_ARGS="--parallel"
 
 before_install:
-  - git clone https://github.com/IBM-Swift/Package-Builder.git
+  - git clone https://github.com/Kitura/Package-Builder.git
 
 script:
   - ./Package-Builder/build-package.sh -projectDir $TRAVIS_BUILD_DIR
