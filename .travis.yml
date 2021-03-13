@@ -36,7 +36,7 @@ matrix:
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=docker.kitura.net/kitura/swift-ci:5.0.3-xenial SWIFT_SNAPSHOT=5.0.3 SWIFT_TEST_ARGS="--parallel"
+      env: DOCKER_IMAGE=docker.kitura.net/kitura/swift-ci:5.0.3 SWIFT_SNAPSHOT=5.0.3 SWIFT_TEST_ARGS="--parallel"
     - os: linux
       dist: xenial
       sudo: required
