@@ -372,7 +372,7 @@ class KituraTest: XCTestCase {
     }
 
     func expectation(line: Int, index: Int) -> XCTestExpectation {
-        return self.expectation(description: "\(type(of: self)):\(line)[\(index)](ssl:\(useSSL))")
+        return XCTestExpectation(description: "\(type(of: self)):\(line)[\(index)](ssl:\(useSSL))")
     }
 
     // Generates a unique temporary file path suitable for use as a Unix domain socket.
