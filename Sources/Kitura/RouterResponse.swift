@@ -407,18 +407,20 @@ public class RouterResponse {
     /// - Parameter forKey: A value used to match the Encodable values to the correct variable in a template file.
     ///                                 The `forKey` value should match the desired variable in the template file.
     /// - Parameter options: Rendering options, specific per template engine
+    /// - Parameter reset: Reset the body content before sending the response.
     /// - Throws: TemplatingError if no file extension was specified or there is no template engine defined for the extension.
     /// - Returns: This RouterResponse.
     @discardableResult
     public func render<I: Identifier, T: Encodable>(_ resource: String, with values: [(I, T)], forKey key: String,
-                                   options: RenderingOptions = NullRenderingOptions()) throws -> RouterResponse {
+                                   options: RenderingOptions = NullRenderingOptions(),
+                                   reset: Bool = false) throws -> RouterResponse {
         guard let router = getRouterThatCanRender(resource: resource) else {
             throw TemplatingError.noTemplateEngineForExtension(extension: "")
         }
         let items: [T] = values.map { $0.1 }
 
         let renderedResource = try router.render(template: resource, with: items, forKey: key, options: options)
-        return send(renderedResource)
+        return send(renderedResource, reset: reset)
     }
 
     private func getRouterThatCanRender(resource: String) -> Router? {
@@ -496,12 +498,16 @@ public class RouterResponse {
     /// Send a UTF-8 encoded string.
     ///
     /// - Parameter str: The string to send.
+    /// - Parameter reset: Reset the body content before sending the response.
     /// - Returns: This RouterResponse.
     @discardableResult
-    public func send(_ str: String) -> RouterResponse {
+    public func send(_ str: String, reset: Bool = false) -> RouterResponse {
         guard !state.invokedEnd else {
             Log.warning("RouterResponse send(str:) invoked after end() for \(self.request.urlURL)")
             return self
+        }
+        if reset {
+            buffer.reset()
         }
         let count = str.utf8.count
         str.withCString {
@@ -517,31 +523,33 @@ public class RouterResponse {
     /// If the `String?` can be unwrapped it is sent as a String, otherwise the empty string ("") is sent.
     ///
     /// - Parameter str: The string to send.
+    /// - Parameter reset: Reset the body content before sending the response.
     /// - Returns: This RouterResponse.
     @discardableResult
-    public func send(_ str: String?) -> RouterResponse {
+    public func send(_ str: String?, reset: Bool = false) -> RouterResponse {
         guard !state.invokedEnd else {
             Log.warning("RouterResponse send(str:) invoked after end() for \(self.request.urlURL)")
             return self
         }
         guard let str = str else {
             Log.warning("RouterResponse send(str:) invoked with a nil value")
-            return send("")
+            return send("", reset: reset)
         }
-        return send(str)
+        return send(str, reset: reset)
     }
 
     /// Set the HTTP status code of the RouterResponse and send the String description of the HTTP status code.
     ///
     /// - Parameter status: The HTTP status code.
+    /// - Parameter reset: Reset the body content before sending the response.
     /// - Returns: This RouterResponse.
-    public func send(status: HTTPStatusCode) -> RouterResponse {
+    public func send(status: HTTPStatusCode, reset: Bool = false) -> RouterResponse {
         guard !state.invokedEnd else {
             Log.warning("RouterResponse send(status:) invoked after end() for \(self.request.urlURL)")
             return self
         }
         self.status(status)
-        send(HTTPURLResponse.localizedString(forStatusCode: status.rawValue))
+        send(HTTPURLResponse.localizedString(forStatusCode: status.rawValue), reset: reset)
         return self
     }
 
@@ -550,12 +558,16 @@ public class RouterResponse {
     /// Send data.
     ///
     /// - Parameter data: The data to send.
+    /// - Parameter reset: Reset the body content before sending the response.
     /// - Returns: This RouterResponse.
     @discardableResult
-    public func send(data: Data) -> RouterResponse {
+    public func send(data: Data, reset: Bool = false) -> RouterResponse {
         guard !state.invokedEnd else {
             Log.warning("RouterResponse send(data:) invoked after end() for \(self.request.urlURL)")
             return self
+        }
+        if reset {
+            buffer.reset()
         }
         buffer.append(data: data)
         state.invokedSend = true
@@ -565,13 +577,14 @@ public class RouterResponse {
     /// Send a file.
     ///
     /// - Parameter fileName: The name of the file to send.
+    /// - Parameter reset: Reset the body content before sending the response.
     /// - Throws: An error in the Cocoa domain, if the file cannot be read.
     /// - Returns: This RouterResponse.
     ///
     /// - Note: Sets the Content-Type header based on the "extension" of the file.
     ///       If the fileName is relative, it is relative to the current directory.
     @discardableResult
-    public func send(fileName: String) throws -> RouterResponse {
+    public func send(fileName: String, reset: Bool = false) throws -> RouterResponse {
         guard !state.invokedEnd else {
             Log.warning("RouterResponse send(fileName:) invoked after end() for \(self.request.urlURL)")
             return self
@@ -583,7 +596,7 @@ public class RouterResponse {
             headers["Content-Type"] = contentType
         }
 
-        send(data: data)
+        send(data: data, reset: reset)
 
         return self
     }
@@ -591,13 +604,14 @@ public class RouterResponse {
     /// Set headers and attach file for downloading.
     ///
     /// - Parameter download: The file to download.
+    /// - Parameter reset: Reset the body content before sending the response.
     /// - Throws: An error in the Cocoa domain, if the file cannot be read.
-    public func send(download: String) throws {
+    public func send(download: String, reset: Bool = false) throws {
         guard !state.invokedEnd else {
             Log.warning("RouterResponse send(download:) invoked after end() for \(self.request.urlURL)")
             return
         }
-        try send(fileName: StaticFileServer.ResourcePathHandler.getAbsolutePath(for: download))
+        try send(fileName: StaticFileServer.ResourcePathHandler.getAbsolutePath(for: download), reset: reset)
         headers.addAttachment(for: download)
     }
 
@@ -607,9 +621,10 @@ public class RouterResponse {
     /// If the data is not a valid JSON structure, it will not be sent and a warning will be logged.
     ///
     /// - Parameter json: The array to send in JSON format.
+    /// - Parameter reset: Reset the body content before sending the response.
     /// - Returns: This RouterResponse.
     @discardableResult
-    public func send(json: [Any]) -> RouterResponse {
+    public func send(json: [Any], reset: Bool = false) -> RouterResponse {
         guard !state.invokedEnd else {
             Log.warning("RouterResponse send(json:) invoked after end() for \(self.request.urlURL)")
             return self
@@ -618,7 +633,7 @@ public class RouterResponse {
         do {
             let jsonData = try JSONSerializationType.data(withJSONObject: json, options:.prettyPrinted)
             headers.setType("json")
-            send(data: jsonData)
+            send(data: jsonData, reset: reset)
         } catch {
             Log.warning("Failed to convert JSON for sending: \(error.localizedDescription)")
         }
@@ -631,9 +646,10 @@ public class RouterResponse {
     /// If the data is not a valid JSON structure, it will not be sent and a warning will be logged.
     ///
     /// - Parameter json: The Dictionary to send in JSON format as a hash.
+    /// - Parameter reset: Reset the body content before sending the response.
     /// - Returns: This RouterResponse.
     @discardableResult
-    public func send(json: [String: Any]) -> RouterResponse {
+    public func send(json: [String: Any], reset: Bool = false) -> RouterResponse {
         guard !state.invokedEnd else {
             Log.warning("RouterResponse send(json:) invoked after end() for \(self.request.urlURL)")
             return self
@@ -642,7 +658,7 @@ public class RouterResponse {
         do {
             let jsonData = try JSONSerializationType.data(withJSONObject: json, options:.prettyPrinted)
             headers.setType("json")
-            send(data: jsonData)
+            send(data: jsonData, reset: reset)
         } catch {
             Log.warning("Failed to convert JSON for sending: \(error.localizedDescription)")
         }
@@ -661,9 +677,10 @@ extension RouterResponse {
     /// If no Accept header was provided, or if no suitable encoder is registered with the router, the encoder corresponding to the `defaultResponseMediaType` will be used.
     ///
     /// - Parameter obj: The Codable object to send.
+    /// - Parameter reset: Reset the body content before sending the response.
     /// - Returns: This RouterResponse.
     @discardableResult
-    public func send<T : Encodable>(_ obj: T) -> RouterResponse {
+    public func send<T : Encodable>(_ obj: T, reset: Bool = false) -> RouterResponse {
         guard !state.invokedEnd else {
             Log.warning("RouterResponse send(_ obj:) invoked after end() for \(self.request.urlURL)")
             return self
@@ -671,7 +688,7 @@ extension RouterResponse {
         do {
             let (mediaType, encoder) = selectResponseEncoder(request)
             headers["Content-Type"] = mediaType.description
-            send(data: try encoder.encode(obj))
+            send(data: try encoder.encode(obj), reset: reset)
         } catch {
             Log.warning("Failed to encode Codable object for sending: \(error.localizedDescription)")
             status(.internalServerError)
@@ -684,16 +701,17 @@ extension RouterResponse {
     /// Encodes an Encodable object into data using a `JSONEncoder()` and sends the data.
     ///
     /// - Parameter json: The JSON Encodable object to send.
+    /// - Parameter reset: Reset the body content before sending the response.
     /// - Returns: This RouterResponse.
     @discardableResult
-    public func send<T : Encodable>(json: T) -> RouterResponse {
+    public func send<T : Encodable>(json: T, reset: Bool = false) -> RouterResponse {
         guard !state.invokedEnd else {
             Log.warning("RouterResponse send(_ obj:) invoked after end() for \(self.request.urlURL)")
             return self
         }
         do {
             headers.setType("json")
-            send(data: try (encoders[.json]?() ?? JSONEncoder()).encode(json))
+            send(data: try (encoders[.json]?() ?? JSONEncoder()).encode(json), reset: reset)
         } catch {
             Log.warning("Failed to encode Codable object for sending: \(error.localizedDescription)")
             status(.internalServerError)
@@ -708,13 +726,14 @@ extension RouterResponse {
     /// - Parameter json: The JSON object to send.
     /// - Parameter callbackParameter: The name of the URL query
     /// parameter whose value contains the JSONP callback function.
+    /// - Parameter reset: Reset the body content before sending the response.
     ///
     /// - Throws: `JSONPError.invalidCallbackName` if the the callback
     /// query parameter of the request URL is missing or its value is
     /// empty or contains invalid characters (the set of valid characters
     /// is the alphanumeric characters and `[]$._`).
     /// - Returns: This RouterResponse.
-    public func send<T : Encodable>(jsonp: T, callbackParameter: String = "callback") throws -> RouterResponse {
+    public func send<T : Encodable>(jsonp: T, callbackParameter: String = "callback", reset: Bool = false) throws -> RouterResponse {
         guard !state.invokedEnd else {
             Log.warning("RouterResponse send(jsonp:) invoked after end() for \(self.request.urlURL)")
             return self
@@ -746,7 +765,7 @@ extension RouterResponse {
             // "/**/ " as security mitigation for Flash vulnerability
             // CVE-2014-4671, CVE-2014-5333 "Abusing JSONP with Rosetta Flash"
             headers["X-Content-Type-Options"] = "nosniff"
-            send("/**/ " + jsCallbackName + "(" + jsonToJS(jsonStr) + ")")
+            send("/**/ " + jsCallbackName + "(" + jsonToJS(jsonStr) + ")", reset: reset)
         } else {
             throw JSONPError.invalidCallbackName(name: taintedJSCallbackName)
         }
