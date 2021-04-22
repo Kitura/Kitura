@@ -754,6 +754,76 @@ extension RouterResponse {
     }
 }
 
+extension RouterResponse {
+
+    /// Define the options we can reset when call the reset function.
+    public struct ResetOptions: OptionSet {
+        /// Internal value: can be a combinaison of multiple options.
+        public let rawValue: Int
+        /// Initialize a reset option directly from a integer value.
+        /// Note: It is better/easier to use the static values and combine them.
+        public init(rawValue: Int) {
+            self.rawValue = rawValue
+        }
+
+        /// Reset the body content of the response.
+        public static let body       = ResetOptions(rawValue: 1 << 0)
+        /// Reset the state of the request: especially useful if the `end` has already been sent.
+        public static let state      = ResetOptions(rawValue: 1 << 1)
+        /// Reset the cookies set by previous sends.
+        public static let cookies    = ResetOptions(rawValue: 1 << 2)
+        /// Reset the errors to nil.
+        public static let error      = ResetOptions(rawValue: 1 << 3)
+        /// Reset the status code to the `unknown` value.
+        public static let statusCode = ResetOptions(rawValue: 1 << 4)
+        /// Remove any custom userInfo that may exists.
+        public static let userInfo   = ResetOptions(rawValue: 1 << 5)
+        /// Reset the headers to the response headers.
+        public static let headers    = ResetOptions(rawValue: 1 << 6)
+
+        /// Reset all the options.
+        public static let all: ResetOptions = [
+            .body, .state, .cookies, .error, .statusCode, .userInfo, .headers,
+        ]
+
+        /// Reset only internal (un-accessible publicly) options.
+        public static let `internal`: ResetOptions = [
+            .body, .state,
+        ]
+    }
+
+    /// Reset the sending buffer.
+    /// A typical usage would be to reset the buffer to add an error message instead.
+    /// It could be used to guaranty that there is no incomplete data
+    /// or multiple error messages send back to the client.
+    @discardableResult
+    public func reset(options: ResetOptions = .all) -> RouterResponse {
+        if options.contains(.body) {
+            buffer.reset()
+        }
+        if options.contains(.state) {
+            state.invokedEnd = false
+        }
+        if options.contains(.cookies) {
+            cookies = [String: HTTPCookie]()
+        }
+        if options.contains(.error) {
+            error = nil
+        }
+        if options.contains(.statusCode) {
+            statusCode = .unknown
+        }
+        if options.contains(.userInfo) {
+            userInfo = [:]
+        }
+        if options.contains(.headers) {
+            headers = Headers(headers: response.headers)
+        }
+
+        return self
+    }
+}
+
 /// Type alias for "Before flush" (i.e. before headers and body are written) lifecycle handler.
 public typealias LifecycleHandler = () -> Void
 
