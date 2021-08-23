@@ -64,7 +64,7 @@ extension Router {
             }
         }
     }
-    
+
     /**
      Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
      The closure accepts two successfully executed instances of `TypeSafeMiddleware`
@@ -99,7 +99,7 @@ extension Router {
             }
         }
     }
-    
+
     /**
      Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
      The closure accepts three successfully executed instances of `TypeSafeMiddleware`
@@ -174,7 +174,7 @@ extension Router {
             }
         }
     }
-    
+
     /**
      Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
      The closure accepts two successfully executed instances of `TypeSafeMiddleware`
@@ -287,6 +287,234 @@ extension Router {
                    return next()
                 }
                 handler(typeSafeMiddleware, identifier, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+            }
+        }
+    }
+
+    /**
+     Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+     The closure accepts a successfully executed instance of `TypeSafeMiddleware`, an identifier
+     the parsed query parameters and a handler which responds with a single Codable object or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives a TypeSafeMiddleware instance, an Identifier, a QueryParams instance and returns a single of Codable object or a RequestError.
+     :nodoc:
+     */
+    public func get<T: TypeSafeMiddleware, Id: Identifier, Q: QueryParams, O: Codable>(
+        _ route: String,
+        handler: @escaping (T, Id, Q?, @escaping CodableResultClosure<O>) -> Void
+    ) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
+            return
+        }
+        registerGetRoute(route: route, id: Id.self, queryParams: Q.self, optionalQParam: true, outputType: O.self)
+        get(appendId(path: route)) { request, response, next in
+            Log.verbose("Received GET (singular with identifier, middleware and Query Parameters) type-safe request")
+            self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
+                guard let typeSafeMiddleware = typeSafeMiddleware else {
+                    return next()
+                }
+                guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
+                   return next()
+                }
+                do {
+                    let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
+                    handler(typeSafeMiddleware, identifier, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+                } catch {
+                    // Http 400 error
+                    response.status(.badRequest)
+                    next()
+                }
+            }
+        }
+    }
+
+    /**
+     Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+     The closure accepts two successfully executed instances of `TypeSafeMiddleware`, an identifier
+     the parsed query parameters and a handler which responds with a single Codable object or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives two TypeSafeMiddleware instances, an Identifier, a QueryParams instance and returns a single of Codable object or a RequestError.
+     :nodoc:
+     */
+    public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Id: Identifier, Q: QueryParams, O: Codable>(
+        _ route: String,
+        handler: @escaping (T1, T2, Id, Q?, @escaping CodableResultClosure<O>) -> Void
+    ) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
+            return
+        }
+        registerGetRoute(route: route, id: Id.self, queryParams: Q.self, optionalQParam: true, outputType: O.self)
+        get(appendId(path: route)) { request, response, next in
+            Log.verbose("Received GET (singular with identifier, middleware and Query Parameters) type-safe request")
+            self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
+                guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
+                    return next()
+                }
+                guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
+                   return next()
+                }
+                do {
+                    let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
+                    handler(typeSafeMiddleware1, typeSafeMiddleware2, identifier, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+                } catch {
+                    // Http 400 error
+                    response.status(.badRequest)
+                    next()
+                }
+            }
+        }
+    }
+
+    /**
+     Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+     The closure accepts three successfully executed instances of `TypeSafeMiddleware`, an identifier
+     the parsed query parameters and a handler which responds with a single Codable object or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives three TypeSafeMiddleware instances, an Identifier, a QueryParams instance and returns a single of Codable object or a RequestError.
+     :nodoc:
+     */
+    public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Id: Identifier, Q: QueryParams, O: Codable>(
+        _ route: String,
+        handler: @escaping (T1, T2, T3, Id, Q?, @escaping CodableResultClosure<O>) -> Void
+    ) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
+            return
+        }
+        registerGetRoute(route: route, id: Id.self, queryParams: Q.self, optionalQParam: true, outputType: O.self)
+        get(appendId(path: route)) { request, response, next in
+            Log.verbose("Received GET (singular with identifier, middleware and Query Parameters) type-safe request")
+            self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
+                guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
+                    return next()
+                }
+                guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
+                   return next()
+                }
+                do {
+                    let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
+                    handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, identifier, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+                } catch {
+                    // Http 400 error
+                    response.status(.badRequest)
+                    next()
+                }
+            }
+        }
+    }
+
+    /**
+     Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+     The closure accepts a successfully executed instance of `TypeSafeMiddleware`, an identifier
+     the parsed query parameters and a handler which responds with a single Codable object or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives a TypeSafeMiddleware instance, an Identifier, a QueryParams instance and returns a single of Codable object or a RequestError.
+     :nodoc:
+     */
+    public func get<T: TypeSafeMiddleware, Id: Identifier, Q: QueryParams, O: Codable>(
+        _ route: String,
+        handler: @escaping (T, Id, Q?, @escaping CodableArrayResultClosure<O>) -> Void
+    ) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
+            return
+        }
+        registerGetRoute(route: route, id: Id.self, queryParams: Q.self, optionalQParam: true, outputType: O.self, outputIsArray: true)
+        get(appendId(path: route)) { request, response, next in
+            Log.verbose("Received GET (singular with identifier, middleware and Query Parameters) type-safe request")
+            self.handleMiddleware(T.self, request: request, response: response) { typeSafeMiddleware in
+                guard let typeSafeMiddleware = typeSafeMiddleware else {
+                    return next()
+                }
+                guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
+                   return next()
+                }
+                do {
+                    let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
+                    handler(typeSafeMiddleware, identifier, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+                } catch {
+                    // Http 400 error
+                    response.status(.badRequest)
+                    next()
+                }
+            }
+        }
+    }
+
+    /**
+     Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+     The closure accepts two successfully executed instances of `TypeSafeMiddleware`, an identifier
+     the parsed query parameters and a handler which responds with a single Codable object or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives two TypeSafeMiddleware instances, an Identifier, a QueryParams instance and returns a single of Codable object or a RequestError.
+     :nodoc:
+     */
+    public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, Id: Identifier, Q: QueryParams, O: Codable>(
+        _ route: String,
+        handler: @escaping (T1, T2, Id, Q?, @escaping CodableArrayResultClosure<O>) -> Void
+    ) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
+            return
+        }
+        registerGetRoute(route: route, id: Id.self, queryParams: Q.self, optionalQParam: true, outputType: O.self, outputIsArray: true)
+        get(appendId(path: route)) { request, response, next in
+            Log.verbose("Received GET (singular with identifier, middleware and Query Parameters) type-safe request")
+            self.handleMiddleware(T1.self, T2.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2 in
+                guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2 else {
+                    return next()
+                }
+                guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
+                   return next()
+                }
+                do {
+                    let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
+                    handler(typeSafeMiddleware1, typeSafeMiddleware2, identifier, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+                } catch {
+                    // Http 400 error
+                    response.status(.badRequest)
+                    next()
+                }
+            }
+        }
+    }
+
+    /**
+     Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
+     The closure accepts three successfully executed instances of `TypeSafeMiddleware`, an identifier
+     the parsed query parameters and a handler which responds with a single Codable object or a `RequestError`.
+     The handler contains the developer's logic, which determines the server's response.
+     - Parameter route: A String specifying the URL path that will invoke the handler.
+     - Parameter handler: A closure that receives three TypeSafeMiddleware instances, an Identifier, a QueryParams instance and returns a single of Codable object or a RequestError.
+     :nodoc:
+     */
+    public func get<T1: TypeSafeMiddleware, T2: TypeSafeMiddleware, T3: TypeSafeMiddleware, Id: Identifier, Q: QueryParams, O: Codable>(
+        _ route: String,
+        handler: @escaping (T1, T2, T3, Id, Q?, @escaping CodableArrayResultClosure<O>) -> Void
+    ) {
+        if !pathSyntaxIsValid(route, identifierExpected: true) {
+            return
+        }
+        registerGetRoute(route: route, id: Id.self, queryParams: Q.self, optionalQParam: true, outputType: O.self, outputIsArray: true)
+        get(appendId(path: route)) { request, response, next in
+            Log.verbose("Received GET (singular with identifier, middleware and Query Parameters) type-safe request")
+            self.handleMiddleware(T1.self, T2.self, T3.self, request: request, response: response) { typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3 in
+                guard let typeSafeMiddleware1 = typeSafeMiddleware1, let typeSafeMiddleware2 = typeSafeMiddleware2, let typeSafeMiddleware3 = typeSafeMiddleware3 else {
+                    return next()
+                }
+                guard let identifier = CodableHelpers.parseIdOrSetResponseStatus(Id.self, from: request, response: response) else {
+                   return next()
+                }
+                do {
+                    let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
+                    handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, identifier, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
+                } catch {
+                    // Http 400 error
+                    response.status(.badRequest)
+                    next()
+                }
             }
         }
     }
@@ -527,7 +755,7 @@ extension Router {
                     let query: Q = try QueryDecoder(dictionary: request.queryParameters).decode(Q.self)
                     handler(typeSafeMiddleware, query, CodableHelpers.constructOutResultHandler(response: response, completion: next))
                 } catch {
-                    // Http 400 error
+                    // Http 400 error 2
                     response.status(.badRequest)
                     next()
                 }
@@ -681,7 +909,7 @@ extension Router {
             }
         }
     }
-    
+
     /**
      Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
      The closure accepts a successfully executed instance of `TypeSafeMiddleware`, the parsed query parameters,
@@ -784,7 +1012,7 @@ extension Router {
             }
         }
     }
-    
+
     /**
      Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
      The closure accepts two successfully executed instances of `TypeSafeMiddleware`, the parsed query parameters,
@@ -882,7 +1110,7 @@ extension Router {
             }
         }
     }
-    
+
     /**
      Sets up a closure that will be invoked when a GET request to the provided route is received by the server.
      The closure accepts three successfully executed instances of `TypeSafeMiddleware`, the parsed query parameters,
@@ -1209,7 +1437,7 @@ extension Router {
             }
         }
     }
-    
+
     /**
      Sets up a closure that will be invoked when a DELETE request to the provided route is received by the server.
      The closure accepts a successfully executed instance of `TypeSafeMiddleware`, the parsed query parameters,
@@ -1311,7 +1539,7 @@ extension Router {
             }
         }
     }
-    
+
     /**
      Sets up a closure that will be invoked when a DELETE request to the provided route is received by the server.
      The closure accepts two successfully executed instances of `TypeSafeMiddleware`, the parsed query parameters,
@@ -1408,7 +1636,7 @@ extension Router {
             }
         }
     }
-    
+
     /**
      Sets up a closure that will be invoked when a DELETE request to the provided route is received by the server.
      The closure accepts three successfully executed instances of `TypeSafeMiddleware`, the parsed query parameters,
@@ -1830,7 +2058,7 @@ extension Router {
                     let codableInput = CodableHelpers.readCodableOrSetResponseStatus(I.self, from: request, response: response)
                 else {
                     return next()
-                    
+
                 }
                 handler(typeSafeMiddleware1, typeSafeMiddleware2, typeSafeMiddleware3, identifier, codableInput, CodableHelpers.constructOutResultHandler(response: response, completion: next))
             }
