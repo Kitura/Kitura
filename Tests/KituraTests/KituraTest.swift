@@ -397,6 +397,13 @@ class KituraTest: XCTestCase {
             XCTFail("Unable to remove \(path): \(error.localizedDescription)")
         }
     }
+
+    func failIfFileExists(_ path: String) {
+        let fm = FileManager.default
+        if fm.fileExists(atPath: path) {
+            XCTFail("File should not exist at: \(path)")
+        }
+    }
 }
 
 fileprivate extension UInt16 {

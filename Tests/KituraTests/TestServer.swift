@@ -271,7 +271,11 @@ final class TestServer: KituraTest, KituraTestSuite {
         // Create a temporary socket path for this server
         let socketPath = uniqueTemporaryFilePath()
         defer {
-            removeTemporaryFilePath(socketPath)
+            if useNIO {
+                failIfFileExists(socketPath)
+            } else {
+                removeTemporaryFilePath(socketPath)
+            }
         }
 
         let router = Router()
