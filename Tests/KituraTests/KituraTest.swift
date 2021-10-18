@@ -52,6 +52,8 @@ protocol KituraTestSuite {
     #endif
 }
 
+typealias AsyncTaskCompletion = ()->Void
+
 class KituraTest: XCTestCase {
     // A singleton Kitura server listening on HTTP on an INET socket
     static private(set) var httpInetServer: HTTPServer?
@@ -110,12 +112,12 @@ class KituraTest: XCTestCase {
     }
 
     func performServerTest(_ router: ServerDelegate, options: ServerOptions? = nil, sslOption: SSLOption = SSLOption.both, socketTypeOption: SocketTypeOption = SocketTypeOption.both, timeout: TimeInterval = 10,
-                           line: Int = #line, asyncTasks: (XCTestExpectation) -> Void...) {
+                           line: Int = #line, asyncTasks: (@escaping AsyncTaskCompletion)->Void...) {
         performServerTest(router, options: options, sslOption: sslOption, socketTypeOption: socketTypeOption, timeout: timeout, line: line, asyncTasks: asyncTasks)
     }
 
     func performServerTest(_ router: ServerDelegate, options: ServerOptions? = nil, sslOption: SSLOption = SSLOption.both, socketTypeOption: SocketTypeOption = SocketTypeOption.both, timeout: TimeInterval = 10,
-                           line: Int = #line, asyncTasks: [(XCTestExpectation) -> Void]) {
+                           line: Int = #line, asyncTasks: [(@escaping AsyncTaskCompletion)->Void]) {
         if sslOption != SSLOption.httpsOnly {
             self.useSSL = false
             if socketTypeOption != SocketTypeOption.unix {
@@ -150,7 +152,8 @@ class KituraTest: XCTestCase {
         }
     }
 
-    func doPerformServerTest(router: ServerDelegate, options: ServerOptions?, timeout: TimeInterval, line: Int, asyncTasks: [(XCTestExpectation) -> Void]) {
+    func doPerformServerTest(router: ServerDelegate, options: ServerOptions?, timeout: TimeInterval, line: Int, asyncTasks: [(@escaping AsyncTaskCompletion) -> Void]) {
+        // ensure there is only one server at a time because of use of global variables
 
         if self.useUnixSocket {
             guard let socketPath = startUnixSocketServer(router: router, options: options) else {
@@ -164,17 +167,18 @@ class KituraTest: XCTestCase {
             self.port = port
         }
         let requestQueue = DispatchQueue(label: "Request queue")
-        for (index, asyncTask) in asyncTasks.enumerated() {
-            let expectation = self.expectation(line: line, index: index)
+        let group = DispatchGroup()
+        for asyncTask in asyncTasks {
+            group.enter()
             requestQueue.async {
-                asyncTask(expectation)
+                asyncTask {
+                    group.leave()
+                }
             }
         }
 
-        // wait for timeout or for all created expectations to be fulfilled
-        waitForExpectations(timeout: timeout) { error in
-            XCTAssertNil(error)
-        }
+        let result = group.wait(timeout: .now() + timeout)
+        XCTAssertTrue(result == .success)
 
         // If we created a short-lived server for specific ServerOptions, shut it down now
         serverWithOptions?.stop()

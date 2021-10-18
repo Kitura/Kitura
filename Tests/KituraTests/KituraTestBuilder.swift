@@ -307,22 +307,22 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
         // Construct a list of async tasks that will perform each
         // request in turn and test their associated assertions
         let tasks = requests.map { request in
-            return { (expectation: XCTestExpectation) in
+            return { (asyncTaskCompletion: @escaping AsyncTaskCompletion) in
                 do {
                     try request.invoker() { response in
                         guard let response = response else {
                             XCTFail("Expected response object")
-                            expectation.fulfill()
+                            asyncTaskCompletion()
                             return
                         }
                         for assertion in request.assertions {
                             assertion(response)
                         }
-                        expectation.fulfill()
+                        asyncTaskCompletion()
                     }
                 } catch {
                     XCTFail("Failed to build request: \(error)")
-                    expectation.fulfill()
+                    asyncTaskCompletion()
                 }
             }
         }

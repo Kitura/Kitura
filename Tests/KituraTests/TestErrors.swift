@@ -40,35 +40,35 @@ final class TestErrors: KituraTest, KituraTestSuite {
     let router = Router()
 
     func testInvalidMethod() {
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("invalid", path: "/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(String(describing: response?.statusCode))")
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             let method = RouterMethod(fromRawValue: "PLOVER")
             XCTAssertEqual(method, .unknown, "Router method should be .unknown, it was \(method)")
-            expectation.fulfill()
+            asyncTaskCompletion()
         })
     }
 
     func testInvalidEndpoint() {
-        performServerTest(router) { expectation in
+        performServerTest(router) { asyncTaskCompletion in
             self.performRequest("get", path: "/notreal", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
     }
 
     func testInvalidHeader() {
-        performServerTest(router) { expectation in
+        performServerTest(router) { asyncTaskCompletion in
             self.performRequest("get", path: "/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 // should this be ok?
-                expectation.fulfill()
+                asyncTaskCompletion()
             }) {req in
                 req.headers = ["garbage": "dfsfdsf"]
             }

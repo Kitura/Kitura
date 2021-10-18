@@ -60,10 +60,10 @@ final class TestRequests: KituraTest, KituraTestSuite {
             next()
         }
 
-        performServerTest(router, socketTypeOption: .inet) { expectation in
+        performServerTest(router, socketTypeOption: .inet) { asyncTaskCompletion in
             self.performRequest("get", path: "/zxcv/ploni", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
     }
@@ -142,16 +142,16 @@ final class TestRequests: KituraTest, KituraTestSuite {
             next()
         }
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: "/abc?key1=value1&key2=value2&key3=value3.1&key3=value3.2&key3=value3.3", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         },
-        { expectation in
+        { asyncTaskCompletion in
             self.performRequest("get", path: "/xyz?key1=value1&key2=value2&key3=value3", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
     }
@@ -180,10 +180,10 @@ final class TestRequests: KituraTest, KituraTestSuite {
             next()
         }
 
-        performServerTest(router) { expectation in
+        performServerTest(router) { asyncTaskCompletion in
             self.performRequest("get", path: path, callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
     }
@@ -260,16 +260,16 @@ final class TestRequests: KituraTest, KituraTestSuite {
             next()
         }
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: "users/random/1000", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertNotNil(response?.headers["User"])
                 XCTAssertNotNil(response?.headers["User-Id"])
                 XCTAssertEqual(response?.headers["User"]?.first, "random")
                 XCTAssertEqual(response?.headers["User-Id"]?.first, "1000")
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "posts/random/11000", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertNil(response?.headers["User"])
@@ -284,7 +284,7 @@ final class TestRequests: KituraTest, KituraTestSuite {
                     XCTFail()
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
     }
@@ -309,9 +309,9 @@ final class TestRequests: KituraTest, KituraTestSuite {
             next()
         }
 
-        performServerTest(router) { expectation in
+        performServerTest(router) { asyncTaskCompletion in
             self.performRequest("get", path: "item/1000", callback: { response in
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
     }
@@ -357,13 +357,13 @@ final class TestRequests: KituraTest, KituraTestSuite {
             next()
         }
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: "item/1000", callback: { response in
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        } , { expectation in
+        } , { asyncTaskCompletion in
             self.performRequest("get", path: "user/bob", callback: { response in
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
     }
@@ -393,7 +393,7 @@ final class TestRequests: KituraTest, KituraTestSuite {
             next()
         }
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: "users/random/1000", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertNotNil(response?.headers["User-Id"])
@@ -407,9 +407,9 @@ final class TestRequests: KituraTest, KituraTestSuite {
                     XCTFail()
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "users/random/dsa", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertNil(response?.headers["User-Id"])
@@ -422,7 +422,7 @@ final class TestRequests: KituraTest, KituraTestSuite {
                     XCTFail()
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
     }

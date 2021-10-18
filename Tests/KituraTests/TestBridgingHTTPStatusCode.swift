@@ -41,7 +41,7 @@ final class TestBridgingHTTPStatusCode: KituraTest, KituraTestSuite {
     let router = TestBridgingHTTPStatusCode.setupRouter()
 
     func testSimpleResponse() {
-    	performServerTest(router) { expectation in
+    	performServerTest(router) { asyncTaskCompletion in
             self.performRequest("get", path:"/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
@@ -53,7 +53,7 @@ final class TestBridgingHTTPStatusCode: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
     }

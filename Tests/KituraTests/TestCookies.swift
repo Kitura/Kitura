@@ -66,7 +66,7 @@ final class TestCookies: KituraTest, KituraTestSuite {
     }
 
     private func cookieToServer(separator: String, quoteValue: Bool) {
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             let cookieMap = [" Plover ": " value with spaces ",
                            "Zxcv": "(E = mc^2)",
                            "value with one quote": "\"",
@@ -103,13 +103,13 @@ final class TestCookies: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Failed reading the body of the response")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             }, headers: ["Cookie": rawCookies.joined(separator: separator)])
         })
     }
 
     func testCookieFromServer() {
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: "/1/sendcookie", callback: {response in
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "/1/sendcookie route did not match single path request")
 
@@ -133,9 +133,9 @@ final class TestCookies: KituraTest, KituraTestSuite {
                     XCTAssertNotNil(cookie2Expire, "\(cookie2Name) had no expiration date. It should have had one")
                     XCTAssertEqual(cookie2Expire, SPIUtils.httpDate(cookie2ExpireExpected))
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/2/sendcookie", callback: { response in
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "/2/sendcookie route did not match single path request")
 
@@ -148,9 +148,9 @@ final class TestCookies: KituraTest, KituraTestSuite {
                     XCTAssertTrue(cookie.isSecure, "\(cookie3Name) wasn't marked as secure. It should have been marked so.")
                     XCTAssertNil(cookieExpire, "\(cookie3Name) had an expiration date. It shouldn't have had one")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/3/sendcookie", callback: { response in
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK,
                     "/3/sendcookie route did not match single path request")
@@ -162,9 +162,9 @@ final class TestCookies: KituraTest, KituraTestSuite {
                     XCTAssertEqual(cookie.path, "/", "Path of Cookie \(cookie4Name) is not (/), was \(cookie.path)")
                     XCTAssertEqual(cookie.domain, cookieHost as String, "Domain of Cookie \(cookie4Name) is not \(cookieHost), was \(cookie.domain)")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/3/sendcookie", callback: { response in
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK,
                                "/3/sendcookie route did not match single path request")
@@ -177,7 +177,7 @@ final class TestCookies: KituraTest, KituraTestSuite {
                     XCTAssertEqual(cookie.domain, cookieHost as String, "Domain of Cookie \(cookie4Name) is not \(cookieHost), was \(cookie.domain)")
                     XCTAssertTrue(cookie.isSecure, "\(cookie4Name) wasn't marked as secure. It should have been marked so.")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
     )}
@@ -233,7 +233,7 @@ final class TestCookies: KituraTest, KituraTestSuite {
     }
 
     func testNoCookies() {
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: "/1/cookiedump", callback: {response in
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "cookiedump route did not match single path request")
                 do {
@@ -249,9 +249,9 @@ final class TestCookies: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Failed reading the body of the response")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/1/cookiedump", callback: {response in
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "cookiedump route did not match single path request")
                 do {
@@ -267,7 +267,7 @@ final class TestCookies: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Failed reading the body of the response")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             }, headers: ["Cookie": "ploverxyzzy"])
         })
     }

@@ -1,4 +1,4 @@
-// swift-tools-version:5.0
+// swift-tools-version:5.2
 
 /**
  * Copyright IBM Corporation and the Kitura project authors 2016-2020
@@ -47,7 +47,12 @@ let package = Package(
     targets: [
         .target(
             name: "Kitura",
-            dependencies: ["KituraNet", "KituraTemplateEngine", "KituraContracts", "TypeDecoder", "LoggerAPI", "Logging"]
+            dependencies: [
+                .product(name: "KituraNet", package: "Kitura-NIO"),
+                .product(name: "KituraTemplateEngine", package: "Kitura-TemplateEngine"),
+                .product(name: "Logging", package: "swift-log"),
+                "KituraContracts", "TypeDecoder", "LoggerAPI",
+                ]
         ),
         .testTarget(
             name: "KituraTests",

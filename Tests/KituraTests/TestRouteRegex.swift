@@ -149,7 +149,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("", handler: handler)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: "", callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -160,7 +160,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
 
@@ -168,7 +168,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("", middleware: subrouter)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: "/helloworld", callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -179,7 +179,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
 
@@ -187,19 +187,19 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("", allowPartialMatch: false, middleware: subrouter)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: "", callback: { response in
                 // Test broken due to router default response
                 // Disable for now
                 // XCTAssertEqual(response?.statusCode, .notFound)
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/helloworld", callback: { response in
                 XCTAssertEqual(response?.statusCode, .notFound)
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
 
@@ -207,7 +207,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("/", handler: handler)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: "", callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -218,7 +218,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
 
@@ -226,7 +226,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("/", middleware: subrouter)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -237,7 +237,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
 
@@ -245,7 +245,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("/*", handler: handler)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: "/123/abc/456/def", callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -256,7 +256,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
 
@@ -264,11 +264,11 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("/*", middleware: subrouter)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .notFound)
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
     }
@@ -281,7 +281,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("/test", handler: handler)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: "/test", callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -292,7 +292,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
 
@@ -300,7 +300,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("/test", middleware: subrouter)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: "/test" + mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -311,7 +311,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
 
@@ -319,7 +319,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("/:id", handler: handler)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: "/" + id, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -334,7 +334,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("\(error)")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
 
@@ -342,7 +342,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("/:id", middleware: subrouter)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: "/" + id + mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -357,7 +357,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
 
@@ -365,7 +365,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("/:id", allowPartialMatch: false, middleware: subrouter)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -380,7 +380,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
     }
@@ -394,7 +394,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("/:id?", handler: handler)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: "", callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -405,9 +405,9 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/" + id, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -422,7 +422,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
 
@@ -430,7 +430,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("/:id?" + mountpath, handler: handler)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -441,9 +441,9 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/" + id + mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -458,7 +458,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
 
@@ -466,7 +466,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("/:id*", handler: handler)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: "", callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -477,9 +477,9 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/" + id, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -494,9 +494,9 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/123/abc/456", callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -511,7 +511,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
 
@@ -519,7 +519,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("/:id*" + mountpath, handler: handler)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -530,9 +530,9 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/" + id + mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -547,9 +547,9 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/123/abc/456" + mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -564,7 +564,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
 
@@ -572,15 +572,15 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("/:id+", handler: handler)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: "", callback: { response in
                 // Test broken due to router default response
                 // Disable for now
                 // XCTAssertEqual(response?.statusCode, .notFound)
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/" + id, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -595,9 +595,9 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/123/abc/456", callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -612,7 +612,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
 
@@ -620,13 +620,13 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("/:id+" + mountpath, handler: handler)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .notFound)
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/" + id + mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -641,9 +641,9 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/123/abc/456" + mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -658,7 +658,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
     }
@@ -670,7 +670,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("/:id(\\d+)", handler: handler)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: "/" + id, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -685,13 +685,13 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/abc", callback: { response in
                 XCTAssertEqual(response?.statusCode, .notFound)
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
 
@@ -699,7 +699,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("/:id(\\d+)", middleware: subrouter)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: "/" + id + mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -714,13 +714,13 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/abc" + mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .notFound)
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
     }
@@ -734,7 +734,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("/:id(\\d+)?", handler: handler)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: "", callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -745,9 +745,9 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/" + id, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -762,13 +762,13 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/abc", callback: { response in
                 XCTAssertEqual(response?.statusCode, .notFound)
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
 
@@ -776,7 +776,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("/:id(\\d+)?", middleware: subrouter)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -787,9 +787,9 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/" + id + mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -804,13 +804,13 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/abc" + mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .notFound)
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
 
@@ -818,7 +818,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("/:id(\\d+)*", handler: handler)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: "", callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -829,9 +829,9 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/" + id, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -846,9 +846,9 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/123/456/789", callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -863,13 +863,13 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/123/abc/456", callback: { response in
                 XCTAssertEqual(response?.statusCode, .notFound)
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
 
@@ -877,7 +877,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("/:id(\\d+)*", middleware: subrouter)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -888,9 +888,9 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/" + id + mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -905,9 +905,9 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/123/456/789" + mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -922,13 +922,13 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/123/abc/456" + mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .notFound)
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
 
@@ -936,15 +936,15 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("/:id(\\d+)+", handler: handler)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: "", callback: { response in
                 // Test broken due to router default response
                 // Disable for now
                 // XCTAssertEqual(response?.statusCode, .notFound)
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/" + id, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -959,9 +959,9 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/123/456/789", callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -976,13 +976,13 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/123/abc/456", callback: { response in
                 XCTAssertEqual(response?.statusCode, .notFound)
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
 
@@ -990,13 +990,13 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
 
         router.all("/:id(\\d+)+", middleware: subrouter)
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: mountpath, callback: { response in
                  XCTAssertEqual(response?.statusCode, .notFound)
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/" + id + mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -1011,9 +1011,9 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/123/456/789" + mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -1028,13 +1028,13 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }, { asyncTaskCompletion in
             self.performRequest("get", path: "/123/abc/456" + mountpath, callback: { response in
                 XCTAssertEqual(response?.statusCode, .notFound)
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
     }
@@ -1045,11 +1045,11 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
         router.get("/say%20hello", handler: makeHandler(helloworld + " with %20"))
         router.get("/say+hello", handler: makeHandler(helloworld + " with +"))
 
-        performServerTest(router, asyncTasks: { expectation in
+        performServerTest(router, asyncTasks: { asyncTaskCompletion in
             self.performRequest("get", path: "/say%20hello", callback: { response in
                 guard let response = response else {
                     XCTFail("ClientRequest response object was nil")
-                    expectation.fulfill()
+                    asyncTaskCompletion()
                     return
                 }
 
@@ -1062,7 +1062,7 @@ final class TestRouteRegex: KituraTest, KituraTestSuite {
                     XCTFail("Unable to read response body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         })
     }
