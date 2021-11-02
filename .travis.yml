@@ -22,7 +22,7 @@ matrix:
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=docker.kitura.net/kitura/swift-ci-ubuntu16.04:5.1.5 SWIFT_TEST_ARGS="--parallel"
+      env: DOCKER_IMAGE=docker.kitura.net/kitura/swift-ci-ubuntu16.04:5.2.5 SWIFT_TEST_ARGS="--parallel"
     - os: linux
       dist: bionic
       sudo: required
@@ -34,11 +34,11 @@ matrix:
       services: docker
       env: DOCKER_IMAGE=docker.kitura.net/kitura/swift-ci-ubuntu18.04:latest USE_SWIFT_DEVELOPMENT_SNAPSHOT=1 SWIFT_TEST_ARGS="--parallel"
     - os: osx
-      osx_image: xcode11
+      osx_image: xcode12.2
       sudo: required
       env: SWIFT_SNAPSHOT=5.1.5 JAZZY_ELIGIBLE=true SWIFT_TEST_ARGS="--parallel"
     - os: osx
-      osx_image: xcode12.2
+      osx_image: xcode12.5
       sudo: required
       env: SWIFT_TEST_ARGS="--parallel"
     - os: osx

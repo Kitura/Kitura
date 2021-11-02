@@ -25,7 +25,7 @@ var kituraNetPackage: Package.Dependency
 if ProcessInfo.processInfo.environment["KITURA_NIO"] == "0" {
     kituraNetPackage = .package(url: "https://github.com/Kitura/Kitura-net.git", from: "3.0.1")
 } else {
-    kituraNetPackage = .package(url: "https://github.com/Kitura/Kitura-NIO.git", from: "3.0.1")
+    kituraNetPackage = .package(url: "https://github.com/Kitura/Kitura-NIO.git", from: "3.1.0")
 }
 
 let package = Package(
