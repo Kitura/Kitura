@@ -375,19 +375,9 @@ class KituraTest: XCTestCase {
     }
 
     // Generates a unique temporary file path suitable for use as a Unix domain socket.
-    // On Linux, a path is returned within /tmp
-    // On MacOS, a path is returned within /var/folders
+    // path is returned within /tmp
     func uniqueTemporaryFilePath() -> String {
-        #if os(Linux)
         let temporaryDirectory = "/tmp"
-        #else
-        var temporaryDirectory: String
-        if #available(OSX 10.12, *) {
-            temporaryDirectory = FileManager.default.temporaryDirectory.path
-        } else {
-            temporaryDirectory = "/tmp"
-        }
-        #endif
         return temporaryDirectory + "/KituraTest." + String(ProcessInfo.processInfo.globallyUniqueString.prefix(20))
     }
 
