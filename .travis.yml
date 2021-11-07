@@ -13,38 +13,43 @@ branches:
     - /^kitura.*$/
 
 # the matrix of builds should cover each combination of Swift version
-# and platform that is supported. The version of Swift used is specified
-# by .swift-version, unless SWIFT_SNAPSHOT is specified.
+# and platform that is supported.
 #
+# The version of Swift used is specified by the image specified.
+# Alternatively USE_SWIFT_DEVELOPMENT_SNAPSHOT=1 will use the snapshot build specified in the Package-Builder repo.
+# (Deprecated: The version of Swift used is specified by .swift-version, unless SWIFT_SNAPSHOT is specified.)
+#
+# Parallel tests not currently working.  When they do work, include the following on the env line:
+#   SWIFT_TEST_ARGS="--parallel"
 matrix:
   include:
     - os: linux
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=docker.kitura.net/kitura/swift-ci-ubuntu16.04:5.2.5 SWIFT_TEST_ARGS="--parallel"
+      env: DOCKER_IMAGE=docker.kitura.net/kitura/swift-ci-ubuntu16.04:5.2.5 SWIFT_TEST_ARGS=""
     - os: linux
       dist: bionic
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=docker.kitura.net/kitura/swift-ci-ubuntu18.04:5.4 SWIFT_TEST_ARGS="--parallel"
+      env: DOCKER_IMAGE=docker.kitura.net/kitura/swift-ci-ubuntu18.04:5.4 SWIFT_TEST_ARGS=""
     - os: linux
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=docker.kitura.net/kitura/swift-ci-ubuntu18.04:latest USE_SWIFT_DEVELOPMENT_SNAPSHOT=1 SWIFT_TEST_ARGS="--parallel"
+      env: DOCKER_IMAGE=docker.kitura.net/kitura/swift-ci-ubuntu18.04:latest USE_SWIFT_DEVELOPMENT_SNAPSHOT=1 SWIFT_TEST_ARGS=""
     - os: osx
       osx_image: xcode12.2
       sudo: required
-      env: JAZZY_ELIGIBLE=true SWIFT_TEST_ARGS="--parallel"
+      env: JAZZY_ELIGIBLE=true SWIFT_TEST_ARGS=""
     - os: osx
       osx_image: xcode12.5
       sudo: required
-      env: SWIFT_TEST_ARGS="--parallel"
+      env: SWIFT_TEST_ARGS=""
     - os: osx
       osx_image: xcode12.5
       sudo: required
-      env: USE_SWIFT_DEVELOPMENT_SNAPSHOT=1 SWIFT_TEST_ARGS="--parallel"
+      env: USE_SWIFT_DEVELOPMENT_SNAPSHOT=1 SWIFT_TEST_ARGS=""
 
 before_install:
   - git clone https://github.com/Kitura/Package-Builder.git
