@@ -114,8 +114,8 @@ final class TestCustomCoders: KituraTest, KituraTestSuite {
             next()
         }
         
-        performServerTest(customRouter) { asyncTaskCompletion in
-            self.performRequest("get", path: "/rawget", callback: { response in
+        performServerTest(customRouter) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/rawget", callback: { response in
                 if let response = response, let responseString = try? response.readString() {
                     XCTAssertEqual(responseString, "{\"date\":1519206456}")
                 } else {
@@ -125,8 +125,8 @@ final class TestCustomCoders: KituraTest, KituraTestSuite {
             })
         }
         
-        performServerTest(customRouter) { asyncTaskCompletion in
-            self.performRequest("post", path: "/rawpost", callback: { response in
+        performServerTest(customRouter) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "post", path: "/rawpost", callback: { response in
                 asyncTaskCompletion()
             })
         }
@@ -152,8 +152,8 @@ final class TestCustomCoders: KituraTest, KituraTestSuite {
             next()
         }
         
-        performServerTest(customRouter) { asyncTaskCompletion in
-            self.performRequest("get", path: "/rawget", callback: { response in
+        performServerTest(customRouter) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/rawget", callback: { response in
                 if let response = response,
                     let unwrappedString = (try? response.readString()).flatMap({ $0 })
                 {
@@ -168,8 +168,8 @@ final class TestCustomCoders: KituraTest, KituraTestSuite {
             }, headers: ["Accept": "application/x-www-form-urlencoded"])
         }
         
-        performServerTest(customRouter) { asyncTaskCompletion in
-            self.performRequest("get", path: "/rawget", callback: { response in
+        performServerTest(customRouter) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/rawget", callback: { response in
                 if let response = response, let responseString = try? response.readString() {
                     XCTAssertEqual(responseString, "{\"date\":540899256}")
                 } else {
@@ -181,8 +181,8 @@ final class TestCustomCoders: KituraTest, KituraTestSuite {
         
         customRouter.defaultResponseMediaType = .urlEncoded
 
-        performServerTest(customRouter) { asyncTaskCompletion in
-            self.performRequest("get", path: "/rawget", callback: { response in
+        performServerTest(customRouter) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/rawget", callback: { response in
                 if let response = response,
                     let unwrappedString = (try? response.readString()).flatMap({ $0 })
                 {
@@ -197,8 +197,8 @@ final class TestCustomCoders: KituraTest, KituraTestSuite {
             })
         }
         
-        performServerTest(customRouter) { asyncTaskCompletion in
-            self.performRequest("get", path: "/sendjson", callback: { response in
+        performServerTest(customRouter) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/sendjson", callback: { response in
                 if let response = response, let responseString = try? response.readString() {
                     XCTAssertEqual(responseString, "{\"date\":540899256}")
                 } else {
@@ -215,8 +215,8 @@ final class TestCustomCoders: KituraTest, KituraTestSuite {
         }
         customRouter.encoders[.json] = jsonEncoder
         
-        performServerTest(customRouter) { asyncTaskCompletion in
-            self.performRequest("get", path: "/sendjson", callback: { response in
+        performServerTest(customRouter) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/sendjson", callback: { response in
                 if let response = response, let responseString = try? response.readString() {
                     XCTAssertEqual(responseString, "{\"date\":1519206456}")
                 } else {

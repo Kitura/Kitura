@@ -71,8 +71,8 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
     let routerWithoutWelcome = TestStaticFileServer.setupRouter(enableWelcomePage: false)
 
     func testFileServer() {
-        performServerTest(router, asyncTasks: { asyncTaskCompletion in
-            self.performRequest("get", path:"/qwer", callback: {response in
+        performServerTest(router, asyncTasks: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path:"/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
@@ -88,8 +88,8 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
                 XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=2")
                 asyncTaskCompletion()
             })
-        }, { asyncTaskCompletion in
-            self.performRequest("get", path:"/qwer/index.html", callback: {response in
+        }, { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path:"/qwer/index.html", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
@@ -100,8 +100,8 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
                 }
                 asyncTaskCompletion()
             })
-        }, { asyncTaskCompletion in
-            self.performRequest("get", path:"/qwer/index", callback: {response in
+        }, { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path:"/qwer/index", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
@@ -112,8 +112,8 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
                 }
                 asyncTaskCompletion()
             })
-            }, { asyncTaskCompletion in
-                self.performRequest("get", path:"/zxcv/index.html", callback: {response in
+            }, { serverContext, asyncTaskCompletion in
+                self.performRequest(serverContext, "get", path:"/zxcv/index.html", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                     do {
@@ -128,32 +128,32 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
                     XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=0")
                     asyncTaskCompletion()
                 })
-            }, { asyncTaskCompletion in
-                self.performRequest("get", path:"/zxcv", callback: {response in
+            }, { serverContext, asyncTaskCompletion in
+                self.performRequest(serverContext, "get", path:"/zxcv", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
                     asyncTaskCompletion()
                 })
-            }, { asyncTaskCompletion in
-                self.performRequest("get", path:"/zxcv/index", callback: {response in
+            }, { serverContext, asyncTaskCompletion in
+                self.performRequest(serverContext, "get", path:"/zxcv/index", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
                     asyncTaskCompletion()
                 })
-            }, { asyncTaskCompletion in
-                self.performRequest("get", path:"/asdf", callback: {response in
+            }, { serverContext, asyncTaskCompletion in
+                self.performRequest(serverContext, "get", path:"/asdf", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
                     asyncTaskCompletion()
                 })
-            }, { asyncTaskCompletion in
-                self.performRequest("put", path:"/asdf", callback: {response in
+            }, { serverContext, asyncTaskCompletion in
+                self.performRequest(serverContext, "put", path:"/asdf", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing:response?.statusCode))")
                     asyncTaskCompletion()
                 })
-            }, { asyncTaskCompletion in
-                self.performRequest("get", path:"/asdf/", callback: {response in
+            }, { serverContext, asyncTaskCompletion in
+                self.performRequest(serverContext, "get", path:"/asdf/", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                     do {
@@ -239,8 +239,8 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
                                     expectedStatusCode: HTTPStatusCode = HTTPStatusCode.OK,
                                     bodyChecker: BodyChecker? = nil,
                                     withRouter: Router? = nil) {
-        performServerTest(withRouter ?? router) { asyncTaskCompletion in
-            self.performRequest("get", path: path, callback: { response in
+        performServerTest(withRouter ?? router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: path, callback: { response in
                 defer { asyncTaskCompletion() }
 
                 guard let response = response else {
@@ -336,8 +336,8 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
     
     func testRangeRequests() {
         let requestingBytes = 10
-        performServerTest(router) { asyncTaskCompletion in
-            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/qwer/index.html", callback: { response in
                 XCTAssertNotNil(response)
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent)
                 XCTAssertEqual(response?.headers["Content-Range"]?.first, "bytes 0-\(requestingBytes)/\(self.indexHtmlCount)")
@@ -352,8 +352,8 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
     }
 
     func testRangeRequestsWithLargeLastBytePos() {
-        performServerTest(router) { asyncTaskCompletion in
-            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/qwer/index.html", callback: { response in
                 XCTAssertNotNil(response)
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent)
                 XCTAssertEqual(response?.headers["Content-Range"]?.first, "bytes 2-53/54")
@@ -368,9 +368,9 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
     }
 
     func testRangeRequestIsIgnoredOnOptionOff() {
-        performServerTest(router) { asyncTaskCompletion in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
             // static server for "/tyui" has the range option off
-            self.performRequest("get", path: "/tyui/index.html", callback: { response in
+            self.performRequest(serverContext, "get", path: "/tyui/index.html", callback: { response in
                 XCTAssertNotNil(response)
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
                 var bodyData = Data()
@@ -383,8 +383,8 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
     }
 
     func testRangeRequestIsIgnoredOnNonGetMethod() {
-        performServerTest(router) { asyncTaskCompletion in
-            self.performRequest("head", path: "/qwer/index.html", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "head", path: "/qwer/index.html", callback: { response in
                 XCTAssertNotNil(response)
                 XCTAssertEqual(response?.headers["Accept-Ranges"]?.first, "bytes")
                 // Range requests should be ignored on non GET method
@@ -401,8 +401,8 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
     func testDataIsNotCorrupted() {
         // Corrupted files will have more bytes or less bytes than required
         // So we check the file is intact after reconstructing it (after various range requests)
-        performServerTest(router) { asyncTaskCompletion in
-            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/qwer/index.html", callback: { response in
                 XCTAssertNotNil(response)
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
                 XCTAssertNil(response?.headers["Content-Range"]?.first)
@@ -410,7 +410,7 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
                 var original = Data()
                 _ = try? response?.readAllData(into: &original)
 
-                self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                self.performRequest(serverContext, "get", path: "/qwer/index.html", callback: { response in
                     XCTAssertNotNil(response)
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent)
                     XCTAssertEqual(response?.headers["Content-Range"]?.first, "bytes 0-10/\(self.indexHtmlCount)")
@@ -418,7 +418,7 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
                     var reconstructed = Data()
                     _ = try? response?.readAllData(into: &reconstructed)
 
-                    self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                    self.performRequest(serverContext, "get", path: "/qwer/index.html", callback: { response in
                         XCTAssertNotNil(response)
                         XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent)
                         XCTAssertEqual(response?.headers["Content-Range"]?.first, "bytes 11-\(self.indexHtmlCount-1)/\(self.indexHtmlCount)")
@@ -475,8 +475,8 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
     }
 
     func testRangeRequestsWithMultipleRanges() {
-        performServerTest(router) { asyncTaskCompletion in
-            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/qwer/index.html", callback: { response in
                 defer {
                     asyncTaskCompletion()
                 }
@@ -527,8 +527,8 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
 
     func testRangeRequestWithNotSatisfiableRange() {
         /// when the first- byte-pos of the range is greater than the current length
-        performServerTest(router) { asyncTaskCompletion in
-            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/qwer/index.html", callback: { response in
                 XCTAssertNotNil(response)
                 XCTAssertEqual(response?.headers["Accept-Ranges"]?.first, "bytes")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.requestedRangeNotSatisfiable)
@@ -539,8 +539,8 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
     }
 
     func testRangeRequestWithSintacticallyInvalidRange() {
-        performServerTest(router) { asyncTaskCompletion in
-            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/qwer/index.html", callback: { response in
                 XCTAssertNotNil(response)
                 XCTAssertEqual(response?.headers["Accept-Ranges"]?.first, "bytes")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
@@ -551,8 +551,8 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
     }
 
     func testRangeRequestWithIfRangeHeaderWithETag() {
-        performServerTest(router) { asyncTaskCompletion in
-            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/qwer/index.html", callback: { response in
                 XCTAssertNotNil(response)
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
                 XCTAssertNotNil(response?.headers["Last-Modified"]?.first)
@@ -562,7 +562,7 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
                 }
 
                 // if ETag is the same then partial content (206) should be served
-                self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                self.performRequest(serverContext, "get", path: "/qwer/index.html", callback: { response in
                     XCTAssertNotNil(response)
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent)
                     XCTAssertEqual(response?.headers["Content-Range"]?.first, "bytes 0-10/\(self.indexHtmlCount)")
@@ -576,9 +576,9 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
     }
 
     func testRangeRequestWithIfRangeHeaderWithOldETag() {
-        performServerTest(router) { asyncTaskCompletion in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
             // if ETag is NOT the same then the entire file (200) should be served
-            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+            self.performRequest(serverContext, "get", path: "/qwer/index.html", callback: { response in
                 XCTAssertNotNil(response)
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
                 XCTAssertNil(response?.headers["Content-Range"]?.first
@@ -589,8 +589,8 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
     }
 
     func testRangeRequestWithIfRangeHeaderAsLastModified() {
-        performServerTest(router) { asyncTaskCompletion in
-            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/qwer/index.html", callback: { response in
                 XCTAssertNotNil(response)
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
                 guard let lastModified = response?.headers["Last-Modified"]?.first else {
@@ -600,7 +600,7 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
                 XCTAssertNotNil(response?.headers["eTag"]?.first)
 
                 // if Last-Modified is the same then partial content (206) should be served
-                self.performRequest("get", path: "/qwer/index.html", callback: { response in
+                self.performRequest(serverContext, "get", path: "/qwer/index.html", callback: { response in
                     XCTAssertNotNil(response)
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.partialContent)
                     XCTAssertEqual(response?.headers["Content-Range"]?.first, "bytes 0-10/\(self.indexHtmlCount)")
@@ -615,9 +615,9 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
 
     func testRangeRequestWithIfRangeHeaderAsOldLastModified() {
         // Range request with If-Range with etag
-        performServerTest(router) { asyncTaskCompletion in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
             // if Last-Modified is NOT the same then the entire file (200) should be served
-            self.performRequest("get", path: "/qwer/index.html", callback: { response in
+            self.performRequest(serverContext, "get", path: "/qwer/index.html", callback: { response in
                 XCTAssertNotNil(response)
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK)
                 XCTAssertNil(response?.headers["Content-Range"]?.first)
@@ -627,8 +627,8 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
     }
 
     func testStaticFileServerRedirectPreservingQueryParams() {
-        performServerTest(router) { asyncTaskCompletion in
-            self.performRequest("get", path: "/queryparams?a=b&c=d", followRedirects: false, callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/queryparams?a=b&c=d", followRedirects: false, callback: { response in
                 defer {
                     asyncTaskCompletion()
                 }
@@ -651,8 +651,8 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
         // This test verifies the fallback to the default index.html if the requested path
         // is not found. This feature is expected to be used by single file applications.
         let router = TestStaticFileServer.setupRouter(defaultIndex: "/index.html")
-        performServerTest(router, asyncTasks: { asyncTaskCompletion in
-            self.performRequest("get", path:"/help/contact", callback: { response in
+        performServerTest(router, asyncTasks: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path:"/help/contact", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
@@ -668,8 +668,8 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
 
     func testFallbackToDefaultIndexFailsIfOptionNotSet() {
         let router = TestStaticFileServer.setupRouter(defaultIndex: nil)
-        performServerTest(router, asyncTasks: { asyncTaskCompletion in
-            self.performRequest("get", path:"/help/contact", callback: { response in
+        performServerTest(router, asyncTasks: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path:"/help/contact", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
                 asyncTaskCompletion()
@@ -684,8 +684,8 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
             path: TestStaticFileServer.servingPathPrefix() + "Tests/KituraTests/TestStaticFileServer/",
             options: StaticFileServer.Options(defaultIndex: "/index.html")))
 
-        performServerTest(router, asyncTasks: { asyncTaskCompletion in
-            self.performRequest("get", path:"/help/contact/details", callback: { response in
+        performServerTest(router, asyncTasks: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path:"/help/contact/details", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {

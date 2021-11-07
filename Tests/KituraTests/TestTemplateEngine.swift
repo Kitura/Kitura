@@ -193,8 +193,8 @@ final class TestTemplateEngine: KituraTest, KituraTestSuite {
     }
 
     private func performRenderServerTest(withRouter router: Router, onPath path: String) {
-        performServerTest(router) { asyncTaskCompletion in
-            self.performRequest("get", path: path, callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: path, callback: { response in
                 guard let response = response else {
                     XCTFail("Got nil response")
                     asyncTaskCompletion()

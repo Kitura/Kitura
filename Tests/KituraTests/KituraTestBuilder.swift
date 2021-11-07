@@ -74,21 +74,21 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
     // assertions to be applied when the request is complete
     private class Request {
         let test: KituraTest
-        let invoker: (@escaping (ClientResponse?) -> Void) throws -> Void
+        var invoker: (KituraTest.ServerContext, @escaping (ClientResponse?) -> Void) throws -> Void
         fileprivate var assertions: [(ClientResponse) -> Void] = []
 
         init(_ test: KituraTest, _ method: String, _ path: String, headers: [String:String]? = nil) {
             self.test = test
-            self.invoker = { callback in
-                test.performRequest(method, path: path, callback: callback, headers: headers)
+            self.invoker = { serverContext, callback in
+                test.performRequest(serverContext, method, path: path, callback: callback, headers: headers)
             }
         }
 
         init<T: Encodable>(_ test: KituraTest, _ method: String, _ path: String, _ data: T, headers: [String:String]? = nil) {
             self.test = test
-            self.invoker = { callback in
+            self.invoker = { serverContext, callback in
                 let data = try JSONEncoder().encode(data)
-                test.performRequest(method, path: path, callback: callback, headers: headers, requestModifier: { request in
+                test.performRequest(serverContext, method, path: path, callback: callback, headers: headers, requestModifier: { request in
                     request.headers["Content-Type"] = "application/json; charset=utf-8"
                     request.write(from: data)
                 })
@@ -97,9 +97,9 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
         
         init<T: Encodable>(_ test: KituraTest, _ method: String, _ path: String, _ data: T, headers: [String:String]? = nil, encoder: @escaping () -> BodyEncoder, mediaType: MediaType = .json) {
             self.test = test
-            self.invoker = { callback in
+            self.invoker = { serverContext, callback in
                 let data = try encoder().encode(data)
-                test.performRequest(method, path: path, callback: callback, headers: headers, requestModifier: { request in
+                test.performRequest(serverContext, method, path: path, callback: callback, headers: headers, requestModifier: { request in
                     request.headers["Content-Type"] = "\(mediaType.description); charset=utf-8"
                     request.write(from: data)
                 })
@@ -108,8 +108,8 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
         
         init(_ test: KituraTest, _ method: String, _ path: String, _ urlEncodedString: String, headers: [String:String]? = nil) {
             self.test = test
-            self.invoker = { callback in
-                test.performRequest(method, path: path, callback: callback, headers: headers, requestModifier: { request in
+            self.invoker = { serverContext, callback in
+                test.performRequest(serverContext, method, path: path, callback: callback, headers: headers, requestModifier: { request in
                     request.headers["Content-Type"] = "application/x-www-form-urlencoded"
                     request.write(from: urlEncodedString)
                 })
@@ -119,13 +119,13 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
     let test: KituraTest
     let router: ServerDelegate
     let sslOption: SSLOption
-    let socketTypeOption: SocketTypeOption
+    let socketTypeOption: [SocketTypeOption]
     let timeout: TimeInterval
     let line: Int
     private var requests: [Request] = []
     private var currentRequest: Request? { return requests.last }
 
-    public init(test: KituraTest, router: ServerDelegate, sslOption: SSLOption, socketTypeOption: SocketTypeOption, timeout: TimeInterval, line: Int) {
+    public init(test: KituraTest, router: ServerDelegate, sslOption: SSLOption, socketTypeOption: [SocketTypeOption], timeout: TimeInterval, line: Int) {
         self.test = test
         self.router = router
         self.sslOption = sslOption
@@ -146,21 +146,21 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
     public func request<T: Encodable>(_ method: String, path: String, data: T) -> AssertionTestBuilder {
         return request(method, path: path, data: data, headers: nil)
     }
-    
+
     public func request<T: Encodable>(_ method: String, path: String, data: T, headers: [String:String]?) -> AssertionTestBuilder {
         requests.append(Request(test, method, path, data, headers: headers))
         return self
     }
-    
+
     public func request<T: Encodable>(_ method: String, path: String, data: T, headers: [String:String]?, encoder: @escaping () -> BodyEncoder) -> AssertionTestBuilder {
         requests.append(Request(test, method, path, data, headers: headers, encoder: encoder))
         return self
     }
-    
+
     public func request(_ method: String, path: String, urlEncodedString: String) -> AssertionTestBuilder {
         return request(method, path: path, urlEncodedString: urlEncodedString, headers: nil)
     }
-    
+
     public func request(_ method: String, path: String, urlEncodedString: String, headers: [String:String]?) -> AssertionTestBuilder {
         requests.append(Request(test, method, path, urlEncodedString, headers: headers))
         return self
@@ -307,9 +307,9 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
         // Construct a list of async tasks that will perform each
         // request in turn and test their associated assertions
         let tasks = requests.map { request in
-            return { (asyncTaskCompletion: @escaping AsyncTaskCompletion) in
+            return { (serverContext: KituraTest.ServerContext, asyncTaskCompletion: @escaping AsyncTaskCompletion) in
                 do {
-                    try request.invoker() { response in
+                    try request.invoker(serverContext) { response in
                         guard let response = response else {
                             XCTFail("Expected response object")
                             asyncTaskCompletion()

@@ -41,8 +41,8 @@ final class TestBridgingHTTPStatusCode: KituraTest, KituraTestSuite {
     let router = TestBridgingHTTPStatusCode.setupRouter()
 
     func testSimpleResponse() {
-    	performServerTest(router) { asyncTaskCompletion in
-            self.performRequest("get", path:"/qwer", callback: {response in
+    	performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path:"/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")

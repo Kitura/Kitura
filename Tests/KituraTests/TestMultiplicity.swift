@@ -33,18 +33,18 @@ final class TestMultiplicity: KituraTest, KituraTestSuite {
     let router = TestMultiplicity.setupRouter()
 
     func testPlus() {
-        performServerTest(router, asyncTasks: { asyncTaskCompletion in
-            self.performRequest("get", path: "/1/plus", callback: {response in
+        performServerTest(router, asyncTasks: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/1/plus", callback: {response in
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "Plus route did not match single path request")
                 asyncTaskCompletion()
             })
-        }, { asyncTaskCompletion in
-            self.performRequest("get", path: "/1/plus/plus", callback: {response in
+        }, { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/1/plus/plus", callback: {response in
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "Plus route did not match multiple path request")
                 asyncTaskCompletion()
                 })
-        }, { asyncTaskCompletion in
-            self.performRequest("get", path: "/1", callback: {response in
+        }, { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/1", callback: {response in
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "Plus route did not miss empty path request")
                 asyncTaskCompletion()
                 })
@@ -52,18 +52,18 @@ final class TestMultiplicity: KituraTest, KituraTestSuite {
     }
 
     func testStar() {
-        performServerTest(router, asyncTasks: { asyncTaskCompletion in
-            self.performRequest("get", path: "/2/star", callback: {response in
+        performServerTest(router, asyncTasks: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/2/star", callback: {response in
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "Star route did not match single path request")
                 asyncTaskCompletion()
             })
-        }, { asyncTaskCompletion in
-            self.performRequest("get", path: "/2/star/star", callback: {response in
+        }, { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/2/star/star", callback: {response in
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "Star route did not match multiple path request")
                 asyncTaskCompletion()
                 })
-        }, { asyncTaskCompletion in
-            self.performRequest("get", path: "/2", callback: {response in
+        }, { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/2", callback: {response in
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "Star route did not match empty path request")
                 asyncTaskCompletion()
                 })
@@ -71,18 +71,18 @@ final class TestMultiplicity: KituraTest, KituraTestSuite {
     }
 
     func testQuestion() {
-        performServerTest(router, asyncTasks: { asyncTaskCompletion in
-            self.performRequest("get", path: "/3/question", callback: {response in
+        performServerTest(router, asyncTasks: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/3/question", callback: {response in
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "Question route did not match single path request")
                 asyncTaskCompletion()
                 })
-        }, { asyncTaskCompletion in
-            self.performRequest("get", path: "/3/question/question", callback: {response in
+        }, { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/3/question/question", callback: {response in
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "Question route did not miss multiple path request")
                 asyncTaskCompletion()
                 })
-        }, { asyncTaskCompletion in
-            self.performRequest("get", path: "/3", callback: {response in
+        }, { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/3", callback: {response in
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "Question route did not match empty path request")
                 asyncTaskCompletion()
                 })
@@ -90,18 +90,18 @@ final class TestMultiplicity: KituraTest, KituraTestSuite {
     }
 
     func testCombined() {
-        performServerTest(router, asyncTasks: { asyncTaskCompletion in
-            self.performRequest("get", path: "/4/question/plus", callback: {response in
+        performServerTest(router, asyncTasks: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/4/question/plus", callback: {response in
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "Complex route did not match dropped star ending")
                 asyncTaskCompletion()
                 })
-        }, { asyncTaskCompletion in
-            self.performRequest("get", path: "/4/plus/plus/star", callback: {response in
+        }, { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/4/plus/plus/star", callback: {response in
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "Complex route did not match dropped beginning with extra middle")
                 asyncTaskCompletion()
                 })
-        }, { asyncTaskCompletion in
-            self.performRequest("get", path: "/4/question/plusssssss/plus/pluss/star/star", callback: {response in
+        }, { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/4/question/plusssssss/plus/pluss/star/star", callback: {response in
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "Complex route did not match internal extra plus signs with multiple extras")
                 asyncTaskCompletion()
                 })

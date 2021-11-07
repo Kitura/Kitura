@@ -112,7 +112,7 @@
 //            return
 //        }
 //        performServerTest(router, timeout: 30) { expectation in
-//            self.performRequest("post", path: "/employees", callback: { response in
+//            self.performRequest(serverContext, "post", path: "/employees", callback: { response in
 //                guard let response = response else {
 //                    XCTFail("ERROR!!! ClientRequest response object was nil")
 //                    expectation.fulfill()
@@ -150,7 +150,7 @@
 //        performServerTest(router, timeout: 30) { expectation in
 //            let expectedEmployees = employeeStore.map({ $0.value }) // TODO: Write these out explicitly?
 //
-//            self.performRequest("get", path: "/employees", callback: { response in
+//            self.performRequest(serverContext, "get", path: "/employees", callback: { response in
 //                guard let response = response else {
 //                    XCTFail("ERROR!!! ClientRequest response object was nil")
 //                    expectation.fulfill()
@@ -191,7 +191,7 @@
 //                return
 //            }
 //
-//            self.performRequest("get", path: "/employees/1", callback: { response in
+//            self.performRequest(serverContext, "get", path: "/employees/1", callback: { response in
 //                guard let response = response else {
 //                    XCTFail("ERROR!!! ClientRequest response object was nil")
 //                    expectation.fulfill()
@@ -233,7 +233,7 @@
 //                return
 //            }
 //
-//            self.performRequest("put", path: "/employees/1", callback: { response in
+//            self.performRequest(serverContext, "put", path: "/employees/1", callback: { response in
 //                guard let response = response else {
 //                    XCTFail("ERROR!!! ClientRequest response object was nil")
 //                    expectation.fulfill()
@@ -270,7 +270,7 @@
 //    func testDeleteAll() {
 //        performServerTest(router, timeout: 30) { expectation in
 //
-//            self.performRequest("delete", path: "/employees", callback: { response in
+//            self.performRequest(serverContext, "delete", path: "/employees", callback: { response in
 //                guard let response = response else {
 //                    XCTFail("ERROR!!! ClientRequest response object was nil")
 //                    return
@@ -291,7 +291,7 @@
 //
 //    func testDeleteSingle() {
 //        performServerTest(router, timeout: 30) { expectation in
-//            self.performRequest("delete", path: "/employees/1", callback: { response in
+//            self.performRequest(serverContext, "delete", path: "/employees/1", callback: { response in
 //                guard let response = response else {
 //                    XCTFail("ERROR!!! ClientRequest response object was nil")
 //                    return
