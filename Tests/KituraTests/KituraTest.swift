@@ -24,18 +24,16 @@ import Dispatch
 
 // The type of transport to use when communicating with the server.
 enum SSLOption {
-    // Tests will be performed over both HTTP and HTTPS.
-    case both
-    // Only HTTP will be tested.
-    case httpOnly
-    // Only HTTPS will be tested.
-    case httpsOnly
+    // HTTP will be tested.
+    case http
+    // HTTPS will be tested.
+    case https
 }
 
 enum SocketTypeOption {
-    // Only inet sockets will be tested
+    // inet sockets will be tested
     case inet
-    // Only unix sockets will be tested
+    // unix sockets will be tested
     case unix
 }
 
@@ -104,25 +102,25 @@ class KituraTest: XCTestCase {
         KituraTest.initOnce
     }
 
-    func buildServerTest(_ router: ServerDelegate, sslOption: SSLOption = SSLOption.both, socketTypeOption: [SocketTypeOption] = [.inet, .unix], timeout: TimeInterval = 10,
+    func buildServerTest(_ router: ServerDelegate, sslOption: [SSLOption] = [.http, .https], socketTypeOption: [SocketTypeOption] = [.inet, .unix], timeout: TimeInterval = 10,
                            line: Int = #line) -> RequestTestBuilder {
         return ServerTestBuilder(test: self, router: router, sslOption: sslOption, socketTypeOption: socketTypeOption, timeout: timeout, line: line)
     }
 
-    func performServerTest(_ router: ServerDelegate, options: ServerOptions? = nil, sslOption: SSLOption = SSLOption.both, socketTypeOption: [SocketTypeOption] = [.inet, .unix], timeout: TimeInterval = 10,
+    func performServerTest(_ router: ServerDelegate, options: ServerOptions? = nil, sslOption: [SSLOption] = [.http, .https], socketTypeOption: [SocketTypeOption] = [.inet, .unix], timeout: TimeInterval = 10,
                            line: Int = #line, asyncTasks: (KituraTest.ServerContext, @escaping AsyncTaskCompletion)->Void...) {
         performServerTest(router, options: options, sslOption: sslOption, socketTypeOption: socketTypeOption, timeout: timeout, line: line, asyncTasks: asyncTasks)
     }
 
-    func performServerTest(_ router: ServerDelegate, options: ServerOptions? = nil, sslOption: SSLOption = SSLOption.both, socketTypeOption: SocketTypeOption, timeout: TimeInterval = 10,
+    func performServerTest(_ router: ServerDelegate, options: ServerOptions? = nil, sslOption: [SSLOption] = [.http, .https], socketTypeOption: SocketTypeOption, timeout: TimeInterval = 10,
                            line: Int = #line, asyncTasks: [(KituraTest.ServerContext, @escaping AsyncTaskCompletion)->Void]) {
 
         performServerTest(router, options: options, sslOption: sslOption, socketTypeOption: [socketTypeOption], timeout: timeout, asyncTasks: asyncTasks)
     }
 
-    func performServerTest(_ router: ServerDelegate, options: ServerOptions? = nil, sslOption: SSLOption = SSLOption.both, socketTypeOption: [SocketTypeOption] = [.inet, .unix], timeout: TimeInterval = 10,
+    func performServerTest(_ router: ServerDelegate, options: ServerOptions? = nil, sslOption: [SSLOption] = [.http, .https], socketTypeOption: [SocketTypeOption] = [.inet, .unix], timeout: TimeInterval = 10,
                            line: Int = #line, asyncTasks: [(KituraTest.ServerContext, @escaping AsyncTaskCompletion)->Void]) {
-        if sslOption != SSLOption.httpsOnly {
+        if sslOption.contains(.http) {
             if socketTypeOption.contains(.inet) {
                 doPerformServerTest(router: router,
                                     config: ServerConfig(socketType: .inet, useSSL: false),
@@ -141,7 +139,7 @@ class KituraTest: XCTestCase {
         // Call setUp to start at a known state (ideally, this should have been written as a separate test)
         setUp()
 
-        if sslOption != SSLOption.httpOnly {
+        if sslOption.contains(.https) {
             if socketTypeOption.contains(.inet) {
                 doPerformServerTest(router: router,
                                     config: ServerConfig(socketType: .inet, useSSL: true),

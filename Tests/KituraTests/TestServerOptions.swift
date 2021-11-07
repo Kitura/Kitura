@@ -202,7 +202,7 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
 
         // Start server and make concurrent request attempts. performServerTest() will
         // not complete until all expectations (including client completion) are fulfilled.
-        performServerTest(router, options: ServerOptions(connectionLimit: maxClients), sslOption: .httpOnly, socketTypeOption: [.inet], timeout: 30) { serverContext, asyncTaskCompletion in
+        performServerTest(router, options: ServerOptions(connectionLimit: maxClients), sslOption: [.http], socketTypeOption: [.inet], timeout: 30) { serverContext, asyncTaskCompletion in
             let group = DispatchGroup()
             group.enter()
             for i in 0..<numClients {
@@ -250,7 +250,7 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
 
         // Start server and make concurrent request attempts. performServerTest() will
         // not complete until all expectations (including client completion) are fulfilled.
-        performServerTest(router, options: ServerOptions(connectionLimit: maxClients, connectionResponseGenerator: customResponse), sslOption: .httpOnly, socketTypeOption: [.inet], timeout: 30) { serverContext, asyncTaskCompletion in
+        performServerTest(router, options: ServerOptions(connectionLimit: maxClients, connectionResponseGenerator: customResponse), sslOption: [.http], socketTypeOption: [.inet], timeout: 30) { serverContext, asyncTaskCompletion in
             let group = DispatchGroup()
             for i in 0..<numClients {
                 usleep(1000)  // TODO: properly fix crash when creating ClientRequests concurrently
