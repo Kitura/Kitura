@@ -27,7 +27,7 @@ matrix:
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=docker.kitura.net/kitura/swift-ci-ubuntu16.04:5.2.5 SWIFT_TEST_ARGS=""
+      env: DOCKER_IMAGE=docker.kitura.net/kitura/swift-ci-ubuntu18.04:5.2.5 SWIFT_TEST_ARGS=""
     - os: linux
       dist: bionic
       sudo: required
