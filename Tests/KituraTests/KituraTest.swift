@@ -171,17 +171,25 @@ class KituraTest: XCTestCase {
             }
             serverContext = ServerContext(listenerType: .inet(port), useSSL: config.useSSL)
         }
-        let requestQueue = DispatchQueue(label: "Request queue", attributes: .concurrent )
+
+        // Some tests need to run in parallel.  So we need to use Threads rather than DispatchQueues since GCD will dynamically determine the number of threads based on environment.
+        var threads: [Thread] = []
         let group = DispatchGroup()
         for asyncTask in asyncTasks {
             group.enter()
-            requestQueue.async {
+            let thread = Thread() {
+                let g = DispatchGroup()
+                g.enter()
                 asyncTask(serverContext) {
-                    group.leave()
+                    g.leave()
                 }
+                g.wait()
+                group.leave()
             }
+            thread.start()
+            threads.append(thread)
         }
-
+        
         let result = group.wait(timeout: .now() + timeout)
         XCTAssertTrue(result == .success)
 
