@@ -66,13 +66,13 @@ final class TestRequests: KituraTest, KituraTestSuite {
             next()
         }
 
-        performServerTest(router, socketTypeOption: [.inet]) { serverContext, asyncTaskCompletion in
+        performServerTest(router, socketTypeOption: [.inet], asyncTasks: .init(task: { serverContext, asyncTaskCompletion in
             routerServerContext = serverContext
             self.performRequest(serverContext, "get", path: "/zxcv/ploni", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 asyncTaskCompletion()
             })
-        }
+        }))
     }
 
     func testQueryParameters() {
@@ -149,18 +149,18 @@ final class TestRequests: KituraTest, KituraTestSuite {
             next()
         }
 
-        performServerTest(router, asyncTasks: { serverContext, asyncTaskCompletion in
+        performServerTest(router, asyncTasks: AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path: "/abc?key1=value1&key2=value2&key3=value3.1&key3=value3.2&key3=value3.3", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 asyncTaskCompletion()
             })
-        },
-        { serverContext, asyncTaskCompletion in
+        }),
+        AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path: "/xyz?key1=value1&key2=value2&key3=value3", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 asyncTaskCompletion()
             })
-        })
+        }))
     }
 
     private func runMiddlewareTest(path: String) {
@@ -267,7 +267,7 @@ final class TestRequests: KituraTest, KituraTestSuite {
             next()
         }
 
-        performServerTest(router, asyncTasks: { serverContext, asyncTaskCompletion in
+        performServerTest(router, asyncTasks: AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path: "users/random/1000", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertNotNil(response?.headers["User"])
@@ -276,7 +276,7 @@ final class TestRequests: KituraTest, KituraTestSuite {
                 XCTAssertEqual(response?.headers["User-Id"]?.first, "1000")
                 asyncTaskCompletion()
             })
-        }, { serverContext, asyncTaskCompletion in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path: "posts/random/11000", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertNil(response?.headers["User"])
@@ -293,7 +293,7 @@ final class TestRequests: KituraTest, KituraTestSuite {
 
                 asyncTaskCompletion()
             })
-        })
+        }))
     }
 
     func testOneParameterMultipleHandlers() {
@@ -364,15 +364,15 @@ final class TestRequests: KituraTest, KituraTestSuite {
             next()
         }
 
-        performServerTest(router, asyncTasks: { serverContext, asyncTaskCompletion in
+        performServerTest(router, asyncTasks: AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path: "item/1000", callback: { response in
                 asyncTaskCompletion()
             })
-        } , { serverContext, asyncTaskCompletion in
+        }) , AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path: "user/bob", callback: { response in
                 asyncTaskCompletion()
             })
-        })
+        }))
     }
 
     func testParameterExit() {
@@ -400,7 +400,7 @@ final class TestRequests: KituraTest, KituraTestSuite {
             next()
         }
 
-        performServerTest(router, asyncTasks: { serverContext, asyncTaskCompletion in
+        performServerTest(router, asyncTasks: AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path: "users/random/1000", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertNotNil(response?.headers["User-Id"])
@@ -416,7 +416,7 @@ final class TestRequests: KituraTest, KituraTestSuite {
 
                 asyncTaskCompletion()
             })
-        }, { serverContext, asyncTaskCompletion in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path: "users/random/dsa", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertNil(response?.headers["User-Id"])
@@ -431,6 +431,6 @@ final class TestRequests: KituraTest, KituraTestSuite {
 
                 asyncTaskCompletion()
             })
-        })
+        }))
     }
 }

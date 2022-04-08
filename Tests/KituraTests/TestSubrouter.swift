@@ -45,7 +45,7 @@ final class TestSubrouter: KituraTest, KituraTestSuite {
     let router = TestSubrouter.setupRouter()
 
     func testSimpleSub() {
-        performServerTest(router, asyncTasks: { serverContext, asyncTaskCompletion in
+        performServerTest(router, asyncTasks: AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path:"/sub", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
@@ -59,7 +59,7 @@ final class TestSubrouter: KituraTest, KituraTestSuite {
                 }
                 asyncTaskCompletion()
             })
-        }, { serverContext, asyncTaskCompletion in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
         	self.performRequest(serverContext, "get", path:"/sub/sub1", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
@@ -70,13 +70,13 @@ final class TestSubrouter: KituraTest, KituraTestSuite {
                 }
                 asyncTaskCompletion()
             })
-        })
+        }))
     }
 
     func testExternSub() {
         router.all("/extern", middleware: ExternSubrouter.getRouter())
 
-        performServerTest(router, asyncTasks: { serverContext, asyncTaskCompletion in
+        performServerTest(router, asyncTasks: AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path:"/extern", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
@@ -90,7 +90,7 @@ final class TestSubrouter: KituraTest, KituraTestSuite {
                 }
                 asyncTaskCompletion()
             })
-        }, { serverContext, asyncTaskCompletion in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path:"/extern/sub1", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
@@ -101,11 +101,11 @@ final class TestSubrouter: KituraTest, KituraTestSuite {
                 }
                 asyncTaskCompletion()
             })
-        })
+        }))
     }
 
     func testSubSubs() {
-        performServerTest(router, asyncTasks: { serverContext, asyncTaskCompletion in
+        performServerTest(router, asyncTasks: AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path:"/sub/sub2", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
@@ -119,7 +119,7 @@ final class TestSubrouter: KituraTest, KituraTestSuite {
                 }
                 asyncTaskCompletion()
             })
-        }, { serverContext, asyncTaskCompletion in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path:"/sub/sub2/sub1", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
@@ -130,7 +130,7 @@ final class TestSubrouter: KituraTest, KituraTestSuite {
                 }
                 asyncTaskCompletion()
             })
-        })
+        }))
     }
 
     func testMultipleMiddleware() {
@@ -171,7 +171,7 @@ final class TestSubrouter: KituraTest, KituraTestSuite {
             res.send(json: req.parameters)
         }
 
-        performServerTest(router, asyncTasks: { serverContext, asyncTaskCompletion in
+        performServerTest(router, asyncTasks: AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path: "/root1/123/sub1/456/subsub1/789", callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -190,7 +190,7 @@ final class TestSubrouter: KituraTest, KituraTestSuite {
 
                 asyncTaskCompletion()
             })
-        }, { serverContext, asyncTaskCompletion in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path: "/root1/123/sub1/456/subsub2/passthrough", callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -209,7 +209,7 @@ final class TestSubrouter: KituraTest, KituraTestSuite {
 
                 asyncTaskCompletion()
             })
-        }, { serverContext, asyncTaskCompletion in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path: "/root2/123", callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
@@ -226,7 +226,7 @@ final class TestSubrouter: KituraTest, KituraTestSuite {
 
                 asyncTaskCompletion()
             })
-        })
+        }))
     }
 
     static func setupRouter() -> Router {

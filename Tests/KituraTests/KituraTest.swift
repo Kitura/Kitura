@@ -49,6 +49,20 @@ protocol KituraTestSuite {
 
 typealias AsyncTaskCompletion = ()->Void
 
+struct AsyncServerTask {
+    let file: String
+    let line: Int
+    let task: (KituraTest.ServerContext, @escaping AsyncTaskCompletion)->Void
+
+    init(file: String = #file, line: Int = #line, task: @escaping (KituraTest.ServerContext, @escaping AsyncTaskCompletion)->Void) {
+
+        self.file = file
+        self.line = line
+        self.task = task
+    }
+}
+
+
 class KituraTest: XCTestCase {
     // A singleton Kitura server listening on HTTP on an INET socket
     static private(set) var httpInetServer: HTTPServer?
@@ -108,18 +122,26 @@ class KituraTest: XCTestCase {
     }
 
     func performServerTest(_ router: ServerDelegate, options: ServerOptions? = nil, sslOption: [SSLOption] = [.http, .https], socketTypeOption: [SocketTypeOption] = [.inet, .unix], timeout: TimeInterval = 10,
-                           line: Int = #line, asyncTasks: (KituraTest.ServerContext, @escaping AsyncTaskCompletion)->Void...) {
+                           file: String = #file, line: Int = #line, asyncTasks task: @escaping (KituraTest.ServerContext, @escaping AsyncTaskCompletion)->Void) {
+
+        let asyncTask = AsyncServerTask(file: file, line: line, task: task)
+        performServerTest(router, options: options, sslOption: sslOption, socketTypeOption: socketTypeOption, timeout: timeout, line: line, asyncTasks: asyncTask)
+    }
+
+
+    func performServerTest(_ router: ServerDelegate, options: ServerOptions? = nil, sslOption: [SSLOption] = [.http, .https], socketTypeOption: [SocketTypeOption] = [.inet, .unix], timeout: TimeInterval = 10,
+                           line: Int = #line, asyncTasks: AsyncServerTask...) {
         performServerTest(router, options: options, sslOption: sslOption, socketTypeOption: socketTypeOption, timeout: timeout, line: line, asyncTasks: asyncTasks)
     }
 
     func performServerTest(_ router: ServerDelegate, options: ServerOptions? = nil, sslOption: [SSLOption] = [.http, .https], socketTypeOption: SocketTypeOption, timeout: TimeInterval = 10,
-                           line: Int = #line, asyncTasks: [(KituraTest.ServerContext, @escaping AsyncTaskCompletion)->Void]) {
+                           line: Int = #line, asyncTasks: [AsyncServerTask]) {
 
         performServerTest(router, options: options, sslOption: sslOption, socketTypeOption: [socketTypeOption], timeout: timeout, asyncTasks: asyncTasks)
     }
 
     func performServerTest(_ router: ServerDelegate, options: ServerOptions? = nil, sslOption: [SSLOption] = [.http, .https], socketTypeOption: [SocketTypeOption] = [.inet, .unix], timeout: TimeInterval = 10,
-                           line: Int = #line, asyncTasks: [(KituraTest.ServerContext, @escaping AsyncTaskCompletion)->Void]) {
+                           line: Int = #line, asyncTasks: [AsyncServerTask]) {
         if sslOption.contains(.http) {
             if socketTypeOption.contains(.inet) {
                 doPerformServerTest(router: router,
@@ -156,7 +178,7 @@ class KituraTest: XCTestCase {
         }
     }
 
-    private func doPerformServerTest(router: ServerDelegate, config: ServerConfig, options: ServerOptions?, timeout: TimeInterval, line: Int, asyncTasks: [(KituraTest.ServerContext, @escaping AsyncTaskCompletion) -> Void]) {
+    private func doPerformServerTest(router: ServerDelegate, config: ServerConfig, options: ServerOptions?, timeout: TimeInterval, line: Int, asyncTasks: [AsyncServerTask]) {
 
         let serverContext: ServerContext
 
@@ -180,18 +202,19 @@ class KituraTest: XCTestCase {
             let thread = Thread() {
                 let g = DispatchGroup()
                 g.enter()
-                asyncTask(serverContext) {
+                asyncTask.task(serverContext) {
                     g.leave()
                 }
                 g.wait()
                 group.leave()
             }
+            thread.name = "\(asyncTask.file):\(asyncTask.line)"
             thread.start()
             threads.append(thread)
         }
         
         let result = group.wait(timeout: .now() + timeout)
-        XCTAssertTrue(result == .success)
+        XCTAssertTrue(result == .success, "Timeout waiting for tasks to complete.  Thread status: \(threads.map{ "\($0.name ?? ""), \($0.isFinished)" })")
 
         // If we created a short-lived server for specific ServerOptions, shut it down now
         serverWithOptions?.stop()

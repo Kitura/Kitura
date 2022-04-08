@@ -66,7 +66,7 @@ final class TestCookies: KituraTest, KituraTestSuite {
     }
 
     private func cookieToServer(separator: String, quoteValue: Bool) {
-        performServerTest(router, asyncTasks: { serverContext, asyncTaskCompletion in
+        performServerTest(router, asyncTasks: AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             let cookieMap = [" Plover ": " value with spaces ",
                            "Zxcv": "(E = mc^2)",
                            "value with one quote": "\"",
@@ -105,11 +105,11 @@ final class TestCookies: KituraTest, KituraTestSuite {
                 }
                 asyncTaskCompletion()
             }, headers: ["Cookie": rawCookies.joined(separator: separator)])
-        })
+        }))
     }
 
     func testCookieFromServer() {
-        performServerTest(router, asyncTasks: { serverContext, asyncTaskCompletion in
+        performServerTest(router, asyncTasks: AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path: "/1/sendcookie", callback: {response in
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "/1/sendcookie route did not match single path request")
 
@@ -135,7 +135,7 @@ final class TestCookies: KituraTest, KituraTestSuite {
                 }
                 asyncTaskCompletion()
             })
-        }, { serverContext, asyncTaskCompletion in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path: "/2/sendcookie", callback: { response in
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "/2/sendcookie route did not match single path request")
 
@@ -150,7 +150,7 @@ final class TestCookies: KituraTest, KituraTestSuite {
                 }
                 asyncTaskCompletion()
             })
-        }, { serverContext, asyncTaskCompletion in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path: "/3/sendcookie", callback: { response in
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK,
                     "/3/sendcookie route did not match single path request")
@@ -164,7 +164,7 @@ final class TestCookies: KituraTest, KituraTestSuite {
                 }
                 asyncTaskCompletion()
             })
-        }, { serverContext, asyncTaskCompletion in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path: "/3/sendcookie", callback: { response in
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK,
                                "/3/sendcookie route did not match single path request")
@@ -179,7 +179,7 @@ final class TestCookies: KituraTest, KituraTestSuite {
                 }
                 asyncTaskCompletion()
             })
-        }
+        })
     )}
     func cookieFrom(response: ClientResponse?, named: String) -> (HTTPCookie?, String?) {
         guard let response = response else {
@@ -233,7 +233,7 @@ final class TestCookies: KituraTest, KituraTestSuite {
     }
 
     func testNoCookies() {
-        performServerTest(router, asyncTasks: { serverContext, asyncTaskCompletion in
+        performServerTest(router, asyncTasks: AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path: "/1/cookiedump", callback: {response in
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "cookiedump route did not match single path request")
                 do {
@@ -251,7 +251,7 @@ final class TestCookies: KituraTest, KituraTestSuite {
                 }
                 asyncTaskCompletion()
             })
-        }, { serverContext, asyncTaskCompletion in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path: "/1/cookiedump", callback: {response in
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "cookiedump route did not match single path request")
                 do {
@@ -269,7 +269,7 @@ final class TestCookies: KituraTest, KituraTestSuite {
                 }
                 asyncTaskCompletion()
             }, headers: ["Cookie": "ploverxyzzy"])
-        })
+        }))
     }
 
     static func setupRouter() -> Router {

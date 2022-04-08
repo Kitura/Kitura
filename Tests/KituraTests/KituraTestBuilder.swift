@@ -307,7 +307,7 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
         // Construct a list of async tasks that will perform each
         // request in turn and test their associated assertions
         let tasks = requests.map { request in
-            return { (serverContext: KituraTest.ServerContext, asyncTaskCompletion: @escaping AsyncTaskCompletion) in
+            return AsyncServerTask(task: { (serverContext: KituraTest.ServerContext, asyncTaskCompletion: @escaping AsyncTaskCompletion) in
                 do {
                     try request.invoker(serverContext) { response in
                         guard let response = response else {
@@ -324,7 +324,7 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
                     XCTFail("Failed to build request: \(error)")
                     asyncTaskCompletion()
                 }
-            }
+            })
         }
         test.performServerTest(router, sslOption: sslOption, socketTypeOption: socketTypeOption, timeout: timeout, line: line, asyncTasks: tasks)
     }

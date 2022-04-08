@@ -71,7 +71,7 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
     let routerWithoutWelcome = TestStaticFileServer.setupRouter(enableWelcomePage: false)
 
     func testFileServer() {
-        performServerTest(router, asyncTasks: { serverContext, asyncTaskCompletion in
+        performServerTest(router, asyncTasks: AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path:"/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
@@ -88,7 +88,7 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
                 XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=2")
                 asyncTaskCompletion()
             })
-        }, { serverContext, asyncTaskCompletion in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path:"/qwer/index.html", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
@@ -100,7 +100,7 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
                 }
                 asyncTaskCompletion()
             })
-        }, { serverContext, asyncTaskCompletion in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             self.performRequest(serverContext, "get", path:"/qwer/index", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
@@ -112,7 +112,7 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
                 }
                 asyncTaskCompletion()
             })
-            }, { serverContext, asyncTaskCompletion in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
                 self.performRequest(serverContext, "get", path:"/zxcv/index.html", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
@@ -128,31 +128,31 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
                     XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=0")
                     asyncTaskCompletion()
                 })
-            }, { serverContext, asyncTaskCompletion in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
                 self.performRequest(serverContext, "get", path:"/zxcv", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
                     asyncTaskCompletion()
                 })
-            }, { serverContext, asyncTaskCompletion in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
                 self.performRequest(serverContext, "get", path:"/zxcv/index", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
                     asyncTaskCompletion()
                 })
-            }, { serverContext, asyncTaskCompletion in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
                 self.performRequest(serverContext, "get", path:"/asdf", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
                     asyncTaskCompletion()
                 })
-            }, { serverContext, asyncTaskCompletion in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
                 self.performRequest(serverContext, "put", path:"/asdf", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing:response?.statusCode))")
                     asyncTaskCompletion()
                 })
-            }, { serverContext, asyncTaskCompletion in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
                 self.performRequest(serverContext, "get", path:"/asdf/", callback: {response in
                     XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                     XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
@@ -168,7 +168,7 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
                     XCTAssertEqual(response?.headers["Cache-Control"]?.first, "max-age=0")
                     asyncTaskCompletion()
                 })
-        })
+        }))
     }
 
     static func servingPathPrefix() -> String {
