@@ -45,7 +45,8 @@ final class TestServer: KituraTest, KituraTestSuite {
         stopServer() // stop common server so we can run these tests
     }
 
-    private func setupServerAndExpectations(expectStart: Bool, expectStop: Bool, expectFail: Bool, httpPort: Int?=nil, fastCgiPort: Int?=nil) {
+    private func setupServerAndExpectations(expectStart: Bool, expectStop: Bool, expectFail: Bool, httpPort: Int?=nil, fastCgiPort: Int?=nil) -> [XCTestExpectation] {
+        var expectations: [XCTestExpectation] = []
         let router = Router()
         let httpServer = Kitura.addHTTPServer(onPort: httpPort ?? 0, onAddress: "localhost", with: router)
         let fastCgiServer = useNIO ? FastCGIServer() : Kitura.addFastCGIServer(onPort: fastCgiPort ?? 0,
@@ -54,6 +55,7 @@ final class TestServer: KituraTest, KituraTestSuite {
         if expectStart {
             let httpStarted = expectation(description: "HTTPServer started()")
             let fastCgiStarted = expectation(description: "FastCGIServer started()")
+            expectations.append(contentsOf: [httpStarted, fastCgiStarted])
 
             httpServer.started {
                 httpStarted.fulfill()
@@ -82,6 +84,7 @@ final class TestServer: KituraTest, KituraTestSuite {
         if expectStop {
             let httpStopped = expectation(description: "HTTPServer stopped()")
             let fastCgiStopped = expectation(description: "FastCGIServer stopped()")
+            expectations.append(contentsOf: [httpStopped, fastCgiStopped])
 
             httpServer.stopped {
                 httpStopped.fulfill()
@@ -99,6 +102,7 @@ final class TestServer: KituraTest, KituraTestSuite {
         if expectFail {
             let httpFailed = expectation(description: "HTTPServer failed()")
             let fastCgiFailed = expectation(description: "FastCGIServer failed()")
+            expectations.append(contentsOf: [httpFailed, fastCgiFailed])
 
             httpServer.failed { error in
                 httpFailed.fulfill()
@@ -123,10 +127,12 @@ final class TestServer: KituraTest, KituraTestSuite {
                 }
             }
         }
+
+        return expectations
     }
 
     func testServerStartStop() {
-        setupServerAndExpectations(expectStart: true, expectStop: true, expectFail: false)
+        let expectations = setupServerAndExpectations(expectStart: true, expectStop: true, expectFail: false)
 
         let requestQueue = DispatchQueue(label: "Request queue")
         requestQueue.async() {
@@ -134,9 +140,8 @@ final class TestServer: KituraTest, KituraTestSuite {
             Kitura.stop()
         }
 
-        waitForExpectations(timeout: 10) { error in
-            XCTAssertNil(error)
-        }
+        let result = XCTWaiter().wait(for: expectations, timeout: 10)
+        XCTAssertEqual(result, .completed)
     }
 
     /// Sets up two servers on the same port. One will start, and one will fail to start

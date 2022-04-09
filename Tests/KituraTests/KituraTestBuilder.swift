@@ -73,18 +73,24 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
     // An object to keep track of a request and store up a list of
     // assertions to be applied when the request is complete
     private class Request {
+        let file: String
+        let line: Int
         let test: KituraTest
         var invoker: (KituraTest.ServerContext, @escaping (ClientResponse?) -> Void) throws -> Void
         fileprivate var assertions: [(ClientResponse) -> Void] = []
 
-        init(_ test: KituraTest, _ method: String, _ path: String, headers: [String:String]? = nil) {
+        init(_ test: KituraTest, _ method: String, _ path: String, headers: [String:String]? = nil, file: String, line: Int) {
+            self.file = file
+            self.line = line
             self.test = test
             self.invoker = { serverContext, callback in
                 test.performRequest(serverContext, method, path: path, callback: callback, headers: headers)
             }
         }
 
-        init<T: Encodable>(_ test: KituraTest, _ method: String, _ path: String, _ data: T, headers: [String:String]? = nil) {
+        init<T: Encodable>(_ test: KituraTest, _ method: String, _ path: String, _ data: T, headers: [String:String]? = nil, file: String, line: Int) {
+            self.file = file
+            self.line = line
             self.test = test
             self.invoker = { serverContext, callback in
                 let data = try JSONEncoder().encode(data)
@@ -95,7 +101,9 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
             }
         }
         
-        init<T: Encodable>(_ test: KituraTest, _ method: String, _ path: String, _ data: T, headers: [String:String]? = nil, encoder: @escaping () -> BodyEncoder, mediaType: MediaType = .json) {
+        init<T: Encodable>(_ test: KituraTest, _ method: String, _ path: String, _ data: T, headers: [String:String]? = nil, encoder: @escaping () -> BodyEncoder, mediaType: MediaType = .json, file: String, line: Int) {
+            self.file = file
+            self.line = line
             self.test = test
             self.invoker = { serverContext, callback in
                 let data = try encoder().encode(data)
@@ -106,7 +114,9 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
             }
         }
         
-        init(_ test: KituraTest, _ method: String, _ path: String, _ urlEncodedString: String, headers: [String:String]? = nil) {
+        init(_ test: KituraTest, _ method: String, _ path: String, _ urlEncodedString: String, headers: [String:String]? = nil, file: String, line: Int) {
+            self.file = file
+            self.line = line
             self.test = test
             self.invoker = { serverContext, callback in
                 test.performRequest(serverContext, method, path: path, callback: callback, headers: headers, requestModifier: { request in
@@ -121,16 +131,18 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
     let sslOption: [SSLOption]
     let socketTypeOption: [SocketTypeOption]
     let timeout: TimeInterval
+    let file: String
     let line: Int
     private var requests: [Request] = []
     private var currentRequest: Request? { return requests.last }
 
-    public init(test: KituraTest, router: ServerDelegate, sslOption: [SSLOption], socketTypeOption: [SocketTypeOption], timeout: TimeInterval, line: Int) {
+    public init(test: KituraTest, router: ServerDelegate, sslOption: [SSLOption], socketTypeOption: [SocketTypeOption], timeout: TimeInterval, file: String, line: Int) {
         self.test = test
         self.router = router
         self.sslOption = sslOption
         self.socketTypeOption = socketTypeOption
         self.timeout = timeout
+        self.file = file
         self.line = line
     }
 
@@ -139,7 +151,7 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
     }
 
     public func request(_ method: String, path: String, headers: [String:String]?) -> AssertionTestBuilder {
-        requests.append(Request(test, method, path, headers: headers))
+        requests.append(Request(test, method, path, headers: headers, file: self.file, line: self.line))
         return self
     }
 
@@ -148,12 +160,12 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
     }
 
     public func request<T: Encodable>(_ method: String, path: String, data: T, headers: [String:String]?) -> AssertionTestBuilder {
-        requests.append(Request(test, method, path, data, headers: headers))
+        requests.append(Request(test, method, path, data, headers: headers, file: self.file, line: self.line))
         return self
     }
 
     public func request<T: Encodable>(_ method: String, path: String, data: T, headers: [String:String]?, encoder: @escaping () -> BodyEncoder) -> AssertionTestBuilder {
-        requests.append(Request(test, method, path, data, headers: headers, encoder: encoder))
+        requests.append(Request(test, method, path, data, headers: headers, encoder: encoder, file: self.file, line: self.line))
         return self
     }
 
@@ -162,7 +174,7 @@ class ServerTestBuilder: RequestTestBuilder, AssertionTestBuilder {
     }
 
     public func request(_ method: String, path: String, urlEncodedString: String, headers: [String:String]?) -> AssertionTestBuilder {
-        requests.append(Request(test, method, path, urlEncodedString, headers: headers))
+        requests.append(Request(test, method, path, urlEncodedString, headers: headers, file: self.file, line: self.line))
         return self
     }
 

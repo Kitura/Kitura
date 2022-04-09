@@ -117,8 +117,8 @@ class KituraTest: XCTestCase {
     }
 
     func buildServerTest(_ router: ServerDelegate, sslOption: [SSLOption] = [.http, .https], socketTypeOption: [SocketTypeOption] = [.inet, .unix], timeout: TimeInterval = 10,
-                           line: Int = #line) -> RequestTestBuilder {
-        return ServerTestBuilder(test: self, router: router, sslOption: sslOption, socketTypeOption: socketTypeOption, timeout: timeout, line: line)
+                         file: String = #file, line: Int = #line) -> RequestTestBuilder {
+        return ServerTestBuilder(test: self, router: router, sslOption: sslOption, socketTypeOption: socketTypeOption, timeout: timeout, file: file, line: line)
     }
 
     func performServerTest(_ router: ServerDelegate, options: ServerOptions? = nil, sslOption: [SSLOption] = [.http, .https], socketTypeOption: [SocketTypeOption] = [.inet, .unix], timeout: TimeInterval = 10,
