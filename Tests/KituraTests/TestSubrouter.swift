@@ -45,8 +45,8 @@ final class TestSubrouter: KituraTest, KituraTestSuite {
     let router = TestSubrouter.setupRouter()
 
     func testSimpleSub() {
-        performServerTest(router, asyncTasks: { expectation in
-            self.performRequest("get", path:"/sub", callback: {response in
+        performServerTest(router, asyncTasks: AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path:"/sub", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
@@ -57,10 +57,10 @@ final class TestSubrouter: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("No response body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
-        	self.performRequest("get", path:"/sub/sub1", callback: {response in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+        	self.performRequest(serverContext, "get", path:"/sub/sub1", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response?.readString()
@@ -68,16 +68,16 @@ final class TestSubrouter: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("No response body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        })
+        }))
     }
 
     func testExternSub() {
         router.all("/extern", middleware: ExternSubrouter.getRouter())
 
-        performServerTest(router, asyncTasks: { expectation in
-            self.performRequest("get", path:"/extern", callback: {response in
+        performServerTest(router, asyncTasks: AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path:"/extern", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
@@ -88,10 +88,10 @@ final class TestSubrouter: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("No response body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
-            self.performRequest("get", path:"/extern/sub1", callback: {response in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path:"/extern/sub1", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response?.readString()
@@ -99,14 +99,14 @@ final class TestSubrouter: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("No response body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        })
+        }))
     }
 
     func testSubSubs() {
-        performServerTest(router, asyncTasks: { expectation in
-            self.performRequest("get", path:"/sub/sub2", callback: {response in
+        performServerTest(router, asyncTasks: AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path:"/sub/sub2", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
@@ -117,10 +117,10 @@ final class TestSubrouter: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("No response body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
-            self.performRequest("get", path:"/sub/sub2/sub1", callback: {response in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path:"/sub/sub2/sub1", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response?.readString()
@@ -128,14 +128,14 @@ final class TestSubrouter: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("No response body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        })
+        }))
     }
 
     func testMultipleMiddleware() {
-        performServerTest(router) { expectation in
-            self.performRequest("get", path:"/middle/sub1", callback: {response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path:"/middle/sub1", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
@@ -146,7 +146,7 @@ final class TestSubrouter: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("No response body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
     }
@@ -171,8 +171,8 @@ final class TestSubrouter: KituraTest, KituraTestSuite {
             res.send(json: req.parameters)
         }
 
-        performServerTest(router, asyncTasks: { expectation in
-            self.performRequest("get", path: "/root1/123/sub1/456/subsub1/789", callback: { response in
+        performServerTest(router, asyncTasks: AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/root1/123/sub1/456/subsub1/789", callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
                 var data = Data()
@@ -188,10 +188,10 @@ final class TestSubrouter: KituraTest, KituraTestSuite {
                     XCTFail()
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
-            self.performRequest("get", path: "/root1/123/sub1/456/subsub2/passthrough", callback: { response in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/root1/123/sub1/456/subsub2/passthrough", callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
                 var data = Data()
@@ -207,10 +207,10 @@ final class TestSubrouter: KituraTest, KituraTestSuite {
                     XCTFail()
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
-            self.performRequest("get", path: "/root2/123", callback: { response in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/root2/123", callback: { response in
                 XCTAssertEqual(response?.statusCode, .OK)
 
                 var data = Data()
@@ -224,9 +224,9 @@ final class TestSubrouter: KituraTest, KituraTestSuite {
                     XCTFail()
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        })
+        }))
     }
 
     static func setupRouter() -> Router {

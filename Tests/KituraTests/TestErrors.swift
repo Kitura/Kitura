@@ -40,38 +40,38 @@ final class TestErrors: KituraTest, KituraTestSuite {
     let router = Router()
 
     func testInvalidMethod() {
-        performServerTest(router, asyncTasks: { expectation in
-            self.performRequest("invalid", path: "/qwer", callback: {response in
+        performServerTest(router, asyncTasks: AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "invalid", path: "/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(String(describing: response?.statusCode))")
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
             let method = RouterMethod(fromRawValue: "PLOVER")
             XCTAssertEqual(method, .unknown, "Router method should be .unknown, it was \(method)")
-            expectation.fulfill()
-        })
+            asyncTaskCompletion()
+        }))
     }
 
     func testInvalidEndpoint() {
-        performServerTest(router) { expectation in
-            self.performRequest("get", path: "/notreal", callback: {response in
+        performServerTest(router, asyncTasks: AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/notreal", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }
+        }))
     }
 
     func testInvalidHeader() {
-        performServerTest(router) { expectation in
-            self.performRequest("get", path: "/qwer", callback: {response in
+        performServerTest(router, asyncTasks: AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 // should this be ok?
-                expectation.fulfill()
+                asyncTaskCompletion()
             }) {req in
                 req.headers = ["garbage": "dfsfdsf"]
             }
-        }
+        }))
     }
 }

@@ -87,8 +87,8 @@ final class TestResponse: KituraTest, KituraTestSuite {
     let router = TestResponse.setupRouter()
 
     func testSimpleResponse() {
-    	performServerTest(router) { expectation in
-            self.performRequest("get", path:"/qwer", callback: {response in
+    	performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path:"/qwer", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
@@ -99,14 +99,14 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
     }
     
     func testOptionalStringNilResponse() {
-        performServerTest(router) { expectation in
-            self.performRequest("post", path:"/sendNilString", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "post", path:"/sendNilString", callback: { response in
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 
                 do {
@@ -116,14 +116,14 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
     }
     
     func testOptionalStringResponse() {
-        performServerTest(router) { expectation in
-            self.performRequest("post", path:"/sendNonNilString", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "post", path:"/sendNonNilString", callback: { response in
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 
                 do {
@@ -132,17 +132,17 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
     }
 
     func testLargeGet() {
-        performServerTest(router, timeout: 30) { expectation in
+        performServerTest(router, timeout: 30) { serverContext, asyncTaskCompletion in
             let uint8 = UInt8.max
             let count = 1024 * 1024
 
-            self.performRequest("get", path:"/largeGet?uint8=\(uint8)&count=\(count)", callback: { response in
+            self.performRequest(serverContext, "get", path:"/largeGet?uint8=\(uint8)&count=\(count)", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
 
@@ -155,17 +155,17 @@ final class TestResponse: KituraTest, KituraTestSuite {
                     XCTFail("Error reading body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
     }
 
     func testLargePost() {
-        performServerTest(router, options: ServerOptions(requestSizeLimit: 2000000), timeout: 30) { expectation in
+        performServerTest(router, options: ServerOptions(requestSizeLimit: 2000000), timeout: 30) { serverContext, asyncTaskCompletion in
             let count = 1024 * 1024
             let postData = Data(repeating: UInt8.max, count: count)
 
-            self.performRequest("post", path: "/largePost", callback: { response in
+            self.performRequest(serverContext, "post", path: "/largePost", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
 
@@ -178,7 +178,7 @@ final class TestResponse: KituraTest, KituraTestSuite {
                     XCTFail("Error reading body")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             }, requestModifier: { request in
                 request.write(from: postData)
             })
@@ -186,8 +186,8 @@ final class TestResponse: KituraTest, KituraTestSuite {
     }
 
     func testResponseNoEndOrNext() {
-        performServerTest(router) { expectation in
-            self.performRequest("get", path:"/noEndOrNext", callback: {response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path:"/noEndOrNext", callback: {response in
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
                 do {
@@ -196,14 +196,14 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
     }
 
     func testEmptyHandler() {
-        performServerTest(router) { expectation in
-            self.performRequest("get", path:"/emptyHandler", callback: {response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path:"/emptyHandler", callback: {response in
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.serviceUnavailable, "HTTP Status code was \(String(describing: response?.statusCode))")
                 XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
                 do {
@@ -212,14 +212,14 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
     }
 
     func testPostRequest() {
-    	performServerTest(router) { expectation in
-            self.performRequest("post", path: "/bodytest", callback: {response in
+    	performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "post", path: "/bodytest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 //XCTAssertEqual(response?.method, "POST", "The request wasn't recognized as a post")
                 XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
@@ -229,7 +229,7 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             }) {req in
                 req.write(from: "plover\n")
                 req.write(from: "xyzzy\n")
@@ -238,8 +238,8 @@ final class TestResponse: KituraTest, KituraTestSuite {
     }
 
     func testPostRequestTheHardWay() {
-        performServerTest(router) { expectation in
-            self.performRequest("post", path: "/bodytesthardway", callback: {response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "post", path: "/bodytesthardway", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response?.readString()
@@ -247,7 +247,7 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             }) {req in
                 req.write(from: "plover\n")
                 req.write(from: "xyzzy\n")
@@ -258,11 +258,11 @@ final class TestResponse: KituraTest, KituraTestSuite {
     func testPostJSONRequest() {
         let jsonToTest = SomeJSON()
 
-        performServerTest(router) { expectation in
-            self.performRequest("post", path: "/bodytest", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "post", path: "/bodytest", callback: { response in
                 guard let response = response else {
                     XCTFail("ClientRequest response object was nil")
-                    expectation.fulfill()
+                    asyncTaskCompletion()
                     return
                 }
                 XCTAssertNotNil(response.headers["Date"], "There was No Date header in the response")
@@ -270,7 +270,7 @@ final class TestResponse: KituraTest, KituraTestSuite {
                     var body = Data()
                     guard try response.read(into: &body) > 0  else {
                         XCTFail("body in response is nil")
-                        expectation.fulfill()
+                        asyncTaskCompletion()
                         return
                     }
                     let returnedJSON = try TestResponse.decoder.decode(SomeJSON.self, from: body)
@@ -278,7 +278,7 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             }, headers: ["Content-Type": "application/json"]) { req in
                 do {
                     let jsonData = try TestResponse.encoder.encode(jsonToTest)
@@ -292,8 +292,8 @@ final class TestResponse: KituraTest, KituraTestSuite {
     }
 
     func testPostRequestWithDoubleBodyParser() {
-        performServerTest(router) { expectation in
-            self.performRequest("post", path: "/doublebodytest", callback: {response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "post", path: "/doublebodytest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 //XCTAssertEqual(response?.method, "POST", "The request wasn't recognized as a post")
                 XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
@@ -303,7 +303,7 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             }) {req in
                 req.write(from: "plover\n")
                 req.write(from: "xyzzy\n")
@@ -312,8 +312,8 @@ final class TestResponse: KituraTest, KituraTestSuite {
     }
 
     func testPostRequestUrlEncoded() {
-        performServerTest(router) { expectation in
-            self.performRequest("post", path: "/bodytest", callback: {response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "post", path: "/bodytest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
                 do {
@@ -322,15 +322,15 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             }) {req in
                 req.headers["Content-Type"] = "application/x-www-form-urlencoded"
                 req.write(from: "swift=rocks")
             }
         }
         // repeat the same test with a Content-Type parameter of charset=UTF-8
-        performServerTest(router) { expectation in
-            self.performRequest("post", path: "/bodytest", callback: {response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "post", path: "/bodytest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
                 do {
@@ -339,15 +339,15 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             }) {req in
                 req.headers["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8"
                 req.write(from: "swift=rocks")
             }
         }
         // Now try the multi-value body parser
-        performServerTest(router) { expectation in
-            self.performRequest("post", path: "/bodytestMultiValue", callback: {response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "post", path: "/bodytestMultiValue", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertNotNil(response?.headers["Date"], "There was No Date header in the response")
                 do {
@@ -356,7 +356,7 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             }) {req in
                 req.headers["Content-Type"] = "application/x-www-form-urlencoded"
                 req.write(from: "swift=rocks&swift=rules")
@@ -396,8 +396,8 @@ final class TestResponse: KituraTest, KituraTestSuite {
         dataComponentsTest("Invalid separator", separator: "")
         dataComponentsTest("", separator: "Invalid search string")
 
-        performServerTest(router) { expectation in
-            self.performRequest("post", path: "/multibodytest", callback: {response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "post", path: "/multibodytest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response?.readString()
@@ -405,7 +405,7 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             }) {req in
                 req.headers["Content-Type"] = "multipart/form-data; boundary=---------------------------9051914041544843365972754266"
                 req.write(from: "-----------------------------9051914041544843365972754266\r\n" +
@@ -423,8 +423,8 @@ final class TestResponse: KituraTest, KituraTestSuite {
             }
         }
         // repeat the test with blank headers (allowed as per section 5.1 of RFC 2046) and custom headers that should be skiped
-        performServerTest(router) { expectation in
-            self.performRequest("post", path: "/multibodytest", callback: {response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "post", path: "/multibodytest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response?.readString()
@@ -432,7 +432,7 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             }) {req in
                 req.headers["Content-Type"] = "multipart/form-data; boundary=---------------------------9051914041544843365972754266"
                 req.write(from: "This is a preamble and should be ignored" +
@@ -453,8 +453,8 @@ final class TestResponse: KituraTest, KituraTestSuite {
             }
         }
         // One more test to ensure we handle Content-Type with a parameter after the bounadary
-        performServerTest(router) { expectation in
-            self.performRequest("post", path: "/multibodytest", callback: {response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "post", path: "/multibodytest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response?.readString()
@@ -462,7 +462,7 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             }) {req in
                 req.headers["Content-Type"] = "multipart/form-data; boundary=ZZZY70gRGgDPOiChzXcmW3psiU7HlnC; charset=US-ASCII"
                 req.write(from: "Preamble" +
@@ -474,8 +474,8 @@ final class TestResponse: KituraTest, KituraTestSuite {
         }
 
         // Negative test case - valid boundary but an invalid body
-        performServerTest(router) { expectation in
-            self.performRequest("post", path: "/multibodytest", callback: {response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "post", path: "/multibodytest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response?.readString()
@@ -483,7 +483,7 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             }) {req in
                 req.headers["Content-Type"] = "multipart/form-data; boundary=ABDCEFG"
                 req.write(from: "This does not contain any valid boundary")
@@ -493,13 +493,13 @@ final class TestResponse: KituraTest, KituraTestSuite {
     }
 
     func testRawDataPost() {
-        performServerTest(router) { expectation in
-            self.performRequest("post",
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "post",
                                 path: "/bodytest",
                                 callback: { response in
                                     guard let response = response else {
                                         XCTFail("Client response was nil on raw data post.")
-                                        expectation.fulfill()
+                                        asyncTaskCompletion()
                                         return
                                     }
 
@@ -510,7 +510,7 @@ final class TestResponse: KituraTest, KituraTestSuite {
                                     } catch {
                                         XCTFail("Failed posting raw data")
                                     }
-                                    expectation.fulfill()
+                                    asyncTaskCompletion()
                                 },
                                 headers: ["Content-Type": "application/octet-stream"],
                                 requestModifier: { request in
@@ -527,12 +527,12 @@ final class TestResponse: KituraTest, KituraTestSuite {
                                    expectedReturnedQueryParameter: String? = nil) {
         let expectedReturnedPathParameter = expectedReturnedPathParameter ?? pathParameter
         let expectedReturnedQueryParameter = expectedReturnedQueryParameter ?? queryParameter
-        performServerTest(router) { expectation in
-            self.performRequest("get", path: "/zxcv/\(pathParameter)?q=\(queryParameter)",
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/zxcv/\(pathParameter)?q=\(queryParameter)",
                 callback: { response in
                 guard let response = response else {
                     XCTFail("ClientRequest response object was nil")
-                    expectation.fulfill()
+                    asyncTaskCompletion()
                     return
                 }
 
@@ -545,7 +545,7 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
     }
@@ -581,8 +581,8 @@ final class TestResponse: KituraTest, KituraTestSuite {
     }
 
     func testRedirect() {
-        performServerTest(router) { expectation in
-            self.performRequest("get", path: "/redirect", callback: {response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/redirect", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response?.readString()
@@ -590,14 +590,14 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
     }
 
     func testErrorHandler() {
-        performServerTest(router) { expectation in
-            self.performRequest("get", path: "/error", callback: {response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/error", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 do {
                     let body = try response?.readString()
@@ -606,14 +606,14 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
     }
 
     func testRouteFunc() {
-        performServerTest(router, asyncTasks: { expectation in
-            self.performRequest("get", path: "/route", callback: {response in
+        performServerTest(router, asyncTasks: AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/route", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
@@ -622,10 +622,10 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        }, { expectation in
-            self.performRequest("post", path: "/route", callback: {response in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "post", path: "/route", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
@@ -634,9 +634,9 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        })
+        }))
     }
 
     func testHeaderModifiers() {
@@ -675,10 +675,10 @@ final class TestResponse: KituraTest, KituraTestSuite {
             next()
         }
 
-        performServerTest(router) { expectation in
-            self.performRequest("get", path: "/headerTest", callback: {response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/headerTest", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
 
@@ -723,21 +723,21 @@ final class TestResponse: KituraTest, KituraTestSuite {
             next()
         }
 
-        performServerTest(router, asyncTasks: { expectation in
-            self.performRequest("get", path: "/customPage", callback: {response in
+        performServerTest(router, asyncTasks: AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/customPage", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                expectation.fulfill()
+                asyncTaskCompletion()
             }) {req in
                 req.headers = ["Accept": "text/*;q=.5, application/json, application/*;q=.3"]
             }
-        }, { expectation in
-            self.performRequest("get", path:"/customPage2", callback: {response in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path:"/customPage2", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                expectation.fulfill()
+                asyncTaskCompletion()
             }) {req in
                 req.headers = ["accept": "*/*;q=.001, application/*;q=0.2, image/jpeg;q=0.8, text/html, text/plain"]
             }
-        })
+        }))
     }
 
     func testAcceptEncodingTypes() {
@@ -773,26 +773,26 @@ final class TestResponse: KituraTest, KituraTestSuite {
             next()
         }
 
-        performServerTest(router, asyncTasks: { expectation in
-            self.performRequest("get", path: "/customPage", callback: {response in
+        performServerTest(router, asyncTasks: AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/customPage", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                expectation.fulfill()
+                asyncTaskCompletion()
             }) {req in
                 req.headers = ["Accept-Encoding": "compress;q=0.5, gzip;q=1.0, *;q=0"]
             }
-        }, { expectation in
-            self.performRequest("get", path:"/customPage2", callback: {response in
+        }), AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path:"/customPage2", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
-                expectation.fulfill()
+                asyncTaskCompletion()
             }) {req in
                 req.headers = ["accept-encoding": "gzip;q=0.5, compress;q=1.0, *;q=0.001"]
             }
-        })
+        }))
     }
 
     func testFormat() {
-        performServerTest(router) { expectation in
-            self.performRequest("get", path:"/format", callback: {response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path:"/format", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 XCTAssertEqual(response?.headers["Content-Type"]?.first, "text/html")
@@ -802,12 +802,12 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
                 }, headers: ["Accept": "text/html"])
         }
 
-        performServerTest(router) { expectation in
-            self.performRequest("get", path:"/format", callback: {response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path:"/format", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 XCTAssertEqual(response?.headers["Content-Type"]?.first, "text/plain")
@@ -817,12 +817,12 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
                 }, headers: ["Accept": "text/plain"])
         }
 
-        performServerTest(router) { expectation in
-            self.performRequest("get", path:"/format", callback: {response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path:"/format", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
@@ -831,26 +831,26 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
                 }, headers: ["Accept": "text/cmd"])
         }
 
     }
 
     func testLink() {
-        performServerTest(router) { expectation in
-            self.performRequest("get", path: "/single_link", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/single_link", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 let header = response?.headers["Link"]?.first
                 XCTAssertNotNil(header, "Link header should not be nil")
                 XCTAssertEqual(header, "<https://developer.ibm.com/swift>; rel=\"root\"")
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
 
-        performServerTest(router) { expectation in
-            self.performRequest("get", path: "/multiple_links", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/multiple_links", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 let firstLink = "<https://developer.ibm.com/swift/products/ibm-swift-sandbox/>; rel=\"next\""
@@ -859,14 +859,14 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 XCTAssertNotNil(header, "Link header should not be nil")
                 XCTAssertNotNil(header?.range(of: firstLink), "link header should contain first link")
                 XCTAssertNotNil(header?.range(of: secondLink), "link header should contain second link")
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
     }
 
     func testJsonp() {
-        performServerTest(router) { expectation in
-            self.performRequest("get", path: "/jsonp?callback=testfn", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/jsonp?callback=testfn", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
@@ -878,28 +878,28 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
 
-        performServerTest(router) { expectation in
-            self.performRequest("get", path: "/jsonp?callback=test+fn", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/jsonp?callback=test+fn", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(String(describing: response?.statusCode))")
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
 
-        performServerTest(router) { expectation in
-            self.performRequest("get", path: "/jsonp", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/jsonp", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(String(describing: response?.statusCode))")
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
 
-        performServerTest(router) { expectation in
-            self.performRequest("get", path: "/jsonp_cb?cb=testfn", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/jsonp_cb?cb=testfn", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
@@ -911,12 +911,12 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
 
-        performServerTest(router) { expectation in
-            self.performRequest("get", path: "/jsonp_encoded?callback=testfn", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/jsonp_encoded?callback=testfn", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
@@ -928,14 +928,14 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
     }
 
     func testSubdomains() {
-        performServerTest(router) { expectation in
-            self.performRequest("get", path: "/subdomains", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/subdomains", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 let hostHeader = response?.headers["Host"]?.first
@@ -945,12 +945,12 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 XCTAssertEqual(hostHeader, "localhost", "Wrong http response host")
                 XCTAssertEqual(domainHeader, "localhost", "Wrong http response domain")
                 XCTAssertEqual(subdomainsHeader, "", "Wrong http response subdomains")
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
 
-        performServerTest(router) { expectation in
-            self.performRequest("get", path: "/subdomains", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/subdomains", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 let hostHeader = response?.headers["Host"]?.first
@@ -960,12 +960,12 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 XCTAssertEqual(hostHeader, "a.b.c.example.com", "Wrong http response host")
                 XCTAssertEqual(domainHeader, "example.com", "Wrong http response domain")
                 XCTAssertEqual(subdomainsHeader, "a, b, c", "Wrong http response subdomains")
-                expectation.fulfill()
+                asyncTaskCompletion()
             }, headers: ["Host": "a.b.c.example.com"])
         }
 
-        performServerTest(router) { expectation in
-            self.performRequest("get", path: "/subdomains", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/subdomains", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 let hostHeader = response?.headers["Host"]?.first
@@ -975,14 +975,14 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 XCTAssertEqual(hostHeader, "a.b.c.d.example.co.uk", "Wrong http response host")
                 XCTAssertEqual(domainHeader, "example.co.uk", "Wrong http response domain")
                 XCTAssertEqual(subdomainsHeader, "a, b, c, d", "Wrong http response subdomains")
-                expectation.fulfill()
+                asyncTaskCompletion()
             }, headers: ["Host": "a.b.c.d.example.co.uk"])
         }
     }
 
     func testLifecycle() {
-        performServerTest(router) { expectation in
-            self.performRequest("get", path: "/lifecycle", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/lifecycle", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 XCTAssertEqual(response?.headers["x-lifecycle"]?.first, "kitura", "Wrong lifecycle header")
@@ -992,14 +992,14 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
     }
 
     func testSend() {
-        performServerTest(router) { expectation in
-            self.performRequest("get", path: "/data", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/data", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
@@ -1009,12 +1009,12 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
 
-        performServerTest(router, asyncTasks: { expectation in
-            self.performRequest("get", path: "/json", callback: { response in
+        performServerTest(router, asyncTasks: AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/json", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/json", "Wrong Content-Type header")
@@ -1026,11 +1026,11 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        },
-        { expectation in
-            self.performRequest("get", path: "/jsonDictionary", callback: { response in
+        }),
+        AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/jsonDictionary", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/json", "Wrong Content-Type header")
@@ -1040,11 +1040,11 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body. Error=\(error.localizedDescription)")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        },
-        { expectation in
-            self.performRequest("get", path: "/jsonCodableDictionary", callback: { response in
+        }),
+        AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/jsonCodableDictionary", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/json", "Wrong Content-Type header")
@@ -1056,11 +1056,11 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body. Error=\(error.localizedDescription)")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        },
-        { expectation in
-            self.performRequest("get", path: "/jsonArray", callback: { response in
+        }),
+        AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/jsonArray", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/json", "Wrong Content-Type header")
@@ -1070,11 +1070,11 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body. Error=\(error.localizedDescription)")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        },
-        { expectation in
-            self.performRequest("get", path: "/jsonCodableArray", callback: { response in
+        }),
+        AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/jsonCodableArray", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 XCTAssertEqual(response?.headers["Content-Type"]?.first, "application/json", "Wrong Content-Type header")
@@ -1086,12 +1086,12 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body. Error=\(error.localizedDescription)")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        })
+        }))
 
-        performServerTest(router) { expectation in
-            self.performRequest("get", path: "/download", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/download", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 XCTAssertEqual(response?.headers["Content-Type"]?.first, "text/html", "Wrong Content-Type header")
@@ -1102,15 +1102,15 @@ final class TestResponse: KituraTest, KituraTestSuite {
                     XCTFail("Error reading body. Error=\(error.localizedDescription)")
                 }
 
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
 
     }
 
     func testSendAfterEnd() {
-        performServerTest(router) { expectation in
-            self.performRequest("get", path: "/send_after_end", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/send_after_end", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.forbidden, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
@@ -1119,31 +1119,31 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body. Error=\(error.localizedDescription)")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
     }
 
     func testChangeStatusCodeOnInvokedSend() {
-        performServerTest(router, asyncTasks: { expectation in
-            self.performRequest("get", path: "/code_unknown_to_ok", callback: { response in
+        performServerTest(router, asyncTasks: AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/code_unknown_to_ok", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, .OK, "HTTP Status code was \(String(describing: response?.statusCode))")
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        },
-        { expectation in
-            self.performRequest("get", path: "/code_notFound_no_change", callback: { response in
+        }),
+        AsyncServerTask(task: { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/code_notFound_no_change", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, .notFound, "HTTP Status code was \(String(describing: response?.statusCode))")
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
-        })
+        }))
     }
 
     func testUserInfo() {
-        performServerTest(router) { expectation in
-            self.performRequest("get", path: "/user_info", callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/user_info", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
@@ -1152,7 +1152,7 @@ final class TestResponse: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body. Error=\(error.localizedDescription)")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
     }
@@ -1205,7 +1205,7 @@ final class TestResponse: KituraTest, KituraTestSuite {
         router.post("/largePost") { request, response, _ in
             do {
                 var data = Data()
-                let count = try request.read(into: &data)
+                _ = try request.read(into: &data)
                 try response.send(data: data).end()
             } catch {
                 XCTFail("Error sending response. Error=\(error.localizedDescription)")

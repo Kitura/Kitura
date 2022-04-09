@@ -193,11 +193,11 @@ final class TestTemplateEngine: KituraTest, KituraTestSuite {
     }
 
     private func performRenderServerTest(withRouter router: Router, onPath path: String) {
-        performServerTest(router) { expectation in
-            self.performRequest("get", path: path, callback: { response in
+        performServerTest(router) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: path, callback: { response in
                 guard let response = response else {
                     XCTFail("Got nil response")
-                    expectation.fulfill()
+                    asyncTaskCompletion()
                     return
                 }
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response.statusCode)")
@@ -208,7 +208,7 @@ final class TestTemplateEngine: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Error reading body")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
     }

@@ -114,20 +114,20 @@ final class TestCustomCoders: KituraTest, KituraTestSuite {
             next()
         }
         
-        performServerTest(customRouter) { expectation in
-            self.performRequest("get", path: "/rawget", callback: { response in
+        performServerTest(customRouter) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/rawget", callback: { response in
                 if let response = response, let responseString = try? response.readString() {
                     XCTAssertEqual(responseString, "{\"date\":1519206456}")
                 } else {
                     XCTFail("Unable to read response string")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
         
-        performServerTest(customRouter) { expectation in
-            self.performRequest("post", path: "/rawpost", callback: { response in
-                expectation.fulfill()
+        performServerTest(customRouter) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "post", path: "/rawpost", callback: { response in
+                asyncTaskCompletion()
             })
         }
     }
@@ -152,8 +152,8 @@ final class TestCustomCoders: KituraTest, KituraTestSuite {
             next()
         }
         
-        performServerTest(customRouter) { expectation in
-            self.performRequest("get", path: "/rawget", callback: { response in
+        performServerTest(customRouter) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/rawget", callback: { response in
                 if let response = response,
                     let unwrappedString = (try? response.readString()).flatMap({ $0 })
                 {
@@ -164,25 +164,25 @@ final class TestCustomCoders: KituraTest, KituraTestSuite {
                 } else {
                     XCTFail("Unable to read response string")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             }, headers: ["Accept": "application/x-www-form-urlencoded"])
         }
         
-        performServerTest(customRouter) { expectation in
-            self.performRequest("get", path: "/rawget", callback: { response in
+        performServerTest(customRouter) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/rawget", callback: { response in
                 if let response = response, let responseString = try? response.readString() {
                     XCTAssertEqual(responseString, "{\"date\":540899256}")
                 } else {
                     XCTFail("Unable to read response string")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
         
         customRouter.defaultResponseMediaType = .urlEncoded
 
-        performServerTest(customRouter) { expectation in
-            self.performRequest("get", path: "/rawget", callback: { response in
+        performServerTest(customRouter) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/rawget", callback: { response in
                 if let response = response,
                     let unwrappedString = (try? response.readString()).flatMap({ $0 })
                 {
@@ -193,18 +193,18 @@ final class TestCustomCoders: KituraTest, KituraTestSuite {
                 } else {
                     XCTFail("Unable to read response string")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
         
-        performServerTest(customRouter) { expectation in
-            self.performRequest("get", path: "/sendjson", callback: { response in
+        performServerTest(customRouter) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/sendjson", callback: { response in
                 if let response = response, let responseString = try? response.readString() {
                     XCTAssertEqual(responseString, "{\"date\":540899256}")
                 } else {
                     XCTFail("Unable to read response string")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
 
@@ -215,14 +215,14 @@ final class TestCustomCoders: KituraTest, KituraTestSuite {
         }
         customRouter.encoders[.json] = jsonEncoder
         
-        performServerTest(customRouter) { expectation in
-            self.performRequest("get", path: "/sendjson", callback: { response in
+        performServerTest(customRouter) { serverContext, asyncTaskCompletion in
+            self.performRequest(serverContext, "get", path: "/sendjson", callback: { response in
                 if let response = response, let responseString = try? response.readString() {
                     XCTAssertEqual(responseString, "{\"date\":1519206456}")
                 } else {
                     XCTFail("Unable to read response string")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             })
         }
     }

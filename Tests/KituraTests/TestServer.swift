@@ -38,14 +38,15 @@ final class TestServer: KituraTest, KituraTestSuite {
     }
 
     var httpPort = 8080
-    let useNIO = ProcessInfo.processInfo.environment["KITURA_NIO"] != nil
+    let useNIO = ProcessInfo.processInfo.environment["KITURA_NIO"] != "0"
 
     override func setUp() {
         super.setUp()
         stopServer() // stop common server so we can run these tests
     }
 
-    private func setupServerAndExpectations(expectStart: Bool, expectStop: Bool, expectFail: Bool, httpPort: Int?=nil, fastCgiPort: Int?=nil) {
+    private func setupServerAndExpectations(expectStart: Bool, expectStop: Bool, expectFail: Bool, httpPort: Int?=nil, fastCgiPort: Int?=nil) -> [XCTestExpectation] {
+        var expectations: [XCTestExpectation] = []
         let router = Router()
         let httpServer = Kitura.addHTTPServer(onPort: httpPort ?? 0, onAddress: "localhost", with: router)
         let fastCgiServer = useNIO ? FastCGIServer() : Kitura.addFastCGIServer(onPort: fastCgiPort ?? 0,
@@ -54,6 +55,7 @@ final class TestServer: KituraTest, KituraTestSuite {
         if expectStart {
             let httpStarted = expectation(description: "HTTPServer started()")
             let fastCgiStarted = expectation(description: "FastCGIServer started()")
+            expectations.append(contentsOf: [httpStarted, fastCgiStarted])
 
             httpServer.started {
                 httpStarted.fulfill()
@@ -82,6 +84,7 @@ final class TestServer: KituraTest, KituraTestSuite {
         if expectStop {
             let httpStopped = expectation(description: "HTTPServer stopped()")
             let fastCgiStopped = expectation(description: "FastCGIServer stopped()")
+            expectations.append(contentsOf: [httpStopped, fastCgiStopped])
 
             httpServer.stopped {
                 httpStopped.fulfill()
@@ -99,6 +102,7 @@ final class TestServer: KituraTest, KituraTestSuite {
         if expectFail {
             let httpFailed = expectation(description: "HTTPServer failed()")
             let fastCgiFailed = expectation(description: "FastCGIServer failed()")
+            expectations.append(contentsOf: [httpFailed, fastCgiFailed])
 
             httpServer.failed { error in
                 httpFailed.fulfill()
@@ -123,10 +127,12 @@ final class TestServer: KituraTest, KituraTestSuite {
                 }
             }
         }
+
+        return expectations
     }
 
     func testServerStartStop() {
-        setupServerAndExpectations(expectStart: true, expectStop: true, expectFail: false)
+        let expectations = setupServerAndExpectations(expectStart: true, expectStop: true, expectFail: false)
 
         let requestQueue = DispatchQueue(label: "Request queue")
         requestQueue.async() {
@@ -134,9 +140,8 @@ final class TestServer: KituraTest, KituraTestSuite {
             Kitura.stop()
         }
 
-        waitForExpectations(timeout: 10) { error in
-            XCTAssertNil(error)
-        }
+        let result = XCTWaiter().wait(for: expectations, timeout: 10)
+        XCTAssertEqual(result, .completed)
     }
 
     /// Sets up two servers on the same port. One will start, and one will fail to start
@@ -144,8 +149,8 @@ final class TestServer: KituraTest, KituraTestSuite {
     private func setupConflictingServers(onPort: Int) {
         let router1 = Router()
         let router2 = Router()
-        let server1 = Kitura.addHTTPServer(onPort: onPort, with: router1)
-        let server2 = Kitura.addHTTPServer(onPort: onPort, with: router2)
+        let server1 = Kitura.addHTTPServer(onPort: onPort, onAddress: "localhost", with: router1)
+        let server2 = Kitura.addHTTPServer(onPort: onPort, onAddress: "localhost", with: router2)
         // Expect server 1 to start
         let server1Started = expectation(description: "Server 1 started on port \(onPort)")
         server1.started {
@@ -228,7 +233,6 @@ final class TestServer: KituraTest, KituraTestSuite {
     }
 
     func testServerRestart() {
-        var port = httpPort
         let path = "/testServerRestart"
         let body = "Server is running."
 
@@ -238,7 +242,7 @@ final class TestServer: KituraTest, KituraTestSuite {
             next()
         }
 
-        let server = Kitura.addHTTPServer(onPort: 0, with: router)
+        let server = Kitura.addHTTPServer(onPort: 0, onAddress: "localhost", with: router)
         server.sslConfig = KituraTest.sslConfig.config
 
         let stopped = DispatchSemaphore(value: 0)
@@ -247,17 +251,15 @@ final class TestServer: KituraTest, KituraTestSuite {
         }
 
         Kitura.start()
-        port = server.port!
-        testResponse(port: port, path: path, expectedBody: body)
+        testResponse(ServerContext(listenerType: .inet(server.port!), useSSL: true), path: path, expectedBody: body)
         Kitura.stop(unregister: false)
         stopped.wait()
 
         XCTAssertEqual(Kitura.httpServersAndPorts.count, 1, "Kitura.httpServersAndPorts.count is \(Kitura.httpServersAndPorts.count), should be 1")
-        testResponse(port: port, path: path, expectedBody: nil, expectedStatus: nil)
+        testResponse(ServerContext(listenerType: .inet(server.port!), useSSL: true), path: path, expectedBody: nil, expectedStatus: nil)
 
         Kitura.start()
-        port = server.port!
-        testResponse(port: port, path: path, expectedBody: body)
+        testResponse(ServerContext(listenerType: .inet(server.port!), useSSL: true), path: path, expectedBody: body)
         Kitura.stop() // default for unregister is true
 
         XCTAssertEqual(Kitura.httpServersAndPorts.count, 0, "Kitura.httpServersAndPorts.count is \(Kitura.httpServersAndPorts.count), should be 0")
@@ -271,7 +273,11 @@ final class TestServer: KituraTest, KituraTestSuite {
         // Create a temporary socket path for this server
         let socketPath = uniqueTemporaryFilePath()
         defer {
-            removeTemporaryFilePath(socketPath)
+            if useNIO {
+                failIfFileExists(socketPath)
+            } else {
+                removeTemporaryFilePath(socketPath)
+            }
         }
 
         let router = Router()
@@ -297,21 +303,21 @@ final class TestServer: KituraTest, KituraTestSuite {
             return XCTFail("Server failed to start")
         }
         XCTAssertEqual(server.unixDomainSocketPath, socketPath, "Server listening on wrong path")
-        testResponse(socketPath: socketPath, path: path, expectedBody: body)
+        testResponse(ServerContext(listenerType: .unix(socketPath), useSSL: true), path: path, expectedBody: body)
         Kitura.stop(unregister: false)
         if stopped.wait(timeout: DispatchTime.now() + DispatchTimeInterval.seconds(5)) != DispatchTimeoutResult.success {
             return XCTFail("Server failed to stop")
         }
 
         XCTAssertEqual(Kitura.httpServersAndUnixSocketPaths.count, 1, "Kitura.httpServersAndUnixSocketPaths.count is \(Kitura.httpServersAndUnixSocketPaths.count), should be 1")
-        testResponse(socketPath: socketPath, path: path, expectedBody: nil, expectedStatus: nil)
+        testResponse(ServerContext(listenerType: .unix(socketPath), useSSL: true), path: path, expectedBody: nil, expectedStatus: nil)
 
         Kitura.start()
         if started.wait(timeout: DispatchTime.now() + DispatchTimeInterval.seconds(5)) != DispatchTimeoutResult.success {
             return XCTFail("Server failed to start")
         }
         XCTAssertEqual(server.unixDomainSocketPath, socketPath, "Server listening on wrong path")
-        testResponse(socketPath: socketPath, path: path, expectedBody: body)
+        testResponse(ServerContext(listenerType: .unix(socketPath), useSSL: true), path: path, expectedBody: body)
         Kitura.stop() // default for unregister is true
         if stopped.wait(timeout: DispatchTime.now() + DispatchTimeInterval.seconds(5)) != DispatchTimeoutResult.success {
             return XCTFail("Server failed to stop")
@@ -321,9 +327,9 @@ final class TestServer: KituraTest, KituraTestSuite {
 #endif
     }
 
-    private func testResponse(port: Int? = nil, socketPath: String? = nil, method: String = "get", path: String, expectedBody: String?, expectedStatus: HTTPStatusCode? = HTTPStatusCode.OK) {
+    private func testResponse(_ serverContext: ServerContext, method: String = "get", path: String, expectedBody: String?, expectedStatus: HTTPStatusCode? = HTTPStatusCode.OK) {
 
-        performRequest(method, path: path, port: port, socketPath: socketPath, useSSL: true, useUnixSocket: (socketPath != nil), callback: { response in
+        performRequest(serverContext, method, path: path, callback: { response in
             let status = response?.statusCode
             XCTAssertEqual(status, expectedStatus, "status was \(String(describing: status)), expected \(String(describing: expectedStatus))")
             do {

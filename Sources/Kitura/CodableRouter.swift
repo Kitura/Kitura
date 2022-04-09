@@ -19,8 +19,8 @@ import LoggerAPI
 import KituraNet
 import KituraContracts
 
-/// Bridge [RequestError](https://ibm-swift.github.io/KituraContracts/Structs/RequestError.html)
-/// from [KituraContracts](https://ibm-swift.github.io/KituraContracts) so that you only need to import
+/// Bridge [RequestError](https://kitura.github.io/KituraContracts/Structs/RequestError.html)
+/// from [KituraContracts](https://kitura.github.io/KituraContracts) so that you only need to import
 /// `Kitura` to access it.
 public typealias RequestError = KituraContracts.RequestError
 

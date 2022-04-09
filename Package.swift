@@ -1,4 +1,4 @@
-// swift-tools-version:5.0
+// swift-tools-version:5.2
 
 /**
  * Copyright IBM Corporation and the Kitura project authors 2016-2020
@@ -21,10 +21,11 @@ import Foundation
 
 var kituraNetPackage: Package.Dependency
 
-if ProcessInfo.processInfo.environment["KITURA_NIO"] != nil {
-    kituraNetPackage = .package(url: "https://github.com/Kitura/Kitura-NIO.git", from: "2.4.200")
+// Note: This is a change in previous behavior.  NIO is now the default.
+if ProcessInfo.processInfo.environment["KITURA_NIO"] == "0" {
+    kituraNetPackage = .package(url: "https://github.com/Kitura/Kitura-net.git", from: "3.0.1")
 } else {
-    kituraNetPackage = .package(url: "https://github.com/Kitura/Kitura-net.git", from: "2.4.200")
+    kituraNetPackage = .package(url: "https://github.com/Kitura/Kitura-NIO.git", from: "3.1.0")
 }
 
 let package = Package(
@@ -36,17 +37,22 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/Kitura/LoggerAPI.git", from: "1.9.200"),
+        .package(url: "https://github.com/Kitura/LoggerAPI.git", from: "2.0.0"),
         .package(url: "https://github.com/apple/swift-log.git", Version("0.0.0") ..< Version("2.0.0")),
         kituraNetPackage,
-        .package(url: "https://github.com/Kitura/Kitura-TemplateEngine.git", from: "2.0.200"),
-        .package(url: "https://github.com/Kitura/KituraContracts.git", from: "1.2.200"),
-        .package(url: "https://github.com/Kitura/TypeDecoder.git", from: "1.3.200"),
+        .package(url: "https://github.com/Kitura/Kitura-TemplateEngine.git", from: "3.0.0"),
+        .package(url: "https://github.com/Kitura/KituraContracts.git", from: "2.0.1"),
+        .package(url: "https://github.com/Kitura/TypeDecoder.git", from: "2.0.0"),
     ],
     targets: [
         .target(
             name: "Kitura",
-            dependencies: ["KituraNet", "KituraTemplateEngine", "KituraContracts", "TypeDecoder", "LoggerAPI", "Logging"]
+            dependencies: [
+                .product(name: "KituraNet", package: "Kitura-NIO"),
+                .product(name: "KituraTemplateEngine", package: "Kitura-TemplateEngine"),
+                .product(name: "Logging", package: "swift-log"),
+                "KituraContracts", "TypeDecoder", "LoggerAPI",
+                ]
         ),
         .testTarget(
             name: "KituraTests",

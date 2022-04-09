@@ -47,15 +47,15 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
 
     // Tests that a request whose total size is smaller than the configured limit is successful.
     func testSmallPostSucceeds() {
-        performServerTest(router, options: ServerOptions(requestSizeLimit: 10), timeout: 30) { expectation in
+        performServerTest(router, options: ServerOptions(requestSizeLimit: 10), timeout: 30) { serverContext, asyncTaskCompletion in
             // Data that is within request limit
             let count = 10
             let postData = Data(repeating: UInt8.max, count: count)
 
-            self.performRequest("post", path: "/smallPost", callback: { response in
+            self.performRequest(serverContext, "post", path: "/smallPost", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
-                expectation.fulfill()
+                asyncTaskCompletion()
             }, requestModifier: { request in
                 request.write(from: postData)
             })
@@ -65,15 +65,15 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
     // Tests that a POST request containing body data that exceeds the configured limit is
     // correctly rejected with `.requestTooLong`.
     func testLargePostExceedsLimit() {
-        performServerTest(router, options: ServerOptions(requestSizeLimit: 10), timeout: 30) { expectation in
+        performServerTest(router, options: ServerOptions(requestSizeLimit: 10), timeout: 30) { serverContext, asyncTaskCompletion in
             // Data that exceeds the request size limit
             let count = 11
             let postData = Data(repeating: UInt8.max, count: count)
 
-            self.performRequest("post", path: "/largePostFail", callback: { response in
+            self.performRequest(serverContext, "post", path: "/largePostFail", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.requestTooLong, "HTTP Status code was \(String(describing: response?.statusCode))")
-                expectation.fulfill()
+                asyncTaskCompletion()
             }, requestModifier: { request in
                 request.write(from: postData)
             })
@@ -86,12 +86,12 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
         let customResponse: (Int, String) -> (HTTPStatusCode, String)? = { requestLimit, client in
             return (.badRequest, "Request too large, limit \(requestLimit)")
         }
-        performServerTest(router, options: ServerOptions(requestSizeLimit: 10, requestSizeResponseGenerator: customResponse), timeout: 30) { expectation in
+        performServerTest(router, options: ServerOptions(requestSizeLimit: 10, requestSizeResponseGenerator: customResponse), timeout: 30) { serverContext, asyncTaskCompletion in
             // Data that exceeds the request size limit
             let count = 11
             let postData = Data(repeating: UInt8.max, count: count)
 
-            self.performRequest("post", path: "/largePostFail", callback: { response in
+            self.performRequest(serverContext, "post", path: "/largePostFail", callback: { response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
@@ -100,7 +100,7 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
                 } catch {
                     XCTFail("Unable to read response: \(error)")
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             }, requestModifier: { request in
                 request.write(from: postData)
             })
@@ -110,7 +110,7 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
     // Tests that a request with a modest total size, but an over-sized header (> 80kb)
     // is correctly rejected as a `.badRequest`.
     func testLargeHeaderExceedsLimit() {
-        performServerTest(router, options: nil /* default options */, timeout: 30) { expectation in
+        performServerTest(router, options: nil /* default options */, timeout: 30) { serverContext, asyncTaskCompletion in
             // Data that is within default request limit
             let count = 10
             let postData = Data(repeating: UInt8.max, count: count)
@@ -120,7 +120,7 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
             let headerData = Data(repeating: 0x7A, count: headerBytes)
             let tooLongString = String(data: headerData, encoding: .utf8)!
 
-            self.performRequest("post", path: "/smallPost", callback: { response in
+            self.performRequest(serverContext, "post", path: "/smallPost", callback: { response in
                 if let response = response {
                     XCTAssertEqual(response.statusCode, HTTPStatusCode.badRequest, "HTTP Status code was \(response.statusCode)")
                 } else {
@@ -128,7 +128,7 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
                     // client has completed sending headers: curl reports send failure. We cannot
                     // test this explicitly as ClientRequest does not return the underlying error.
                 }
-                expectation.fulfill()
+                asyncTaskCompletion()
             }, requestModifier: { request in
                 request.headers["Much-Too-Long"] = tooLongString
                 request.write(from: postData)
@@ -139,7 +139,7 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
     // Tests that a request with large header size that is just within the headers limit,
     // plus a request body that is just within the body size limit, is correctly accepted.
     func testLargeHeaderWithinLimit() {
-        performServerTest(router, options: ServerOptions(requestSizeLimit: 10), timeout: 30) { expectation in
+        performServerTest(router, options: ServerOptions(requestSizeLimit: 10), timeout: 30) { serverContext, asyncTaskCompletion in
             // Data that is within default request limit
             let count = 10
             let postData = Data(repeating: UInt8.max, count: count)
@@ -148,12 +148,12 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
             let headerData = Data(repeating: 0x7A, count: headerBytes)
             let prettyLongString = String(data: headerData, encoding: .utf8)!
 
-            self.performRequest("post", path: "/smallPost", callback: { response in
+            self.performRequest(serverContext, "post", path: "/smallPost", callback: { response in
                 guard let response = response else {
                     return XCTFail("ERROR!!! ClientRequest response object was nil")
                 }
                 XCTAssertEqual(response.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(response.statusCode)")
-                expectation.fulfill()
+                asyncTaskCompletion()
             }, requestModifier: { request in
                 request.headers["Not-Too-Long"] = prettyLongString
                 request.write(from: postData)
@@ -172,11 +172,11 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
 
     // Wrap ClientRequest in an async dispatch block as Kitura-net's implementation is
     // not asynchronous, and we need connections to be established in parallel.
-    func asyncClientRequest(expectation: XCTestExpectation, status: ClientStatus) {
+    func asyncClientRequest(_ serverContext: ServerContext, status: ClientStatus, completion: @escaping ()->Void) {
         DispatchQueue.global().async {
-            self.performRequest("get", path: "/answerSlowly", callback: { response in
+            self.performRequest(serverContext, "get", path: "/answerSlowly", callback: { response in
                 defer {
-                    expectation.fulfill()
+                    completion()
                 }
                 guard let response = response else {
                     return XCTFail("ERROR!!! ClientRequest response object was nil")
@@ -196,20 +196,27 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
 
         // Create client status objects and expectations
         var clientStatus = [ClientStatus]()
-        var clientExpectations = [XCTestExpectation]()
-        for i in 1...numClients {
+        for _ in 1...numClients {
             clientStatus.append(ClientStatus())
-            clientExpectations.append(self.expectation(description: "Client \(i) completed"))
         }
 
         // Start server and make concurrent request attempts. performServerTest() will
         // not complete until all expectations (including client completion) are fulfilled.
-        performServerTest(router, options: ServerOptions(connectionLimit: maxClients), sslOption: .httpOnly, socketTypeOption: .inet, timeout: 30) { expectation in
+        performServerTest(router, options: ServerOptions(connectionLimit: maxClients), sslOption: [.http], socketTypeOption: [.inet], timeout: 30) { serverContext, asyncTaskCompletion in
+            let group = DispatchGroup()
+            group.enter()
             for i in 0..<numClients {
-                usleep(1000)  // TODO: properly fix crash when creating ClientRequests concurrently
-                self.asyncClientRequest(expectation: clientExpectations[i], status: clientStatus[i])
+                group.enter()
+                self.asyncClientRequest(serverContext, status: clientStatus[i]) {
+                    group.leave()
+                }
             }
-            expectation.fulfill()
+            group.leave()
+
+            group.notify(queue: .global()) {
+                asyncTaskCompletion()
+            }
+
         }
 
         // Assess results
@@ -219,11 +226,11 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
             switch clientStatus[i].code {
             case .OK: successCount += 1
             case .serviceUnavailable: failCount += 1
-            default: XCTFail("Unexpected client status: \(clientStatus[i].code)")
+            default: XCTFail("Unexpected client status \(i): \(clientStatus[i].code)")
             }
         }
-        XCTAssertEqual(successCount, maxClients, "Incorrect number of accepted client connections")
-        XCTAssertEqual(failCount, numClients - maxClients, "Incorrect number of rejected client connections")
+        XCTAssertEqual(successCount, maxClients, "Incorrect number of accepted client connections.  Expected: \(maxClients)")
+        XCTAssertEqual(failCount, numClients - maxClients, "Incorrect number of rejected client connections.  Expected: \(numClients - maxClients)")
     }
 
     // Tests that the response can be customized for when a connection is rejected.
@@ -233,10 +240,8 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
 
         // Create client status objects and expectations
         var clientStatus = [ClientStatus]()
-        var clientExpectations = [XCTestExpectation]()
-        for i in 1...numClients {
+        for _ in 1...numClients {
             clientStatus.append(ClientStatus())
-            clientExpectations.append(self.expectation(description: "Client \(i) completed"))
         }
 
         let customResponse: (Int, String) -> (HTTPStatusCode, String)? = { limit, client in
@@ -245,12 +250,19 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
 
         // Start server and make concurrent request attempts. performServerTest() will
         // not complete until all expectations (including client completion) are fulfilled.
-        performServerTest(router, options: ServerOptions(connectionLimit: maxClients, connectionResponseGenerator: customResponse), sslOption: .httpOnly, socketTypeOption: .inet, timeout: 30) { expectation in
+        performServerTest(router, options: ServerOptions(connectionLimit: maxClients, connectionResponseGenerator: customResponse), sslOption: [.http], socketTypeOption: [.inet], timeout: 30) { serverContext, asyncTaskCompletion in
+            let group = DispatchGroup()
             for i in 0..<numClients {
                 usleep(1000)  // TODO: properly fix crash when creating ClientRequests concurrently
-                self.asyncClientRequest(expectation: clientExpectations[i], status: clientStatus[i])
+                group.enter()
+                self.asyncClientRequest(serverContext, status: clientStatus[i]) {
+                    group.leave()
+                }
             }
-            expectation.fulfill()
+
+            group.notify(queue: .global()) {
+                asyncTaskCompletion()
+            }
         }
 
         // Assess results
@@ -284,7 +296,7 @@ final class TestServerOptions: KituraTest, KituraTestSuite {
 
         router.get("/answerSlowly") { request, response, _ in
             // Return .OK after 1 second
-            DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(3)) {
                 do {
                     try response.status(.OK).end()
                 } catch {

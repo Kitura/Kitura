@@ -66,6 +66,10 @@ All improvements to Kitura are very welcome! Here's how to get started with deve
 
 You can find more info on contributing to Kitura in our [contributing guidelines](https://github.com/Kitura/Kitura/blob/master/.github/CONTRIBUTING.md).
 
+## Note
+
+This version of Kitura no longer actively supports Swift 4.x; Swift 5.1 is now the minimum supported version.
+
 ## Community
 
 We love to talk server-side Swift, and Kitura. Join our [Slack](http://swift-at-ibm-slack.mybluemix.net/) to meet the team!
