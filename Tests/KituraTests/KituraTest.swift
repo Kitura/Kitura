@@ -391,6 +391,11 @@ class KituraTest: XCTestCase {
     func removeTemporaryFilePath(_ path: String) {
         let fileURL = URL(fileURLWithPath: path)
         let fm = FileManager.default
+        guard fm.fileExists(atPath: fileURL.path) else {
+            // Kitura-NIO automatically cleans itself.  So currently the item will be removed by the time this function is called.
+            return
+        }
+
         do {
             try fm.removeItem(at: fileURL)
         } catch {
