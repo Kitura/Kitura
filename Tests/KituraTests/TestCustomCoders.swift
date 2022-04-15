@@ -217,8 +217,16 @@ final class TestCustomCoders: KituraTest, KituraTestSuite {
         
         performServerTest(customRouter) { expectation in
             self.performRequest("get", path: "/sendjson", callback: { response in
-                if let response = response, let responseString = try? response.readString() {
-                    XCTAssertEqual(responseString, "{\"date\":1519206456}")
+                if let response = response {
+                    var responseData = Data()
+                    _ = try? response.readAllData(into: &responseData)
+
+                    struct DateObject: Codable {
+                        let date: TimeInterval
+                    }
+
+                    let responseJson = try! JSONDecoder().decode(DateObject.self, from: responseData)
+                    XCTAssertEqual(responseJson.date, 1519206456)
                 } else {
                     XCTFail("Unable to read response string")
                 }
