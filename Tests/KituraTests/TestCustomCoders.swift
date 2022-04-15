@@ -17,6 +17,7 @@
 import XCTest
 import Foundation
 import KituraContracts
+import KituraNet
 
 @testable import Kitura
 
@@ -38,6 +39,18 @@ final class TestCustomCoders: KituraTest, KituraTestSuite {
             return lhs.date == rhs.date
         }
     }
+
+    struct CodableDateAsTimeInterval: Codable {
+        let date: TimeInterval
+
+        init(response: ClientResponse) throws {
+            var responseData = Data()
+            _ = try response.readAllData(into: &responseData)
+
+            self = try JSONDecoder().decode(CodableDateAsTimeInterval.self, from: responseData)
+        }
+    }
+
     
     let dateFormatter = DateFormatter()
     
@@ -116,8 +129,9 @@ final class TestCustomCoders: KituraTest, KituraTestSuite {
         
         performServerTest(customRouter) { expectation in
             self.performRequest("get", path: "/rawget", callback: { response in
-                if let response = response, let responseString = try? response.readString() {
-                    XCTAssertEqual(responseString, "{\"date\":1519206456}")
+                if let response = response,
+                   let responseJson = try? CodableDateAsTimeInterval(response: response) {
+                    XCTAssertEqual(responseJson.date, 1519206456)
                 } else {
                     XCTFail("Unable to read response string")
                 }
@@ -217,15 +231,8 @@ final class TestCustomCoders: KituraTest, KituraTestSuite {
         
         performServerTest(customRouter) { expectation in
             self.performRequest("get", path: "/sendjson", callback: { response in
-                if let response = response {
-                    var responseData = Data()
-                    _ = try? response.readAllData(into: &responseData)
-
-                    struct DateObject: Codable {
-                        let date: TimeInterval
-                    }
-
-                    let responseJson = try! JSONDecoder().decode(DateObject.self, from: responseData)
+                if let response = response,
+                   let responseJson = try? CodableDateAsTimeInterval(response: response) {
                     XCTAssertEqual(responseJson.date, 1519206456)
                 } else {
                     XCTFail("Unable to read response string")
