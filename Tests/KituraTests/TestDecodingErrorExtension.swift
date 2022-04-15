@@ -123,8 +123,9 @@ final class TestDecodingErrorExtension: XCTestCase, KituraTestSuite {
         } catch  {
             if let decodingError = error as? DecodingError {
                 let expectedErrors = [
-                    "Key 'name' has the wrong type or was not found",
-                    "Key 'name' has the wrong type. Expected to decode String but found null instead."
+//                    "Key 'name' has the wrong type or was not found",
+                    "Key 'name' has the wrong type. Expected to decode String but found null instead.", // Swift 5.5.2
+                    "Key 'name' has the wrong type or was not found. Expected String value but found null instead." // Swift 5.2.5, 5.3.1, 5.4.1, 5.6
                 ]
                 XCTAssert(expectedErrors.contains(decodingError.humanReadableDescription),
                           "DecodingError.humanReadableDescription not what we expected.  got: \(decodingError.humanReadableDescription)")
