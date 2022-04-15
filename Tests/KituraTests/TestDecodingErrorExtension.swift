@@ -122,7 +122,12 @@ final class TestDecodingErrorExtension: XCTestCase, KituraTestSuite {
             XCTFail("We should have had a decoding error.")
         } catch  {
             if let decodingError = error as? DecodingError {
-                XCTAssert(decodingError.humanReadableDescription.contains("Key \'name\' has the wrong type or was not found"), "DecodingError.humanReadableDescription not what we expected.  got: \(decodingError.humanReadableDescription)")
+                let expectedErrors = [
+                    "Key 'name' has the wrong type or was not found",
+                    "Key 'name' has the wrong type. Expected to decode String but found null instead."
+                ]
+                XCTAssert(expectedErrors.contains(decodingError.humanReadableDescription),
+                          "DecodingError.humanReadableDescription not what we expected.  got: \(decodingError.humanReadableDescription)")
             } else {
                 XCTFail("We should have had a decoding error.")
             }
