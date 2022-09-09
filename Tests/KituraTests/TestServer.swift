@@ -43,8 +43,6 @@ final class TestServer: KituraTest, KituraTestSuite {
     #else
     let useNIO = false
     #endif
-//    let useNIO =  DISABLE_FASTCGI
-//    ProcessInfo.processInfo.environment["KITURA_NIO"] != nil
 
     override func setUp() {
         super.setUp()
