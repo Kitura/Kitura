@@ -66,6 +66,12 @@ All improvements to Kitura are very welcome! Here's how to get started with deve
 
 You can find more info on contributing to Kitura in our [contributing guidelines](https://github.com/Kitura/Kitura/blob/master/.github/CONTRIBUTING.md).
 
+## Notes
+
+* Swift-NIO is now the default network engine via the Kitura-NIO package.  If for some reason you require the old Kitura-net package, you can still enable it by setting an environment variable `KITURA_NIO=0` during build.
+* Most Kitura packages have been updated to require at least Swift 5.2 in order to maintain backward compatibility.
+
+
 ## Community
 
 We love to talk server-side Swift, and Kitura. Join our [Slack](http://swift-at-ibm-slack.mybluemix.net/) to meet the team!
