@@ -38,7 +38,11 @@ final class TestServer: KituraTest, KituraTestSuite {
     }
 
     var httpPort = 8080
-    let useNIO = ProcessInfo.processInfo.environment["KITURA_NIO"] != nil
+    #if DISABLE_FASTCGI
+    let useNIO = true
+    #else
+    let useNIO = false
+    #endif
 
     override func setUp() {
         super.setUp()

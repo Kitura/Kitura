@@ -21,13 +21,18 @@ import Foundation
 
 var kituraNetPackage: Package.Dependency
 let kituraNetDependency: Target.Dependency
+let swiftSettings: [SwiftSetting]
 
-if ProcessInfo.processInfo.environment["KITURA_NIO"] != nil {
+// Default behavior is to now use NIO.  Add the environment variable KITURA_NIO=0 to disable NIO and use the (legacy) Kitura-net package.
+let enable_nio = !( ["0","false"].contains(ProcessInfo.processInfo.environment["KITURA_NIO"]) )
+if enable_nio {
     kituraNetPackage = .package(url: "https://github.com/Kitura/Kitura-NIO.git", from: "3.1.0")
     kituraNetDependency = .product(name: "KituraNet", package: "Kitura-NIO")
+    swiftSettings = [ .define("DISABLE_FASTCGI")]
 } else {
     kituraNetPackage = .package(url: "https://github.com/Kitura/Kitura-net.git", from: "3.0.1")
     kituraNetDependency = .product(name: "KituraNet", package: "Kitura-net")
+    swiftSettings = []
 }
 
 let package = Package(
@@ -57,7 +62,8 @@ let package = Package(
         ),
         .testTarget(
             name: "KituraTests",
-            dependencies: ["Kitura", "KituraContracts", "TypeDecoder", "LoggerAPI"]
+            dependencies: ["Kitura", "KituraContracts", "TypeDecoder", "LoggerAPI"],
+            swiftSettings: swiftSettings
         )
     ]
 )
