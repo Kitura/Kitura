@@ -26,7 +26,7 @@ let swiftSettings: [SwiftSetting]
 // Default behavior is to now use NIO.  Add the environment variable KITURA_NIO=0 to disable NIO and use the (legacy) Kitura-net package.
 let enable_nio = !( ["0","false"].contains(ProcessInfo.processInfo.environment["KITURA_NIO"]) )
 if enable_nio {
-    kituraNetPackage = .package(url: "https://github.com/Kitura/Kitura-NIO.git", from: "3.1.0")
+    kituraNetPackage = .package(url: "https://github.com/Kitura/Kitura-NIO.git", from: "3.1.1")
     kituraNetDependency = .product(name: "KituraNet", package: "Kitura-NIO")
     swiftSettings = [ .define("DISABLE_FASTCGI")]
 } else {
