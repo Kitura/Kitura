@@ -1075,12 +1075,12 @@ public struct SwaggerDocument: Encodable {
         }
         return document
     }
-    
+
     private static func getTypeName(type: Any.Type) -> String {
         let fullName = String(reflecting: type)
         return removeFrameworkname(fullName: fullName)
     }
-    
+
     private static func getTypeName(type: Any) -> String {
         let fullName = String(reflecting: type)
         return removeFrameworkname(fullName: fullName)
@@ -1256,6 +1256,48 @@ extension Router {
     // - Parameter method: The http method name: one of 'get', 'patch', 'post', 'put'.
     // - Parameter id: The type of the identifier.
     // - Parameter idReturned: Flag indicating that id is returned.
+    // - Parameter queryTypes: The types of the query parameters.
+    // - Parameter allOptQParams: The type of the model to register.
+    // - Parameter outputType: The type of the model to register.
+    // - Parameter responseTypes: array of expected swagger response type objects.
+    func registerRoute<Id: Identifier, Q: QueryParams, O: Codable>(route: String, method: String, id: Id.Type, idReturned: Bool, queryType: Q.Type, allOptQParams: Bool, outputType: O.Type, responseTypes: [SwaggerResponseType]) {
+        Log.debug("Registering \(route) for \(method) method")
+
+        let typeInfo: TypeInfo
+        do {
+            typeInfo = try TypeDecoder.decode(outputType)
+        } catch {
+            return logTypeDecodeError(error, for: outputType, on: route, as: .outputType)
+        }
+
+        var params: OrderedDictionary<String, TypeInfo>? = nil
+        do {
+            if case .keyed(_, let dict) = try TypeDecoder.decode(queryType) {
+                params = dict
+            }
+        } catch {
+            return logTypeDecodeError(error, for: queryType, on: route, as: .queryParamType)
+        }
+
+        // insert the path information into the document structure.
+        swagger.addPath(path: route, method: method, id: "\(id)", idReturned: idReturned, qParams: params, allOptQParams: allOptQParams, inputTypeInfo: nil, responseList: responseTypes)
+
+        // add model information into the document structure.
+        swagger.addModel(model: typeInfo, forSwiftType: outputType)
+
+        // now walk all the unprocessed models and ensure they are processed.
+        for unprocessed in Array(swagger.unprocessedTypes) {
+            Log.debug("Processing unprocessed model: \(unprocessed.debugDescription)")
+            swagger.addModel(model: unprocessed)
+        }
+    }
+
+    // Register a route in the SwaggerDocument.
+    //
+    // - Parameter route: The route to be registered.
+    // - Parameter method: The http method name: one of 'get', 'patch', 'post', 'put'.
+    // - Parameter id: The type of the identifier.
+    // - Parameter idReturned: Flag indicating that id is returned.
     // - Parameter outputType: The type of the model to register.
     // - Parameter responseTypes: array of expected swagger response type objects.
     func registerRoute<Id: Identifier, O: Codable>(route: String, method: String, id: Id.Type, idReturned: Bool, outputType: O.Type, responseTypes: [SwaggerResponseType]) {
@@ -1414,6 +1456,24 @@ extension Router {
         responseTypes.append(SwaggerResponseType(optional: true, array: outputIsArray, tuple: false, type: O.self, statusCode: .OK))
         responseTypes.append(SwaggerResponseType(optional: true, array: false, tuple: false, type: nil, statusCode: .badRequest))
         registerRoute(route: route, method: "get", queryType: Q.self, allOptQParams: optionalQParam, outputType: O.self, responseTypes: responseTypes)
+    }
+
+    /// Register GET route
+    ///
+    /// - Parameter route: The route to register.
+    /// - Parameter id: The id type.
+    /// - Parameter queryParams: The query parameters.
+    /// - Parameter optionalQParam: Flag to indicate that the query params are all optional.
+    /// - Parameter outputType: The output object type.
+    public func registerGetRoute<Id: Identifier, Q: QueryParams, O: Codable>(route: String, id: Id.Type, queryParams: Q.Type, optionalQParam: Bool, outputType: O.Type, outputIsArray: Bool = false) {
+        var responseTypes = [SwaggerResponseType]()
+        // A GET route involving an ID and an array return type is a GET (plural) request, returning
+        // an array of tuples associating an ID with each item returned.
+        let outputIsArrayOfTuples = outputIsArray
+        let idReturned: Bool = outputIsArray
+        responseTypes.append(SwaggerResponseType(optional: true, array: outputIsArray, tuple: outputIsArrayOfTuples, type: O.self, statusCode: .OK))
+        responseTypes.append(SwaggerResponseType(optional: true, array: false, tuple: false, type: nil, statusCode: .badRequest))
+        registerRoute(route: route, method: "get", id: Id.self, idReturned: idReturned, queryType: Q.self, allOptQParams: optionalQParam, outputType: O.self, responseTypes: responseTypes)
     }
 
     /// Register DELETE route
