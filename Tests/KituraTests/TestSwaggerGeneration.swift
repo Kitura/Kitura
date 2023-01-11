@@ -120,6 +120,10 @@ func getTupleArrayAppleHandler(completion: ([(Int, Apple)]?, RequestError?) -> V
     completion(nil, nil)
 }
 
+func postEmptyHandler(completion: (Apple?, RequestError?) -> Void ) -> Void {
+    completion(nil, nil)
+}
+
 func postAppleHandler(posted: Apple, completion: (Apple?, RequestError?) -> Void ) -> Void {
     completion(nil, nil)
 }
@@ -211,6 +215,7 @@ final class TestSwaggerGeneration: KituraTest, KituraTestSuite {
 
         router.patch("/me/patch", handler: patchSingleAppleHandler)
 
+        router.post("/me/new", handler: postEmptyHandler)
         router.post("/me/post", handler: postAppleHandler)
         router.post("/me/postid", handler: postSingleAppleHandler)
 
@@ -226,6 +231,7 @@ final class TestSwaggerGeneration: KituraTest, KituraTestSuite {
 
     func pathAssertions(paths: [String: Any]) {
         // test for path existence
+        XCTAssertTrue(paths["/me/new"] != nil, "path /me/new is missing")
         XCTAssertTrue(paths["/me/post"] != nil, "path /me/post is missing")
         XCTAssertTrue(paths["/me/getTupleArray"] != nil, "path /me/getTupleArray is missing")
         XCTAssertTrue(paths["/me/postid"] != nil, "path /me/postid is missing")
@@ -617,6 +623,15 @@ final class TestSwaggerGeneration: KituraTest, KituraTestSuite {
     }
 
     func pathContentAssertions3(paths: [String: Any]) {
+        // Test empty POST
+        if let path = paths["/me/new"] as? [String: Any] {
+            if let _ = path["new"] as? [String: Any] {
+                XCTFail("path /me/new: no post parameters expected")
+            }
+        } else {
+            XCTFail("path /me/new is missing")
+        }
+
         if let path = paths["/me/post"] as? [String: Any] {
             if let post = path["post"] as? [String: Any] {
                 if let parameters = post["parameters"] as? [[String: Any]] {
