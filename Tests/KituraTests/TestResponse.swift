@@ -64,7 +64,8 @@ final class TestResponse: KituraTest, KituraTestSuite {
             ("testSend", testSend),
             ("testSendAfterEnd", testSendAfterEnd),
             ("testChangeStatusCodeOnInvokedSend", testChangeStatusCodeOnInvokedSend),
-            ("testUserInfo", testUserInfo)
+            ("testUserInfo", testUserInfo),
+            ("testSendReset", testSendReset),
         ]
     }
 
@@ -85,6 +86,8 @@ final class TestResponse: KituraTest, KituraTestSuite {
     static let decoder = JSONDecoder()
 
     let router = TestResponse.setupRouter()
+
+    static let resettedContent: String = "Secondly send content."
 
     func testSimpleResponse() {
     	performServerTest(router) { expectation in
@@ -1156,6 +1159,52 @@ final class TestResponse: KituraTest, KituraTestSuite {
             })
         }
     }
+
+    func testSendReset() {
+        // String
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/resetString", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
+                do {
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, Self.resettedContent)
+                } catch {
+                    XCTFail("Error reading body. Error=\(error.localizedDescription)")
+                }
+                expectation.fulfill()
+            })
+        }
+        // Optional string
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/resetStringOptional", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
+                do {
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, nil)
+                } catch {
+                    XCTFail("Error reading body. Error=\(error.localizedDescription)")
+                }
+                expectation.fulfill()
+            })
+        }
+        // Data
+        performServerTest(router) { expectation in
+            self.performRequest("get", path: "/resetData", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
+                do {
+                    var body = Data()
+                    _ = try response?.read(into: &body)
+                    XCTAssertEqual(body, Self.resettedContent.data(using: .utf8)!)
+                } catch {
+                    XCTFail("Error reading body")
+                }
+                expectation.fulfill()
+            })
+        }
+    }
     
     static func setupRouter() -> Router {
         let router = Router()
@@ -1605,6 +1654,26 @@ final class TestResponse: KituraTest, KituraTestSuite {
             response.send("\(greeting) world")
             next()
         })
+
+        router.get("/resetString") { _, response, next in
+            response.send("Ignored content")
+            response.send(Self.resettedContent, reset: true)
+            next()
+        }
+
+        router.get("/resetStringOptional") { _, response, next in
+            response.send("Ignored content")
+            response.send(nil, reset: true)
+            next()
+        }
+
+        router.get("/resetData") { _, response, next in
+            do {
+                response.send("Ignored content")
+                try response.send(data: Self.resettedContent.data(using: .utf8)!, reset: true).end()
+            } catch {}
+            next()
+        }
         
         router.error { _, response, next in
             response.headers["Content-Type"] = "text/html; charset=utf-8"
