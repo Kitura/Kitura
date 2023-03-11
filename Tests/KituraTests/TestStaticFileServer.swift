@@ -62,6 +62,7 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
             ("testRangeRequestWithIfRangeHeaderAsOldLastModified", testRangeRequestWithIfRangeHeaderAsOldLastModified),
             ("testStaticFileServerRedirectPreservingQueryParams", testStaticFileServerRedirectPreservingQueryParams),
             ("testFallbackToDefaultIndex", testFallbackToDefaultIndex),
+            ("testThat_DefaultIndex_WillNotSend_WhenRequestPreviouslyEnded", testThat_DefaultIndex_WillNotSend_WhenRequestPreviouslyEnded),
             ("testFallbackToDefaultIndexFailsIfOptionNotSet", testFallbackToDefaultIndexFailsIfOptionNotSet),
             ("testFallbackToDefaultIndexWithSubrouter", testFallbackToDefaultIndexWithSubrouter),
         ]
@@ -666,6 +667,25 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
         })
     }
 
+    func testThat_DefaultIndex_WillNotSend_WhenRequestPreviouslyEnded() {
+        // This test verifies that the default index.html will not be sent if a middleware ended the response
+        let router = TestStaticFileServer.setupRouter(defaultIndex: "/index.html")
+
+        performServerTest(router, asyncTasks: { expectation in
+            self.performRequest("get", path:"/help/middleware/endresponse", callback: { response in
+                XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
+                XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
+                do {
+                    let body = try response?.readString()
+                    XCTAssertEqual(body, "Middleware response")
+                } catch {
+                    XCTFail("No response body")
+                }
+                expectation.fulfill()
+            })
+        })
+    }
+
     func testFallbackToDefaultIndexFailsIfOptionNotSet() {
         let router = TestStaticFileServer.setupRouter(defaultIndex: nil)
         performServerTest(router, asyncTasks: { expectation in
@@ -701,10 +721,16 @@ final class TestStaticFileServer: KituraTest, KituraTestSuite {
 
     static func setupRouter(defaultIndex: String?) -> Router {
         let router = Router(enableWelcomePage: true)
+        router.get("/help/middleware/endresponse") { request, response, next in
+            response.send("Middleware response").status(.OK)
+            try response.end()
+            next()
+        }
         router.all("/help", middleware: StaticFileServer(
             path: servingPathPrefix() + "Tests/KituraTests/TestStaticFileServer/",
             options: StaticFileServer.Options(defaultIndex: defaultIndex))
         )
+
         return router
     }
 }
