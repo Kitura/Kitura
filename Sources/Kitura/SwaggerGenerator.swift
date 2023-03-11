@@ -284,6 +284,9 @@ struct SwaggerModel {
     var required: [String]
 }
 
+// Dummy struct only to allow serialization of RFC3339 'full-date'
+struct FullDate {}
+
 // Enum of supported Swift types.
 // Note that there are ommissions here, notably Float80, because it is not codable.
 enum SwiftType: String {
@@ -292,6 +295,8 @@ enum SwiftType: String {
     case Double, Float, Float32, Float64
     case Int, UInt, Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64
     case String
+    case Date
+    case FullDate
 
     // Return the OpenApi (Swagger) type that maps to the Swift type.
     func swaggerType() -> String {
@@ -306,6 +311,10 @@ enum SwiftType: String {
             return "integer"
         case .String:
             return "string"
+        case .Date:
+            return "string"
+        case .FullDate:
+            return "string"
         }
     }
 
@@ -316,6 +325,10 @@ enum SwiftType: String {
         switch self {
         case .Float, .Float32, .Float64, .Int8, .UInt8, .Int16, .UInt16, .Int32, .UInt32, .Int64, .UInt64:
             return self.rawValue.lowercased()
+        case .Date:
+            return "date-time"
+        case .FullDate:
+            return "date"
         default:
             return nil
         }
@@ -340,7 +353,9 @@ enum SwiftType: String {
              UInt32.rawValue,
              Int64.rawValue,
              UInt64.rawValue,
-             String.rawValue:
+             String.rawValue,
+             Date.rawValue,
+             FullDate.rawValue:
             return true
         default:
             return false
@@ -646,9 +661,22 @@ public struct SwaggerDocument: Encodable {
                     // Note: We do not handle a difference in input vs. output encoding - although it
                     // is possible to configure Kitura this way, it is not compatible with REST.
                     switch self.dateEncodingStrategy {
-                    case .iso8601, .formatted(_):
-                        // Date is serialized to a string
-                        property = try swaggerPropertyFromSwiftType(String.self)
+                    case .iso8601:
+                        // Serialize to a `date-time`.
+                        property = try swaggerPropertyFromSwiftType(Date.self)
+                    case .formatted(let format):
+                        guard let dateFormat = format.dateFormat else {
+                            property = try swaggerPropertyFromSwiftType(String.self)
+                            break
+                        }
+                        switch dateFormat {
+                        case "yyyy-MM-dd'T'HH:mm:ssZZZZZ": // RFC3339 'date-time'
+                            property = try swaggerPropertyFromSwiftType(Date.self)
+                        case "yyyy-MM-dd": // RFC3339 'date'
+                            property = try swaggerPropertyFromSwiftType(FullDate.self)
+                        default:// Date is serialized to a string
+                            property = try swaggerPropertyFromSwiftType(String.self)
+                        }
                     case .secondsSince1970, .millisecondsSince1970:
                         // Date is serialized to an integer value
                         property = try swaggerPropertyFromSwiftType(Int64.self)
@@ -1075,12 +1103,12 @@ public struct SwaggerDocument: Encodable {
         }
         return document
     }
-    
+
     private static func getTypeName(type: Any.Type) -> String {
         let fullName = String(reflecting: type)
         return removeFrameworkname(fullName: fullName)
     }
-    
+
     private static func getTypeName(type: Any) -> String {
         let fullName = String(reflecting: type)
         return removeFrameworkname(fullName: fullName)

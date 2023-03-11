@@ -347,7 +347,7 @@ final class TestSwaggerGeneration: KituraTest, KituraTestSuite {
             }
         }
     }
-    
+
     func deckDefinitionsAssertions(definitions: [String: Any]) {
         if let model = definitions["Deck"] as? [String: Any] {
             if let type = model["type"] as? String {
@@ -373,7 +373,7 @@ final class TestSwaggerGeneration: KituraTest, KituraTestSuite {
             return XCTFail("Deck model is missing")
         }
     }
-    
+
     func deckCardDefinitionsAssertions(definitions: [String: Any]) {
         if let model = definitions["Deck.Card"] as? [String: Any] {
             if let type = model["type"] as? String {
@@ -1087,7 +1087,7 @@ final class TestSwaggerGeneration: KituraTest, KituraTestSuite {
             }
         }
     }
-    
+
     //
     // Test that our swagger document defines the custom info section.
     //
@@ -1107,13 +1107,13 @@ final class TestSwaggerGeneration: KituraTest, KituraTestSuite {
             } else {
                 XCTFail("title is missing")
             }
-            
+
             if let desc = info["description"] {
                 XCTAssertTrue(desc == customDescription, "description is incorrect")
             } else {
                 XCTFail("description is missing")
             }
-            
+
             if let version = info["version"] {
                 XCTAssertTrue(version == customVersion, "version is incorrect")
             } else {
@@ -1405,7 +1405,8 @@ final class TestSwaggerGeneration: KituraTest, KituraTestSuite {
         /// Helper function for validating swagger representation of Person.birthday
         /// - Parameter router: The router to inspect
         /// - Parameter expectedEncoding: The type description we expect for Date
-        func personEncodingAssertions(for router: Router, expectedEncoding: String) {
+        /// - Paramter expectedFormat: The special format we expect for Date
+        func personEncodingAssertions(for router: Router, expectedEncoding: String, expectedFormat: String? = nil) {
             guard let dict = getSwaggerDictionary(for: router) else {
                 return XCTFail("Unable to get swagger dictionary")
             }
@@ -1431,6 +1432,12 @@ final class TestSwaggerGeneration: KituraTest, KituraTestSuite {
                 return XCTFail("model Person: birthday does not contain 'type'")
             }
             XCTAssertEqual(birthdayType, expectedEncoding, "model Person: birthday expected to be encoded as \(expectedEncoding), but was \(birthdayType)")
+            if let expectedFormat = expectedFormat {
+                guard let birthdayFormat = birthday["format"] as? String else {
+                    return XCTFail("model Person: birthday does not contain 'format'")
+                }
+                XCTAssertEqual(birthdayFormat, expectedFormat, "model Person: birthday expected to be encoded as \(expectedEncoding) with format \(expectedFormat), but was format \(birthdayFormat)")
+            }
         }
 
         // Check that Date is described as 'string' when encoding with ISO8601 strategy
@@ -1438,8 +1445,25 @@ final class TestSwaggerGeneration: KituraTest, KituraTestSuite {
             let customRouterIso8601 = Router()
             configureDateEncoding(on: customRouterIso8601, encodingStrategy: .iso8601, decodingStrategy: .iso8601)
             customRouterIso8601.get("/standardPerson", handler: getPersonHandler)
-            personEncodingAssertions(for: customRouterIso8601, expectedEncoding: "string")
+            personEncodingAssertions(for: customRouterIso8601, expectedEncoding: "string", expectedFormat: "date-time")
         }
+        let customRouterRFC3339 = Router()
+        let RFC3339DateFormatter = DateFormatter()
+        RFC3339DateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        RFC3339DateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
+        RFC3339DateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        configureDateEncoding(on: customRouterRFC3339, encodingStrategy: .formatted(RFC3339DateFormatter), decodingStrategy: .formatted(RFC3339DateFormatter))
+        customRouterRFC3339.get("/standardPerson", handler: getPersonHandler)
+        personEncodingAssertions(for: customRouterRFC3339, expectedEncoding: "string", expectedFormat: "date-time")
+
+        let customRouterRFC3339FullDate = Router()
+        let RFC3339DateFormatterFullDate = DateFormatter()
+        RFC3339DateFormatterFullDate.locale = Locale(identifier: "en_US_POSIX")
+        RFC3339DateFormatterFullDate.dateFormat = "yyyy-MM-dd"
+        RFC3339DateFormatterFullDate.timeZone = TimeZone(secondsFromGMT: 0)
+        configureDateEncoding(on: customRouterRFC3339FullDate, encodingStrategy: .formatted(RFC3339DateFormatterFullDate), decodingStrategy: .formatted(RFC3339DateFormatterFullDate))
+        customRouterRFC3339FullDate.get("/standardPerson", handler: getPersonHandler)
+        personEncodingAssertions(for: customRouterRFC3339FullDate, expectedEncoding: "string", expectedFormat: "date")
 
         // Check that Date is described as 'integer' when encoded as seconds since 1970
         let customRouterSince1970 = Router()
